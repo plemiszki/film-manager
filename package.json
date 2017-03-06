@@ -28,5 +28,9 @@
     "react-modal": "^1.6.4",
     "snakecase-keys": "^1.1.0",
     "webpack": "^1.14.0"
+  },
+  "engines": {
+    "node": "4.1.1",
+    "npm": "2.1.x"
   }
 }
