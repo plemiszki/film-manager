@@ -1,14 +1,24 @@
-var path = require("path");
+var webpack = require("webpack");
 
 module.exports = {
   context: __dirname,
   entry: "./flux/entry.jsx",
   output: {
-    path: path.join(__dirname, 'app', 'assets', 'javascripts', 'me'),
-    filename: "bundle.js",
-    devtoolModuleFilenameTemplate: '[resourcePath]',
-    devtoolFallbackModuleFilenameTemplate: '[resourcePath]?[hash]'
+    path: "./app/assets/javascripts",
+    filename: "bundle.js"
   },
+  plugins:[
+    new webpack.DefinePlugin({
+      'process.env':{
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress:{
+        warnings: true
+      }
+    })
+  ],
   module: {
     loaders: [
       {
@@ -21,7 +31,7 @@ module.exports = {
       }
     ]
   },
-  devtool: 'source-maps',
+  devtool: 'source-map',
   resolve: {
     extensions: ["", ".js", ".jsx"]
   }
