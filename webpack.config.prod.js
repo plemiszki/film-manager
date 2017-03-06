@@ -4,7 +4,7 @@ module.exports = {
   context: __dirname,
   entry: "./flux/entry.jsx",
   output: {
-    path: "./app/assets/javascripts",
+    path: "./app/assets/javascripts/me",
     filename: "bundle.js"
   },
   plugins:[
