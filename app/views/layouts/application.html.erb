@@ -1,14 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>FilmManager</title>
-  <%= stylesheet_link_tag    'application', media: 'all' %>
-  <%= javascript_include_tag 'application' %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-
-<%= yield %>
-
-</body>
+  <head>
+    <title>Film Movement</title>
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+    <%= csrf_meta_tags %>
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <% if !current_page?('/sign_in') %>
+    <body>
+      <div id="admin-framework">
+        <div id="admin-row" class="row">
+          <div id="admin-sidebar" class="col-xs-2 match-height">
+            <div id="admin-sidebar-header"></div>
+            <div id="admin-sidebar-body">
+              <ul>
+                <li><a href="/films">Films</a></li>
+                <li><a href="/licensors">Licensors</a></li>
+                <li><a href="/theaters">Theaters</a></li>
+                <li><a href="/bookings">Bookings</a></li>
+                <li><a href="/dvd-vendors">DVD Vendors</a></li>
+                <li><a href="/users">Users</a></li>
+                <li><a href="/import">Import</a></li>
+              </ul>
+            </div>
+          </div>
+          <div id="admin-right-column" class="col-xs-10 match-height">
+            <nav id="admin-navbar" class="clearfix">
+              <div id="admin-navbar-menu">
+                <div id="current-user-dropdown">
+                </div>
+              </div>
+            </nav>
+            <div id="admin-right-column-content">
+              <%= yield %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </body>
+  <% else %>
+    <body>
+      <%= yield %>
+    </body>
+  <% end %>
 </html>

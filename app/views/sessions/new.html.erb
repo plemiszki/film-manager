@@ -1,0 +1,14 @@
+<div id="clearance" class="sign-in">
+  <div id="header">
+    <div id="t-sign"></div>
+    Log in
+  </div>
+  <div id="content">
+    <% flash.each do |key, value| %>
+      <div id="flash-message">
+        <%= value %>
+      </div>
+    <% end %>
+    <%= render partial: '/sessions/form' %>
+  </div>
+</div>
