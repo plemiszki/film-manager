@@ -80,26 +80,26 @@
 
 @font-face {
   font-family: 'TeachableSansRegular';
-  src: url('me/fonts/TeachableSans-Regular.woff') format('woff'), /* Pretty Modern Browsers */
-       url('me/fonts/TeachableSans-Regular.ttf')  format('truetype') /* Safari, Android, iOS */
+  src: font-url('TeachableSans-Regular.woff') format('woff'), /* Pretty Modern Browsers */
+       font-url('TeachableSans-Regular.ttf')  format('truetype') /* Safari, Android, iOS */
 }
 @font-face {
   font-family: 'TeachableSansMedium';
-  src: url('me/fonts/TeachableSans-Medium.woff') format('woff'), /* Pretty Modern Browsers */
-       url('me/fonts/TeachableSans-Medium.ttf')  format('truetype') /* Safari, Android, iOS */
+  src: font-url('TeachableSans-Medium.woff') format('woff'), /* Pretty Modern Browsers */
+       font-url('TeachableSans-Medium.ttf')  format('truetype') /* Safari, Android, iOS */
 }
 @font-face {
   font-family: 'TeachableSansSemiBold';
-  src: url('me/fonts/TeachableSans-SemiBold.woff') format('woff'), /* Pretty Modern Browsers */
-       url('me/fonts/TeachableSans-SemiBold.ttf')  format('truetype') /* Safari, Android, iOS */
+  src: font-url('TeachableSans-SemiBold.woff') format('woff'), /* Pretty Modern Browsers */
+       font-url('TeachableSans-SemiBold.ttf')  format('truetype') /* Safari, Android, iOS */
 }
 @font-face {
   font-family: 'TeachableSansBold';
-  src: url('me/fonts/TeachableSans-Bold.woff') format('woff'), /* Pretty Modern Browsers */
-       url('me/fonts/TeachableSans-Bold.ttf')  format('truetype') /* Safari, Android, iOS */
+  src: font-url('TeachableSans-Bold.woff') format('woff'), /* Pretty Modern Browsers */
+       font-url('TeachableSans-Bold.ttf')  format('truetype') /* Safari, Android, iOS */
 }
 @font-face {
   font-family: 'TeachableSansExtraBold';
-  src: url('me/fonts/TeachableSans-ExtraBold.woff') format('woff'), /* Pretty Modern Browsers */
-       url('me/fonts/TeachableSans-ExtraBold.ttf')  format('truetype') /* Safari, Android, iOS */
+  src: font-url('TeachableSans-ExtraBold.woff') format('woff'), /* Pretty Modern Browsers */
+       font-url('TeachableSans-ExtraBold.ttf')  format('truetype') /* Safari, Android, iOS */
 }
