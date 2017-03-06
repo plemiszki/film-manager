@@ -1,0 +1,56 @@
+#current-user-dropdown {
+  position: relative;
+  width: 43px;
+
+  #hover-area {
+    cursor: pointer;
+    padding-bottom: 5px;
+
+    #profile-pic {
+      display: inline-block;
+      width: 30px;
+      margin-right: 5px;
+      height: 30px;
+      border-radius: 100px;
+    }
+
+    #triangle {
+      display: inline-block;
+      background: asset-data-url("drop-down-triangle.png");
+      width: 8px;
+      height: 4px;
+    }
+  }
+
+  #user-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    font-size: 15px;
+    color: #B0B0B0;
+    z-index: 200;
+    left: calc(43px - 160px);
+    top: 35px;
+    width: 160px;
+    border: 1px solid #E4E9ED;
+    border-radius: 3px;
+    text-align: left;
+    padding: 20px;
+
+    li:not(:last-of-type) {
+      padding-bottom: 20px;
+    }
+
+    li, a {
+      cursor: pointer;
+    }
+
+    li:hover {
+      color: #EF8755;
+    }
+  }
+}
+
+#current-user-dropdown:hover #user-menu {
+  display: block;
+}
