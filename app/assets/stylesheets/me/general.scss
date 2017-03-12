@@ -44,7 +44,7 @@ body {
             padding-bottom: 30px;
 
             .highlight {
-              color: #FF7F45;
+              color: $button-color;
               cursor: default;
               font-family: 'TeachableSansExtraBold';
             }
@@ -118,7 +118,7 @@ body {
         opacity: 0.75;
         left: calc(50% - (#{$spinner-size} / 2));
         top: calc(50% - (#{$spinner-size} / 2));
-        // background: asset-data-url("admin/ajax-loader.svg") center center no-repeat;
+        background: asset-data-url("ajax-loader.svg") center center no-repeat;
       }
 
       h2 {
@@ -173,7 +173,7 @@ body {
 
   .orange-button {
     color: white;
-    background-color: #01647c;
+    background-color: $button-color;
 
     &:hover {
       background-color: #0385a4;
@@ -279,13 +279,15 @@ body {
   }
 }
 
-.admin-modal {
+#new-thing.component {
+  margin-bottom: 0 !important;
 
-  .component {
-    margin-bottom: 0 !important;
+  .white-box {
+    box-shadow: none !important;
 
-    .white-box {
-      box-shadow: none !important;
+    input {
+      width: 100%;
+      margin-bottom: 20px;
     }
   }
 }

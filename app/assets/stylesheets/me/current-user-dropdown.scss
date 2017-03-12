@@ -12,6 +12,8 @@
       margin-right: 5px;
       height: 30px;
       border-radius: 100px;
+      background: asset-data-url("profile-dummy.png");
+      background-size: cover;
     }
 
     #triangle {
@@ -46,7 +48,7 @@
     }
 
     li:hover {
-      color: #EF8755;
+      color: $button-color;
     }
   }
 }

@@ -37,7 +37,7 @@ var CurrentUserDropDown = React.createClass({
     return(
       <div id="current-user-dropdown">
         <div id="hover-area">
-          <img id="profile-pic" src={this.state.image_url} />
+          <div id="profile-pic"></div>
           <div id="triangle"></div>
         </div>
         <div id="user-menu">

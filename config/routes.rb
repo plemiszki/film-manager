@@ -3,6 +3,13 @@ Rails.application.routes.draw do
   resources :films, only: [:index, :show]
   resources :users, only: [:index, :show]
 
+  namespace :api do
+    get '/users' => '/api/users#api_index'
+    post '/users' => '/api/users#api_create'
+    patch '/users' => '/api/users#api_update'
+    delete '/users/:id' => '/api/users#api_destroy'
+  end
+
   # Clearance ------------------------
   resources :passwords, controller: "clearance/passwords", only: [:create, :new]
   resource :session, controller: "clearance/sessions", only: [:create]
