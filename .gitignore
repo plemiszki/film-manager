@@ -20,5 +20,5 @@
 /node_modules/*
 
 * Ignore bundle.js and bundle.js.map
-/app/assets/javascripts/teachable/admin/bundle.js
-/app/assets/javascripts/teachable/admin/bundle.js.map
+/app/assets/javascripts/me/bundle.js
+/app/assets/javascripts/me/bundle.js.map
