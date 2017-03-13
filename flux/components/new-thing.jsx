@@ -1,5 +1,5 @@
 var React = require('react');
-// var ErrorsStore = require('../stores/errors-store.js');
+var ErrorsStore = require('../stores/errors-store.js');
 var ClientActions = require('../actions/client-actions.js');
 
 var NewThing = React.createClass({
@@ -13,11 +13,11 @@ var NewThing = React.createClass({
   },
 
   componentDidMount: function() {
-    // this.errorsListener = ErrorsStore.addListener(this.getErrors);
+    this.errorsListener = ErrorsStore.addListener(this.getErrors);
   },
 
   componentWillUnmount: function() {
-    // this.errorsListener.remove();
+    this.errorsListener.remove();
   },
 
   getErrors: function() {
@@ -34,11 +34,11 @@ var NewThing = React.createClass({
     }
   },
 
-  clickSaveButton: function(e) {
+  clickAddButton: function(e) {
     this.setState({
       fetching: true
     });
-    // ClientActions.createPage(this.state.page);
+    ClientActions.createUser(this.state.user);
   },
 
   disableIfBlank: function() {
@@ -72,11 +72,11 @@ var NewThing = React.createClass({
           <div className="row">
             <div className="col-xs-12">
               <h2>Password</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.password)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].password} data-field="password" />
+              <input type="password" className={Common.errorClass(this.state.errors, Common.errors.password)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].password} data-field="password" />
               {Common.renderFieldError(this.state.errors, Common.errors.password)}
             </div>
           </div>
-          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickSaveButton}>
+          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
             Add {this.props.thing.capitalize()}
           </a>
         </div>

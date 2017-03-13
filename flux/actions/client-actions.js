@@ -12,6 +12,20 @@ var ClientActions = {
         ServerActions.receiveUsers(response);
       }
     });
+  },
+
+  createUser: function(user) {
+    $.ajax({
+      url: '/api/users',
+      method: "POST",
+      data: {user: user},
+      success: function(response) {
+        ServerActions.receiveUsers(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
+      }
+    });
   }
 }
 

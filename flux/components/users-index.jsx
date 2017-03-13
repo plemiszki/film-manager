@@ -14,7 +14,7 @@ var ModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 398
+    height: 466
   }
 };
 
