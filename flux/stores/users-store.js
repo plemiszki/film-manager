@@ -16,9 +16,10 @@ UsersStore.find = function (id) {
 };
 
 UsersStore.all = function() {
-  return Object.keys(_users).map(function (id) {
+  var users = Object.keys(_users).map(function (id) {
     return(_users[id]);
   });
+  return Tools.alphabetizeArrayOfObjects(users, 'name');
 };
 
 UsersStore.__onDispatch = function(payload) {

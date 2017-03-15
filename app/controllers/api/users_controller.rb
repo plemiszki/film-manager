@@ -5,6 +5,11 @@ class Api::UsersController < Clearance::UsersController
     render "index.json.jbuilder"
   end
 
+  def show
+    @users = User.where(id: params[:id])
+    render "show.json.jbuilder"
+  end
+
   def api_create
     @user = User.new(user_params)
     if @user.save

@@ -37,7 +37,7 @@ Common = {
       newThing[key] = event.target.value;
     }
 
-    this.setState({[changeFieldArgs.thing]: newThing, justSaved: false, changesToSave: "wait"}, function() {
+    this.setState({[changeFieldArgs.thing]: newThing, justSaved: false}, function() {
       if (changeFieldArgs.changesFunction) {
         var changesToSave = changeFieldArgs.changesFunction.call();
         this.setState({changesToSave: changesToSave}, function() {
@@ -58,6 +58,10 @@ Common = {
       }
     }
     return "";
+  },
+
+  getUserId: function() {
+    return $('#current-user-id').html();
   },
 
   highlightCurrentPageInMenu: function() {
@@ -106,6 +110,10 @@ Common = {
         <div className="grayed-out"></div>
       );
     }
+  },
+
+  renderInactiveButtonClass: function(changesToSave) {
+    return changesToSave ? "" : " inactive";
   },
 
   renderSpinner: function(fetching) {

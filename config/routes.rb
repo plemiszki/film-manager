@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     get '/users' => '/api/users#api_index'
+    get '/users/:id' => '/api/users#show'
     post '/users' => '/api/users#api_create'
     patch '/users' => '/api/users#api_update'
     delete '/users/:id' => '/api/users#api_destroy'

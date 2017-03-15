@@ -7,7 +7,7 @@ var ClientActions = {
   fetchUsers: function() {
     $.ajax({
       url: '/api/users',
-      method: "GET",
+      method: 'GET',
       success: function(response) {
         ServerActions.receiveUsers(response);
       }
@@ -17,7 +17,7 @@ var ClientActions = {
   createUser: function(user) {
     $.ajax({
       url: '/api/users',
-      method: "POST",
+      method: 'POST',
       data: {user: user},
       success: function(response) {
         ServerActions.receiveUsers(response);
@@ -26,6 +26,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response)
       }
     });
+  },
+
+  fetchUser: function(id) {
+    $.ajax({
+      url: '/api/users/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveUsers(response);
+      }
+    })
   }
 }
 

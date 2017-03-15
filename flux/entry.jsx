@@ -3,9 +3,8 @@ var ReactDOM = require('react-dom');
 var ReactModal = require('react-modal');
 var CurrentUserDropDown = require('./components/current-user-dropdown.jsx');
 var UsersIndex = require('./components/users-index.jsx');
-// var UserProfile = require('./components/user-profile.jsx');
+var UserDetails = require('./components/user-details.jsx');
 // var UserPrivileges = require('./components/user-privileges.jsx');
-// var UserDelete = require('./components/user-delete.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -18,7 +17,7 @@ $(document).ready(function() {
   if ($('#users-index')[0]) {
     ReactDOM.render(<UsersIndex />, document.getElementById("users-index"));
   }
-  if ($('#user-profile')[0]) {
-    ReactDOM.render(<UserProfile new={false} />, document.getElementById("user-profile"));
+  if ($('#user-details')[0]) {
+    ReactDOM.render(<UserDetails />, document.getElementById("user-details"));
   }
 });

@@ -34,7 +34,7 @@ var UsersIndex = React.createClass({
   },
 
   componentWillUnmount: function() {
-    // this.usersListener.remove();
+    this.usersListener.remove();
   },
 
   getUsers: function() {
@@ -45,8 +45,8 @@ var UsersIndex = React.createClass({
     });
   },
 
-  redirect: function() {
-    console.log('redirect');
+  redirect: function(id) {
+    window.location.pathname = "users/" + id;
   },
 
   handleAddNewClick: function() {
@@ -75,7 +75,7 @@ var UsersIndex = React.createClass({
               <tr><td></td><td></td></tr>
               {this.state.users.map(function(user, index) {
                 return(
-                  <tr key={index} onClick={this.redirect}>
+                  <tr key={index} onClick={this.redirect.bind(this, user.id)}>
                     <td className="name-column">
                       {user.name}
                     </td>
