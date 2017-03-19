@@ -1,6 +1,6 @@
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 var ServerActions = require('../actions/server-actions.js');
-// var snakeCaseKeys = require('snakecase-keys');
+var snakeCaseKeys = require('snakecase-keys');
 
 var ClientActions = {
 
@@ -61,7 +61,7 @@ var ClientActions = {
       success: function() {
         window.location.pathname = "/users";
       }
-    })
+    });
   }
 }
 
