@@ -82,21 +82,13 @@ var LicensorsIndex = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
-          {this.renderButton()}
+          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Licensor</a>
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
           <NewThing thing="licensor" initialObject={{name: ""}} />
         </Modal>
       </div>
     );
-  },
-
-  renderButton: function() {
-    if (Common.user.admin) {
-      return(
-        <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Licensor</a>
-      )
-    }
   }
 });
 
