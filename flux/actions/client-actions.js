@@ -1,6 +1,6 @@
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 var ServerActions = require('../actions/server-actions.js');
-var snakeCaseKeys = require('snakecase-keys');
+// var snakeCaseKeys = require('snakecase-keys');
 
 var ClientActions = {
 
@@ -43,7 +43,7 @@ var ClientActions = {
       url: '/api/users/' + user.id,
       method: 'PATCH',
       data: {
-        user: snakeCaseKeys(user)
+        user: user
       },
       success: function(response) {
         ServerActions.receiveUsers(response);
