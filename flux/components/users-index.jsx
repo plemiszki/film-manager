@@ -87,13 +87,21 @@ var UsersIndex = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
-          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add User</a>
+          {this.renderButton()}
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
           <NewThing thing="user" initialObject={{name: "", email: "", password: ""}} />
         </Modal>
       </div>
     );
+  },
+
+  renderButton: function() {
+    if (Common.user.admin) {
+      return(
+        <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add User</a>
+      )
+    }
   }
 });
 

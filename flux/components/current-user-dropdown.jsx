@@ -3,7 +3,7 @@ var React = require('react');
 var CurrentUserDropDown = React.createClass({
 
   clickMyAccount: function() {
-    window.location.pathname = "users/" + Common.getUserId();
+    window.location.pathname = "users/" + Common.user.id;
   },
 
   render: function() {

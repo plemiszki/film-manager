@@ -12,7 +12,7 @@ body {
   background-color: #F5F6F7;
   height: 100%;
 
-  #current-user-id {
+  #current-user {
     display: none;
   }
 
@@ -229,7 +229,6 @@ body {
 
   table.admin-table {
     width: 100%;
-    margin-bottom: 20px;
 
     thead {
       border-bottom: solid 1px #DADEE2;
@@ -273,11 +272,11 @@ body {
       }
 
       tr:not(:first-child) {
-          cursor: pointer;
+        cursor: pointer;
       }
 
       tr:not(:first-child):hover {
-          background-color: #F5F5F5;
+        background-color: #F5F5F5;
       }
     }
   }

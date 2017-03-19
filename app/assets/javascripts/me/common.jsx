@@ -74,6 +74,8 @@ Common = {
 
   initialize: function() {
     Common.highlightCurrentPageInMenu();
+    Common.user.id = +$('#current-user #id').html();
+    Common.user.admin = ($('#current-user #admin').html() == "true");
   },
 
   removeFieldError: function(errorsArray, fieldName) {
@@ -122,7 +124,9 @@ Common = {
         <div className="spinner"></div>
       );
     }
-  }
+  },
+
+  user: {}
 }
 
 module.exports = Common;

@@ -7,7 +7,6 @@
     <%= javascript_include_tag 'application' %>
     <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width">
-    <div id="current-user-id"><%= current_user ? current_user.id : "" %></div>
   </head>
   <% if controller_name == "sessions" %>
     <body>
@@ -15,6 +14,10 @@
     </body>
   <% else %>
     <body>
+      <div id="current-user">
+        <span id="id"><%= current_user ? current_user.id : "" %></span>
+        <span id="admin"><%= current_user ? current_user.admin : "" %></span>
+      </div>
       <div id="admin-framework">
         <div id="admin-row" class="row">
           <div id="admin-sidebar" class="col-xs-2 match-height">

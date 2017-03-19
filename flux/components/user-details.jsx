@@ -47,7 +47,19 @@ var UserDetails = React.createClass({
   },
 
   clickSave: function() {
-    console.log('click save');
+    this.setState({
+      fetching: true
+    }, function() {
+      ClientActions.updateUser(this.state.user);
+    });
+  },
+
+  clickDelete: function() {
+    this.setState({
+      fetching: true
+    }, function() {
+      ClientActions.deleteUser(this.state.user.id);
+    });
   },
 
   checkForChanges: function() {
@@ -92,14 +104,14 @@ var UserDetails = React.createClass({
                 <textarea rows="5" cols="20" onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.emailSignature || ""} data-field="emailSignature" />
               </div>
             </div>
-            {this.renderButton()}
+            {this.renderButtons()}
           </div>
         </div>
       </div>
     );
   },
 
-  renderButton: function() {
+  renderButtons: function() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -110,8 +122,19 @@ var UserDetails = React.createClass({
         <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
           {buttonText}
         </a>
+        {this.renderDeleteButton()}
       </div>
     )
+  },
+
+  renderDeleteButton: function() {
+    if (Common.user.admin && (Common.user.id != window.location.pathname.split("/")[2])) {
+      return(
+        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+          Delete User
+        </a>
+      )
+    }
   }
 });
 

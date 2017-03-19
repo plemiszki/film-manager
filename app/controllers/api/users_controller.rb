@@ -23,7 +23,8 @@ class Api::UsersController < Clearance::UsersController
   def api_update
     @user = User.find(params[:user][:id])
     if @user.update(user_params)
-      render "user-profile-edit.json.jbuilder"
+      @users = User.where(id: params[:id])
+      render "show.json.jbuilder"
     else
       render json: @user.errors.full_messages, status: 422
     end
