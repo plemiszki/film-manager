@@ -26,7 +26,6 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-modal": "^1.6.4",
-    "snakecase-keys": "^1.1.0",
     "webpack": "^1.14.0"
   },
   "engines": {

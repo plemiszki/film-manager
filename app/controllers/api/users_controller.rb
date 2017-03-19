@@ -21,7 +21,7 @@ class Api::UsersController < Clearance::UsersController
   end
 
   def api_update
-    @user = User.find(params[:user][:id])
+    @user = User.find(params[:id])
     if @user.update(user_params)
       @users = User.where(id: params[:id])
       render "show.json.jbuilder"
