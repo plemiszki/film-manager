@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: "films#index"
   resources :films, only: [:index, :show]
   resources :users, only: [:index, :show]
+  resources :licensors, only: [:index, :show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -9,6 +10,7 @@ Rails.application.routes.draw do
     post '/users' => '/api/users#api_create'
     patch '/users/:id' => '/api/users#api_update'
     delete '/users/:id' => '/api/users#api_destroy'
+    resources :licensors, only: [:index, :show, :create, :update, :destroy]
   end
 
   # Clearance ------------------------

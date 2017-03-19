@@ -4,7 +4,8 @@ var ReactModal = require('react-modal');
 var CurrentUserDropDown = require('./components/current-user-dropdown.jsx');
 var UsersIndex = require('./components/users-index.jsx');
 var UserDetails = require('./components/user-details.jsx');
-// var UserPrivileges = require('./components/user-privileges.jsx');
+var LicensorsIndex = require('./components/licensors-index.jsx');
+var LicensorDetails = require('./components/licensor-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -19,5 +20,11 @@ $(document).ready(function() {
   }
   if ($('#user-details')[0]) {
     ReactDOM.render(<UserDetails />, document.getElementById("user-details"));
+  }
+  if ($('#licensors-index')[0]) {
+    ReactDOM.render(<LicensorsIndex />, document.getElementById("licensors-index"));
+  }
+  if ($('#licensor-details')[0]) {
+    ReactDOM.render(<LicensorDetails />, document.getElementById("licensor-details"));
   }
 });

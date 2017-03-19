@@ -9,6 +9,15 @@ var ServerActions = {
     });
   },
 
+  // LICENSORS ---
+
+  receiveLicensors: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "LICENSORS_RECEIVED",
+      licensors: response
+    });
+  },
+
   // USERS ---
 
   receiveUsers: function(response) {

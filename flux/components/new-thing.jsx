@@ -38,7 +38,7 @@ var NewThing = React.createClass({
     this.setState({
       fetching: true
     });
-    ClientActions.createUser(this.state.user);
+    ClientActions["create" + this.props.thing.capitalize()].call(ClientActions, this.state[this.props.thing]);
   },
 
   disableIfBlank: function() {
@@ -62,26 +62,42 @@ var NewThing = React.createClass({
               {Common.renderFieldError(this.state.errors, Common.errors.name)}
             </div>
           </div>
-          <div className="row">
-            <div className="col-xs-12">
-              <h2>Email</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].url} data-field="email" />
-              {Common.renderFieldError(this.state.errors, Common.errors.email)}
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-xs-12">
-              <h2>Password</h2>
-              <input type="password" className={Common.errorClass(this.state.errors, Common.errors.password)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].password} data-field="password" />
-              {Common.renderFieldError(this.state.errors, Common.errors.password)}
-            </div>
-          </div>
+          {this.renderEmailField()}
+          {this.renderPasswordField()}
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
             Add {this.props.thing.capitalize()}
           </a>
         </div>
       </div>
     )
+  },
+
+  renderEmailField: function() {
+    if (this.props.thing === "user") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Email</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].url} data-field="email" />
+            {Common.renderFieldError(this.state.errors, Common.errors.email)}
+          </div>
+        </div>
+      )
+    }
+  },
+
+  renderPasswordField: function() {
+    if (this.props.thing === "user") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Password</h2>
+            <input type="password" className={Common.errorClass(this.state.errors, Common.errors.password)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].password} data-field="password" />
+            {Common.renderFieldError(this.state.errors, Common.errors.password)}
+          </div>
+        </div>
+      )
+    }
   }
 });
 
