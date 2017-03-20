@@ -22,3 +22,6 @@
 * Ignore bundle.js and bundle.js.map
 /app/assets/javascripts/me/bundle.js
 /app/assets/javascripts/me/bundle.js.map
+
+* Ignore data directory
+/data/*
