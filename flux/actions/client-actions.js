@@ -131,6 +131,16 @@ var ClientActions = {
       }
     });
   },
+
+  fetchFilms: function() {
+    $.ajax({
+      url: '/api/films',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveFilms(response);
+      }
+    });
+  }
 }
 
 module.exports = ClientActions;

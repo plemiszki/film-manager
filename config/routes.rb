@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     patch '/users/:id' => '/api/users#api_update'
     delete '/users/:id' => '/api/users#api_destroy'
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
+    resources :films, only: [:index, :show, :create, :update, :destroy]
   end
 
   # Clearance ------------------------

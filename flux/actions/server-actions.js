@@ -9,6 +9,15 @@ var ServerActions = {
     });
   },
 
+  // FILMS ---
+
+  receiveFilms: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILMS_RECEIVED",
+      films: response
+    });
+  },
+
   // LICENSORS ---
 
   receiveLicensors: function(response) {

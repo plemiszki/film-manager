@@ -6,6 +6,7 @@ var UsersIndex = require('./components/users-index.jsx');
 var UserDetails = require('./components/user-details.jsx');
 var LicensorsIndex = require('./components/licensors-index.jsx');
 var LicensorDetails = require('./components/licensor-details.jsx');
+var FilmsIndex = require('./components/films-index.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -26,5 +27,8 @@ $(document).ready(function() {
   }
   if ($('#licensor-details')[0]) {
     ReactDOM.render(<LicensorDetails />, document.getElementById("licensor-details"));
+  }
+  if ($('#films-index')[0]) {
+    ReactDOM.render(<FilmsIndex />, document.getElementById("films-index"));
   }
 });

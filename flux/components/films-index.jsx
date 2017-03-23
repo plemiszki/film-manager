@@ -1,7 +1,7 @@
 var React = require('react');
 var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
-var LicensorsStore = require('../stores/licensors-store.js');
+var FilmsStore = require('../stores/films-store.js');
 var NewThing = require('./new-thing.jsx');
 
 var ModalStyles = {
@@ -17,35 +17,35 @@ var ModalStyles = {
   }
 };
 
-var LicensorsIndex = React.createClass({
+var FilmsIndex = React.createClass({
 
   getInitialState: function() {
     return({
       fetching: true,
-      licensors: [],
+      films: [],
       modalOpen: false
     });
   },
 
   componentDidMount: function() {
-    this.licensorsListener = LicensorsStore.addListener(this.getLicensors);
-    ClientActions.fetchLicensors();
+    this.filmsListener = FilmsStore.addListener(this.getFilms);
+    ClientActions.fetchFilms();
   },
 
   componentWillUnmount: function() {
-    this.licensorsListener.remove();
+    this.filmsListener.remove();
   },
 
-  getLicensors: function() {
+  getFilms: function() {
     this.setState({
       fetching: false,
-      licensors: LicensorsStore.all(),
+      films: FilmsStore.all(),
       modalOpen: false
     });
   },
 
   redirect: function(id) {
-    window.location.pathname = "licensors/" + id;
+    window.location.pathname = "films/" + id;
   },
 
   handleAddNewClick: function() {
@@ -58,8 +58,8 @@ var LicensorsIndex = React.createClass({
 
   render: function() {
     return(
-      <div id="licensors-index" className="component">
-        <h1>Licensors</h1>
+      <div id="films-index" className="component">
+        <h1>Films</h1>
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
           {Common.renderGrayedOut(this.state.fetching)}
@@ -71,25 +71,29 @@ var LicensorsIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.licensors.map(function(licensor, index) {
+              {this.state.films.map(function(film, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, licensor.id)}>
+                  <tr key={index} onClick={this.redirect.bind(this, film.id)}>
                     <td className="name-column">
-                      {licensor.name}
+                      {film.title}
                     </td>
                   </tr>
                 );
               }.bind(this))}
             </tbody>
           </table>
-          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Licensor</a>
+          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Film</a>
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="licensor" initialObject={{name: ""}} />
+          <NewThing thing="film" initialObject={{name: ""}} />
         </Modal>
       </div>
     );
+  },
+
+  componentDidUpdate: function() {
+    $('.match-height-layout').matchHeight();
   }
 });
 
-module.exports = LicensorsIndex;
+module.exports = FilmsIndex;
