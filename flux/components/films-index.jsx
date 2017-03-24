@@ -59,7 +59,11 @@ var FilmsIndex = React.createClass({
   render: function() {
     return(
       <div id="films-index" className="component">
-        <h1>Films</h1>
+        <div className="clearfix">
+          <h1>Films</h1>
+          <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Film</a>
+          <input className="search-box" />
+        </div>
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
           {Common.renderGrayedOut(this.state.fetching)}
@@ -82,7 +86,6 @@ var FilmsIndex = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
-          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Film</a>
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
           <NewThing thing="film" initialObject={{name: ""}} />

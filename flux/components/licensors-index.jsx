@@ -60,6 +60,8 @@ var LicensorsIndex = React.createClass({
     return(
       <div id="licensors-index" className="component">
         <h1>Licensors</h1>
+        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Licensor</a>
+        <input className="search-box" />
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
           {Common.renderGrayedOut(this.state.fetching)}
@@ -82,13 +84,16 @@ var LicensorsIndex = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
-          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Licensor</a>
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
           <NewThing thing="licensor" initialObject={{name: ""}} />
         </Modal>
       </div>
     );
+  },
+
+  componentDidUpdate: function() {
+    $('.match-height-layout').matchHeight();
   }
 });
 
