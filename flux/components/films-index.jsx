@@ -22,6 +22,7 @@ var FilmsIndex = React.createClass({
   getInitialState: function() {
     return({
       fetching: true,
+      searchText: "",
       films: [],
       modalOpen: false
     });
@@ -56,13 +57,18 @@ var FilmsIndex = React.createClass({
     this.setState({modalOpen: false});
   },
 
+  filterFilms: function(re, film) {
+    console.log(re);
+    return re.test(film.title)
+  },
+
   render: function() {
     return(
       <div id="films-index" className="component">
         <div className="clearfix">
           <h1>Films</h1>
           <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Film</a>
-          <input className="search-box" />
+          <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
         </div>
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
@@ -75,7 +81,7 @@ var FilmsIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.films.map(function(film, index) {
+              {this.state.films.filterSearchText(this.state.searchText).map(function(film, index) {
                 return(
                   <tr key={index} onClick={this.redirect.bind(this, film.id)}>
                     <td className="name-column">

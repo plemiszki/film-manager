@@ -39,6 +39,7 @@ var LicensorsIndex = React.createClass({
   getLicensors: function() {
     this.setState({
       fetching: false,
+      searchText: "",
       licensors: LicensorsStore.all(),
       modalOpen: false
     });
@@ -61,7 +62,7 @@ var LicensorsIndex = React.createClass({
       <div id="licensors-index" className="component">
         <h1>Licensors</h1>
         <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Licensor</a>
-        <input className="search-box" />
+        <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
           {Common.renderGrayedOut(this.state.fetching)}
@@ -73,7 +74,7 @@ var LicensorsIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.licensors.map(function(licensor, index) {
+              {this.state.licensors.filterSearchText(this.state.searchText).map(function(licensor, index) {
                 return(
                   <tr key={index} onClick={this.redirect.bind(this, licensor.id)}>
                     <td className="name-column">

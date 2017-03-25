@@ -4,6 +4,17 @@ $(document).ready(function() {
   Common.initialize();
 });
 
+Array.prototype.filterSearchText = function(searchText) {
+  if (searchText !== '') {
+    var re = new RegExp(searchText, "i");
+    return this.filter(function(thing) {
+      return re.test(thing.title || thing.name);
+    });
+  } else {
+    return this;
+  }
+}
+
 Common = {
 
   errors: {
@@ -19,6 +30,12 @@ Common = {
     password: [
       "Password can't be blank"
     ]
+  },
+
+  changeSearchText: function(event) {
+    this.setState({
+      searchText: event.target.value
+    });
   },
 
   changeField: function(changeFieldArgs, event) {
