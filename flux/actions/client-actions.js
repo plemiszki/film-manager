@@ -140,6 +140,20 @@ var ClientActions = {
         ServerActions.receiveFilms(response);
       }
     });
+  },
+
+  createFilm: function(film) {
+    $.ajax({
+      url: '/api/films',
+      method: 'POST',
+      data: {film: film},
+      success: function(response) {
+        ServerActions.receiveFilms(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    })
   }
 }
 

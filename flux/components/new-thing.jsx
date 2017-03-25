@@ -55,13 +55,8 @@ var NewThing = React.createClass({
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
           {Common.renderGrayedOut(this.state.fetching)}
-          <div className="row">
-            <div className="col-xs-12">
-              <h2>Name</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].text} data-field="name" />
-              {Common.renderFieldError(this.state.errors, Common.errors.name)}
-            </div>
-          </div>
+          {this.renderNameField()}
+          {this.renderTitleField()}
           {this.renderEmailField()}
           {this.renderPasswordField()}
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
@@ -72,13 +67,41 @@ var NewThing = React.createClass({
     )
   },
 
+  renderNameField: function() {
+    if (this.props.thing === "user" || this.props.thing === "licensor") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Name</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].name} data-field="name" />
+            {Common.renderFieldError(this.state.errors, Common.errors.name)}
+          </div>
+        </div>
+      )
+    }
+  },
+
+  renderTitleField: function() {
+    if (this.props.thing === "film") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Title</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.title)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].title} data-field="title" />
+            {Common.renderFieldError(this.state.errors, Common.errors.title)}
+          </div>
+        </div>
+      )
+    }
+  },
+
   renderEmailField: function() {
     if (this.props.thing === "user") {
       return(
         <div className="row">
           <div className="col-xs-12">
             <h2>Email</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].url} data-field="email" />
+            <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].email} data-field="email" />
             {Common.renderFieldError(this.state.errors, Common.errors.email)}
           </div>
         </div>

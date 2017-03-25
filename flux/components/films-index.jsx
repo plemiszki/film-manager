@@ -13,7 +13,7 @@ var ModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 234
+    height: 236
   }
 };
 
@@ -57,11 +57,6 @@ var FilmsIndex = React.createClass({
     this.setState({modalOpen: false});
   },
 
-  filterFilms: function(re, film) {
-    console.log(re);
-    return re.test(film.title)
-  },
-
   render: function() {
     return(
       <div id="films-index" className="component">
@@ -94,7 +89,7 @@ var FilmsIndex = React.createClass({
           </table>
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="film" initialObject={{name: ""}} />
+          <NewThing thing="film" initialObject={{title: ""}} />
         </Modal>
       </div>
     );

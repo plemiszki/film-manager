@@ -11,7 +11,7 @@ class Api::FilmsController < ApplicationController
   end
 
   def create
-    @film = Film.new(name: film_params[:name], email: "", address: "")
+    @film = Film.new(title: film_params[:title], label_id: 1, days_statement_due: 30)
     if @film.save
       @films = Film.all
       render "index.json.jbuilder"
@@ -42,7 +42,7 @@ class Api::FilmsController < ApplicationController
   private
 
   def film_params
-    params[:film].permit(:name)
+    params[:film].permit(:title)
   end
 
 end

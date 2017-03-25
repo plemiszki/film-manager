@@ -27,6 +27,10 @@ Common = {
       "Name can't be blank",
       "Name has already been taken"
     ],
+    title: [
+      "Title can't be blank",
+      "Title has already been taken"
+    ],
     password: [
       "Password can't be blank"
     ]
