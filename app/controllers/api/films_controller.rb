@@ -13,7 +13,7 @@ class Api::FilmsController < ApplicationController
   def create
     @film = Film.new(title: film_params[:title], label_id: 1, days_statement_due: 30)
     if @film.save
-      @films = Film.all
+      @films = Film.where(short_film: false)
       render "index.json.jbuilder"
     else
       render json: @film.errors.full_messages, status: 422

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321013400) do
+ActiveRecord::Schema.define(version: 20170326005151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20170321013400) do
   add_index "films", ["feature_id"], name: "index_films_on_feature_id", using: :btree
   add_index "films", ["label_id"], name: "index_films_on_label_id", using: :btree
   add_index "films", ["licensor_id"], name: "index_films_on_licensor_id", using: :btree
+  add_index "films", ["title", "short_film"], name: "index_films_on_title_and_short_film", unique: true, using: :btree
 
   create_table "labels", force: :cascade do |t|
     t.string "name", null: false
@@ -46,6 +47,8 @@ ActiveRecord::Schema.define(version: 20170321013400) do
     t.string "email"
     t.string "address"
   end
+
+  add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at",                                     null: false
