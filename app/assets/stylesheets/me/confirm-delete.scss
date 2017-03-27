@@ -1,0 +1,24 @@
+.ReactModalPortal {
+
+  .confirm-delete {
+
+    h1 {
+      color: #2C2F33;
+      font-family: 'TeachableSansSemiBold';
+      font-size: 20px;
+      line-height: 27px;
+      max-width: 350px;
+      margin: auto;
+      margin-bottom: 10px;
+    }
+
+    .orange-button, .red-button {
+      width: 124px;
+      padding-left: 0;
+      padding-right: 0;
+      margin-top: 30px;
+      margin-right: 20px;
+      margin-left: 20px;
+    }
+  }
+}

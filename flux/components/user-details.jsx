@@ -1,4 +1,5 @@
 var React = require('react');
+var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var UsersStore = require('../stores/users-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
@@ -12,7 +13,8 @@ var UserDetails = React.createClass({
       userSaved: {},
       errors: [],
       changesToSave: false,
-      justSaved: false
+      justSaved: false,
+      deleteModalOpen: false
     });
   },
 
@@ -56,10 +58,20 @@ var UserDetails = React.createClass({
 
   clickDelete: function() {
     this.setState({
+      deleteModalOpen: true
+    });
+  },
+
+  confirmDelete: function() {
+    this.setState({
       fetching: true
     }, function() {
       ClientActions.deleteUser(this.state.user.id);
     });
+  },
+
+  handleModalClose: function() {
+    this.setState({deleteModalOpen: false});
   },
 
   checkForChanges: function() {
@@ -107,6 +119,18 @@ var UserDetails = React.createClass({
             {this.renderButtons()}
           </div>
         </div>
+        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
+          <div className="confirm-delete">
+            <h1>Are you sure you want to permanently delete this user&#63;</h1>
+            Deleting a user will erase ALL of their information and data<br />
+            <a className={"red-button"} onClick={this.confirmDelete}>
+              Yes
+            </a>
+            <a className={"orange-button"} onClick={this.handleModalClose}>
+              No
+            </a>
+          </div>
+        </Modal>
       </div>
     );
   },

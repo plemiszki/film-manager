@@ -42,7 +42,19 @@ class Api::FilmsController < ApplicationController
   private
 
   def film_params
-    params[:film].permit(:title)
+    params[:film].permit(
+      :days_statement_due,
+      :deal_type_id,
+      :e_and_o,
+      :expense_cap,
+      :gr_percentage,
+      :licensor_id,
+      :mg,
+      :royalty_notes,
+      :sage_id,
+      :short_film,
+      :title
+    )
   end
 
 end

@@ -17,6 +17,23 @@ Array.prototype.filterSearchText = function(searchText) {
 
 Common = {
 
+  deleteModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 540,
+      height: 217,
+      border: 'solid 1px #01647C',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F',
+      paddingTop: '36px'
+    }
+  },
+
   errors: {
     email: [
       "Email can't be blank",
@@ -94,6 +111,7 @@ Common = {
   },
 
   initialize: function() {
+    $.fn.matchHeight._maintainScroll = true;
     Common.highlightCurrentPageInMenu();
     Common.user.id = +$('#current-user #id').html();
     Common.user.admin = ($('#current-user #admin').html() == "true");
@@ -145,6 +163,13 @@ Common = {
         <div className="spinner"></div>
       );
     }
+  },
+
+  resetNiceSelect: function(selector, func) {
+    var $dropDowns = $(selector);
+    $dropDowns.niceSelect('destroy');
+    $dropDowns.unbind('change');
+    $dropDowns.niceSelect().on('change', func);
   },
 
   user: {}

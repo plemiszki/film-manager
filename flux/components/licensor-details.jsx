@@ -1,4 +1,5 @@
 var React = require('react');
+var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var LicensorsStore = require('../stores/licensors-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
@@ -12,7 +13,8 @@ var LicensorDetails = React.createClass({
       licensorSaved: {},
       errors: [],
       changesToSave: false,
-      justSaved: false
+      justSaved: false,
+      deleteModalOpen: false
     });
   },
 
@@ -56,10 +58,20 @@ var LicensorDetails = React.createClass({
 
   clickDelete: function() {
     this.setState({
+      deleteModalOpen: true
+    });
+  },
+
+  confirmDelete: function() {
+    this.setState({
       fetching: true
     }, function() {
       ClientActions.deleteLicensor(this.state.licensor.id);
     });
+  },
+
+  handleModalClose: function() {
+    this.setState({deleteModalOpen: false});
   },
 
   checkForChanges: function() {
@@ -103,6 +115,18 @@ var LicensorDetails = React.createClass({
             {this.renderButtons()}
           </div>
         </div>
+        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
+          <div className="confirm-delete">
+            <h1>Are you sure you want to permanently delete this licensor&#63;</h1>
+            Deleting a licensor will erase ALL of its information and data<br />
+            <a className={"red-button"} onClick={this.confirmDelete}>
+              Yes
+            </a>
+            <a className={"orange-button"} onClick={this.handleModalClose}>
+              No
+            </a>
+          </div>
+        </Modal>
       </div>
     );
   },

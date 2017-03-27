@@ -153,7 +153,55 @@ var ClientActions = {
       error: function(response) {
         ServerActions.receiveErrors(response);
       }
+    });
+  },
+
+  fetchFilm: function(id) {
+    $.ajax({
+      url: '/api/films/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveFilms(response);
+      }
+    });
+  },
+
+  updateFilm: function(film) {
+    $.ajax({
+      url: '/api/films/' + film.id,
+      method: 'PATCH',
+      data: {
+        film: {
+          title: film.title,
+          short_film: film.shortFilm == "yes" ? true : false,
+          licensor_id: film.licensorId,
+          deal_type_id: film.dealTypeId,
+          days_statement_due: film.daysStatementDue,
+          gr_percentage: film.grPercentage,
+          expense_cap: film.expenseCap,
+          mg: film.mg,
+          e_and_o: film.eAndO,
+          sage_id: film.sageId,
+          royalty_notes: film.royaltyNotes
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFilms(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
     })
+  },
+
+  deleteFilm: function(id) {
+    $.ajax({
+      url: '/api/films/' + id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = "/films";
+      }
+    });
   }
 }
 

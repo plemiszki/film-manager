@@ -17,7 +17,7 @@ $button-color: #01647C;
 
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
-// @import 'library/nice-select';
+@import 'library/nice-select';
 
 @import 'me/reset';
 @import 'me/fonts';
@@ -31,3 +31,5 @@ $button-color: #01647C;
 @import 'me/licensors-index';
 @import 'me/licensor-details';
 @import 'me/films-index';
+@import 'me/film-details';
+@import 'me/confirm-delete';

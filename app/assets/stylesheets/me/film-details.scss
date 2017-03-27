@@ -1,0 +1,29 @@
+#film-details {
+
+  input {
+    width: 100%;
+  }
+
+  .noFieldError {
+    margin-bottom: 60px;
+  }
+
+  .yesFieldError {
+    margin-top: 10px;
+    height: 10px;
+    margin-bottom: 40px;
+  }
+
+  textarea {
+    margin-bottom: 60px;
+  }
+
+  a#delete {
+    float: right;
+  }
+
+  .nice-select {
+    width: 100%;
+    margin-bottom: 60px;
+  }
+}

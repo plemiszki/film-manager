@@ -172,20 +172,20 @@ body {
     color: #95949B;
   }
 
-  .orange-button, .light-orange-button, .green-outline-button {
+  .orange-button, .light-orange-button, .green-outline-button, .red-button {
     display: inline-block;
     min-width: 175px;
     text-align: center;
     font-size: 12px;
     border-radius: 100px;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: none;
+    }
   }
 
-  .orange-button:hover, .light-orange-button:hover, .green-outline-button:hover {
-    cursor: pointer;
-    text-decoration: none;
-  }
-
-  .orange-button, .light-orange-button {
+  .orange-button, .light-orange-button, .red-button {
     font-family: 'TeachableSansBold';
     padding: 15px 40px;
   }
@@ -194,6 +194,15 @@ body {
     font-family: 'TeachableSansSemiBold';
     padding: 10px 40px;
     border: solid 1px #1EA69A;
+  }
+
+  .red-button {
+    color: white;
+    background-color: red;
+
+    &:hover {
+      background-color: #F15050;
+    }
   }
 
   .orange-button {
