@@ -132,10 +132,12 @@ var ClientActions = {
     });
   },
 
-  fetchFilms: function() {
+  fetchFilms: function(shorts) {
+    console.log(shorts);
     $.ajax({
       url: '/api/films',
       method: 'GET',
+      data: {shorts: shorts},
       success: function(response) {
         ServerActions.receiveFilms(response);
       }
@@ -146,7 +148,21 @@ var ClientActions = {
     $.ajax({
       url: '/api/films',
       method: 'POST',
-      data: {film: film},
+      data: {film: film, short: false},
+      success: function(response) {
+        ServerActions.receiveFilms(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  createShort: function(film) {
+    $.ajax({
+      url: '/api/films',
+      method: 'POST',
+      data: {film: film, short: true},
       success: function(response) {
         ServerActions.receiveFilms(response);
       },

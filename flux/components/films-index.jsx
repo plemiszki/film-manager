@@ -29,8 +29,9 @@ var FilmsIndex = React.createClass({
   },
 
   componentDidMount: function() {
+    console.log(this.props);
     this.filmsListener = FilmsStore.addListener(this.getFilms);
-    ClientActions.fetchFilms();
+    ClientActions.fetchFilms(this.props.shorts);
   },
 
   componentWillUnmount: function() {
@@ -61,7 +62,7 @@ var FilmsIndex = React.createClass({
     return(
       <div id="films-index" className="component">
         <div className="clearfix">
-          <h1>Films</h1>
+          {this.renderHeader()}
           <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Film</a>
           <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
         </div>
@@ -89,10 +90,22 @@ var FilmsIndex = React.createClass({
           </table>
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="film" initialObject={{title: ""}} />
+          <NewThing thing={this.props.shorts ? "short" : "film"} initialObject={{title: ""}} />
         </Modal>
       </div>
     );
+  },
+
+  renderHeader: function() {
+    if (this.props.shorts) {
+      return(
+        <h1>Shorts</h1>
+      )
+    } else {
+      return(
+        <h1>Films</h1>
+      )
+    }
   },
 
   componentDidUpdate: function() {

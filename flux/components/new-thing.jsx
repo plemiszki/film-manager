@@ -82,7 +82,7 @@ var NewThing = React.createClass({
   },
 
   renderTitleField: function() {
-    if (this.props.thing === "film") {
+    if (this.props.thing === "film" || this.props.thing === "short") {
       return(
         <div className="row">
           <div className="col-xs-12">

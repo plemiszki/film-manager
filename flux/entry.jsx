@@ -30,7 +30,10 @@ $(document).ready(function() {
     ReactDOM.render(<LicensorDetails />, document.getElementById("licensor-details"));
   }
   if ($('#films-index')[0]) {
-    ReactDOM.render(<FilmsIndex />, document.getElementById("films-index"));
+    ReactDOM.render(<FilmsIndex shorts={false}/>, document.getElementById("films-index"));
+  }
+  if ($('#shorts-index')[0]) {
+    ReactDOM.render(<FilmsIndex shorts={true}/>, document.getElementById("shorts-index"));
   }
   if ($('#film-details')[0]) {
     ReactDOM.render(<FilmDetails />, document.getElementById("film-details"));

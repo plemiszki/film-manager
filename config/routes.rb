@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root to: "films#index"
   resources :films, only: [:index, :show]
+  resources :shorts, only: [:index]
   resources :users, only: [:index, :show]
   resources :licensors, only: [:index, :show]
 
