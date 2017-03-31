@@ -18,6 +18,14 @@ var ServerActions = {
     });
   },
 
+  receiveFilm: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILMS_RECEIVED",
+      films: response.films,
+      dealTemplates: response.dealTemplates
+    });
+  },
+
   // LICENSORS ---
 
   receiveLicensors: function(response) {

@@ -50,6 +50,23 @@ Common = {
     ],
     password: [
       "Password can't be blank"
+    ],
+    grPercentage: [
+      "Gr percentage is not a number",
+      "Gr percentage must be less than or equal to 100",
+      "Gr percentage must be greater than or equal to 0"
+    ],
+    eAndO: [
+      "E and o is not a number",
+      "E and o must be greater than or equal to 0"
+    ],
+    mg: [
+      "Mg is not a number",
+      "Mg must be greater than or equal to 0"
+    ],
+    expenseCap: [
+      "Expense cap is not a number",
+      "Expense cap must be greater than or equal to 0"
     ]
   },
 
@@ -63,11 +80,7 @@ Common = {
     var key = event.target.dataset.field;
     var newThing = this.state[changeFieldArgs.thing];
 
-    if (changeFieldArgs.thing == "object" || changeFieldArgs.thing == "pagePartial") {
-      Common.removeDynamicFieldError(changeFieldArgs.errorsArray, event.target.dataset.fieldname);
-    } else {
-      Common.removeFieldError(changeFieldArgs.errorsArray, key);
-    }
+    Common.removeFieldError(changeFieldArgs.errorsArray, key);
 
     if ($(event.target).is('select')) {
       newThing[key] = Tools.convertTrueFalseFromStringToBoolean(event.target.value);
@@ -75,16 +88,20 @@ Common = {
       newThing[key] = event.target.value;
     }
 
+    if (changeFieldArgs.beforeSave) {
+      changeFieldArgs.beforeSave.call(this, newThing, key, event.target.value);
+    }
+
     this.setState({[changeFieldArgs.thing]: newThing, justSaved: false}, function() {
       if (changeFieldArgs.changesFunction) {
         var changesToSave = changeFieldArgs.changesFunction.call();
         this.setState({changesToSave: changesToSave}, function() {
           if (changeFieldArgs.callback) {
-            changeFieldArgs.callback.call(this, this.state[changeFieldArgs.thing]);
+            changeFieldArgs.callback.call(this, this.state[changeFieldArgs.thing], key);
           }
         });
       } else if (changeFieldArgs.callback) {
-        changeFieldArgs.callback.call(this, this.state[changeFieldArgs.thing]);
+        changeFieldArgs.callback.call(this, this.state[changeFieldArgs.thing], key);
       }
     });
   },

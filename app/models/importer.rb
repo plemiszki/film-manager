@@ -21,7 +21,21 @@ class Importer < ActiveRecord::Base
       films = 0
       until films == total
         a = file.gets.split("\t")
-        f = Film.new(title: a[1], label_id: 0, days_statement_due: 30, short_film: a[54] == "short")
+        f = Film.new(
+          title: a[1],
+          short_film: a[54] == "short",
+          label_id: 0,
+          deal_type_id: a[241] == "Template A" ? 1 : (a[241] == "Template B" ? 2 : (a[241] == "Template B (Theat. Only)" ? 3 : (a[241] == "Template C" ? 4 : (a[241] == "Template D" ? 5 : (a[241] == "Template E" ? 6 : nil))))),
+          days_statement_due: a[357],
+          gr_percentage: a[326],
+          mg: a[11],
+          e_and_o: a[242],
+          expense_cap: a[358],
+          sage_id: a[276],
+          royalty_notes: a[337]
+        )
+        # licensor id
+        # feature id
         f.save!
         films += 1
       end

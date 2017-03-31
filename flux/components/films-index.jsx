@@ -29,7 +29,6 @@ var FilmsIndex = React.createClass({
   },
 
   componentDidMount: function() {
-    console.log(this.props);
     this.filmsListener = FilmsStore.addListener(this.getFilms);
     ClientActions.fetchFilms(this.props.shorts);
   },

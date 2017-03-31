@@ -11,25 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170326005151) do
+ActiveRecord::Schema.define(version: 20170331183516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "deal_templates", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
   create_table "films", force: :cascade do |t|
-    t.string  "title",                              null: false
-    t.boolean "short_film",         default: false
+    t.string  "title",                                                      null: false
+    t.boolean "short_film",                                 default: false
     t.integer "feature_id"
-    t.integer "label_id",                           null: false
+    t.integer "label_id",                                                   null: false
     t.integer "licensor_id"
-    t.integer "deal_type_id",       default: 1
-    t.integer "days_statement_due",                 null: false
-    t.integer "gr_percentage"
-    t.integer "mg",                 default: 0
-    t.integer "e_and_o",            default: 0
-    t.integer "expense_cap"
-    t.string  "sage_id",            default: ""
-    t.string  "royalty_notes",      default: ""
+    t.integer "deal_type_id",                               default: 1
+    t.integer "days_statement_due",                                         null: false
+    t.decimal "gr_percentage",      precision: 5, scale: 2
+    t.decimal "mg",                 precision: 8, scale: 2, default: 0.0
+    t.decimal "e_and_o",            precision: 8, scale: 2, default: 0.0
+    t.decimal "expense_cap",        precision: 8, scale: 2, default: 0.0
+    t.string  "sage_id",                                    default: ""
+    t.string  "royalty_notes",                              default: ""
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree

@@ -133,7 +133,6 @@ var ClientActions = {
   },
 
   fetchFilms: function(shorts) {
-    console.log(shorts);
     $.ajax({
       url: '/api/films',
       method: 'GET',
@@ -177,7 +176,7 @@ var ClientActions = {
       url: '/api/films/' + id,
       method: 'GET',
       success: function(response) {
-        ServerActions.receiveFilms(response);
+        ServerActions.receiveFilm(response);
       }
     });
   },
@@ -194,15 +193,15 @@ var ClientActions = {
           deal_type_id: film.dealTypeId,
           days_statement_due: film.daysStatementDue,
           gr_percentage: film.grPercentage,
-          expense_cap: film.expenseCap,
-          mg: film.mg,
-          e_and_o: film.eAndO,
+          expense_cap: film.expenseCap.removeFinanceSymbols(),
+          mg: film.mg.removeFinanceSymbols(),
+          e_and_o: film.eAndO.removeFinanceSymbols(),
           sage_id: film.sageId,
           royalty_notes: film.royaltyNotes
         }
       },
       success: function(response) {
-        ServerActions.receiveFilms(response);
+        ServerActions.receiveFilm(response);
       },
       error: function(response) {
         ServerActions.receiveErrors(response);

@@ -7,6 +7,7 @@ class Api::FilmsController < ApplicationController
 
   def show
     @films = Film.where(id: params[:id])
+    @templates = DealTemplate.all
     render "show.json.jbuilder"
   end
 
@@ -24,6 +25,7 @@ class Api::FilmsController < ApplicationController
     @film = Film.find(params[:id])
     if @film.update(film_params)
       @films = Film.where(id: params[:id])
+      @templates = DealTemplate.all
       render "show.json.jbuilder"
     else
       render json: @film.errors.full_messages, status: 422
@@ -42,7 +44,7 @@ class Api::FilmsController < ApplicationController
   private
 
   def film_params
-    params[:film].permit(
+    result = params[:film].permit(
       :days_statement_due,
       :deal_type_id,
       :e_and_o,
