@@ -49,12 +49,14 @@ var UserDetails = React.createClass({
   },
 
   clickSave: function() {
-    this.setState({
-      fetching: true,
-      justSaved: true
-    }, function() {
-      ClientActions.updateUser(this.state.user);
-    });
+    if (this.state.changesToSave) {
+      this.setState({
+        fetching: true,
+        justSaved: true
+      }, function() {
+        ClientActions.updateUser(this.state.user);
+      });
+    }
   },
 
   clickDelete: function() {

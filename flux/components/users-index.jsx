@@ -60,7 +60,10 @@ var UsersIndex = React.createClass({
   render: function() {
     return(
       <div id="users-index" className="component">
-        <h1>Users</h1>
+        <div className="clearfix">
+          <h1>Users</h1>
+          {this.renderButton()}
+        </div>
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
           {Common.renderGrayedOut(this.state.fetching)}
@@ -87,7 +90,6 @@ var UsersIndex = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
-          {this.renderButton()}
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
           <NewThing thing="user" initialObject={{name: "", email: "", password: ""}} />
@@ -99,7 +101,7 @@ var UsersIndex = React.createClass({
   renderButton: function() {
     if (Common.user.admin) {
       return(
-        <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add User</a>
+        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add User</a>
       )
     }
   }

@@ -49,12 +49,14 @@ var FilmDetails = React.createClass({
   },
 
   clickSave: function() {
-    this.setState({
-      fetching: true,
-      justSaved: true
-    }, function() {
-      ClientActions.updateFilm(this.state.film);
-    });
+    if (this.state.changesToSave) {
+      this.setState({
+        fetching: true,
+        justSaved: true
+      }, function() {
+        ClientActions.updateFilm(this.state.film);
+      });
+    }
   },
 
   clickDelete: function() {
