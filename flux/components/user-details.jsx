@@ -50,7 +50,8 @@ var UserDetails = React.createClass({
 
   clickSave: function() {
     this.setState({
-      fetching: true
+      fetching: true,
+      justSaved: true
     }, function() {
       ClientActions.updateUser(this.state.user);
     });

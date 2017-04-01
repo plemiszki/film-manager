@@ -50,7 +50,8 @@ var LicensorDetails = React.createClass({
 
   clickSave: function() {
     this.setState({
-      fetching: true
+      fetching: true,
+      justSaved: true
     }, function() {
       ClientActions.updateLicensor(this.state.licensor);
     });
