@@ -97,7 +97,7 @@ var ClientActions = {
       url: '/api/licensors/' + id,
       method: 'GET',
       success: function(response) {
-        ServerActions.receiveLicensors(response);
+        ServerActions.receiveLicensor(response);
       }
     })
   },
@@ -114,7 +114,7 @@ var ClientActions = {
         }
       },
       success: function(response) {
-        ServerActions.receiveLicensors(response);
+        ServerActions.receiveLicensor(response);
       },
       error: function(response) {
         ServerActions.receiveErrors(response);

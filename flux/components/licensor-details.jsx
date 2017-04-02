@@ -59,6 +59,10 @@ var LicensorDetails = React.createClass({
     }
   },
 
+  redirect: function(id) {
+    window.location.pathname = "films/" + id;
+  },
+
   clickDelete: function() {
     this.setState({
       deleteModalOpen: true
@@ -115,6 +119,29 @@ var LicensorDetails = React.createClass({
                 <textarea rows="5" cols="20" onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.licensor.address || ""} data-field="address" />
               </div>
             </div>
+            <div className="row">
+              <div className="col-xs-12 col-sm-12">
+                <table className={"admin-table"}>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td></tr>
+                    {LicensorsStore.films().map(function(film, index) {
+                      return(
+                        <tr key={index} onClick={this.redirect.bind(this, film.id)}>
+                          <td className="name-column">
+                            {film.title}
+                          </td>
+                        </tr>
+                      );
+                    }.bind(this))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
             {this.renderButtons()}
           </div>
         </div>
@@ -150,6 +177,10 @@ var LicensorDetails = React.createClass({
         </a>
       </div>
     )
+  },
+
+  componentDidUpdate: function() {
+    $('.match-height-layout').matchHeight();
   }
 });
 

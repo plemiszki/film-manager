@@ -26,4 +26,37 @@
     width: 100%;
     margin-bottom: 60px;
   }
+
+  .icons {
+    padding: 0;
+
+    img {
+      margin-top: 34px;
+      cursor: pointer;
+
+      &:first-of-type {
+        margin-right: 5px;
+      }
+    }
+  }
+
+
+}
+
+.licensor-modal-list {
+  li {
+    cursor: pointer;
+    padding: 10px;
+    border: solid 1px #5F5F5F;
+    border-radius: 6px;
+    margin-bottom: 10px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      background-color: #F5F6F7;
+    }
+  }
 }

@@ -7,6 +7,7 @@ class Api::LicensorsController < ApplicationController
 
   def show
     @licensors = Licensor.where(id: params[:id])
+    @films = Film.where(licensor_id: params[:id]).order(:title)
     render "show.json.jbuilder"
   end
 
@@ -22,6 +23,7 @@ class Api::LicensorsController < ApplicationController
 
   def update
     @licensor = Licensor.find(params[:id])
+    @films = Film.where(licensor_id: params[:id]).order(:title)
     if @licensor.update(licensor_params)
       @licensors = Licensor.where(id: params[:id])
       render "show.json.jbuilder"

@@ -13,3 +13,7 @@ json.films @films do |film|
   json.royaltyNotes film.royalty_notes || ""
 end
 json.dealTemplates @templates
+json.licensors @licensors do |licensor|
+  json.id licensor.id
+  json.name licensor.name
+end

@@ -22,7 +22,8 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "FILMS_RECEIVED",
       films: response.films,
-      dealTemplates: response.dealTemplates
+      dealTemplates: response.dealTemplates,
+      licensors: response.licensors
     });
   },
 
@@ -32,6 +33,14 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "LICENSORS_RECEIVED",
       licensors: response
+    });
+  },
+
+  receiveLicensor: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "LICENSOR_RECEIVED",
+      licensors: response.licensors,
+      films: response.films,
     });
   },
 

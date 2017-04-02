@@ -6,6 +6,22 @@ var ErrorsStore = require('../stores/errors-store.js');
 
 var FilmDetails = React.createClass({
 
+  licensorModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 540,
+      height: '90%',
+      border: 'solid 1px #5F5F5F',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F'
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -14,7 +30,8 @@ var FilmDetails = React.createClass({
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      licensorModalOpen: false
     });
   },
 
@@ -65,6 +82,25 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickSelectLicensorButton: function() {
+    this.setState({
+      licensorModalOpen: true
+    });
+  },
+
+  clickLicensorButton: function(event) {
+    var film = this.state.film;
+    film.licensorId = event.target.dataset.id;
+    this.setState({
+      film: film,
+      licensorModalOpen: false
+    }, function() {
+      this.setState({
+        changesToSave: this.checkForChanges()
+      });
+    });
+  },
+
   confirmDelete: function() {
     this.setState({
       fetching: true
@@ -74,7 +110,10 @@ var FilmDetails = React.createClass({
   },
 
   handleModalClose: function() {
-    this.setState({deleteModalOpen: false});
+    this.setState({
+      deleteModalOpen: false,
+      licensorModalOpen: false
+    });
   },
 
   checkForChanges: function() {
@@ -123,12 +162,12 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-12 col-sm-5">
               <h2>Licensor</h2>
-                <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="licensorId" value={this.state.film.licensorId}>
-                  <option value={""}>(None)</option>
-                </select>
+              <input className={Common.errorClass(this.state.errors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
               {Common.renderFieldError(this.state.errors, [])}
             </div>
-            <div className="col-sm-4"></div>
+            <div className="col-sm-4 icons">
+              <img src={Images.openModal} onClick={this.clickSelectLicensorButton} />
+            </div>
             <div className="col-xs-12 col-sm-3">
               <h2>MG</h2>
               <input className={Common.errorClass(this.state.errors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
@@ -149,6 +188,16 @@ var FilmDetails = React.createClass({
               No
             </a>
           </div>
+        </Modal>
+        <Modal isOpen={this.state.licensorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.licensorModalStyles}>
+          <ul className="licensor-modal-list">
+            <li onClick={this.clickLicensorButton} data-id={null}>(None)</li>
+            {FilmsStore.licensors().map(function(licensor, index) {
+              return(
+                <li key={index} onClick={this.clickLicensorButton} data-id={licensor.id}>{licensor.name}</li>
+              );
+            }.bind(this))}
+          </ul>
         </Modal>
       </div>
     );

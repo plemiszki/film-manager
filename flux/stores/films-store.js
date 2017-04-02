@@ -5,6 +5,7 @@ var FilmsStore = new Store(AppDispatcher);
 
 var _films = {};
 var _dealTemplates = [];
+var _licensors = {};
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -14,6 +15,12 @@ FilmsStore.setFilms = function(films) {
 
 FilmsStore.setDealTemplates = function(dealTemplates) {
   _dealTemplates = dealTemplates;
+};
+
+FilmsStore.setLicensors = function(licensors) {
+  licensors.forEach(function(licensor) {
+    _licensors[licensor.id] = licensor;
+  });
 };
 
 FilmsStore.find = function(id) {
@@ -31,12 +38,24 @@ FilmsStore.dealTemplates = function() {
   return _dealTemplates;
 };
 
+FilmsStore.licensors = function() {
+  var licensors = Object.keys(_licensors).map(function(id) {
+    return(_licensors[id]);
+  });
+  return Tools.alphabetizeArrayOfObjects(licensors, 'name');
+};
+
+FilmsStore.findLicensor = function(id) {
+  return _licensors[id];
+};
+
 FilmsStore.__onDispatch = function(payload) {
   switch(payload.actionType){
     case "FILMS_RECEIVED":
       this.setFilms(payload.films);
       if (payload.dealTemplates) {
-        this.setDealTemplates(payload.dealTemplates)
+        this.setDealTemplates(payload.dealTemplates);
+        this.setLicensors(payload.licensors);
       }
       this.__emitChange();
       break;

@@ -8,6 +8,7 @@ class Api::FilmsController < ApplicationController
   def show
     @films = Film.where(id: params[:id])
     @templates = DealTemplate.all
+    @licensors = Licensor.all
     render "show.json.jbuilder"
   end
 
@@ -25,7 +26,6 @@ class Api::FilmsController < ApplicationController
     @film = Film.find(params[:id])
     if @film.update(film_params)
       @films = Film.where(id: params[:id])
-      @templates = DealTemplate.all
       render "show.json.jbuilder"
     else
       render json: @film.errors.full_messages, status: 422
@@ -57,6 +57,8 @@ class Api::FilmsController < ApplicationController
       :short_film,
       :title
     )
+    result[:licensor_id] = nil unless params[:licensor_id]
+    result
   end
 
 end

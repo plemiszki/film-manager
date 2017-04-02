@@ -15,7 +15,15 @@
   }
 
   textarea {
+    margin-bottom: 50px;
+  }
+
+  table {
     margin-bottom: 60px;
+
+    .name-column {
+      color: #5F5F5F;
+    }
   }
 
   a#delete {
