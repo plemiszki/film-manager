@@ -57,7 +57,7 @@ class Api::FilmsController < ApplicationController
       :short_film,
       :title
     )
-    result[:licensor_id] = nil unless params[:licensor_id]
+    result[:licensor_id] = nil unless params[:film][:licensor_id]
     result
   end
 

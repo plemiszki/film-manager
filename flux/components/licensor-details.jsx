@@ -108,7 +108,7 @@ var LicensorDetails = React.createClass({
                 {Common.renderFieldError(this.state.errors, ["Name can't be blank"])}
               </div>
               <div className="col-xs-12 col-sm-6">
-                <h2>Royalty Email</h2>
+                <h2>Royalty Emails</h2>
                 <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.licensor.email || ""} data-field="email" />
                 {Common.renderFieldError(this.state.errors, Common.errors.email)}
               </div>

@@ -35,6 +35,7 @@ class Api::LicensorsController < ApplicationController
   def destroy
     @licensor = Licensor.find(params[:id])
     if @licensor.destroy
+      Film.where(licensor_id: params[:id]).update_all(licensor_id: nil)
       render json: @licensor, status: 200
     else
       render json: @licensor.errors.full_messages, status: 422

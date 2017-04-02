@@ -21,10 +21,18 @@ class Importer < ActiveRecord::Base
       films = 0
       until films == total
         a = file.gets.split("\t")
+        licensor = Licensor.find_by_name(a[8])
+        if licensor && (licensor.email == nil || licensor.email == "")
+          licensor.update(email: a[240].strip)
+        end
+        if !licensor && a[54] != "short"
+          licensor = Licensor.create(name: a[8].strip, email: a[240].strip)
+        end
         f = Film.new(
           title: a[1],
           short_film: a[54] == "short",
           label_id: 0,
+          licensor_id: licensor ? licensor.id : nil,
           deal_type_id: a[241] == "Template A" ? 1 : (a[241] == "Template B" ? 2 : (a[241] == "Template B (Theat. Only)" ? 3 : (a[241] == "Template C" ? 4 : (a[241] == "Template D" ? 5 : (a[241] == "Template E" ? 6 : nil))))),
           days_statement_due: a[357],
           gr_percentage: a[326],
@@ -34,7 +42,6 @@ class Importer < ActiveRecord::Base
           sage_id: a[276],
           royalty_notes: a[337]
         )
-        # licensor id
         # feature id
         f.save!
         films += 1
