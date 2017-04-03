@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170331183516) do
+ActiveRecord::Schema.define(version: 20170403024932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,36 @@ ActiveRecord::Schema.define(version: 20170331183516) do
   end
 
   add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
+
+  create_table "revenue_streams", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  create_table "royalty_reports", force: :cascade do |t|
+    t.integer "film_id",                                           null: false
+    t.integer "year",                                              null: false
+    t.integer "quarter",                                           null: false
+    t.decimal "total",       precision: 8, scale: 2, default: 0.0
+    t.decimal "mg",          precision: 8, scale: 2, default: 0.0
+    t.decimal "e_and_o",     precision: 8, scale: 2, default: 0.0
+    t.decimal "amount_paid", precision: 8, scale: 2, default: 0.0
+    t.decimal "amount_due",  precision: 8, scale: 2, default: 0.0
+  end
+
+  create_table "royalty_revenue_stream", force: :cascade do |t|
+    t.integer "royalty_report_id",                                            null: false
+    t.integer "revenue_stream_id",                                            null: false
+    t.decimal "current_revenue",        precision: 8, scale: 2, default: 0.0
+    t.decimal "current_gr",             precision: 8, scale: 2, default: 0.0
+    t.decimal "current_expense",        precision: 8, scale: 2, default: 0.0
+    t.decimal "current_difference",     precision: 8, scale: 2, default: 0.0
+    t.decimal "current_licensor_share", precision: 8, scale: 2, default: 0.0
+    t.decimal "cume_revenue",           precision: 8, scale: 2, default: 0.0
+    t.decimal "cume_gr",                precision: 8, scale: 2, default: 0.0
+    t.decimal "cume_expense",           precision: 8, scale: 2, default: 0.0
+    t.decimal "cume_difference",        precision: 8, scale: 2, default: 0.0
+    t.decimal "cume_licensor_share",    precision: 8, scale: 2, default: 0.0
+  end
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at",                                     null: false
