@@ -13,4 +13,16 @@ class Film < ActiveRecord::Base
     end
   end
 
+  after_create :create_percentages
+
+  has_many :film_revenue_percentages, dependent: :destroy
+
+  def create_percentages
+    unless short_film
+      RevenueStream.all.each do |revenue_stream|
+        FilmRevenuePercentage.create!(film_id: id, revenue_stream_id: revenue_stream.id)
+      end
+    end
+  end
+
 end
