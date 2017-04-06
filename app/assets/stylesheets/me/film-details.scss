@@ -40,7 +40,11 @@
     }
   }
 
-
+  .percentage-column {
+    input {
+      max-width: 100px;
+    }
+  }
 }
 
 .licensor-modal-list {

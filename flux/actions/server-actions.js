@@ -23,7 +23,9 @@ var ServerActions = {
       actionType: "FILMS_RECEIVED",
       films: response.films,
       dealTemplates: response.dealTemplates,
-      licensors: response.licensors
+      licensors: response.licensors,
+      revenueStreams: response.revenueStreams,
+      filmRevenuePercentages: response.filmRevenuePercentages
     });
   },
 

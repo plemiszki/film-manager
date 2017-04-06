@@ -44,6 +44,9 @@ class Importer < ActiveRecord::Base
         )
         # feature id
         f.save!
+
+        # update film revenue percentages
+
         films += 1
       end
     end

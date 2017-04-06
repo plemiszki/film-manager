@@ -6,6 +6,8 @@ var FilmsStore = new Store(AppDispatcher);
 var _films = {};
 var _dealTemplates = [];
 var _licensors = {};
+var _revenueStreams = {};
+var _revenuePercentages = {};
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -20,6 +22,18 @@ FilmsStore.setDealTemplates = function(dealTemplates) {
 FilmsStore.setLicensors = function(licensors) {
   licensors.forEach(function(licensor) {
     _licensors[licensor.id] = licensor;
+  });
+};
+
+FilmsStore.setRevenueStreams = function(revenueStreams) {
+  revenueStreams.forEach(function(revenueStream) {
+    _revenueStreams[revenueStream.id] = revenueStream;
+  });
+};
+
+FilmsStore.setFilmRevenuePercentages = function(revenuePercentages) {
+  revenuePercentages.forEach(function(revenuePercentage) {
+    _revenuePercentages[revenuePercentage.id] = revenuePercentage;
   });
 };
 
@@ -49,6 +63,36 @@ FilmsStore.findLicensor = function(id) {
   return _licensors[id];
 };
 
+FilmsStore.percentages = function(id) {
+  var result = {};
+  Object.keys(_revenuePercentages).forEach(function(id) {
+    result[id] = _revenuePercentages[id].value;
+  });
+  return result;
+};
+
+FilmsStore.revenueStreams = function() {
+  var revenueStreams = Object.keys(_revenueStreams).map(function(id) {
+    return(_revenueStreams[id]);
+  });
+  return revenueStreams;
+};
+
+FilmsStore.findRevenueStream = function(id) {
+  return _revenueStreams[id];
+};
+
+FilmsStore.revenuePercentages = function() {
+  var revenuePercentages = Object.keys(_revenuePercentages).map(function(id) {
+    return(_revenuePercentages[id]);
+  });
+  return revenuePercentages;
+}
+
+FilmsStore.findRevenuePercentage = function(revenueStreamId) {
+  return _revenuePercentages[revenueStreamId];
+};
+
 FilmsStore.__onDispatch = function(payload) {
   switch(payload.actionType){
     case "FILMS_RECEIVED":
@@ -56,6 +100,8 @@ FilmsStore.__onDispatch = function(payload) {
       if (payload.dealTemplates) {
         this.setDealTemplates(payload.dealTemplates);
         this.setLicensors(payload.licensors);
+        this.setRevenueStreams(payload.revenueStreams);
+        this.setFilmRevenuePercentages(payload.filmRevenuePercentages);
       }
       this.__emitChange();
       break;

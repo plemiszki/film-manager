@@ -17,3 +17,13 @@ json.licensors @licensors do |licensor|
   json.id licensor.id
   json.name licensor.name
 end
+json.revenueStreams @revenue_streams do |revenue_stream|
+  json.id revenue_stream.id
+  json.name revenue_stream.name
+end
+json.filmRevenuePercentages @film_revenue_percentages do |film_revenue_percentage|
+  json.id film_revenue_percentage.id
+  json.filmId film_revenue_percentage.film_id
+  json.revenueStreamId film_revenue_percentage.revenue_stream_id
+  json.value film_revenue_percentage.value
+end

@@ -27,6 +27,8 @@ var FilmDetails = React.createClass({
       fetching: true,
       film: {},
       filmSaved: {},
+      percentages: {},
+      percentagesSaved: {},
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -50,6 +52,8 @@ var FilmDetails = React.createClass({
     this.setState({
       film: Tools.deepCopy(FilmsStore.find(window.location.pathname.split("/")[2])),
       filmSaved: FilmsStore.find(window.location.pathname.split("/")[2]),
+      percentages: Tools.deepCopy(FilmsStore.percentages()),
+      percentagesSaved: FilmsStore.percentages(),
       fetching: false
     }, function() {
       this.setState({
@@ -139,6 +143,7 @@ var FilmDetails = React.createClass({
   },
 
   render: function() {
+    console.log(this.state);
     return(
       <div className="component">
         <h1>Film Details</h1>
@@ -254,6 +259,21 @@ var FilmDetails = React.createClass({
               <h2>Sage ID</h2>
               <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" />
               {Common.renderFieldError(this.state.errors, [])}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12 col-sm-6">
+            </div>
+            <div className="col-xs-12 col-sm-6 percentage-column">
+              {FilmsStore.revenuePercentages().map(function(revenuePercentage, index) {
+                return(
+                  <div key={index}>
+                    <h2>{FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).name} %</h2>
+                    <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.percentages[revenuePercentage.id]} data-field="" />
+                    {Common.renderFieldError(this.state.errors, [])}
+                  </div>
+                )
+              }.bind(this))}
             </div>
           </div>
         </div>
