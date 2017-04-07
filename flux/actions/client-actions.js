@@ -181,7 +181,7 @@ var ClientActions = {
     });
   },
 
-  updateFilm: function(film) {
+  updateFilm: function(film, percentages) {
     $.ajax({
       url: '/api/films/' + film.id,
       method: 'PATCH',
@@ -198,7 +198,8 @@ var ClientActions = {
           e_and_o: film.eAndO.removeFinanceSymbols(),
           sage_id: film.sageId,
           royalty_notes: film.royaltyNotes
-        }
+        },
+        percentages: percentages
       },
       success: function(response) {
         ServerActions.receiveFilm(response);

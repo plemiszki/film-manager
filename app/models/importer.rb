@@ -45,7 +45,23 @@ class Importer < ActiveRecord::Base
         # feature id
         f.save!
 
-        # update film revenue percentages
+        unless f.short_film
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 1).update(value: a[243]) #Theatrical
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 2).update(value: a[244]) #Non-Theatrical
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 3).update(value: a[249]) #Video
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 4).update(value: a[253]) #Commercial Video
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 5).update(value: a[304]) #HVED
+          # p f.title unless a[304] == "0"
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 6).update(value: a[247]) #VOD
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 7).update(value: a[246]) #SVOD
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 8).update(value: a[307]) #TVOD
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 9).update(value: a[306]) #AVOD
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 10).update(value: a[305]) #FVOD
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 11).update(value: a[248]) #Other Internet
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 12).update(value: a[250]) #Ancillary
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 13).update(value: a[245]) #TV
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 14).update(value: a[251]) #Club
+        end
 
         films += 1
       end

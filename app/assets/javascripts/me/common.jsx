@@ -78,7 +78,8 @@ Common = {
 
   changeField: function(changeFieldArgs, event) {
     var key = event.target.dataset.field;
-    var newThing = this.state[changeFieldArgs.thing];
+    var thing = event.target.dataset.thing || changeFieldArgs.thing;
+    var newThing = this.state[thing];
 
     Common.removeFieldError(changeFieldArgs.errorsArray, key);
 
@@ -92,16 +93,16 @@ Common = {
       changeFieldArgs.beforeSave.call(this, newThing, key, event.target.value);
     }
 
-    this.setState({[changeFieldArgs.thing]: newThing, justSaved: false}, function() {
+    this.setState({[thing]: newThing, justSaved: false}, function() {
       if (changeFieldArgs.changesFunction) {
         var changesToSave = changeFieldArgs.changesFunction.call();
         this.setState({changesToSave: changesToSave}, function() {
           if (changeFieldArgs.callback) {
-            changeFieldArgs.callback.call(this, this.state[changeFieldArgs.thing], key);
+            changeFieldArgs.callback.call(this, this.state[thing], key);
           }
         });
       } else if (changeFieldArgs.callback) {
-        changeFieldArgs.callback.call(this, this.state[changeFieldArgs.thing], key);
+        changeFieldArgs.callback.call(this, this.state[thing], key);
       }
     });
   },

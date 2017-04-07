@@ -40,9 +40,12 @@
     }
   }
 
-  .percentage-column {
+  .revenue-percentage {
+    width: 33%;
+    float: left;
+
     input {
-      max-width: 100px;
+      width: 90%;
     }
   }
 }

@@ -101,6 +101,8 @@ FilmsStore.__onDispatch = function(payload) {
         this.setDealTemplates(payload.dealTemplates);
         this.setLicensors(payload.licensors);
         this.setRevenueStreams(payload.revenueStreams);
+      }
+      if (payload.filmRevenuePercentages) {
         this.setFilmRevenuePercentages(payload.filmRevenuePercentages);
       }
       this.__emitChange();

@@ -75,7 +75,7 @@ var FilmDetails = React.createClass({
         fetching: true,
         justSaved: true
       }, function() {
-        ClientActions.updateFilm(this.state.film);
+        ClientActions.updateFilm(this.state.film, this.state.percentages);
       });
     }
   },
@@ -121,7 +121,11 @@ var FilmDetails = React.createClass({
   },
 
   checkForChanges: function() {
-    return !Tools.objectsAreEqual(this.state.film, this.state.filmSaved);
+    if (Tools.objectsAreEqual(this.state.film, this.state.filmSaved) == false) {
+      return true;
+    } else {
+      return !Tools.objectsAreEqual(this.state.percentages, this.state.percentagesSaved);
+    }
   },
 
   changeFieldArgs: function() {
@@ -143,7 +147,6 @@ var FilmDetails = React.createClass({
   },
 
   render: function() {
-    console.log(this.state);
     return(
       <div className="component">
         <h1>Film Details</h1>
@@ -267,9 +270,9 @@ var FilmDetails = React.createClass({
             <div className="col-xs-12 col-sm-6 percentage-column">
               {FilmsStore.revenuePercentages().map(function(revenuePercentage, index) {
                 return(
-                  <div key={index}>
-                    <h2>{FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).name} %</h2>
-                    <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.percentages[revenuePercentage.id]} data-field="" />
+                  <div className="revenue-percentage" key={index}>
+                    <h2>{FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).nickname || FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).name} %</h2>
+                    <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.percentages[revenuePercentage.id] || ""} data-thing="percentages" data-field={revenuePercentage.id} />
                     {Common.renderFieldError(this.state.errors, [])}
                   </div>
                 )

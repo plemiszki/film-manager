@@ -20,6 +20,7 @@ end
 json.revenueStreams @revenue_streams do |revenue_stream|
   json.id revenue_stream.id
   json.name revenue_stream.name
+  json.nickname revenue_stream.nickname
 end
 json.filmRevenuePercentages @film_revenue_percentages do |film_revenue_percentage|
   json.id film_revenue_percentage.id

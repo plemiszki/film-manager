@@ -27,7 +27,11 @@ class Api::FilmsController < ApplicationController
   def update
     @film = Film.find(params[:id])
     if @film.update(film_params)
+      FilmRevenuePercentage.where(film_id: params[:id]).each do |revenue_percentage|
+        revenue_percentage.update!(value: params[:percentages][revenue_percentage.id.to_s])
+      end
       @films = Film.where(id: params[:id])
+      @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
       render "show.json.jbuilder"
     else
       render json: @film.errors.full_messages, status: 422
