@@ -29,6 +29,14 @@ var ServerActions = {
     });
   },
 
+  receiveFilmErrors: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILM_ERRORS_RECEIVED",
+      filmErrors: response.responseJSON.film,
+      percentageErrors: response.responseJSON.percentages
+    });
+  },
+
   // LICENSORS ---
 
   receiveLicensors: function(response) {

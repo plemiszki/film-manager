@@ -67,6 +67,11 @@ Common = {
     expenseCap: [
       "Expense cap is not a number",
       "Expense cap must be greater than or equal to 0"
+    ],
+    value: [
+      "Value is not a number",
+      "Value must be less than or equal to 100",
+      "Value must be greater than or equal to 0"
     ]
   },
 
@@ -136,13 +141,15 @@ Common = {
   },
 
   removeFieldError: function(errorsArray, fieldName) {
-    if (Common.errors[fieldName]) {
+    if (Common.errors[fieldName]) { // some fields may have multiple errors, make sure all are removed
       if (!errorsArray) {
         console.log("no errors array!!!");
       }
       Common.errors[fieldName].forEach(function(message) {
         Tools.removeFromArray(errorsArray, message);
       });
+    } else if (+fieldName >= 1) { // if the field name is a number, assume all errors for this model can be removed
+      errorsArray.length = 0;
     }
   },
 

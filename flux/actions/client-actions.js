@@ -205,7 +205,7 @@ var ClientActions = {
         ServerActions.receiveFilm(response);
       },
       error: function(response) {
-        ServerActions.receiveErrors(response);
+        ServerActions.receiveFilmErrors(response);
       }
     })
   },

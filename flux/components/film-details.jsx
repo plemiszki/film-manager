@@ -2,7 +2,7 @@ var React = require('react');
 var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+var FilmErrorsStore = require('../stores/film-errors-store.js');
 
 var FilmDetails = React.createClass({
 
@@ -27,9 +27,10 @@ var FilmDetails = React.createClass({
       fetching: true,
       film: {},
       filmSaved: {},
+      filmErrors: [],
       percentages: {},
       percentagesSaved: {},
-      errors: [],
+      percentageErrors: {},
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -39,7 +40,7 @@ var FilmDetails = React.createClass({
 
   componentDidMount: function() {
     this.filmListener = FilmsStore.addListener(this.getFilm);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+    this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
     ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
   },
 
@@ -64,7 +65,8 @@ var FilmDetails = React.createClass({
 
   getErrors: function() {
     this.setState({
-      errors: ErrorsStore.all(),
+      filmErrors: FilmErrorsStore.filmErrors(),
+      percentageErrors: FilmErrorsStore.percentageErrors(),
       fetching: false
     });
   },
@@ -128,15 +130,15 @@ var FilmDetails = React.createClass({
     }
   },
 
-  changeFieldArgs: function() {
+  changeFieldArgs: function(errors) {
     return {
       thing: "film",
-      errorsArray: this.state.errors,
+      errorsArray: errors || this.state.filmErrors,
       beforeSave: function(newThing, key, value) {
         if (key == "dealTypeId") {
           if (value <= 4) {
             newThing.grPercentage = "";
-            Common.removeFieldError(this.state.errors, "grPercentage")
+            Common.removeFieldError(this.state.filmErrors, "grPercentage")
           } else {
             newThing.grPercentage = "0";
           }
@@ -156,8 +158,8 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-12 col-sm-9">
               <h2>Title</h2>
-              <input className={Common.errorClass(this.state.errors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
-              {Common.renderFieldError(this.state.errors, ["Title can't be blank"])}
+              <input className={Common.errorClass(this.state.filmErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
+              {Common.renderFieldError(this.state.filmErrors, ["Title can't be blank"])}
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>Type</h2>
@@ -170,16 +172,16 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-12 col-sm-5">
               <h2>Licensor</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
-              {Common.renderFieldError(this.state.errors, [])}
+              <input className={Common.errorClass(this.state.filmErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
+              {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
             <div className="col-sm-4 icons">
               <img src={Images.openModal} onClick={this.clickSelectLicensorButton} />
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>MG</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
-              {Common.renderFieldError(this.state.errors, Common.errors.mg)}
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
+              {Common.renderFieldError(this.state.filmErrors, Common.errors.mg)}
             </div>
           </div>
           {this.renderRoyaltyFields()}
@@ -226,12 +228,12 @@ var FilmDetails = React.createClass({
                     )
                   })}
                 </select>
-              {Common.renderFieldError(this.state.errors, [])}
+              {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
             <div className={"col-xs-12 col-sm-1" + ((this.state.film.dealTypeId != "5" && this.state.film.dealTypeId != "6") ? " hidden" : "")}>
               <h2>GR %</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.grPercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.grPercentage || ""} data-field="grPercentage" />
-              {Common.renderFieldError(this.state.errors, [])}
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.grPercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.grPercentage || ""} data-field="grPercentage" />
+              {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
             <div className="col-xs-12 col-sm-2">
               <h2>Statements Due</h2>
@@ -240,28 +242,28 @@ var FilmDetails = React.createClass({
                   <option value={"45"}>45 Days</option>
                   <option value={"60"}>60 Days</option>
                 </select>
-              {Common.renderFieldError(this.state.errors, [])}
+              {Common.renderFieldError([], [])}
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>Expense Cap</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.expenseCap)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.expenseCap || ""} data-field="expenseCap" />
-              {Common.renderFieldError(this.state.errors, Common.errors.expenseCap)}
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.expenseCap)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.expenseCap || ""} data-field="expenseCap" />
+              {Common.renderFieldError(this.state.filmErrors, Common.errors.expenseCap)}
             </div>
           </div>
           <div className="row">
             <div className="col-xs-12 col-sm-6">
               <h2>Royalty Notes</h2>
-              <textarea rows="5" className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" />
+              <textarea rows="5" className={Common.errorClass(this.state.filmErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" />
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>E & O</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.eAndO)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
-              {Common.renderFieldError(this.state.errors, Common.errors.eAndO)}
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.eAndO)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
+              {Common.renderFieldError(this.state.filmErrors, Common.errors.eAndO)}
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>Sage ID</h2>
-              <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" />
-              {Common.renderFieldError(this.state.errors, [])}
+              <input className={Common.errorClass([], [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" />
+              {Common.renderFieldError([], [])}
             </div>
           </div>
           <div className="row">
@@ -269,11 +271,12 @@ var FilmDetails = React.createClass({
             </div>
             <div className="col-xs-12 col-sm-6 percentage-column">
               {FilmsStore.revenuePercentages().map(function(revenuePercentage, index) {
+                var properErrorsArray = this.state.percentageErrors[revenuePercentage.id] ? this.state.percentageErrors[revenuePercentage.id] : [];
                 return(
                   <div className="revenue-percentage" key={index}>
                     <h2>{FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).nickname || FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).name} %</h2>
-                    <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.percentages[revenuePercentage.id] || ""} data-thing="percentages" data-field={revenuePercentage.id} />
-                    {Common.renderFieldError(this.state.errors, [])}
+                    <input className={Common.errorClass(properErrorsArray, Common.errors.value)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={this.state.percentages[revenuePercentage.id] || ""} data-thing="percentages" data-field={revenuePercentage.id} />
+                    {Common.renderFieldError([], [])}
                   </div>
                 )
               }.bind(this))}

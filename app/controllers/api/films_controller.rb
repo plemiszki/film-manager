@@ -25,16 +25,31 @@ class Api::FilmsController < ApplicationController
   end
 
   def update
-    @film = Film.find(params[:id])
-    if @film.update(film_params)
-      FilmRevenuePercentage.where(film_id: params[:id]).each do |revenue_percentage|
-        revenue_percentage.update!(value: params[:percentages][revenue_percentage.id.to_s])
+    error_present = false
+    errors = {
+      film: [],
+      percentages: {}
+    }
+    begin
+      ActiveRecord::Base.transaction do
+        @film = Film.find(params[:id])
+        unless @film.update(film_params)
+          error_present = true
+          errors[:film] = @film.errors.full_messages
+        end
+        FilmRevenuePercentage.where(film_id: params[:id]).each do |revenue_percentage|
+          unless revenue_percentage.update(value: params[:percentages][revenue_percentage.id.to_s])
+            error_present = true
+            errors[:percentages][revenue_percentage.id] = revenue_percentage.errors.full_messages
+          end
+        end
+        fail if error_present
+        @films = Film.where(id: params[:id])
+        @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
+        render "show.json.jbuilder"
       end
-      @films = Film.where(id: params[:id])
-      @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
-      render "show.json.jbuilder"
-    else
-      render json: @film.errors.full_messages, status: 422
+    rescue
+      render json: errors, status: 422
     end
   end
 

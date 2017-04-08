@@ -4,5 +4,6 @@ class FilmRevenuePercentage < ActiveRecord::Base
 
   validates :film_id, :revenue_stream_id, presence: true
   validates :film_id, uniqueness: { scope: :revenue_stream_id }
+  validates_numericality_of :value, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 100
 
 end
