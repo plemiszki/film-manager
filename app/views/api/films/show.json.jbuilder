@@ -28,3 +28,8 @@ json.filmRevenuePercentages @film_revenue_percentages do |film_revenue_percentag
   json.revenueStreamId film_revenue_percentage.revenue_stream_id
   json.value film_revenue_percentage.value
 end
+json.reports @reports do |report|
+  json.id report.id
+  json.year report.year
+  json.quarter report.quarter
+end

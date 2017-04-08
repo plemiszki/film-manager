@@ -8,6 +8,7 @@ var _dealTemplates = [];
 var _licensors = {};
 var _revenueStreams = {};
 var _revenuePercentages = {};
+var _reports = [];
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -35,6 +36,10 @@ FilmsStore.setFilmRevenuePercentages = function(revenuePercentages) {
   revenuePercentages.forEach(function(revenuePercentage) {
     _revenuePercentages[revenuePercentage.id] = revenuePercentage;
   });
+};
+
+FilmsStore.setReports = function(reports) {
+  _reports = reports;
 };
 
 FilmsStore.find = function(id) {
@@ -93,6 +98,10 @@ FilmsStore.findRevenuePercentage = function(revenueStreamId) {
   return _revenuePercentages[revenueStreamId];
 };
 
+FilmsStore.reports = function() {
+  return _reports;
+};
+
 FilmsStore.__onDispatch = function(payload) {
   switch(payload.actionType){
     case "FILMS_RECEIVED":
@@ -101,6 +110,7 @@ FilmsStore.__onDispatch = function(payload) {
         this.setDealTemplates(payload.dealTemplates);
         this.setLicensors(payload.licensors);
         this.setRevenueStreams(payload.revenueStreams);
+        this.setReports(payload.reports);
       }
       if (payload.filmRevenuePercentages) {
         this.setFilmRevenuePercentages(payload.filmRevenuePercentages);

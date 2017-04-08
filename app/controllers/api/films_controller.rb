@@ -10,6 +10,7 @@ class Api::FilmsController < ApplicationController
     @templates = DealTemplate.all
     @licensors = Licensor.all
     @revenue_streams = RevenueStream.all
+    @reports = RoyaltyReport.where(film_id: params[:id])
     @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
     render "show.json.jbuilder"
   end

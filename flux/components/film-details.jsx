@@ -31,6 +31,7 @@ var FilmDetails = React.createClass({
       percentages: {},
       percentagesSaved: {},
       percentageErrors: {},
+      reports: [],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -55,6 +56,7 @@ var FilmDetails = React.createClass({
       filmSaved: FilmsStore.find(window.location.pathname.split("/")[2]),
       percentages: Tools.deepCopy(FilmsStore.percentages()),
       percentagesSaved: FilmsStore.percentages(),
+      reports: FilmsStore.reports(),
       fetching: false
     }, function() {
       this.setState({
@@ -128,6 +130,10 @@ var FilmDetails = React.createClass({
     } else {
       return !Tools.objectsAreEqual(this.state.percentages, this.state.percentagesSaved);
     }
+  },
+
+  redirect: function(id) {
+    window.location.pathname = "royalty_reports/" + id;
   },
 
   changeFieldArgs: function(errors) {
@@ -282,6 +288,30 @@ var FilmDetails = React.createClass({
               }.bind(this))}
             </div>
           </div>
+          <hr />
+          <table className={"admin-table"}>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Quarter</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td><td></td></tr>
+              {this.state.reports.map(function(report, index) {
+                return(
+                  <tr key={index} onClick={this.redirect.bind(this, report.id)}>
+                    <td className="name-column">
+                      {report.year}
+                    </td>
+                    <td>
+                      {report.quarter}
+                    </td>
+                  </tr>
+                );
+              }.bind(this))}
+            </tbody>
+          </table>
         </div>
       )
     }

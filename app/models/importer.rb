@@ -51,7 +51,6 @@ class Importer < ActiveRecord::Base
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 3).update(value: a[249]) #Video
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 4).update(value: a[253]) #Commercial Video
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 5).update(value: a[304]) #HVED
-          # p f.title unless a[304] == "0"
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 6).update(value: a[247]) #VOD
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 7).update(value: a[246]) #SVOD
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 8).update(value: a[307]) #TVOD
@@ -61,7 +60,10 @@ class Importer < ActiveRecord::Base
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 12).update(value: a[250]) #Ancillary
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 13).update(value: a[245]) #TV
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 14).update(value: a[251]) #Club
+          
+          RoyaltyReport.create(film_id: f.id, year: 2017, quarter: 1)
         end
+
 
         films += 1
       end
