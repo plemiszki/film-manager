@@ -1,0 +1,61 @@
+#royalty-details {
+
+  h1, h3, h4 {
+    display: block;
+    text-align: center;
+    margin: auto;
+  }
+
+  h1 {
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  h4 {
+    color: black;
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  hr {
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+
+  .headers {
+    color: black;
+    margin-bottom: 10px;
+
+    div {
+      text-align: center;
+    }
+  }
+
+  .stream-name {
+    text-align: center;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .noFieldError {
+    margin-bottom: 10px;
+  }
+
+  .yesFieldError {
+    margin-top: 10px;
+    height: 10px;
+    margin-bottom: 10px;
+  }
+
+  a#delete {
+    float: right;
+  }
+}

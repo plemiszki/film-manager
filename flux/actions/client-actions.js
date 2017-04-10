@@ -218,6 +218,17 @@ var ClientActions = {
         window.location.pathname = "/films";
       }
     });
+  },
+
+  fetchReport: function(id) {
+    $.ajax({
+      url: '/api/royalty_reports/' + id,
+      method: 'GET',
+      success: function(response) {
+        console.log(response);
+        ServerActions.receiveReport(response);
+      }
+    });
   }
 }
 

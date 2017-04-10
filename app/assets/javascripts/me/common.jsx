@@ -86,12 +86,19 @@ Common = {
     var thing = event.target.dataset.thing || changeFieldArgs.thing;
     var newThing = this.state[thing];
 
+    var thingId = event.target.dataset.thingid;
+    if (thingId) {
+      thingToUpdate = newThing[thingId];
+    } else {
+      thingToUpdate = newThing;
+    }
+
     Common.removeFieldError(changeFieldArgs.errorsArray, key);
 
     if ($(event.target).is('select')) {
-      newThing[key] = Tools.convertTrueFalseFromStringToBoolean(event.target.value);
+      thingToUpdate[key] = Tools.convertTrueFalseFromStringToBoolean(event.target.value);
     } else {
-      newThing[key] = event.target.value;
+      thingToUpdate[key] = event.target.value;
     }
 
     if (changeFieldArgs.beforeSave) {

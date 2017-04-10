@@ -62,6 +62,16 @@ var ServerActions = {
       actionType: "USERS_RECEIVED",
       users: response
     });
+  },
+
+  // REPORTS ---
+
+  receiveReport: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "REPORTS_RECEIVED",
+      reports: response.reports,
+      streams: response.streams
+    });
   }
 }
 

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :shorts, only: [:index]
   resources :users, only: [:index, :show]
   resources :licensors, only: [:index, :show]
+  resources :royalty_reports, only: [:show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
     delete '/users/:id' => '/api/users#api_destroy'
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     resources :films, only: [:index, :show, :create, :update, :destroy]
+    resources :royalty_reports, only: [:show, :create, :update, :destroy]
   end
 
   # Clearance ------------------------
