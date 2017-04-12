@@ -120,7 +120,7 @@ var ReportDetails = React.createClass({
             return(
               <div key={index} className="row">
                 <div className="col-xs-1 stream-name">
-                  <h2>{stream.nickname}</h2>
+                  {stream.nickname}
                 </div>
                 <div className="col-xs-2">
                   <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={stream.currentRevenue} data-thing="streams" data-thingid={index} data-field="currentRevenue" />
@@ -156,7 +156,7 @@ var ReportDetails = React.createClass({
             return(
               <div key={index} className="row">
                 <div className="col-xs-1 stream-name">
-                  <h2>{stream.nickname}</h2>
+                  {stream.nickname}
                 </div>
                 <div className="col-xs-2">
                   <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={stream.cumeRevenue} data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
@@ -273,6 +273,7 @@ var ReportDetails = React.createClass({
 
   componentDidUpdate: function() {
     $('.match-height-layout').matchHeight();
+    $('.match-height-row').matchHeight();
   }
 });
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170409202114) do
+ActiveRecord::Schema.define(version: 20170412021514) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,16 +69,19 @@ ActiveRecord::Schema.define(version: 20170409202114) do
   end
 
   create_table "royalty_reports", force: :cascade do |t|
-    t.integer "film_id",                                             null: false
-    t.integer "year",                                                null: false
-    t.integer "quarter",                                             null: false
-    t.decimal "total",         precision: 8, scale: 2, default: 0.0
-    t.decimal "mg",            precision: 8, scale: 2, default: 0.0
-    t.decimal "e_and_o",       precision: 8, scale: 2, default: 0.0
-    t.decimal "amount_paid",   precision: 8, scale: 2, default: 0.0
-    t.decimal "amount_due",    precision: 8, scale: 2, default: 0.0
-    t.integer "deal_id",                                             null: false
-    t.decimal "gr_percentage", precision: 5, scale: 2, default: 0.0
+    t.integer "film_id",                                                      null: false
+    t.integer "year",                                                         null: false
+    t.integer "quarter",                                                      null: false
+    t.decimal "cume_total",             precision: 8, scale: 2, default: 0.0
+    t.decimal "mg",                     precision: 8, scale: 2, default: 0.0
+    t.decimal "e_and_o",                precision: 8, scale: 2, default: 0.0
+    t.decimal "amount_paid",            precision: 8, scale: 2, default: 0.0
+    t.decimal "amount_due",             precision: 8, scale: 2, default: 0.0
+    t.integer "deal_id",                                                      null: false
+    t.decimal "gr_percentage",          precision: 5, scale: 2, default: 0.0
+    t.decimal "current_total_expenses", precision: 5, scale: 2, default: 0.0
+    t.decimal "cume_total_expenses",    precision: 5, scale: 2, default: 0.0
+    t.decimal "current_total",          precision: 5, scale: 2, default: 0.0
   end
 
   create_table "royalty_revenue_streams", force: :cascade do |t|
