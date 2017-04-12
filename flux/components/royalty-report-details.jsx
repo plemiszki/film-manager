@@ -38,7 +38,7 @@ var ReportDetails = React.createClass({
       report: Tools.deepCopy(ReportStore.report()),
       reportSaved: ReportStore.report(),
       streams: Tools.deepCopy(ReportStore.streams()),
-      streamsSaved: ReportStore.streamsWithCalculations(),
+      streamsSaved: ReportStore.streams(),
       fetching: false
     }, function() {
       this.setState({
@@ -109,7 +109,7 @@ var ReportDetails = React.createClass({
   render: function() {
     return(
       <div className="component">
-        <h1 onClick={this.clickTitle}>{this.state.report.film}</h1>
+        <h1><span onClick={this.clickTitle}>{this.state.report.film}</span></h1>
         <h3>{this.state.report.year} - Q{this.state.report.quarter}</h3>
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
@@ -126,16 +126,16 @@ var ReportDetails = React.createClass({
                   <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={stream.currentRevenue} data-thing="streams" data-thingid={index} data-field="currentRevenue" />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
-                <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value="$0.00" />
+                <div className={"col-xs-2" + this.grClass()}>
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={stream.currentGr} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
-                <div className="col-xs-2">
+                <div className={"col-xs-2" + this.expenseClass()}>
                   <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={stream.currentExpense} data-thing="streams" data-thingid={index} data-field="currentExpense" />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
-                <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streamsSaved[index].currentDifference} />
+                <div className={"col-xs-2" + this.expenseClass()}>
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streams[index].currentDifference} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className="col-xs-1">
@@ -143,7 +143,7 @@ var ReportDetails = React.createClass({
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streamsSaved[index].currentLicensorShare} />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streams[index].currentLicensorShare} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
               </div>
@@ -162,16 +162,16 @@ var ReportDetails = React.createClass({
                   <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={stream.cumeRevenue} data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
-                <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value="$0.00" />
+                <div className={"col-xs-2" + this.grClass()}>
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={stream.cumeGr} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
-                <div className="col-xs-2">
+                <div className={"col-xs-2" + this.expenseClass()}>
                   <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={stream.cumeExpense} data-thing="streams" data-thingid={index} data-field="cumeExpense" />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
-                <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streamsSaved[index].cumeDifference} />
+                <div className={"col-xs-2" + this.expenseClass()}>
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streams[index].cumeDifference} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className="col-xs-1">
@@ -179,7 +179,7 @@ var ReportDetails = React.createClass({
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streamsSaved[index].cumeLicensorShare} />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streams[index].cumeLicensorShare} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
               </div>
@@ -218,13 +218,13 @@ var ReportDetails = React.createClass({
         <div className="col-xs-2">
           Revenue
         </div>
-        <div className="col-xs-2">
+        <div className={"col-xs-2" + this.grClass()}>
           {this.state.report.grPercentage}% Fee
         </div>
-        <div className="col-xs-2">
+        <div className={"col-xs-2" + this.expenseClass()}>
           Expenses
         </div>
-        <div className="col-xs-2">
+        <div className={"col-xs-2" + this.expenseClass()}>
           Difference
         </div>
         <div className="col-xs-1">
@@ -253,6 +253,22 @@ var ReportDetails = React.createClass({
         </a>
       </div>
     )
+  },
+
+  grClass: function() {
+    if (this.state.report.dealId >= 5) {
+      return "";
+    } else {
+      return " hidden"
+    }
+  },
+
+  expenseClass: function() {
+    if (this.state.report.dealId !== 4) {
+      return "";
+    } else {
+      return " hidden"
+    }
   },
 
   componentDidUpdate: function() {
