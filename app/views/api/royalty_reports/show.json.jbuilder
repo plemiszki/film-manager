@@ -6,6 +6,9 @@ json.reports @reports do |report|
   json.quarter report.quarter
   json.year report.year
   json.grPercentage @film.gr_percentage.to_s || ""
+  json.currentTotal dollarify(number_with_precision(report.current_total, precision: 2, delimiter: ','))
+  json.currentTotalRevenue dollarify(number_with_precision(report.current_total_revenue, precision: 2, delimiter: ','))
+  json.currentTotalExpenses dollarify(number_with_precision(report.current_total_expenses, precision: 2, delimiter: ','))
   json.mg '$' + number_with_precision(report.mg, precision: 2, delimiter: ',')
   json.amountPaid '$' + number_with_precision(report.amount_paid, precision: 2, delimiter: ',')
   json.amountDue '$' + number_with_precision(report.amount_due, precision: 2, delimiter: ',')
@@ -17,11 +20,11 @@ json.streams @streams do |stream|
   json.currentRevenue '$' + number_with_precision(stream.current_revenue, precision: 2, delimiter: ',')
   json.currentGr '$' + number_with_precision(stream.current_gr, precision: 2, delimiter: ',')
   json.currentExpense '$' + number_with_precision(stream.current_expense, precision: 2, delimiter: ',')
-  json.currentDifference '$' + number_with_precision(stream.current_difference, precision: 2, delimiter: ',')
-  json.currentLicensorShare '$' + number_with_precision(stream.current_licensor_share, precision: 2, delimiter: ',')
+  json.currentDifference dollarify(number_with_precision(stream.current_difference, precision: 2, delimiter: ','))
+  json.currentLicensorShare dollarify(number_with_precision(stream.current_licensor_share, precision: 2, delimiter: ','))
   json.cumeRevenue '$' + number_with_precision(stream.cume_revenue, precision: 2, delimiter: ',')
   json.cumeGr '$' + number_with_precision(stream.cume_gr, precision: 2, delimiter: ',')
   json.cumeExpense '$' + number_with_precision(stream.cume_expense, precision: 2, delimiter: ',')
-  json.cumeDifference '$' + number_with_precision(stream.cume_difference, precision: 2, delimiter: ',')
-  json.cumeLicensorShare '$' + number_with_precision(stream.cume_licensor_share, precision: 2, delimiter: ',')
+  json.cumeDifference dollarify(number_with_precision(stream.cume_difference, precision: 2, delimiter: ','))
+  json.cumeLicensorShare dollarify(number_with_precision(stream.cume_licensor_share, precision: 2, delimiter: ','))
 end

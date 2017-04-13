@@ -135,7 +135,7 @@ var ReportDetails = React.createClass({
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className={"col-xs-2" + this.expenseClass()}>
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streams[index].currentDifference} />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={stream.currentDifference} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className="col-xs-1">
@@ -143,12 +143,35 @@ var ReportDetails = React.createClass({
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streams[index].currentLicensorShare} />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={stream.currentLicensorShare} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
               </div>
             )
           }.bind(this))}
+          <div className="row">
+            <div className="col-xs-1 stream-name">
+              Total
+            </div>
+            <div className={"col-xs-2"}>
+              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.currentTotalRevenue || ""} />
+              {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+            <div className={"col-xs-2" + this.grClass()}>
+            </div>
+            <div className={"col-xs-2" + this.expenseClass()}>
+              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.currentTotalExpenses || ""} />
+              {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.currentTotal || ""} />
+              {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+          </div>
           <hr />
           <h4>Cumulative</h4>
           {this.renderRowHeaders()}

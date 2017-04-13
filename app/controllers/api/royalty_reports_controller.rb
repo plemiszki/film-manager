@@ -59,6 +59,9 @@ class Api::RoyaltyReportsController < ApplicationController
   private
 
   def calculate(film, report, streams)
+    report.current_total_revenue = 0.00
+    report.current_total_expenses = 0.00
+    report.current_total = 0.00
     streams.each do |stream|
       if film.deal_type_id == 1 # No Expenses Recouped
         stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
@@ -103,6 +106,9 @@ class Api::RoyaltyReportsController < ApplicationController
           stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         end
       end
+      report.current_total_revenue += stream.current_revenue
+      report.current_total_expenses += stream.current_expense
+      report.current_total += stream.current_licensor_share
     end
   end
 
