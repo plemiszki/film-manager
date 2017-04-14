@@ -27,4 +27,9 @@ json.streams @streams do |stream|
   json.cumeExpense '$' + number_with_precision(stream.cume_expense, precision: 2, delimiter: ',')
   json.cumeDifference dollarify(number_with_precision(stream.cume_difference, precision: 2, delimiter: ','))
   json.cumeLicensorShare dollarify(number_with_precision(stream.cume_licensor_share, precision: 2, delimiter: ','))
+  json.joinedRevenue '$' + number_with_precision(stream.joined_revenue, precision: 2, delimiter: ',')
+  json.joinedGr '$' + number_with_precision(stream.joined_gr, precision: 2, delimiter: ',')
+  json.joinedExpense '$' + number_with_precision(stream.joined_expense, precision: 2, delimiter: ',')
+  json.joinedDifference dollarify(number_with_precision(stream.joined_difference, precision: 2, delimiter: ','))
+  json.joinedLicensorShare dollarify(number_with_precision(stream.joined_licensor_share, precision: 2, delimiter: ','))
 end

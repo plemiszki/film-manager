@@ -18,7 +18,8 @@ var ReportDetails = React.createClass({
       reports: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      showJoined: true
     });
   },
 
@@ -70,9 +71,9 @@ var ReportDetails = React.createClass({
     window.location.pathname = "films/" + this.state.report.filmId;
   },
 
-  clickDelete: function() {
+  clickToggle: function() {
     this.setState({
-      deleteModalOpen: true
+      showJoined: !this.state.showJoined
     });
   },
 
@@ -182,19 +183,19 @@ var ReportDetails = React.createClass({
                   {stream.nickname}
                 </div>
                 <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={stream.cumeRevenue} data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={this.state.showJoined} value={this.state.showJoined ? stream.joinedRevenue : stream.cumeRevenue} data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className={"col-xs-2" + this.grClass()}>
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={stream.cumeGr} />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? stream.joinedGr : stream.cumeGr} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className={"col-xs-2" + this.expenseClass()}>
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={stream.cumeExpense} data-thing="streams" data-thingid={index} data-field="cumeExpense" />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={this.state.showJoined} value={this.state.showJoined ? stream.joinedExpense : stream.cumeExpense} data-thing="streams" data-thingid={index} data-field="cumeExpense" />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className={"col-xs-2" + this.expenseClass()}>
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streams[index].cumeDifference} />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? stream.joinedDifference : stream.cumeDifference} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className="col-xs-1">
@@ -202,7 +203,7 @@ var ReportDetails = React.createClass({
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
                 <div className="col-xs-2">
-                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.streams[index].cumeLicensorShare} />
+                  <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? stream.joinedLicensorShare : stream.cumeLicensorShare} />
                   {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
                 </div>
               </div>
@@ -271,8 +272,11 @@ var ReportDetails = React.createClass({
         <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
           {buttonText}
         </a>
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
-          Delete Report
+        <a id="export" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>
+          Export PDF
+        </a>
+        <a id="toggle" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickToggle}>
+          {this.state.showJoined ? "Including Current Period" : "Not Including Current Period"}
         </a>
       </div>
     )

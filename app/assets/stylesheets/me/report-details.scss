@@ -61,7 +61,11 @@
     margin-bottom: 10px;
   }
 
-  a#delete {
+  a#toggle, a#export {
     float: right;
+  }
+
+  a#toggle {
+    margin-right: 20px;
   }
 }

@@ -63,27 +63,36 @@ class Api::RoyaltyReportsController < ApplicationController
     report.current_total_expenses = 0.00
     report.current_total = 0.00
     streams.each do |stream|
+      stream.joined_revenue = stream.current_revenue + stream.cume_revenue
+      stream.joined_expense = stream.current_expense + stream.cume_expense
       if film.deal_type_id == 1 # No Expenses Recouped
         stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        stream.joined_licensor_share = (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
       elsif film.deal_type_id == 2 # Expenses Recouped From Top
         stream.current_difference = stream.current_revenue - stream.current_expense
         stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_difference = stream.cume_revenue - stream.cume_expense
         stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        stream.joined_difference = stream.joined_revenue - stream.joined_expense
+        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
       elsif film.deal_type_id == 3 # Theatrical Expenses Recouped From Top
         if ["Theatrical", "Non-Theatrical", "Commercial Video"].include?(stream.revenue_stream.name)
           stream.current_difference = stream.current_revenue - stream.current_expense
           stream.cume_difference = stream.cume_revenue - stream.cume_expense
+          stream.joined_difference = stream.joined_revenue - stream.joined_expense
         else
           stream.current_difference = stream.current_revenue
           stream.cume_difference = stream.cume_revenue
+          stream.joined_difference = stream.joined_revenue
         end
         stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
       elsif film.deal_type_id == 4 # Expenses Recouped From Licensor Share
         stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        stream.joined_licensor_share = (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
       elsif film.deal_type_id == 5 # GR Percentage
         stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
         stream.current_difference = stream.current_revenue - stream.current_gr - stream.current_expense
@@ -91,6 +100,9 @@ class Api::RoyaltyReportsController < ApplicationController
         stream.cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
         stream.cume_difference = stream.cume_revenue - stream.cume_gr - stream.cume_expense
         stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        stream.joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+        stream.joined_difference = stream.joined_revenue - stream.joined_gr - stream.joined_expense
+        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
       elsif film.deal_type_id == 6 # GR Percentage Theatrical/Non-Theatrical
         if ["Theatrical", "Non-Theatrical"].include?(stream.revenue_stream.name)
           stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
@@ -99,13 +111,19 @@ class Api::RoyaltyReportsController < ApplicationController
           stream.cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
           stream.cume_difference = stream.cume_revenue - stream.cume_gr - stream.cume_expense
           stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+          stream.joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+          stream.joined_difference = stream.joined_revenue - stream.joined_gr - stream.joined_expense
+          stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         else
           stream.current_difference = stream.current_revenue - stream.current_expense
           stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
           stream.cume_difference = stream.cume_revenue - stream.cume_expense
           stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+          stream.joined_difference = stream.joined_revenue - stream.joined_expense
+          stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         end
       end
+
       report.current_total_revenue += stream.current_revenue
       report.current_total_expenses += stream.current_expense
       report.current_total += stream.current_licensor_share

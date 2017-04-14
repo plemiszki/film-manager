@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170413030104) do
+ActiveRecord::Schema.define(version: 20170414021846) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,6 +100,11 @@ ActiveRecord::Schema.define(version: 20170413030104) do
     t.decimal "cume_difference",        precision: 8, scale: 2, default: 0.0
     t.decimal "cume_licensor_share",    precision: 8, scale: 2, default: 0.0
     t.decimal "licensor_percentage",    precision: 5, scale: 2, default: 0.0
+    t.decimal "joined_revenue",         precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_gr",              precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_expense",         precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_difference",      precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_licensor_share",  precision: 8, scale: 2, default: 0.0
   end
 
   create_table "users", force: :cascade do |t|
