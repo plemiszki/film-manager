@@ -210,10 +210,106 @@ var ReportDetails = React.createClass({
             )
           }.bind(this))}
           <div className="row">
-            <div className="col-xs-12">
-              <h2>MG</h2>
-              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.report.mg || ""} data-field="mg" />
+            <div className="col-xs-1 stream-name">
+              Total
+            </div>
+            <div className={"col-xs-2"}>
+              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? (this.state.report.joinedTotalRevenue || "") : (this.state.report.cumeTotalRevenue || "")} />
               {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+            <div className={"col-xs-2" + this.grClass()}>
+            </div>
+            <div className={"col-xs-2" + this.expenseClass()}>
+              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "")} />
+              {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">Total</div>
+              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? (this.state.report.joinedTotal || "") : (this.state.report.cumeTotal || "")} />
+              {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-1">
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className={"col-xs-2" + this.grClass()}>
+            </div>
+            <div className={"col-xs-2" + this.expenseClass()}>
+              <div className="label">Expense Cap</div>
+              <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.expenseCap || ""} />
+              {Common.renderFieldError(this.state.reportErrors, [])}
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">E & O</div>
+              <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.eAndO || ""} />
+              {Common.renderFieldError(this.state.reportErrors, [])}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-1">
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className={"col-xs-2" + this.grClass()}>
+            </div>
+            <div className={"col-xs-2" + this.expenseClass()}>
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">MG</div>
+              <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.mg || ""} />
+              {Common.renderFieldError(this.state.reportErrors, [])}
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-1">
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className={"col-xs-2" + this.grClass()}>
+            </div>
+            <div className={"col-xs-2" + this.expenseClass()}>
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">Amount Paid</div>
+              <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.amountPaid || ""} />
+              {Common.renderFieldError(this.state.reportErrors, [])}
+            </div>
+          </div>
+          <div className="row last-row">
+            <div className="col-xs-1">
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className={"col-xs-2" + this.grClass()}>
+            </div>
+            <div className={"col-xs-2" + this.expenseClass()}>
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">Amount Due</div>
+              <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? (this.state.report.joinedAmountDue || "") : (this.state.report.amountDue || "")} />
+              {Common.renderFieldError(this.state.reportErrors, [])}
             </div>
           </div>
           {this.renderButtons()}

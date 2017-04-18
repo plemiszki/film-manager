@@ -3,15 +3,24 @@ json.reports @reports do |report|
   json.film @film.title
   json.filmId @film.id
   json.dealId @film.deal_type_id
+  json.expenseCap dollarify(number_with_precision(@film.expense_cap, precision: 2, delimiter: ','))
   json.quarter report.quarter
   json.year report.year
   json.grPercentage @film.gr_percentage.to_s || ""
   json.currentTotal dollarify(number_with_precision(report.current_total, precision: 2, delimiter: ','))
   json.currentTotalRevenue dollarify(number_with_precision(report.current_total_revenue, precision: 2, delimiter: ','))
   json.currentTotalExpenses dollarify(number_with_precision(report.current_total_expenses, precision: 2, delimiter: ','))
+  json.cumeTotal dollarify(number_with_precision(report.cume_total, precision: 2, delimiter: ','))
+  json.cumeTotalRevenue dollarify(number_with_precision(report.cume_total_revenue, precision: 2, delimiter: ','))
+  json.cumeTotalExpenses dollarify(number_with_precision(report.cume_total_expenses, precision: 2, delimiter: ','))
+  json.joinedTotal dollarify(number_with_precision(report.joined_total, precision: 2, delimiter: ','))
+  json.joinedTotalRevenue dollarify(number_with_precision(report.joined_total_revenue, precision: 2, delimiter: ','))
+  json.joinedTotalExpenses dollarify(number_with_precision(report.joined_total_expenses, precision: 2, delimiter: ','))
   json.mg '$' + number_with_precision(report.mg, precision: 2, delimiter: ',')
+  json.eAndO '$' + number_with_precision(report.e_and_o, precision: 2, delimiter: ',')
   json.amountPaid '$' + number_with_precision(report.amount_paid, precision: 2, delimiter: ',')
   json.amountDue '$' + number_with_precision(report.amount_due, precision: 2, delimiter: ',')
+  json.joinedAmountDue '$' + number_with_precision(report.joined_amount_due, precision: 2, delimiter: ',')
 end
 json.streams @streams do |stream|
   json.id stream.id

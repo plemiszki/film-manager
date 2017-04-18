@@ -68,4 +68,19 @@
   a#toggle {
     margin-right: 20px;
   }
+
+  .label {
+    position: absolute;
+    right: 100%;
+    width: 100px;
+    text-align: right;
+    margin-top: 10px;
+    font-family: 'TeachableSansMedium';
+    font-size: 12px;
+    color: #2C2F33;
+  }
+
+  .last-row {
+    margin-bottom: 60px;
+  }
 }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170414021846) do
+ActiveRecord::Schema.define(version: 20170418005308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,10 @@ ActiveRecord::Schema.define(version: 20170414021846) do
     t.decimal "current_total",          precision: 8, scale: 2, default: 0.0
     t.decimal "current_total_revenue",  precision: 8, scale: 2, default: 0.0
     t.decimal "cume_total_revenue",     precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_total_revenue",   precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_total_expenses",  precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_total",           precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_amount_due",      precision: 8, scale: 2, default: 0.0
   end
 
   create_table "royalty_revenue_streams", force: :cascade do |t|
