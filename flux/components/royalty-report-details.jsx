@@ -164,13 +164,28 @@ var ReportDetails = React.createClass({
               <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.currentTotalExpenses || ""} />
               {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
             </div>
-            <div className={"col-xs-2"}>
+            <div className={"col-xs-2" + this.expenseClass()}>
             </div>
             <div className="col-xs-1">
             </div>
             <div className="col-xs-2">
+              <div className="label">Total</div>
               <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.currentTotal || ""} />
               {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+          </div>
+          <div className={"row" + this.dealType4Only()}>
+            <div className="col-xs-2 col-xs-offset-4">
+              <div className="label">Current Expenses</div>
+              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.report.currentTotalExpenses || ""} />
+              {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+          </div>
+          <div className={"row" + this.dealType4Only()}>
+            <div className="col-xs-2 col-xs-offset-4">
+              <div className="label">Current Licensor Share</div>
+              <input onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.currentShareMinusExpenses || ""} />
+              {Common.renderFieldError(this.state.reportErrors, [])}
             </div>
           </div>
           <hr />
@@ -223,7 +238,7 @@ var ReportDetails = React.createClass({
               <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "")} />
               {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
             </div>
-            <div className={"col-xs-2"}>
+            <div className={"col-xs-2" + this.expenseClass()}>
             </div>
             <div className="col-xs-1">
             </div>
@@ -245,7 +260,7 @@ var ReportDetails = React.createClass({
               <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.expenseCap || ""} />
               {Common.renderFieldError(this.state.reportErrors, [])}
             </div>
-            <div className={"col-xs-2"}>
+            <div className={"col-xs-2" + this.expenseClass()}>
             </div>
             <div className="col-xs-1">
             </div>
@@ -264,7 +279,7 @@ var ReportDetails = React.createClass({
             </div>
             <div className={"col-xs-2" + this.expenseClass()}>
             </div>
-            <div className={"col-xs-2"}>
+            <div className={"col-xs-2" + this.expenseClass()}>
             </div>
             <div className="col-xs-1">
             </div>
@@ -283,7 +298,7 @@ var ReportDetails = React.createClass({
             </div>
             <div className={"col-xs-2" + this.expenseClass()}>
             </div>
-            <div className={"col-xs-2"}>
+            <div className={"col-xs-2" + this.expenseClass()}>
             </div>
             <div className="col-xs-1">
             </div>
@@ -302,7 +317,7 @@ var ReportDetails = React.createClass({
             </div>
             <div className={"col-xs-2" + this.expenseClass()}>
             </div>
-            <div className={"col-xs-2"}>
+            <div className={"col-xs-2" + this.expenseClass()}>
             </div>
             <div className="col-xs-1">
             </div>
@@ -388,6 +403,14 @@ var ReportDetails = React.createClass({
 
   expenseClass: function() {
     if (this.state.report.dealId !== 4) {
+      return "";
+    } else {
+      return " hidden"
+    }
+  },
+
+  dealType4Only: function() {
+    if (this.state.report.dealId == 4) {
       return "";
     } else {
       return " hidden"

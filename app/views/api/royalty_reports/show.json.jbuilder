@@ -10,6 +10,7 @@ json.reports @reports do |report|
   json.currentTotal dollarify(number_with_precision(report.current_total, precision: 2, delimiter: ','))
   json.currentTotalRevenue dollarify(number_with_precision(report.current_total_revenue, precision: 2, delimiter: ','))
   json.currentTotalExpenses dollarify(number_with_precision(report.current_total_expenses, precision: 2, delimiter: ','))
+  json.currentShareMinusExpenses dollarify(number_with_precision(report.current_share_minus_expenses, precision: 2, delimiter: ','))
   json.cumeTotal dollarify(number_with_precision(report.cume_total, precision: 2, delimiter: ','))
   json.cumeTotalRevenue dollarify(number_with_precision(report.cume_total_revenue, precision: 2, delimiter: ','))
   json.cumeTotalExpenses dollarify(number_with_precision(report.cume_total_expenses, precision: 2, delimiter: ','))

@@ -60,7 +60,7 @@ class Api::RoyaltyReportsController < ApplicationController
 
   def calculate(film, report, streams)
     report.current_total_revenue = 0.00
-    report.current_total_expenses = 0.00
+    report.current_total_expenses = 0.00 unless film.deal_type_id == 4
     report.current_total = 0.00
     streams.each do |stream|
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
@@ -125,11 +125,11 @@ class Api::RoyaltyReportsController < ApplicationController
       end
 
       report.current_total_revenue += stream.current_revenue
-      report.current_total_expenses += stream.current_expense
+      report.current_total_expenses += stream.current_expense unless film.deal_type_id == 4
       report.current_total += stream.current_licensor_share
 
       report.cume_total_revenue += stream.cume_revenue
-      report.cume_total_expenses += stream.cume_expense
+      report.cume_total_expenses += stream.cume_expense unless film.deal_type_id == 4
       report.cume_total += stream.cume_licensor_share
       report.amount_due = report.cume_total - report.e_and_o - report.mg - report.amount_paid
 
@@ -137,6 +137,9 @@ class Api::RoyaltyReportsController < ApplicationController
       report.joined_total_expenses += stream.joined_expense
       report.joined_total += stream.joined_licensor_share
       report.joined_amount_due = report.joined_total - report.e_and_o - report.mg - report.amount_paid
+    end
+    if film.deal_type_id == 4
+      report.current_share_minus_expenses = report.current_total - report.current_total_expenses
     end
   end
 
