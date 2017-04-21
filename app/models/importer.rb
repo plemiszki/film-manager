@@ -59,6 +59,7 @@ class Importer < ActiveRecord::Base
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 11).update(value: a[250]) #Ancillary
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 12).update(value: a[245]) #TV
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 13).update(value: a[251]) #Club
+          FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 14).update(value: a[252]) #Jewish
 
           r = RoyaltyReport.create(film_id: f.id, year: 2017, quarter: 1, deal_id: f.deal_type_id, gr_percentage: f.gr_percentage, mg: f.mg, e_and_o: f.e_and_o, amount_paid: a[299], current_total_expenses: a[302], cume_total_expenses: a[303])
           RoyaltyRevenueStream.create(royalty_report_id: r.id, revenue_stream_id: 1, current_revenue: a[254], current_expense: a[277], cume_revenue: a[265], cume_expense: a[288], licensor_percentage: a[243]) #Theatrical
@@ -74,6 +75,7 @@ class Importer < ActiveRecord::Base
           RoyaltyRevenueStream.create(royalty_report_id: r.id, revenue_stream_id: 11, current_revenue: a[261], current_expense: a[284], cume_revenue: a[272], cume_expense: a[295], licensor_percentage: a[250]) #Ancillary
           RoyaltyRevenueStream.create(royalty_report_id: r.id, revenue_stream_id: 12, current_revenue: a[256], current_expense: a[279], cume_revenue: a[267], cume_expense: a[290], licensor_percentage: a[245]) #TV
           RoyaltyRevenueStream.create(royalty_report_id: r.id, revenue_stream_id: 13, current_revenue: a[262], current_expense: a[285], cume_revenue: a[273], cume_expense: a[296], licensor_percentage: a[251]) #Club
+          RoyaltyRevenueStream.create(royalty_report_id: r.id, revenue_stream_id: 14, current_revenue: a[263], current_expense: a[286], cume_revenue: a[274], cume_expense: a[297], licensor_percentage: a[252]) #Club
         end
 
         films += 1

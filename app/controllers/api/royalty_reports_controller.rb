@@ -131,12 +131,16 @@ class Api::RoyaltyReportsController < ApplicationController
       report.cume_total_revenue += stream.cume_revenue
       report.cume_total_expenses += stream.cume_expense unless film.deal_type_id == 4
       report.cume_total += stream.cume_licensor_share
-      report.amount_due = report.cume_total - report.e_and_o - report.mg - report.amount_paid
-
       report.joined_total_revenue += stream.joined_revenue
       report.joined_total_expenses += stream.joined_expense
       report.joined_total += stream.joined_licensor_share
-      report.joined_amount_due = report.joined_total - report.e_and_o - report.mg - report.amount_paid
+      if film.deal_type_id == 4
+        report.amount_due = report.cume_total - report.cume_total_expenses - report.e_and_o - report.mg - report.amount_paid
+        report.joined_amount_due = report.joined_total - report.current_total_expenses - report.cume_total_expenses - report.e_and_o - report.mg - report.amount_paid
+      else
+        report.joined_amount_due = report.joined_total - report.e_and_o - report.mg - report.amount_paid
+        report.amount_due = report.cume_total - report.e_and_o - report.mg - report.amount_paid
+      end
     end
     if film.deal_type_id == 4
       report.current_share_minus_expenses = report.current_total - report.current_total_expenses

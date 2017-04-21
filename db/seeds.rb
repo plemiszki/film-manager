@@ -22,6 +22,7 @@ RevenueStream.create(name: "Other Internet", nickname: "Internet")
 RevenueStream.create(name: "Hotels, Ships, Airlines", nickname: "Ancillary")
 RevenueStream.create(name: "Television", nickname: "TV")
 RevenueStream.create(name: "FM Subscription", nickname: "Club")
+RevenueStream.create(name: "Jewish Festivals", nickname: "Jewish")
 
 Importer.import_licensors
 Importer.import_films

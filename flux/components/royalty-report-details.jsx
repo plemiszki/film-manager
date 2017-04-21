@@ -248,6 +248,13 @@ var ReportDetails = React.createClass({
               {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
             </div>
           </div>
+          <div className={"row" + this.dealType4Only()}>
+            <div className="col-xs-2 col-xs-offset-4">
+              <div className="label">Cumulative Expenses</div>
+              <input className={Common.errorClass(this.state.reportErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.report.cumeTotalExpenses || ""} />
+              {Common.renderFieldError(this.state.reportErrors, ["Title can't be blank"])}
+            </div>
+          </div>
           <div className="row">
             <div className="col-xs-1">
             </div>
