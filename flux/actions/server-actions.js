@@ -72,6 +72,14 @@ var ServerActions = {
       reports: response.reports,
       streams: response.streams
     });
+  },
+
+  receiveReportErrors: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "REPORT_ERRORS_RECEIVED",
+      reportErrors: response.responseJSON.report,
+      streamErrors: response.responseJSON.streams
+    });
   }
 }
 

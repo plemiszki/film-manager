@@ -72,6 +72,39 @@ Common = {
       "Value is not a number",
       "Value must be less than or equal to 100",
       "Value must be greater than or equal to 0"
+    ],
+    amountPaid: [
+      "Amount paid is not a number",
+      "Amount paid must be greater than or equal to 0"
+    ],
+    currentTotalExpenses: [
+      "Current total expenses is not a number",
+      "Current total expenses must be greater than or equal to 0"
+    ],
+    cumeTotalExpenses: [
+      "Cume total expenses is not a number",
+      "Cume total expenses must be greater than or equal to 0"
+    ],
+    currentRevenue: [
+      "Current revenue is not a number",
+      "Current revenue must be greater than or equal to 0"
+    ],
+    currentExpense: [
+      "Current expense is not a number",
+      "Current expense must be greater than or equal to 0"
+    ],
+    cumeRevenue: [
+      "Cume revenue is not a number",
+      "Cume revenue must be greater than or equal to 0"
+    ],
+    cumeExpense: [
+      "Cume expense is not a number",
+      "Cume expense must be greater than or equal to 0"
+    ],
+    licensorPercentage: [
+      "Licensor percentage is not a number",
+      "Licensor percentage must be less than or equal to 100",
+      "Licensor percentage must be greater than or equal to 0"
     ]
   },
 

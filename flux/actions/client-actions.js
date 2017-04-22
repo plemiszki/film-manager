@@ -225,8 +225,40 @@ var ClientActions = {
       url: '/api/royalty_reports/' + id,
       method: 'GET',
       success: function(response) {
-        console.log(response);
         ServerActions.receiveReport(response);
+      }
+    });
+  },
+
+  updateReport: function(report, streams) {
+    var newStreams = {}
+    streams.forEach(function(stream) {
+      newStreams[stream.id] = {
+        licensor_percentage: stream.licensorPercentage,
+        current_revenue: stream.currentRevenue.removeFinanceSymbols(),
+        current_expense: stream.currentExpense.removeFinanceSymbols(),
+        cume_revenue: stream.cumeRevenue.removeFinanceSymbols(),
+        cume_expense: stream.cumeExpense.removeFinanceSymbols()
+      }
+    });
+    $.ajax({
+      url: '/api/royalty_reports/' + report.id,
+      method: 'PATCH',
+      data: {
+        report: {
+          mg: report.mg.removeFinanceSymbols(),
+          e_and_o: report.eAndO.removeFinanceSymbols(),
+          amount_paid: report.amountPaid.removeFinanceSymbols(),
+          current_total_expenses: report.currentTotalExpenses.removeFinanceSymbols(),
+          cume_total_expenses: report.cumeTotalExpenses.removeFinanceSymbols()
+        },
+        streams: newStreams
+      },
+      success: function(response) {
+        ServerActions.receiveReport(response);
+      },
+      error: function(response) {
+        ServerActions.receiveReportErrors(response);
       }
     });
   }

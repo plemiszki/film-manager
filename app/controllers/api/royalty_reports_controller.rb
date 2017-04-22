@@ -1,62 +1,46 @@
 class Api::RoyaltyReportsController < ApplicationController
 
   def show
+    query_data_for_show_jbuilder
+    render "show.json.jbuilder"
+  end
+
+  def update
+    error_present = false
+    errors = {
+      report: [],
+      streams: {}
+    }
+    begin
+      ActiveRecord::Base.transaction do
+        @report = RoyaltyReport.find(params[:id])
+        unless @report.update(report_params)
+          error_present = true
+          errors[:report] = @report.errors.full_messages
+        end
+        RoyaltyRevenueStream.where(royalty_report_id: params[:id]).each do |royalty_revenue_stream|
+          unless royalty_revenue_stream.update(revenue_stream_params(royalty_revenue_stream.id))
+            error_present = true
+            errors[:streams][royalty_revenue_stream.id] = royalty_revenue_stream.errors.full_messages
+          end
+        end
+        fail if error_present
+        query_data_for_show_jbuilder
+        render "show.json.jbuilder"
+      end
+    rescue
+      render json: errors, status: 422
+    end
+  end
+
+  private
+
+  def query_data_for_show_jbuilder
     @reports = RoyaltyReport.where(id: params[:id])
     @film = Film.find(@reports[0].film_id)
     @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id)
     calculate(@film, @reports[0], @streams)
-    render "show.json.jbuilder"
   end
-
-  def create
-    @film = Film.new(title: film_params[:title], label_id: 1, days_statement_due: 30, short_film: params[:short])
-    if @film.save
-      @films = Film.where(short_film: params[:short])
-      render "index.json.jbuilder"
-    else
-      render json: @film.errors.full_messages, status: 422
-    end
-  end
-
-  # def update
-  #   error_present = false
-  #   errors = {
-  #     film: [],
-  #     percentages: {}
-  #   }
-  #   begin
-  #     ActiveRecord::Base.transaction do
-  #       @film = Film.find(params[:id])
-  #       unless @film.update(film_params)
-  #         error_present = true
-  #         errors[:film] = @film.errors.full_messages
-  #       end
-  #       FilmRevenuePercentage.where(film_id: params[:id]).each do |revenue_percentage|
-  #         unless revenue_percentage.update(value: params[:percentages][revenue_percentage.id.to_s])
-  #           error_present = true
-  #           errors[:percentages][revenue_percentage.id] = revenue_percentage.errors.full_messages
-  #         end
-  #       end
-  #       fail if error_present
-  #       @films = Film.where(id: params[:id])
-  #       @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
-  #       render "show.json.jbuilder"
-  #     end
-  #   rescue
-  #     render json: errors, status: 422
-  #   end
-  # end
-  #
-  # def destroy
-  #   @film = Film.find(params[:id])
-  #   if @film.destroy
-  #     render json: @film, status: 200
-  #   else
-  #     render json: @film.errors.full_messages, status: 422
-  #   end
-  # end
-
-  private
 
   def calculate(film, report, streams)
     report.current_total_revenue = 0.00
@@ -132,7 +116,7 @@ class Api::RoyaltyReportsController < ApplicationController
       report.cume_total_expenses += stream.cume_expense unless film.deal_type_id == 4
       report.cume_total += stream.cume_licensor_share
       report.joined_total_revenue += stream.joined_revenue
-      report.joined_total_expenses += stream.joined_expense
+      report.joined_total_expenses += stream.joined_expense unless film.deal_type_id == 4
       report.joined_total += stream.joined_licensor_share
       if film.deal_type_id == 4
         report.amount_due = report.cume_total - report.cume_total_expenses - report.e_and_o - report.mg - report.amount_paid
@@ -144,25 +128,16 @@ class Api::RoyaltyReportsController < ApplicationController
     end
     if film.deal_type_id == 4
       report.current_share_minus_expenses = report.current_total - report.current_total_expenses
+      report.joined_total_expenses = report.current_total_expenses + report.cume_total_expenses
     end
   end
 
-  def film_params
-    result = params[:film].permit(
-      :days_statement_due,
-      :deal_type_id,
-      :e_and_o,
-      :expense_cap,
-      :gr_percentage,
-      :licensor_id,
-      :mg,
-      :royalty_notes,
-      :sage_id,
-      :short_film,
-      :title
-    )
-    result[:licensor_id] = nil unless params[:film][:licensor_id]
-    result
+  def report_params
+    params[:report].permit(:current_total_expenses, :cume_total_expenses, :mg, :e_and_o, :amount_paid)
+  end
+
+  def revenue_stream_params(id)
+    params[:streams][id.to_s].permit(:current_revenue, :current_expense, :cume_revenue, :cume_expense, :licensor_percentage)
   end
 
 end
