@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show]
   resources :licensors, only: [:index, :show]
   resources :royalty_reports, only: [:show]
+  get '/royalty_reports/:id/export' => 'royalty_reports#export'
 
   namespace :api do
     get '/users' => '/api/users#api_index'

@@ -77,19 +77,23 @@ var ReportDetails = React.createClass({
     });
   },
 
-  confirmDelete: function() {
-    this.setState({
-      fetching: true
-    }, function() {
-      ClientActions.deleteReport(this.state.report.id);
-    });
+  clickExport: function() {
+    window.location.pathname = 'royalty_reports/' + this.state.report.id + '/export'
   },
 
-  handleModalClose: function() {
-    this.setState({
-      deleteModalOpen: false
-    });
-  },
+  // confirmDelete: function() {
+  //   this.setState({
+  //     fetching: true
+  //   }, function() {
+  //     ClientActions.deleteReport(this.state.report.id);
+  //   });
+  // },
+  //
+  // handleModalClose: function() {
+  //   this.setState({
+  //     deleteModalOpen: false
+  //   });
+  // },
 
   checkForChanges: function() {
     if (Tools.objectsAreEqual(this.state.report, this.state.reportSaved) == false) {
