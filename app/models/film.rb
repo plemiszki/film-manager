@@ -13,9 +13,10 @@ class Film < ActiveRecord::Base
     end
   end
 
-  after_create :create_percentages
-
+  belongs_to :licensor
   has_many :film_revenue_percentages, dependent: :destroy
+
+  after_create :create_percentages
 
   def create_percentages
     unless short_film

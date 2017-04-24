@@ -13,6 +13,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc # bundle exec rake doc:rails generates the A
 gem 'bootstrap-sass'
 gem 'clearance', '~> 1.11'
 gem 'database_cleaner'
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
 # ------------------------------
 
 group :development, :test do

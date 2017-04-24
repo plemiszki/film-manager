@@ -1,5 +1,7 @@
 class Api::RoyaltyReportsController < ApplicationController
 
+  include ActionView::Helpers::NumberHelper
+
   def show
     query_data_for_show_jbuilder
     render "show.json.jbuilder"
@@ -33,6 +35,75 @@ class Api::RoyaltyReportsController < ApplicationController
     end
   end
 
+  def export
+    query_data_for_show_jbuilder
+    report = @reports[0]
+    string = "<style>"
+    string += "body {"
+    string +=   "font-family: Arial;"
+    string +=   "font-size: 14px;"
+    string +=   "line-height: 18px;"
+    string += "}"
+    string += "table {"
+    string +=   "width: 100%;"
+    string +=   "font-family: Arial;"
+    string +=   "font-size: 14px;"
+    string +=   "line-height: 18px;"
+    string +=   "text-align: left;"
+    string += "}"
+    string += ".upper-right {"
+    string +=   "float: right;"
+    string += "}"
+    string += ".producer-report {"
+    string +=   "padding-top: 3px;"
+    string +=   "font-family: Times;"
+    string +=   "letter-spacing: .5px;"
+    string +=   "font-size: 30px;"
+    string +=   "margin-bottom: 6px;"
+    string += "}"
+    string += ".film-movement {"
+    string +=   "font-size: 18px;"
+    string +=   "margin-bottom: 4px;"
+    string += "}"
+    string += "</style>"
+    string += "<div class=\"upper-right\">"
+    string +=   "<div class=\"producer-report\">Producer Report</div>"
+    string +=   "#{report.film.licensor.name}<br>"
+    string +=   "#{report.film.title}<br>"
+    string +=   "Q#{report.quarter} #{report.year}"
+    string += "</div>"
+    string += "<div class=\"film-movement\">Film Movement</div>"
+    string += "109 West 27th Street<br>"
+    string += "Suite 9B<br>"
+    string += "New York, NY 10001<br>"
+    string += "212.941.7744<br><br><br>"
+
+    string += "<table><tr>"
+    string +=   "<th>Current Period</th>"
+    string +=   "<th>Revenue</th>"
+    string +=   "<th>Licensor %</th>"
+    string +=   "<th>Licensor Share</th></tr>"
+    @streams.each do |stream|
+      string += "<tr>"
+      string +=   "<td>#{stream.revenue_stream.name}</td>"
+      string +=   "<td>#{dollarify(stream.current_revenue)}</td>"
+      string +=   "<td>#{stream.licensor_percentage}</td>"
+      string +=   "<td>#{dollarify(stream.current_licensor_share)}</td>"
+      string += "</tr>"
+    end
+    string += "</table>"
+
+    pdf = WickedPdf.new.pdf_from_string(string)
+    save_path = Rails.root.join('test.pdf')
+    File.open(save_path, 'wb') do |f|
+      f << pdf
+    end
+    File.open(save_path, 'r') do |f|
+      send_data f.read, filename: "test.pdf"
+    end
+    File.delete(save_path)
+  end
+
   private
 
   def query_data_for_show_jbuilder
@@ -40,6 +111,15 @@ class Api::RoyaltyReportsController < ApplicationController
     @film = Film.find(@reports[0].film_id)
     @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id)
     calculate(@film, @reports[0], @streams)
+  end
+
+  def dollarify(input)
+    input = number_with_precision(input, precision: 2, delimiter: ',').to_s
+    if (input[0] == "-")
+      '-$' + input[1..-1]
+    else
+      '$' + input
+    end
   end
 
   def calculate(film, report, streams)

@@ -5,7 +5,6 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show]
   resources :licensors, only: [:index, :show]
   resources :royalty_reports, only: [:show]
-  get '/royalty_reports/:id/export' => 'royalty_reports#export'
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -16,6 +15,7 @@ Rails.application.routes.draw do
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     resources :films, only: [:index, :show, :create, :update, :destroy]
     resources :royalty_reports, only: [:show, :create, :update, :destroy]
+    get '/royalty_reports/:id/export' => '/api/royalty_reports#export'
   end
 
   # Clearance ------------------------
