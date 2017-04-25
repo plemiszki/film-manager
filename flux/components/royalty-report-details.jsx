@@ -81,20 +81,6 @@ var ReportDetails = React.createClass({
     window.location.pathname = 'api/royalty_reports/' + this.state.report.id + '/export'
   },
 
-  // confirmDelete: function() {
-  //   this.setState({
-  //     fetching: true
-  //   }, function() {
-  //     ClientActions.deleteReport(this.state.report.id);
-  //   });
-  // },
-  //
-  // handleModalClose: function() {
-  //   this.setState({
-  //     deleteModalOpen: false
-  //   });
-  // },
-
   checkForChanges: function() {
     if (Tools.objectsAreEqual(this.state.report, this.state.reportSaved) == false) {
       return true;
@@ -389,7 +375,7 @@ var ReportDetails = React.createClass({
   },
 
   expenseClass: function() {
-    if (this.state.report.dealId !== 4) {
+    if (this.state.report.dealId !== 1 && this.state.report.dealId !== 4) {
       return "";
     } else {
       return " hidden"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419113630) do
+ActiveRecord::Schema.define(version: 20170424233656) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,8 +64,9 @@ ActiveRecord::Schema.define(version: 20170419113630) do
   add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
 
   create_table "revenue_streams", force: :cascade do |t|
-    t.string "name",     null: false
-    t.text   "nickname"
+    t.string  "name",     null: false
+    t.text    "nickname"
+    t.integer "order"
   end
 
   create_table "royalty_reports", force: :cascade do |t|

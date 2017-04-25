@@ -65,6 +65,22 @@ class Api::RoyaltyReportsController < ApplicationController
     string +=   "font-size: 18px;"
     string +=   "margin-bottom: 4px;"
     string += "}"
+    string += "tr.totals-row td {"
+    string +=   "padding-top: 20px;"
+    string +=   "padding-bottom: 60px;"
+    string += "}"
+    string += "th {"
+    string +=   "padding-bottom: 10px;"
+    string += "}"
+    string += ".clearfix:after {"
+    string +=   "content: \"\";"
+    string +=   "display: block;"
+    string +=   "clear: both;"
+    string +=  "}"
+    string += ".bottom-table {"
+    string +=   "float: right;"
+    string +=   "width: 300px;"
+    string += "}"
     string += "</style>"
     string += "<div class=\"upper-right\">"
     string +=   "<div class=\"producer-report\">Producer Report</div>"
@@ -84,14 +100,63 @@ class Api::RoyaltyReportsController < ApplicationController
     string +=   "<th>Licensor %</th>"
     string +=   "<th>Licensor Share</th></tr>"
     @streams.each do |stream|
-      string += "<tr>"
-      string +=   "<td>#{stream.revenue_stream.name}</td>"
-      string +=   "<td>#{dollarify(stream.current_revenue)}</td>"
-      string +=   "<td>#{stream.licensor_percentage}</td>"
-      string +=   "<td>#{dollarify(stream.current_licensor_share)}</td>"
-      string += "</tr>"
+      if stream.current_revenue > 0 || stream.current_expense > 0
+        string += "<tr>"
+        string +=   "<td>#{stream.revenue_stream.name}</td>"
+        string +=   "<td>#{dollarify(stream.current_revenue)}</td>"
+        string +=   "<td>#{sprintf("%g", stream.licensor_percentage)}%</td>"
+        string +=   "<td>#{dollarify(stream.current_licensor_share)}</td>"
+        string += "</tr>"
+      end
     end
+    string += "<tr class=\"totals-row\">"
+    string +=   "<td>Current Total</td>"
+    string +=   "<td>#{dollarify(@reports[0].current_total_revenue)}</td>"
+    string +=   "<td></td>"
+    string +=   "<td>#{dollarify(@reports[0].current_total)}</td>"
+    string += "</tr><tr>"
+    string +=   "<th>Cumulative</th>"
+    string +=   "<th></th>"
+    string +=   "<th></th>"
+    string +=   "<th></th></tr>"
+    @streams.each do |stream|
+      if stream.cume_revenue > 0 || stream.cume_expense > 0
+        string += "<tr>"
+        string +=   "<td>#{stream.revenue_stream.name}</td>"
+        string +=   "<td>#{dollarify(stream.joined_revenue)}</td>"
+        string +=   "<td>#{sprintf("%g", stream.licensor_percentage)}%</td>"
+        string +=   "<td>#{dollarify(stream.joined_licensor_share)}</td>"
+        string += "</tr>"
+      end
+    end
+    string += "<tr class=\"totals-row\">"
+    string +=   "<td>Cumulative Total</td>"
+    string +=   "<td>#{dollarify(@reports[0].joined_total_revenue)}</td>"
+    string +=   "<td></td>"
+    string +=   "<td>#{dollarify(@reports[0].joined_total)}</td>"
+    string += "</tr>"
     string += "</table>"
+    string += "<div class=\"clearfix\"><div class=\"bottom-table\"><table>"
+    string +=   "<tr>"
+    string +=     "<td>Cumulative Licensor Share</td>"
+    string +=     "<td>#{dollarify(@reports[0].joined_total)}</td>"
+    string +=   "</tr>"
+    string +=   "<tr>"
+    string +=     "<td>MG</td>"
+    string +=     "<td>(#{dollarify(@reports[0].mg)})</td>"
+    string +=   "</tr>"
+    string +=   "<tr>"
+    string +=     "<td>Amount Paid</td>"
+    string +=     "<td>(#{dollarify(@reports[0].amount_paid)})</td>"
+    string +=   "</tr>"
+    string +=   "<tr class=\"totals-row\">"
+    string +=     "<td>Amount Due</td>"
+    string +=     "<td>#{dollarify(@reports[0].joined_amount_due)}</td>"
+    string +=   "</tr>"
+    string += "</table></div></div>"
+    string += "<div class=\"bottom-text\">"
+    string += "If there is an amount due to Licensor on this report, please send an invoice for the amount due along with current bank wire information if located outside the U.S., and current mailing address if located inside the U.S.<br>No payments will be made without this invoice and information."
+    string += "</div>"
 
     pdf = WickedPdf.new.pdf_from_string(string)
     save_path = Rails.root.join('test.pdf')
@@ -99,7 +164,7 @@ class Api::RoyaltyReportsController < ApplicationController
       f << pdf
     end
     File.open(save_path, 'r') do |f|
-      send_data f.read, filename: "test.pdf"
+      send_data f.read, filename: "#{@film.title} - Q#{@reports[0].quarter} #{@reports[0].year}.pdf"
     end
     File.delete(save_path)
   end
@@ -109,7 +174,7 @@ class Api::RoyaltyReportsController < ApplicationController
   def query_data_for_show_jbuilder
     @reports = RoyaltyReport.where(id: params[:id])
     @film = Film.find(@reports[0].film_id)
-    @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id)
+    @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id).joins(:revenue_stream).order('revenue_streams.order')
     calculate(@film, @reports[0], @streams)
   end
 
