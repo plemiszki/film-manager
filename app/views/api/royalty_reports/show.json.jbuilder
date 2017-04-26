@@ -20,8 +20,8 @@ json.reports @reports do |report|
   json.mg '$' + number_with_precision(report.mg, precision: 2, delimiter: ',')
   json.eAndO '$' + number_with_precision(report.e_and_o, precision: 2, delimiter: ',')
   json.amountPaid '$' + number_with_precision(report.amount_paid, precision: 2, delimiter: ',')
-  json.amountDue '$' + number_with_precision(report.amount_due, precision: 2, delimiter: ',')
-  json.joinedAmountDue '$' + number_with_precision(report.joined_amount_due, precision: 2, delimiter: ',')
+  json.amountDue dollarify(number_with_precision(report.amount_due, precision: 2, delimiter: ','))
+  json.joinedAmountDue dollarify(number_with_precision(report.joined_amount_due, precision: 2, delimiter: ','))
 end
 json.streams @streams do |stream|
   json.id stream.id

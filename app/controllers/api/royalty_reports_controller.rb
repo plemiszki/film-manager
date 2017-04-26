@@ -41,33 +41,39 @@ class Api::RoyaltyReportsController < ApplicationController
     string = "<style>"
     string += "body {"
     string +=   "font-family: Arial;"
-    string +=   "font-size: 14px;"
-    string +=   "line-height: 18px;"
+    string +=   "font-size: 12px;"
+    string +=   "line-height: 16px;"
     string += "}"
     string += "table {"
     string +=   "width: 100%;"
     string +=   "font-family: Arial;"
-    string +=   "font-size: 14px;"
-    string +=   "line-height: 18px;"
+    string +=   "font-size: 12px;"
+    string +=   "line-height: 14px;"
     string +=   "text-align: left;"
     string += "}"
     string += ".upper-right {"
     string +=   "float: right;"
     string += "}"
     string += ".producer-report {"
-    string +=   "padding-top: 3px;"
+    string +=   "padding-top: 5px;"
     string +=   "font-family: Times;"
     string +=   "letter-spacing: .5px;"
     string +=   "font-size: 30px;"
     string +=   "margin-bottom: 6px;"
     string += "}"
     string += ".film-movement {"
-    string +=   "font-size: 18px;"
+    string +=   "font-size: 16px;"
     string +=   "margin-bottom: 4px;"
     string += "}"
     string += "tr.totals-row td {"
-    string +=   "padding-top: 20px;"
-    string +=   "padding-bottom: 60px;"
+    string +=   "padding-top: 14px;"
+    string +=   "padding-bottom: 45px;"
+    string += "}"
+    string += "tr.totals-row-2 td {"
+    string +=   "padding-top: 14px;"
+    string += "}"
+    string += "tr.current-share td {"
+    string +=   "padding-bottom: 45px;"
     string += "}"
     string += "th {"
     string +=   "padding-bottom: 10px;"
@@ -80,6 +86,9 @@ class Api::RoyaltyReportsController < ApplicationController
     string += ".bottom-table {"
     string +=   "float: right;"
     string +=   "width: 300px;"
+    string += "}"
+    string += ".bottom-text {"
+    string +=   "font-size: 10px;"
     string += "}"
     string += "</style>"
     string += "<div class=\"upper-right\">"
@@ -97,6 +106,9 @@ class Api::RoyaltyReportsController < ApplicationController
     string += "<table><tr>"
     string +=   "<th>Current Period</th>"
     string +=   "<th>Revenue</th>"
+    string +=   "<th>#{sprintf("%g", @reports[0].gr_percentage)}% Fee</th>" if gr_deal
+    string +=   "<th>Expenses</th>" if expense_class
+    string +=   "<th>Difference</th>" if expense_class
     string +=   "<th>Licensor %</th>"
     string +=   "<th>Licensor Share</th></tr>"
     @streams.each do |stream|
@@ -104,26 +116,48 @@ class Api::RoyaltyReportsController < ApplicationController
         string += "<tr>"
         string +=   "<td>#{stream.revenue_stream.name}</td>"
         string +=   "<td>#{dollarify(stream.current_revenue)}</td>"
+        string +=   "<td>#{negafy(stream.current_gr)}</td>" if gr_deal
+        string +=   "<td>#{negafy(stream.current_expense)}</td>" if expense_class
+        string +=   "<td>#{dollarify(stream.current_difference)}</td>" if expense_class
         string +=   "<td>#{sprintf("%g", stream.licensor_percentage)}%</td>"
         string +=   "<td>#{dollarify(stream.current_licensor_share)}</td>"
         string += "</tr>"
       end
     end
-    string += "<tr class=\"totals-row\">"
+    string += "<tr class=\"#{@reports[0].film.deal_type_id == 4 ? "totals-row-2" : "totals-row"}\">"
     string +=   "<td>Current Total</td>"
     string +=   "<td>#{dollarify(@reports[0].current_total_revenue)}</td>"
+    string +=   "<td></td>" if gr_deal
+    string +=   "<td>#{negafy(@reports[0].current_total_expenses)}</td>" if expense_class
+    string +=   "<td></td>" if expense_class
     string +=   "<td></td>"
     string +=   "<td>#{dollarify(@reports[0].current_total)}</td>"
-    string += "</tr><tr>"
+    string += "</tr>"
+    if @reports[0].film.deal_type_id == 4
+      string += "<tr>"
+      string +=   "<td>Current Expenses</td><td></td><td></td><td>#{negafy(@reports[0].current_total_expenses)}</td>"
+      string += "</tr>"
+      string += "<tr class=\"current-share\">"
+      string +=   "<td>Current Licensor Share</td><td></td><td></td><td>#{dollarify(@reports[0].current_share_minus_expenses)}</td>"
+      string += "</tr>"
+    end
+    string += "<tr>"
     string +=   "<th>Cumulative</th>"
     string +=   "<th></th>"
+    string +=   "<th></th>" if gr_deal
+    string +=   "<th></th>" if expense_class
+    string +=   "<th></th>" if expense_class
     string +=   "<th></th>"
-    string +=   "<th></th></tr>"
+    string +=   "<th></th>"
+    string += "</tr>"
     @streams.each do |stream|
-      if stream.cume_revenue > 0 || stream.cume_expense > 0
+      if stream.joined_revenue > 0 || stream.joined_expense > 0
         string += "<tr>"
         string +=   "<td>#{stream.revenue_stream.name}</td>"
         string +=   "<td>#{dollarify(stream.joined_revenue)}</td>"
+        string +=   "<td>#{negafy(stream.joined_gr)}</td>" if gr_deal
+        string +=   "<td>#{negafy(stream.joined_expense)}</td>" if expense_class
+        string +=   "<td>#{dollarify(stream.joined_difference)}</td>" if expense_class
         string +=   "<td>#{sprintf("%g", stream.licensor_percentage)}%</td>"
         string +=   "<td>#{dollarify(stream.joined_licensor_share)}</td>"
         string += "</tr>"
@@ -132,6 +166,9 @@ class Api::RoyaltyReportsController < ApplicationController
     string += "<tr class=\"totals-row\">"
     string +=   "<td>Cumulative Total</td>"
     string +=   "<td>#{dollarify(@reports[0].joined_total_revenue)}</td>"
+    string +=   "<td></td>" if gr_deal
+    string +=   "<td>#{negafy(@reports[0].joined_total_expenses)}</td>" if expense_class
+    string +=   "<td></td>" if expense_class
     string +=   "<td></td>"
     string +=   "<td>#{dollarify(@reports[0].joined_total)}</td>"
     string += "</tr>"
@@ -141,13 +178,19 @@ class Api::RoyaltyReportsController < ApplicationController
     string +=     "<td>Cumulative Licensor Share</td>"
     string +=     "<td>#{dollarify(@reports[0].joined_total)}</td>"
     string +=   "</tr>"
+    if @reports[0].film.deal_type_id == 4
+      string +=   "<tr>"
+      string +=     "<td>Cumulative Expenses</td>"
+      string +=     "<td>#{negafy(@reports[0].joined_total_expenses)}</td>"
+      string +=   "</tr>"
+    end
     string +=   "<tr>"
     string +=     "<td>MG</td>"
-    string +=     "<td>(#{dollarify(@reports[0].mg)})</td>"
+    string +=     "<td>#{negafy(@reports[0].mg)}</td>"
     string +=   "</tr>"
     string +=   "<tr>"
     string +=     "<td>Amount Paid</td>"
-    string +=     "<td>(#{dollarify(@reports[0].amount_paid)})</td>"
+    string +=     "<td>#{negafy(@reports[0].amount_paid)}</td>"
     string +=   "</tr>"
     string +=   "<tr class=\"totals-row\">"
     string +=     "<td>Amount Due</td>"
@@ -181,10 +224,27 @@ class Api::RoyaltyReportsController < ApplicationController
   def dollarify(input)
     input = number_with_precision(input, precision: 2, delimiter: ',').to_s
     if (input[0] == "-")
-      '-$' + input[1..-1]
+      '($' + input[1..-1] + ')'
     else
       '$' + input
     end
+  end
+
+  def negafy(input)
+    string = number_with_precision(input, precision: 2, delimiter: ',').to_s
+    if (input > 0)
+      '($' + string + ')'
+    else
+      '$' + string
+    end
+  end
+
+  def expense_class
+    @reports[0].film.deal_type_id != 1 && @reports[0].film.deal_type_id != 4
+  end
+
+  def gr_deal
+    @reports[0].film.deal_type_id == 5 || @reports[0].film.deal_type_id == 6
   end
 
   def calculate(film, report, streams)
