@@ -34,7 +34,7 @@ class Importer < ActiveRecord::Base
           label_id: 0,
           licensor_id: licensor ? licensor.id : nil,
           deal_type_id: a[241] == "Template A" ? 1 : (a[241] == "Template B" ? 2 : (a[241] == "Template B (Theat. Only)" ? 3 : (a[241] == "Template C" ? 4 : (a[241] == "Template D" ? 5 : (a[241] == "Template E" ? 6 : nil))))),
-          days_statement_due: a[357],
+          days_statement_due: a[357] == "" ? 30 : a[357],
           gr_percentage: a[326],
           mg: a[11],
           e_and_o: a[242],

@@ -10,16 +10,17 @@ var ReportsIndex = React.createClass({
       fetching: true,
       exporting: false,
       searchText: "",
-      quarter: 1,
-      year: 2017,
+      quarter: 4,
+      year: 2016,
       reports: [],
+      daysDue: 'all',
       // deleteModalOpen: false
     });
   },
 
   componentDidMount: function() {
     this.reportsListener = ReportsStore.addListener(this.getReports);
-    ClientActions.fetchReports(1, 2017);
+    ClientActions.fetchReports(this.state.quarter, this.state.year);
   },
 
   componentWillUnmount: function() {
@@ -70,19 +71,29 @@ var ReportsIndex = React.createClass({
             {Common.renderSpinner(this.state.fetching)}
             {Common.renderGrayedOut(this.state.fetching)}
             <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
+            <select onChange={function(e) { this.setState({daysDue: e.target.value}); }.bind(this)} value={this.state.daysDue}>
+              <option value={"all"}>All</option>
+              <option value={"30"}>30 days</option>
+              <option value={"45"}>45 days</option>
+              <option value={"60"}>60 days</option>
+            </select>
             <table className={"admin-table"}>
               <thead>
                 <tr>
                   <th>Title</th>
+                  <th>Due</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td></tr>
-                {this.state.reports.filterSearchText(this.state.searchText).map(function(report, index) {
+                <tr><td></td><td></td></tr>
+                {this.state.reports.filterDaysDue(this.state.daysDue).filterSearchText(this.state.searchText).map(function(report, index) {
                   return(
                     <tr key={index} onClick={this.redirect.bind(this, report.id)}>
                       <td className="name-column">
                         {report.title}
+                      </td>
+                      <td>
+                        {report.days} days
                       </td>
                     </tr>
                   );
@@ -108,7 +119,7 @@ var ReportsIndex = React.createClass({
   },
 
   componentDidUpdate: function() {
-    // Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
     $('.match-height-layout').matchHeight();
   }
 });

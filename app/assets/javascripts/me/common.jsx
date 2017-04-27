@@ -15,6 +15,16 @@ Array.prototype.filterSearchText = function(searchText) {
   }
 }
 
+Array.prototype.filterDaysDue = function(daysDue) {
+  if (daysDue === 'all') {
+    return this;
+  } else {
+    return this.filter(function(report) {
+      return report.days == daysDue;
+    });
+  }
+}
+
 Common = {
 
   deleteModalStyles: {
