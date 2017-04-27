@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     delete '/users/:id' => '/api/users#api_destroy'
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     resources :films, only: [:index, :show, :create, :update, :destroy]
-    resources :royalty_reports, only: [:show, :create, :update, :destroy]
+    resources :royalty_reports, only: [:index, :show, :create, :update, :destroy]
     get '/royalty_reports/:id/export' => '/api/royalty_reports#export'
   end
 

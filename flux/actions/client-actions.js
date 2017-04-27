@@ -220,6 +220,20 @@ var ClientActions = {
     });
   },
 
+  fetchReports: function(quarter, year) {
+    $.ajax({
+      url: '/api/royalty_reports',
+      method: 'GET',
+      data: {
+        quarter: quarter,
+        year: year
+      },
+      success: function(response) {
+        ServerActions.receiveReports(response);
+      }
+    });
+  },
+
   fetchReport: function(id) {
     $.ajax({
       url: '/api/royalty_reports/' + id,

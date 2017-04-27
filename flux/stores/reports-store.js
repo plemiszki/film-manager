@@ -20,6 +20,10 @@ ReportStore.report = function() {
   return _reports[0];
 };
 
+ReportStore.all = function() {
+  return Tools.alphabetizeArrayOfObjects(_reports, 'title');
+};
+
 ReportStore.streams = function() {
   var result = [];
   Object.keys(_streams).forEach(function(id) {
@@ -28,29 +32,13 @@ ReportStore.streams = function() {
   return result;
 };
 
-// ReportStore.streamsWithCalculations = function() {
-//   var result = [];
-//   Object.keys(_streams).forEach(function(id) {
-//     _streams[id].currentDifference = ReportStore.calculateDifference(_streams[id]).formatMoney();
-//     _streams[id].currentLicensorShare = ReportStore.calculateLicensorShare(_streams[id]).formatMoney();
-//     result.push(_streams[id]);
-//   });
-//   return result;
-// };
-//
-// ReportStore.calculateDifference = function(stream) {
-//   return Tools.convertToNumber(stream.currentRevenue) - Tools.convertToNumber(stream.currentExpense);
-// };
-//
-// ReportStore.calculateLicensorShare = function(stream) {
-//   var percentage = Tools.convertToNumber(stream.currentDifference) * (stream.licensorPercentage / 100);
-//   var truncatedString = percentage.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
-//   return +truncatedString;
-// };
-
 ReportStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case "REPORTS_RECEIVED":
+      this.setReports(payload.reports);
+      this.__emitChange();
+      break;
+    case "REPORT_RECEIVED":
       this.setReports(payload.reports);
       this.setStreams(payload.streams);
       this.__emitChange();

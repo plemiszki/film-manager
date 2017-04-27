@@ -2,6 +2,11 @@ class Api::RoyaltyReportsController < ApplicationController
 
   include ActionView::Helpers::NumberHelper
 
+  def index
+    @reports = RoyaltyReport.where(quarter: params[:quarter], year: params[:year])
+    render "index.json.jbuilder"
+  end
+
   def show
     query_data_for_show_jbuilder
     render "show.json.jbuilder"

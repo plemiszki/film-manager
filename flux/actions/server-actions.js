@@ -68,9 +68,16 @@ var ServerActions = {
 
   receiveReport: function(response) {
     AppDispatcher.dispatch({
-      actionType: "REPORTS_RECEIVED",
+      actionType: "REPORT_RECEIVED",
       reports: response.reports,
       streams: response.streams
+    });
+  },
+
+  receiveReports: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "REPORTS_RECEIVED",
+      reports: response
     });
   },
 

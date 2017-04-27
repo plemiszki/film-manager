@@ -1,0 +1,12 @@
+#reports-index {
+
+  a:not(:first-of-type) {
+    margin-right: 15px;
+  }
+
+  input {
+    position: absolute;
+    top: 12px;
+    right: 0;
+  }
+}
