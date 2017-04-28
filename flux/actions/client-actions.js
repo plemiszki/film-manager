@@ -275,6 +275,21 @@ var ClientActions = {
         ServerActions.receiveReportErrors(response);
       }
     });
+  },
+
+  exportAll: function(daysDue, quarter, year) {
+    $.ajax({
+      url: '/api/royalty_reports/export_all',
+      method: 'POST',
+      data: {
+        days_due: daysDue,
+        quarter: quarter,
+        year: year
+      },
+      success: function(response) {
+        ServerActions.exportsDone();
+      }
+    });
   }
 }
 

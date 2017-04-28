@@ -15,6 +15,7 @@ gem 'clearance', '~> 1.11'
 gem 'database_cleaner'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+gem 'rubyzip'
 # ------------------------------
 
 group :development, :test do

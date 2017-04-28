@@ -25,3 +25,4 @@
 
 * Ignore data directory
 /data/*
+/statements/*

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170424233656) do
+ActiveRecord::Schema.define(version: 20170428011252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20170424233656) do
     t.integer "label_id",                                                   null: false
     t.integer "licensor_id"
     t.integer "deal_type_id",                               default: 1
-    t.integer "days_statement_due",                                         null: false
+    t.integer "days_statement_due"
     t.decimal "gr_percentage",      precision: 5, scale: 2
     t.decimal "mg",                 precision: 8, scale: 2, default: 0.0
     t.decimal "e_and_o",            precision: 8, scale: 2, default: 0.0

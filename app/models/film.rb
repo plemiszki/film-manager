@@ -1,6 +1,6 @@
 class Film < ActiveRecord::Base
 
-  validates :title, :label_id, :days_statement_due, presence: true
+  validates :title, :label_id, presence: true
   validates :title, uniqueness: { scope: :short_film }
   validate :gr_percentage_tenth_decimal
   validates_numericality_of :mg, :greater_than_or_equal_to => 0

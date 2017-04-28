@@ -2,6 +2,7 @@ var React = require('react');
 var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var ReportsStore = require('../stores/reports-store.js');
+var FileStore = require('../stores/file-store.js');
 
 var ReportsIndex = React.createClass({
 
@@ -20,11 +21,14 @@ var ReportsIndex = React.createClass({
 
   componentDidMount: function() {
     this.reportsListener = ReportsStore.addListener(this.getReports);
+    this.fileListener = FileStore.addListener(this.fileDone);
+    Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
     ClientActions.fetchReports(this.state.quarter, this.state.year);
   },
 
   componentWillUnmount: function() {
     this.reportsListener.remove();
+    this.fileListener.remove();
   },
 
   getReports: function() {
@@ -39,14 +43,15 @@ var ReportsIndex = React.createClass({
       fetching: true,
       exporting: true
     });
+    ClientActions.exportAll(this.state.daysDue, this.state.quarter, this.state.year);
   },
 
-  confirmDelete: function() {
+  fileDone: function() {
     this.setState({
-      fetching: true
-    }, function() {
-      ClientActions.deleteUser(this.state.user.id);
+      fetching: false,
+      exporting: false
     });
+    window.location.pathname = 'api/royalty_reports/zip';
   },
 
   handleModalClose: function() {

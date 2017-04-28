@@ -87,6 +87,12 @@ var ServerActions = {
       reportErrors: response.responseJSON.report,
       streamErrors: response.responseJSON.streams
     });
+  },
+
+  exportsDone: function() {
+    AppDispatcher.dispatch({
+      actionType: "EXPORTS_DONE"
+    });
   }
 }
 
