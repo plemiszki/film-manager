@@ -54,9 +54,9 @@ class Api::RoyaltyReportsController < ApplicationController
   def export_all
     Pathname.new(Rails.root.join('statements')).children.each { |p| p.unlink }
     if params[:days_due] == 'all'
-      films = Film.where(short_film: false).order(:title)
+      films = Film.where(short_film: false, export_reports: true).order(:title)
     else
-      films = Film.where(days_statement_due: params[:days_due]).order(:title).limit(5)
+      films = Film.where(days_statement_due: params[:days_due], export_reports: true).order(:title)
     end
     reports = []
     films.each do |film|
@@ -83,6 +83,14 @@ class Api::RoyaltyReportsController < ApplicationController
   def zip
     zip_data = File.read(Rails.root.join('statements', 'statements.zip'))
     send_data(zip_data, :type => 'application/zip', :filename => 'statements.zip')
+  end
+
+  def upload
+    uploaded_io = params[:royalty_report][:file]
+    File.open(Rails.root.join('sage', uploaded_io.original_filename), 'wb') do |file|
+      file.write(uploaded_io.read)
+    end
+    redirect_to '/films'
   end
 
   private

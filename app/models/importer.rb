@@ -17,10 +17,11 @@ class Importer < ActiveRecord::Base
 
   def self.import_films
     File.open(Rails.root.join('data/Films.txt')) do |file|
-      total = file.gets.to_i
+      total = file.gets.to_i - 2
       films = 0
       until films == total
         a = file.gets.split("\t")
+        next if a[1][0..8] == "(NEW FILM"
         licensor = Licensor.find_by_name(a[8])
         if licensor && (licensor.email == nil || licensor.email == "")
           licensor.update(email: a[240].strip)
