@@ -77,7 +77,8 @@ var ServerActions = {
   receiveReports: function(response) {
     AppDispatcher.dispatch({
       actionType: "REPORTS_RECEIVED",
-      reports: response
+      reports: response.reports,
+      errors: response.errors
     });
   },
 

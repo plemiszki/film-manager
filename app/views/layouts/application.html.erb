@@ -53,6 +53,9 @@
   <div id="upload-form">
     <%= form_for User.first do |f| %>
       <%= f.file_field :file %>
+      <input id="quarter" name="quarter" type="hidden" />
+      <input id="year" name="year" type="hidden" />
+      <input id="label" name="label" type="hidden" />
       <input id="submit-button" type="submit" />
     <% end %>
   </div>

@@ -20,11 +20,15 @@
     top: 14px;
     right: 300px;
   }
+
+  .arrow-button {
+    min-width: 25px;
+  }
 }
 
 .ReactModalPortal {
 
-  .import-file {
+  .import-file, .errors-modal {
 
     h1 {
       color: #2C2F33;
@@ -44,6 +48,21 @@
       margin-right: 20px;
       margin-left: 20px;
       user-select: none;
+    }
+  }
+
+  .errors-modal {
+
+    .import-error {
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .orange-button {
+      position: absolute;
+      bottom: 20px;
+      margin: 0;
+      left: calc(50% - 87.5px);
     }
   }
 }

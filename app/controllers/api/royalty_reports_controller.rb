@@ -4,6 +4,7 @@ class Api::RoyaltyReportsController < ApplicationController
 
   def index
     @reports = RoyaltyReport.where(quarter: params[:quarter], year: params[:year])
+    @errors = flash[:errors] || []
     render "index.json.jbuilder"
   end
 
@@ -90,7 +91,26 @@ class Api::RoyaltyReportsController < ApplicationController
     File.open(Rails.root.join('sage', uploaded_io.original_filename), 'wb') do |file|
       file.write(uploaded_io.read)
     end
-    redirect_to '/films'
+    require 'roo'
+    xlsx = Roo::Spreadsheet.open(Rails.root.join('sage', uploaded_io.original_filename).to_s)
+    sheet = xlsx.sheet(0)
+    index = 2
+    errors = []
+    while index <= xlsx.last_row
+      columns = sheet.row(index)
+      films = Film.where("LOWER(films.sage_id) LIKE LOWER('%#{columns[0].gsub("'", "''")}%')")
+      if films.length > 0
+      else
+        films = Film.where("LOWER(films.title) LIKE LOWER('%#{columns[0].gsub("'", "''")}%')")
+        if films.length > 0
+        else
+          errors << "Sage ID #{columns[0]} not found."
+        end
+      end
+      index += 1
+    end
+    flash[:errors] = errors
+    redirect_to '/royalty_reports'
   end
 
   private

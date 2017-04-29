@@ -128,6 +128,9 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (12.0.0)
     rdoc (4.3.0)
+    roo (2.7.1)
+      nokogiri (~> 1)
+      rubyzip (~> 1.1, < 2.0.0)
     rubyzip (1.2.1)
     sass (3.4.23)
     sass-rails (5.0.6)
@@ -179,6 +182,7 @@ DEPENDENCIES
   pry-rails
   rails (= 4.2.5)
   rails_12factor
+  roo (~> 2.7.0)
   rubyzip
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)

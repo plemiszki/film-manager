@@ -22,17 +22,35 @@ var ReportsIndex = React.createClass({
     }
   },
 
+  errorsModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 600,
+      height: 300,
+      border: 'solid 1px #5F5F5F',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F'
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
       exporting: false,
       searchText: "",
-      quarter: 4,
-      year: 2016,
+      quarter: 1,
+      year: 2017,
       reports: [],
       daysDue: 'all',
       file: '',
-      importModalOpen: false
+      importModalOpen: false,
+      errorsModalOpen: false,
+      errors: []
       // deleteModalOpen: false
     });
   },
@@ -53,7 +71,41 @@ var ReportsIndex = React.createClass({
   getReports: function() {
     this.setState({
       reports: ReportsStore.all(),
+      errors: ReportsStore.errors(),
+      errorsModalOpen: ReportsStore.errors().length > 0,
       fetching: false
+    });
+  },
+
+  clickPrev: function() {
+    var newQuarter = this.state.quarter - 1;
+    var newYear = this.state.year;
+    if (newQuarter == 0) {
+      newYear -= 1;
+      newQuarter = 4;
+    }
+    this.setState({
+      quarter: newQuarter,
+      year: newYear,
+      fetching: true
+    }, function() {
+      ClientActions.fetchReports(this.state.quarter, this.state.year);
+    });
+  },
+
+  clickNext: function() {
+    var newQuarter = this.state.quarter + 1;
+    var newYear = this.state.year;
+    if (newQuarter == 5) {
+      newYear += 1;
+      newQuarter = 1;
+    }
+    this.setState({
+      quarter: newQuarter,
+      year: newYear,
+      fetching: true
+    }, function() {
+      ClientActions.fetchReports(this.state.quarter, this.state.year);
     });
   },
 
@@ -67,6 +119,9 @@ var ReportsIndex = React.createClass({
     this.setState({
       file: 'revenue'
     }, function() {
+      $('#upload-form #quarter').val(this.state.quarter);
+      $('#upload-form #year').val(this.state.year);
+      $('#upload-form #label').val('revenue');
       $('#upload-form #user_file').click();
     });
   },
@@ -102,7 +157,8 @@ var ReportsIndex = React.createClass({
 
   handleModalClose: function() {
     this.setState({
-      importModalOpen: false
+      importModalOpen: false,
+      errorsModalOpen: false
     });
   },
 
@@ -119,6 +175,8 @@ var ReportsIndex = React.createClass({
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Send All</a>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>{this.state.exporting ? "Exporting..." : "Export All"}</a>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickImport}>Import</a>
+            <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickNext}>&#62;&#62;</a>
+            <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickPrev}>&#60;&#60;</a>
           </div>
           <div className="white-box">
             {Common.renderSpinner(this.state.fetching)}
@@ -160,6 +218,17 @@ var ReportsIndex = React.createClass({
             <h1>Import File</h1>
             <a className="orange-button" onClick={this.clickImportRevenue}>Import Revenue</a>
             <a className="orange-button" onClick={this.clickImportExpenses}>Import Expenses</a>
+          </div>
+        </Modal>
+        <Modal isOpen={this.state.errorsModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.errorsModalStyles}>
+          <div className="errors-modal">
+            <h1>Oops. There were some errors.</h1>
+            {this.state.errors.map(function(error, index) {
+              return(
+                <div key={index} className="import-error">{error}</div>
+              );
+            }.bind(this))}
+            <a className="orange-button" onClick={this.handleModalClose}>OK</a>
           </div>
         </Modal>
       </div>

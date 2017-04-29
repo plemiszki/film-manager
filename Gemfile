@@ -16,6 +16,7 @@ gem 'database_cleaner'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'rubyzip'
+gem "roo", "~> 2.7.0"
 # ------------------------------
 
 group :development, :test do
