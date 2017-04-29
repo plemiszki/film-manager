@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show]
   resources :licensors, only: [:index, :show]
   resources :royalty_reports, only: [:index, :show]
-  patch '/royalty_reports/1' => 'api/royalty_reports#upload'
+  patch '/users/1' => 'api/royalty_reports#upload'
 
   namespace :api do
     get '/users' => '/api/users#api_index'

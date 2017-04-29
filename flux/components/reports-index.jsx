@@ -41,7 +41,7 @@ var ReportsIndex = React.createClass({
     this.reportsListener = ReportsStore.addListener(this.getReports);
     this.fileListener = FileStore.addListener(this.fileDone);
     Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
-    $('#upload-form #royalty_report_file').on('change', this.pickFile);
+    $('#upload-form #user_file').on('change', this.pickFile);
     ClientActions.fetchReports(this.state.quarter, this.state.year);
   },
 
@@ -67,7 +67,7 @@ var ReportsIndex = React.createClass({
     this.setState({
       file: 'revenue'
     }, function() {
-      $('#upload-form #royalty_report_file').click();
+      $('#upload-form #user_file').click();
     });
   },
 

@@ -51,7 +51,7 @@
     </body>
   <% end %>
   <div id="upload-form">
-    <%= form_for RoyaltyReport.first do |f| %>
+    <%= form_for User.first do |f| %>
       <%= f.file_field :file %>
       <input id="submit-button" type="submit" />
     <% end %>

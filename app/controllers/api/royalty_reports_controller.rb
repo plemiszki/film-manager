@@ -86,7 +86,7 @@ class Api::RoyaltyReportsController < ApplicationController
   end
 
   def upload
-    uploaded_io = params[:royalty_report][:file]
+    uploaded_io = params[:user][:file]
     File.open(Rails.root.join('sage', uploaded_io.original_filename), 'wb') do |file|
       file.write(uploaded_io.read)
     end
