@@ -98,15 +98,33 @@ class Api::RoyaltyReportsController < ApplicationController
     errors = []
     while index <= xlsx.last_row
       columns = sheet.row(index)
-      films = Film.where("LOWER(films.sage_id) LIKE LOWER('%#{columns[0].gsub("'", "''")}%')")
+      found_film = false
+      films = Film.where("short_film = FALSE AND LOWER(films.sage_id) LIKE LOWER('%#{columns[0].gsub("'", "''")}%')")
       if films.length > 0
+        found_film = true
       else
-        films = Film.where("LOWER(films.title) LIKE LOWER('%#{columns[0].gsub("'", "''")}%')")
+        films = Film.where("short_film = FALSE AND LOWER(films.title) LIKE LOWER('%#{columns[0].gsub("'", "''")}%')")
         if films.length > 0
+          found_film = true
         else
           errors << "Sage ID #{columns[0]} not found."
         end
       end
+
+      if found_film
+        film = films[0]
+        report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
+        unless report
+          report = RoyaltyReport.create!(film_id: film.id, deal_id: film.deal_type_id, quarter: params[:quarter], year: params[:year], mg: film.mg)
+          #determine amount paid
+          FilmRevenuePercentage.where(film_id: film.id).each do |film_revenue_percentage|
+            RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
+          end
+        end
+
+        # update royalty revenue streams
+      end
+
       index += 1
     end
     flash[:errors] = errors
@@ -123,6 +141,7 @@ class Api::RoyaltyReportsController < ApplicationController
     @reports = RoyaltyReport.where(id: params[:id])
     @film = Film.find(@reports[0].film_id)
     @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id).joins(:revenue_stream).order('revenue_streams.order')
+    p @streams.pluck(:revenue_stream_id)
     calculate(@film, @reports[0], @streams)
   end
 

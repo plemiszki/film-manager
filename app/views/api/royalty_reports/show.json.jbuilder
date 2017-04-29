@@ -26,6 +26,7 @@ end
 json.streams @streams do |stream|
   json.id stream.id
   json.nickname stream.revenue_stream.nickname || stream.revenue_stream.name
+  json.order stream.revenue_stream.order
   json.licensorPercentage stream.licensor_percentage.to_s || ""
   json.currentRevenue '$' + number_with_precision(stream.current_revenue, precision: 2, delimiter: ',')
   json.currentGr '$' + number_with_precision(stream.current_gr, precision: 2, delimiter: ',')

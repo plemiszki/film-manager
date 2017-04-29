@@ -38,7 +38,7 @@ ReportStore.streams = function() {
   Object.keys(_streams).forEach(function(id) {
     result.push(_streams[id]);
   });
-  return result;
+  return Tools.sortArrayOfObjects(result, 'order');
 };
 
 ReportStore.__onDispatch = function(payload) {
