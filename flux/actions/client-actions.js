@@ -197,7 +197,9 @@ var ClientActions = {
           mg: film.mg.removeFinanceSymbols(),
           e_and_o: film.eAndO.removeFinanceSymbols(),
           sage_id: film.sageId,
-          royalty_notes: film.royaltyNotes
+          royalty_notes: film.royaltyNotes,
+          send_reports: film.sendReports,
+          export_reports: film.exportReports
         },
         percentages: percentages
       },

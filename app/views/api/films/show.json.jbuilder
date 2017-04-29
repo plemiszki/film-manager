@@ -11,6 +11,8 @@ json.films @films do |film|
   json.eAndO '$' + number_with_precision(film.e_and_o, precision: 2, delimiter: ',')
   json.sageId film.sage_id || ""
   json.royaltyNotes film.royalty_notes || ""
+  json.exportReports film.export_reports
+  json.sendReports film.send_reports
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

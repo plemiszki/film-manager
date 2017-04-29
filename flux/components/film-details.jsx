@@ -136,6 +136,18 @@ var FilmDetails = React.createClass({
     window.location.pathname = "royalty_reports/" + id;
   },
 
+  changeCheckbox: function(property, e) {
+    var film = this.state.film;
+    film[property] = e.target.checked;
+    this.setState({
+      film: film,
+      justSaved: false
+    }, function() {
+      var changesToSave = this.changeFieldArgs().changesFunction.call();
+      this.setState({changesToSave: changesToSave});
+    });
+  },
+
   changeFieldArgs: function(errors) {
     return {
       thing: "film",
@@ -156,7 +168,7 @@ var FilmDetails = React.createClass({
 
   render: function() {
     return(
-      <div className="component">
+      <div className="film-details component">
         <h1>Film Details</h1>
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
@@ -286,6 +298,15 @@ var FilmDetails = React.createClass({
                   </div>
                 )
               }.bind(this))}
+            </div>
+          </div>
+          <hr id="above-checkboxes" />
+          <div className="row checkboxes">
+            <div className="col-xs-6">
+              <input id="export-reports" type="checkbox" checked={this.state.film.exportReports} onChange={this.changeCheckbox.bind(this, 'exportReports')} /><label htmlFor="export-reports">Export Reports</label>
+            </div>
+            <div className={"col-xs-6" + (this.state.film.exportReports ? "" : " hidden")}>
+              <input id="send-reports" type="checkbox" checked={this.state.film.sendReports} onChange={this.changeCheckbox.bind(this, 'sendReports')} /><label htmlFor="send-reports">Send Reports</label>
             </div>
           </div>
           <hr />

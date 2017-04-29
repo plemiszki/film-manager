@@ -1,4 +1,4 @@
-#film-details {
+.film-details {
 
   input {
     width: 100%;
@@ -69,5 +69,28 @@
     &:hover {
       background-color: #F5F6F7;
     }
+  }
+}
+
+hr#above-checkboxes {
+  margin-bottom: 15px;
+}
+
+.checkboxes {
+
+  .col-xs-6 {
+    text-align: center;
+  }
+
+  input {
+    width: auto;
+    margin-right: 20px;
+  }
+
+  label {
+    font-family: 'teachablesansmedium';
+    color: #2C2F33;
+    font-size: 12px;
+    margin-bottom: 15px;
   }
 }

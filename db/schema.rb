@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170428011252) do
+ActiveRecord::Schema.define(version: 20170429121501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,8 @@ ActiveRecord::Schema.define(version: 20170428011252) do
     t.decimal "expense_cap",        precision: 8, scale: 2, default: 0.0
     t.string  "sage_id",                                    default: ""
     t.string  "royalty_notes",                              default: ""
+    t.boolean "export_reports",                             default: true
+    t.boolean "send_reports",                               default: true
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree

@@ -40,7 +40,8 @@ class Importer < ActiveRecord::Base
           e_and_o: a[242],
           expense_cap: a[358],
           sage_id: a[276],
-          royalty_notes: a[337]
+          royalty_notes: a[337],
+          send_reports: a[348] == "False"
         )
         # feature id
         f.save!
