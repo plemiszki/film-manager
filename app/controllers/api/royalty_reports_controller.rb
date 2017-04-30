@@ -118,20 +118,160 @@ class Api::RoyaltyReportsController < ApplicationController
     while index <= xlsx.last_row
       columns = sheet.row(index)
       found_film = false
-      films = Film.where("short_film = FALSE AND LOWER(films.sage_id) LIKE LOWER('%#{columns[0].gsub("'", "''")}%')")
+      films = Film.where("short_film = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
       if films.length > 0
         found_film = true
       else
-        films = Film.where("short_film = FALSE AND LOWER(films.title) LIKE LOWER('%#{columns[0].gsub("'", "''")}%')")
+        films = Film.where("short_film = FALSE AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
         if films.length > 0
           found_film = true
+        elsif ["BEYOND BORDERS", "FACES OF ISRAEL", "THE FEMALE GAZE", "FRENCH LANGUAGE GIFT BOX", "LATIN AMERICAN GIFT BOX", "SPANISH LANGUAGE GIFT BOX"].include?(columns[0].strip)
+          errors << "not video revenue (#{columns[3]}) (#{index})" unless columns[1] == "30200"
+          found_box_set = true
         else
           errors << "Sage ID #{columns[0]} not found."
         end
       end
 
+      if found_box_set
+        case columns[0].strip
+        when "BEYOND BORDERS"
+          amount = (columns[3].to_d / 3).truncate(2)
+          films = Film.where(title: ['A Bottle in the Gaza Sea', 'Arranged', 'Foreign Letters'])
+          films.each do |film|
+            report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_revenue += amount
+            stream.save!
+          end
+        when "FACES OF ISRAEL"
+          amount = (columns[3].to_d / 4).truncate(2)
+          films = Film.where(title: ['Campfire', 'For My Father', 'The Human Resources Manager', 'Seven Minutes in Heaven'])
+          films.each do |film|
+            report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_revenue += amount
+            stream.save!
+          end
+        when "THE FEMALE GAZE"
+          amount = (columns[3].to_d / 7).truncate(2)
+          films = Film.where(title: ['Arcadia', 'Madeinusa', 'Watchtower', 'Foreign Letters', 'Queen of Hearts', 'Inch\' Allah Dimanche', 'The Forest for the Trees'])
+          films.each do |film|
+            report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_revenue += amount
+            stream.save!
+          end
+        when "FRENCH LANGUAGE GIFT BOX"
+          amount = (columns[3].to_d / 12).truncate(2)
+          films = Film.where(title: ['Inch\' Allah Dimanche', 'Raja', 'Viva Laldjerie', 'Le Grand Voyage', 'Aaltra', 'Familia', 'Dreams of Dust', 'Her Name is Sabine', 'The Grocer\'s Son', 'Eldorado', 'Welcome', '1981'])
+          films.each do |film|
+            report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_revenue += amount
+            stream.save!
+          end
+        when "LATIN AMERICAN GIFT BOX"
+          amount = (columns[3].to_d / 12).truncate(2)
+          films = Film.where(title: ['Clandestine Childhood', 'Madeinusa', 'The Violin', 'Viva Cuba', 'XXY', 'The Pope\'s Toilet', 'Lake Tahoe', 'The Window', 'Gigante', 'The Wind Journeys', 'Alamar', 'Only When I Dance'])
+          films.each do |film|
+            report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_revenue += amount
+            stream.save!
+          end
+        when "SPANISH LANGUAGE GIFT BOX"
+          amount = (columns[3].to_d / 12).truncate(2)
+          films = Film.where(title: ['Clandestine Childhood', 'Madeinusa', 'The Violin', 'Viva Cuba', 'XXY', 'The Pope\'s Toilet', 'Lake Tahoe', 'The Window', 'Gigante', 'The Wind Journeys', 'Alamar', 'Only When I Dance'])
+          films.each do |film|
+            report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_revenue += amount
+            stream.save!
+          end
+        end
+      end
+
       if found_film
-        # update current revenue
+        film = films[0]
+        report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
+        gl = columns[1]
+        case gl
+        when "30100"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30200"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30300"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30410"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30430"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30440"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30400"
+          if FilmRight.find_by(film_id: film.id, right_id: 2).value == true
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+            stream.current_revenue += columns[3]
+            stream.save!
+          else
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+            stream.current_revenue += columns[3]
+            stream.save!
+          end
+        when "30415"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 4)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30420"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 4)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30500"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 6)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30510"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 8)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30520"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30600"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 12)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30700"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30800"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when "30900"
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
+          stream.current_revenue += columns[3]
+          stream.save!
+        when nil
+          errors << "GL Code is empty on line #{index}"
+        else
+          errors << "GL Code #{columns[1]} not found."
+        end
       end
 
       index += 1

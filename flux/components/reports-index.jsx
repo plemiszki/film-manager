@@ -30,7 +30,7 @@ var ReportsIndex = React.createClass({
       background: '#FFFFFF',
       margin: 'auto',
       maxWidth: 600,
-      height: 300,
+      height: 500,
       border: 'solid 1px #5F5F5F',
       borderRadius: '6px',
       textAlign: 'center',

@@ -47,9 +47,22 @@ class Importer < ActiveRecord::Base
         # feature id
         f.save!
 
-        Right.all.each do |right|
-          FilmRight.create!(film_id: f.id, right_id: right.id, value: true)
-        end
+        FilmRight.create!(film_id: f.id, right_id: 1, value: a[57] == 'True') # Theatrical
+        FilmRight.create!(film_id: f.id, right_id: 2, value: a[17] == 'True') # Educational
+        FilmRight.create!(film_id: f.id, right_id: 3, value: a[17] == 'True') # Festival
+        FilmRight.create!(film_id: f.id, right_id: 4, value: a[17] == 'True') # Other Non-Theatrical
+        FilmRight.create!(film_id: f.id, right_id: 5, value: a[59] == 'True') # SVOD
+        FilmRight.create!(film_id: f.id, right_id: 6, value: a[60] == 'True') # TVOD (Cable)
+        FilmRight.create!(film_id: f.id, right_id: 7, value: a[102] == 'True') # EST/DTR
+        FilmRight.create!(film_id: f.id, right_id: 8, value: a[66] == 'True') # Pay TV
+        FilmRight.create!(film_id: f.id, right_id: 9, value: a[67] == 'True') # Free TV
+        FilmRight.create!(film_id: f.id, right_id: 10, value: a[61] == 'True') # FVOD
+        FilmRight.create!(film_id: f.id, right_id: 11, value: a[104] == 'True') # AVOD
+        FilmRight.create!(film_id: f.id, right_id: 12, value: a[16] == 'True') # DVD/Video
+        FilmRight.create!(film_id: f.id, right_id: 13, value: a[62] == 'True') # Hotels
+        FilmRight.create!(film_id: f.id, right_id: 14, value: a[63] == 'True') # Airlines
+        FilmRight.create!(film_id: f.id, right_id: 15, value: a[64] == 'True') # Ships
+        FilmRight.create!(film_id: f.id, right_id: 16, value: true) # FM Subscription
 
         unless f.short_film
           p f.title
