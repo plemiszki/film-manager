@@ -35,3 +35,9 @@ json.reports @reports do |report|
   json.year report.year
   json.quarter report.quarter
 end
+json.rights @rights do |right|
+  json.id right.id
+  json.name right.right.name
+  json.order right.right.order
+  json.value right.value
+end

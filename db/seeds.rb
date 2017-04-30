@@ -24,5 +24,22 @@ RevenueStream.create(name: "Television", nickname: "TV", order: 11)
 RevenueStream.create(name: "FM Subscription", nickname: "Club", order: 12)
 RevenueStream.create(name: "Jewish Festivals", nickname: "Jewish", order: 13)
 
+Right.create(name: 'Theatrical', order: 1)
+Right.create(name: 'Educational', order: 2)
+Right.create(name: 'Festival', order: 3)
+Right.create(name: 'Other Non-Theatrical', order: 4)
+Right.create(name: 'SVOD', order: 5)
+Right.create(name: 'TVOD (Cable)', order: 6)
+Right.create(name: 'EST/DTR', order: 7)
+Right.create(name: 'Pay TV', order: 8)
+Right.create(name: 'Free TV', order: 9)
+Right.create(name: 'FVOD', order: 10)
+Right.create(name: 'AVOD', order: 11)
+Right.create(name: 'DVD/Video', order: 12)
+Right.create(name: 'Hotels', order: 13)
+Right.create(name: 'Airlines', order: 14)
+Right.create(name: 'Ships', order: 15)
+Right.create(name: 'FM Subscription', order: 16)
+
 Importer.import_licensors
 Importer.import_films

@@ -9,6 +9,7 @@ var _licensors = {};
 var _revenueStreams = {};
 var _revenuePercentages = {};
 var _reports = [];
+var _rights = {};
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -42,6 +43,12 @@ FilmsStore.setReports = function(reports) {
   _reports = reports;
 };
 
+FilmsStore.setRights = function(rights) {
+  rights.forEach(function(right) {
+    _rights[right.id] = right;
+  });
+};
+
 FilmsStore.find = function(id) {
   return _films[id];
 };
@@ -62,6 +69,13 @@ FilmsStore.licensors = function() {
     return(_licensors[id]);
   });
   return Tools.alphabetizeArrayOfObjects(licensors, 'name');
+};
+
+FilmsStore.rights = function() {
+  var rights = Object.keys(_rights).map(function(id) {
+    return(_rights[id]);
+  });
+  return Tools.sortArrayOfObjects(rights, 'order');
 };
 
 FilmsStore.findLicensor = function(id) {
@@ -114,6 +128,7 @@ FilmsStore.__onDispatch = function(payload) {
       }
       if (payload.filmRevenuePercentages) {
         this.setFilmRevenuePercentages(payload.filmRevenuePercentages);
+        this.setRights(payload.rights);
       }
       this.__emitChange();
       break;

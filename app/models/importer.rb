@@ -47,6 +47,10 @@ class Importer < ActiveRecord::Base
         # feature id
         f.save!
 
+        Right.all.each do |right|
+          FilmRight.create!(film_id: f.id, right_id: right.id, value: true)
+        end
+
         unless f.short_film
           p f.title
           FilmRevenuePercentage.find_by(film_id: f.id, revenue_stream_id: 1).update(value: a[243]) #Theatrical

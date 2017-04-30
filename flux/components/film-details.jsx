@@ -285,7 +285,27 @@ var FilmDetails = React.createClass({
             </div>
           </div>
           <div className="row">
-            <div className="col-xs-12 col-sm-6">
+            <div className="col-xs-3">
+              <div className="rights-checkboxes">
+                {FilmsStore.rights().slice(0, 8).map(function(right, index) {
+                  return(
+                    <div className="right" key={index}>
+                      <input id={"rights-checkbox-" + right.id} type="checkbox" checked={right.value} onChange={function() { console.log('woo');}} /><label htmlFor={"rights-checkbox-" + right.id}>{right.name}</label>
+                    </div>
+                  )
+                }.bind(this))}
+              </div>
+            </div>
+            <div className="col-xs-3">
+              <div className="rights-checkboxes">
+                {FilmsStore.rights().slice(8, 16).map(function(right, index) {
+                  return(
+                    <div className="right" key={index}>
+                      <input id={"rights-checkbox-" + right.id} type="checkbox" checked={right.value} onChange={function() { console.log('woo');}} /><label htmlFor={"rights-checkbox-" + right.id}>{right.name}</label>
+                    </div>
+                  )
+                }.bind(this))}
+              </div>
             </div>
             <div className="col-xs-12 col-sm-6 percentage-column">
               {FilmsStore.revenuePercentages().map(function(revenuePercentage, index) {

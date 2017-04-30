@@ -26,7 +26,8 @@ var ServerActions = {
       licensors: response.licensors,
       revenueStreams: response.revenueStreams,
       filmRevenuePercentages: response.filmRevenuePercentages,
-      reports: response.reports
+      reports: response.reports,
+      rights: response.rights
     });
   },
 

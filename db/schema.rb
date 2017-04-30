@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170429121501) do
+ActiveRecord::Schema.define(version: 20170430122914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,14 @@ ActiveRecord::Schema.define(version: 20170429121501) do
 
   add_index "film_revenue_percentages", ["film_id"], name: "index_film_revenue_percentages_on_film_id", using: :btree
   add_index "film_revenue_percentages", ["revenue_stream_id"], name: "index_film_revenue_percentages_on_revenue_stream_id", using: :btree
+
+  create_table "film_rights", force: :cascade do |t|
+    t.integer "film_id",                  null: false
+    t.integer "right_id",                 null: false
+    t.boolean "value",    default: false
+  end
+
+  add_index "film_rights", ["film_id", "right_id"], name: "index_film_rights_on_film_id_and_right_id", unique: true, using: :btree
 
   create_table "films", force: :cascade do |t|
     t.string  "title",                                                      null: false
@@ -69,6 +77,11 @@ ActiveRecord::Schema.define(version: 20170429121501) do
     t.string  "name",     null: false
     t.text    "nickname"
     t.integer "order"
+  end
+
+  create_table "rights", force: :cascade do |t|
+    t.string  "name",  null: false
+    t.integer "order", null: false
   end
 
   create_table "royalty_reports", force: :cascade do |t|

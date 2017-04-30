@@ -72,6 +72,20 @@
   }
 }
 
+.rights-checkboxes {
+  input {
+    width: auto;
+    margin-right: 20px;
+  }
+
+  label {
+    font-family: 'teachablesansmedium';
+    color: #2C2F33;
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+}
+
 hr#above-checkboxes {
   margin-bottom: 15px;
 }
