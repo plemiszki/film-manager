@@ -100,14 +100,22 @@ class Api::RoyaltyReportsController < ApplicationController
         report = RoyaltyReport.new(film_id: film.id, deal_id: film.deal_type_id, quarter: params[:quarter], year: params[:year], mg: film.mg, e_and_o: film.e_and_o)
         prev_amount_due = (prev_report.joined_amount_due < 0 ? 0 : prev_report.joined_amount_due)
         report.amount_paid = (prev_report.amount_paid + prev_amount_due) if prev_report
+        if film.deal_type_id == 4
+          report.cume_total_expenses = prev_report.joined_total_expenses if prev_report
+        end
         report.save!
 
         FilmRevenuePercentage.where(film_id: film.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-          RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: prev_streams[index].joined_revenue)
+          RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: prev_streams[index].joined_revenue, cume_expense: prev_streams[index].joined_expense)
         end
       end
     else
-      ActiveRecord::Base.connection.execute("UPDATE royalty_revenue_streams SET current_revenue = 0 FROM royalty_reports WHERE royalty_reports.id = royalty_revenue_streams.royalty_report_id AND royalty_reports.year = #{params[:year]} AND royalty_reports.quarter = #{params[:quarter]}")
+      if params[:label] == "revenue"
+        ActiveRecord::Base.connection.execute("UPDATE royalty_revenue_streams SET current_revenue = 0 FROM royalty_reports WHERE royalty_reports.id = royalty_revenue_streams.royalty_report_id AND royalty_reports.year = #{params[:year]} AND royalty_reports.quarter = #{params[:quarter]}")
+      elsif params[:label] == "expenses"
+        ActiveRecord::Base.connection.execute("UPDATE royalty_revenue_streams SET current_expense = 0 FROM royalty_reports WHERE royalty_reports.id = royalty_revenue_streams.royalty_report_id AND royalty_reports.year = #{params[:year]} AND royalty_reports.quarter = #{params[:quarter]}")
+        ActiveRecord::Base.connection.execute("UPDATE royalty_reports SET current_total_expenses = 0 WHERE royalty_reports.year = #{params[:year]} AND royalty_reports.quarter = #{params[:quarter]}")
+      end
     end
 
     require 'roo'
@@ -196,81 +204,217 @@ class Api::RoyaltyReportsController < ApplicationController
         film = films[0]
         report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
         gl = columns[1]
-        case gl
-        when "30100"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30200"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30300"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30410"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30430"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30440"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30400"
-          if FilmRight.find_by(film_id: film.id, right_id: 2).value == true
+
+        if params[:label] == "revenue"
+          case gl
+          when "30100"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30200"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30300"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30410"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
             stream.current_revenue += columns[3]
             stream.save!
-          else
+          when "30430"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30440"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30400"
+            if FilmRight.find_by(film_id: film.id, right_id: 2).value == true
+              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+              stream.current_revenue += columns[3]
+              stream.save!
+            else
+              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+              stream.current_revenue += columns[3]
+              stream.save!
+            end
+          when "30415"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 4)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30420"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 4)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30500"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 6)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30510"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 8)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30520"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
             stream.current_revenue += columns[3]
             stream.save!
+          when "30600"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 12)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30700"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30800"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when "30900"
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
+            stream.current_revenue += columns[3]
+            stream.save!
+          when nil
+            errors << "GL Code is empty on line #{index}"
+          else
+            errors << "GL Code #{columns[1]} not found."
           end
-        when "30415"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 4)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30420"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 4)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30500"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 6)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30510"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 8)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30520"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30600"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 12)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30700"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30800"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when "30900"
-          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
-          stream.current_revenue += columns[3]
-          stream.save!
-        when nil
-          errors << "GL Code is empty on line #{index}"
-        else
-          errors << "GL Code #{columns[1]} not found."
+        elsif params[:label] == "expenses"
+          if film.deal_type_id == 2 || film.deal_type_id == 3 || film.deal_type_id == 5 || film.deal_type_id == 6
+            if (FilmRight.find_by(film_id: film.id, right_id: 13).value || FilmRight.find_by(film_id: film.id, right_id: 14).value || FilmRight.find_by(film_id: film.id, right_id: 15).value) && !FilmRight.find_by(film_id: film.id, right_id: 1).value && !FilmRight.find_by(film_id: film.id, right_id: 2).value && !FilmRight.find_by(film_id: film.id, right_id: 12).value && !FilmRight.find_by(film_id: film.id, right_id: 5).value && !FilmRight.find_by(film_id: film.id, right_id: 6).value && !FilmRight.find_by(film_id: film.id, right_id: 10).value && !FilmRight.find_by(film_id: film.id, right_id: 11).value && !FilmRight.find_by(film_id: film.id, right_id: 8).value && !FilmRight.find_by(film_id: film.id, right_id: 9).value
+              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
+              stream.current_expense += columns[3]
+              stream.save!
+            elsif gl == "50400"
+              unless film.deal_type_id == 3
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == "50200"
+              unless film.deal_type_id == 3
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == "40070" || gl == "50300"
+              unless film.deal_type_id == 3
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == "50360" || gl == "48200"
+              unless film.deal_type_id == 3
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == "50110" || gl == "40041" || gl == "40064" || gl == "40063" || gl == "40051" || gl == "50111" || gl == "40042" || gl == "50112" || gl == "40061"
+              unless film.deal_type_id == 3
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == "40092" || gl == "50105" || gl == "50101" || gl == "40086" || gl == "50102" || gl == "50103" || gl == "40078" || gl == "40080"
+              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
+              stream.current_expense += columns[3]
+              stream.save!
+            elsif gl == "47000"
+              unless film.deal_type_id == 3
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 12)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == "61110" || gl == "63104" || gl == "64101" || gl == "63114" || gl == "61140" || gl == "63103" || gl == "61120" || gl == "64100" || gl == "64103" || gl == "69111" || gl == "69113" || gl == "60200" || gl == "60400" || gl == "60300" || gl == "63110" || gl == "63120" || gl == "69109" || gl == "63105" || gl == "61100" || gl == "61160" || gl == "63111" || gl == "63106" || gl == "63118" || gl == "63107" || gl == "63112" || gl == "67160" || gl == "63119" || gl == "65101" || gl == "69110" || gl == "60100" || gl == "40071" || gl == "64104" || gl == "61150" || gl == "63116" || gl == "69100" || gl == "69112" || gl == "69101" || gl == "69102"
+              if FilmRight.find_by(film_id: film.id, right_id: 1).value
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
+                stream.current_expense += columns[3]
+                stream.save!
+              else
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == "50500" || gl == "40021"
+              unless film.deal_type_id == 3
+                if FilmRight.find_by(film_id: film.id, right_id: 6).value
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                else
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                end
+              end
+            elsif gl == "40031"
+              unless film.deal_type_id == 3
+                if FilmRight.find_by(film_id: film.id, right_id: 12).value
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                else
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                end
+              end
+            elsif gl == "40040"
+              if FilmRight.find_by(film_id: film.id, right_id: 1).value
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
+                stream.current_expense += columns[3]
+                stream.save!
+              elsif FilmRight.find_by(film_id: film.id, right_id: 7).value
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+                stream.current_expense += columns[3]
+                stream.save!
+              else
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == "40011" || gl == "48000" || gl == "50350"
+              unless film.deal_type_id == 3
+                if FilmRight.find_by(film_id: film.id, right_id: 6).value
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                else
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                end
+              end
+            elsif gl == "48100"
+              unless film.deal_type_id == 3
+                if FilmRight.find_by(film_id: film.id, right_id: 7).value
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                else
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                end
+              end
+            elsif gl == "40090"
+              unless film.deal_type_id == 3
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+                stream.current_expense += columns[3]
+                stream.save!
+              end
+            elsif gl == nil
+              errors << "GL Code is empty on line #{index}"
+            else
+              errors << "GL Code #{columns[1]} not found."
+            end
+          elsif film.deal_type_id == 4
+            report.current_total_expenses += columns[3]
+            report.save!
+          end
         end
       end
 

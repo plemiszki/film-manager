@@ -47,7 +47,6 @@ var ReportsIndex = React.createClass({
       year: 2017,
       reports: [],
       daysDue: 'all',
-      file: '',
       importModalOpen: false,
       errorsModalOpen: false,
       errors: []
@@ -116,18 +115,17 @@ var ReportsIndex = React.createClass({
   },
 
   clickImportRevenue: function() {
-    this.setState({
-      file: 'revenue'
-    }, function() {
-      $('#upload-form #quarter').val(this.state.quarter);
-      $('#upload-form #year').val(this.state.year);
-      $('#upload-form #label').val('revenue');
-      $('#upload-form #user_file').click();
-    });
+    $('#upload-form #quarter').val(this.state.quarter);
+    $('#upload-form #year').val(this.state.year);
+    $('#upload-form #label').val('revenue');
+    $('#upload-form #user_file').click();
   },
 
   clickImportExpenses: function() {
-    console.log('import expenses');
+    $('#upload-form #quarter').val(this.state.quarter);
+    $('#upload-form #year').val(this.state.year);
+    $('#upload-form #label').val('expenses');
+    $('#upload-form #user_file').click();
   },
 
   pickFile: function() {
