@@ -220,72 +220,89 @@ class Api::RoyaltyReportsController < ApplicationController
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30200"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30300"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30410"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30430"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30440"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30400"
             if FilmRight.find_by(film_id: film.id, right_id: 2).value == true
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
               stream.current_revenue += columns[3]
               stream.save!
+              check_for_empty_percentage(stream, errors, film.title, params[:label])
             else
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
               stream.current_revenue += columns[3]
               stream.save!
+              check_for_empty_percentage(stream, errors, film.title, params[:label])
             end
           when "30415"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 4)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30420"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 4)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30500"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 6)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30510"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 8)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30520"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30600"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 12)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30700"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30800"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when "30900"
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
             stream.current_revenue += columns[3]
             stream.save!
+            check_for_empty_percentage(stream, errors, film.title, params[:label])
           when nil
             errors << "GL Code is empty on line #{index}"
           else
@@ -297,55 +314,65 @@ class Api::RoyaltyReportsController < ApplicationController
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
               stream.current_expense += columns[3]
               stream.save!
+              check_for_empty_percentage(stream, errors, film.title, params[:label])
             elsif gl == "50400"
               unless film.deal_type_id == 3
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == "50200"
               unless film.deal_type_id == 3
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == "40070" || gl == "50300"
               unless film.deal_type_id == 3
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == "50360" || gl == "48200"
               unless film.deal_type_id == 3
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == "50110" || gl == "40041" || gl == "40064" || gl == "40063" || gl == "40051" || gl == "50111" || gl == "40042" || gl == "50112" || gl == "40061"
               unless film.deal_type_id == 3
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == "40092" || gl == "50105" || gl == "50101" || gl == "40086" || gl == "50102" || gl == "50103" || gl == "40078" || gl == "40080"
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
               stream.current_expense += columns[3]
               stream.save!
+              check_for_empty_percentage(stream, errors, film.title, params[:label])
             elsif gl == "47000"
               unless film.deal_type_id == 3
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 12)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == "61110" || gl == "63104" || gl == "64101" || gl == "63114" || gl == "61140" || gl == "63103" || gl == "61120" || gl == "64100" || gl == "64103" || gl == "69111" || gl == "69113" || gl == "60200" || gl == "60400" || gl == "60300" || gl == "63110" || gl == "63120" || gl == "69109" || gl == "63105" || gl == "61100" || gl == "61160" || gl == "63111" || gl == "63106" || gl == "63118" || gl == "63107" || gl == "63112" || gl == "67160" || gl == "63119" || gl == "65101" || gl == "69110" || gl == "60100" || gl == "40071" || gl == "64104" || gl == "61150" || gl == "63116" || gl == "69100" || gl == "69112" || gl == "69101" || gl == "69102"
               if FilmRight.find_by(film_id: film.id, right_id: 1).value
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               else
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == "50500" || gl == "40021"
               unless film.deal_type_id == 3
@@ -353,10 +380,12 @@ class Api::RoyaltyReportsController < ApplicationController
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
                   stream.current_expense += columns[3]
                   stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, params[:label])
                 else
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
                   stream.current_expense += columns[3]
                   stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, params[:label])
                 end
               end
             elsif gl == "40031"
@@ -365,10 +394,12 @@ class Api::RoyaltyReportsController < ApplicationController
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
                   stream.current_expense += columns[3]
                   stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, params[:label])
                 else
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
                   stream.current_expense += columns[3]
                   stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, params[:label])
                 end
               end
             elsif gl == "40040"
@@ -376,14 +407,17 @@ class Api::RoyaltyReportsController < ApplicationController
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               elsif FilmRight.find_by(film_id: film.id, right_id: 7).value
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               else
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == "40011" || gl == "48000" || gl == "50350"
               unless film.deal_type_id == 3
@@ -391,10 +425,12 @@ class Api::RoyaltyReportsController < ApplicationController
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
                   stream.current_expense += columns[3]
                   stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, params[:label])
                 else
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
                   stream.current_expense += columns[3]
                   stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, params[:label])
                 end
               end
             elsif gl == "48100"
@@ -403,10 +439,12 @@ class Api::RoyaltyReportsController < ApplicationController
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
                   stream.current_expense += columns[3]
                   stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, params[:label])
                 else
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
                   stream.current_expense += columns[3]
                   stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, params[:label])
                 end
               end
             elsif gl == "40090"
@@ -414,6 +452,7 @@ class Api::RoyaltyReportsController < ApplicationController
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
                 stream.current_expense += columns[3]
                 stream.save!
+                check_for_empty_percentage(stream, errors, film.title, params[:label])
               end
             elsif gl == nil
               errors << "GL Code is empty on line #{index}"
@@ -429,6 +468,16 @@ class Api::RoyaltyReportsController < ApplicationController
 
       index += 1
     end
+
+    if params[:label] == "expenses"
+      RoyaltyReport.includes(:film, :royalty_revenue_streams).where(year: params[:year], quarter: params[:quarter]).each do |report|
+        calculate(report.film, report, report.royalty_revenue_streams)
+        if report.film.expense_cap > 0 && report.joined_total_expenses > report.film.expense_cap
+          errors << "#{report.film.title} is over expense cap."
+        end
+      end
+    end
+
     flash[:errors] = errors
     redirect_to '/royalty_reports'
   end
@@ -437,6 +486,15 @@ class Api::RoyaltyReportsController < ApplicationController
 
   def report_name(film, report)
     "#{film.title} - Q#{report.quarter} #{report.year}.pdf"
+  end
+
+  def check_for_empty_percentage(stream, errors, title, label)
+    if stream.licensor_percentage == 0
+      rev_stream = RevenueStream.find(stream.revenue_stream_id)
+      stream_name = rev_stream.nickname || rev_stream.name
+      message = "#{label.capitalize} #{label == 'revenue' ? 'was' : 'were'} added to #{stream_name} for \"#{title}\", but percentage is zero."
+      errors << message unless errors.include?(message)
+    end
   end
 
   def query_data_for_show_jbuilder

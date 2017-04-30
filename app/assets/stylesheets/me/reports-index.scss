@@ -56,6 +56,12 @@
     .import-error {
       font-size: 14px;
       line-height: 22px;
+      background: pink;
+      border: solid 1px red;
+      border-radius: 5px;
+      padding: 3px;
+      margin-bottom: 5px;
+      color: black;
     }
 
     .orange-button {
