@@ -93,7 +93,8 @@ class Api::RoyaltyReportsController < ApplicationController
     end
 
     # create reports for every film, if they don't already exist
-    if RoyaltyReport.where(year: params[:year], quarter: params[:quarter]).length == 0
+    reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter])
+    if reports.length == 0
       Film.where(short_film: false).each do |film|
         prev_report, prev_streams = get_prev_report(film, params[:quarter].to_i, params[:year].to_i)
         report = RoyaltyReport.new(film_id: film.id, deal_id: film.deal_type_id, quarter: params[:quarter], year: params[:year], mg: film.mg, e_and_o: film.e_and_o)
@@ -105,6 +106,8 @@ class Api::RoyaltyReportsController < ApplicationController
           RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: prev_streams[index].joined_revenue)
         end
       end
+    else
+      ActiveRecord::Base.connection.execute("UPDATE royalty_revenue_streams SET current_revenue = 0 FROM royalty_reports WHERE royalty_reports.id = royalty_revenue_streams.royalty_report_id AND royalty_reports.year = #{params[:year]} AND royalty_reports.quarter = #{params[:quarter]}")
     end
 
     require 'roo'
