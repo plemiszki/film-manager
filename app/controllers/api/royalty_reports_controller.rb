@@ -91,6 +91,22 @@ class Api::RoyaltyReportsController < ApplicationController
     File.open(Rails.root.join('sage', uploaded_io.original_filename), 'wb') do |file|
       file.write(uploaded_io.read)
     end
+
+    # create reports for every film, if they don't already exist
+    if RoyaltyReport.where(year: params[:year], quarter: params[:quarter]).length == 0
+      Film.where(short_film: false).each do |film|
+        prev_report, prev_streams = get_prev_report(film, params[:quarter].to_i, params[:year].to_i)
+        report = RoyaltyReport.new(film_id: film.id, deal_id: film.deal_type_id, quarter: params[:quarter], year: params[:year], mg: film.mg, e_and_o: film.e_and_o)
+        prev_amount_due = (prev_report.joined_amount_due < 0 ? 0 : prev_report.joined_amount_due)
+        report.amount_paid = (prev_report.amount_paid + prev_amount_due) if prev_report
+        report.save!
+
+        FilmRevenuePercentage.where(film_id: film.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
+          RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: prev_streams[index].joined_revenue)
+        end
+      end
+    end
+
     require 'roo'
     xlsx = Roo::Spreadsheet.open(Rails.root.join('sage', uploaded_io.original_filename).to_s)
     sheet = xlsx.sheet(0)
@@ -112,17 +128,7 @@ class Api::RoyaltyReportsController < ApplicationController
       end
 
       if found_film
-        film = films[0]
-        report = RoyaltyReport.find_by(film_id: film.id, quarter: params[:quarter], year: params[:year])
-        unless report
-          report = RoyaltyReport.create!(film_id: film.id, deal_id: film.deal_type_id, quarter: params[:quarter], year: params[:year], mg: film.mg)
-          #determine amount paid
-          FilmRevenuePercentage.where(film_id: film.id).each do |film_revenue_percentage|
-            RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
-          end
-        end
-
-        # update royalty revenue streams
+        # update current revenue
       end
 
       index += 1
@@ -141,8 +147,22 @@ class Api::RoyaltyReportsController < ApplicationController
     @reports = RoyaltyReport.where(id: params[:id])
     @film = Film.find(@reports[0].film_id)
     @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id).joins(:revenue_stream).order('revenue_streams.order')
-    p @streams.pluck(:revenue_stream_id)
     calculate(@film, @reports[0], @streams)
+  end
+
+  def get_prev_report(film, quarter, year)
+    prev_quarter = quarter - 1
+    prev_year = year
+    if prev_quarter == 0
+      prev_quarter = 4
+      prev_year -= 1
+    end
+    @reports = RoyaltyReport.where(film_id: film.id, year: prev_year, quarter: prev_quarter)
+    return nil if @reports.empty?
+    @film = film
+    @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id).joins(:revenue_stream).order('revenue_streams.order')
+    calculate(@film, @reports[0], @streams)
+    return [@reports[0], @streams]
   end
 
   def dollarify(input)

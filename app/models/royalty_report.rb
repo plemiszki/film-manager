@@ -9,6 +9,6 @@ class RoyaltyReport < ActiveRecord::Base
   validates_numericality_of :amount_paid, :greater_than_or_equal_to => 0
 
   belongs_to :film
-  has_many :royalty_revenue_streams
+  has_many :royalty_revenue_streams, dependent: :destroy
 
 end
