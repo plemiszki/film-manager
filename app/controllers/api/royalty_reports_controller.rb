@@ -59,7 +59,7 @@ class Api::RoyaltyReportsController < ApplicationController
     if params[:days_due] == 'all'
       films = Film.where(short_film: false, export_reports: true).order(:title)
     else
-      films = Film.where(days_statement_due: params[:days_due], export_reports: true).order(:title)
+      films = Film.where(days_statement_due: params[:days_due], export_reports: true).order(:title).limit(20)
     end
     reports = []
     films.each do |film|
@@ -68,6 +68,9 @@ class Api::RoyaltyReportsController < ApplicationController
     reports.each do |report|
       @report = report
       @film = Film.find(@report.film_id)
+      p '---------------------------'
+      p @film.title
+      p '---------------------------'
       @streams = RoyaltyRevenueStream.where(royalty_report_id: @report.id).joins(:revenue_stream).order('revenue_streams.order')
       calculate(@film, @report, @streams)
       export_report(@report, @streams, @film)
