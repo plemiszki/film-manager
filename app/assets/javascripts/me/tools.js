@@ -10,6 +10,10 @@ String.prototype.removeFinanceSymbols = function() {
   return this.replace('$', '').replace(',', '');
 };
 
+String.prototype.cap = function(n) {
+  return this.slice(0, n) + (this.length > n ? '...' : '');
+};
+
 Number.prototype.formatMoney = function() {
   var n = this,
       c = 2,

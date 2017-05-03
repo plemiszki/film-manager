@@ -50,7 +50,6 @@ var ReportsIndex = React.createClass({
       importModalOpen: false,
       errorsModalOpen: false,
       errors: []
-      // deleteModalOpen: false
     });
   },
 
@@ -190,16 +189,20 @@ var ReportsIndex = React.createClass({
               <thead>
                 <tr>
                   <th>Title</th>
+                  <th>Licensor</th>
                   <th>Due</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td></tr>
                 {this.state.reports.filterDaysDue(this.state.daysDue).filterSearchText(this.state.searchText).map(function(report, index) {
                   return(
                     <tr key={index} onClick={this.redirect.bind(this, report.id)}>
                       <td className="name-column">
-                        {report.title}
+                        {report.title.cap(42)}
+                      </td>
+                      <td>
+                        {report.licensor}
                       </td>
                       <td>
                         {report.days} days

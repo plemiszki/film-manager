@@ -3,7 +3,7 @@ class Api::RoyaltyReportsController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
   def index
-    @reports = RoyaltyReport.where(quarter: params[:quarter], year: params[:year])
+    @reports = RoyaltyReport.includes(film: [:licensor]).where(quarter: params[:quarter], year: params[:year])
     @errors = flash[:errors] || []
     render "index.json.jbuilder"
   end
