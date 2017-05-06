@@ -91,9 +91,9 @@ var ServerActions = {
     });
   },
 
-  exportsDone: function() {
+  jobStarted: function() {
     AppDispatcher.dispatch({
-      actionType: "EXPORTS_DONE"
+      actionType: "JOB_STARTED"
     });
   }
 }

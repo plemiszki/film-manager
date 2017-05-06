@@ -3,6 +3,7 @@ var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var ReportsStore = require('../stores/reports-store.js');
 var FileStore = require('../stores/file-store.js');
+var JobStore = require('../stores/job-store.js');
 
 var ReportsIndex = React.createClass({
 
@@ -49,6 +50,7 @@ var ReportsIndex = React.createClass({
       daysDue: 'all',
       importModalOpen: false,
       errorsModalOpen: false,
+      jobModalOpen: false,
       errors: []
     });
   },
@@ -56,6 +58,7 @@ var ReportsIndex = React.createClass({
   componentDidMount: function() {
     this.reportsListener = ReportsStore.addListener(this.getReports);
     this.fileListener = FileStore.addListener(this.fileDone);
+    this.jobListener = JobStore.addListener(this.updateJobStatus);
     Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
     $('#upload-form #user_file').on('change', this.pickFile);
     ClientActions.fetchReports(this.state.quarter, this.state.year);
@@ -71,6 +74,14 @@ var ReportsIndex = React.createClass({
       reports: ReportsStore.all(),
       errors: ReportsStore.errors(),
       errorsModalOpen: ReportsStore.errors().length > 0,
+      fetching: false
+    });
+  },
+
+  updateJobStatus: function() {
+    this.setState({
+      jobModalOpen: true,
+      exporting: false,
       fetching: false
     });
   },
@@ -232,6 +243,7 @@ var ReportsIndex = React.createClass({
             <a className="orange-button" onClick={this.handleModalClose}>OK</a>
           </div>
         </Modal>
+        {Common.jobModal.call(this, "Exporting Reports")}
       </div>
     );
   },

@@ -145,19 +145,6 @@ body {
         margin-left: -32px;
       }
 
-      .spinner {
-        position: absolute;
-        z-index: 101;
-        $spinner-size: 90px;
-        width: $spinner-size;
-        height: $spinner-size;
-        background-color: black;
-        opacity: 0.75;
-        left: calc(50% - (#{$spinner-size} / 2));
-        top: calc(50% - (#{$spinner-size} / 2));
-        background: asset-data-url("ajax-loader.svg") center center no-repeat;
-      }
-
       h2 {
         font-family: 'TeachableSansMedium';
         font-size: 12px;
@@ -321,5 +308,22 @@ body {
         background-color: #F5F5F5;
       }
     }
+  }
+}
+
+.spinner {
+  position: absolute;
+  z-index: 101;
+  $spinner-size: 90px;
+  width: $spinner-size;
+  height: $spinner-size;
+  background-color: black;
+  opacity: 0.75;
+  left: calc(50% - (#{$spinner-size} / 2));
+  top: calc(50% - (#{$spinner-size} / 2));
+  background: asset-data-url("ajax-loader.svg") center center no-repeat;
+
+  &.jobs-spinner {
+    top: calc(40% - (#{$spinner-size} / 2));
   }
 }

@@ -1,4 +1,5 @@
 var React = require('react');
+var Modal = require('react-modal');
 
 $(document).ready(function() {
   Common.initialize();
@@ -41,6 +42,25 @@ Common = {
       textAlign: 'center',
       color: '#5F5F5F',
       paddingTop: '36px'
+    }
+  },
+
+  jobModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: 'white',
+      margin: 'auto',
+      maxWidth: 540,
+      height: 217,
+      border: 'solid 1px black',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: 'black',
+      fontSize: 18,
+      fontWeight: 'bold',
+      paddingTop: '160px'
     }
   },
 
@@ -188,6 +208,17 @@ Common = {
     Common.highlightCurrentPageInMenu();
     Common.user.id = +$('#current-user #id').html();
     Common.user.admin = ($('#current-user #admin').html() == "true");
+  },
+
+  jobModal: function(text) {
+    return(
+      <Modal isOpen={this.state.jobModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.jobModalStyles}>
+        <div className="jobs-modal">
+          <div className="spinner jobs-spinner"></div>
+          {text}
+        </div>
+      </Modal>
+    )
   },
 
   removeFieldError: function(errorsArray, fieldName) {

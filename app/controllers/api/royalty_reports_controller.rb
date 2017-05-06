@@ -2,6 +2,12 @@ class Api::RoyaltyReportsController < ApplicationController
 
   include ActionView::Helpers::NumberHelper
 
+  def testing
+    TestJob.perform_later
+    # TestJob.new.enqueue(wait: 1.seconds)
+    render text: 'OK', status: 200
+  end
+
   def index
     @reports = RoyaltyReport.includes(film: [:licensor]).where(quarter: params[:quarter], year: params[:year])
     @errors = flash[:errors] || []
