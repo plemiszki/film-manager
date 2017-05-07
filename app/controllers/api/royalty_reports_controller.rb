@@ -2,12 +2,6 @@ class Api::RoyaltyReportsController < ApplicationController
 
   include ActionView::Helpers::NumberHelper
 
-  def testing
-    TestJob.perform_later
-    # TestJob.new.enqueue(wait: 1.seconds)
-    render text: 'OK', status: 200
-  end
-
   def index
     @reports = RoyaltyReport.includes(film: [:licensor]).where(quarter: params[:quarter], year: params[:year])
     @errors = flash[:errors] || []
@@ -59,44 +53,9 @@ class Api::RoyaltyReportsController < ApplicationController
   end
 
   def export_all
-    File.delete(Rails.root.join('statements', 'statements.zip')) if File.exist?(Rails.root.join('statements', 'statements.zip'))
-    Pathname.new(Rails.root.join('statements', 'amount due')).children.each { |file| file.unlink unless file.basename.to_s == '.gitignore' }
-    Pathname.new(Rails.root.join('statements', 'no amount due')).children.each { |file| file.unlink unless file.basename.to_s == '.gitignore' }
-    if params[:days_due] == 'all'
-      films = Film.where(short_film: false, export_reports: true).order(:title)
-    else
-      films = Film.where(days_statement_due: params[:days_due], export_reports: true).order(:title)
-    end
-    reports = []
-    films.each do |film|
-      reports << RoyaltyReport.where(quarter: params[:quarter], year: params[:year], film_id: film.id)[0]
-    end
-    reports.each do |report|
-      @report = report
-      @film = Film.find(@report.film_id)
-      p '---------------------------'
-      p @film.title
-      p '---------------------------'
-      @streams = RoyaltyRevenueStream.where(royalty_report_id: @report.id).joins(:revenue_stream).order('revenue_streams.order')
-      calculate(@film, @report, @streams)
-      export_report(@report, @streams, @film)
-    end
-
-    subfolder = @report.joined_amount_due > 0 ? 'amount due' : 'no amount due'
-
-    files = Dir.glob("#{Rails.root}/statements/amount due/*.pdf")
-    files2 = Dir.glob("#{Rails.root}/statements/no amount due/*.pdf")
-
-    require 'zip'
-    Zip::File.open(Rails.root.join('statements', 'statements.zip'), Zip::File::CREATE) do |zip|
-      files.each do |file|
-        zip.add("amount due/#{file.split('/')[-1]}", file)
-      end
-      files2.each do |file|
-        zip.add("no amount due/#{file.split('/')[-1]}", file)
-      end
-    end
-    render text: 'done', status: 200
+    p 'testing export all'
+    ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year])
+    render text: 'OK', status: 200
   end
 
   def zip

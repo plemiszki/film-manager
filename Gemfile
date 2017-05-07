@@ -17,6 +17,7 @@ gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'rubyzip'
 gem "roo", "~> 2.7.0"
+gem "sidekiq"
 # ------------------------------
 
 group :development, :test do

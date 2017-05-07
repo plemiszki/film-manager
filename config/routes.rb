@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     get '/royalty_reports/zip' => '/api/royalty_reports#zip'
     resources :royalty_reports, only: [:index, :show, :create, :update, :destroy]
     get '/royalty_reports/:id/export' => '/api/royalty_reports#export'
-    post '/royalty_reports/export_all' => '/api/royalty_reports#testing'
+    post '/royalty_reports/export_all' => '/api/royalty_reports#export_all'
   end
 
   # Clearance ------------------------
