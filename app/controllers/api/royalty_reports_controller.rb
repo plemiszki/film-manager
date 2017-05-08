@@ -53,9 +53,9 @@ class Api::RoyaltyReportsController < ApplicationController
   end
 
   def export_all
-    p 'testing export all'
-    ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year])
-    render text: 'OK', status: 200
+    time_started = Time.now.to_s
+    ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
+    render text: time_started, status: 200
   end
 
   def zip

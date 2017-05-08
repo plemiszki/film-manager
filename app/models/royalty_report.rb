@@ -238,7 +238,7 @@ class RoyaltyReport < ActiveRecord::Base
           stream.cume_gr = (stream.cume_revenue * (self.film.gr_percentage.fdiv(100))).truncate(2)
           stream.cume_difference = stream.cume_revenue - stream.cume_gr - stream.cume_expense
           stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-          stream.joined_gr = (stream.joined_revenue * (self.self.film.gr_percentage.fdiv(100))).truncate(2)
+          stream.joined_gr = (stream.joined_revenue * (self.film.gr_percentage.fdiv(100))).truncate(2)
           stream.joined_difference = stream.joined_revenue - stream.joined_gr - stream.joined_expense
           stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         else
