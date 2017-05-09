@@ -13,7 +13,7 @@ class RoyaltyReport < ActiveRecord::Base
   belongs_to :film
   has_many :royalty_revenue_streams, dependent: :destroy
 
-  def export!
+  def export!(time_started)
     string = "<style>"
     string += "body {"
     string +=   "font-family: Arial;"
@@ -179,7 +179,7 @@ class RoyaltyReport < ActiveRecord::Base
 
     pdf = WickedPdf.new.pdf_from_string(string)
     subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
-    save_path = Rails.root.join('statements', subfolder, report_name)
+    save_path = Rails.root.join('jobs', time_started, subfolder, report_name)
     File.open(save_path, 'wb') do |f|
       f << pdf
     end
