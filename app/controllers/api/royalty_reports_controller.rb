@@ -63,6 +63,12 @@ class Api::RoyaltyReportsController < ApplicationController
     send_data(zip_data, :type => 'application/zip', :filename => 'statements.zip')
   end
 
+  def status
+    count = Pathname.new(Rails.root.join('jobs', params[:time], 'amount due')).children.length
+    count += Pathname.new(Rails.root.join('jobs', params[:time], 'no amount due')).children.length
+    render text: count.to_s, status: 200
+  end
+
   def upload
     uploaded_io = params[:user][:file]
     File.open(Rails.root.join('sage', uploaded_io.original_filename), 'wb') do |file|

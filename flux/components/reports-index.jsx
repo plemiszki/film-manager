@@ -51,6 +51,9 @@ var ReportsIndex = React.createClass({
       importModalOpen: false,
       errorsModalOpen: false,
       jobModalOpen: false,
+      jobTotal: 0,
+      jobValue: 0,
+      jobTime: "",
       errors: []
     });
   },
@@ -81,6 +84,9 @@ var ReportsIndex = React.createClass({
   updateJobStatus: function() {
     this.setState({
       jobModalOpen: true,
+      jobValue: 0,
+      jobTotal: this.state.reports.filterDaysDue(this.state.daysDue).length,
+      jobTime: JobStore.timeStamp(),
       exporting: false,
       fetching: false
     });
@@ -251,6 +257,22 @@ var ReportsIndex = React.createClass({
   componentDidUpdate: function() {
     Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
     $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/royalty_reports/status',
+          method: 'GET',
+          data: {
+            time: this.state.jobTime
+          },
+          success: function(response) {
+            this.setState({
+              jobValue: response
+            });
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 

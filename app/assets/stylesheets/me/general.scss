@@ -324,6 +324,6 @@ body {
   background: asset-data-url("ajax-loader.svg") center center no-repeat;
 
   &.jobs-spinner {
-    top: calc(40% - (#{$spinner-size} / 2));
+    top: calc(35% - (#{$spinner-size} / 2));
   }
 }

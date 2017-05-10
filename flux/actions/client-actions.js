@@ -289,7 +289,7 @@ var ClientActions = {
         year: year
       },
       success: function(response) {
-        ServerActions.jobStarted();
+        ServerActions.jobStarted(response);
       }
     });
   }
