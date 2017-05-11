@@ -16,14 +16,16 @@ gem 'database_cleaner'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'rubyzip'
-gem "roo", "~> 2.7.0"
-gem "sidekiq"
+gem 'roo', '~> 2.7.0'
+gem 'sidekiq'
+gem 'aws-sdk'
 # ------------------------------
 
 group :development, :test do
   gem 'byebug'
   gem 'pry-rails'
   gem 'better_errors'
+  gem 'dotenv-rails' # load environment variables from .env file
 end
 
 group :development do

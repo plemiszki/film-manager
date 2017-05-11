@@ -257,30 +257,30 @@ var ReportsIndex = React.createClass({
   componentDidUpdate: function() {
     Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
     $('.match-height-layout').matchHeight();
-    if (this.state.jobModalOpen) {
-      window.setTimeout(function() {
-        $.ajax({
-          url: '/api/royalty_reports/status',
-          method: 'GET',
-          data: {
-            time: this.state.jobTime
-          },
-          success: function(response) {
-            if (response === 'done') {
-              this.setState({
-                jobModalOpen: false
-              }, function() {
-                window.location = 'api/royalty_reports/zip?time=' + this.state.jobTime;
-              });
-            } else {
-              this.setState({
-                jobValue: response
-              });
-            }
-          }.bind(this)
-        })
-      }.bind(this), 1500)
-    }
+    // if (this.state.jobModalOpen) {
+    //   window.setTimeout(function() {
+    //     $.ajax({
+    //       url: '/api/royalty_reports/status',
+    //       method: 'GET',
+    //       data: {
+    //         time: this.state.jobTime
+    //       },
+    //       success: function(response) {
+    //         if (response === 'done') {
+    //           this.setState({
+    //             jobModalOpen: false
+    //           }, function() {
+    //             window.location = 'api/royalty_reports/zip?time=' + this.state.jobTime;
+    //           });
+    //         } else {
+    //           this.setState({
+    //             jobValue: response
+    //           });
+    //         }
+    //       }.bind(this)
+    //     })
+    //   }.bind(this), 1500)
+    // }
   }
 });
 

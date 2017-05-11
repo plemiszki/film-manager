@@ -26,6 +26,4 @@
 * Ignore data directory
 /data/*
 
-* Ignore statements, but not subdirectories
-statements/*
-!statements/*/
+.env
