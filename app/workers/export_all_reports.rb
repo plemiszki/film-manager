@@ -4,17 +4,13 @@ class ExportAllReports
 
   def perform(days_due, quarter, year, time_started)
 
-    # cancel any other running jobs - i'll have to figure out a different solution for multiple users
-    # jobs = Sidekiq::Workers.new.size
-    # Sidekiq::Workers.new.each do |pid, tid, work|
-    #   job_id = work['payload']['jid']
-    #   Sidekiq.redis {|c| c.setex("cancelled-#{job_id}", 86400, 1) }
-    # end
-    # sleep(3) unless jobs == 0
-
-    # File.delete(Rails.root.join('statements', 'statements.zip')) if File.exist?(Rails.root.join('statements', 'statements.zip'))
-    # Pathname.new(Rails.root.join('statements', 'amount due')).children.each { |file| file.unlink unless file.basename.to_s == '.gitignore' }
-    # Pathname.new(Rails.root.join('statements', 'no amount due')).children.each { |file| file.unlink unless file.basename.to_s == '.gitignore' }
+    # how many workers are running?
+    Sidekiq::Workers.new.size
+    # cancel all of them!
+    Sidekiq::Workers.new.each do |pid, tid, work|
+      job_id = work['payload']['jid']
+      Sidekiq.redis {|c| c.setex("cancelled-#{job_id}", 86400, 1) }
+    end
 
     FileUtils.mkdir_p("#{Rails.root}/jobs/#{time_started}/amount due")
     FileUtils.mkdir_p("#{Rails.root}/jobs/#{time_started}/no amount due")

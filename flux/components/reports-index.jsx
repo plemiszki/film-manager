@@ -266,9 +266,17 @@ var ReportsIndex = React.createClass({
             time: this.state.jobTime
           },
           success: function(response) {
-            this.setState({
-              jobValue: response
-            });
+            if (response === 'done') {
+              this.setState({
+                jobModalOpen: false
+              }, function() {
+                window.location = 'api/royalty_reports/zip?time=' + this.state.jobTime;
+              });
+            } else {
+              this.setState({
+                jobValue: response
+              });
+            }
           }.bind(this)
         })
       }.bind(this), 1500)
