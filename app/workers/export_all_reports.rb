@@ -4,13 +4,13 @@ class ExportAllReports
 
   def perform(days_due, quarter, year, time_started)
 
-    # how many workers are running?
-    Sidekiq::Workers.new.size
-    # cancel all of them!
-    Sidekiq::Workers.new.each do |pid, tid, work|
-      job_id = work['payload']['jid']
-      Sidekiq.redis {|c| c.setex("cancelled-#{job_id}", 86400, 1) }
-    end
+    # # how many workers are running?
+    # Sidekiq::Workers.new.size
+    # # cancel all of them!
+    # Sidekiq::Workers.new.each do |pid, tid, work|
+    #   job_id = work['payload']['jid']
+    #   Sidekiq.redis {|c| c.setex("cancelled-#{job_id}", 86400, 1) }
+    # end
 
     FileUtils.mkdir_p("#{Rails.root}/jobs/#{time_started}/amount due")
     FileUtils.mkdir_p("#{Rails.root}/jobs/#{time_started}/no amount due")
