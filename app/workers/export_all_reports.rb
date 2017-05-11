@@ -12,8 +12,8 @@ class ExportAllReports
     #   Sidekiq.redis {|c| c.setex("cancelled-#{job_id}", 86400, 1) }
     # end
 
-    FileUtils.mkdir_p("#{Rails.root}/jobs/#{time_started}/amount due")
-    FileUtils.mkdir_p("#{Rails.root}/jobs/#{time_started}/no amount due")
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}/amount due")
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}/no amount due")
 
     reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year)
     reports.each do |report|
@@ -27,11 +27,11 @@ class ExportAllReports
       end
     end
 
-    files = Dir.glob("#{Rails.root}/jobs/#{time_started}/amount due/*.pdf")
-    files2 = Dir.glob("#{Rails.root}/jobs/#{time_started}/no amount due/*.pdf")
+    files = Dir.glob("#{Rails.root}/tmp/#{time_started}/amount due/*.pdf")
+    files2 = Dir.glob("#{Rails.root}/tmp/#{time_started}/no amount due/*.pdf")
 
     require 'zip'
-    Zip::File.open(Rails.root.join('jobs', time_started, 'statements.zip'), Zip::File::CREATE) do |zip|
+    Zip::File.open(Rails.root.join('tmp', time_started, 'statements.zip'), Zip::File::CREATE) do |zip|
       files.each do |file|
         zip.add("amount due/#{file.split('/')[-1]}", file)
       end

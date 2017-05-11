@@ -59,15 +59,15 @@ class Api::RoyaltyReportsController < ApplicationController
   end
 
   def zip
-    zip_data = File.read(Rails.root.join('jobs', params[:time], 'statements.zip'))
+    zip_data = File.read(Rails.root.join('tmp', params[:time], 'statements.zip'))
     send_data(zip_data, :type => 'application/zip', :filename => 'statements.zip')
   end
 
   def status
-    count = Pathname.new(Rails.root.join('jobs', params[:time], 'amount due')).children.length
-    count += Pathname.new(Rails.root.join('jobs', params[:time], 'no amount due')).children.length
+    count = Pathname.new(Rails.root.join('tmp', params[:time], 'amount due')).children.length
+    count += Pathname.new(Rails.root.join('tmp', params[:time], 'no amount due')).children.length
 
-    if File.exist?(Rails.root.join('jobs', params[:time], 'statements.zip'))
+    if File.exist?(Rails.root.join('tmp', params[:time], 'statements.zip'))
       render text: 'done', status: 200
     else
       render text: count.to_s, status: 200
