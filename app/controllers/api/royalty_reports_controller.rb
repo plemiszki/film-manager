@@ -54,9 +54,7 @@ class Api::RoyaltyReportsController < ApplicationController
 
   def export_all
     time_started = Time.now.to_s
-    s3 = Aws::S3::Client.new
-    p s3.list_buckets
-    # ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
+    ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
     render text: time_started, status: 200
   end
 

@@ -12,6 +12,12 @@ class ExportAllReports
     #   Sidekiq.redis {|c| c.setex("cancelled-#{job_id}", 86400, 1) }
     # end
 
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWSAWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    bucket = s3.bucket(ENV['S3_BUCKET'])
+
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}/amount due")
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}/no amount due")
 
@@ -23,7 +29,7 @@ class ExportAllReports
         p "#{report.film.title} (#{jid})"
         p '---------------------------'
         report.calculate!
-        report.export!(time_started)
+        report.export!(time_started, bucket)
       end
     end
 

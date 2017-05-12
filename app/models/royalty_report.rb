@@ -13,7 +13,7 @@ class RoyaltyReport < ActiveRecord::Base
   belongs_to :film
   has_many :royalty_revenue_streams, dependent: :destroy
 
-  def export!(time_started)
+  def export!(time_started, bucket)
     string = "<style>"
     string += "body {"
     string +=   "font-family: Arial;"
@@ -183,6 +183,8 @@ class RoyaltyReport < ActiveRecord::Base
     File.open(save_path, 'wb') do |f|
       f << pdf
     end
+    obj = bucket.object("#{time_started}/#{subfolder}/#{report_name}")
+    obj.upload_file(save_path, acl:'public-read')
   end
 
   def calculate!
