@@ -54,7 +54,19 @@ class Api::RoyaltyReportsController < ApplicationController
 
   def export_all
     time_started = Time.now.to_s
-    ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
+
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    bucket = s3.bucket(ENV['S3_BUCKET'])
+    File.open(Rails.root.join('tmp', 'test.txt'), 'wb') do |f|
+      f << "hello"
+    end
+    obj = bucket.object("test")
+    obj.upload_file(Rails.root.join('tmp', 'test.txt'), acl:'public-read')
+
+    # ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
     render text: time_started, status: 200
   end
 

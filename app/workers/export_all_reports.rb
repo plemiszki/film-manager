@@ -16,9 +16,7 @@ class ExportAllReports
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
     )
-    p s3
     bucket = s3.bucket(ENV['S3_BUCKET'])
-    p bucket
 
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}/amount due")
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}/no amount due")
