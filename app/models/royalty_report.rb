@@ -184,7 +184,7 @@ class RoyaltyReport < ActiveRecord::Base
       f << pdf
     end
     obj = bucket.object("#{time_started}/#{subfolder}/#{report_name}")
-    obj.upload_file(save_path, acl:'public-read')
+    obj.upload_file(save_path, acl:'private')
   end
 
   def calculate!

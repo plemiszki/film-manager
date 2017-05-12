@@ -45,5 +45,8 @@ class ExportAllReports
         zip.add("no amount due/#{file.split('/')[-1]}", file)
       end
     end
+
+    obj = bucket.object("#{time_started}/statements.zip")
+    obj.upload_file(Rails.root.join('tmp', time_started, 'statements.zip'), acl:'private')
   end
 end
