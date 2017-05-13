@@ -292,6 +292,21 @@ var ClientActions = {
         ServerActions.jobStarted(response);
       }
     });
+  },
+
+  sendAll: function(daysDue, quarter, year) {
+    $.ajax({
+      url: '/api/royalty_reports/send_all',
+      method: 'POST',
+      data: {
+        days_due: daysDue,
+        quarter: quarter,
+        year: year
+      },
+      success: function(response) {
+        ServerActions.jobStarted(response);
+      }
+    });
   }
 }
 

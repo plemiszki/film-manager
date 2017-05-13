@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     resources :royalty_reports, only: [:index, :show, :create, :update, :destroy]
     get '/royalty_reports/:id/export' => '/api/royalty_reports#export'
     post '/royalty_reports/export_all' => '/api/royalty_reports#export_all'
+    post '/royalty_reports/send_all' => '/api/royalty_reports#send_all'
   end
 
   # Clearance ------------------------

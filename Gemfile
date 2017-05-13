@@ -19,6 +19,7 @@ gem 'rubyzip'
 gem 'roo', '~> 2.7.0'
 gem 'sidekiq'
 gem 'aws-sdk'
+gem 'mailgun-ruby', '~>1.1.6'
 # ------------------------------
 
 group :development, :test do

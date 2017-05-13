@@ -64,14 +64,27 @@ class Api::RoyaltyReportsController < ApplicationController
   end
 
   def status
-    count = Pathname.new(Rails.root.join('tmp', params[:time], 'amount due')).children.length
-    count += Pathname.new(Rails.root.join('tmp', params[:time], 'no amount due')).children.length
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
 
-    if File.exist?(Rails.root.join('tmp', params[:time], 'statements.zip'))
+    resp = Aws::S3::Client.new.list_objects(bucket: ENV['S3_BUCKET'])
+    reports = resp.contents.select do |object|
+      object.key.split("/")[0] == params[:time]
+    end
+
+    if reports.map { |object| object.key }.include?("#{params[:time]}/statements.zip")
       render text: 'done', status: 200
     else
-      render text: count.to_s, status: 200
+      render text: reports.length, status: 200
     end
+  end
+
+  def send_all
+    time_started = Time.now.to_s
+    ExportAndSendReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
+    render text: time_started, status: 200
   end
 
   def upload

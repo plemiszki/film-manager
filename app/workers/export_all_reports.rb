@@ -29,9 +29,12 @@ class ExportAllReports
         p "#{report.film.title} (#{jid})"
         p '---------------------------'
         report.calculate!
-        report.export!(time_started, bucket)
+        report.export!(save_path)
       end
     end
+
+    # obj = bucket.object("#{time_started}/#{subfolder}/#{report_name}")
+    # obj.upload_file(save_path, acl:'private')
 
     files = Dir.glob("#{Rails.root}/tmp/#{time_started}/amount due/*.pdf")
     files2 = Dir.glob("#{Rails.root}/tmp/#{time_started}/no amount due/*.pdf")

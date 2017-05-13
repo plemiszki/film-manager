@@ -216,8 +216,8 @@ Common = {
       <Modal isOpen={this.state.jobModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.jobModalStyles}>
         <div className="jobs-modal">
           <div className="spinner jobs-spinner"></div>
-          {text}<br />
-        ({this.state.jobValue} of {this.state.jobTotal})
+          <div className="first-line">{text}</div>
+          <div className="second-line">({this.state.jobValue} of {this.state.jobTotal})</div>
         </div>
       </Modal>
     )
