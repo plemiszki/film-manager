@@ -5,7 +5,8 @@ class Importer < ActiveRecord::Base
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
     )
-    s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Admin.txt").get(response_target: "tmp/#{time_started}/Admin.txt")
+    s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Admin.txt").get(response_target: Rails.root.join("tmp/#{time_started}/Admin.txt"))
+    p 'file should be there now'
     File.open(Rails.root.join("tmp/#{time_started}/Admin.txt")) do |f|
       array = f.gets.split('^')
       total = array[0].to_i
