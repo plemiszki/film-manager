@@ -19,17 +19,27 @@ class ExportAndSendReports
         report.export!(licensor_folder)
       end
     end
-    licensors = Licensor.all
+    licensors = Licensor.all.order(:id)
     Dir.foreach("#{Rails.root}/tmp/#{time_started}") do |entry|
       next if entry == "." || entry == ".."
-      p licensors[entry.to_i - 1].name
-      # mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
-      # message_params =  { from: 'peter@filmmovement.com',
-      #                     to:   'plemiszki@gmail.com',
-      #                     subject: 'The Ruby SDK is awesome!',
-      #                     text:    'It is really easy to send a message!'
-      #                   }
-      # mg_client.send_message 'filmmovement.com', message_params
+      file_names = Dir.entries(Rails.root.join('tmp', "#{time_started}", entry))
+      file_names.select! { |string| (string != '.' && string != '..') }
+      attachments = file_names.map { |string| File.open(Rails.root.join('tmp', "#{time_started}", entry, string), "r") }
+      royalty_email_text = licensors[entry.to_i - 1].email
+      mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
+      message_params =  { from: 'michael@filmmovement.com',
+                          to: 'plemiszki@gmail.com',
+                          subject: "Your Q#{quarter} #{year} statements from Film Movement",
+                          text: "#{royalty_email_text}",
+                          attachment: attachments
+                        }
+      begin
+        mg_client.send_message 'filmmovement.com', message_params
+      rescue
+        p '-------------------------'
+        p "FAILED TO SEND EMAIL TO #{entry}"
+        p '-------------------------'
+      end
     end
   end
 end
