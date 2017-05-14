@@ -3,22 +3,20 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var JobStore = new Store(AppDispatcher);
 
-var _running = false;
-var _timeStamp = "";
+var _job = {}
 
-JobStore.setTimeStamp = function(timeStamp) {
-  _running = true;
-  _timeStamp = timeStamp;
+JobStore.setJob = function(job) {
+  _job = job;
 };
 
-JobStore.timeStamp = function() {
-  return _timeStamp;
+JobStore.job = function() {
+  return _job;
 };
 
 JobStore.__onDispatch = function(payload) {
   switch(payload.actionType){
-    case "JOB_STARTED":
-      this.setTimeStamp(payload.timeStamp);
+    case "JOB_RECEIVED":
+      this.setJob(payload.job);
       this.__emitChange();
       break;
   }

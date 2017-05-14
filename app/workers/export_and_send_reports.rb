@@ -5,8 +5,9 @@ class ExportAndSendReports
   def perform(days_due, quarter, year, time_started)
 
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+    job = Job.find_by_job_id(time_started)
 
-    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year)
+    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: {send_reports: true})
     reports.each do |report|
       return if Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
       if (days_due == "all" || report.film.days_statement_due == days_due.to_i) && report.film.export_reports && report.film.licensor
@@ -17,8 +18,10 @@ class ExportAndSendReports
         p '---------------------------'
         report.calculate!
         report.export!(licensor_folder)
+        job.update({current_value: job.current_value + 1})
       end
     end
+    job.update({first_line: "Adding Emails to Mailgun Queue", current_value: 0, total_value: Dir.entries(Rails.root.join('tmp', "#{time_started}")).length - 2})
     licensors = Licensor.all.order(:id)
     Dir.foreach("#{Rails.root}/tmp/#{time_started}") do |entry|
       next if entry == "." || entry == ".."
@@ -35,11 +38,13 @@ class ExportAndSendReports
                         }
       begin
         mg_client.send_message 'filmmovement.com', message_params
+        job.update({current_value: job.current_value + 1})
       rescue
         p '-------------------------'
-        p "FAILED TO SEND EMAIL TO #{entry}"
+        p "FAILED TO SEND EMAIL TO #{licensors[entry.to_i - 1].name}"
         p '-------------------------'
       end
     end
+    job.update({first_line: "Done!", second_line: false})
   end
 end

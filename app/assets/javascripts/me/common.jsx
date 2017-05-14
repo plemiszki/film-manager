@@ -211,13 +211,13 @@ Common = {
     Common.user.admin = ($('#current-user #admin').html() == "true");
   },
 
-  jobModal: function(text) {
+  jobModal: function(job) {
     return(
       <Modal isOpen={this.state.jobModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.jobModalStyles}>
         <div className="jobs-modal">
           <div className="spinner jobs-spinner"></div>
-          <div className="first-line">{text}</div>
-          <div className="second-line">({this.state.jobValue} of {this.state.jobTotal})</div>
+          <div className="first-line">{this.state.job.first_line}</div>
+          <div className="second-line">({this.state.job.current_value} of {this.state.job.total_value})</div>
         </div>
       </Modal>
     )

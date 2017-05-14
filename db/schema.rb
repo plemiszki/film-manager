@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170514213300) do
+ActiveRecord::Schema.define(version: 20170514215019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 20170514213300) do
     t.boolean "second_line",   default: false
     t.integer "current_value", default: 0
     t.integer "total_value",   default: 0
-    t.string  "errors"
+    t.string  "errors_text"
   end
 
   create_table "labels", force: :cascade do |t|

@@ -23,6 +23,7 @@ Rails.application.routes.draw do
     get '/royalty_reports/:id/export' => '/api/royalty_reports#export'
     post '/royalty_reports/export_all' => '/api/royalty_reports#export_all'
     post '/royalty_reports/send_all' => '/api/royalty_reports#send_all'
+    get '/jobs/status' => '/api/jobs#status'
   end
 
   # Clearance ------------------------

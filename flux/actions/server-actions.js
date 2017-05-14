@@ -91,10 +91,10 @@ var ServerActions = {
     });
   },
 
-  jobStarted: function(response) {
+  receiveJob: function(response) {
     AppDispatcher.dispatch({
-      actionType: "JOB_STARTED",
-      timeStamp: response
+      actionType: "JOB_RECEIVED",
+      job: response
     });
   }
 }

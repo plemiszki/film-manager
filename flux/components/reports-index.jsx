@@ -1,6 +1,7 @@
 var React = require('react');
 var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
+var ServerActions = require('../actions/server-actions.js');
 var ReportsStore = require('../stores/reports-store.js');
 var FileStore = require('../stores/file-store.js');
 var JobStore = require('../stores/job-store.js');
@@ -50,10 +51,7 @@ var ReportsIndex = React.createClass({
       importModalOpen: false,
       errorsModalOpen: false,
       jobModalOpen: false,
-      jobModalText: "",
-      jobTotal: 0,
-      jobValue: 0,
-      jobTime: "",
+      job: {},
       errors: []
     });
   },
@@ -61,7 +59,7 @@ var ReportsIndex = React.createClass({
   componentDidMount: function() {
     this.reportsListener = ReportsStore.addListener(this.getReports);
     this.fileListener = FileStore.addListener(this.fileDone);
-    this.jobListener = JobStore.addListener(this.updateJobStatus);
+    this.jobListener = JobStore.addListener(this.getJob);
     Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
     $('#upload-form #user_file').on('change', this.pickFile);
     ClientActions.fetchReports(this.state.quarter, this.state.year);
@@ -81,12 +79,11 @@ var ReportsIndex = React.createClass({
     });
   },
 
-  updateJobStatus: function() {
+  getJob: function() {
+    var open = JobStore.job().first_line !== "Done!";
     this.setState({
-      jobModalOpen: true,
-      jobValue: 0,
-      jobTotal: this.state.reports.filterDaysDue(this.state.daysDue).length,
-      jobTime: JobStore.timeStamp(),
+      jobModalOpen: open,
+      job: JobStore.job(),
       fetching: false
     });
   },
@@ -162,7 +159,7 @@ var ReportsIndex = React.createClass({
   clickSend: function() {
     this.setState({
       fetching: true,
-      jobModalText: "Exporting Reports"
+      jobFirstLine: "Exporting Reports"
     });
     ClientActions.sendAll(this.state.daysDue, this.state.quarter, this.state.year);
   },
@@ -254,7 +251,7 @@ var ReportsIndex = React.createClass({
             <a className="orange-button" onClick={this.handleModalClose}>OK</a>
           </div>
         </Modal>
-        {Common.jobModal.call(this, this.state.jobModalText)}
+        {Common.jobModal.call(this, this.state.job)}
       </div>
     );
   },
@@ -262,30 +259,20 @@ var ReportsIndex = React.createClass({
   componentDidUpdate: function() {
     Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
     $('.match-height-layout').matchHeight();
-    // if (this.state.jobModalOpen) {
-    //   window.setTimeout(function() {
-    //     $.ajax({
-    //       url: '/api/royalty_reports/status',
-    //       method: 'GET',
-    //       data: {
-    //         time: this.state.jobTime
-    //       },
-    //       success: function(response) {
-    //         if (response === 'done') {
-    //           this.setState({
-    //             jobModalOpen: false
-    //           }, function() {
-    //             window.location = 'api/royalty_reports/zip?time=' + this.state.jobTime;
-    //           });
-    //         } else {
-    //           this.setState({
-    //             jobValue: response
-    //           });
-    //         }
-    //       }.bind(this)
-    //     })
-    //   }.bind(this), 1500)
-    // }
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            time: this.state.job.job_id
+          },
+          success: function(response) {
+            ServerActions.receiveJob(response);
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 

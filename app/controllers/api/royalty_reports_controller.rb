@@ -41,6 +41,14 @@ class Api::RoyaltyReportsController < ApplicationController
     end
   end
 
+  def send_all
+    time_started = Time.now.to_s
+    total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], send_reports: true}, quarter: params[:quarter], year: params[:year])
+    job = Job.create!(job_id: time_started, first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
+    ExportAndSendReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
+    render json: job
+  end
+
   def export
     query_data_for_show_jbuilder
     export_report(@reports[0], @streams, @film)
@@ -63,29 +71,23 @@ class Api::RoyaltyReportsController < ApplicationController
     send_data(zip_data, :type => 'application/zip', :filename => 'statements.zip')
   end
 
-  def status
-    s3 = Aws::S3::Resource.new(
-      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
-      region: 'us-east-1'
-    )
-
-    resp = Aws::S3::Client.new.list_objects(bucket: ENV['S3_BUCKET'])
-    reports = resp.contents.select do |object|
-      object.key.split("/")[0] == params[:time]
-    end
-
-    if reports.map { |object| object.key }.include?("#{params[:time]}/statements.zip")
-      render text: 'done', status: 200
-    else
-      render text: reports.length, status: 200
-    end
-  end
-
-  def send_all
-    time_started = Time.now.to_s
-    ExportAndSendReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
-    render text: time_started, status: 200
-  end
+  # def status
+  #   s3 = Aws::S3::Resource.new(
+  #     credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+  #     region: 'us-east-1'
+  #   )
+  #
+  #   resp = Aws::S3::Client.new.list_objects(bucket: ENV['S3_BUCKET'])
+  #   reports = resp.contents.select do |object|
+  #     object.key.split("/")[0] == params[:time]
+  #   end
+  #
+  #   if reports.map { |object| object.key }.include?("#{params[:time]}/statements.zip")
+  #     render text: 'done', status: 200
+  #   else
+  #     render text: reports.length, status: 200
+  #   end
+  # end
 
   def upload
     uploaded_io = params[:user][:file]

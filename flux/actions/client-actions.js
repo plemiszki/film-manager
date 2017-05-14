@@ -304,7 +304,7 @@ var ClientActions = {
         year: year
       },
       success: function(response) {
-        ServerActions.jobStarted(response);
+        ServerActions.receiveJob(response);
       }
     });
   }
