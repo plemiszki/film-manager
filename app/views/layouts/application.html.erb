@@ -32,6 +32,9 @@
                 <!-- <li><a href="/dvd-vendors">DVD Vendors</a></li> -->
                 <li><a href="/users">Users</a></li>
                 <li><a href="/royalty_reports">Royalties</a></li>
+                <% if current_user.email == "peter@filmmovement.com" %>
+                  <li><a href="/import">Import Data Files</a></li>
+                <% end %>
               </ul>
             </div>
           </div>

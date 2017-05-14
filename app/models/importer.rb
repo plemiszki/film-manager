@@ -1,7 +1,7 @@
 class Importer < ActiveRecord::Base
 
-  def self.import_licensors
-    File.open(Rails.root.join('data/Admin.txt')) do |f|
+  def self.import_licensors(time_started)
+    File.open(Rails.root.join("tmp/#{time_started}/Admin.txt")) do |f|
       array = f.gets.split('^')
       total = array[0].to_i
       array.shift
@@ -15,8 +15,8 @@ class Importer < ActiveRecord::Base
     end
   end
 
-  def self.import_films
-    File.open(Rails.root.join('data/Films.txt')) do |file|
+  def self.import_films(time_started)
+    File.open(Rails.root.join("tmp/#{time_started}/Films.txt")) do |file|
       total = file.gets.to_i - 2
       films = 0
       until films == total

@@ -1,6 +1,7 @@
 DatabaseCleaner.clean_with :truncation
 
 User.create(name: "Peter", email: "peter@filmmovement.com", password: "password", admin: true)
+User.create(name: "Michael", email: "michael@filmmovement.com", password: "password", admin: true)
 
 DealTemplate.create(name: "No Expenses Recouped")
 DealTemplate.create(name: "Expenses Recouped From Top")
@@ -40,6 +41,3 @@ Right.create(name: 'Hotels', order: 13)
 Right.create(name: 'Airlines', order: 14)
 Right.create(name: 'Ships', order: 15)
 Right.create(name: 'FM Subscription', order: 16)
-
-Importer.import_licensors
-Importer.import_films
