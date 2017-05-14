@@ -36,8 +36,8 @@ class FilmsController < ApplicationController
     admin_obj = bucket.object("#{time_started}/Admin.txt")
     admin_obj.upload_file(Rails.root.join('tmp', time_started, 'Admin.txt'), acl:'private')
     # start worker
-    # ImportData.perform_async(time_started)
-    render "index.html.erb"
+    ImportData.perform_async(time_started)
+    redirect_to "/films"
   end
 
 end

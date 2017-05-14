@@ -1,6 +1,11 @@
 class Importer < ActiveRecord::Base
 
   def self.import_licensors(time_started)
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Admin.txt").get(response_target: "tmp/#{time_started}/Admin.txt")
     File.open(Rails.root.join("tmp/#{time_started}/Admin.txt")) do |f|
       array = f.gets.split('^')
       total = array[0].to_i
@@ -16,6 +21,11 @@ class Importer < ActiveRecord::Base
   end
 
   def self.import_films(time_started)
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Films.txt").get(response_target: "tmp/#{time_started}/Films.txt")
     File.open(Rails.root.join("tmp/#{time_started}/Films.txt")) do |file|
       total = file.gets.to_i - 2
       films = 0
