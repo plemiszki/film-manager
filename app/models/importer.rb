@@ -1,12 +1,12 @@
 class Importer < ActiveRecord::Base
 
   def self.import_licensors(time_started)
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
     )
     s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Admin.txt").get(response_target: Rails.root.join("tmp/#{time_started}/Admin.txt"))
-    p 'file should be there now'
     File.open(Rails.root.join("tmp/#{time_started}/Admin.txt")) do |f|
       array = f.gets.split('^')
       total = array[0].to_i
@@ -22,6 +22,7 @@ class Importer < ActiveRecord::Base
   end
 
   def self.import_films(time_started)
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
