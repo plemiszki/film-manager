@@ -28,11 +28,12 @@ class ExportAndSendReports
       file_names = Dir.entries(Rails.root.join('tmp', "#{time_started}", entry))
       file_names.select! { |string| (string != '.' && string != '..') }
       attachments = file_names.map { |string| File.open(Rails.root.join('tmp', "#{time_started}", entry, string), "r") }
-      royalty_email_text = licensors[entry.to_i - 1].email
+      royalty_email_text = "Hello,\n\nPlease find attached your Q#{quarter} #{year} producer reports. Please let me know if you have any questions, or if this report should be sent to a different person.\n\nKind Regards,\n\nMichael Rosenberg\nPresident\nFilm Movement"
       mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
       message_params =  { from: 'michael@filmmovement.com',
-                          to: 'plemiszki@gmail.com',
-                          subject: "Your Q#{quarter} #{year} statements from Film Movement",
+                          to: licensors[entry.to_i - 1].email.strip,
+                          cc: "michael@filmmovement.com",
+                          subject: "Your Q#{quarter} #{year} producer reports from Film Movement",
                           text: "#{royalty_email_text}",
                           attachment: attachments
                         }
@@ -43,6 +44,8 @@ class ExportAndSendReports
         p '-------------------------'
         p "FAILED TO SEND EMAIL TO #{licensors[entry.to_i - 1].name}"
         p '-------------------------'
+        new_line = (job.errors_text == "" ? "" : "\n")
+        job.update({errors_text: job.errors_text += (new_line + "Failed to send email to #{licensors[entry.to_i - 1].name}")})
       end
     end
     job.update({first_line: "Done!", second_line: false})

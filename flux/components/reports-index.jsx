@@ -51,8 +51,9 @@ var ReportsIndex = React.createClass({
       importModalOpen: false,
       errorsModalOpen: false,
       jobModalOpen: false,
-      job: {},
-      errors: []
+      job: {
+        errors_text: ""
+      }
     });
   },
 
@@ -80,10 +81,14 @@ var ReportsIndex = React.createClass({
   },
 
   getJob: function() {
-    var open = JobStore.job().first_line !== "Done!";
+    var job = JobStore.job();
+    var open = job.first_line !== "Done!";
+    var errorsModalOpen = (job.first_line === "Done!" && job.errors_text)
+    console.log(job.errors_text);
     this.setState({
       jobModalOpen: open,
-      job: JobStore.job(),
+      errorsModalOpen: errorsModalOpen,
+      job: job,
       fetching: false
     });
   },
@@ -243,7 +248,7 @@ var ReportsIndex = React.createClass({
         <Modal isOpen={this.state.errorsModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.errorsModalStyles}>
           <div className="errors-modal">
             <h1>Oops. There were some errors.</h1>
-            {this.state.errors.map(function(error, index) {
+            {this.state.job.errors_text.split("\n").map(function(error, index) {
               return(
                 <div key={index} className="import-error">{error}</div>
               );
