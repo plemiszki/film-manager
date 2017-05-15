@@ -84,7 +84,6 @@ var ReportsIndex = React.createClass({
     var job = JobStore.job();
     var open = job.first_line !== "Done!";
     var errorsModalOpen = (job.first_line === "Done!" && job.errors_text)
-    console.log(job.errors_text);
     this.setState({
       jobModalOpen: open,
       errorsModalOpen: errorsModalOpen,
@@ -161,12 +160,14 @@ var ReportsIndex = React.createClass({
     ClientActions.exportAll(this.state.daysDue, this.state.quarter, this.state.year);
   },
 
-  clickSend: function() {
-    this.setState({
-      fetching: true,
-      jobFirstLine: "Exporting Reports"
-    });
-    ClientActions.sendAll(this.state.daysDue, this.state.quarter, this.state.year);
+  clickSend: function(e) {
+    if (!e.target.classList.contains('inactive')) {      
+      this.setState({
+        fetching: true,
+        jobFirstLine: "Exporting Reports"
+      });
+      ClientActions.sendAll(this.state.daysDue, this.state.quarter, this.state.year);
+    }
   },
 
   fileDone: function() {
@@ -193,7 +194,7 @@ var ReportsIndex = React.createClass({
         <div id="reports-index" className="component">
           <div className="clearfix">
             <h1>Statements - Q{this.state.quarter}, {this.state.year}</h1>
-            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickSend}>Send All</a>
+            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all')} onClick={this.clickSend}>Send All</a>
             <a className={"disabled orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>Export All</a>
             <a className={"disabled orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickImport}>Import</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickNext}>&#62;&#62;</a>
