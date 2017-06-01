@@ -164,6 +164,12 @@ class RoyaltyReport < ActiveRecord::Base
     string +=     "<td>MG</td>"
     string +=     "<td>#{negafy(self.mg)}</td>"
     string +=   "</tr>"
+    if self.e_and_o > 0
+      string +=   "<tr>"
+      string +=     "<td>E & O</td>"
+      string +=     "<td>#{negafy(self.e_and_o)}</td>"
+      string +=   "</tr>"
+    end
     string +=   "<tr>"
     string +=     "<td>Amount Paid</td>"
     string +=     "<td>#{negafy(self.amount_paid)}</td>"
