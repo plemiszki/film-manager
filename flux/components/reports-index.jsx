@@ -258,7 +258,8 @@ var ReportsIndex = React.createClass({
                 <tr>
                   <th><div className={this.sortClass("title")} onClick={this.clickTitle}>Title</div></th>
                   <th><div className={this.sortClass("licensor")} onClick={this.clickLicensor}>Licensor</div></th>
-                  <th>Due</th>
+                  <th></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -274,6 +275,9 @@ var ReportsIndex = React.createClass({
                       </td>
                       <td>
                         {report.days} days
+                      </td>
+                      <td>
+                        {report.dateSent ? Tools.formatDate(new Date(report.dateSent + " 0:00")) : "Not Sent"}
                       </td>
                     </tr>
                   );

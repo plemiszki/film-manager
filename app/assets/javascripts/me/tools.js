@@ -115,6 +115,10 @@ Tools = {
     return null;
   },
 
+  formatDate: function(date) {
+    return (date.getMonth() + 1).toString() + "/" + date.getDate().toString() + "/" + date.getFullYear().toString();
+  },
+
   objectsAreEqual: function(obj1, obj2) {
     return JSON.stringify(obj1) === JSON.stringify(obj2);
   },
