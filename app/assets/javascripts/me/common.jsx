@@ -5,11 +5,15 @@ $(document).ready(function() {
   Common.initialize();
 });
 
-Array.prototype.filterSearchText = function(searchText) {
+Array.prototype.filterSearchText = function(searchText, property) {
   if (searchText !== '') {
     var re = new RegExp(searchText, "i");
     return this.filter(function(thing) {
-      return re.test(thing.title || thing.name);
+      if (property) {
+        return re.test(thing[property]);
+      } else {
+        return re.test(thing.title || thing.name);
+      }
     });
   } else {
     return this;

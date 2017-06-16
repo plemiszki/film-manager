@@ -24,6 +24,18 @@
   .arrow-button {
     min-width: 25px;
   }
+
+  .sort-header-active {
+    display: inline;
+    color: #01647C;
+    cursor: default;
+    font-family: 'TeachableSansExtraBold';
+  }
+
+  .sort-header-inactive {
+    display: inline;
+    cursor: pointer;
+  }
 }
 
 .ReactModalPortal {

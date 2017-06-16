@@ -43,6 +43,7 @@ var ReportsIndex = React.createClass({
   getInitialState: function() {
     return({
       fetching: true,
+      sortBy: "title",
       searchText: "",
       quarter: 1,
       year: 2017,
@@ -161,13 +162,25 @@ var ReportsIndex = React.createClass({
   },
 
   clickSend: function(e) {
-    if (!e.target.classList.contains('inactive')) {      
+    if (!e.target.classList.contains('inactive')) {
       this.setState({
         fetching: true,
         jobFirstLine: "Exporting Reports"
       });
       ClientActions.sendAll(this.state.daysDue, this.state.quarter, this.state.year);
     }
+  },
+
+  clickTitle: function(e) {
+    this.setState({
+      sortBy: "title"
+    });
+  },
+
+  clickLicensor: function(e) {
+    this.setState({
+      sortBy: "licensor"
+    });
   },
 
   fileDone: function() {
@@ -186,6 +199,36 @@ var ReportsIndex = React.createClass({
 
   redirect: function(id) {
     window.location.pathname = "royalty_reports/" + id;
+  },
+
+  sortClass: function(which) {
+    return this.state.sortBy === which ? "sort-header-active" : "sort-header-inactive";
+  },
+
+  sortReports: function(a, b) {
+    if (this.state.sortBy === "title") {
+      if (a.title.toLowerCase() < b.title.toLowerCase()) {
+        return -1;
+      } else if (a.title.toLowerCase() > b.title.toLowerCase()) {
+        return 1;
+      } else {
+        return 0;
+      }
+    } else {
+      if (a.licensor.toLowerCase() < b.licensor.toLowerCase()) {
+        return -1;
+      } else if (a.licensor.toLowerCase() > b.licensor.toLowerCase()) {
+        return 1;
+      } else {
+        if (a.title.toLowerCase() < b.title.toLowerCase()) {
+          return -1;
+        } else if (a.title.toLowerCase() > b.title.toLowerCase()) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+    }
   },
 
   render: function() {
@@ -213,14 +256,14 @@ var ReportsIndex = React.createClass({
             <table className={"admin-table"}>
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Licensor</th>
+                  <th><div className={this.sortClass("title")} onClick={this.clickTitle}>Title</div></th>
+                  <th><div className={this.sortClass("licensor")} onClick={this.clickLicensor}>Licensor</div></th>
                   <th>Due</th>
                 </tr>
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td></tr>
-                {this.state.reports.filterDaysDue(this.state.daysDue).filterSearchText(this.state.searchText).map(function(report, index) {
+                {this.state.reports.sort(this.sortReports).filterDaysDue(this.state.daysDue).filterSearchText(this.state.searchText, this.state.sortBy).map(function(report, index) {
                   return(
                     <tr key={index} onClick={this.redirect.bind(this, report.id)}>
                       <td className="name-column">
