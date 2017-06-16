@@ -16,6 +16,7 @@ class Film < ActiveRecord::Base
   belongs_to :licensor
   has_many :film_revenue_percentages, dependent: :destroy
   has_many :film_rights, dependent: :destroy
+  has_many :royalty_reports, dependent: :destroy
 
   after_create :create_percentages
 
