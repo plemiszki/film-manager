@@ -52,7 +52,7 @@
 
 .ReactModalPortal {
 
-  .import-file, .errors-modal {
+  .import-file, .errors-modal, .send-modal {
 
     h1 {
       color: #2C2F33;
@@ -93,6 +93,16 @@
       bottom: 20px;
       margin: 0;
       left: calc(50% - 87.5px);
+    }
+  }
+
+  .send-modal {
+    h1 {
+      margin-bottom: 0;
+    }
+
+    .orange-button {
+      margin-top: 20px;
     }
   }
 }

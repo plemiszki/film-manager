@@ -40,6 +40,22 @@ var ReportsIndex = React.createClass({
     }
   },
 
+  sendModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 540,
+      height: 140,
+      border: 'solid 1px #5F5F5F',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F'
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -52,6 +68,7 @@ var ReportsIndex = React.createClass({
       importModalOpen: false,
       errorsModalOpen: false,
       jobModalOpen: false,
+      sendModalOpen: false,
       job: {
         errors_text: ""
       }
@@ -164,10 +181,13 @@ var ReportsIndex = React.createClass({
   clickSend: function(e) {
     if (!e.target.classList.contains('inactive')) {
       this.setState({
-        fetching: true,
-        jobFirstLine: "Exporting Reports"
+        sendModalOpen: true
       });
-      ClientActions.sendAll(this.state.daysDue, this.state.quarter, this.state.year);
+      // this.setState({
+      //   fetching: true,
+      //   jobFirstLine: "Exporting Reports"
+      // });
+      // ClientActions.sendAll(this.state.daysDue, this.state.quarter, this.state.year);
     }
   },
 
@@ -193,7 +213,8 @@ var ReportsIndex = React.createClass({
   handleModalClose: function() {
     this.setState({
       importModalOpen: false,
-      errorsModalOpen: false
+      errorsModalOpen: false,
+      sendModalOpen: false
     });
   },
 
@@ -304,9 +325,44 @@ var ReportsIndex = React.createClass({
             <a className="orange-button" onClick={this.handleModalClose}>OK</a>
           </div>
         </Modal>
+        <Modal isOpen={this.state.sendModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.sendModalStyles}>
+          {this.renderSendModalHeader()}
+        </Modal>
         {Common.jobModal.call(this, this.state.job)}
       </div>
     );
+  },
+
+  renderSendModalHeader: function() {
+    var total = this.state.reports.filterDaysDue(this.state.daysDue).length;
+    var unsent = this.state.reports.filterDaysDue(this.state.daysDue).filter(function(report) {
+      return report.dateSent === null;
+    }).length;
+    var difference = total - unsent;
+    if (difference === total) {
+      return(
+        <div className="send-modal">
+          <h1>Send all {difference} reports now&#63;</h1>
+          <a className="orange-button" onClick={this.handleModalClose}>Yes</a>
+          <a className="orange-button" onClick={this.handleModalClose}>No</a>
+        </div>
+      )
+    } else if (difference === 0) {
+      return(
+        <div className="send-modal">
+          <h1>All reports have been sent.</h1>
+          <a className="orange-button" onClick={this.handleModalClose}>OK</a>
+        </div>
+      )
+    } else {
+      return(
+        <div className="send-modal">
+          <h1>Send remaining {difference} reports now&#63;</h1>
+          <a className="orange-button" onClick={this.handleModalClose}>Yes</a>
+          <a className="orange-button" onClick={this.handleModalClose}>No</a>
+        </div>
+      )
+    }
   },
 
   componentDidUpdate: function() {
