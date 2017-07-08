@@ -43,7 +43,7 @@ class Api::RoyaltyReportsController < ApplicationController
 
   def send_all
     time_started = Time.now.to_s
-    total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], send_reports: true}, quarter: params[:quarter], year: params[:year])
+    total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], export_reports: true, send_reports: true}, quarter: params[:quarter], year: params[:year], date_sent: nil)
     job = Job.create!(job_id: time_started, first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
     ExportAndSendReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
     render json: job

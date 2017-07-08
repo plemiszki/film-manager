@@ -14,6 +14,14 @@ String.prototype.cap = function(n) {
   return this.slice(0, n) + (this.length > n ? '...' : '');
 };
 
+String.prototype.pluralize = function(n) {
+  if (n > 1) {
+    return this + 's';
+  } else {
+    return this;
+  }
+};
+
 Number.prototype.formatMoney = function() {
   var n = this,
       c = 2,
