@@ -78,7 +78,7 @@ var ReportDetails = React.createClass({
   },
 
   clickExport: function() {
-    window.location.pathname = 'api/royalty_reports/' + this.state.report.id + '/export'
+    window.location.pathname = 'api/royalty_reports/' + this.state.report.id + '/export';
   },
 
   checkForChanges: function() {

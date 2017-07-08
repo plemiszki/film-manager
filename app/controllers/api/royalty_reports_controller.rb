@@ -50,14 +50,14 @@ class Api::RoyaltyReportsController < ApplicationController
   end
 
   def export
+    pathname = Rails.root.join('tmp', Time.now.to_s)
+    FileUtils.mkdir_p("#{pathname}")
     query_data_for_show_jbuilder
-    export_report(@reports[0], @streams, @film)
-
-    save_path = Rails.root.join('statements', report_name(@film, @reports[0]))
-    File.open(save_path, 'r') do |f|
+    report = @reports[0]
+    report.export!(pathname)
+    File.open("#{pathname}/#{report_name(@film, @reports[0])}", 'r') do |f|
       send_data f.read, filename: report_name(@film, @reports[0])
     end
-    File.delete(save_path)
   end
 
   def export_all
