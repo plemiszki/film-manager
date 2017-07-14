@@ -8,5 +8,8 @@ class ImportData
     p '---------------------------'
     Importer.import_licensors(time_started)
     Importer.import_films(time_started)
+    p '---------------------------'
+    p 'FINISHED DATA IMPORT'
+    p '---------------------------'
   end
 end
