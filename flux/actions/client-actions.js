@@ -199,7 +199,12 @@ var ClientActions = {
           sage_id: film.sageId,
           royalty_notes: film.royaltyNotes,
           send_reports: film.sendReports,
-          export_reports: film.exportReports
+          export_reports: film.exportReports,
+          reserve: film.reserve,
+          reserve_percentage: film.reservePercentage,
+          reserve_quarters: film.reserveQuarters,
+          reserve_start_year: film.reserveStartYear,
+          reserve_start_quarter: film.reserveStartQuarter
         },
         percentages: percentages
       },

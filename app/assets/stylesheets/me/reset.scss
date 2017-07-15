@@ -35,6 +35,10 @@ button {
   padding: 0;
 }
 
+*:focus {
+  outline: none;
+}
+
 input, .nice-select, textarea {
   border: 1px solid #E4E9ED;
   border-radius: 3px;

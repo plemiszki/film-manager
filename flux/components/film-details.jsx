@@ -138,9 +138,29 @@ var FilmDetails = React.createClass({
 
   changeCheckbox: function(property, e) {
     var film = this.state.film;
+    var filmErrors = this.state.filmErrors;
     film[property] = e.target.checked;
+    if (property === "reserve" && e.target.checked === false) {
+      film.reservePercentage = 0;
+      Common.errors.reservePercentage.forEach(function(message) {
+        Tools.removeFromArray(filmErrors, message);
+      });
+      film.reserveQuarters = 0;
+      Common.errors.reserveQuarters.forEach(function(message) {
+        Tools.removeFromArray(filmErrors, message);
+      });
+      film.reserveStartYear = (new Date).getFullYear();
+      Common.errors.reserveStartYear.forEach(function(message) {
+        Tools.removeFromArray(filmErrors, message);
+      });
+      film.reserveStartQuarter = 1;
+      Common.errors.reserveStartQuarter.forEach(function(message) {
+        Tools.removeFromArray(filmErrors, message);
+      });
+    }
     this.setState({
       film: film,
+      filmErrors: filmErrors,
       justSaved: false
     }, function() {
       var changesToSave = this.changeFieldArgs().changesFunction.call();
@@ -318,6 +338,32 @@ var FilmDetails = React.createClass({
                   </div>
                 )
               }.bind(this))}
+            </div>
+          </div>
+          <hr id="above-checkboxes" />
+          <div className={"row reserve-section" + (this.state.film.reserve ? "" : " no-reserve")}>
+            <div className="col-xs-3">
+              <input id="returns-reserve" className="checkbox" type="checkbox" checked={this.state.film.reserve} onChange={this.changeCheckbox.bind(this, 'reserve')} /><label className="checkbox" htmlFor="reserve-returns">Reserve Against Returns</label>
+            </div>
+            <div className="col-xs-2">
+              <h2>Reserve %</h2>
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.reservePercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reservePercentage} data-field="reservePercentage" disabled={!this.state.film.reserve} />
+              {Common.renderFieldError(this.state.filmErrors, [])}
+            </div>
+            <div className="col-xs-2">
+              <h2># of Quarters</h2>
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.reserveQuarters)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveQuarters} data-field="reserveQuarters" disabled={!this.state.film.reserve} />
+              {Common.renderFieldError(this.state.filmErrors, [])}
+            </div>
+            <div className="col-xs-2">
+              <h2>Year Start</h2>
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.reserveStartYear)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveStartYear} data-field="reserveStartYear" disabled={!this.state.film.reserve} />
+              {Common.renderFieldError(this.state.filmErrors, [])}
+            </div>
+            <div className="col-xs-2">
+              <h2>Quarter Start</h2>
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.reserveStartQuarter)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveStartQuarter} data-field="reserveStartQuarter" disabled={!this.state.film.reserve} />
+              {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
           </div>
           <hr id="above-checkboxes" />
