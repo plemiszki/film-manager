@@ -83,9 +83,7 @@ class Api::FilmsController < ApplicationController
       :export_reports,
       :reserve,
       :reserve_percentage,
-      :reserve_quarters,
-      :reserve_start_year,
-      :reserve_start_quarter
+      :reserve_quarters
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

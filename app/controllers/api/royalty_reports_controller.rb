@@ -41,14 +41,6 @@ class Api::RoyaltyReportsController < ApplicationController
     end
   end
 
-  def send_all
-    time_started = Time.now.to_s
-    total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], export_reports: true, send_reports: true}, quarter: params[:quarter], year: params[:year], date_sent: nil)
-    job = Job.create!(job_id: time_started, first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
-    ExportAndSendReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
-    render json: job
-  end
-
   def export
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")
@@ -62,13 +54,18 @@ class Api::RoyaltyReportsController < ApplicationController
 
   def export_all
     time_started = Time.now.to_s
+    total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], export_reports: true, send_reports: true}, quarter: params[:quarter], year: params[:year])
+    job = Job.create!(job_id: time_started, name: "export all", first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
     ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
-    render text: time_started, status: 200
+    render json: job
   end
 
-  def zip
-    zip_data = File.read(Rails.root.join('tmp', params[:time], 'statements.zip'))
-    send_data(zip_data, :type => 'application/zip', :filename => 'statements.zip')
+  def send_all
+    time_started = Time.now.to_s
+    total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], export_reports: true, send_reports: true}, quarter: params[:quarter], year: params[:year], date_sent: nil)
+    job = Job.create!(job_id: time_started, first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
+    ExportAndSendReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
+    render json: job
   end
 
   # def status

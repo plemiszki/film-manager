@@ -101,17 +101,31 @@ var ReportsIndex = React.createClass({
 
   getJob: function() {
     var job = JobStore.job();
-    var open = job.first_line !== "Done!";
-    var errorsModalOpen = (job.first_line === "Done!" && job.errors_text !== "");
-    var noErrorsModalOpen = (job.first_line === "Done!" && job.errors_text === "");
-    this.setState({
-      jobModalOpen: open,
-      errorsModalOpen: errorsModalOpen,
-      noErrorsModalOpen: noErrorsModalOpen,
-      sendModalOpen: false,
-      job: job,
-      fetching: false
-    });
+    if (job.first_line.slice(0, 5) === "Done!") {
+      if (job.name === "export all") {
+        this.setState({
+          jobModalOpen: false,
+          job: job
+        }, function() {
+          window.location.href = job.first_line.slice(5);
+        });
+      } else {
+        this.setState({
+          jobModalOpen: false,
+          errorsModalOpen: job.errors_text !== "",
+          noErrorsModalOpen: job.errors_text === "",
+          sendModalOpen: false,
+          job: job
+        });
+      }
+    } else {
+      this.setState({
+        jobModalOpen: true,
+        sendModalOpen: false,
+        job: job,
+        fetching: false
+      });
+    }
   },
 
   clickPrev: function() {
@@ -274,7 +288,7 @@ var ReportsIndex = React.createClass({
           <div className="clearfix">
             <h1>Statements - Q{this.state.quarter}, {this.state.year}</h1>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all')} onClick={this.clickSend}>Send All</a>
-            <a className={"disabled orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>Export All</a>
+            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>Export All</a>
             <a className={"disabled orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickImport}>Import</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickNext}>&#62;&#62;</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickPrev}>&#60;&#60;</a>

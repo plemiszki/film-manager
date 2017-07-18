@@ -149,15 +149,6 @@ Common = {
       "Reserve quarters is not a number",
       "Reserve quarters must be greater than or equal to 1",
       "Reserve quarters must be less than or equal to 4"
-    ],
-    reserveStartYear: [
-      "Reserve start year is not a number",
-      "Reserve start year must be greater than or equal to 2000"
-    ],
-    reserveStartQuarter: [
-      "Reserve start quarter is not a number",
-      "Reserve start quarter must be greater than or equal to 1",
-      "Reserve start quarter must be less than or equal to 4"
     ]
   },
 

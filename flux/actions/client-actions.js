@@ -202,9 +202,7 @@ var ClientActions = {
           export_reports: film.exportReports,
           reserve: film.reserve,
           reserve_percentage: film.reservePercentage,
-          reserve_quarters: film.reserveQuarters,
-          reserve_start_year: film.reserveStartYear,
-          reserve_start_quarter: film.reserveStartQuarter
+          reserve_quarters: film.reserveQuarters
         },
         percentages: percentages
       },
@@ -294,7 +292,7 @@ var ClientActions = {
         year: year
       },
       success: function(response) {
-        ServerActions.jobStarted(response);
+        ServerActions.receiveJob(response);
       }
     });
   },

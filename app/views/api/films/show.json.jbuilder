@@ -14,8 +14,6 @@ json.films @films do |film|
   json.reserve film.reserve
   json.reservePercentage film.reserve_percentage
   json.reserveQuarters film.reserve_quarters
-  json.reserveStartYear film.reserve_start_year
-  json.reserveStartQuarter film.reserve_start_quarter
   json.exportReports film.export_reports
   json.sendReports film.send_reports
 end

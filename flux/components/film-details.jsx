@@ -149,14 +149,6 @@ var FilmDetails = React.createClass({
       Common.errors.reserveQuarters.forEach(function(message) {
         Tools.removeFromArray(filmErrors, message);
       });
-      film.reserveStartYear = (new Date).getFullYear();
-      Common.errors.reserveStartYear.forEach(function(message) {
-        Tools.removeFromArray(filmErrors, message);
-      });
-      film.reserveStartQuarter = 1;
-      Common.errors.reserveStartQuarter.forEach(function(message) {
-        Tools.removeFromArray(filmErrors, message);
-      });
     }
     this.setState({
       film: film,
@@ -353,16 +345,6 @@ var FilmDetails = React.createClass({
             <div className="col-xs-2">
               <h2># of Quarters</h2>
               <input className={Common.errorClass(this.state.filmErrors, Common.errors.reserveQuarters)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveQuarters} data-field="reserveQuarters" disabled={!this.state.film.reserve} />
-              {Common.renderFieldError(this.state.filmErrors, [])}
-            </div>
-            <div className="col-xs-2">
-              <h2>Year Start</h2>
-              <input className={Common.errorClass(this.state.filmErrors, Common.errors.reserveStartYear)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveStartYear} data-field="reserveStartYear" disabled={!this.state.film.reserve} />
-              {Common.renderFieldError(this.state.filmErrors, [])}
-            </div>
-            <div className="col-xs-2">
-              <h2>Quarter Start</h2>
-              <input className={Common.errorClass(this.state.filmErrors, Common.errors.reserveStartQuarter)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveStartQuarter} data-field="reserveStartQuarter" disabled={!this.state.film.reserve} />
               {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
           </div>

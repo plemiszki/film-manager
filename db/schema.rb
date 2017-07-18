@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170714004350) do
+ActiveRecord::Schema.define(version: 20170718015646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,26 +38,24 @@ ActiveRecord::Schema.define(version: 20170714004350) do
   add_index "film_rights", ["film_id", "right_id"], name: "index_film_rights_on_film_id_and_right_id", unique: true, using: :btree
 
   create_table "films", force: :cascade do |t|
-    t.string  "title",                                                         null: false
-    t.boolean "short_film",                                    default: false
+    t.string  "title",                                                      null: false
+    t.boolean "short_film",                                 default: false
     t.integer "feature_id"
-    t.integer "label_id",                                                      null: false
+    t.integer "label_id",                                                   null: false
     t.integer "licensor_id"
-    t.integer "deal_type_id",                                  default: 1
+    t.integer "deal_type_id",                               default: 1
     t.integer "days_statement_due"
-    t.decimal "gr_percentage",         precision: 5, scale: 2
-    t.decimal "mg",                    precision: 8, scale: 2, default: 0.0
-    t.decimal "e_and_o",               precision: 8, scale: 2, default: 0.0
-    t.decimal "expense_cap",           precision: 8, scale: 2, default: 0.0
-    t.string  "sage_id",                                       default: ""
-    t.string  "royalty_notes",                                 default: ""
-    t.boolean "export_reports",                                default: true
-    t.boolean "send_reports",                                  default: true
-    t.boolean "reserve",                                       default: false
-    t.decimal "reserve_percentage",    precision: 5, scale: 2, default: 0.0
-    t.integer "reserve_quarters",                              default: 0
-    t.integer "reserve_start_year",                            default: 0
-    t.integer "reserve_start_quarter",                         default: 1
+    t.decimal "gr_percentage",      precision: 5, scale: 2
+    t.decimal "mg",                 precision: 8, scale: 2, default: 0.0
+    t.decimal "e_and_o",            precision: 8, scale: 2, default: 0.0
+    t.decimal "expense_cap",        precision: 8, scale: 2, default: 0.0
+    t.string  "sage_id",                                    default: ""
+    t.string  "royalty_notes",                              default: ""
+    t.boolean "export_reports",                             default: true
+    t.boolean "send_reports",                               default: true
+    t.boolean "reserve",                                    default: false
+    t.decimal "reserve_percentage", precision: 5, scale: 2, default: 0.0
+    t.integer "reserve_quarters",                           default: 0
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree
@@ -73,6 +71,7 @@ ActiveRecord::Schema.define(version: 20170714004350) do
     t.integer "current_value", default: 0
     t.integer "total_value",   default: 0
     t.string  "errors_text",   default: ""
+    t.string  "name"
   end
 
   create_table "labels", force: :cascade do |t|
