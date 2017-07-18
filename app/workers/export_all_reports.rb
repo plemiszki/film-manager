@@ -19,7 +19,6 @@ class ExportAllReports
     job = Job.find_by_job_id(time_started)
     reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: {export_reports: true, send_reports: true})
     reports.each do |report|
-      next unless report.film.title == "And They Call It Summer"
       return if Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
       if days_due == "all" || report.film.days_statement_due == days_due.to_i
         p '---------------------------'
