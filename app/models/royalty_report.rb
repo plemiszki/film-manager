@@ -14,6 +14,9 @@ class RoyaltyReport < ActiveRecord::Base
   has_many :royalty_revenue_streams, dependent: :destroy
 
   def export!(directory)
+    film = self.film
+    royalty_revenue_streams = self.royalty_revenue_streams
+
     string = "<style>"
     string += "body {"
     string +=   "font-family: Arial;"
@@ -66,11 +69,14 @@ class RoyaltyReport < ActiveRecord::Base
     string += ".bottom-text {"
     string +=   "font-size: 10px;"
     string += "}"
+    string += ".page-break {"
+    string +=   "page-break-before: always;"
+    string += "}"
     string += "</style>"
     string += "<div class=\"upper-right\">"
     string +=   "<div class=\"producer-report\">Producer Report</div>"
-    string +=   "#{self.film.licensor ? self.film.licensor.name : ""}<br>"
-    string +=   "#{self.film.title}<br>"
+    string +=   "#{film.licensor ? film.licensor.name : ""}<br>"
+    string +=   "#{film.title}<br>"
     string +=   "Q#{self.quarter} #{self.year}"
     string += "</div>"
     string += "<div class=\"film-movement\">Film Movement</div>"
@@ -87,7 +93,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "<th>Difference</th>" if expense_class
     string +=   "<th>Licensor %</th>"
     string +=   "<th>Licensor Share</th></tr>"
-    self.royalty_revenue_streams.each do |stream|
+    royalty_revenue_streams.each do |stream|
       if stream.current_revenue > 0 || stream.current_expense > 0
         string += "<tr>"
         string +=   "<td>#{stream.revenue_stream.name}</td>"
@@ -100,7 +106,7 @@ class RoyaltyReport < ActiveRecord::Base
         string += "</tr>"
       end
     end
-    string += "<tr class=\"#{self.film.deal_type_id == 4 ? "totals-row-2" : "totals-row"}\">"
+    string += "<tr class=\"#{film.deal_type_id == 4 ? "totals-row-2" : "totals-row"}\">"
     string +=   "<td>Current Total</td>"
     string +=   "<td>#{dollarify(self.current_total_revenue)}</td>"
     string +=   "<td></td>" if gr_deal
@@ -109,7 +115,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "<td></td>"
     string +=   "<td>#{dollarify(self.current_total)}</td>"
     string += "</tr>"
-    if self.film.deal_type_id == 4
+    if film.deal_type_id == 4
       string += "<tr>"
       string +=   "<td>Current Expenses</td><td></td><td></td><td>#{negafy(self.current_total_expenses)}</td>"
       string += "</tr>"
@@ -126,7 +132,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "<th></th>"
     string +=   "<th></th>"
     string += "</tr>"
-    self.royalty_revenue_streams.each do |stream|
+    royalty_revenue_streams.each do |stream|
       if stream.joined_revenue > 0 || stream.joined_expense > 0
         string += "<tr>"
         string +=   "<td>#{stream.revenue_stream.name}</td>"
@@ -154,7 +160,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=     "<td>Cumulative Licensor Share</td>"
     string +=     "<td>#{dollarify(self.joined_total)}</td>"
     string +=   "</tr>"
-    if self.film.deal_type_id == 4
+    if film.deal_type_id == 4
       string +=   "<tr>"
       string +=     "<td>Cumulative Expenses</td>"
       string +=     "<td>#{negafy(self.joined_total_expenses)}</td>"
@@ -182,6 +188,9 @@ class RoyaltyReport < ActiveRecord::Base
     string += "<div class=\"bottom-text\">"
     string += "If there is an amount due to Licensor on this self, please send an invoice for the amount due along with current bank wire information if located outside the U.S., and current mailing address if located inside the U.S.<br>No payments will be made without this invoice and information."
     string += "</div>"
+    if film.reserve
+      string += "<div class=\"page-break\">here we go!!!</div>"
+    end
 
     pdf = WickedPdf.new.pdf_from_string(string)
     subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
@@ -192,24 +201,25 @@ class RoyaltyReport < ActiveRecord::Base
   end
 
   def calculate!
+    film = self.film
     self.current_total_revenue = 0.00
-    self.current_total_expenses = 0.00 unless self.film.deal_type_id == 4
+    self.current_total_expenses = 0.00 unless film.deal_type_id == 4
     self.current_total = 0.00
     self.royalty_revenue_streams.each do |stream|
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
       stream.joined_expense = stream.current_expense + stream.cume_expense
-      if self.film.deal_type_id == 1 # No Expenses Recouped
+      if film.deal_type_id == 1 # No Expenses Recouped
         stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.joined_licensor_share = (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif self.film.deal_type_id == 2 # Expenses Recouped From Top
+      elsif film.deal_type_id == 2 # Expenses Recouped From Top
         stream.current_difference = stream.current_revenue - stream.current_expense
         stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_difference = stream.cume_revenue - stream.cume_expense
         stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.joined_difference = stream.joined_revenue - stream.joined_expense
         stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif self.film.deal_type_id == 3 # Theatrical Expenses Recouped From Top
+      elsif film.deal_type_id == 3 # Theatrical Expenses Recouped From Top
         if ["Theatrical", "Non-Theatrical", "Commercial Video"].include?(stream.revenue_stream.name)
           stream.current_difference = stream.current_revenue - stream.current_expense
           stream.cume_difference = stream.cume_revenue - stream.cume_expense
@@ -222,29 +232,29 @@ class RoyaltyReport < ActiveRecord::Base
         stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif self.film.deal_type_id == 4 # Expenses Recouped From Licensor Share
+      elsif film.deal_type_id == 4 # Expenses Recouped From Licensor Share
         stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.joined_licensor_share = (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif self.film.deal_type_id == 5 # GR Percentage
-        stream.current_gr = (stream.current_revenue * (self.film.gr_percentage.fdiv(100))).truncate(2)
+      elsif film.deal_type_id == 5 # GR Percentage
+        stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
         stream.current_difference = stream.current_revenue - stream.current_gr - stream.current_expense
         stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_gr = (stream.cume_revenue * (self.film.gr_percentage.fdiv(100))).truncate(2)
+        stream.cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
         stream.cume_difference = stream.cume_revenue - stream.cume_gr - stream.cume_expense
         stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_gr = (stream.joined_revenue * (self.film.gr_percentage.fdiv(100))).truncate(2)
+        stream.joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
         stream.joined_difference = stream.joined_revenue - stream.joined_gr - stream.joined_expense
         stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif self.film.deal_type_id == 6 # GR Percentage Theatrical/Non-Theatrical
+      elsif film.deal_type_id == 6 # GR Percentage Theatrical/Non-Theatrical
         if ["Theatrical", "Non-Theatrical"].include?(stream.revenue_stream.name)
-          stream.current_gr = (stream.current_revenue * (self.film.gr_percentage.fdiv(100))).truncate(2)
+          stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
           stream.current_difference = stream.current_revenue - stream.current_gr - stream.current_expense
           stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-          stream.cume_gr = (stream.cume_revenue * (self.film.gr_percentage.fdiv(100))).truncate(2)
+          stream.cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
           stream.cume_difference = stream.cume_revenue - stream.cume_gr - stream.cume_expense
           stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-          stream.joined_gr = (stream.joined_revenue * (self.film.gr_percentage.fdiv(100))).truncate(2)
+          stream.joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
           stream.joined_difference = stream.joined_revenue - stream.joined_gr - stream.joined_expense
           stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         else
@@ -258,18 +268,18 @@ class RoyaltyReport < ActiveRecord::Base
       end
 
       self.current_total_revenue += stream.current_revenue
-      self.current_total_expenses += stream.current_expense unless self.film.deal_type_id == 4
+      self.current_total_expenses += stream.current_expense unless film.deal_type_id == 4
       self.current_total += stream.current_licensor_share
 
       self.cume_total_revenue += stream.cume_revenue
-      self.cume_total_expenses += stream.cume_expense unless self.film.deal_type_id == 4
+      self.cume_total_expenses += stream.cume_expense unless film.deal_type_id == 4
       self.cume_total += stream.cume_licensor_share
 
       self.joined_total_revenue += stream.joined_revenue
-      self.joined_total_expenses += stream.joined_expense unless self.film.deal_type_id == 4
+      self.joined_total_expenses += stream.joined_expense unless film.deal_type_id == 4
       self.joined_total += stream.joined_licensor_share
 
-      if self.film.deal_type_id == 4
+      if film.deal_type_id == 4
         self.amount_due = self.cume_total - self.cume_total_expenses - self.e_and_o - self.mg - self.amount_paid
         self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.e_and_o - self.mg - self.amount_paid
       else
@@ -277,7 +287,7 @@ class RoyaltyReport < ActiveRecord::Base
         self.amount_due = self.cume_total - self.e_and_o - self.mg - self.amount_paid
       end
     end
-    if self.film.deal_type_id == 4
+    if film.deal_type_id == 4
       self.current_share_minus_expenses = self.current_total - self.current_total_expenses
       self.joined_total_expenses = self.current_total_expenses + self.cume_total_expenses
     end

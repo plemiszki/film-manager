@@ -17,7 +17,7 @@ class Importer < ActiveRecord::Base
         if licensor
           licensor.update(name: array[1], address: "#{array[2]}\n#{array[3]}\n#{array[4]}")
         else
-          l = Licensor.new(name: array[1], address: "#{array[2]}\n#{array[3]}\n#{array[4]}")
+          licensor = Licensor.new(name: array[1], address: "#{array[2]}\n#{array[3]}\n#{array[4]}")
         end
         licensor.save!
         array.shift(5)
