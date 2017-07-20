@@ -6,7 +6,8 @@ class Importer < ActiveRecord::Base
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
     )
-    s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Admin.txt").get(response_target: Rails.root.join("tmp/#{time_started}/Admin.txt"))
+    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Admin.txt")
+    object.get(response_target: Rails.root.join("tmp/#{time_started}/Admin.txt"))
     File.open(Rails.root.join("tmp/#{time_started}/Admin.txt")) do |f|
       array = f.gets.split('^')
       total = array[0].to_i
@@ -24,6 +25,7 @@ class Importer < ActiveRecord::Base
         licensors += 1
       end
     end
+    object.delete
   end
 
   def self.import_films(time_started)
@@ -32,7 +34,8 @@ class Importer < ActiveRecord::Base
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
     )
-    s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Films.txt").get(response_target: "tmp/#{time_started}/Films.txt")
+    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Films.txt")
+    object.get(response_target: "tmp/#{time_started}/Films.txt")
     File.open(Rails.root.join("tmp/#{time_started}/Films.txt")) do |file|
       total = file.gets.to_i - 2
       films = 0
@@ -128,6 +131,7 @@ class Importer < ActiveRecord::Base
         films += 1
       end
     end
+    object.delete
   end
 
 end
