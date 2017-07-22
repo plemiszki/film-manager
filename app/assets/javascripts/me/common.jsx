@@ -196,6 +196,32 @@ Common = {
     });
   },
 
+  properStatementQuarter: function(date) {
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    month -= 2;
+    if (month <= 1) {
+      year -= 1;
+      month += 12;
+    }
+    return {
+      quarter: Common.getQuarterFromMonth(month),
+      year: year
+    }
+  },
+
+  getQuarterFromMonth: function(month) {
+    if (month >= 9) {
+      return 4;
+    } else if (month >= 6) {
+      return 3;
+    } else if (month >= 3) {
+      return 2;
+    } else {
+      return 1;
+    }
+  },
+
   errorClass: function(stateErrors, fieldErrors) {
     for (i = 0; i < fieldErrors.length; i++) {
       if (stateErrors.indexOf(fieldErrors[i]) > -1) {

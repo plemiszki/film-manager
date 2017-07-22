@@ -57,12 +57,13 @@ var ReportsIndex = React.createClass({
   },
 
   getInitialState: function() {
+    date = new Date;
     return({
       fetching: true,
       sortBy: "title",
       searchText: "",
-      quarter: 1,
-      year: 2017,
+      quarter: Common.properStatementQuarter(date).quarter,
+      year: Common.properStatementQuarter(date).year,
       reports: [],
       daysDue: 'all',
       importModalOpen: false,
