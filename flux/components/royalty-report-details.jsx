@@ -225,6 +225,10 @@ var ReportDetails = React.createClass({
               <div className="label">Cumulative Expenses</div>
               <input className={Common.errorClass(this.state.reportErrors, Common.errors.cumeTotalExpenses)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={this.state.showJoined} value={this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "")} data-field="cumeTotalExpenses" />
             </div>
+            <div className="col-xs-2 col-xs-offset-2">
+              <div className="label">Expense Cap</div>
+                <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.report.expenseCap || ""} />
+              </div>
           </div>
           <div className="row">
             <div className="col-xs-1">
