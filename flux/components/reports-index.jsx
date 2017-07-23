@@ -108,13 +108,13 @@ var ReportsIndex = React.createClass({
 
   getJob: function() {
     var job = JobStore.job();
-    if (job.first_line.slice(0, 5) === "Done!") {
+    if (job.done || job.first_line.slice(0, 5) === "Done!") {
       if (job.name === "export all") {
         this.setState({
           jobModalOpen: false,
           job: job
         }, function() {
-          window.location.href = job.first_line.slice(5);
+          window.location.href = job.first_line;
         });
       } else {
         this.setState({
@@ -196,11 +196,13 @@ var ReportsIndex = React.createClass({
     });
   },
 
-  clickExport: function() {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.exportAll(this.state.daysDue, this.state.quarter, this.state.year);
+  clickExport: function(e) {
+    if (!e.target.classList.contains('inactive')) {
+      this.setState({
+        fetching: true
+      });
+      ClientActions.exportAll(this.state.daysDue, this.state.quarter, this.state.year);
+    }
   },
 
   clickSend: function(e) {
@@ -294,8 +296,8 @@ var ReportsIndex = React.createClass({
         <div id="reports-index" className="component">
           <div className="clearfix">
             <h1>Statements - Q{this.state.quarter}, {this.state.year}</h1>
-            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all')} onClick={this.clickSend}>Send All</a>
-            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>Export All</a>
+            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all' || this.state.reports.length === 0)} onClick={this.clickSend}>Send All</a>
+            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all' || this.state.reports.length === 0)} onClick={this.clickExport}>Export All</a>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickImport}>Import</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickNext}>&#62;&#62;</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickPrev}>&#60;&#60;</a>
@@ -358,12 +360,11 @@ var ReportsIndex = React.createClass({
                 <div key={index} className="import-error">{error}</div>
               );
             }.bind(this))}
-            <a className="orange-button" onClick={this.modalCloseAndRefresh}>OK</a>
           </div>
         </Modal>
         <Modal isOpen={this.state.noErrorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={this.sendModalStyles}>
           <div className="send-modal">
-            <h1>All reports sent successfully</h1>
+            <h1>{this.state.job.first_line}</h1>
             <a className="orange-button" onClick={this.modalCloseAndRefresh}>OK</a>
           </div>
         </Modal>

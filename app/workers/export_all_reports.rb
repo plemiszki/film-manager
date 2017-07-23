@@ -44,7 +44,7 @@ class ExportAllReports
       end
     end
 
-    job.update({first_line: "Uploading Archive", second_line: false})
+    job.update({first_line: "Creating Archive", second_line: false})
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
@@ -52,6 +52,6 @@ class ExportAllReports
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object("#{time_started}/statements.zip")
     obj.upload_file(Rails.root.join('tmp', time_started, 'statements.zip'), acl:'public-read')
-    job.update!({first_line: "Done!#{obj.public_url}"})
+    job.update!({done: true, first_line: obj.public_url})
   end
 end
