@@ -61,7 +61,7 @@ class ImportSageData
           films = Film.where("short_film = FALSE AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
           if films.length > 0
             found_film = true
-          elsif ["BEYOND BORDERS", "FACES OF ISRAEL", "FEMALE GAZE", "ENGLISH LANG GB", "FRENCH LANGUAGE GIFT BOX", "SPANISH LANG BOX SET", "LATIN AMERICAN GIFT BOX", "SPANISH LANGUAGE GIFT BOX"].include?(columns[0].strip)
+          elsif ["BEYOND BORDERS", "FACES OF ISRAEL", "FEMALE GAZE", "ENGLISH LANG GB", "FRENCH LANGUAGE GIFT BOX", "SPANISH LANG BOX SET", "LATIN AMERICAN GIFT BOX", "SPANISH LANGUAGE GIFT BOX", "CANNES FILM FEST BOX"].include?(columns[0].strip)
             errors << "not video revenue (#{columns[3]}) (#{index})" unless columns[1] == "30200"
             found_box_set = true
           else
@@ -128,6 +128,16 @@ class ImportSageData
           when "SPANISH LANGUAGE GIFT BOX"
             amount = (columns[3].to_d / 12).truncate(2)
             films = Film.where(title: ['Clandestine Childhood', 'Madeinusa', 'The Violin', 'Viva Cuba', 'XXY', 'The Pope\'s Toilet', 'Lake Tahoe', 'The Window', 'Gigante', 'The Wind Journeys', 'Alamar', 'Only When I Dance'])
+            films.each do |film|
+              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
+              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+              stream.current_revenue += amount
+              stream.save!
+            end
+          end
+        when "CANNES FILM FEST BOX"
+            amount = (columns[3].to_d / 3).truncate(2)
+            films = Film.where(title: ['The Bothersome Man', 'Raja', 'Road to Koktobel'])
             films.each do |film|
               report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
