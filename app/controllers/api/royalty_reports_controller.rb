@@ -294,7 +294,7 @@ class Api::RoyaltyReportsController < ApplicationController
     string += "<table><tr>"
     string +=   "<th>Current Period</th>"
     string +=   "<th>Revenue</th>"
-    string +=   "<th>#{sprintf("%g", report.gr_percentage)}% Fee</th>" if gr_deal(report)
+    string +=   "<th>#{sprintf("%g", film.gr_percentage)}% Fee</th>" if gr_deal(report)
     string +=   "<th>Expenses</th>" if expense_class(report)
     string +=   "<th>Difference</th>" if expense_class(report)
     string +=   "<th>Licensor %</th>"
