@@ -53,13 +53,19 @@
       </div>
     </body>
   <% end %>
-  <div id="upload-form">
+  <div id="upload-form" class="hidden">
     <%= form_for User.first do |f| %>
+      <%= f.file_field :file %>
+      <input id="submit-button" type="submit" />
+    <% end %>
+  </div>
+  <div id="upload-form-sage" class="hidden">
+    <%= form_for User.second do |f| %>
       <%= f.file_field :file %>
       <input id="quarter" name="quarter" type="hidden" />
       <input id="year" name="year" type="hidden" />
       <input id="label" name="label" type="hidden" />
-      <input id="submit-button" type="submit" />
+      <input id="submit-button-sage" type="submit" />
     <% end %>
   </div>
 </html>

@@ -57,7 +57,15 @@ var ReportsIndex = React.createClass({
   },
 
   getInitialState: function() {
-    date = new Date;
+    var date = new Date;
+    var job = {
+      errors_text: ""
+    };
+    if ($('#sage-import-id').length == 1) {
+      job.id = $('#sage-import-id')[0].innerHTML;
+      job.second_line = false;
+      job.first_line = "Importing Q" + $('#sage-import-quarter')[0].innerHTML + " " + $('#sage-import-label')[0].innerHTML;
+    }
     return({
       fetching: true,
       sortBy: "title",
@@ -69,11 +77,9 @@ var ReportsIndex = React.createClass({
       importModalOpen: false,
       errorsModalOpen: false,
       noErrorsModalOpen: false,
-      jobModalOpen: false,
+      jobModalOpen: !!job.id,
       sendModalOpen: false,
-      job: {
-        errors_text: ""
-      }
+      job: job
     });
   },
 
@@ -82,7 +88,7 @@ var ReportsIndex = React.createClass({
     this.fileListener = FileStore.addListener(this.fileDone);
     this.jobListener = JobStore.addListener(this.getJob);
     Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
-    $('#upload-form #user_file').on('change', this.pickFile);
+    $('#upload-form-sage #user_file').on('change', this.pickFile);
     ClientActions.fetchReports(this.state.quarter, this.state.year);
   },
 
@@ -168,17 +174,17 @@ var ReportsIndex = React.createClass({
   },
 
   clickImportRevenue: function() {
-    $('#upload-form #quarter').val(this.state.quarter);
-    $('#upload-form #year').val(this.state.year);
-    $('#upload-form #label').val('revenue');
-    $('#upload-form #user_file').click();
+    $('#upload-form-sage #quarter').val(this.state.quarter);
+    $('#upload-form-sage #year').val(this.state.year);
+    $('#upload-form-sage #label').val('revenue');
+    $('#upload-form-sage #user_file').click();
   },
 
   clickImportExpenses: function() {
-    $('#upload-form #quarter').val(this.state.quarter);
-    $('#upload-form #year').val(this.state.year);
-    $('#upload-form #label').val('expenses');
-    $('#upload-form #user_file').click();
+    $('#upload-form-sage #quarter').val(this.state.quarter);
+    $('#upload-form-sage #year').val(this.state.year);
+    $('#upload-form-sage #label').val('expenses');
+    $('#upload-form-sage #user_file').click();
   },
 
   pickFile: function() {
@@ -186,7 +192,7 @@ var ReportsIndex = React.createClass({
       importModalOpen: false,
       fetching: true
     }, function() {
-      $('#upload-form #submit-button').click();
+      $('#upload-form-sage #submit-button-sage').click();
     });
   },
 
@@ -290,7 +296,7 @@ var ReportsIndex = React.createClass({
             <h1>Statements - Q{this.state.quarter}, {this.state.year}</h1>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all')} onClick={this.clickSend}>Send All</a>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>Export All</a>
-            <a className={"disabled orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickImport}>Import</a>
+            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickImport}>Import</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickNext}>&#62;&#62;</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickPrev}>&#60;&#60;</a>
           </div>
@@ -411,6 +417,7 @@ var ReportsIndex = React.createClass({
           url: '/api/jobs/status',
           method: 'GET',
           data: {
+            id: this.state.job.id,
             time: this.state.job.job_id
           },
           success: function(response) {

@@ -86,7 +86,14 @@ class Api::RoyaltyReportsController < ApplicationController
   #   end
   # end
 
-  def upload
+  def import
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, first_line: "Importing Q#{params[:quarter]} #{params[:label].capitalize}", second_line: false)
+    ImportSageData.perform_async(params[:year], params[:quarter], time_started)
+    redirect_to "/royalty_reports", flash: {sage_import_id: job.id, quarter: params[:quarter], label: params[:label]}
+  end
+
+  def upload2
     uploaded_io = params[:user][:file]
     File.open(Rails.root.join('sage', uploaded_io.original_filename), 'wb') do |file|
       file.write(uploaded_io.read)
