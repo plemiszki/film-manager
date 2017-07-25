@@ -134,8 +134,7 @@ class ImportSageData
               stream.current_revenue += amount
               stream.save!
             end
-          end
-        when "CANNES FILM FEST BOX"
+          when "CANNES FILM FEST BOX"
             amount = (columns[3].to_d / 3).truncate(2)
             films = Film.where(title: ['The Bothersome Man', 'Raja', 'Road to Koktobel'])
             films.each do |film|

@@ -1,7 +1,12 @@
 #reports-index {
 
   a:not(:first-of-type) {
-    margin-right: 15px;
+    margin-right: 12px;
+  }
+
+  a:not(.arrow-button) {
+    padding: 15px 20px !important;
+    min-width: 140px;
   }
 
   input {

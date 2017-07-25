@@ -310,6 +310,20 @@ var ClientActions = {
         ServerActions.receiveJob(response);
       }
     });
+  },
+
+  errorCheck: function(quarter, year) {
+    $.ajax({
+      url: '/api/royalty_reports/error_check',
+      method: 'POST',
+      data: {
+        quarter: quarter,
+        year: year
+      },
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
   }
 }
 

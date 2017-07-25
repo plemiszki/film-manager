@@ -213,6 +213,16 @@ var ReportsIndex = React.createClass({
     }
   },
 
+  clickErrorCheck: function(e) {
+    if (!e.target.classList.contains('inactive')) {
+      this.setState({
+        fetching: true,
+        jobFirstLine: "Checking For Errors"
+      });
+      ClientActions.errorCheck(this.state.quarter, this.state.year);
+    }
+  },
+
   clickConfirmSend: function(e) {
     this.setState({
       fetching: true,
@@ -298,6 +308,7 @@ var ReportsIndex = React.createClass({
             <h1>Statements - Q{this.state.quarter}, {this.state.year}</h1>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all' || this.state.reports.length === 0)} onClick={this.clickSend}>Send All</a>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all' || this.state.reports.length === 0)} onClick={this.clickExport}>Export All</a>
+            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.reports.length === 0)} onClick={this.clickErrorCheck}>Error Check</a>
             <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickImport}>Import</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickNext}>&#62;&#62;</a>
             <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickPrev}>&#60;&#60;</a>
