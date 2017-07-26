@@ -88,7 +88,7 @@ class RoyaltyReport < ActiveRecord::Base
     string += "<table><tr>"
     string +=   "<th>Current Period</th>"
     string +=   "<th>Revenue</th>"
-    string +=   "<th>#{sprintf("%g", self.gr_percentage)}% Fee</th>" if gr_deal
+    string +=   "<th>#{sprintf("%g", film.gr_percentage)}% Fee</th>" if gr_deal
     string +=   "<th>Expenses</th>" if expense_class
     string +=   "<th>Difference</th>" if expense_class
     string +=   "<th>Licensor %</th>"
@@ -133,6 +133,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "<th></th>"
     string += "</tr>"
     royalty_revenue_streams.each do |stream|
+      p stream.joined_revenue.to_f
       if stream.joined_revenue > 0 || stream.joined_expense > 0
         string += "<tr>"
         string +=   "<td>#{stream.revenue_stream.name}</td>"
@@ -176,6 +177,12 @@ class RoyaltyReport < ActiveRecord::Base
       string +=     "<td>#{negafy(self.e_and_o)}</td>"
       string +=   "</tr>"
     end
+    if self.joined_reserve > 0
+      string +=   "<tr>"
+      string +=     "<td>Reserve Against Returns</td>"
+      string +=     "<td>#{negafy(self.joined_reserve)}</td>"
+      string +=   "</tr>"
+    end
     string +=   "<tr>"
     string +=     "<td>Amount Paid</td>"
     string +=     "<td>#{negafy(self.amount_paid)}</td>"
@@ -188,9 +195,9 @@ class RoyaltyReport < ActiveRecord::Base
     string += "<div class=\"bottom-text\">"
     string += "If there is an amount due to Licensor on this self, please send an invoice for the amount due along with current bank wire information if located outside the U.S., and current mailing address if located inside the U.S.<br>No payments will be made without this invoice and information."
     string += "</div>"
-    if film.reserve
-      string += "<div class=\"page-break\">here we go!!!</div>"
-    end
+    # if film.reserve
+    #   string += "<div class=\"page-break\">here we go!!!</div>"
+    # end
 
     pdf = WickedPdf.new.pdf_from_string(string)
     subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
@@ -207,6 +214,9 @@ class RoyaltyReport < ActiveRecord::Base
     self.current_total = 0.00
     royalty_revenue_streams = self.royalty_revenue_streams
     royalty_revenue_streams.each do |stream|
+      if stream.revenue_stream_id == 3 && film.reserve
+        self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
+      end
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
       stream.joined_expense = stream.current_expense + stream.cume_expense
       if film.deal_type_id == 1 # No Expenses Recouped
@@ -279,18 +289,16 @@ class RoyaltyReport < ActiveRecord::Base
       self.joined_total_revenue += stream.joined_revenue
       self.joined_total_expenses += stream.joined_expense unless film.deal_type_id == 4
       self.joined_total += stream.joined_licensor_share
-
-      if film.deal_type_id == 4
-        self.amount_due = self.cume_total - self.cume_total_expenses - self.e_and_o - self.mg - self.amount_paid
-        self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.e_and_o - self.mg - self.amount_paid
-      else
-        self.joined_amount_due = self.joined_total - self.e_and_o - self.mg - self.amount_paid
-        self.amount_due = self.cume_total - self.e_and_o - self.mg - self.amount_paid
-      end
     end
+    self.joined_reserve = self.current_reserve + self.cume_reserve
     if film.deal_type_id == 4
       self.current_share_minus_expenses = self.current_total - self.current_total_expenses
       self.joined_total_expenses = self.current_total_expenses + self.cume_total_expenses
+      self.amount_due = self.cume_total - self.cume_total_expenses - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.joined_reserve - self.e_and_o - self.mg - self.amount_paid
+    else
+      self.amount_due = self.cume_total - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due = self.joined_total - self.joined_reserve - self.e_and_o - self.mg - self.amount_paid
     end
     return royalty_revenue_streams
   end

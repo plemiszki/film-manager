@@ -98,6 +98,7 @@ var ReportDetails = React.createClass({
   },
 
   render: function() {
+    console.log(this.state.report);
     return(
       <div className="component">
         <h1><span onClick={this.clickTitle}>{this.state.report.film}</span></h1>
@@ -266,6 +267,24 @@ var ReportDetails = React.createClass({
             <div className="col-xs-2">
               <div className="label">MG</div>
               <input className={Common.errorClass(this.state.reportErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.report.mg || ""} data-field="mg" />
+            </div>
+          </div>
+          <div className={"row" + (this.state.report.joinedReserve === "$0.00" ? " hidden" : "")}>
+            <div className="col-xs-1">
+            </div>
+            <div className={"col-xs-2"}>
+            </div>
+            <div className={"col-xs-2" + this.grClass()}>
+            </div>
+            <div className={"col-xs-2" + this.expenseClass()}>
+            </div>
+            <div className={"col-xs-2" + this.expenseClass()}>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">Reserve Against Returns</div>
+              <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? (this.state.report.joinedReserve || "") : (this.state.report.cumeReserve || "")} />
             </div>
           </div>
           <div className="row">

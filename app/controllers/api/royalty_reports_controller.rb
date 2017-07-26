@@ -142,6 +142,9 @@ class Api::RoyaltyReportsController < ApplicationController
     streams.each do |stream|
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
       stream.joined_expense = stream.current_expense + stream.cume_expense
+      if stream.revenue_stream_id == 3 && film.reserve
+        report.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
+      end
       if film.deal_type_id == 1 # No Expenses Recouped
         stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
@@ -211,13 +214,16 @@ class Api::RoyaltyReportsController < ApplicationController
       report.joined_total_revenue += stream.joined_revenue
       report.joined_total_expenses += stream.joined_expense unless film.deal_type_id == 4
       report.joined_total += stream.joined_licensor_share
-      if film.deal_type_id == 4
-        report.amount_due = report.cume_total - report.cume_total_expenses - report.e_and_o - report.mg - report.amount_paid
-        report.joined_amount_due = report.joined_total - report.current_total_expenses - report.cume_total_expenses - report.e_and_o - report.mg - report.amount_paid
-      else
-        report.joined_amount_due = report.joined_total - report.e_and_o - report.mg - report.amount_paid
-        report.amount_due = report.cume_total - report.e_and_o - report.mg - report.amount_paid
-      end
+    end
+
+    report.joined_reserve = report.current_reserve + report.cume_reserve
+
+    if film.deal_type_id == 4
+      report.amount_due = report.cume_total - report.cume_total_expenses - report.cume_reserve - report.e_and_o - report.mg - report.amount_paid
+      report.joined_amount_due = report.joined_total - report.current_total_expenses - report.cume_total_expenses - report.joined_reserve - report.e_and_o - report.mg - report.amount_paid
+    else
+      report.amount_due = report.cume_total - report.cume_reserve - report.e_and_o - report.mg - report.amount_paid
+      report.joined_amount_due = report.joined_total - report.joined_reserve - report.e_and_o - report.mg - report.amount_paid
     end
     if film.deal_type_id == 4
       report.current_share_minus_expenses = report.current_total - report.current_total_expenses

@@ -22,6 +22,10 @@ json.reports @reports do |report|
   json.amountPaid '$' + number_with_precision(report.amount_paid, precision: 2, delimiter: ',')
   json.amountDue dollarify(number_with_precision(report.amount_due, precision: 2, delimiter: ','))
   json.joinedAmountDue dollarify(number_with_precision(report.joined_amount_due, precision: 2, delimiter: ','))
+  json.currentReserve dollarify(number_with_precision(report.current_reserve, precision: 2, delimiter: ','))
+  json.cumeReserve dollarify(number_with_precision(report.cume_reserve, precision: 2, delimiter: ','))
+  json.joinedReserve dollarify(number_with_precision(report.joined_reserve, precision: 2, delimiter: ','))
+  json.liquidatedReserve dollarify(number_with_precision(report.liquidated_reserve, precision: 2, delimiter: ','))
 end
 json.streams @streams do |stream|
   json.id stream.id

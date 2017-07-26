@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170723172643) do
+ActiveRecord::Schema.define(version: 20170726031011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,6 +120,10 @@ ActiveRecord::Schema.define(version: 20170723172643) do
     t.decimal "joined_amount_due",            precision: 8, scale: 2, default: 0.0
     t.decimal "current_share_minus_expenses", precision: 8, scale: 2, default: 0.0
     t.date    "date_sent"
+    t.decimal "current_reserve",              precision: 8, scale: 2, default: 0.0
+    t.decimal "cume_reserve",                 precision: 8, scale: 2, default: 0.0
+    t.decimal "liquidated_reserve",           precision: 8, scale: 2, default: 0.0
+    t.decimal "joined_reserve",               precision: 8, scale: 2, default: 0.0
   end
 
   create_table "royalty_revenue_streams", force: :cascade do |t|
