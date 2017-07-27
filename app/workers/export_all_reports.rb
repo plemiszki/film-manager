@@ -17,7 +17,7 @@ class ExportAllReports
     FileUtils.mkdir_p("#{job_folder}/amount due")
     FileUtils.mkdir_p("#{job_folder}/no amount due")
     job = Job.find_by_job_id(time_started)
-    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: {export_reports: true, send_reports: true})
+    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: {export_reports: true})
     reports.each do |report|
       return if Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
       if days_due == "all" || report.film.days_statement_due == days_due.to_i

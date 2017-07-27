@@ -133,7 +133,6 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "<th></th>"
     string += "</tr>"
     royalty_revenue_streams.each do |stream|
-      p stream.joined_revenue.to_f
       if stream.joined_revenue > 0 || stream.joined_expense > 0
         string += "<tr>"
         string +=   "<td>#{stream.revenue_stream.name}</td>"
