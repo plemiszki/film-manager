@@ -8,7 +8,7 @@ class ErrorCheck
     reports = RoyaltyReport.where(quarter: quarter, year: year)
     reports.each do |report|
       film = report.film
-      if film.send_reports
+      if film.export_reports && film.send_reports
         licensor = film.licensor
         if !film.licensor_id
           errors << "No licensor on #{film.title}."
