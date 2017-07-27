@@ -33,6 +33,20 @@ class RoyaltyReport < ActiveRecord::Base
     sum.to_f
   end
 
+  def self.get_films_with_amount_due_not_being_sent(quarter, year)
+    reports1 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {export_reports: false}).to_a
+    reports2 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {send_reports: false}).to_a
+    reports = reports1 | reports2
+    titles = {}
+    reports.each do |report|
+      report.calculate!
+      if report.joined_amount_due > 0
+        titles[report.film.title] = report.joined_amount_due.to_f
+      end
+    end
+    titles
+  end
+
   def export!(directory)
     film = self.film
     royalty_revenue_streams = self.royalty_revenue_streams
