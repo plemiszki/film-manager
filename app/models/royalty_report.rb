@@ -13,6 +13,26 @@ class RoyaltyReport < ActiveRecord::Base
   belongs_to :film
   has_many :royalty_revenue_streams, dependent: :destroy
 
+  def self.get_total_due(quarter, year)
+    reports = RoyaltyReport.where(quarter: quarter, year: year)
+    sum = 0
+    reports.each do |report|
+      report.calculate!
+      sum += report.joined_amount_due unless report.joined_amount_due < 0
+    end
+    sum.to_f
+  end
+
+  def self.get_total_due_to_send(quarter, year)
+    reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {export_reports: true, send_reports: true})
+    sum = 0
+    reports.each do |report|
+      report.calculate!
+      sum += report.joined_amount_due unless report.joined_amount_due < 0
+    end
+    sum.to_f
+  end
+
   def export!(directory)
     film = self.film
     royalty_revenue_streams = self.royalty_revenue_streams
