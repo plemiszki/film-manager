@@ -38,9 +38,8 @@ class ExportAndSendReports
         royalty_email_text = "Hello,\n\nPlease find attached your Q#{quarter} #{year} producer reports. Please let me know if you have any questions, or if this report should be sent to a different person.\n\nKind Regards,\n\nMichael Rosenberg\nPresident\nFilm Movement"
         mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
         message_params =  { from: 'michael@filmmovement.com',
-                            # to: licensor.email.strip,
-                            to: 'plemiszki@gmail.com',
-                            # cc: "michael@filmmovement.com",
+                            to: licensor.email.strip,
+                            cc: "michael@filmmovement.com",
                             subject: "Your Q#{quarter} #{year} producer reports from Film Movement",
                             text: "#{royalty_email_text}",
                             attachment: attachments
