@@ -47,6 +47,18 @@ class RoyaltyReport < ActiveRecord::Base
     titles
   end
 
+  def self.get_reserve_numbers(quarter, year)
+    reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {reserve: true})
+    result = Hash.new { |h,k| h[k] = 0}
+    reports.each do |report|
+      film = report.film
+      report.calculate!
+      result[:total] += report.current_reserve
+      result[film.reserve_quarters] += report.current_reserve
+    end
+    result.map { |key, value| [key, value.to_f] }.to_h
+  end
+
   def export!(directory)
     film = self.film
     royalty_revenue_streams = self.royalty_revenue_streams
