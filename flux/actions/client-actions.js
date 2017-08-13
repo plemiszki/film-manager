@@ -324,6 +324,42 @@ var ClientActions = {
         ServerActions.receiveJob(response);
       }
     });
+  },
+
+  fetchGiftboxes: function() {
+    $.ajax({
+      url: '/api/giftboxes',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveGiftboxes(response);
+      }
+    });
+  },
+
+  createGiftbox: function(giftbox) {
+    $.ajax({
+      url: '/api/giftboxes',
+      method: 'POST',
+      data: {
+        giftbox: giftbox
+      },
+      success: function(response) {
+        ServerActions.receiveGiftboxes(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchGiftbox: function(id) {
+    $.ajax({
+      url: '/api/giftboxes/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveGiftbox(response);
+      }
+    })
   }
 }
 

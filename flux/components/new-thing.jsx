@@ -59,6 +59,7 @@ var NewThing = React.createClass({
           {this.renderTitleField()}
           {this.renderEmailField()}
           {this.renderPasswordField()}
+          {this.renderUpcField()}
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
             Add {this.props.thing.capitalize()}
           </a>
@@ -68,13 +69,27 @@ var NewThing = React.createClass({
   },
 
   renderNameField: function() {
-    if (this.props.thing === "user" || this.props.thing === "licensor") {
+    if (this.props.thing === "user" || this.props.thing === "licensor" || this.props.thing === "giftbox") {
       return(
         <div className="row">
           <div className="col-xs-12">
             <h2>Name</h2>
             <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].name} data-field="name" />
             {Common.renderFieldError(this.state.errors, Common.errors.name)}
+          </div>
+        </div>
+      )
+    }
+  },
+
+  renderUpcField: function() {
+    if (this.props.thing === "giftbox") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>UPC</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.upc)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].upc} data-field="upc" />
+            {Common.renderFieldError(this.state.errors, Common.errors.upc)}
           </div>
         </div>
       )

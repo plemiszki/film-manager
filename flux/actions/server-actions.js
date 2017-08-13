@@ -96,6 +96,22 @@ var ServerActions = {
       actionType: "JOB_RECEIVED",
       job: response
     });
+  },
+
+  // GIFT BOXES ---
+
+  receiveGiftboxes: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "GIFTBOXES_RECEIVED",
+      giftboxes: response
+    });
+  },
+
+  receiveGiftbox: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "GIFTBOX_RECEIVED",
+      giftboxes: response
+    });
   }
 }
 

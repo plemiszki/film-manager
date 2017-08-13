@@ -149,6 +149,14 @@ Common = {
       "Reserve quarters is not a number",
       "Reserve quarters must be greater than or equal to 1",
       "Reserve quarters must be less than or equal to 4"
+    ],
+    upc: [
+      "Upc can't be blank",
+      "Upc has already been taken"
+    ],
+    msrp: [
+      "Msrp is not a number",
+      "Msrp must be greater than or equal to 0"
     ]
   },
 

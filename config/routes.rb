@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show]
   resources :licensors, only: [:index, :show]
   resources :royalty_reports, only: [:index, :show]
+  resources :giftboxes, only: [:index, :show]
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
@@ -17,6 +18,7 @@ Rails.application.routes.draw do
     delete '/users/:id' => '/api/users#api_destroy'
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     resources :films, only: [:index, :show, :create, :update, :destroy]
+    resources :giftboxes, only: [:index, :show, :create, :update, :destroy]
     get '/royalty_reports/zip' => '/api/royalty_reports#zip'
     get '/royalty_reports/status' => '/api/royalty_reports#status'
     resources :royalty_reports, only: [:index, :show, :create, :update, :destroy]

@@ -10,6 +10,8 @@ var FilmsIndex = require('./components/films-index.jsx');
 var FilmDetails = require('./components/film-details.jsx');
 var RoyaltyReportDetails = require('./components/royalty-report-details.jsx');
 var RoyaltyReportsIndex = require('./components/reports-index.jsx');
+var GiftBoxesIndex = require('./components/giftboxes-index.jsx');
+var GiftBoxDetails = require('./components/giftbox-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -45,5 +47,11 @@ $(document).ready(function() {
   }
   if ($('#reports-index')[0]) {
     ReactDOM.render(<RoyaltyReportsIndex />, document.getElementById("reports-index"));
+  }
+  if ($('#giftboxes-index')[0]) {
+    ReactDOM.render(<GiftBoxesIndex />, document.getElementById("giftboxes-index"));
+  }
+  if ($('#giftbox-details')[0]) {
+    ReactDOM.render(<GiftBoxDetails />, document.getElementById("giftbox-details"));
   }
 });
