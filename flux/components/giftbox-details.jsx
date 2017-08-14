@@ -94,7 +94,6 @@ var GiftboxDetails = React.createClass({
   },
 
   render: function() {
-    console.log(this.state.giftbox);
     return(
       <div id="giftbox-details">
         <div className="component">
@@ -105,13 +104,13 @@ var GiftboxDetails = React.createClass({
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
-                <input className={Common.errorClass(this.state.errors, ["Name can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.giftbox.name || ""} data-field="name" />
-                {Common.renderFieldError(this.state.errors, ["Name can't be blank"])}
+                <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.giftbox.name || ""} data-field="name" />
+                {Common.renderFieldError(this.state.errors, Common.errors.name)}
               </div>
               <div className="col-xs-4">
                 <h2>UPC</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.giftbox.upc || ""} data-field="upc" />
-                {Common.renderFieldError(this.state.errors, Common.errors.email)}
+                <input className={Common.errorClass(this.state.errors, Common.errors.upc)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.giftbox.upc || ""} data-field="upc" />
+                {Common.renderFieldError(this.state.errors, Common.errors.upc)}
               </div>
               <div className="col-xs-2">
                 <h2>MSRP</h2>
@@ -129,7 +128,7 @@ var GiftboxDetails = React.createClass({
               </div>
               <div className={"col-xs-3" + (this.state.giftbox.onDemand === "yes" ? " hidden" : "")} >
                 <h2>Quantity</h2>
-                <input value={this.state.giftbox.quantity === null ? "" : this.state.giftbox.quantity} readOnly={true} />
+                <input value={this.state.giftbox.quantity === undefined ? "" : this.state.giftbox.quantity} readOnly={true} />
                 {Common.renderFieldError([], [])}
               </div>
               <div className="col-xs-3">

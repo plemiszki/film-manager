@@ -21,13 +21,12 @@ class Api::GiftboxesController < ApplicationController
   end
 
   def update
-    @licensor = Licensor.find(params[:id])
-    @films = Film.where(licensor_id: params[:id]).order(:title)
-    if @licensor.update(licensor_params)
-      @licensors = Licensor.where(id: params[:id])
+    @giftbox = Giftbox.find(params[:id])
+    if @giftbox.update(giftbox_params)
+      @giftboxes = Giftbox.where(id: params[:id])
       render "show.json.jbuilder"
     else
-      render json: @licensor.errors.full_messages, status: 422
+      render json: @giftbox.errors.full_messages, status: 422
     end
   end
 
@@ -44,7 +43,7 @@ class Api::GiftboxesController < ApplicationController
   private
 
   def giftbox_params
-    params[:giftbox].permit(:name, :upc, :sage_id, :one_demand, :msrp)
+    params[:giftbox].permit(:name, :upc, :sage_id, :on_demand, :msrp)
   end
 
 end

@@ -360,6 +360,28 @@ var ClientActions = {
         ServerActions.receiveGiftbox(response);
       }
     })
+  },
+
+  updateGiftbox: function(giftbox) {
+    $.ajax({
+      url: '/api/giftboxes/' + giftbox.id,
+      method: 'PATCH',
+      data: {
+        giftbox: {
+          name: giftbox.name,
+          upc: giftbox.upc,
+          msrp: giftbox.msrp.removeFinanceSymbols(),
+          on_demand: giftbox.onDemand === "yes" ? true : false,
+          sage_id: giftbox.sageId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveGiftbox(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    })
   }
 }
 
