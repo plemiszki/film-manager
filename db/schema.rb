@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170813131427) do
+ActiveRecord::Schema.define(version: 20170814145143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,15 @@ ActiveRecord::Schema.define(version: 20170813131427) do
   add_index "films", ["label_id"], name: "index_films_on_label_id", using: :btree
   add_index "films", ["licensor_id"], name: "index_films_on_licensor_id", using: :btree
   add_index "films", ["title", "short_film"], name: "index_films_on_title_and_short_film", unique: true, using: :btree
+
+  create_table "giftbox_films", force: :cascade do |t|
+    t.integer "giftbox_id", null: false
+    t.integer "film_id",    null: false
+  end
+
+  add_index "giftbox_films", ["film_id"], name: "index_giftbox_films_on_film_id", using: :btree
+  add_index "giftbox_films", ["giftbox_id", "film_id"], name: "index_giftbox_films_on_giftbox_id_and_film_id", unique: true, using: :btree
+  add_index "giftbox_films", ["giftbox_id"], name: "index_giftbox_films_on_giftbox_id", using: :btree
 
   create_table "giftboxes", force: :cascade do |t|
     t.string  "name",                                              null: false
