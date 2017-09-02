@@ -204,7 +204,8 @@ var ClientActions = {
           reserve_percentage: film.reservePercentage,
           reserve_quarters: film.reserveQuarters,
           auto_renew: film.autoRenew,
-          auto_renew_term: film.autoRenewTerm
+          auto_renew_term: film.autoRenewTerm,
+          sell_off_period: film.sellOffPeriod
         },
         percentages: percentages
       },

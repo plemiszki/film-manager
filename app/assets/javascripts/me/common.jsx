@@ -161,6 +161,10 @@ Common = {
     autoRenewTerm: [
       "Auto renew term is not a number",
       "Auto renew term must be greater than or equal to 0"
+    ],
+    sellOffPeriod: [
+      "Sell off period is not a number",
+      "Sell off period must be greater than or equal to 0"
     ]
   },
 

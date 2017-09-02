@@ -252,6 +252,11 @@ var FilmDetails = React.createClass({
               <input className={Common.errorClass(this.state.filmErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
               {Common.renderFieldError(this.state.filmErrors, Common.errors.mg)}
             </div>
+            <div className="col-xs-12 col-sm-3">
+              <h2>E & O</h2>
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.eAndO)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
+              {Common.renderFieldError(this.state.filmErrors, Common.errors.eAndO)}
+            </div>
           </div>
           {this.renderRoyaltyFields()}
         </div>
@@ -280,7 +285,7 @@ var FilmDetails = React.createClass({
               <input className={Common.errorClass(this.state.filmErrors, Common.errors.grPercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.grPercentage || ""} data-field="grPercentage" />
               {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
-            <div className="col-xs-12 col-sm-2">
+            <div className="col-xs-12 col-sm-3">
               <h2>Statements Due</h2>
                 <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="daysStatementDue" value={this.state.film.daysStatementDue}>
                   <option value={"30"}>30 Days</option>
@@ -301,14 +306,14 @@ var FilmDetails = React.createClass({
               <textarea rows="5" className={Common.errorClass(this.state.filmErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" />
             </div>
             <div className="col-xs-12 col-sm-3">
-              <h2>E & O</h2>
-              <input className={Common.errorClass(this.state.filmErrors, Common.errors.eAndO)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
-              {Common.renderFieldError(this.state.filmErrors, Common.errors.eAndO)}
-            </div>
-            <div className="col-xs-12 col-sm-3">
               <h2>Sage ID</h2>
               <input className={Common.errorClass([], [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" />
               {Common.renderFieldError([], [])}
+            </div>
+            <div className="col-xs-12 col-sm-3">
+              <h2>DVD Sell Off Period (Months)</h2>
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.sellOffPeriod)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sellOffPeriod} data-field="sellOffPeriod" />
+              {Common.renderFieldError(this.state.filmErrors, Common.errors.sellOffPeriod)}
             </div>
           </div>
           <div className="row">
