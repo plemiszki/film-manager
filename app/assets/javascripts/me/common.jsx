@@ -165,6 +165,10 @@ Common = {
     sellOffPeriod: [
       "Sell off period is not a number",
       "Sell off period must be greater than or equal to 0"
+    ],
+    discount: [
+      "Discount is not a number",
+      "Discount must be less than or equal to 100"
     ]
   },
 

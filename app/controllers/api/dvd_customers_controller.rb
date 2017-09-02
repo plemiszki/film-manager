@@ -43,7 +43,7 @@ class Api::DvdCustomersController < ApplicationController
   private
 
   def dvd_customer_params
-    params[:dvd_customer].permit(:name, :upc, :sage_id, :on_demand, :msrp)
+    params[:dvd_customer].permit(:name, :discount, :consignment, :address, :notes)
   end
 
 end

@@ -395,6 +395,25 @@ var ClientActions = {
         ServerActions.receiveDvdCustomers(response);
       }
     });
+  },
+
+  createDvdCustomer: function(dvdCustomer) {
+    $.ajax({
+      url: '/api/dvd_customers',
+      method: 'POST',
+      data: {
+        dvd_customer: {
+          name: dvdCustomer.name,
+          discount: dvdCustomer.discount
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDvdCustomers(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

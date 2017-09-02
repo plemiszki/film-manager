@@ -60,8 +60,9 @@ var NewThing = React.createClass({
           {this.renderEmailField()}
           {this.renderPasswordField()}
           {this.renderUpcField()}
+          {this.renderDiscountField()}
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
-            Add {this.props.thing.capitalize()}
+            {this.props.thing === "dvdCustomer" ? "Add DVD Customer" : (this.props.thing === "giftbox" ? "Add Gift Box" : "Add " + this.props.thing.capitalize())}
           </a>
         </div>
       </div>
@@ -69,7 +70,7 @@ var NewThing = React.createClass({
   },
 
   renderNameField: function() {
-    if (this.props.thing === "user" || this.props.thing === "licensor" || this.props.thing === "giftbox") {
+    if (["user", "licensor", "giftbox", "dvdCustomer"].indexOf(this.props.thing) > -1) {
       return(
         <div className="row">
           <div className="col-xs-12">
@@ -132,6 +133,20 @@ var NewThing = React.createClass({
             <h2>Password</h2>
             <input type="password" className={Common.errorClass(this.state.errors, Common.errors.password)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].password} data-field="password" />
             {Common.renderFieldError(this.state.errors, Common.errors.password)}
+          </div>
+        </div>
+      )
+    }
+  },
+
+  renderDiscountField: function() {
+    if (this.props.thing === "dvdCustomer") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Discount</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.discount)} style={{maxWidth: "20%"}} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].discount} data-field="discount" />
+            {Common.renderFieldError(this.state.errors, Common.errors.discount)}
           </div>
         </div>
       )
