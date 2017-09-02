@@ -11,13 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170902023934) do
+ActiveRecord::Schema.define(version: 20170902183635) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "deal_templates", force: :cascade do |t|
     t.string "name", null: false
+  end
+
+  create_table "dvd_customers", force: :cascade do |t|
+    t.string  "name",                                                null: false
+    t.decimal "discount",    precision: 5, scale: 2
+    t.boolean "consignment",                         default: false
+    t.string  "address",                             default: ""
+    t.string  "notes",                               default: ""
   end
 
   create_table "film_revenue_percentages", force: :cascade do |t|
