@@ -17,7 +17,7 @@ json.films @films do |film|
   json.exportReports film.export_reports
   json.sendReports film.send_reports
   json.sellOffPeriod film.sell_off_period
-  json.autoRenew film.auto_renew == true ? "yes" : "no"
+  json.autoRenew film.auto_renew
   json.autoRenewTerm film.auto_renew_term
 end
 json.dealTemplates @templates

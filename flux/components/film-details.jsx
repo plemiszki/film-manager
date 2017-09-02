@@ -149,6 +149,11 @@ var FilmDetails = React.createClass({
       Common.errors.reserveQuarters.forEach(function(message) {
         Tools.removeFromArray(filmErrors, message);
       });
+    } else if (property === "autoRenew" && e.target.checked === false) {
+      film.autoRenewTerm = 0;
+      Common.errors.autoRenewTerm.forEach(function(message) {
+        Tools.removeFromArray(filmErrors, message);
+      });
     }
     this.setState({
       film: film,
@@ -342,7 +347,7 @@ var FilmDetails = React.createClass({
               }.bind(this))}
             </div>
           </div>
-          <hr id="above-checkboxes" />
+          <hr />
           <div className={"row reserve-section" + (this.state.film.reserve ? "" : " no-reserve")}>
             <div className="col-xs-3">
               <input id="returns-reserve" className="checkbox" type="checkbox" checked={this.state.film.reserve} onChange={this.changeCheckbox.bind(this, 'reserve')} /><label className="checkbox" htmlFor="reserve-returns">Reserve Against Returns</label>
@@ -358,7 +363,18 @@ var FilmDetails = React.createClass({
               {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
           </div>
-          <hr id="above-checkboxes" />
+          <hr />
+          <div className={"row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew")}>
+            <div className="col-xs-3">
+              <input id="auto-renew" className="checkbox" type="checkbox" checked={this.state.film.autoRenew} onChange={this.changeCheckbox.bind(this, 'autoRenew')} /><label className="checkbox">Auto-Renew</label>
+            </div>
+            <div className="col-xs-2">
+              <h2>Term (Months)</h2>
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.autoRenewTerm)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.autoRenewTerm} data-field="autoRenewTerm" disabled={!this.state.film.autoRenew} />
+              {Common.renderFieldError(this.state.filmErrors, [])}
+            </div>
+          </div>
+          <hr className="smaller-margin" />
           <div className="row checkboxes">
             <div className="col-xs-6">
               <input id="export-reports" type="checkbox" checked={this.state.film.exportReports} onChange={this.changeCheckbox.bind(this, 'exportReports')} /><label htmlFor="export-reports">Export Reports</label>

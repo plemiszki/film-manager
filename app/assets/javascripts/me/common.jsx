@@ -147,7 +147,7 @@ Common = {
     ],
     reserveQuarters: [
       "Reserve quarters is not a number",
-      "Reserve quarters must be greater than or equal to 1",
+      "Reserve quarters must be greater than or equal to 0",
       "Reserve quarters must be less than or equal to 4"
     ],
     upc: [
@@ -157,6 +157,10 @@ Common = {
     msrp: [
       "Msrp is not a number",
       "Msrp must be greater than or equal to 0"
+    ],
+    autoRenewTerm: [
+      "Auto renew term is not a number",
+      "Auto renew term must be greater than or equal to 0"
     ]
   },
 

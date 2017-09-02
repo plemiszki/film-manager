@@ -81,7 +81,7 @@
     }
   }
 
-  hr#above-checkboxes {
+  hr.smaller-margin {
     margin-bottom: 15px;
   }
 
@@ -104,7 +104,7 @@
     }
   }
 
-  .reserve-section.no-reserve {
+  .reserve-section.no-reserve, .auto-renew-section.no-renew {
 
     h2 {
       color: gray;

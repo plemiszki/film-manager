@@ -202,7 +202,9 @@ var ClientActions = {
           export_reports: film.exportReports,
           reserve: film.reserve,
           reserve_percentage: film.reservePercentage,
-          reserve_quarters: film.reserveQuarters
+          reserve_quarters: film.reserveQuarters,
+          auto_renew: film.autoRenew,
+          auto_renew_term: film.autoRenewTerm
         },
         percentages: percentages
       },
