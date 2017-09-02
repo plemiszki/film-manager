@@ -11,6 +11,7 @@ var GiftboxDetails = React.createClass({
       fetching: true,
       giftbox: {},
       giftboxSaved: {},
+      films: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -138,6 +139,26 @@ var GiftboxDetails = React.createClass({
               </div>
             </div>
             {this.renderButtons()}
+            <hr />
+            <table className={"admin-table"}>
+              <thead>
+                <tr>
+                  <th>DVDs</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td></td></tr>
+                {this.state.films.map(function(film, index) {
+                  return(
+                    <tr key={index} onClick={this.redirect.bind(this, film.id)}>
+                      <td className="name-column">
+                        {film.title}
+                      </td>
+                    </tr>
+                  );
+                }.bind(this))}
+              </tbody>
+            </table>
           </div>
         </div>
         <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
