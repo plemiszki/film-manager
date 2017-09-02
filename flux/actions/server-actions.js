@@ -112,6 +112,15 @@ var ServerActions = {
       actionType: "GIFTBOX_RECEIVED",
       giftboxes: response
     });
+  },
+
+  // DVD CUSTOMERS ---
+
+  receiveDvdCustomers: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "DVD_CUSTOMERS_RECEIVED",
+      dvdCustomers: response
+    });
   }
 }
 

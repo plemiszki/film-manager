@@ -12,6 +12,8 @@ var RoyaltyReportDetails = require('./components/royalty-report-details.jsx');
 var RoyaltyReportsIndex = require('./components/reports-index.jsx');
 var GiftBoxesIndex = require('./components/giftboxes-index.jsx');
 var GiftBoxDetails = require('./components/giftbox-details.jsx');
+var DvdCustomersIndex = require('./components/dvd-customers-index.jsx');
+// var DvdCustomersDetails = require('./components/dvd-customers-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -54,4 +56,10 @@ $(document).ready(function() {
   if ($('#giftbox-details')[0]) {
     ReactDOM.render(<GiftBoxDetails />, document.getElementById("giftbox-details"));
   }
+  if ($('#dvd-customers-index')[0]) {
+    ReactDOM.render(<DvdCustomersIndex />, document.getElementById("dvd-customers-index"));
+  }
+  // if ($('#dvd-customers-details')[0]) {
+  //   ReactDOM.render(<DvdCustomersDetails />, document.getElementById("dvd-customers-details"));
+  // }
 });

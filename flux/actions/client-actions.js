@@ -385,6 +385,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     })
+  },
+
+  fetchDvdCustomers: function() {
+    $.ajax({
+      url: '/api/dvd_customers',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveDvdCustomers(response);
+      }
+    });
   }
 }
 
