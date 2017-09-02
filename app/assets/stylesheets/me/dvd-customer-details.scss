@@ -1,0 +1,54 @@
+#dvd-customer-details {
+
+  input, .nice-select {
+    width: 100%;
+  }
+
+  input.checkbox {
+    display: inline-block;
+    width: auto;
+    margin-right: 25px;
+  }
+
+  label.checkbox {
+    display: inline-block;
+    font-family: 'teachablesansmedium';
+    color: #2C2F33;
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  .consignment-column {
+    padding-top: 42px;
+  }
+
+  .noFieldError {
+    margin-bottom: 30px;
+  }
+
+  .yesFieldError {
+    margin-top: 10px;
+    height: 10px;
+    margin-bottom: 40px;
+  }
+
+  textarea {
+    margin-bottom: 30px;
+  }
+
+  hr {
+    margin-top: 30px;
+  }
+
+  table {
+    margin-bottom: 60px;
+
+    .name-column {
+      color: #5F5F5F;
+    }
+  }
+
+  a#delete {
+    float: right;
+  }
+}

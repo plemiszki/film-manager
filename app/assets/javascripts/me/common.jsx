@@ -168,6 +168,7 @@ Common = {
     ],
     discount: [
       "Discount is not a number",
+      "Discount must be greater than or equal to 0",
       "Discount must be less than or equal to 100"
     ]
   },
@@ -201,6 +202,34 @@ Common = {
     if (changeFieldArgs.beforeSave) {
       changeFieldArgs.beforeSave.call(this, newThing, key, event.target.value);
     }
+
+    this.setState({[thing]: newThing, justSaved: false}, function() {
+      if (changeFieldArgs.changesFunction) {
+        var changesToSave = changeFieldArgs.changesFunction.call();
+        this.setState({changesToSave: changesToSave}, function() {
+          if (changeFieldArgs.callback) {
+            changeFieldArgs.callback.call(this, this.state[thing], key);
+          }
+        });
+      } else if (changeFieldArgs.callback) {
+        changeFieldArgs.callback.call(this, this.state[thing], key);
+      }
+    });
+  },
+
+  changeCheckBox: function(changeFieldArgs, event) {
+    var key = event.target.dataset.field;
+    var thing = event.target.dataset.thing || changeFieldArgs.thing;
+    var newThing = this.state[thing];
+
+    var thingId = event.target.dataset.thingid;
+    if (thingId) {
+      thingToUpdate = newThing[thingId];
+    } else {
+      thingToUpdate = newThing;
+    }
+
+    thingToUpdate[key] = event.target.checked;
 
     this.setState({[thing]: newThing, justSaved: false}, function() {
       if (changeFieldArgs.changesFunction) {

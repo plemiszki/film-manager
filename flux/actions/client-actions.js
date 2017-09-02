@@ -414,6 +414,38 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  fetchDvdCustomer: function(id) {
+    $.ajax({
+      url: '/api/dvd_customers/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveDvdCustomers(response);
+      }
+    })
+  },
+
+  updateDvdCustomer: function(dvdCustomer) {
+    $.ajax({
+      url: '/api/dvd_customers/' + dvdCustomer.id,
+      method: 'PATCH',
+      data: {
+        dvd_customer: {
+          name: dvdCustomer.name,
+          discount: dvdCustomer.discount,
+          consignment: dvdCustomer.consignment,
+          address: dvdCustomer.address,
+          notes: dvdCustomer.notes
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDvdCustomers(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    })
   }
 }
 
