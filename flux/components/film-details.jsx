@@ -199,22 +199,8 @@ var FilmDetails = React.createClass({
               </select>
             </div>
           </div>
-          <div className="row">
-            <div className="col-xs-12 col-sm-5">
-              <h2>Licensor</h2>
-              <input className={Common.errorClass(this.state.filmErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
-              {Common.renderFieldError(this.state.filmErrors, [])}
-            </div>
-            <div className="col-sm-4 icons">
-              <img src={Images.openModal} onClick={this.clickSelectLicensorButton} />
-            </div>
-            <div className="col-xs-12 col-sm-3">
-              <h2>MG</h2>
-              <input className={Common.errorClass(this.state.filmErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
-              {Common.renderFieldError(this.state.filmErrors, Common.errors.mg)}
-            </div>
-          </div>
-          {this.renderRoyaltyFields()}
+          <hr />
+          {this.renderTab("licensor")}
           {this.renderButtons()}
         </div>
         <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
@@ -243,11 +229,35 @@ var FilmDetails = React.createClass({
     );
   },
 
+  renderTab: function(tab) {
+    if (tab === "licensor") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-12 col-sm-5">
+              <h2>Licensor</h2>
+              <input className={Common.errorClass(this.state.filmErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
+              {Common.renderFieldError(this.state.filmErrors, [])}
+            </div>
+            <div className="col-sm-1 icons">
+              <img src={Images.openModal} onClick={this.clickSelectLicensorButton} />
+            </div>
+            <div className="col-xs-12 col-sm-3">
+              <h2>MG</h2>
+              <input className={Common.errorClass(this.state.filmErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
+              {Common.renderFieldError(this.state.filmErrors, Common.errors.mg)}
+            </div>
+          </div>
+          {this.renderRoyaltyFields()}
+        </div>
+      )
+    }
+  },
+
   renderRoyaltyFields: function() {
     if (this.state.film.shortFilm === 'no') {
       return(
         <div>
-          <hr />
           <div className="row">
             <div className="col-xs-12 col-sm-6">
               <h2>Deal Type</h2>

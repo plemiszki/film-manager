@@ -16,6 +16,9 @@ json.films @films do |film|
   json.reserveQuarters film.reserve_quarters
   json.exportReports film.export_reports
   json.sendReports film.send_reports
+  json.sellOffPeriod film.sell_off_period
+  json.autoRenew film.auto_renew == true ? "yes" : "no"
+  json.autoRenewTerm film.auto_renew_term
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
