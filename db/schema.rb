@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170814145143) do
+ActiveRecord::Schema.define(version: 20170902023934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,9 @@ ActiveRecord::Schema.define(version: 20170814145143) do
     t.boolean "reserve",                                    default: false
     t.decimal "reserve_percentage", precision: 5, scale: 2, default: 0.0
     t.integer "reserve_quarters",                           default: 0
+    t.integer "sell_off_period",                            default: 0
+    t.boolean "auto_renew",                                 default: false
+    t.integer "auto_renew_term",                            default: 0
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree
