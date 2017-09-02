@@ -68,9 +68,10 @@ var DvdCustomersDetails = React.createClass({
 
   confirmDelete: function() {
     this.setState({
-      fetching: true
+      fetching: true,
+      deleteModalOpen: false
     }, function() {
-      ClientActions.deleteDvdCustomers(this.state.dvdCustomer.id);
+      ClientActions.deleteDvdCustomer(this.state.dvdCustomer.id);
     });
   },
 

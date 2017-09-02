@@ -446,6 +446,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     })
+  },
+
+  deleteDvdCustomer: function(id) {
+    $.ajax({
+      url: '/api/dvd_customers/' + id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = "/dvd_customers";
+      }
+    });
   }
 }
 

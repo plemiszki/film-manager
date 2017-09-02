@@ -31,12 +31,12 @@ class Api::DvdCustomersController < ApplicationController
   end
 
   def destroy
-    @licensor = Licensor.find(params[:id])
-    if @licensor.destroy
-      Film.where(licensor_id: params[:id]).update_all(licensor_id: nil)
-      render json: @licensor, status: 200
+    @dvd_customer = DvdCustomer.find(params[:id])
+    if @dvd_customer.destroy
+      # TODO: delete all POs? invoices?
+      render json: @dvd_customer, status: 200
     else
-      render json: @licensor.errors.full_messages, status: 422
+      render json: @dvd_customer.errors.full_messages, status: 422
     end
   end
 
