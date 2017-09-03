@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170903142735) do
+ActiveRecord::Schema.define(version: 20170903205435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,27 @@ ActiveRecord::Schema.define(version: 20170903142735) do
   create_table "dvd_types", force: :cascade do |t|
     t.string "name", null: false
   end
+
+  create_table "dvds", force: :cascade do |t|
+    t.integer "dvd_type_id",                                              null: false
+    t.integer "feature_film_id",                                          null: false
+    t.integer "short_film_id"
+    t.integer "short_film_2_id"
+    t.decimal "price",            precision: 5, scale: 2, default: 0.0
+    t.string  "upc",                                      default: ""
+    t.integer "stock",                                    default: 0
+    t.boolean "repressing",                               default: false
+    t.string  "sound_config",                             default: ""
+    t.string  "special_features",                         default: ""
+    t.integer "discs",                                    default: 1
+    t.integer "units_shipped",                            default: 0
+    t.date    "first_shipment"
+  end
+
+  add_index "dvds", ["dvd_type_id"], name: "index_dvds_on_dvd_type_id", using: :btree
+  add_index "dvds", ["feature_film_id"], name: "index_dvds_on_feature_film_id", using: :btree
+  add_index "dvds", ["short_film_2_id"], name: "index_dvds_on_short_film_2_id", using: :btree
+  add_index "dvds", ["short_film_id"], name: "index_dvds_on_short_film_id", using: :btree
 
   create_table "film_revenue_percentages", force: :cascade do |t|
     t.integer "film_id",                                                 null: false
