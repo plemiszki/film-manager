@@ -1,6 +1,6 @@
 class Importer < ActiveRecord::Base
 
-  def self.import_licensors(time_started)
+  def self.import_admin(time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
@@ -10,6 +10,8 @@ class Importer < ActiveRecord::Base
     object.get(response_target: Rails.root.join("tmp/#{time_started}/Admin.txt"))
     File.open(Rails.root.join("tmp/#{time_started}/Admin.txt")) do |f|
       array = f.gets.split('^')
+
+      # licensors
       total = array[0].to_i
       array.shift
       licensors = 0
@@ -23,6 +25,45 @@ class Importer < ActiveRecord::Base
         licensor.save!
         array.shift(5)
         licensors += 1
+      end
+
+      # languages
+      total = array[0].to_i
+      array.shift
+      languages = 0
+      until languages == total
+        array.shift(3)
+        languages += 1
+      end
+
+      # cast/crew
+      total = array[0].to_i
+      array.shift
+      actors = 0
+      until actors == total
+        array.shift(3)
+        actors += 1
+      end
+
+      # dvd customers
+      total = array[0].to_i
+      array.shift
+      customers = 0
+      until customers == total
+        if ["Blockbuster", "Blockbuster Canada", "RepNet"].include?(array[1])
+          array.shift(7)
+          customers += 1
+          next
+        end
+        customer = DvdCustomer.find_by_name(array[1])
+        if customer
+          customer.update(discount: array[2], notes: array[3])
+        else
+          customer = DvdCustomer.new(name: array[1], discount: array[2], notes: array[3])
+        end
+        customer.save!
+        array.shift(7)
+        customers += 1
       end
     end
     object.delete

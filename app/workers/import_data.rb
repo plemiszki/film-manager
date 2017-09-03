@@ -6,7 +6,7 @@ class ImportData
     p '---------------------------'
     p 'STARTING DATA IMPORT'
     p '---------------------------'
-    Importer.import_licensors(time_started)
+    Importer.import_admin(time_started)
     Importer.import_films(time_started)
     p '---------------------------'
     p 'FINISHED DATA IMPORT'
