@@ -144,8 +144,8 @@ var FilmDetails = React.createClass({
     }
   },
 
-  redirect: function(id) {
-    window.location.pathname = "royalty_reports/" + id;
+  redirect: function(directory, id) {
+    window.location.pathname = directory + "/" + id;
   },
 
   changeCheckbox: function(property, e) {
@@ -305,7 +305,7 @@ var FilmDetails = React.createClass({
               <tr><td></td></tr>
               {this.state.dvds.map(function(dvd, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, dvd.id)}>
+                  <tr key={index} onClick={this.redirect.bind(this, "dvds", dvd.id)}>
                     <td className="name-column">
                       {dvd.type}
                     </td>
@@ -339,7 +339,7 @@ var FilmDetails = React.createClass({
               <tr><td></td><td></td></tr>
               {this.state.reports.map(function(report, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, report.id)}>
+                  <tr key={index} onClick={this.redirect.bind(this, "royalty_reports", report.id)}>
                     <td className="name-column">
                       {report.year}
                     </td>

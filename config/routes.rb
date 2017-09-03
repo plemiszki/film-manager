@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :royalty_reports, only: [:index, :show]
   resources :giftboxes, only: [:index, :show]
   resources :dvd_customers, only: [:index, :show]
+  resources :dvds, only: [:show]
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
@@ -29,6 +30,7 @@ Rails.application.routes.draw do
     post '/royalty_reports/error_check' => '/api/royalty_reports#error_check'
     get '/jobs/status' => '/api/jobs#status'
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]
+    resources :dvds, only: [:show, :create, :update, :destroy]
   end
 
   # Clearance ------------------------
