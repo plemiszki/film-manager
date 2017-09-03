@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170903205435) do
+ActiveRecord::Schema.define(version: 20170903231618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20170903205435) do
     t.date    "first_shipment"
   end
 
+  add_index "dvds", ["dvd_type_id", "feature_film_id"], name: "index_dvds_on_dvd_type_id_and_feature_film_id", unique: true, using: :btree
   add_index "dvds", ["dvd_type_id"], name: "index_dvds_on_dvd_type_id", using: :btree
   add_index "dvds", ["feature_film_id"], name: "index_dvds_on_feature_film_id", using: :btree
   add_index "dvds", ["short_film_2_id"], name: "index_dvds_on_short_film_2_id", using: :btree

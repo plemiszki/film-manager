@@ -3,6 +3,7 @@ class Dvd < ActiveRecord::Base
   validates :dvd_type_id, presence: true
   validates :feature_film_id, presence: true
   validates_numericality_of :price, :greater_than_or_equal_to => 0
+  validates :dvd_type_id, uniqueness: { scope: :feature_film_id }
 
   belongs_to :dvd_type
   belongs_to(
