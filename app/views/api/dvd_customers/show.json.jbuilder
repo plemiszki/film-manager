@@ -3,6 +3,5 @@ json.array! @dvd_customers do |dvd_customer|
   json.name dvd_customer.name
   json.discount dvd_customer.discount
   json.consignment dvd_customer.consignment
-  json.address dvd_customer.address
   json.notes dvd_customer.notes
 end

@@ -115,12 +115,7 @@ var DvdCustomersDetails = React.createClass({
               </div>
             </div>
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Address</h2>
-                <textarea rows="5" className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address || ""} data-field="address" />
-                {Common.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-6">
+              <div className="col-xs-12">
                 <h2>Notes</h2>
                 <textarea rows="5" className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.notes || ""} data-field="notes" />
                 {Common.renderFieldError(this.state.errors, [])}

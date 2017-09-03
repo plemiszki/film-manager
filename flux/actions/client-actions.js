@@ -435,7 +435,6 @@ var ClientActions = {
           name: dvdCustomer.name,
           discount: dvdCustomer.discount,
           consignment: dvdCustomer.consignment,
-          address: dvdCustomer.address,
           notes: dvdCustomer.notes
         }
       },
