@@ -32,6 +32,7 @@ var FilmDetails = React.createClass({
       percentagesSaved: {},
       percentageErrors: {},
       reports: [],
+      dvds: [],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -58,6 +59,7 @@ var FilmDetails = React.createClass({
       percentages: Tools.deepCopy(FilmsStore.percentages()),
       percentagesSaved: FilmsStore.percentages(),
       reports: FilmsStore.reports(),
+      dvds: FilmsStore.dvds(),
       fetching: false
     }, function() {
       this.setState({
@@ -293,7 +295,25 @@ var FilmDetails = React.createClass({
     } else if (this.state.tab === "DVDs") {
       return(
         <div>
-          DVD Tab
+          <table className={"admin-table"}>
+            <thead>
+              <tr>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td></tr>
+              {this.state.dvds.map(function(dvd, index) {
+                return(
+                  <tr key={index} onClick={this.redirect.bind(this, dvd.id)}>
+                    <td className="name-column">
+                      {dvd.type}
+                    </td>
+                  </tr>
+                );
+              }.bind(this))}
+            </tbody>
+          </table>
         </div>
       )
     } else if (this.state.tab === "Statements") {

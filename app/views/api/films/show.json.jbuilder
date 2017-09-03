@@ -47,3 +47,7 @@ json.rights @rights do |right|
   json.order right.right.order
   json.value right.value
 end
+json.dvds @dvds do |dvd|
+  json.id dvd.id
+  json.type dvd.dvd_type.name
+end

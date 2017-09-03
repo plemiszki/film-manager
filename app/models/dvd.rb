@@ -4,6 +4,7 @@ class Dvd < ActiveRecord::Base
   validates :feature_film_id, presence: true
   validates_numericality_of :price, :greater_than_or_equal_to => 0
 
+  belongs_to :dvd_type
   belongs_to(
     :feature,
     class_name: "Film",

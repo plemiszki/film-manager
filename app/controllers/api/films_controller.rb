@@ -13,6 +13,7 @@ class Api::FilmsController < ApplicationController
     @reports = RoyaltyReport.where(film_id: params[:id])
     @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
     @rights = FilmRight.where(film_id: params[:id])
+    @dvds = Dvd.where(feature_film_id: params[:id])
     render "show.json.jbuilder"
   end
 
