@@ -35,7 +35,8 @@ var FilmDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
-      licensorModalOpen: false
+      licensorModalOpen: false,
+      tab: 'Contract'
     });
   },
 
@@ -71,6 +72,15 @@ var FilmDetails = React.createClass({
       percentageErrors: FilmErrorsStore.percentageErrors(),
       fetching: false
     });
+  },
+
+  clickTab: function(event) {
+    var tab = event.target.innerText;
+    if (this.state.tab !== tab) {
+      this.setState({
+        tab: tab
+      });
+    }
   },
 
   clickSave: function() {
@@ -187,6 +197,7 @@ var FilmDetails = React.createClass({
     return(
       <div className="film-details component">
         <h1>Film Details</h1>
+        {this.renderTopTabs()}
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}
           {Common.renderGrayedOut(this.state.fetching)}
@@ -204,8 +215,8 @@ var FilmDetails = React.createClass({
               </select>
             </div>
           </div>
-          <hr />
-          {this.renderTab("licensor")}
+          <hr className={this.state.tab === "Statements" ? "smaller-margin" : ""} />
+          {this.renderTab(this.state.tab)}
           {this.renderButtons()}
         </div>
         <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
@@ -234,8 +245,26 @@ var FilmDetails = React.createClass({
     );
   },
 
+  renderTopTabs: function() {
+    if (this.state.film.shortFilm === "no") {
+      return(
+        <div className="tabs-row">
+          {this.renderTopTab("Contract")}
+          {this.renderTopTab("DVDs")}
+          {this.renderTopTab("Statements")}
+        </div>
+      )
+    }
+  },
+
+  renderTopTab: function(label) {
+    return(
+      <div className={"tab" + (this.state.tab === label ? " selected" : "")} onClick={this.clickTab}>{label}</div>
+    )
+  },
+
   renderTab: function(tab) {
-    if (tab === "licensor") {
+    if (tab === "Contract") {
       return(
         <div>
           <div className="row">
@@ -252,7 +281,7 @@ var FilmDetails = React.createClass({
               <input className={Common.errorClass(this.state.filmErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
               {Common.renderFieldError(this.state.filmErrors, Common.errors.mg)}
             </div>
-            <div className="col-xs-12 col-sm-3">
+            <div className={"col-xs-12 col-sm-3" + (this.state.film.shortFilm === "yes" ? " hidden" : "")}>
               <h2>E & O</h2>
               <input className={Common.errorClass(this.state.filmErrors, Common.errors.eAndO)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
               {Common.renderFieldError(this.state.filmErrors, Common.errors.eAndO)}
@@ -260,6 +289,53 @@ var FilmDetails = React.createClass({
           </div>
           {this.renderRoyaltyFields()}
         </div>
+      )
+    } else if (this.state.tab === "DVDs") {
+      return(
+        <div>
+          DVD Tab
+        </div>
+      )
+    } else if (this.state.tab === "Statements") {
+      return(
+        <div>
+          <div className="row checkboxes">
+            <div className="col-xs-6">
+              <input id="export-reports" type="checkbox" checked={this.state.film.exportReports} onChange={this.changeCheckbox.bind(this, 'exportReports')} /><label htmlFor="export-reports">Export Reports</label>
+            </div>
+            <div className={"col-xs-6" + (this.state.film.exportReports ? "" : " hidden")}>
+              <input id="send-reports" type="checkbox" checked={this.state.film.sendReports} onChange={this.changeCheckbox.bind(this, 'sendReports')} /><label htmlFor="send-reports">Send Reports</label>
+            </div>
+          </div>
+          <hr />
+          <table className={"admin-table"}>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Quarter</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td><td></td></tr>
+              {this.state.reports.map(function(report, index) {
+                return(
+                  <tr key={index} onClick={this.redirect.bind(this, report.id)}>
+                    <td className="name-column">
+                      {report.year}
+                    </td>
+                    <td>
+                      {report.quarter}
+                    </td>
+                  </tr>
+                );
+              }.bind(this))}
+            </tbody>
+          </table>
+        </div>
+      )
+    } else {
+      return(
+        <div></div>
       )
     }
   },
@@ -269,7 +345,7 @@ var FilmDetails = React.createClass({
       return(
         <div>
           <div className="row">
-            <div className="col-xs-12 col-sm-6">
+            <div className="col-xs-12 col-sm-5">
               <h2>Deal Type</h2>
                 <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="dealTypeId" value={this.state.film.dealTypeId}>
                   {FilmsStore.dealTemplates().map(function(dealTemplate, index) {
@@ -285,7 +361,7 @@ var FilmDetails = React.createClass({
               <input className={Common.errorClass(this.state.filmErrors, Common.errors.grPercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.grPercentage || ""} data-field="grPercentage" />
               {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
-            <div className="col-xs-12 col-sm-3">
+            <div className={"col-xs-12 col-sm-3" + ((this.state.film.dealTypeId === "5" || this.state.film.dealTypeId === "6") ? "" : " col-sm-offset-1")}>
               <h2>Statements Due</h2>
                 <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="daysStatementDue" value={this.state.film.daysStatementDue}>
                   <option value={"30"}>30 Days</option>
@@ -379,39 +455,6 @@ var FilmDetails = React.createClass({
               {Common.renderFieldError(this.state.filmErrors, [])}
             </div>
           </div>
-          <hr className="smaller-margin" />
-          <div className="row checkboxes">
-            <div className="col-xs-6">
-              <input id="export-reports" type="checkbox" checked={this.state.film.exportReports} onChange={this.changeCheckbox.bind(this, 'exportReports')} /><label htmlFor="export-reports">Export Reports</label>
-            </div>
-            <div className={"col-xs-6" + (this.state.film.exportReports ? "" : " hidden")}>
-              <input id="send-reports" type="checkbox" checked={this.state.film.sendReports} onChange={this.changeCheckbox.bind(this, 'sendReports')} /><label htmlFor="send-reports">Send Reports</label>
-            </div>
-          </div>
-          <hr />
-          <table className={"admin-table"}>
-            <thead>
-              <tr>
-                <th>Year</th>
-                <th>Quarter</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td></tr>
-              {this.state.reports.map(function(report, index) {
-                return(
-                  <tr key={index} onClick={this.redirect.bind(this, report.id)}>
-                    <td className="name-column">
-                      {report.year}
-                    </td>
-                    <td>
-                      {report.quarter}
-                    </td>
-                  </tr>
-                );
-              }.bind(this))}
-            </tbody>
-          </table>
         </div>
       )
     }
