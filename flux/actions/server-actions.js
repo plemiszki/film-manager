@@ -122,6 +122,16 @@ var ServerActions = {
       actionType: "DVD_CUSTOMERS_RECEIVED",
       dvdCustomers: response
     });
+  },
+
+  // DVDS ---
+
+  receiveDvds: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "DVDS_RECEIVED",
+      dvds: response.dvds,
+      dvdTypes: response.dvdTypes
+    });
   }
 }
 

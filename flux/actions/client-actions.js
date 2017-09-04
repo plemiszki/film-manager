@@ -455,6 +455,16 @@ var ClientActions = {
         window.location.pathname = "/dvd_customers";
       }
     });
+  },
+
+  fetchDvd: function(id) {
+    $.ajax({
+      url: '/api/dvds/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveDvds(response);
+      }
+    })
   }
 }
 
