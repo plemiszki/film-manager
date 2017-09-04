@@ -39,7 +39,7 @@ class Api::DvdsController < ApplicationController
   private
 
   def dvd_params
-    params[:dvd].permit(:name, :upc, :price, :dvd_type_id, :feature_film_id, :short_film_id, :short_film_2_id, :stock, :repressing, :sound_config, :special_features, :discs, :units_shipped, :first_shipment)
+    params[:dvd].permit(:name, :upc, :price, :dvd_type_id, :feature_film_id, :stock, :repressing, :sound_config, :special_features, :discs, :units_shipped, :first_shipment)
   end
 
 end

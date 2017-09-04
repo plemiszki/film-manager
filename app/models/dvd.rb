@@ -14,8 +14,4 @@ class Dvd < ActiveRecord::Base
     primary_key: :id
   )
 
-  def shorts
-    Film.where(id: [short_film_id, short_film_2_id])
-  end
-
 end
