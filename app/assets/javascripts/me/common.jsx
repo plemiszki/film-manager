@@ -170,6 +170,18 @@ Common = {
       "Discount is not a number",
       "Discount must be greater than or equal to 0",
       "Discount must be less than or equal to 100"
+    ],
+    discs: [
+      "Discs is not a number",
+      "Discs must be greater than or equal to 1",
+      "Discs must be less than or equal to 2"
+    ],
+    price: [
+      "Price is not a number",
+      "Price must be greater than or equal to 0"
+    ],
+    dvdTypeId: [
+      "Dvd type has already been taken"
     ]
   },
 

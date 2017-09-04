@@ -464,7 +464,33 @@ var ClientActions = {
       success: function(response) {
         ServerActions.receiveDvds(response);
       }
-    })
+    });
+  },
+
+  updateDvd: function(dvd) {
+    $.ajax({
+      url: '/api/dvds/' + dvd.id,
+      method: 'PATCH',
+      data: {
+        dvd: {
+          dvd_type_id: dvd.dvdTypeId,
+          upc: dvd.upc,
+          price: dvd.price.removeFinanceSymbols(),
+          discs: dvd.discs,
+          stock: dvd.stock,
+          repressing: dvd.repressing,
+          units_shipped: dvd.unitsShipped,
+          sound_config: dvd.soundConfig,
+          special_features: dvd.specialFeatures
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDvds(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

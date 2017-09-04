@@ -20,6 +20,7 @@ class Api::DvdsController < ApplicationController
     @dvd = Dvd.find(params[:id])
     if @dvd.update(dvd_params)
       @dvds = Dvd.where(id: params[:id])
+      @dvd_types = DvdType.all
       render "show.json.jbuilder"
     else
       render json: @dvd.errors.full_messages, status: 422
