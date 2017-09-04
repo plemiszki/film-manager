@@ -491,11 +491,62 @@ var FilmDetails = React.createClass({
         <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
           {buttonText}
         </a>
+        {this.renderErrorGuide()}
         <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
           Delete Film
         </a>
       </div>
     )
+  },
+
+  percentageErrorsExist: function() {
+    var keys = Object.keys(this.state.percentageErrors);
+    var result = false;
+    if (keys.length > 0) {
+      for (var i = 0; i < keys.length; i++) {
+        if (this.state.percentageErrors[keys[i]].length > 0) {
+          result = true;
+          break
+        }
+      }
+    }
+    return result;
+  },
+
+  renderErrorGuide: function() {
+    if (this.state.filmErrors.length > 0 || this.percentageErrorsExist()) {
+      var tabs = {
+        contract: [
+          Common.errors.grPercentage,
+          Common.errors.eAndO,
+          Common.errors.mg,
+          Common.errors.expenseCap,
+          Common.errors.sellOffPeriod,
+          Common.errors.reservePercentage,
+          Common.errors.reserveQuarters,
+          Common.errors.autoRenewTerm
+        ]
+      }
+      var result = [];
+      if (this.percentageErrorsExist()) {
+        result.push("Contract Tab");
+      }
+      this.state.filmErrors.forEach(function(error) {
+        if (result.indexOf("Contract Tab") === -1) {
+          tabs.contract.forEach(function(errorsArray) {
+            if (errorsArray.indexOf(error) > -1) {
+              result.push("Contract Tab");
+            }
+          });
+        }
+      });
+      var string = (result.length > 0 ? ("(" + result.join(", ") + ")") : "");
+      return(
+        <div className="error-guide">
+          {"Not saved. There were errors. " + string}
+        </div>
+      )
+    }
   },
 
   componentDidUpdate: function() {
