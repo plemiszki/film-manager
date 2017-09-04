@@ -491,6 +491,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  deleteDvd: function(dvd) {
+    $.ajax({
+      url: '/api/dvds/' + dvd.id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = "/films/" + dvd.featureFilmId;
+      }
+    });
   }
 }
 

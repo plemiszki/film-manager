@@ -1,6 +1,7 @@
 json.dvds @dvds do |dvd|
   json.id dvd.id
   json.dvdTypeId dvd.dvd_type_id.to_s
+  json.featureFilmId dvd.feature_film_id
   json.title dvd.feature.title
   json.shortFilmId dvd.short_film_id || ""
   json.shortFilm2Id dvd.short_film_2_id || ""

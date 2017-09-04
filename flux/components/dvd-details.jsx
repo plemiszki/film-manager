@@ -74,7 +74,7 @@ var DvdDetails = React.createClass({
       fetching: true,
       deleteModalOpen: false
     }, function() {
-      ClientActions.deleteDvd(this.state.dvd.id);
+      ClientActions.deleteDvd(this.state.dvd);
     });
   },
 
