@@ -171,7 +171,7 @@ body {
     color: #95949B;
   }
 
-  .orange-button, .light-orange-button, .green-outline-button, .red-button {
+  .orange-button, .light-orange-button, .blue-outline-button, .red-button {
     display: inline-block;
     min-width: 175px;
     text-align: center;
@@ -189,10 +189,16 @@ body {
     padding: 15px 40px;
   }
 
-  .green-outline-button {
+  .blue-outline-button {
     font-family: 'TeachableSansSemiBold';
     padding: 10px 40px;
-    border: solid 1px #1EA69A;
+    color: $button-color;
+    border: solid 1px $button-color;
+
+    &.small {
+      padding: 5px 10px 5px 10px;
+      min-width: 120px;
+    }
   }
 
   .red-button {
@@ -227,11 +233,6 @@ body {
       color: #FF7F45;
       background-color: rgba(255, 127, 69, 0.2);
     }
-  }
-
-  .green-outline-button, .green-outline-button:hover {
-    color: #1EA69A;
-    // background: asset-data-url('admin/green-plus.png') 20px 14px no-repeat;
   }
 
   .light-orange-button.disabled, .orange-button.disabled, .green-outline-button.disabled {

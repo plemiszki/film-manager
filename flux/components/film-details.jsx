@@ -314,6 +314,7 @@ var FilmDetails = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
+          <a className='blue-outline-button small'>Add DVD</a>
         </div>
       )
     } else if (this.state.tab === "Statements") {
