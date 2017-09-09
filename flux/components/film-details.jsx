@@ -3,6 +3,7 @@ var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
 var FilmErrorsStore = require('../stores/film-errors-store.js');
+var NewThing = require('./new-thing.jsx');
 
 var FilmDetails = React.createClass({
 
@@ -22,6 +23,19 @@ var FilmDetails = React.createClass({
     }
   },
 
+  dvdModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 351
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -37,6 +51,7 @@ var FilmDetails = React.createClass({
       justSaved: false,
       deleteModalOpen: false,
       licensorModalOpen: false,
+      dvdModalOpen: false,
       tab: 'Contract'
     });
   },
@@ -121,6 +136,12 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickAddDVDButton: function() {
+    this.setState({
+      dvdModalOpen: true
+    });
+  },
+
   confirmDelete: function() {
     this.setState({
       fetching: true
@@ -132,7 +153,8 @@ var FilmDetails = React.createClass({
   handleModalClose: function() {
     this.setState({
       deleteModalOpen: false,
-      licensorModalOpen: false
+      licensorModalOpen: false,
+      dvdModalOpen: false
     });
   },
 
@@ -243,6 +265,9 @@ var FilmDetails = React.createClass({
             }.bind(this))}
           </ul>
         </Modal>
+        <Modal isOpen={this.state.dvdModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdModalStyles}>
+          <NewThing thing="dvd" initialObject={{name: "", discount: 0}} />
+        </Modal>
       </div>
     );
   },
@@ -314,7 +339,7 @@ var FilmDetails = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
-          <a className='blue-outline-button small'>Add DVD</a>
+          <a className='blue-outline-button small' onClick={this.clickAddDVDButton}>Add DVD</a>
         </div>
       )
     } else if (this.state.tab === "Statements") {

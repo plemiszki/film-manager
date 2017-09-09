@@ -61,12 +61,26 @@ var NewThing = React.createClass({
           {this.renderPasswordField()}
           {this.renderUpcField()}
           {this.renderDiscountField()}
+          {this.renderDvdTypeField()}
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
-            {this.props.thing === "dvdCustomer" ? "Add DVD Customer" : (this.props.thing === "giftbox" ? "Add Gift Box" : "Add " + this.props.thing.capitalize())}
+            {this.renderAddButton()}
           </a>
         </div>
       </div>
     )
+  },
+
+  renderAddButton: function() {
+    var map = {
+      dvdCustomer: "DVD Customer",
+      giftbox: "Gift Box",
+      dvd: "DVD"
+    };
+    if (Object.keys(map).indexOf(this.props.thing) > -1) {
+      return "Add " + map[this.props.thing];
+    } else {
+      return "Add " + this.props.thing.capitalize();
+    }
   },
 
   renderNameField: function() {
@@ -147,6 +161,18 @@ var NewThing = React.createClass({
             <h2>Discount</h2>
             <input className={Common.errorClass(this.state.errors, Common.errors.discount)} style={{maxWidth: "20%"}} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].discount} data-field="discount" />
             {Common.renderFieldError(this.state.errors, Common.errors.discount)}
+          </div>
+        </div>
+      )
+    }
+  },
+
+  renderDvdTypeField: function() {
+    if (this.props.thing === "dvd") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            select dvd type
           </div>
         </div>
       )
