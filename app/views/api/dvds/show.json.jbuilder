@@ -14,3 +14,7 @@ json.dvds @dvds do |dvd|
   json.firstShipment dvd.first_shipment || ""
 end
 json.dvdTypes @dvd_types
+json.shorts @shorts do |short|
+  json.id short.id
+  json.title short.title
+end

@@ -131,7 +131,8 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "DVDS_RECEIVED",
       dvds: response.dvds,
-      dvdTypes: response.dvdTypes
+      dvdTypes: response.dvdTypes,
+      shorts: response.shorts
     });
   }
 }

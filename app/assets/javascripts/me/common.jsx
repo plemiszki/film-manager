@@ -323,6 +323,10 @@ Common = {
     )
   },
 
+  redirect: function(directory, id) {
+    window.location.pathname = directory + "/" + id;
+  },
+
   removeFieldError: function(errorsArray, fieldName) {
     if (Common.errors[fieldName]) { // some fields may have multiple errors, make sure all are removed
       if (!errorsArray) {

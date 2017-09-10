@@ -3,6 +3,7 @@ class Api::DvdsController < ApplicationController
   def show
     @dvds = Dvd.where(id: params[:id])
     @dvd_types = DvdType.all
+    @shorts = @dvds[0].shorts
     render "show.json.jbuilder"
   end
 

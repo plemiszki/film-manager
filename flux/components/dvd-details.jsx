@@ -15,6 +15,7 @@ var DvdDetails = React.createClass({
       },
       dvdSaved: {},
       films: [],
+      shorts: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -37,6 +38,7 @@ var DvdDetails = React.createClass({
     this.setState({
       dvd: Tools.deepCopy(DvdsStore.find(window.location.pathname.split("/")[2])),
       dvdSaved: DvdsStore.find(window.location.pathname.split("/")[2]),
+      shorts: DvdsStore.shorts(),
       fetching: false
     }, function() {
       this.setState({
@@ -162,6 +164,26 @@ var DvdDetails = React.createClass({
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
             </div>
+            <table className={"admin-table"}>
+              <thead>
+                <tr>
+                  <th>Short Films</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td></td></tr>
+                {this.state.shorts.map(function(short, index) {
+                  return(
+                    <tr key={index} onClick={Common.redirect.bind(this, "films", short.id)}>
+                      <td className="name-column">
+                        {short.title}
+                      </td>
+                    </tr>
+                  );
+                }.bind(this))}
+              </tbody>
+            </table>
+            <a className={'blue-outline-button small'} onClick={this.clickAddShortButton}>Add Short</a>
             {this.renderButtons()}
           </div>
         </div>
