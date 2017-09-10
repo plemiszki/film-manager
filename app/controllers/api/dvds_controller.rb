@@ -7,10 +7,9 @@ class Api::DvdsController < ApplicationController
   end
 
   def create
-    @dvd = Dvd.new(name: dvd_params[:name], discount: dvd_params[:discount])
+    @dvd = Dvd.new(dvd_params)
     if @dvd.save
-      @dvds = Dvd.all
-      render "index.json.jbuilder"
+      render json: @dvd
     else
       render json: @dvd.errors.full_messages, status: 422
     end

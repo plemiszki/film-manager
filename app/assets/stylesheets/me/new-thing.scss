@@ -4,9 +4,17 @@
   .white-box {
     box-shadow: none !important;
 
-    input {
+    input, .nice-select {
       width: 100%;
       margin-bottom: 10px;
+    }
+
+    .nice-select {
+      margin-bottom: 32px;
+    }
+
+    .dvd-type-column {
+      margin-bottom: 150px;
     }
 
     .noFieldError {

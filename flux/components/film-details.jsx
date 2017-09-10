@@ -32,7 +32,7 @@ var FilmDetails = React.createClass({
       padding: 0,
       margin: 'auto',
       maxWidth: 1000,
-      height: 351
+      height: 376
     }
   },
 
@@ -266,7 +266,7 @@ var FilmDetails = React.createClass({
           </ul>
         </Modal>
         <Modal isOpen={this.state.dvdModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdModalStyles}>
-          <NewThing thing="dvd" initialObject={{name: "", discount: 0}} />
+          <NewThing thing="dvd" initialObject={{featureFilmId: this.state.film.id, dvdTypeId: (this.state.film.id && this.state.dvds.length < 6) ? FilmsStore.dvdTypes()[0].id : 1}} />
         </Modal>
       </div>
     );
@@ -339,7 +339,7 @@ var FilmDetails = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
-          <a className='blue-outline-button small' onClick={this.clickAddDVDButton}>Add DVD</a>
+          <a className={'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '')} onClick={this.clickAddDVDButton}>Add DVD</a>
         </div>
       )
     } else if (this.state.tab === "Statements") {

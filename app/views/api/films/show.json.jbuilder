@@ -51,3 +51,7 @@ json.dvds @dvds do |dvd|
   json.id dvd.id
   json.type dvd.dvd_type.name
 end
+json.dvdTypes @dvd_types do |dvd_type|
+  json.id dvd_type.id
+  json.name dvd_type.name
+end

@@ -457,6 +457,25 @@ var ClientActions = {
     });
   },
 
+  createDvd: function(dvd) {
+    $.ajax({
+      url: '/api/dvds',
+      method: 'POST',
+      data: {
+        dvd: {
+          dvd_type_id: dvd.dvdTypeId,
+          feature_film_id: dvd.featureFilmId
+        }
+      },
+      success: function(response) {
+        window.location.pathname = '/dvds/' + response.id
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
   fetchDvd: function(id) {
     $.ajax({
       url: '/api/dvds/' + id,

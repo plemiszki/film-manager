@@ -1,6 +1,7 @@
 var React = require('react');
 var ErrorsStore = require('../stores/errors-store.js');
 var ClientActions = require('../actions/client-actions.js');
+var FilmsStore = require('../stores/films-store.js');
 
 var NewThing = React.createClass({
 
@@ -14,6 +15,7 @@ var NewThing = React.createClass({
 
   componentDidMount: function() {
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
+    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
   },
 
   componentWillUnmount: function() {
@@ -171,12 +173,23 @@ var NewThing = React.createClass({
     if (this.props.thing === "dvd") {
       return(
         <div className="row">
-          <div className="col-xs-12">
-            select dvd type
+          <div className="col-xs-12 dvd-type-column">
+            <h2>DVD Type</h2>
+            <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="dvdTypeId" value={this.state[this.props.thing].dvdTypeId}>
+              {FilmsStore.dvdTypes().map(function(dvdType, index) {
+                return(
+                  <option key={index} value={dvdType.id}>{dvdType.name}</option>
+                );
+              })}
+            </select>
           </div>
         </div>
       )
     }
+  },
+
+  componentDidUpdate: function() {
+    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
   }
 });
 

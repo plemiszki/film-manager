@@ -11,6 +11,7 @@ var _revenuePercentages = {};
 var _reports = [];
 var _rights = {};
 var _dvds = {};
+var _dvdTypes = [];
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -46,6 +47,10 @@ FilmsStore.setReports = function(reports) {
 
 FilmsStore.setDvds = function(dvds) {
   _dvds = dvds;
+};
+
+FilmsStore.setDvdTypes = function(dvdTypes) {
+  _dvdTypes = dvdTypes;
 };
 
 FilmsStore.setRights = function(rights) {
@@ -125,6 +130,10 @@ FilmsStore.dvds = function() {
   return _dvds;
 };
 
+FilmsStore.dvdTypes = function() {
+  return _dvdTypes;
+};
+
 FilmsStore.__onDispatch = function(payload) {
   switch(payload.actionType){
     case "FILMS_RECEIVED":
@@ -139,7 +148,8 @@ FilmsStore.__onDispatch = function(payload) {
         this.setFilmRevenuePercentages(payload.filmRevenuePercentages);
         this.setRights(payload.rights);
       }
-      this.setDvds(payload.dvds)
+      this.setDvds(payload.dvds);
+      this.setDvdTypes(payload.dvdTypes);
       this.__emitChange();
       break;
   }

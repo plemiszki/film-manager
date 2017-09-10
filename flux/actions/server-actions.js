@@ -28,7 +28,8 @@ var ServerActions = {
       filmRevenuePercentages: response.filmRevenuePercentages,
       reports: response.reports,
       rights: response.rights,
-      dvds: response.dvds
+      dvds: response.dvds,
+      dvdTypes: response.dvdTypes
     });
   },
 
