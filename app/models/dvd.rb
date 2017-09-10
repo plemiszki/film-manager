@@ -14,4 +14,11 @@ class Dvd < ActiveRecord::Base
     primary_key: :id
   )
 
+  has_many :dvd_shorts
+
+  has_many(
+    :shorts,
+    through: :dvd_shorts
+  )
+
 end

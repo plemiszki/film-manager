@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170904151226) do
+ActiveRecord::Schema.define(version: 20170910173528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,13 @@ ActiveRecord::Schema.define(version: 20170904151226) do
     t.boolean "consignment",                         default: false
     t.string  "notes",                               default: ""
   end
+
+  create_table "dvd_shorts", force: :cascade do |t|
+    t.integer "dvd_id",   null: false
+    t.integer "short_id", null: false
+  end
+
+  add_index "dvd_shorts", ["dvd_id", "short_id"], name: "index_dvd_shorts_on_dvd_id_and_short_id", unique: true, using: :btree
 
   create_table "dvd_types", force: :cascade do |t|
     t.string "name", null: false
