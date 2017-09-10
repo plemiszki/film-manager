@@ -6,6 +6,22 @@ var ErrorsStore = require('../stores/errors-store.js');
 
 var DvdDetails = React.createClass({
 
+  shortsModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 540,
+      height: '90%',
+      border: 'solid 1px #5F5F5F',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F'
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -16,10 +32,12 @@ var DvdDetails = React.createClass({
       dvdSaved: {},
       films: [],
       shorts: [],
+      otherShorts: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      shortsModalOpen: false
     });
   },
 
@@ -39,6 +57,7 @@ var DvdDetails = React.createClass({
       dvd: Tools.deepCopy(DvdsStore.find(window.location.pathname.split("/")[2])),
       dvdSaved: DvdsStore.find(window.location.pathname.split("/")[2]),
       shorts: DvdsStore.shorts(),
+      otherShorts: DvdsStore.otherShorts(),
       fetching: false
     }, function() {
       this.setState({
@@ -54,6 +73,12 @@ var DvdDetails = React.createClass({
     });
   },
 
+  clickAddShort: function() {
+    this.setState({
+      shortsModalOpen: true
+    });
+  },
+
   clickSave: function() {
     if (this.state.changesToSave) {
       this.setState({
@@ -63,6 +88,22 @@ var DvdDetails = React.createClass({
         ClientActions.updateDvd(this.state.dvd);
       });
     }
+  },
+
+  clickAddShortButton: function() {
+    this.setState({
+      shortsModalOpen: true
+    });
+  },
+
+  clickShortButton: function(event) {
+    var shortId = event.target.dataset.id;
+    this.setState({
+      fetching: true,
+      shortsModalOpen: false
+    }, function() {
+      ClientActions.createDvdShort(this.state.dvd.id, shortId);
+    });
   },
 
   clickDelete: function() {
@@ -81,7 +122,10 @@ var DvdDetails = React.createClass({
   },
 
   handleModalClose: function() {
-    this.setState({deleteModalOpen: false});
+    this.setState({
+      deleteModalOpen: false,
+      shortsModalOpen: false
+    });
   },
 
   checkForChanges: function() {
@@ -198,6 +242,15 @@ var DvdDetails = React.createClass({
               No
             </a>
           </div>
+        </Modal>
+        <Modal isOpen={this.state.shortsModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.shortsModalStyles}>
+          <ul className="licensor-modal-list">
+            {this.state.otherShorts.map(function(short, index) {
+              return(
+                <li key={index} onClick={this.clickShortButton} data-id={short.id}>{short.title}</li>
+              );
+            }.bind(this))}
+          </ul>
         </Modal>
       </div>
     );

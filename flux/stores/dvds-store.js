@@ -6,6 +6,7 @@ var DvdsStore = new Store(AppDispatcher);
 var _dvds = {};
 var _types = [];
 var _shorts = [];
+var _otherShorts = [];
 
 DvdsStore.setDvds = function (dvds) {
   dvds.forEach(function(dvd) {
@@ -19,6 +20,10 @@ DvdsStore.setTypes = function(types) {
 
 DvdsStore.setShorts = function(shorts) {
   _shorts = shorts;
+};
+
+DvdsStore.setOtherShorts = function(shorts) {
+  _otherShorts = shorts;
 };
 
 DvdsStore.find = function (id) {
@@ -40,12 +45,17 @@ DvdsStore.shorts = function() {
   return _shorts;
 };
 
+DvdsStore.otherShorts = function() {
+  return _otherShorts;
+};
+
 DvdsStore.__onDispatch = function(payload) {
   switch(payload.actionType){
     case "DVDS_RECEIVED":
       this.setDvds(payload.dvds);
       this.setTypes(payload.dvdTypes);
       this.setShorts(payload.shorts);
+      this.setOtherShorts(payload.otherShorts);
       this.__emitChange();
       break;
   }

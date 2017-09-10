@@ -520,6 +520,22 @@ var ClientActions = {
         window.location.pathname = "/films/" + dvd.featureFilmId;
       }
     });
+  },
+
+  createDvdShort: function(dvdId, shortId) {
+    $.ajax({
+      url: '/api/dvd_shorts',
+      method: 'POST',
+      data: {
+        dvd_short: {
+          dvd_id: dvdId,
+          short_id: shortId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDvds(response);
+      }
+    });
   }
 }
 

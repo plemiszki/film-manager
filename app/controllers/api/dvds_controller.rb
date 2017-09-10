@@ -4,6 +4,7 @@ class Api::DvdsController < ApplicationController
     @dvds = Dvd.where(id: params[:id])
     @dvd_types = DvdType.all
     @shorts = @dvds[0].shorts
+    @other_shorts = Film.where(short_film: true) - @shorts
     render "show.json.jbuilder"
   end
 

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     get '/jobs/status' => '/api/jobs#status'
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]
     resources :dvds, only: [:show, :create, :update, :destroy]
+    resources :dvd_shorts, only: [:create, :destroy]
   end
 
   # Clearance ------------------------
