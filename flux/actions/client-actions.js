@@ -536,6 +536,22 @@ var ClientActions = {
         ServerActions.receiveDvds(response);
       }
     });
+  },
+
+  deleteDvdShort: function(dvdId, shortId) {
+    $.ajax({
+      url: '/api/dvd_shorts/' + dvdId,
+      method: 'DELETE',
+      data: {
+        dvd_short: {
+          dvd_id: dvdId,
+          short_id: shortId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDvds(response);
+      }
+    });
   }
 }
 

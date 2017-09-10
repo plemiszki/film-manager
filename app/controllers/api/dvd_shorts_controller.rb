@@ -14,9 +14,13 @@ class Api::DvdShortsController < ApplicationController
   end
 
   def destroy
-    @dvd = Dvd.find(params[:id])
-    if @dvd.destroy
-      render json: @dvd, status: 200
+    @dvd_short = DvdShort.where(dvd_id: dvd_short_params[:dvd_id], short_id: dvd_short_params[:short_id])[0]
+    if @dvd_short.destroy
+      @dvds = Dvd.where(id: dvd_short_params[:dvd_id])
+      @dvd_types = DvdType.all
+      @shorts = @dvds[0].shorts
+      @other_shorts = Film.where(short_film: true) - @shorts
+      render "show.json.jbuilder"
     else
       render json: @dvd.errors.full_messages, status: 422
     end

@@ -106,6 +106,15 @@ var DvdDetails = React.createClass({
     });
   },
 
+  clickXButton: function(event) {
+    var id = event.target.dataset.id;
+    this.setState({
+      fetching: true
+    }, function() {
+      ClientActions.deleteDvdShort(this.state.dvd.id, id);
+    });
+  },
+
   clickDelete: function() {
     this.setState({
       deleteModalOpen: true
@@ -218,9 +227,12 @@ var DvdDetails = React.createClass({
                 <tr><td></td></tr>
                 {this.state.shorts.map(function(short, index) {
                   return(
-                    <tr key={index} onClick={Common.redirect.bind(this, "films", short.id)}>
+                    <tr key={index}>
                       <td className="name-column">
-                        {short.title}
+                        <div onClick={Common.redirect.bind(this, "films", short.id)}>
+                          {short.title}
+                        </div>
+                        <div className="x-button" onClick={this.clickXButton} data-id={short.id}></div>
                       </td>
                     </tr>
                   );

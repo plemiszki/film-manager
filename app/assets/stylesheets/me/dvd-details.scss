@@ -46,6 +46,22 @@
     .name-column {
       color: #5F5F5F;
     }
+
+    td {
+      position: relative;
+    }
+  }
+
+  .x-button {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 10px;
+    margin-right: 10px;
+    background-image: asset-url('gray-x.png');
+    background-size: contain;
+    width: 17px;
+    height: 17px;
   }
 
   .blue-outline-button {

@@ -128,7 +128,6 @@ var ServerActions = {
   // DVDS ---
 
   receiveDvds: function(response) {
-    console.log(response);
     AppDispatcher.dispatch({
       actionType: "DVDS_RECEIVED",
       dvds: response.dvds,
