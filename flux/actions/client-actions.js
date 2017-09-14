@@ -500,7 +500,9 @@ var ClientActions = {
           repressing: dvd.repressing,
           units_shipped: dvd.unitsShipped,
           sound_config: dvd.soundConfig,
-          special_features: dvd.specialFeatures
+          special_features: dvd.specialFeatures,
+          pre_book_date: dvd.preBookDate,
+          retail_date: dvd.retailDate
         }
       },
       success: function(response) {
