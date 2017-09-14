@@ -149,25 +149,25 @@ class Importer < ActiveRecord::Base
             FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 12).update(value: a[245]) #TV
             FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 13).update(value: a[251]) #Club
             FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 14).update(value: a[252]) #Jewish
-
-            # r = RoyaltyReport.create(film_id: f.id, year: 2017, quarter: 1, deal_id: f.deal_type_id, gr_percentage: f.gr_percentage, mg: f.mg, e_and_o: f.e_and_o, amount_paid: a[299], current_total_expenses: a[302], cume_total_expenses: a[303])
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 1, current_revenue: a[254], current_expense: a[277], cume_revenue: a[265], cume_expense: a[288], licensor_percentage: a[243]) #Theatrical
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 2, current_revenue: a[255], current_expense: a[278], cume_revenue: a[266], cume_expense: a[289], licensor_percentage: a[244]) #NT
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 3, current_revenue: a[260], current_expense: a[283], cume_revenue: a[271], cume_expense: a[294], licensor_percentage: a[249]) #Video
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 4, current_revenue: a[264], current_expense: a[287], cume_revenue: a[275], cume_expense: a[298], licensor_percentage: a[253]) #Com Vid
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 5, current_revenue: a[258], current_expense: a[281], cume_revenue: a[269], cume_expense: a[292], licensor_percentage: a[247]) #VOD
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 6, current_revenue: a[257], current_expense: a[280], cume_revenue: a[268].to_f + a[316].to_f, cume_expense: a[291].to_f + a[320].to_f, licensor_percentage: a[246]) #SVOD
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 7, current_revenue: a[311], current_expense: a[315], cume_revenue: a[319], cume_expense: a[323], licensor_percentage: a[307]) #TVOD
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 8, current_revenue: a[310], current_expense: a[314], cume_revenue: a[318], cume_expense: a[322], licensor_percentage: a[306]) #AVOD
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 9, current_revenue: a[309], current_expense: a[313], cume_revenue: a[317], cume_expense: a[321], licensor_percentage: a[305]) #FVOD
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 10, current_revenue: a[259], current_expense: a[282], cume_revenue: a[270], cume_expense: a[293], licensor_percentage: a[248]) #Other Internet
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 11, current_revenue: a[261], current_expense: a[284], cume_revenue: a[272], cume_expense: a[295], licensor_percentage: a[250]) #Ancillary
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 12, current_revenue: a[256], current_expense: a[279], cume_revenue: a[267], cume_expense: a[290], licensor_percentage: a[245]) #TV
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 13, current_revenue: a[262], current_expense: a[285], cume_revenue: a[273], cume_expense: a[296], licensor_percentage: a[251]) #Club
-            # RoyaltyRevenueStream.create!(royalty_report_id: r.id, revenue_stream_id: 14, current_revenue: a[263], current_expense: a[286], cume_revenue: a[274], cume_expense: a[297], licensor_percentage: a[252]) #Club
           end
         end
         film.save!
+
+        # create retail dvd
+        retail_dvd_vars = {
+          dvd_type_id: 1,
+          feature_film_id: film.id,
+          upc: a[39],
+          price: a[35]
+        }
+        if retail_dvd_vars[:upc] != ""
+          retail_dvd = Dvd.where(dvd_type_id: 1, feature_film_id: film.id)[0]
+          if (retail_dvd)
+            retail_dvd.update!(retail_dvd_vars)
+          else
+            Dvd.create!(retail_dvd_vars)
+          end
+        end
 
         films += 1
       end
