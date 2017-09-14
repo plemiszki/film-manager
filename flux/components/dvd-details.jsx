@@ -163,7 +163,7 @@ var DvdDetails = React.createClass({
                 <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.title || ""} readOnly={true} />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
-              <div className="col-xs-6">
+              <div className="col-xs-3">
                 <h2>DVD Type</h2>
                   <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="dvdTypeId" value={this.state.dvd.dvdTypeId}>
                     {DvdsStore.types().map(function(type, index) {
@@ -174,21 +174,26 @@ var DvdDetails = React.createClass({
                   </select>
                 {Common.renderFieldError(this.state.errors, Common.errors.dvdTypeId)}
               </div>
-            </div>
-            <div className="row">
               <div className="col-xs-3">
                 <h2>UPC</h2>
                 <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.upc || ""} data-field="upc" />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-2">
+                <h2>PreBook Date</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.price)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.preBookDate || ""} data-field="preBookDate" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-2">
+                <h2>Retail Date</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.price)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.retailDate || ""} data-field="retailDate" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
               <div className="col-xs-2">
                 <h2>Price</h2>
                 <input className={Common.errorClass(this.state.errors, Common.errors.price)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.price || ""} data-field="price" />
-                {Common.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-1">
-                <h2>Discs</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.discs)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.discs || ""} data-field="discs" />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
               <div className="col-xs-2">
@@ -206,7 +211,12 @@ var DvdDetails = React.createClass({
               </div>
             </div>
             <div className="row">
-              <div className="col-xs-6">
+              <div className="col-xs-1">
+                <h2>Discs</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.discs)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.discs || ""} data-field="discs" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-5">
                 <h2>Sound Configuration</h2>
                 <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.soundConfig || ""} data-field="soundConfig" />
                 {Common.renderFieldError(this.state.errors, [])}

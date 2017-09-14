@@ -12,6 +12,8 @@ json.dvds @dvds do |dvd|
   json.discs dvd.discs
   json.unitsShipped dvd.units_shipped
   json.firstShipment dvd.first_shipment || ""
+  json.preBookDate dvd.pre_book_date || ""
+  json.retailDate dvd.retail_date || ""
 end
 json.dvdTypes @dvd_types
 json.shorts @shorts do |short|
