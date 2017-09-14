@@ -20,6 +20,8 @@ gem 'roo', '~> 2.7.0'
 gem 'sidekiq'
 gem 'aws-sdk'
 gem 'mailgun-ruby', '~>1.1.6'
+gem 'validates_timeliness', '~> 4.0'
+gem 'timeliness'
 # ------------------------------
 
 group :development, :test do

@@ -183,13 +183,13 @@ var DvdDetails = React.createClass({
             <div className="row">
               <div className="col-xs-2">
                 <h2>PreBook Date</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.price)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.preBookDate || ""} data-field="preBookDate" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={Common.errorClass(this.state.errors, Common.errors.preBookDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.preBookDate || ""} data-field="preBookDate" />
+                {Common.renderFieldError(this.state.errors, Common.errors.preBookDate)}
               </div>
               <div className="col-xs-2">
                 <h2>Retail Date</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.price)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.retailDate || ""} data-field="retailDate" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={Common.errorClass(this.state.errors, Common.errors.retailDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvd.retailDate || ""} data-field="retailDate" />
+                {Common.renderFieldError(this.state.errors, Common.errors.retailDate)}
               </div>
               <div className="col-xs-2">
                 <h2>Price</h2>

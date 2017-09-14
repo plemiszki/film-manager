@@ -182,6 +182,12 @@ Common = {
     ],
     dvdTypeId: [
       "Dvd type has already been taken"
+    ],
+    preBookDate: [
+      "Pre book date is not a valid date"
+    ],
+    retailDate: [
+      "Retail date is not a valid date"
     ]
   },
 
