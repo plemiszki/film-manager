@@ -43,9 +43,6 @@ class Api::DvdsController < ApplicationController
 
   def dvd_params
     params[:dvd].permit(:name, :upc, :price, :dvd_type_id, :feature_film_id, :stock, :repressing, :sound_config, :special_features, :discs, :units_shipped, :first_shipment, :pre_book_date, :retail_date)
-    # result[:pre_book_date] = Date.strptime(result[:pre_book_date], "%m/%d/%Y")
-    # result[:retail_date] = Date.strptime(result[:retail_date], "%m/%d/%Y")
-    # result
   end
 
 end
