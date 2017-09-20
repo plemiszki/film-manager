@@ -153,7 +153,7 @@ class Importer < ActiveRecord::Base
         end
         film.save!
 
-        # create retail dvd
+        # retail dvd
         retail_dvd_vars = {
           dvd_type_id: 1,
           feature_film_id: film.id,
@@ -174,6 +174,28 @@ class Importer < ActiveRecord::Base
             retail_dvd.update!(retail_dvd_vars)
           else
             Dvd.create!(retail_dvd_vars)
+          end
+        end
+
+        # club dvd
+        club_dvd_vars = {
+          dvd_type_id: 2,
+          feature_film_id: film.id,
+          price: a[35],
+          upc: a[38],
+          repressing: a[84],
+          sound_config: a[206],
+          special_features: a[365],
+          discs: 1,
+          units_shipped: a[86],
+          first_shipment: a[85]
+        }
+        if club_dvd_vars[:upc] != "(No Club Version)" && club_dvd_vars[:upc] != ""
+          club_dvd = Dvd.where(dvd_type_id: 2, feature_film_id: film.id)[0]
+          if (club_dvd)
+            club_dvd.update!(club_dvd_vars)
+          else
+            Dvd.create!(club_dvd_vars)
           end
         end
 
