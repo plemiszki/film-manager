@@ -157,8 +157,16 @@ class Importer < ActiveRecord::Base
         retail_dvd_vars = {
           dvd_type_id: 1,
           feature_film_id: film.id,
+          price: a[35],
+          pre_book_date: (a[36] == "12:00:00 AM" ? nil : a[36]),
+          retail_date: (a[37] == "12:00:00 AM" ? nil : a[37]),
           upc: a[39],
-          price: a[35]
+          repressing: a[89],
+          sound_config: a[206],
+          special_features: a[365],
+          discs: (a[367].to_i == 0 ? 1 : a[367].to_i),
+          units_shipped: a[91],
+          first_shipment: a[90]
         }
         if retail_dvd_vars[:upc] != ""
           retail_dvd = Dvd.where(dvd_type_id: 1, feature_film_id: film.id)[0]
