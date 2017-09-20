@@ -199,6 +199,50 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # institutional dvd
+        institutional_dvd_vars = {
+          dvd_type_id: 5,
+          feature_film_id: film.id,
+          price: a[369],
+          upc: a[353],
+          repressing: a[361],
+          sound_config: a[206],
+          special_features: a[365],
+          discs: (a[367].to_i == 0 ? 1 : a[367].to_i),
+          units_shipped: a[363],
+          first_shipment: a[362]
+        }
+        if institutional_dvd_vars[:upc] != ""
+          institutional_dvd = Dvd.where(dvd_type_id: 5, feature_film_id: film.id)[0]
+          if (institutional_dvd)
+            institutional_dvd.update!(institutional_dvd_vars)
+          else
+            Dvd.create!(institutional_dvd_vars)
+          end
+        end
+
+        # spanish dvd
+        spanish_dvd_vars = {
+          dvd_type_id: 4,
+          feature_film_id: film.id,
+          price: a[47],
+          upc: a[46],
+          repressing: false,
+          sound_config: a[206],
+          special_features: a[365],
+          discs: (a[367].to_i == 0 ? 1 : a[367].to_i),
+          units_shipped: a[51],
+          first_shipment: a[50]
+        }
+        if spanish_dvd_vars[:upc] != ""
+          spanish_dvd = Dvd.where(dvd_type_id: 4, feature_film_id: film.id)[0]
+          if (spanish_dvd)
+            spanish_dvd.update!(spanish_dvd_vars)
+          else
+            Dvd.create!(spanish_dvd_vars)
+          end
+        end
+
         films += 1
       end
     end
