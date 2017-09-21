@@ -243,6 +243,30 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # blu-ray
+        blu_ray_vars = {
+          dvd_type_id: 6,
+          feature_film_id: film.id,
+          pre_book_date: (a[194] == "12:00:00 AM" ? nil : a[194]),
+          retail_date: (a[195] == "12:00:00 AM" ? nil : a[195]),
+          price: a[197],
+          upc: a[196],
+          repressing: a[200],
+          sound_config: a[206],
+          special_features: a[365],
+          discs: (a[368].to_i == 0 ? 1 : a[368].to_i),
+          units_shipped: a[202],
+          first_shipment: a[201]
+        }
+        if blu_ray_vars[:upc] != ""
+          blu_ray = Dvd.where(dvd_type_id: 6, feature_film_id: film.id)[0]
+          if (blu_ray)
+            blu_ray.update!(blu_ray_vars)
+          else
+            Dvd.create!(blu_ray_vars)
+          end
+        end
+
         films += 1
       end
     end
