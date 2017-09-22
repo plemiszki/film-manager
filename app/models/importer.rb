@@ -267,6 +267,28 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # jfc
+        jfc_dvd_vars = {
+          dvd_type_id: 3,
+          feature_film_id: film.id,
+          price: a[35],
+          upc: a[40],
+          repressing: a[94],
+          sound_config: a[206],
+          special_features: a[365],
+          discs: 1,
+          units_shipped: a[6],
+          first_shipment: a[5]
+        }
+        if jfc_dvd_vars[:upc] != ""
+          jfc_dvd = Dvd.where(dvd_type_id: 3, feature_film_id: film.id)[0]
+          if (jfc_dvd)
+            jfc_dvd.update!(jfc_dvd_vars)
+          else
+            Dvd.create!(jfc_dvd_vars)
+          end
+        end
+
         films += 1
       end
     end
