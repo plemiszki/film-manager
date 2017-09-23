@@ -292,6 +292,30 @@ class Importer < ActiveRecord::Base
         films += 1
       end
     end
+
+    File.open(Rails.root.join("tmp/#{time_started}/Films.txt")) do |file|
+      total = file.gets.to_i - 2
+      films = 0
+      until films == total
+        a = file.gets.split("\t")
+        next if a[1][0..8] == "(NEW FILM"
+        short_title = a[24]
+        unless short_title.empty?
+          short = Film.find_by_title(short_title)
+          if short
+            feature_title = a[1]
+            feature = Film.find_by_title(feature_title)
+            retail_dvd = Dvd.find_by(dvd_type_id: 1, feature_film_id: feature.id)
+            retail_dvd_short = DvdShort.find_by(dvd_id: retail_dvd.id, short_id: short.id)
+            unless retail_dvd_short
+              DvdShort.create(dvd_id: retail_dvd.id, short_id: short.id)
+            end
+          end
+        end
+        films += 1
+      end
+    end
+
     object.delete
   end
 
