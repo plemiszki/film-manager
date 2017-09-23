@@ -310,6 +310,20 @@ class Importer < ActiveRecord::Base
             unless retail_dvd_short
               DvdShort.create(dvd_id: retail_dvd.id, short_id: short.id)
             end
+            club_dvd = Dvd.find_by(dvd_type_id: 2, feature_film_id: feature.id)
+            if club_dvd
+              club_dvd_short = DvdShort.find_by(dvd_id: club_dvd.id, short_id: short.id)
+              unless club_dvd_short
+                DvdShort.create(dvd_id: club_dvd.id, short_id: short.id)
+              end
+            end
+            jfc_dvd = Dvd.find_by(dvd_type_id: 3, feature_film_id: feature.id)
+            if jfc_dvd
+              jfc_dvd_short = DvdShort.find_by(dvd_id: jfc_dvd.id, short_id: short.id)
+              unless jfc_dvd_short
+                DvdShort.create(dvd_id: jfc_dvd.id, short_id: short.id)
+              end
+            end
           end
         end
         films += 1
