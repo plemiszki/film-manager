@@ -7,6 +7,7 @@ class Api::GiftboxesController < ApplicationController
 
   def show
     @giftboxes = Giftbox.where(id: params[:id])
+    @dvds = @giftboxes[0].dvds
     render "show.json.jbuilder"
   end
 
@@ -24,6 +25,7 @@ class Api::GiftboxesController < ApplicationController
     @giftbox = Giftbox.find(params[:id])
     if @giftbox.update(giftbox_params)
       @giftboxes = Giftbox.where(id: params[:id])
+      @dvds = @giftboxes[0].dvds
       render "show.json.jbuilder"
     else
       render json: @giftbox.errors.full_messages, status: 422

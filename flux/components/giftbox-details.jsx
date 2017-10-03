@@ -11,7 +11,7 @@ var GiftboxDetails = React.createClass({
       fetching: true,
       giftbox: {},
       giftboxSaved: {},
-      films: [],
+      dvds: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -34,6 +34,7 @@ var GiftboxDetails = React.createClass({
     this.setState({
       giftbox: Tools.deepCopy(GiftboxesStore.find(window.location.pathname.split("/")[2])),
       giftboxSaved: GiftboxesStore.find(window.location.pathname.split("/")[2]),
+      dvds: GiftboxesStore.dvds(),
       fetching: false
     }, function() {
       this.setState({
@@ -61,7 +62,7 @@ var GiftboxDetails = React.createClass({
   },
 
   redirect: function(id) {
-    window.location.pathname = "giftboxes/" + id;
+    window.location.pathname = "dvds/" + id;
   },
 
   clickDelete: function() {
@@ -148,11 +149,11 @@ var GiftboxDetails = React.createClass({
               </thead>
               <tbody>
                 <tr><td></td></tr>
-                {this.state.films.map(function(film, index) {
+                {this.state.dvds.map(function(dvd, index) {
                   return(
-                    <tr key={index} onClick={this.redirect.bind(this, film.id)}>
+                    <tr key={index} onClick={this.redirect.bind(this, dvd.id)}>
                       <td className="name-column">
-                        {film.title}
+                        {dvd.title}
                       </td>
                     </tr>
                   );
