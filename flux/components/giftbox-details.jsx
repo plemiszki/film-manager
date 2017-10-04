@@ -3,6 +3,7 @@ var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var GiftboxesStore = require('../stores/giftboxes-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
+import ModalSelect from './modal-select.jsx';
 
 var GiftboxDetails = React.createClass({
 
@@ -222,13 +223,7 @@ var GiftboxDetails = React.createClass({
           </div>
         </Modal>
         <Modal isOpen={this.state.dvdsModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdsModalStyles}>
-          <ul className="licensor-modal-list">
-            {this.state.otherDvds.map(function(dvd, index) {
-              return(
-                <li key={index} onClick={this.clickDvdButton} data-id={dvd.id}>{dvd.title}</li>
-              );
-            }.bind(this))}
-          </ul>
+          <ModalSelect options={this.state.otherDvds} property={"title"} func={this.clickDvdButton} />
         </Modal>
       </div>
     );
