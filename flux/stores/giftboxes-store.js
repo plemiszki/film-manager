@@ -33,7 +33,7 @@ GiftboxesStore.all = function() {
 };
 
 GiftboxesStore.dvds = function() {
-  return _dvds;
+  return Tools.alphabetizeArrayOfObjects(_dvds, 'title');
 };
 
 GiftboxesStore.otherDvds = function() {
