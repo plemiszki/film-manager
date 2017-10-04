@@ -277,6 +277,7 @@ body {
 
       td {
         padding-top: 10px;
+        position: relative;
         padding-bottom: 10px;
         color: #96939B;
       }
@@ -307,6 +308,18 @@ body {
 
       tr:not(:first-child):hover {
         background-color: #F5F5F5;
+      }
+
+      .x-button {
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 10px;
+        margin-right: 10px;
+        background-image: asset-url('gray-x.png');
+        background-size: contain;
+        width: 17px;
+        height: 17px;
       }
     }
   }

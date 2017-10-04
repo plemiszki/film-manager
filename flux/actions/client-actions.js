@@ -413,6 +413,22 @@ var ClientActions = {
     });
   },
 
+  deleteGiftboxDvd: function(giftboxId, dvdId) {
+    $.ajax({
+      url: '/api/giftbox_dvds/' + dvdId,
+      method: 'DELETE',
+      data: {
+        giftbox_dvd: {
+          giftbox_id: giftboxId,
+          dvd_id: dvdId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveGiftbox(response);
+      }
+    });
+  },
+
   fetchDvdCustomers: function() {
     $.ajax({
       url: '/api/dvd_customers',

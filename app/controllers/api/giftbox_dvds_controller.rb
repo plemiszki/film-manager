@@ -12,6 +12,18 @@ class Api::GiftboxDvdsController < ApplicationController
     end
   end
 
+  def destroy
+    @giftbox_dvd = GiftboxDvd.where(giftbox_id: giftbox_dvd_params[:giftbox_id], dvd_id: giftbox_dvd_params[:dvd_id])[0]
+    if @giftbox_dvd.destroy
+      @giftboxes = Giftbox.where(id: giftbox_dvd_params[:giftbox_id])
+      @dvds = @giftboxes[0].dvds.includes(:feature)
+      @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
+      render "show.json.jbuilder"
+    else
+      render json: @giftbox_dvd.errors.full_messages, status: 422
+    end
+  end
+
   private
 
   def giftbox_dvd_params

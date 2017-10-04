@@ -95,8 +95,13 @@ var GiftboxDetails = React.createClass({
     }
   },
 
-  redirect: function(id) {
-    window.location.pathname = "dvds/" + id;
+  clickXButton: function(event) {
+    var id = event.target.dataset.id;
+    this.setState({
+      fetching: true
+    }, function() {
+      ClientActions.deleteGiftboxDvd(this.state.giftbox.id, id);
+    });
   },
 
   clickDelete: function() {
@@ -189,9 +194,12 @@ var GiftboxDetails = React.createClass({
                 <tr><td></td></tr>
                 {this.state.dvds.map(function(dvd, index) {
                   return(
-                    <tr key={index} onClick={this.redirect.bind(this, dvd.id)}>
+                    <tr key={index}>
                       <td className="name-column">
-                        {dvd.title}
+                        <div onClick={Common.redirect.bind(this, "dvds", dvd.id)}>
+                          {dvd.title}
+                        </div>
+                        <div className="x-button" onClick={this.clickXButton} data-id={dvd.id}></div>
                       </td>
                     </tr>
                   );
