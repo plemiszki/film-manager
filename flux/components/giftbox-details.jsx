@@ -107,7 +107,8 @@ var GiftboxDetails = React.createClass({
 
   confirmDelete: function() {
     this.setState({
-      fetching: true
+      fetching: true,
+      deleteModalOpen: false
     }, function() {
       ClientActions.deleteGiftbox(this.state.giftbox.id);
     });

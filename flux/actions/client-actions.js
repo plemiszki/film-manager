@@ -387,6 +387,16 @@ var ClientActions = {
     })
   },
 
+  deleteGiftbox: function(id) {
+    $.ajax({
+      url: '/api/giftboxes/' + id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = "/giftboxes";
+      }
+    });
+  },
+
   createGiftboxDvd: function(giftboxId, dvdId) {
     $.ajax({
       url: '/api/giftbox_dvds',
