@@ -6,12 +6,29 @@ var ErrorsStore = require('../stores/errors-store.js');
 
 var GiftboxDetails = React.createClass({
 
+  dvdsModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 540,
+      height: '90%',
+      border: 'solid 1px #5F5F5F',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F'
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
       giftbox: {},
       giftboxSaved: {},
       dvds: [],
+      otherDvds: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -35,6 +52,7 @@ var GiftboxDetails = React.createClass({
       giftbox: Tools.deepCopy(GiftboxesStore.find(window.location.pathname.split("/")[2])),
       giftboxSaved: GiftboxesStore.find(window.location.pathname.split("/")[2]),
       dvds: GiftboxesStore.dvds(),
+      otherDvds: GiftboxesStore.otherDvds(),
       fetching: false
     }, function() {
       this.setState({
@@ -47,6 +65,22 @@ var GiftboxDetails = React.createClass({
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
+    });
+  },
+
+  clickAddDvdButton: function() {
+    this.setState({
+      dvdsModalOpen: true
+    });
+  },
+
+  clickDvdButton: function(event) {
+    var dvdId = event.target.dataset.id;
+    this.setState({
+      fetching: true,
+      dvdsModalOpen: false
+    }, function() {
+      ClientActions.createGiftboxDvd(this.state.giftbox.id, dvdId);
     });
   },
 
@@ -80,7 +114,10 @@ var GiftboxDetails = React.createClass({
   },
 
   handleModalClose: function() {
-    this.setState({deleteModalOpen: false});
+    this.setState({
+      deleteModalOpen: false,
+      dvdsModalOpen: false
+    });
   },
 
   checkForChanges: function() {
@@ -160,6 +197,7 @@ var GiftboxDetails = React.createClass({
                 }.bind(this))}
               </tbody>
             </table>
+            <a className={'blue-outline-button small'} onClick={this.clickAddDvdButton}>Add DVD</a>
           </div>
         </div>
         <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
@@ -173,6 +211,15 @@ var GiftboxDetails = React.createClass({
               No
             </a>
           </div>
+        </Modal>
+        <Modal isOpen={this.state.dvdsModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdsModalStyles}>
+          <ul className="licensor-modal-list">
+            {this.state.otherDvds.map(function(dvd, index) {
+              return(
+                <li key={index} onClick={this.clickDvdButton} data-id={dvd.id}>{dvd.title}</li>
+              );
+            }.bind(this))}
+          </ul>
         </Modal>
       </div>
     );

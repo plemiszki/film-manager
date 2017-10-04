@@ -8,6 +8,7 @@ class Api::GiftboxesController < ApplicationController
   def show
     @giftboxes = Giftbox.where(id: params[:id])
     @dvds = @giftboxes[0].dvds
+    @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
     render "show.json.jbuilder"
   end
 
@@ -26,6 +27,7 @@ class Api::GiftboxesController < ApplicationController
     if @giftbox.update(giftbox_params)
       @giftboxes = Giftbox.where(id: params[:id])
       @dvds = @giftboxes[0].dvds
+      @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
       render "show.json.jbuilder"
     else
       render json: @giftbox.errors.full_messages, status: 422

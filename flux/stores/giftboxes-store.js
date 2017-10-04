@@ -5,6 +5,7 @@ var GiftboxesStore = new Store(AppDispatcher);
 
 var _giftboxes = {};
 var _dvds = [];
+var _otherDvds = [];
 
 GiftboxesStore.setGiftboxes = function(giftboxes) {
   giftboxes.forEach(function(giftbox) {
@@ -14,6 +15,10 @@ GiftboxesStore.setGiftboxes = function(giftboxes) {
 
 GiftboxesStore.setDvds = function(dvds) {
   _dvds = dvds;
+};
+
+GiftboxesStore.setOtherDvds = function(otherDvds) {
+  _otherDvds = otherDvds;
 };
 
 GiftboxesStore.find = function(id) {
@@ -29,7 +34,11 @@ GiftboxesStore.all = function() {
 
 GiftboxesStore.dvds = function() {
   return _dvds;
-}
+};
+
+GiftboxesStore.otherDvds = function() {
+  return Tools.alphabetizeArrayOfObjects(_otherDvds, 'title');
+};
 
 GiftboxesStore.__onDispatch = function(payload) {
   switch(payload.actionType){
@@ -40,6 +49,7 @@ GiftboxesStore.__onDispatch = function(payload) {
     case "GIFTBOX_RECEIVED":
       this.setGiftboxes(payload.giftboxes);
       this.setDvds(payload.dvds);
+      this.setOtherDvds(payload.otherDvds);
       this.__emitChange();
       break;
   }

@@ -387,6 +387,22 @@ var ClientActions = {
     })
   },
 
+  createGiftboxDvd: function(giftboxId, dvdId) {
+    $.ajax({
+      url: '/api/giftbox_dvds',
+      method: 'POST',
+      data: {
+        giftbox_dvd: {
+          giftbox_id: giftboxId,
+          dvd_id: dvdId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveGiftbox(response);
+      }
+    });
+  },
+
   fetchDvdCustomers: function() {
     $.ajax({
       url: '/api/dvd_customers',

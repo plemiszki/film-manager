@@ -113,7 +113,8 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "GIFTBOX_RECEIVED",
       giftboxes: response.giftboxes,
-      dvds: response.dvds
+      dvds: response.dvds,
+      otherDvds: response.otherDvds
     });
   },
 
