@@ -61,88 +61,27 @@ class ImportSageData
           films = Film.where("short_film = FALSE AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
           if films.length > 0
             found_film = true
-          elsif ["BEYOND BORDERS", "FACES OF ISRAEL", "FEMALE GAZE", "ENGLISH LANG GB", "FRENCH LANGUAGE GIFT BOX", "SPANISH LANG BOX SET", "LATIN AMERICAN GIFT BOX", "SPANISH LANGUAGE GIFT BOX", "CANNES FILM FEST BOX"].include?(columns[0].strip)
-            errors << "not video revenue (#{columns[3]}) (#{index})" unless columns[1] == "30200"
-            found_box_set = true
           else
-            errors << "Sage ID #{columns[0]} not found."
+            giftboxes = Giftbox.where("LOWER(giftboxes.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
+            if giftboxes.length > 0
+              errors << "not video revenue (#{columns[3]}) (#{index})" unless columns[1] == "30200"
+              found_box_set = true
+            else
+              errors << "Sage ID #{columns[0]} not found."
+            end
           end
         end
 
         if found_box_set
-          case columns[0].strip
-          when "BEYOND BORDERS"
-            amount = (columns[3].to_d / 3).truncate(2)
-            films = Film.where(title: ['A Bottle in the Gaza Sea', 'Arranged', 'Foreign Letters'])
-            films.each do |film|
-              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-              stream.current_revenue += amount
-              stream.save!
-            end
-          when "FACES OF ISRAEL"
-            amount = (columns[3].to_d / 4).truncate(2)
-            films = Film.where(title: ['Campfire', 'For My Father', 'The Human Resources Manager', 'Seven Minutes in Heaven'])
-            films.each do |film|
-              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-              stream.current_revenue += amount
-              stream.save!
-            end
-          when "FEMALE GAZE"
-            amount = (columns[3].to_d / 7).truncate(2)
-            films = Film.where(title: ['Arcadia', 'Madeinusa', 'Watchtower', 'Foreign Letters', 'Queen of Hearts', 'Inch\' Allah Dimanche', 'The Forest for the Trees'])
-            films.each do |film|
-              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-              stream.current_revenue += amount
-              stream.save!
-            end
-          when "ENGLISH LANG GB"
-            amount = (columns[3].to_d / 12).truncate(2)
-            films = Film.where(title: ['He Died With a Felafel in His Hand', 'Marion Bridge', 'Morlang', 'Falling Angels', 'Alexandra\'s Project', 'Wilby Wonderful', 'Anytown, USA', 'August the First', 'Choking Man', 'Mine', 'Bomber', 'A Simple Curve'])
-            films.each do |film|
-              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-              stream.current_revenue += amount
-              stream.save!
-            end
-          when "FRENCH LANGUAGE GIFT BOX"
-            amount = (columns[3].to_d / 12).truncate(2)
-            films = Film.where(title: ['Inch\' Allah Dimanche', 'Raja', 'Viva Laldjerie', 'Le Grand Voyage', 'Aaltra', 'Familia', 'Dreams of Dust', 'Her Name is Sabine', 'The Grocer\'s Son', 'Eldorado', 'Welcome', '1981'])
-            films.each do |film|
-              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-              stream.current_revenue += amount
-              stream.save!
-            end
-          when "LATIN AMERICAN GIFT BOX" || "SPANISH LANG BOX SET"
-            amount = (columns[3].to_d / 12).truncate(2)
-            films = Film.where(title: ['Clandestine Childhood', 'Madeinusa', 'The Violin', 'Viva Cuba', 'XXY', 'The Pope\'s Toilet', 'Lake Tahoe', 'The Window', 'Gigante', 'The Wind Journeys', 'Alamar', 'Only When I Dance'])
-            films.each do |film|
-              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-              stream.current_revenue += amount
-              stream.save!
-            end
-          when "SPANISH LANGUAGE GIFT BOX"
-            amount = (columns[3].to_d / 12).truncate(2)
-            films = Film.where(title: ['Clandestine Childhood', 'Madeinusa', 'The Violin', 'Viva Cuba', 'XXY', 'The Pope\'s Toilet', 'Lake Tahoe', 'The Window', 'Gigante', 'The Wind Journeys', 'Alamar', 'Only When I Dance'])
-            films.each do |film|
-              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-              stream.current_revenue += amount
-              stream.save!
-            end
-          when "CANNES FILM FEST BOX"
-            amount = (columns[3].to_d / 3).truncate(2)
-            films = Film.where(title: ['The Bothersome Man', 'Raja', 'Road to Koktobel'])
-            films.each do |film|
-              report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-              stream.current_revenue += amount
-              stream.save!
-            end
+          giftbox = giftboxes[0]
+          dvds = giftbox.dvds.includes(:feature)
+          amount = amount = (columns[3].to_d / dvds.length).truncate(2)
+          dvds.each do |dvd|
+            film = dvd.feature
+            report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_revenue += amount
+            stream.save!
           end
         end
 
