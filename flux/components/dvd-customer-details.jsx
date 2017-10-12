@@ -115,6 +115,18 @@ var DvdCustomersDetails = React.createClass({
               </div>
             </div>
             <div className="row">
+              <div className="col-xs-6">
+                <h2>Invoices Email</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.invoicesEmail)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.invoicesEmail || ""} data-field="invoicesEmail" />
+                {Common.renderFieldError(this.state.errors, Common.errors.invoicesEmail)}
+              </div>
+              <div className="col-xs-3">
+                <h2>Sage ID</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.sageId)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.sageId || ""} data-field="sageId" />
+                {Common.renderFieldError(this.state.errors, Common.errors.sageId)}
+              </div>
+            </div>
+            <div className="row">
               <div className="col-xs-12">
                 <h2>Notes</h2>
                 <textarea rows="5" className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.notes || ""} data-field="notes" />

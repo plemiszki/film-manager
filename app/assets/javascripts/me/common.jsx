@@ -196,6 +196,12 @@ Common = {
     ],
     orderDate: [
       "Order date is not a valid date"
+    ],
+    sageId: [
+      "Sage id can't be blank"
+    ],
+    invoicesEmail: [
+      "Invoices email can't be blank"
     ]
   },
 
