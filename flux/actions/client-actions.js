@@ -596,6 +596,35 @@ var ClientActions = {
         ServerActions.receiveDvds(response);
       }
     });
+  },
+
+  fetchPurchaseOrders: function() {
+    $.ajax({
+      url: '/api/purchase_orders',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receivePurchaseOrders(response);
+      }
+    });
+  },
+
+  createPurchaseOrder: function(purchase_order) {
+    $.ajax({
+      url: '/api/purchase_orders',
+      method: 'POST',
+      data: {
+        purchase_order: {
+          number: purchase_order.number,
+          order_date: purchase_order.orderDate
+        }
+      },
+      success: function(response) {
+        window.location.pathname = "/purchase_orders/" + response.purchaseOrder.id;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

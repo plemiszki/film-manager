@@ -137,6 +137,15 @@ var ServerActions = {
       shorts: response.shorts,
       otherShorts: response.otherShorts
     });
+  },
+
+  // DVD POS ---
+
+  receivePurchaseOrders: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "PURCHASE_ORDERS_RECEIVED",
+      purchaseOrders: response
+    });
   }
 }
 

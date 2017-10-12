@@ -15,6 +15,7 @@ var GiftBoxDetails = require('./components/giftbox-details.jsx');
 var DvdCustomersIndex = require('./components/dvd-customers-index.jsx');
 var DvdCustomerDetails = require('./components/dvd-customer-details.jsx');
 var DvdDetails = require('./components/dvd-details.jsx');
+var PurchaseOrdersIndex = require('./components/purchase-orders-index.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -65,5 +66,8 @@ $(document).ready(function() {
   }
   if ($('#dvd-details')[0]) {
     ReactDOM.render(<DvdDetails />, document.getElementById("dvd-details"));
+  }
+  if ($('#purchase-orders-index')[0]) {
+    ReactDOM.render(<PurchaseOrdersIndex />, document.getElementById("purchase-orders-index"));
   }
 });

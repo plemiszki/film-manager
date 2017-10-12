@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var _ = require('lodash');
 
 $(document).ready(function() {
   Common.initialize();
@@ -188,6 +189,13 @@ Common = {
     ],
     retailDate: [
       "Retail date is not a valid date"
+    ],
+    number: [
+      "Number can't be blank",
+      "Number has already been taken"
+    ],
+    orderDate: [
+      "Order date is not a valid date"
     ]
   },
 
@@ -261,6 +269,29 @@ Common = {
         changeFieldArgs.callback.call(this, this.state[thing], key);
       }
     });
+  },
+
+  clickHeader: function(property) {
+    this.setState({
+      sortBy: property
+    });
+  },
+
+  commonSort: function(object) {
+    var property = object[this.state.sortBy];
+    if (["shipDate"].indexOf(this.state.sortBy) > -1) {
+      if (property === "(Not Sent)") {
+        return Date.now();
+      } else {
+        return new Date(property);
+      }
+    } else if (typeof property === "string" || property instanceof String) {
+      return property.toLowerCase();
+    } else if (typeof property == "boolean") {
+      return property.toString().toLowerCase();
+    } else {
+      return property;
+    }
   },
 
   properStatementQuarter: function(date) {
@@ -388,6 +419,10 @@ Common = {
     $dropDowns.niceSelect('destroy');
     $dropDowns.unbind('change');
     $dropDowns.niceSelect().on('change', func);
+  },
+
+  sortClass: function(which) {
+    return this.state.sortBy === which ? "sort-header-active" : "sort-header-inactive";
   },
 
   user: {}

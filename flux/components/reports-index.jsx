@@ -270,10 +270,6 @@ var ReportsIndex = React.createClass({
     window.location.pathname = "royalty_reports/" + id;
   },
 
-  sortClass: function(which) {
-    return this.state.sortBy === which ? "sort-header-active" : "sort-header-inactive";
-  },
-
   sortReports: function(a, b) {
     if (this.state.sortBy === "title") {
       if (a.title.toLowerCase() < b.title.toLowerCase()) {
@@ -326,8 +322,8 @@ var ReportsIndex = React.createClass({
             <table className={"admin-table"}>
               <thead>
                 <tr>
-                  <th><div className={this.sortClass("title")} onClick={this.clickTitle}>Title</div></th>
-                  <th><div className={this.sortClass("licensor")} onClick={this.clickLicensor}>Licensor</div></th>
+                  <th><div className={Common.sortClass("title").bind(this)} onClick={this.clickTitle}>Title</div></th>
+                  <th><div className={Common.sortClass("licensor").bind(this)} onClick={this.clickLicensor}>Licensor</div></th>
                   <th></th>
                   <th></th>
                 </tr>

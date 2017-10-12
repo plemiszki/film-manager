@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171003020309) do
+ActiveRecord::Schema.define(version: 20171012000128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -143,6 +143,25 @@ ActiveRecord::Schema.define(version: 20171003020309) do
   end
 
   add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
+
+  create_table "purchase_order_dvds", force: :cascade do |t|
+    t.integer "purchase_order_id", null: false
+    t.integer "dvd_id",            null: false
+  end
+
+  create_table "purchase_orders", force: :cascade do |t|
+    t.string  "number",                   null: false
+    t.integer "customer_id", default: 0
+    t.string  "address1",    default: ""
+    t.string  "address2",    default: ""
+    t.string  "city",        default: ""
+    t.string  "state",       default: ""
+    t.string  "zip",         default: ""
+    t.date    "order_date"
+    t.date    "ship_date"
+    t.string  "name",        default: ""
+    t.string  "country",     default: ""
+  end
 
   create_table "revenue_streams", force: :cascade do |t|
     t.string  "name",     null: false

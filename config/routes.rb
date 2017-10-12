@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :royalty_reports, only: [:index, :show]
   resources :giftboxes, only: [:index, :show]
   resources :dvd_customers, only: [:index, :show]
+  resources :purchase_orders, only: [:index, :show]
   resources :dvds, only: [:show]
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
@@ -33,6 +34,8 @@ Rails.application.routes.draw do
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]
     resources :dvds, only: [:show, :create, :update, :destroy]
     resources :dvd_shorts, only: [:create, :destroy]
+    resources :purchase_orders, only: [:index, :show, :create, :update, :destroy]
+    resources :purchase_order_dvds, only: [:create, :destroy]
   end
 
   # Clearance ------------------------

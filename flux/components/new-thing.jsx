@@ -64,6 +64,7 @@ var NewThing = React.createClass({
           {this.renderUpcField()}
           {this.renderDiscountField()}
           {this.renderDvdTypeField()}
+          {this.renderPOFields()}
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
             {this.renderAddButton()}
           </a>
@@ -76,7 +77,8 @@ var NewThing = React.createClass({
     var map = {
       dvdCustomer: "DVD Customer",
       giftbox: "Gift Box",
-      dvd: "DVD"
+      dvd: "DVD",
+      purchaseOrder: "Purchase Order"
     };
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
@@ -182,6 +184,25 @@ var NewThing = React.createClass({
                 );
               })}
             </select>
+          </div>
+        </div>
+      )
+    }
+  },
+
+  renderPOFields: function() {
+    if (this.props.thing === "purchaseOrder") {
+      return(
+        <div className="row">
+          <div className="col-xs-6">
+            <h2>PO Number</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].number} data-field="number" />
+            {Common.renderFieldError(this.state.errors, Common.errors.number)}
+          </div>
+          <div className="col-xs-6">
+            <h2>Order Date</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].orderDate} data-field="orderDate" />
+            {Common.renderFieldError(this.state.errors, Common.errors.orderDate)}
           </div>
         </div>
       )
