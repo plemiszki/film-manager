@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171012193801) do
+ActiveRecord::Schema.define(version: 20171014002116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20171012193801) do
     t.string  "notes",                                  default: ""
     t.string  "sage_id",                                default: ""
     t.string  "invoices_email",                         default: ""
+    t.string  "payment_terms",                          default: "30"
   end
 
   create_table "dvd_shorts", force: :cascade do |t|

@@ -479,7 +479,8 @@ var ClientActions = {
           consignment: dvdCustomer.consignment,
           notes: dvdCustomer.notes,
           sage_id: dvdCustomer.sageId,
-          invoices_email: dvdCustomer.invoicesEmail
+          invoices_email: dvdCustomer.invoicesEmail,
+          payment_terms: dvdCustomer.paymentTerms
         }
       },
       success: function(response) {

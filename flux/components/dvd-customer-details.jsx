@@ -125,6 +125,11 @@ var DvdCustomersDetails = React.createClass({
                 <input className={Common.errorClass(this.state.errors, Common.errors.sageId)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.sageId || ""} data-field="sageId" />
                 {Common.renderFieldError(this.state.errors, Common.errors.sageId)}
               </div>
+              <div className="col-xs-3">
+                <h2>Payment Terms (in days)</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.paymentTerms)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.paymentTerms || ""} data-field="paymentTerms" />
+                {Common.renderFieldError(this.state.errors, Common.errors.paymentTerms)}
+              </div>
             </div>
             <div className="row">
               <div className="col-xs-12">

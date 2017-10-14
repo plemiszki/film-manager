@@ -6,4 +6,5 @@ json.array! @dvd_customers do |dvd_customer|
   json.notes dvd_customer.notes
   json.sageId dvd_customer.sage_id
   json.invoicesEmail dvd_customer.invoices_email
+  json.paymentTerms dvd_customer.payment_terms
 end
