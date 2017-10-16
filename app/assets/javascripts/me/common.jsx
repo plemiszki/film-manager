@@ -266,6 +266,10 @@ Common = {
 
     thingToUpdate[key] = event.target.checked;
 
+    if (changeFieldArgs.beforeSave) {
+      changeFieldArgs.beforeSave.call(this, newThing, key, event.target.checked);
+    }
+
     this.setState({[thing]: newThing, justSaved: false}, function() {
       if (changeFieldArgs.changesFunction) {
         var changesToSave = changeFieldArgs.changesFunction.call();

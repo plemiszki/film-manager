@@ -87,7 +87,17 @@ var DvdCustomersDetails = React.createClass({
     return {
       thing: "dvdCustomer",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges,
+      beforeSave: function(newThing, key, value) {
+        if (key === "consignment" && value === false) {
+          newThing.invoicesEmail = "";
+          newThing.sageId = "";
+          newThing.paymentTerms = "";
+          Common.removeFieldError(this.state.errors, "invoicesEmail");
+          Common.removeFieldError(this.state.errors, "sageId");
+          Common.removeFieldError(this.state.errors, "paymentTerms");
+        }
+      }
     }
   },
 
@@ -114,7 +124,7 @@ var DvdCustomersDetails = React.createClass({
                 <input id="consignment" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.dvdCustomer.consignment || false} data-field="consignment" /><label className="checkbox">Consignment</label>
               </div>
             </div>
-            <div className="row">
+            <div className={"row" + (this.state.dvdCustomer.consignment ? " hidden" : "")}>
               <div className="col-xs-6">
                 <h2>Invoices Email</h2>
                 <input className={Common.errorClass(this.state.errors, Common.errors.invoicesEmail)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.invoicesEmail || ""} data-field="invoicesEmail" />
