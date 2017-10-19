@@ -322,8 +322,8 @@ var ReportsIndex = React.createClass({
             <table className={"admin-table"}>
               <thead>
                 <tr>
-                  <th><div className={Common.sortClass("title").bind(this)} onClick={this.clickTitle}>Title</div></th>
-                  <th><div className={Common.sortClass("licensor").bind(this)} onClick={this.clickLicensor}>Licensor</div></th>
+                  <th><div className={Common.sortClass.call(this, "title")} onClick={this.clickTitle}>Title</div></th>
+                  <th><div className={Common.sortClass.call(this, "licensor")} onClick={this.clickLicensor}>Licensor</div></th>
                   <th></th>
                   <th></th>
                 </tr>
