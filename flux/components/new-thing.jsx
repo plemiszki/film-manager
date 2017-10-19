@@ -32,7 +32,25 @@ var NewThing = React.createClass({
   changeFieldArgs: function() {
     return {
       thing: this.props.thing,
-      errorsArray: this.state.errors
+      errorsArray: this.state.errors,
+      beforeSave: this.properBeforeSave()
+    }
+  },
+
+  properBeforeSave: function() {
+    if (this.props.thing === "dvdCustomer") {
+      return function(newThing, key, value) {
+        if (key === "consignment" && value === false) {
+          newThing.invoicesEmail = "";
+          newThing.sageId = "";
+          newThing.paymentTerms = "";
+          Common.removeFieldError(this.state.errors, "invoicesEmail");
+          Common.removeFieldError(this.state.errors, "sageId");
+          Common.removeFieldError(this.state.errors, "paymentTerms");
+        }
+      }
+    } else {
+      return null;
     }
   },
 
@@ -62,7 +80,7 @@ var NewThing = React.createClass({
           {this.renderEmailField()}
           {this.renderPasswordField()}
           {this.renderUpcField()}
-          {this.renderDiscountField()}
+          {this.renderDvdCustomerFields()}
           {this.renderDvdTypeField()}
           {this.renderPOFields()}
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
@@ -88,7 +106,7 @@ var NewThing = React.createClass({
   },
 
   renderNameField: function() {
-    if (["user", "licensor", "giftbox", "dvdCustomer"].indexOf(this.props.thing) > -1) {
+    if (["user", "licensor", "giftbox"].indexOf(this.props.thing) > -1) {
       return(
         <div className="row">
           <div className="col-xs-12">
@@ -157,17 +175,45 @@ var NewThing = React.createClass({
     }
   },
 
-  renderDiscountField: function() {
+  renderDvdCustomerFields: function() {
     if (this.props.thing === "dvdCustomer") {
       return(
-        <div className="row">
-          <div className="col-xs-12">
-            <h2>Discount</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.discount)} style={{maxWidth: "20%"}} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].discount} data-field="discount" />
-            {Common.renderFieldError(this.state.errors, Common.errors.discount)}
+        <div>
+          <div className="row">
+            <div className="col-xs-6">
+              <h2>Name</h2>
+              <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.name} data-field="name" />
+              {Common.renderFieldError(this.state.errors, Common.errors.name)}
+            </div>
+            <div className="col-xs-3">
+              <h2>Discount</h2>
+              <input className={Common.errorClass(this.state.errors, Common.errors.discount)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.discount} data-field="discount" />
+              {Common.renderFieldError(this.state.errors, Common.errors.discount)}
+            </div>
+            <div className="col-xs-3 consignment-column">
+              <input id="consignment" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.dvdCustomer.consignment} data-field="consignment" /><label className="checkbox">Consignment</label>
+            </div>
+          </div>
+          <div className={this.state.dvdCustomer.consignment ? "dvd-customer-placeholder" : ""}></div>
+          <div className={"row" + (this.state.dvdCustomer.consignment ? " hidden" : "")}>
+            <div className="col-xs-6">
+              <h2>Invoices Email</h2>
+              <input className={Common.errorClass(this.state.errors, Common.errors.invoicesEmail)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.invoicesEmail} data-field="invoicesEmail" />
+              {Common.renderFieldError(this.state.errors, Common.errors.invoicesEmail)}
+            </div>
+            <div className="col-xs-3">
+              <h2>Sage ID</h2>
+              <input className={Common.errorClass(this.state.errors, Common.errors.sageId)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.sageId} data-field="sageId" />
+              {Common.renderFieldError(this.state.errors, Common.errors.sageId)}
+            </div>
+            <div className="col-xs-3">
+              <h2>Payment Terms (in days)</h2>
+              <input className={Common.errorClass(this.state.errors, Common.errors.paymentTerms)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.paymentTerms} data-field="paymentTerms" />
+              {Common.renderFieldError(this.state.errors, Common.errors.paymentTerms)}
+            </div>
           </div>
         </div>
-      )
+      );
     }
   },
 

@@ -4,7 +4,7 @@ var ClientActions = require('../actions/client-actions.js');
 var DvdCustomersStore = require('../stores/dvd-customers-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
 
-var DvdCustomersDetails = React.createClass({
+var DvdCustomerDetails = React.createClass({
 
   getInitialState: function() {
     return({
@@ -88,16 +88,18 @@ var DvdCustomersDetails = React.createClass({
       thing: "dvdCustomer",
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges,
-      beforeSave: function(newThing, key, value) {
-        if (key === "consignment" && value === false) {
-          newThing.invoicesEmail = "";
-          newThing.sageId = "";
-          newThing.paymentTerms = "";
-          Common.removeFieldError(this.state.errors, "invoicesEmail");
-          Common.removeFieldError(this.state.errors, "sageId");
-          Common.removeFieldError(this.state.errors, "paymentTerms");
-        }
-      }
+      beforeSave: this.beforeSave
+    }
+  },
+
+  beforeSave: function(newThing, key, value) {
+    if (key === "consignment" && value === false) {
+      newThing.invoicesEmail = "";
+      newThing.sageId = "";
+      newThing.paymentTerms = "";
+      Common.removeFieldError(this.state.errors, "invoicesEmail");
+      Common.removeFieldError(this.state.errors, "sageId");
+      Common.removeFieldError(this.state.errors, "paymentTerms");
     }
   },
 
@@ -191,4 +193,4 @@ var DvdCustomersDetails = React.createClass({
   }
 });
 
-module.exports = DvdCustomersDetails;
+module.exports = DvdCustomerDetails;

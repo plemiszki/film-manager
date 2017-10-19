@@ -87,7 +87,7 @@ var DvdCustomersIndex = React.createClass({
           </table>
         </div>
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="dvdCustomer" initialObject={{name: "", discount: 0}} />
+          <NewThing thing="dvdCustomer" initialObject={{name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: ""}} />
         </Modal>
       </div>
     );

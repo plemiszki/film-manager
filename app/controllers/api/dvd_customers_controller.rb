@@ -11,7 +11,7 @@ class Api::DvdCustomersController < ApplicationController
   end
 
   def create
-    @dvd_customer = DvdCustomer.new(name: dvd_customer_params[:name], discount: dvd_customer_params[:discount])
+    @dvd_customer = DvdCustomer.new(dvd_customer_params)
     if @dvd_customer.save
       @dvd_customers = DvdCustomer.all
       render "index.json.jbuilder"

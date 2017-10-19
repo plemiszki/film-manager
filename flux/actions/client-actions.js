@@ -446,7 +446,11 @@ var ClientActions = {
       data: {
         dvd_customer: {
           name: dvdCustomer.name,
-          discount: dvdCustomer.discount
+          discount: dvdCustomer.discount,
+          consignment: dvdCustomer.consignment,
+          sage_id: dvdCustomer.sageId,
+          invoices_email: dvdCustomer.invoicesEmail,
+          payment_terms: dvdCustomer.paymentTerms
         }
       },
       success: function(response) {
