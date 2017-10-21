@@ -479,7 +479,7 @@ var ClientActions = {
       data: {
         dvd_customer: {
           name: dvdCustomer.name,
-          discount: dvdCustomer.discount,
+          discount: dvdCustomer.discount.removeFinanceSymbols(),
           consignment: dvdCustomer.consignment,
           notes: dvdCustomer.notes,
           sage_id: dvdCustomer.sageId,

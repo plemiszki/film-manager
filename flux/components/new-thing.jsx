@@ -186,7 +186,7 @@ var NewThing = React.createClass({
               {Common.renderFieldError(this.state.errors, Common.errors.name)}
             </div>
             <div className="col-xs-3">
-              <h2>Discount</h2>
+              <h2>Discount or Price/Unit </h2>
               <input className={Common.errorClass(this.state.errors, Common.errors.discount)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.discount} data-field="discount" />
               {Common.renderFieldError(this.state.errors, Common.errors.discount)}
             </div>
