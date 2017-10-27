@@ -54,6 +54,7 @@ class ImportSageData
       while index <= xlsx.last_row
         columns = sheet.row(index)
         found_film = false
+        found_box_set = false
         films = Film.where("short_film = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
         if films.length > 0
           found_film = true

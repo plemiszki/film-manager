@@ -50,6 +50,8 @@ class Api::FilmsController < ApplicationController
         fail if error_present
         @films = Film.where(id: params[:id])
         @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
+        @dvds = Dvd.where(feature_film_id: params[:id])
+        @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
         render "show.json.jbuilder"
       end
     rescue
