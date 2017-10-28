@@ -59,6 +59,15 @@ class RoyaltyReport < ActiveRecord::Base
     result.map { |key, value| [key, value.to_f] }.to_h
   end
 
+  def get_total_past_reserves
+    result = {}
+    self.past_reports.each do |report|
+      report.calculate!
+      result["Q#{report.quarter} #{report.year}"] = report.current_reserve.to_f
+    end
+    result
+  end
+
   def export!(directory)
     film = self.film
     royalty_revenue_streams = self.royalty_revenue_streams
@@ -240,9 +249,44 @@ class RoyaltyReport < ActiveRecord::Base
     string += "<div class=\"bottom-text\">"
     string += "If there is an amount due to Licensor on this self, please send an invoice for the amount due along with current bank wire information if located outside the U.S., and current mailing address if located inside the U.S.<br>No payments will be made without this invoice and information."
     string += "</div>"
-    # if film.reserve
-    #   string += "<div class=\"page-break\">here we go!!!</div>"
-    # end
+    if film.reserve
+      string += "<div class=\"page-break\"></div>"
+      string += "<h1 style='text-align: center; margin-bottom: 10px;'>Reserves Against Returns</h1>"
+      string += "<h3 style='text-align: center; margin-bottom: 20px;'>#{film.title}</h3>"
+      string += "<table style='padding: 5px; border: 1px solid black;'>"
+      string += "<tr><th>Quarter Withheld</th><th>Reserve Amount</th><th>Amount Liquidated</th><th>Total Remaining</th><th>Quarter Liquidated</th></tr>"
+      total_reserves = 0
+      total_liquidated = 0
+      total_remaining = 0
+      self.get_total_past_reserves.each do |quarter, amount|
+        if amount > 0
+          total_reserves += amount
+          liquidated = 0
+          total_liquidated += liquidated
+          difference = amount - liquidated
+          total_remaining += difference
+          new_quarter = quarter.split[0].split('')[1].to_i + film.reserve_quarters
+          new_year = self.year
+          until new_quarter < 5
+            new_year += 1
+            new_quarter -= 4
+          end
+          string += "<tr><td>#{quarter}</td><td>#{dollarify(amount)}</td><td>#{dollarify(liquidated)}</td><td>#{dollarify(difference)}</td><td>Q#{new_quarter} #{new_year}</td></tr>"
+        end
+      end
+      new_quarter = self.quarter + film.reserve_quarters
+      new_year = self.year
+      until new_quarter < 5
+        new_year += 1
+        new_quarter -= 4
+      end
+      string += "<tr><td>Q#{self.quarter} #{self.year}</td><td>#{dollarify(self.current_reserve)}</td><td>#{dollarify(0)}</td><td>#{dollarify(self.current_reserve)}</td><td>Q#{new_quarter} #{new_year}</td></tr>"
+      string += "<tr><td></td><td></td><td></td><td></td><td></td></tr>"
+      total_reserves += self.current_reserve
+      total_remaining += self.current_reserve
+      string += "<tr style='font-weight: bold;'><td></td><td>#{dollarify(total_reserves)}</td><td>#{dollarify(total_liquidated)}</td><td>#{dollarify(total_remaining)}</td><td></td></tr>"
+      string += "</table>"
+    end
 
     pdf = WickedPdf.new.pdf_from_string(string)
     subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
@@ -260,7 +304,9 @@ class RoyaltyReport < ActiveRecord::Base
     royalty_revenue_streams = self.royalty_revenue_streams
     royalty_revenue_streams.each do |stream|
       if stream.revenue_stream_id == 3 && film.reserve
-        self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
+        unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
+          self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
+        end
       end
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
       stream.joined_expense = stream.current_expense + stream.cume_expense
@@ -346,6 +392,10 @@ class RoyaltyReport < ActiveRecord::Base
       self.joined_amount_due = self.joined_total - self.joined_reserve - self.e_and_o - self.mg - self.amount_paid
     end
     return royalty_revenue_streams
+  end
+
+  def past_reports
+    RoyaltyReport.where("film_id = ? AND id < ?", film_id, id)
   end
 
   private
