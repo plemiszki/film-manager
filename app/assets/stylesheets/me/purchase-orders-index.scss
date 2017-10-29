@@ -1,7 +1,15 @@
 #purchase-orders-index {
 
   a:not(:first-of-type) {
+    position: relative;
     margin-right: 20px;
-  }
 
+    img {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 30px;
+      height: 30px;
+    }
+  }
 }

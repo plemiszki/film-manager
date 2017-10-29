@@ -144,7 +144,8 @@ var ServerActions = {
   receivePurchaseOrders: function(response) {
     AppDispatcher.dispatch({
       actionType: "PURCHASE_ORDERS_RECEIVED",
-      purchaseOrders: response
+      purchaseOrders: response.purchaseOrders,
+      needToUpdate: response.needToUpdate
     });
   }
 }

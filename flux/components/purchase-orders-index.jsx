@@ -117,7 +117,10 @@ var PurchaseOrdersIndex = React.createClass({
       <div id="purchase-orders-index" className="component">
         <h1>DVD Purchase Orders</h1>
         <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add New</a>
-        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickUpdateStock}>Update Stock</a>
+        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickUpdateStock}>
+          <img className={ PurchaseOrdersStore.needToUpdate() ? "" : "hidden" } src={Images.attention} />
+          Update Stock
+        </a>
         <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
         <div className="white-box">
           {Common.renderSpinner(this.state.fetching)}

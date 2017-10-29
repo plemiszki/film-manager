@@ -54,7 +54,7 @@ class Api::DvdsController < ApplicationController
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object("#{time_started}/#{original_filename}")
     obj.upload_file(Rails.root.join('tmp', time_started, original_filename), acl:'private')
-    job = Job.create!(job_id: time_started, first_line: "Updating Stock", second_line: false)
+    job = Job.create!(job_id: time_started, name: "import inventory", first_line: "Updating Stock", second_line: false)
     ImportInventory.perform_async(time_started, original_filename)
     redirect_to "/purchase_orders", flash: { inventory_import_id: job.id }
   end

@@ -4,11 +4,13 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var PurchaseOrdersStore = new Store(AppDispatcher);
 
 var _purchaseOrders = {};
+var _needToUpdate = false;
 
-PurchaseOrdersStore.setPurchaseOrders = function(purchaseOrders) {
-  purchaseOrders.forEach(function(purchaseOrder) {
+PurchaseOrdersStore.setStuff = function(payload) {
+  payload.purchaseOrders.forEach(function(purchaseOrder) {
     _purchaseOrders[purchaseOrder.id] = purchaseOrder;
   });
+  _needToUpdate = payload.needToUpdate;
 };
 
 PurchaseOrdersStore.find = function(id) {
@@ -22,10 +24,14 @@ PurchaseOrdersStore.all = function() {
   return purchaseOrders;
 };
 
+PurchaseOrdersStore.needToUpdate = function() {
+  return _needToUpdate;
+};
+
 PurchaseOrdersStore.__onDispatch = function(payload) {
   switch(payload.actionType){
     case "PURCHASE_ORDERS_RECEIVED":
-      this.setPurchaseOrders(payload.purchaseOrders);
+      this.setStuff(payload);
       this.__emitChange();
       break;
   }

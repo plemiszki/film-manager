@@ -2,6 +2,7 @@ class Api::PurchaseOrdersController < ApplicationController
 
   def index
     @purchase_orders = PurchaseOrder.all.includes(:customer)
+    @jobs = Job.where(name: "import inventory").order(:id)
     render "index.json.jbuilder"
   end
 
