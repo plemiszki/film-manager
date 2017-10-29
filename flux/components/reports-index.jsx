@@ -359,16 +359,6 @@ var ReportsIndex = React.createClass({
             <a className="orange-button" onClick={this.clickImportExpenses}>Import Expenses</a>
           </div>
         </Modal>
-        <Modal isOpen={this.state.errorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={this.errorsModalStyles}>
-          <div className="errors-modal">
-            <h1>Oops. There were some errors.</h1>
-            {this.state.job.errors_text.split("\n").map(function(error, index) {
-              return(
-                <div key={index} className="import-error">{error}</div>
-              );
-            }.bind(this))}
-          </div>
-        </Modal>
         <Modal isOpen={this.state.noErrorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={this.sendModalStyles}>
           <div className="send-modal">
             <h1>{this.state.job.first_line}</h1>
@@ -379,6 +369,7 @@ var ReportsIndex = React.createClass({
           {this.renderSendModalHeader()}
         </Modal>
         {Common.jobModal.call(this, this.state.job)}
+        {Common.jobErrorsModal.call(this)}
       </div>
     );
   },
