@@ -3,6 +3,8 @@ var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
 var NewThing = require('./new-thing.jsx');
+var JobStore = require('../stores/job-store.js');
+var ServerActions = require('../actions/server-actions.js');
 
 var ModalStyles = {
   overlay: {
@@ -20,17 +22,32 @@ var ModalStyles = {
 var PurchaseOrdersIndex = React.createClass({
 
   getInitialState: function() {
+    var date = new Date;
+    var job = {
+      errors_text: ""
+    };
+    if ($('#inventory-import-id').length == 1) {
+      job.id = $('#inventory-import-id')[0].innerHTML;
+      job.second_line = false;
+      job.first_line = "Updating Stock";
+    }
     return({
       fetching: true,
       searchText: "",
       sortBy: "shipDate",
       purchaseOrders: [],
-      modalOpen: false
+      modalOpen: false,
+      errorsModalOpen: false,
+      noErrorsModalOpen: false,
+      jobModalOpen: !!job.id,
+      job: job
     });
   },
 
   componentDidMount: function() {
     this.purchaseOrdersListener = PurchaseOrdersStore.addListener(this.getPurchaseOrders);
+    this.jobListener = JobStore.addListener(this.getJob);
+    $('#upload-form-inventory #user_file').on('change', this.pickFile);
     ClientActions.fetchPurchaseOrders();
   },
 
@@ -44,6 +61,42 @@ var PurchaseOrdersIndex = React.createClass({
       purchaseOrders: PurchaseOrdersStore.all(),
       modalOpen: false
     });
+  },
+
+  getJob: function() {
+    var job = JobStore.job();
+    if (job.done) {
+      this.setState({
+        jobModalOpen: false,
+        errorsModalOpen: job.errors_text !== "",
+        noErrorsModalOpen: job.errors_text === "",
+        job: job
+      });
+    } else {
+      this.setState({
+        jobModalOpen: true,
+        job: job,
+        fetching: false
+      });
+    }
+  },
+
+  modalCloseAndRefresh: function() {
+    this.setState({
+      errorsModalOpen: false,
+      noErrorsModalOpen: false,
+      fetching: true
+    }, function() {
+      ClientActions.fetchPurchaseOrders();
+    });
+  },
+
+  clickUpdateStock: function() {
+    $('#upload-form-inventory #user_file').click();
+  },
+
+  pickFile: function() {
+    $('#upload-form-inventory #submit-button-inventory').click();
   },
 
   redirect: function(id) {
@@ -104,12 +157,29 @@ var PurchaseOrdersIndex = React.createClass({
         <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
           <NewThing thing="purchaseOrder" initialObject={{number: "", orderDate: ""}} />
         </Modal>
+        {Common.jobModal.call(this, this.state.job)}
+        {Common.jobErrorsModal.call(this)}
       </div>
     );
   },
 
   componentDidUpdate: function() {
     $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: function(response) {
+            ServerActions.receiveJob(response);
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 

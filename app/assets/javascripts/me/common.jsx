@@ -70,6 +70,22 @@ Common = {
     }
   },
 
+  errorsModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 800,
+      height: 550,
+      border: 'solid 1px #5F5F5F',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F'
+    }
+  },
+
   errors: {
     email: [
       "Email can't be blank",
@@ -368,6 +384,21 @@ Common = {
           <div className="spinner jobs-spinner"></div>
           <div className="first-line">{this.state.job.first_line}</div>
           <div className={"second-line" + (this.state.job.second_line ? "" : " hidden")}>({this.state.job.current_value} of {this.state.job.total_value})</div>
+        </div>
+      </Modal>
+    )
+  },
+
+  jobErrorsModal: function() {
+    return(
+      <Modal isOpen={this.state.errorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={Common.errorsModalStyles}>
+        <div className="errors-modal">
+          <h1>Oops. There were some errors.</h1>
+          {this.state.job.errors_text.split("\n").map(function(error, index) {
+            return(
+              <div key={index} className="import-error">{error}</div>
+            );
+          }.bind(this))}
         </div>
       </Modal>
     )

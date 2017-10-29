@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
+  patch '/users/3' => 'api/dvds#update_stock'
 
   namespace :api do
     get '/users' => '/api/users#api_index'
