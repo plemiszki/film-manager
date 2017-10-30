@@ -31,6 +31,6 @@ class ErrorCheck
       end
       job.update({current_value: job.current_value + 1})
     end
-    job.update!({done: true, first_line: "No Errors Found", errors_text: errors.empty? ? "" : errors.join("\n")})
+    job.update!({done: true, first_line: errors.empty? ? "No Errors Found" : "Errors Found", errors_text: errors.empty? ? "" : errors.join("\n")})
   end
 end
