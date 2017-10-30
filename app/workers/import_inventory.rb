@@ -30,7 +30,7 @@ class ImportInventory
         if dvd
           before_qty = dvd.stock
           difference = qty.to_i - before_qty
-          errors << "(#{difference > 0 ? "+" : ""}#{difference}) #{dvd.feature.title} - #{dvd.dvd_type.name}" unless difference == 0
+          errors << "(#{difference > 0 ? "+" : ""}#{difference}) #{dvd.feature.title} - #{dvd.dvd_type.name}#{difference > 0 ? " :)" : ""}" unless difference == 0
           dvd.update(stock: qty)
         end
         index += 1

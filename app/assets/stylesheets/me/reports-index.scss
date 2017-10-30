@@ -79,6 +79,11 @@
       padding: 3px;
       margin-bottom: 5px;
       color: black;
+
+      &.green {
+        background: lightgreen;
+        border: solid 1px green;
+      }
     }
 
     .orange-button {
