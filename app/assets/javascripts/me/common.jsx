@@ -86,6 +86,22 @@ Common = {
     }
   },
 
+  noErrorsModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 540,
+      height: 140,
+      border: 'solid 1px #5F5F5F',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F'
+    }
+  },
+
   errors: {
     email: [
       "Email can't be blank",
@@ -393,12 +409,23 @@ Common = {
     return(
       <Modal isOpen={this.state.errorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={Common.errorsModalStyles}>
         <div className="errors-modal">
-          <h1>Oops. There were some errors.</h1>
+          <h1>{this.state.job.first_line}</h1>
           {this.state.job.errors_text.split("\n").map(function(error, index) {
             return(
               <div key={index} className="import-error">{error}</div>
             );
           }.bind(this))}
+        </div>
+      </Modal>
+    )
+  },
+
+  jobNoErrorsModal: function() {
+    return(
+      <Modal isOpen={this.state.noErrorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={Common.noErrorsModalStyles}>
+        <div className="send-modal">
+          <h1>{this.state.job.first_line}</h1>
+          <a className="orange-button" onClick={this.modalCloseAndRefresh}>OK</a>
         </div>
       </Modal>
     )

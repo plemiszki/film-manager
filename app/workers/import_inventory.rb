@@ -28,17 +28,30 @@ class ImportInventory
         upc, qty = columns[1], columns[4]
         dvd = dvds.find_by_upc(upc)
         if dvd
+          before_qty = dvd.stock
+          difference = qty.to_i - before_qty
+          errors << "(#{difference > 0 ? "+" : ""}#{difference}) #{dvd.feature.title} - #{dvd.dvd_type.name}" unless difference == 0
           dvd.update(stock: qty)
         end
         index += 1
         job.update!(current_value: index)
       end
-      job.update!({ done: true, first_line: "Import Complete", errors_text: errors.join("\n") })
+      errors.sort! do |a, b|
+        a_num = a[/^\([\+\-\d]+\)/].gsub(/[\(\)]/, '').to_i
+        b_num = b[/^\([\+\-\d]+\)/].gsub(/[\(\)]/, '').to_i
+        case
+        when a_num <= b_num
+          1
+        when a_num > b_num
+          -1
+        end
+      end
+      job.update!({ done: true, first_line: errors.empty? ? "Import complete.\nThere were no changes." : "Stock Updated", errors_text: errors.join("\n") })
       p '---------------------------'
       p 'FINISHED INVENTORY IMPORT'
       p '---------------------------'
     rescue
-      job.update!({ done: true, errors_text: "Unable to import spreadsheet" })
+      job.update!({ done: true, first_line: "Oops. There were some errors.", errors_text: "Unable to import spreadsheet" })
     end
   end
 

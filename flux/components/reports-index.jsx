@@ -359,17 +359,12 @@ var ReportsIndex = React.createClass({
             <a className="orange-button" onClick={this.clickImportExpenses}>Import Expenses</a>
           </div>
         </Modal>
-        <Modal isOpen={this.state.noErrorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={this.sendModalStyles}>
-          <div className="send-modal">
-            <h1>{this.state.job.first_line}</h1>
-            <a className="orange-button" onClick={this.modalCloseAndRefresh}>OK</a>
-          </div>
-        </Modal>
         <Modal isOpen={this.state.sendModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.sendModalStyles}>
           {this.renderSendModalHeader()}
         </Modal>
         {Common.jobModal.call(this, this.state.job)}
         {Common.jobErrorsModal.call(this)}
+        {Common.jobNoErrorsModal.call(this)}
       </div>
     );
   },

@@ -162,6 +162,7 @@ var PurchaseOrdersIndex = React.createClass({
         </Modal>
         {Common.jobModal.call(this, this.state.job)}
         {Common.jobErrorsModal.call(this)}
+        {Common.jobNoErrorsModal.call(this)}
       </div>
     );
   },
