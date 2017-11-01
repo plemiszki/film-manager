@@ -301,7 +301,7 @@ class RoyaltyReport < ActiveRecord::Base
     self.current_total_revenue = 0.00
     self.current_total_expenses = 0.00 unless film.deal_type_id == 4
     self.current_total = 0.00
-    royalty_revenue_streams = self.royalty_revenue_streams
+    royalty_revenue_streams = RoyaltyRevenueStream.where(royalty_report_id: self.id).joins(:revenue_stream).order('revenue_streams.order')
     royalty_revenue_streams.each do |stream|
       if stream.revenue_stream_id == 3 && film.reserve
         unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
