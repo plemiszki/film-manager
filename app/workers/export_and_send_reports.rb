@@ -17,8 +17,8 @@ class ExportAndSendReports
           p '---------------------------'
           p "#{film.title} (#{jid})"
           p '---------------------------'
-          report.calculate!
-          report.export!(licensor_folder)
+          royalty_revenue_streams = report.calculate!
+          report.export!(licensor_folder, royalty_revenue_streams)
         else
           new_line = (job.errors_text == "" ? "" : "\n")
           job.update({errors_text: job.errors_text += (new_line + "Film #{film.title} is missing licensor.")})

@@ -68,10 +68,8 @@ class RoyaltyReport < ActiveRecord::Base
     result
   end
 
-  def export!(directory)
+  def export!(directory, royalty_revenue_streams)
     film = self.film
-    royalty_revenue_streams = self.royalty_revenue_streams
-
     string = "<style>"
     string += "body {"
     string +=   "font-family: Arial;"
@@ -135,8 +133,8 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "Q#{self.quarter} #{self.year}"
     string += "</div>"
     string += "<div class=\"film-movement\">Film Movement</div>"
-    string += "109 West 27th Street<br>"
-    string += "Suite 9B<br>"
+    string += "237 West 35th Street<br>"
+    string += "Suite 604<br>"
     string += "New York, NY 10001<br>"
     string += "212.941.7744<br><br><br>"
 
