@@ -13,8 +13,12 @@ class RoyaltyReport < ActiveRecord::Base
   belongs_to :film
   has_many :royalty_revenue_streams, dependent: :destroy
 
-  def self.get_total_due(quarter, year)
-    reports = RoyaltyReport.where(quarter: quarter, year: year)
+  def self.get_total_due(quarter, year, days_statement_due = nil)
+    if days_statement_due
+      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { days_statement_due: days_statement_due })
+    else
+      reports = RoyaltyReport.where(quarter: quarter, year: year)
+    end
     sum = 0
     reports.each do |report|
       report.calculate!
@@ -23,12 +27,27 @@ class RoyaltyReport < ActiveRecord::Base
     sum.to_f
   end
 
-  def self.get_total_due_to_send(quarter, year)
-    reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {export_reports: true, send_reports: true})
+  def self.get_total_due_to_send(quarter, year, days_statement_due = nil)
+    if days_statement_due
+      reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { days_statement_due: days_statement_due, export_reports: true, send_reports: true })
+    else
+      reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { export_reports: true, send_reports: true })
+    end
     sum = 0
     reports.each do |report|
       report.calculate!
       sum += report.joined_amount_due unless report.joined_amount_due < 0
+    end
+    sum.to_f
+  end
+
+  def self.get_reserves(quarter, year)
+    reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { reserve: true, export_reports: true, send_reports: true })
+    sum = 0
+    result = {}
+    reports.each do |report|
+      report.calculate!
+      sum += report.current_reserve
     end
     sum.to_f
   end
@@ -301,7 +320,7 @@ class RoyaltyReport < ActiveRecord::Base
     self.current_total = 0.00
     royalty_revenue_streams = RoyaltyRevenueStream.where(royalty_report_id: self.id).joins(:revenue_stream).order('revenue_streams.order')
     royalty_revenue_streams.each do |stream|
-      if stream.revenue_stream_id == 3 && film.reserve
+      if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue > 0
         unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
           self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
         end
