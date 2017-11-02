@@ -323,6 +323,7 @@ class RoyaltyReport < ActiveRecord::Base
       if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue > 0
         unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
           self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
+          self.cume_reserve = self.get_total_past_reserves.values.sum
         end
       end
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
