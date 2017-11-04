@@ -4,12 +4,14 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var PurchaseOrdersStore = new Store(AppDispatcher);
 
 var _purchaseOrders = {};
+var _dvdCustomers = [];
 var _needToUpdate = false;
 
 PurchaseOrdersStore.setStuff = function(payload) {
   payload.purchaseOrders.forEach(function(purchaseOrder) {
     _purchaseOrders[purchaseOrder.id] = purchaseOrder;
   });
+  _dvdCustomers = payload.dvdCustomers;
   _needToUpdate = payload.needToUpdate;
 };
 
@@ -22,6 +24,10 @@ PurchaseOrdersStore.all = function() {
     return(_purchaseOrders[id]);
   });
   return purchaseOrders;
+};
+
+PurchaseOrdersStore.dvdCustomers = function() {
+  return _dvdCustomers;
 };
 
 PurchaseOrdersStore.needToUpdate = function() {

@@ -8,8 +8,9 @@ class Api::PurchaseOrdersController < ApplicationController
 
   def show
     @purchase_orders = PurchaseOrder.where(id: params[:id])
-    @dvds = @purchase_orders[0].dvds.includes(:feature)
-    @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
+    @dvd_customers = DvdCustomer.all
+    # @dvds = @purchase_orders[0].dvds.includes(:feature)
+    # @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
     render "show.json.jbuilder"
   end
 
@@ -23,14 +24,13 @@ class Api::PurchaseOrdersController < ApplicationController
   end
 
   def update
-    @giftbox = PurchaseOrder.find(params[:id])
-    if @giftbox.update(giftbox_params)
+    @purchase_order = PurchaseOrder.find(params[:id])
+    if @purchase_order.update(purchase_order_params)
       @purchase_orders = PurchaseOrder.where(id: params[:id])
-      @dvds = @purchase_orders[0].dvds
-      @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
+      @dvd_customers = DvdCustomer.all
       render "show.json.jbuilder"
     else
-      render json: @giftbox.errors.full_messages, status: 422
+      render json: @purchase_order.errors.full_messages, status: 422
     end
   end
 
@@ -46,7 +46,7 @@ class Api::PurchaseOrdersController < ApplicationController
   private
 
   def purchase_order_params
-    params[:purchase_order].permit(:number, :order_date)
+    params[:purchase_order].permit(:number, :order_date, :address1, :address2, :city, :state, :zip, :country, :customer_id)
   end
 
 end

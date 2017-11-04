@@ -1,0 +1,47 @@
+#purchase-order-details {
+
+  input, .nice-select {
+    width: 100%;
+  }
+
+  .noFieldError {
+    margin-bottom: 30px;
+  }
+
+  .yesFieldError {
+    margin-top: 10px;
+    height: 10px;
+    margin-bottom: 40px;
+  }
+
+  ul.list {
+    height: 320px;
+    overflow-y: scroll;
+  }
+
+  table {
+    margin-bottom: 60px;
+
+    .name-column {
+      color: #5F5F5F;
+    }
+  }
+
+  a#ship {
+    display: block;
+    width: 200px;
+    margin: auto;
+    margin-bottom: 30px;
+
+    &.shipped {
+      background-color: white;
+      color: black;
+      cursor: default;
+      border: solid 1px black;
+    }
+  }
+
+  a#delete {
+    float: right;
+  }
+}

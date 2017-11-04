@@ -615,6 +615,16 @@ var ClientActions = {
     });
   },
 
+  fetchPurchaseOrder: function(id) {
+    $.ajax({
+      url: '/api/purchase_orders/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receivePurchaseOrders(response);
+      }
+    });
+  },
+
   createPurchaseOrder: function(purchase_order) {
     $.ajax({
       url: '/api/purchase_orders',
@@ -630,6 +640,42 @@ var ClientActions = {
       },
       error: function(response) {
         ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  updatePurchaseOrder: function(purchaseOrder) {
+    $.ajax({
+      url: '/api/purchase_orders/' + purchaseOrder.id,
+      method: 'PATCH',
+      data: {
+        purchase_order: {
+          order_date: purchaseOrder.orderDate,
+          number: purchaseOrder.number,
+          address1: purchaseOrder.address1,
+          address2: purchaseOrder.address2,
+          city: purchaseOrder.city,
+          state: purchaseOrder.state,
+          zip: purchaseOrder.zip,
+          country: purchaseOrder.country,
+          customer_id: purchaseOrder.customerId
+        }
+      },
+      success: function(response) {
+        ServerActions.receivePurchaseOrders(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deletePurchaseOrder: function(id) {
+    $.ajax({
+      url: '/api/purchase_orders/' + id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = "/purchase_orders";
       }
     });
   }

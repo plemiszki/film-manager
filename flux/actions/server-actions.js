@@ -145,7 +145,8 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "PURCHASE_ORDERS_RECEIVED",
       purchaseOrders: response.purchaseOrders,
-      needToUpdate: response.needToUpdate
+      needToUpdate: response.needToUpdate,
+      dvdCustomers: response.dvdCustomers
     });
   }
 }
