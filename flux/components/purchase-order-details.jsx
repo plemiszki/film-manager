@@ -2,7 +2,23 @@ var React = require('react');
 var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
+var ShippingAddressesStore = require('../stores/shipping-addresses-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
+var NewThing = require('./new-thing.jsx');
+import ModalSelect from './modal-select.jsx';
+
+var AddAddressModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 1000,
+    height: 415
+  }
+};
 
 var PurchaseOrderDetails = React.createClass({
 
@@ -12,21 +28,26 @@ var PurchaseOrderDetails = React.createClass({
       purchaseOrder: {},
       purchaseOrderSaved: {},
       dvds: [],
+      shippingAddresses: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      addAddressModalOpen: false,
+      selectAddressModalOpen: false
     });
   },
 
   componentDidMount: function() {
     this.purchaseOrderListener = PurchaseOrdersStore.addListener(this.getPurchaseOrders);
+    this.shippingAddressListener = ShippingAddressesStore.addListener(this.getShippingAddresses);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
     ClientActions.fetchPurchaseOrder(window.location.pathname.split("/")[2]);
   },
 
   componentWillUnmount: function() {
     this.purchaseOrderListener.remove();
+    this.shippingAddressListener.remove();
     this.errorsListener.remove();
   },
 
@@ -34,11 +55,19 @@ var PurchaseOrderDetails = React.createClass({
     this.setState({
       purchaseOrder: Tools.deepCopy(PurchaseOrdersStore.find(window.location.pathname.split("/")[2])),
       purchaseOrderSaved: PurchaseOrdersStore.find(window.location.pathname.split("/")[2]),
+      shippingAddresses: PurchaseOrdersStore.shippingAddresses(),
       fetching: false
     }, function() {
       this.setState({
         changesToSave: this.checkForChanges()
       });
+    });
+  },
+
+  getShippingAddresses: function() {
+    this.setState({
+      shippingAddresses: ShippingAddressesStore.all(),
+      addAddressModalOpen: false
     });
   },
 
@@ -75,8 +104,49 @@ var PurchaseOrderDetails = React.createClass({
     });
   },
 
+  clickSaveShippingAddress: function() {
+    this.setState({
+      addAddressModalOpen: true
+    });
+  },
+
+  clickUseSavedShippingAddressButton: function() {
+    this.setState({
+      selectAddressModalOpen: true
+    });
+  },
+
+  clickSelectShippingAddress: function(event) {
+    for (var i = 0; i < this.state.shippingAddresses.length; i++) {
+      if (this.state.shippingAddresses[i].id === +event.target.dataset.id) {
+        var address = this.state.shippingAddresses[i];
+        var purchaseOrder = this.state.purchaseOrder;
+        purchaseOrder.name = address.name;
+        purchaseOrder.address1 = address.address1;
+        purchaseOrder.address2 = address.address2;
+        purchaseOrder.city = address.city;
+        purchaseOrder.state = address.state;
+        purchaseOrder.zip = address.zip;
+        purchaseOrder.country = address.country;
+        purchaseOrder.customerId = address.customerId.toString();
+        this.setState({
+          purchaseOrder: purchaseOrder,
+          selectAddressModalOpen: false
+        }, function() {
+          this.setState({
+            changesToSave: this.checkForChanges()
+          });
+        });
+      }
+    }
+  },
+
   handleModalClose: function() {
-    this.setState({deleteModalOpen: false});
+    this.setState({
+        addAddressModalOpen: false,
+        selectAddressModalOpen: false,
+        deleteModalOpen: false
+    });
   },
 
   checkForChanges: function() {
@@ -93,7 +163,6 @@ var PurchaseOrderDetails = React.createClass({
   },
 
   render: function() {
-    console.log(this.state.purchaseOrder);
     return(
       <div id="purchase-order-details">
         <div className="component">
@@ -114,13 +183,19 @@ var PurchaseOrderDetails = React.createClass({
               </div>
             </div>
             <hr />
+            <a className={'blue-outline-button small'} onClick={this.clickUseSavedShippingAddressButton}>Use Saved Shipping Address</a>
             <div className="row">
-              <div className="col-xs-6">
+              <div className="col-xs-4">
+                <h2>Name</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.name || ""} data-field="name" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-4">
                 <h2>Address 1</h2>
                 <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.address1 || ""} data-field="address1" />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
-              <div className="col-xs-6">
+              <div className="col-xs-4">
                 <h2>Address 2</h2>
                 <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.address2 || ""} data-field="address2" />
                 {Common.renderFieldError(this.state.errors, [])}
@@ -160,6 +235,7 @@ var PurchaseOrderDetails = React.createClass({
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
             </div>
+            <a id="save-address" className={'blue-outline-button small'} onClick={this.clickSaveShippingAddress}>Save Shipping Address</a>
             <hr />
             <div className="row">
               <div className="col-xs-12">
@@ -183,6 +259,22 @@ var PurchaseOrderDetails = React.createClass({
               No
             </a>
           </div>
+        </Modal>
+        <Modal isOpen={this.state.addAddressModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={AddAddressModalStyles}>
+          <NewThing thing="shippingAddress" initialObject={{
+              label: "",
+              name: this.state.purchaseOrder.name,
+              address1: this.state.purchaseOrder.address1,
+              address2: this.state.purchaseOrder.address2,
+              city: this.state.purchaseOrder.city,
+              state: this.state.purchaseOrder.state,
+              zip: this.state.purchaseOrder.zip,
+              country: this.state.purchaseOrder.country,
+              customerId: this.state.purchaseOrder.customerId
+          }} />
+        </Modal>
+        <Modal isOpen={this.state.selectAddressModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
+          <ModalSelect options={this.state.shippingAddresses} property={"label"} func={this.clickSelectShippingAddress} />
         </Modal>
       </div>
     );

@@ -222,7 +222,7 @@ var GiftboxDetails = React.createClass({
             </a>
           </div>
         </Modal>
-        <Modal isOpen={this.state.dvdsModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdsModalStyles}>
+        <Modal isOpen={this.state.dvdsModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
           <ModalSelect options={this.state.otherDvds} property={"title"} func={this.clickDvdButton} />
         </Modal>
       </div>

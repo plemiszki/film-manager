@@ -46,5 +46,23 @@
     .dvd-customer-placeholder {
       margin-bottom: 115px;
     }
+
+    p {
+      height: 22px;
+      line-height: 22px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+
+      &:last-of-type {
+        font-style: italic;
+        margin-bottom: 30px;
+      }
+    }
+
+    ul {
+      height: 200px;
+      overflow-y: scroll;
+    }
   }
 }

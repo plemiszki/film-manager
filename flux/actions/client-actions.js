@@ -625,14 +625,15 @@ var ClientActions = {
     });
   },
 
-  createPurchaseOrder: function(purchase_order) {
+  createPurchaseOrder: function(purchaseOrder) {
     $.ajax({
       url: '/api/purchase_orders',
       method: 'POST',
       data: {
         purchase_order: {
-          number: purchase_order.number,
-          order_date: purchase_order.orderDate
+          number: purchaseOrder.number,
+          order_date: purchaseOrder.orderDate,
+          shipping_address_id: purchaseOrder.shippingAddressId
         }
       },
       success: function(response) {
@@ -652,6 +653,7 @@ var ClientActions = {
         purchase_order: {
           order_date: purchaseOrder.orderDate,
           number: purchaseOrder.number,
+          name: purchaseOrder.name,
           address1: purchaseOrder.address1,
           address2: purchaseOrder.address2,
           city: purchaseOrder.city,
@@ -676,6 +678,32 @@ var ClientActions = {
       method: 'DELETE',
       success: function() {
         window.location.pathname = "/purchase_orders";
+      }
+    });
+  },
+
+  createShippingAddress: function(shippingAddress) {
+    $.ajax({
+      url: '/api/shipping_addresses',
+      method: 'POST',
+      data: {
+        shipping_address: {
+          label: shippingAddress.label,
+          name: shippingAddress.name,
+          address1: shippingAddress.address1,
+          address2: shippingAddress.address2,
+          city: shippingAddress.city,
+          state: shippingAddress.state,
+          zip: shippingAddress.zip,
+          country: shippingAddress.country,
+          customer_id: shippingAddress.customerId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveShippingAddresses(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
       }
     });
   }

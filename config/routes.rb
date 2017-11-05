@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     resources :dvd_shorts, only: [:create, :destroy]
     resources :purchase_orders, only: [:index, :show, :create, :update, :destroy]
     resources :purchase_order_dvds, only: [:create, :destroy]
+    resources :shipping_addresses, only: [:create]
   end
 
   # Clearance ------------------------

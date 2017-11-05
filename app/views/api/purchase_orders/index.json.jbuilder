@@ -5,4 +5,8 @@ json.purchaseOrders @purchase_orders do |purchase_order|
   json.customer purchase_order.customer ? purchase_order.customer.name : ""
   json.units 0
 end
+json.shippingAddresses @shipping_addresses do |shipping_address|
+  json.id shipping_address.id
+  json.label shipping_address.label
+end
 json.needToUpdate @jobs.empty? ? true : DateTime.parse(@jobs.last.job_id).to_date.past?

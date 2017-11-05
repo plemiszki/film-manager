@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171021143744) do
+ActiveRecord::Schema.define(version: 20171105144454) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -225,6 +225,18 @@ ActiveRecord::Schema.define(version: 20171021143744) do
     t.decimal "joined_expense",         precision: 8, scale: 2, default: 0.0
     t.decimal "joined_difference",      precision: 8, scale: 2, default: 0.0
     t.decimal "joined_licensor_share",  precision: 8, scale: 2, default: 0.0
+  end
+
+  create_table "shipping_addresses", force: :cascade do |t|
+    t.string  "label"
+    t.string  "address1"
+    t.string  "address2"
+    t.string  "city"
+    t.string  "state"
+    t.string  "zip"
+    t.string  "country"
+    t.integer "customer_id", default: 0
+    t.string  "name"
   end
 
   create_table "users", force: :cascade do |t|

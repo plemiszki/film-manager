@@ -2,6 +2,7 @@ class Api::PurchaseOrdersController < ApplicationController
 
   def index
     @purchase_orders = PurchaseOrder.all.includes(:customer)
+    @shipping_addresses = ShippingAddress.all
     @jobs = Job.where(name: "import inventory").order(:id)
     render "index.json.jbuilder"
   end
@@ -9,13 +10,25 @@ class Api::PurchaseOrdersController < ApplicationController
   def show
     @purchase_orders = PurchaseOrder.where(id: params[:id])
     @dvd_customers = DvdCustomer.all
-    # @dvds = @purchase_orders[0].dvds.includes(:feature)
-    # @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
+    @shipping_addresses = ShippingAddress.all
     render "show.json.jbuilder"
   end
 
   def create
-    @purchase_order = PurchaseOrder.new(purchase_order_params)
+    params = purchase_order_params
+    if params[:shipping_address_id]
+      shipping_address = ShippingAddress.find(params[:shipping_address_id].to_i)
+      params[:name] = shipping_address.name
+      params[:address1] = shipping_address.address1
+      params[:address2] = shipping_address.address2
+      params[:city] = shipping_address.city
+      params[:state] = shipping_address.state
+      params[:zip] = shipping_address.zip
+      params[:country] = shipping_address.country
+      params[:customer_id] = shipping_address.customer_id
+      params.delete(:shipping_address_id)
+    end
+    @purchase_order = PurchaseOrder.new(params)
     if @purchase_order.save
       render "create.json.jbuilder"
     else
@@ -46,7 +59,7 @@ class Api::PurchaseOrdersController < ApplicationController
   private
 
   def purchase_order_params
-    params[:purchase_order].permit(:number, :order_date, :address1, :address2, :city, :state, :zip, :country, :customer_id)
+    params[:purchase_order].permit(:number, :order_date, :name, :address1, :address2, :city, :state, :zip, :country, :customer_id, :shipping_address_id)
   end
 
 end

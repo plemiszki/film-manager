@@ -145,8 +145,16 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "PURCHASE_ORDERS_RECEIVED",
       purchaseOrders: response.purchaseOrders,
+      shippingAddresses: response.shippingAddresses,
       needToUpdate: response.needToUpdate,
       dvdCustomers: response.dvdCustomers
+    });
+  },
+
+  receiveShippingAddresses: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "SHIPPING_ADDRESSES_RECEIVED",
+      shippingAddresses: response.shippingAddresses
     });
   }
 }

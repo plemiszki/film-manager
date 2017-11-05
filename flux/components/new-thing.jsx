@@ -2,6 +2,7 @@ var React = require('react');
 var ErrorsStore = require('../stores/errors-store.js');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
+var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
 
 var NewThing = React.createClass({
 
@@ -70,6 +71,7 @@ var NewThing = React.createClass({
   },
 
   render: function() {
+    console.log(this.state);
     return(
       <div id="new-thing" className="component">
         <div className="white-box">
@@ -83,6 +85,8 @@ var NewThing = React.createClass({
           {this.renderDvdCustomerFields()}
           {this.renderDvdTypeField()}
           {this.renderPOFields()}
+          { this.renderLabelField() }
+          { this.renderShippingAddress() }
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
             {this.renderAddButton()}
           </a>
@@ -96,7 +100,8 @@ var NewThing = React.createClass({
       dvdCustomer: "DVD Customer",
       giftbox: "Gift Box",
       dvd: "DVD",
-      purchaseOrder: "Purchase Order"
+      purchaseOrder: "Purchase Order",
+      shippingAddress: "Shipping Address"
     };
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
@@ -239,19 +244,67 @@ var NewThing = React.createClass({
   renderPOFields: function() {
     if (this.props.thing === "purchaseOrder") {
       return(
-        <div className="row">
-          <div className="col-xs-6">
-            <h2>PO Number</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].number} data-field="number" />
-            {Common.renderFieldError(this.state.errors, Common.errors.number)}
+        <div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>Shipping Address</h2>
+              <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="shippingAddressId" value={this.state.purchaseOrder.shippingAddressId}>
+                <option key={0} value={''}>(Do Not Use a Saved Shipping Address)</option>
+                {PurchaseOrdersStore.shippingAddresses().map(function(shippingAddress, index) {
+                  return(
+                    <option key={index + 1} value={shippingAddress.id}>{shippingAddress.label}</option>
+                  )
+                })}
+              </select>
+              {Common.renderFieldError(this.state.errors, [])}
+            </div>
           </div>
-          <div className="col-xs-6">
-            <h2>Order Date</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].orderDate} data-field="orderDate" />
-            {Common.renderFieldError(this.state.errors, Common.errors.orderDate)}
+          <div className="row">
+            <div className="col-xs-6">
+              <h2>PO Number</h2>
+              <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].number} data-field="number" />
+              {Common.renderFieldError(this.state.errors, Common.errors.number)}
+            </div>
+            <div className="col-xs-6">
+              <h2>Order Date</h2>
+              <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].orderDate} data-field="orderDate" />
+              {Common.renderFieldError(this.state.errors, Common.errors.orderDate)}
+            </div>
           </div>
         </div>
       )
+    }
+  },
+
+  renderLabelField: function() {
+    if (this.props.thing === "shippingAddress") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Label</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.label)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].label} data-field="label" />
+            {Common.renderFieldError(this.state.errors, Common.errors.label)}
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderShippingAddress: function() {
+    if (this.props.thing === "shippingAddress") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <p>{ this.state[this.props.thing].name }</p>
+            <p>{ this.state[this.props.thing].address1 }</p>
+            <p>{ this.state[this.props.thing].address2 }</p>
+            <p>{ this.state[this.props.thing].city }, { this.state[this.props.thing].state }, { this.state[this.props.thing].zip }</p>
+            <p>{ this.state[this.props.thing].country }</p>
+            <br />
+            <p>{ +this.state[this.props.thing].customerId ? "Customer: " + PurchaseOrdersStore.findDvdCustomer(this.state[this.props.thing].customerId).name : "No DVD Customer" }</p>
+          </div>
+        </div>
+      );
     }
   },
 

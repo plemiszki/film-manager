@@ -33,6 +33,22 @@ Array.prototype.filterDaysDue = function(daysDue) {
 
 Common = {
 
+  selectModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#FFFFFF',
+      margin: 'auto',
+      maxWidth: 540,
+      height: '90%',
+      border: 'solid 1px #5F5F5F',
+      borderRadius: '6px',
+      textAlign: 'center',
+      color: '#5F5F5F'
+    }
+  },
+
   deleteModalStyles: {
     overlay: {
       background: 'rgba(0, 0, 0, 0.50)'
@@ -237,6 +253,10 @@ Common = {
     ],
     paymentTerms: [
       "Payment terms can't be blank"
+    ],
+    label: [
+      "Label can't be blank",
+      "Label has already been taken"
     ]
   },
 
