@@ -1,5 +1,10 @@
 class Api::ShippingAddressesController < ApplicationController
 
+  def index
+    @shipping_addresses = ShippingAddress.all
+    render "index.json.jbuilder"
+  end
+
   def create
     @shipping_address = ShippingAddress.new(shipping_address_params)
     if @shipping_address.save

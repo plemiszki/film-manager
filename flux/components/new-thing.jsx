@@ -298,7 +298,7 @@ var NewThing = React.createClass({
             <p>{ this.state[this.props.thing].name }</p>
             <p>{ this.state[this.props.thing].address1 }</p>
             <p>{ this.state[this.props.thing].address2 }</p>
-            <p>{ this.state[this.props.thing].city }, { this.state[this.props.thing].state }, { this.state[this.props.thing].zip }</p>
+            <p>{ this.state[this.props.thing].city }, { this.state[this.props.thing].state } { this.state[this.props.thing].zip }</p>
             <p>{ this.state[this.props.thing].country }</p>
             <br />
             <p>{ +this.state[this.props.thing].customerId ? "Customer: " + PurchaseOrdersStore.findDvdCustomer(this.state[this.props.thing].customerId).name : "No DVD Customer" }</p>

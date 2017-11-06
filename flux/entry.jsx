@@ -17,6 +17,7 @@ var DvdCustomerDetails = require('./components/dvd-customer-details.jsx');
 var DvdDetails = require('./components/dvd-details.jsx');
 var PurchaseOrdersIndex = require('./components/purchase-orders-index.jsx');
 var PurchaseOrderDetails = require('./components/purchase-order-details.jsx');
+var ShippingAddressesIndex = require('./components/shipping-addresses-index.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -73,5 +74,8 @@ $(document).ready(function() {
   }
   if ($('#purchase-order-details')[0]) {
     ReactDOM.render(<PurchaseOrderDetails />, document.getElementById("purchase-order-details"));
+  }
+  if ($('#shipping-addresses-index')[0]) {
+    ReactDOM.render(<ShippingAddressesIndex />, document.getElementById("shipping-addresses-index"));
   }
 });

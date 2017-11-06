@@ -1,14 +1,15 @@
 Rails.application.routes.draw do
   root to: "films#index"
   resources :films, only: [:index, :show]
-  resources :shorts, only: [:index]
-  resources :users, only: [:index, :show]
-  resources :licensors, only: [:index, :show]
-  resources :royalty_reports, only: [:index, :show]
-  resources :giftboxes, only: [:index, :show]
-  resources :dvd_customers, only: [:index, :show]
-  resources :purchase_orders, only: [:index, :show]
   resources :dvds, only: [:show]
+  resources :shorts, only: [:index]
+  resources :licensors, only: [:index, :show]
+  resources :dvd_customers, only: [:index, :show]
+  resources :shipping_addresses, only: [:index, :show]
+  resources :purchase_orders, only: [:index, :show]
+  resources :giftboxes, only: [:index, :show]
+  resources :royalty_reports, only: [:index, :show]
+  resources :users, only: [:index, :show]
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
@@ -37,7 +38,7 @@ Rails.application.routes.draw do
     resources :dvd_shorts, only: [:create, :destroy]
     resources :purchase_orders, only: [:index, :show, :create, :update, :destroy]
     resources :purchase_order_dvds, only: [:create, :destroy]
-    resources :shipping_addresses, only: [:create]
+    resources :shipping_addresses, only: [:index, :create, :update, :destroy]
   end
 
   # Clearance ------------------------

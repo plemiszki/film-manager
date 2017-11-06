@@ -706,6 +706,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  fetchShippingAddresses: function() {
+    $.ajax({
+      url: '/api/shipping_addresses',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveShippingAddresses(response);
+      }
+    });
   }
 }
 
