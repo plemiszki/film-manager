@@ -9,5 +9,6 @@ class RoyaltyRevenueStream < ActiveRecord::Base
   validates_numericality_of :cume_expense
 
   belongs_to :revenue_stream
+  belongs_to :royalty_report
 
 end
