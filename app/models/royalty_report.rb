@@ -166,7 +166,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "<th>Licensor %</th>"
     string +=   "<th>Licensor Share</th></tr>"
     royalty_revenue_streams.each do |stream|
-      if stream.current_revenue > 0 || stream.current_expense > 0
+      if stream.current_revenue != 0 || stream.current_expense != 0
         string += "<tr>"
         string +=   "<td>#{stream.revenue_stream.name}</td>"
         string +=   "<td>#{dollarify(stream.current_revenue)}</td>"
