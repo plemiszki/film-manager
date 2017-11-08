@@ -154,7 +154,8 @@ var ServerActions = {
   receiveShippingAddresses: function(response) {
     AppDispatcher.dispatch({
       actionType: "SHIPPING_ADDRESSES_RECEIVED",
-      shippingAddresses: response.shippingAddresses
+      shippingAddresses: response.shippingAddresses,
+      dvdCustomers: response.dvdCustomers
     });
   }
 }

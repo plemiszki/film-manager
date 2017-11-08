@@ -15,6 +15,32 @@ class Api::ShippingAddressesController < ApplicationController
     end
   end
 
+  def show
+    @shipping_addresses = ShippingAddress.where(id: params[:id])
+    @dvd_customers = DvdCustomer.all
+    render "show.json.jbuilder"
+  end
+
+  def update
+    @shipping_address = ShippingAddress.find(params[:id])
+    if @shipping_address.update(shipping_address_params)
+      @shipping_addresses = ShippingAddress.where(id: params[:id])
+      @dvd_customers = DvdCustomer.all
+      render "show.json.jbuilder"
+    else
+      render json: @shipping_address.errors.full_messages, status: 422
+    end
+  end
+
+  def destroy
+    @shipping_address = ShippingAddress.find(params[:id])
+    if @shipping_address.destroy
+      render json: @shipping_address, status: 200
+    else
+      render json: @shipping_address.errors.full_messages, status: 422
+    end
+  end
+
   private
 
   def shipping_address_params

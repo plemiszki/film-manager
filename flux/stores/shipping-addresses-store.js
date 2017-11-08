@@ -4,11 +4,17 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var ShippingAddressesStore = new Store(AppDispatcher);
 
 var _shippingAddresses = {};
+var _dvdCustomers = {};
 
 ShippingAddressesStore.setStuff = function(payload) {
   payload.shippingAddresses.forEach(function(shippingAddress) {
     _shippingAddresses[shippingAddress.id] = shippingAddress;
   });
+  if (payload.dvdCustomers) {
+    payload.dvdCustomers.forEach(function(dvdCustomer) {
+      _dvdCustomers[dvdCustomer.id] = dvdCustomer;
+    });
+  }
 };
 
 ShippingAddressesStore.all = function() {
@@ -16,6 +22,17 @@ ShippingAddressesStore.all = function() {
     return(_shippingAddresses[id]);
   });
   return Tools.alphabetizeArrayOfObjects(shippingAddresses, 'label');
+};
+
+ShippingAddressesStore.find = function(id) {
+  return _shippingAddresses[id];
+};
+
+ShippingAddressesStore.dvdCustomers = function() {
+  var dvdCustomers = Object.keys(_dvdCustomers).map(function(id) {
+    return(_dvdCustomers[id]);
+  });
+  return Tools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
 };
 
 ShippingAddressesStore.__onDispatch = function(payload) {

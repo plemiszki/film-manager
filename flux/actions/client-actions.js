@@ -3,6 +3,16 @@ var ServerActions = require('../actions/server-actions.js');
 
 var ClientActions = {
 
+  deleteAndGoToIndex: function(directory, id) {
+    $.ajax({
+      url: '/api/' + directory + '/' + id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = '/' + directory;
+      }
+    });
+  },
+
   fetchUsers: function() {
     $.ajax({
       url: '/api/users',
@@ -714,6 +724,42 @@ var ClientActions = {
       method: 'GET',
       success: function(response) {
         ServerActions.receiveShippingAddresses(response);
+      }
+    });
+  },
+
+  fetchShippingAddress: function(id) {
+    $.ajax({
+      url: '/api/shipping_addresses/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveShippingAddresses(response);
+      }
+    });
+  },
+
+  updateShippingAddress: function(shippingAddress) {
+    $.ajax({
+      url: '/api/shipping_addresses/' + shippingAddress.id,
+      method: 'PATCH',
+      data: {
+        shipping_address: {
+          label: shippingAddress.label,
+          name: shippingAddress.name,
+          address1: shippingAddress.address1,
+          address2: shippingAddress.address2,
+          city: shippingAddress.city,
+          state: shippingAddress.state,
+          zip: shippingAddress.zip,
+          country: shippingAddress.country,
+          customer_id: shippingAddress.customerId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveShippingAddresses(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
       }
     });
   }
