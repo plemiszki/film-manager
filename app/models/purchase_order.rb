@@ -3,8 +3,8 @@ class PurchaseOrder < ActiveRecord::Base
   validates :number, presence: true, uniqueness: true
   validates_date :order_date, :ship_date, allow_blank: true
 
-  has_many :purchase_order_dvds
-  has_many :dvds, through: :purchase_order_dvds
+  has_many :purchase_order_items
+  has_many :items, through: :purchase_order_items
   belongs_to(
     :customer,
     class_name: "DvdCustomer",

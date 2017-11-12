@@ -762,6 +762,27 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  addPurchaseOrderItem: function(purchaseOrderId, itemId, itemType, qty) {
+    $.ajax({
+      url: '/api/purchase_order_items/',
+      method: 'POST',
+      data: {
+        purchase_order_item: {
+          purchase_order_id: purchaseOrderId,
+          item_id: itemId,
+          item_type: itemType,
+          qty: qty
+        }
+      },
+      success: function(response) {
+        ServerActions.receivePurchaseOrderItems(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

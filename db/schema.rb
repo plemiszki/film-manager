@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171105144454) do
+ActiveRecord::Schema.define(version: 20171110021542) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,9 +148,12 @@ ActiveRecord::Schema.define(version: 20171105144454) do
 
   add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
 
-  create_table "purchase_order_dvds", force: :cascade do |t|
-    t.integer "purchase_order_id", null: false
-    t.integer "dvd_id",            null: false
+  create_table "purchase_order_items", force: :cascade do |t|
+    t.integer "purchase_order_id",             null: false
+    t.string  "item_type",                     null: false
+    t.integer "item_id",                       null: false
+    t.integer "order",                         null: false
+    t.integer "qty",               default: 0
   end
 
   create_table "purchase_orders", force: :cascade do |t|

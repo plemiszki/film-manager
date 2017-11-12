@@ -2,6 +2,7 @@ var React = require('react');
 var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
 var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
+var PurchaseOrderItemsStore = require('../stores/purchase-order-items-store.js');
 var ShippingAddressesStore = require('../stores/shipping-addresses-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -20,6 +21,19 @@ var AddAddressModalStyles = {
   }
 };
 
+var qtyModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    width: 300,
+    height: 238
+  }
+};
+
 var PurchaseOrderDetails = React.createClass({
 
   getInitialState: function() {
@@ -27,8 +41,8 @@ var PurchaseOrderDetails = React.createClass({
       fetching: true,
       purchaseOrder: {},
       purchaseOrderSaved: {},
-      dvds: [],
       shippingAddresses: [],
+      items: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -40,6 +54,7 @@ var PurchaseOrderDetails = React.createClass({
 
   componentDidMount: function() {
     this.purchaseOrderListener = PurchaseOrdersStore.addListener(this.getPurchaseOrders);
+    this.purchaseOrderItemsListener = PurchaseOrderItemsStore.addListener(this.getPurchaseOrderItems);
     this.shippingAddressListener = ShippingAddressesStore.addListener(this.getShippingAddresses);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
     ClientActions.fetchPurchaseOrder(window.location.pathname.split("/")[2]);
@@ -47,6 +62,7 @@ var PurchaseOrderDetails = React.createClass({
 
   componentWillUnmount: function() {
     this.purchaseOrderListener.remove();
+    this.purchaseOrderItemsListener.remove();
     this.shippingAddressListener.remove();
     this.errorsListener.remove();
   },
@@ -56,6 +72,8 @@ var PurchaseOrderDetails = React.createClass({
       purchaseOrder: Tools.deepCopy(PurchaseOrdersStore.find(window.location.pathname.split("/")[2])),
       purchaseOrderSaved: PurchaseOrdersStore.find(window.location.pathname.split("/")[2]),
       shippingAddresses: PurchaseOrdersStore.shippingAddresses(),
+      items: PurchaseOrdersStore.items(),
+      otherItems: PurchaseOrdersStore.otherItems(),
       fetching: false
     }, function() {
       this.setState({
@@ -74,6 +92,14 @@ var PurchaseOrderDetails = React.createClass({
   getErrors: function() {
     this.setState({
       errors: ErrorsStore.all(),
+      fetching: false
+    });
+  },
+
+  getPurchaseOrderItems: function() {
+    this.setState({
+      items: PurchaseOrderItemsStore.items(),
+      otherItems: PurchaseOrderItemsStore.otherItems(),
       fetching: false
     });
   },
@@ -141,10 +167,44 @@ var PurchaseOrderDetails = React.createClass({
     }
   },
 
+  clickAddItemButton: function() {
+    this.setState({
+        selectItemModalOpen: true
+    });
+  },
+
+  clickSelectItem: function(event) {
+    this.setState({
+      selectedItemId: event.target.dataset.id,
+      selectedItemType: event.target.dataset.type,
+      selectItemModalOpen: false,
+      qtyModalOpen: true,
+      selectedItemQty: 1
+    });
+  },
+
+  updateQty: function(e) {
+    if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
+      this.setState({
+        selectedItemQty: e.target.value
+      });
+    }
+  },
+
+  clickQtyOk: function() {
+    this.setState({
+      fetching: true,
+      qtyModalOpen: false
+    });
+    ClientActions.addPurchaseOrderItem(this.state.purchaseOrder.id, this.state.selectedItemId, this.state.selectedItemType, this.state.selectedItemQty);
+  },
+
   handleModalClose: function() {
     this.setState({
         addAddressModalOpen: false,
         selectAddressModalOpen: false,
+        selectItemModalOpen: false,
+        qtyModalOpen: false,
         deleteModalOpen: false
     });
   },
@@ -237,6 +297,30 @@ var PurchaseOrderDetails = React.createClass({
             </div>
             <a id="save-address" className={'blue-outline-button small'} onClick={this.clickSaveShippingAddress}>Save Shipping Address</a>
             <hr />
+            <table className={"admin-table"}>
+              <thead>
+                <tr>
+                  <th>Items</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td></td></tr>
+                {this.state.items.map(function(item, index) {
+                  return(
+                    <tr key={index}>
+                      <td className="name-column">
+                        <div onClick={Common.redirect.bind(this, "dvds", item.id)}>
+                          {item.label}
+                        </div>
+                        <div className="x-button" onClick={this.clickXButton} data-id={item.id}></div>
+                      </td>
+                    </tr>
+                  );
+                }.bind(this))}
+              </tbody>
+            </table>
+            <a className={'blue-outline-button small'} onClick={this.clickAddItemButton}>Add Item</a>
+            <hr />
             <div className="row">
               <div className="col-xs-12">
                 <a id="ship" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + (this.state.purchaseOrder.shipDate ? " shipped" : "")} onClick={this.clickShip}>
@@ -275,6 +359,19 @@ var PurchaseOrderDetails = React.createClass({
         </Modal>
         <Modal isOpen={this.state.selectAddressModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
           <ModalSelect options={this.state.shippingAddresses} property={"label"} func={this.clickSelectShippingAddress} />
+        </Modal>
+        <Modal isOpen={this.state.selectItemModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
+          <ModalSelect options={this.state.otherItems} property={"label"} func={this.clickSelectItem} />
+        </Modal>
+        <Modal isOpen={this.state.qtyModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={qtyModalStyles}>
+          <div className="qty-modal">
+            <h1>Enter Quantity:</h1>
+            <h2>{ this.state.selectedItemId ? PurchaseOrdersStore.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
+            <input onChange={ this.updateQty } value={ this.state.selectedItemQty || "" } /><br />
+            <div className="orange-button" onClick={ this.clickQtyOk }>
+              OK
+            </div>
+          </div>
         </Modal>
       </div>
     );

@@ -20,7 +20,7 @@
   }
 
   table {
-    margin-bottom: 60px;
+    margin-bottom: 15px;
 
     .name-column {
       color: #5F5F5F;
@@ -52,5 +52,29 @@
 
   a#save-address {
     float: right;
+  }
+}
+
+div.qty-modal {
+  padding: 30px;
+  text-align: center;
+
+  h1 {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  input {
+    width: 170px;
+    margin-bottom: 20px;
+  }
+
+  .orange-button {
+    margin: auto;
   }
 }

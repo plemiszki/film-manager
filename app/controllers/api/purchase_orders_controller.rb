@@ -1,5 +1,7 @@
 class Api::PurchaseOrdersController < ApplicationController
 
+  include PurchaseOrderItems
+
   def index
     @purchase_orders = PurchaseOrder.all.includes(:customer)
     @shipping_addresses = ShippingAddress.all
@@ -11,6 +13,7 @@ class Api::PurchaseOrdersController < ApplicationController
     @purchase_orders = PurchaseOrder.where(id: params[:id])
     @dvd_customers = DvdCustomer.all
     @shipping_addresses = ShippingAddress.all
+    get_data_for_items
     render "show.json.jbuilder"
   end
 
@@ -48,11 +51,11 @@ class Api::PurchaseOrdersController < ApplicationController
   end
 
   def destroy
-    @giftbox = PurchaseOrder.find(params[:id])
-    if @giftbox.destroy
-      render json: @giftbox, status: 200
+    @purchase_order = PurchaseOrder.find(params[:id])
+    if @purchase_order.destroy
+      render json: @purchase_order, status: 200
     else
-      render json: @giftbox.errors.full_messages, status: 422
+      render json: @purchase_order.errors.full_messages, status: 422
     end
   end
 

@@ -147,7 +147,9 @@ var ServerActions = {
       purchaseOrders: response.purchaseOrders,
       shippingAddresses: response.shippingAddresses,
       needToUpdate: response.needToUpdate,
-      dvdCustomers: response.dvdCustomers
+      dvdCustomers: response.dvdCustomers,
+      items: response.items,
+      otherItems: response.otherItems
     });
   },
 
@@ -156,6 +158,14 @@ var ServerActions = {
       actionType: "SHIPPING_ADDRESSES_RECEIVED",
       shippingAddresses: response.shippingAddresses,
       dvdCustomers: response.dvdCustomers
+    });
+  },
+
+  receivePurchaseOrderItems: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "PURCHASE_ORDER_ITEMS_RECEIVED",
+      items: response.items,
+      otherItems: response.otherItems
     });
   }
 }

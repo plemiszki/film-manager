@@ -6,6 +6,11 @@ var PurchaseOrdersStore = new Store(AppDispatcher);
 var _purchaseOrders = {};
 var _dvdCustomers = {};
 var _shippingAddresses = {};
+var _items = {};
+var _otherItems = {
+  'dvd': {},
+  'giftbox': {}
+};
 var _needToUpdate = false;
 
 PurchaseOrdersStore.setStuff = function(payload) {
@@ -20,6 +25,14 @@ PurchaseOrdersStore.setStuff = function(payload) {
   if (payload.shippingAddresses) {
     payload.shippingAddresses.forEach(function(shippingAddress) {
       _shippingAddresses[shippingAddress.id] = shippingAddress;
+    });
+  }
+  payload.items.forEach(function(item) {
+    _items[item.id] = item;
+  });
+  if (payload.otherItems) {
+    payload.otherItems.forEach(function(otherItem) {
+      _otherItems[otherItem.itemType][otherItem.id] = otherItem;
     });
   }
   _needToUpdate = payload.needToUpdate;
@@ -52,6 +65,27 @@ PurchaseOrdersStore.shippingAddresses = function() {
     return(_shippingAddresses[id]);
   });
   return Tools.alphabetizeArrayOfObjects(shippingAddresses, 'label');
+};
+
+PurchaseOrdersStore.items = function() {
+  var items = Object.keys(_items).map(function(id) {
+    return(_items[id]);
+  });
+  return Tools.sortArrayOfObjects(items, 'order');
+};
+
+PurchaseOrdersStore.otherItems = function() {
+  var otherDvds = Object.keys(_otherItems.dvd).map(function(id) {
+    return(_otherItems['dvd'][id]);
+  });
+  var otherGiftboxes = Object.keys(_otherItems.giftbox).map(function(id) {
+    return(_otherItems['giftbox'][id]);
+  });
+  return Tools.alphabetizeArrayOfObjects(otherDvds.concat(otherGiftboxes), 'label');
+};
+
+PurchaseOrdersStore.findOtherItem = function(type, id) {
+  return _otherItems[type][id];
 };
 
 PurchaseOrdersStore.needToUpdate = function() {
