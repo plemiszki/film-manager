@@ -301,10 +301,13 @@ var PurchaseOrderDetails = React.createClass({
               <thead>
                 <tr>
                   <th>Items</th>
+                  <th>Qty</th>
+                  <th>Stock</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
                 {this.state.items.map(function(item, index) {
                   return(
                     <tr key={index}>
@@ -312,6 +315,14 @@ var PurchaseOrderDetails = React.createClass({
                         <div onClick={Common.redirect.bind(this, "dvds", item.id)}>
                           {item.label}
                         </div>
+                      </td>
+                      <td>
+                          {item.qty}
+                      </td>
+                      <td>
+                          {item.stock}
+                      </td>
+                      <td>
                         <div className="x-button" onClick={this.clickXButton} data-id={item.id}></div>
                       </td>
                     </tr>

@@ -23,6 +23,7 @@ class ImportInventory
       errors = []
       job.update!(first_line: "Updating Stock", second_line: true, current_value: 0, total_value: xls.last_row)
       dvds = Dvd.all.includes(:feature)
+      giftboxes = Giftbox.all
       while index <= xls.last_row
         columns = sheet.row(index)
         upc, qty = columns[1], columns[4]
@@ -32,6 +33,14 @@ class ImportInventory
           difference = qty.to_i - before_qty
           errors << "(#{difference > 0 ? "+" : ""}#{difference}) #{dvd.feature.title} - #{dvd.dvd_type.name}#{difference > 0 ? " :)" : ""}" unless difference == 0
           dvd.update(stock: qty)
+        else
+          giftbox = giftboxes.find_by_upc(upc)
+          if giftbox
+            before_qty = giftbox.quantity
+            difference = qty.to_i - before_qty
+            errors << "(#{difference > 0 ? "+" : ""}#{difference}) #{giftbox.name}#{difference > 0 ? " :)" : ""}" unless difference == 0
+            giftbox.update(quantity: qty)
+          end
         end
         index += 1
         job.update!(current_value: index)

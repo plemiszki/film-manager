@@ -12,8 +12,10 @@ module PurchaseOrderItems
       result[:item_id] = thing.id
       if item.item_type == "dvd"
         result[:label] = "#{thing.feature.title} - #{thing.dvd_type.name}"
+        result[:stock] = thing.stock
       else
         result[:label] = thing.name
+        result[:stock] = thing.on_demand ? 'n/a' : thing.quantity
       end
       result
     end

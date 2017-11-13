@@ -27,9 +27,11 @@ PurchaseOrdersStore.setStuff = function(payload) {
       _shippingAddresses[shippingAddress.id] = shippingAddress;
     });
   }
-  payload.items.forEach(function(item) {
-    _items[item.id] = item;
-  });
+  if (payload.items) {
+    payload.items.forEach(function(item) {
+      _items[item.id] = item;
+    });
+  }
   if (payload.otherItems) {
     payload.otherItems.forEach(function(otherItem) {
       _otherItems[otherItem.itemType][otherItem.id] = otherItem;
