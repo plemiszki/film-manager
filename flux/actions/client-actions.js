@@ -783,6 +783,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  deletePurchaseOrderItem: function(id) {
+    $.ajax({
+      url: '/api/purchase_order_items/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receivePurchaseOrderItems(response);
+      }
+    });
   }
 }
 

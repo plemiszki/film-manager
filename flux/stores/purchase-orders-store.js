@@ -86,10 +86,6 @@ PurchaseOrdersStore.otherItems = function() {
   return Tools.alphabetizeArrayOfObjects(otherDvds.concat(otherGiftboxes), 'label');
 };
 
-PurchaseOrdersStore.findOtherItem = function(type, id) {
-  return _otherItems[type][id];
-};
-
 PurchaseOrdersStore.needToUpdate = function() {
   return _needToUpdate;
 };

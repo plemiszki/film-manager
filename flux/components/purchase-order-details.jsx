@@ -100,7 +100,9 @@ var PurchaseOrderDetails = React.createClass({
     this.setState({
       items: PurchaseOrderItemsStore.items(),
       otherItems: PurchaseOrderItemsStore.otherItems(),
-      fetching: false
+      fetching: false,
+      selectedItemId: null,
+      selectedItemQty: null
     });
   },
 
@@ -199,6 +201,13 @@ var PurchaseOrderDetails = React.createClass({
     ClientActions.addPurchaseOrderItem(this.state.purchaseOrder.id, this.state.selectedItemId, this.state.selectedItemType, this.state.selectedItemQty);
   },
 
+  clickXButton: function(e) {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.deletePurchaseOrderItem(e.target.dataset.id);
+  },
+
   handleModalClose: function() {
     this.setState({
         addAddressModalOpen: false,
@@ -220,6 +229,16 @@ var PurchaseOrderDetails = React.createClass({
       changesFunction: this.checkForChanges,
       beforeSave: this.beforeSave
     }
+  },
+
+  findOtherItem: function(type, id) {
+    var result;
+    this.state.otherItems.forEach(function(otherItem, index) {
+      if (otherItem.itemType == type && otherItem.id == id) {
+        result = otherItem;
+      }
+    });
+    return result;
   },
 
   render: function() {
@@ -377,7 +396,7 @@ var PurchaseOrderDetails = React.createClass({
         <Modal isOpen={this.state.qtyModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={qtyModalStyles}>
           <div className="qty-modal">
             <h1>Enter Quantity:</h1>
-            <h2>{ this.state.selectedItemId ? PurchaseOrdersStore.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
+            <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
             <input onChange={ this.updateQty } value={ this.state.selectedItemQty || "" } /><br />
             <div className="orange-button" onClick={ this.clickQtyOk }>
               OK

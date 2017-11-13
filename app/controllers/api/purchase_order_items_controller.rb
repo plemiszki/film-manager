@@ -1,6 +1,7 @@
 class Api::PurchaseOrderItemsController < ApplicationController
 
   include PurchaseOrderItems
+  include Reorderable
 
   def create
     current_length = PurchaseOrderItem.where(purchase_order_id: purchase_order_item_params[:purchase_order_id]).length
@@ -8,10 +9,19 @@ class Api::PurchaseOrderItemsController < ApplicationController
     if @purchase_order_item.save
       @purchase_orders = PurchaseOrder.where(id: @purchase_order_item.purchase_order_id)
       get_data_for_items
-      render 'create.json.jbuilder'
+      render 'index.json.jbuilder'
     else
       render json: @purchase_order_item.errors.full_messages, status: 422
     end
+  end
+
+  def destroy
+    @purchase_order_item = PurchaseOrderItem.find(params[:id])
+    @purchase_order_item.destroy
+    reorder(PurchaseOrderItem.where(purchase_order_id: @purchase_order_item.purchase_order_id).order(:order))
+    @purchase_orders = PurchaseOrder.where(id: @purchase_order_item.purchase_order_id)
+    get_data_for_items
+    render 'index.json.jbuilder'
   end
 
   private
