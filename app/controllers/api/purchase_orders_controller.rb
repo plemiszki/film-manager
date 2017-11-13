@@ -19,7 +19,7 @@ class Api::PurchaseOrdersController < ApplicationController
 
   def create
     params = purchase_order_params
-    if params[:shipping_address_id]
+    if params[:shipping_address_id] && params[:shipping_address_id] != ''
       shipping_address = ShippingAddress.find(params[:shipping_address_id].to_i)
       params[:name] = shipping_address.name
       params[:address1] = shipping_address.address1
@@ -29,8 +29,15 @@ class Api::PurchaseOrdersController < ApplicationController
       params[:zip] = shipping_address.zip
       params[:country] = shipping_address.country
       params[:customer_id] = shipping_address.customer_id
-      params.delete(:shipping_address_id)
+      if (params[:customer_id] > 0 && DvdCustomer.find(params[:customer_id]).consignment == false)
+        params[:send_invoice] = true
+      else
+        params[:send_invoice] = false
+      end
+    else
+      params[:send_invoice] = false
     end
+    params.delete(:shipping_address_id)
     @purchase_order = PurchaseOrder.new(params)
     if @purchase_order.save
       render "create.json.jbuilder"
@@ -62,7 +69,7 @@ class Api::PurchaseOrdersController < ApplicationController
   private
 
   def purchase_order_params
-    params[:purchase_order].permit(:number, :order_date, :name, :address1, :address2, :city, :state, :zip, :country, :customer_id, :shipping_address_id)
+    params[:purchase_order].permit(:number, :order_date, :name, :address1, :address2, :city, :state, :zip, :country, :customer_id, :shipping_address_id, :send_invoice)
   end
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171110021542) do
+ActiveRecord::Schema.define(version: 20171113155713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,17 +157,18 @@ ActiveRecord::Schema.define(version: 20171110021542) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.string  "number",                   null: false
-    t.integer "customer_id", default: 0
-    t.string  "address1",    default: ""
-    t.string  "address2",    default: ""
-    t.string  "city",        default: ""
-    t.string  "state",       default: ""
-    t.string  "zip",         default: ""
+    t.string  "number",                      null: false
+    t.integer "customer_id",  default: 0
+    t.string  "address1",     default: ""
+    t.string  "address2",     default: ""
+    t.string  "city",         default: ""
+    t.string  "state",        default: ""
+    t.string  "zip",          default: ""
     t.date    "order_date"
     t.date    "ship_date"
-    t.string  "name",        default: ""
-    t.string  "country",     default: ""
+    t.string  "name",         default: ""
+    t.string  "country",      default: ""
+    t.boolean "send_invoice", default: true
   end
 
   create_table "revenue_streams", force: :cascade do |t|

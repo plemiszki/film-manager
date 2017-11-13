@@ -670,7 +670,8 @@ var ClientActions = {
           state: purchaseOrder.state,
           zip: purchaseOrder.zip,
           country: purchaseOrder.country,
-          customer_id: purchaseOrder.customerId
+          customer_id: purchaseOrder.customerId,
+          send_invoice: purchaseOrder.sendInvoice
         }
       },
       success: function(response) {

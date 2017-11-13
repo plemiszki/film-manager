@@ -44,6 +44,7 @@ var PurchaseOrderDetails = React.createClass({
       shippingAddresses: [],
       items: [],
       errors: [],
+      sendInvoice: true,
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -352,7 +353,8 @@ var PurchaseOrderDetails = React.createClass({
             <a className={'blue-outline-button small'} onClick={this.clickAddItemButton}>Add Item</a>
             <hr />
             <div className="row">
-              <div className="col-xs-12">
+              <div className="col-xs-12 text-center">
+                <input id="send-invoice" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.purchaseOrder ? this.state.purchaseOrder.sendInvoice : true} data-field="sendInvoice" /><label className="checkbox">Send Invoice</label>
                 <a id="ship" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + (this.state.purchaseOrder.shipDate ? " shipped" : "")} onClick={this.clickShip}>
                   {this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : "Ship Now"}
                 </a>

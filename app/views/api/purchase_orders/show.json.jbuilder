@@ -11,6 +11,7 @@ json.purchaseOrders @purchase_orders do |purchase_order|
   json.country purchase_order.country
   json.orderDate purchase_order.order_date || ""
   json.shipDate purchase_order.ship_date || ""
+  json.sendInvoice purchase_order.send_invoice
 end
 json.dvdCustomers @dvd_customers do |dvd_customer|
   json.id dvd_customer.id
