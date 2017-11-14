@@ -16,6 +16,7 @@ end
 json.dvdCustomers @dvd_customers do |dvd_customer|
   json.id dvd_customer.id
   json.name dvd_customer.name
+  json.consignment dvd_customer.consignment
 end
 json.shippingAddresses @shipping_addresses do |shipping_address|
   json.id shipping_address.id

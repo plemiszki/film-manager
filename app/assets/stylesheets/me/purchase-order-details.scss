@@ -5,6 +5,8 @@
   }
 
   input.checkbox {
+    vertical-align: text-top;
+    margin-top: 1px;
     display: inline-block;
     width: auto;
     margin-right: 15px;
@@ -15,7 +17,12 @@
     font-family: 'teachablesansmedium';
     color: #2C2F33;
     font-size: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 0;
+  }
+
+  .notification {
+    margin-top: 15px;
+    font-style: italic;
   }
 
   .noFieldError {
@@ -45,6 +52,7 @@
     display: block;
     width: 200px;
     margin: auto;
+    margin-top: 15px;
     margin-bottom: 30px;
 
     &.shipped {
