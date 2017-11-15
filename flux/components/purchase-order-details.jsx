@@ -161,6 +161,11 @@ var PurchaseOrderDetails = React.createClass({
         purchaseOrder.zip = address.zip;
         purchaseOrder.country = address.country;
         purchaseOrder.customerId = address.customerId.toString();
+        if (purchaseOrder.customerId == 0) {
+          purchaseOrder.sendInvoice = false;
+        } else {
+          purchaseOrder.sendInvoice = !PurchaseOrdersStore.findDvdCustomer(purchaseOrder.customerId).consignment;
+        }
         this.setState({
           purchaseOrder: purchaseOrder,
           selectAddressModalOpen: false
