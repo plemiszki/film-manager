@@ -11,7 +11,6 @@ class Api::PurchaseOrdersController < ApplicationController
 
   def show
     @purchase_orders = PurchaseOrder.where(id: params[:id])
-    @dvd_customers = DvdCustomer.all
     @shipping_addresses = ShippingAddress.all
     get_data_for_items
     render "show.json.jbuilder"
@@ -50,7 +49,8 @@ class Api::PurchaseOrdersController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:id])
     if @purchase_order.update(purchase_order_params)
       @purchase_orders = PurchaseOrder.where(id: params[:id])
-      @dvd_customers = DvdCustomer.all
+      @shipping_addresses = ShippingAddress.all
+      get_data_for_items
       render "show.json.jbuilder"
     else
       render json: @purchase_order.errors.full_messages, status: 422

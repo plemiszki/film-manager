@@ -43,7 +43,9 @@ var PurchaseOrderDetails = React.createClass({
         customerId: 0,
         sendInvoice: true
       },
-      purchaseOrderSaved: {},
+      purchaseOrderSaved: {
+        sendInvoice: true
+      },
       shippingAddresses: [],
       items: [],
       errors: [],
@@ -341,6 +343,7 @@ var PurchaseOrderDetails = React.createClass({
                   <th>Items</th>
                   <th>Qty</th>
                   <th>Stock</th>
+                  <th>{this.state.purchaseOrderSaved.sendInvoice ? 'Price' : ''}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -351,14 +354,17 @@ var PurchaseOrderDetails = React.createClass({
                     <tr key={index}>
                       <td className="name-column">
                         <div onClick={Common.redirect.bind(this, "dvds", item.id)}>
-                          {item.label}
+                          { item.label }
                         </div>
                       </td>
                       <td>
-                          {item.qty}
+                          { item.qty }
                       </td>
                       <td>
-                          {item.stock}
+                          { item.stock }
+                      </td>
+                      <td>
+                          { this.state.purchaseOrderSaved.sendInvoice ? item.price : '' }
                       </td>
                       <td>
                         <div className="x-button" onClick={this.clickXButton} data-id={item.id}></div>

@@ -37,6 +37,7 @@ json.items @items do |purchase_order_item|
   json.qty purchase_order_item[:qty]
   json.stock purchase_order_item[:stock]
   json.order purchase_order_item[:order]
+  json.price get_price(purchase_order_item[:item_id], purchase_order_item[:item_type], @selected_dvd_customer)
 end
 json.otherItems @other_items do |item|
   json.id item['id']

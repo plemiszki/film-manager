@@ -40,6 +40,8 @@ module PurchaseOrderItems
       other_item_to_delete = @other_items.select { |other_item| other_item['id'] == item[:item_id] && other_item[:item_type] == item[:item_type] }.first
       @other_items.delete(other_item_to_delete)
     end
+    @dvd_customers = DvdCustomer.all
+    @selected_dvd_customer = @dvd_customers.find(@purchase_orders[0].customer_id)
   end
 
 end
