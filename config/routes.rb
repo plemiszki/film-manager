@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :giftboxes, only: [:index, :show]
   resources :royalty_reports, only: [:index, :show]
   resources :users, only: [:index, :show]
+  resources :invoices, only: [:index, :show]
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
@@ -37,8 +38,11 @@ Rails.application.routes.draw do
     resources :dvds, only: [:show, :create, :update, :destroy]
     resources :dvd_shorts, only: [:create, :destroy]
     resources :purchase_orders, only: [:index, :show, :create, :update, :destroy]
+    post '/purchase_orders/ship' => '/api/purchase_orders#ship'
     resources :purchase_order_items, only: [:create, :destroy]
     resources :shipping_addresses, only: [:index, :create, :show, :update, :destroy]
+    resources :invoices, only: [:index, :show]
+    get '/invoices/:id/export' => '/api/invoices#export'
   end
 
   # Clearance ------------------------

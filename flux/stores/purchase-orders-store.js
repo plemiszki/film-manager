@@ -91,7 +91,7 @@ PurchaseOrdersStore.needToUpdate = function() {
 };
 
 PurchaseOrdersStore.__onDispatch = function(payload) {
-  switch(payload.actionType){
+  switch (payload.actionType) {
     case "PURCHASE_ORDERS_RECEIVED":
       this.setStuff(payload);
       this.__emitChange();

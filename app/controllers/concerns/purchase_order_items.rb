@@ -41,7 +41,7 @@ module PurchaseOrderItems
       @other_items.delete(other_item_to_delete)
     end
     @dvd_customers = DvdCustomer.all
-    @selected_dvd_customer = @dvd_customers.find(@purchase_orders[0].customer_id)
+    @selected_dvd_customer = (@purchase_orders[0].customer_id == 0 ? nil : @dvd_customers.find(@purchase_orders[0].customer_id))
   end
 
 end

@@ -794,6 +794,42 @@ var ClientActions = {
         ServerActions.receivePurchaseOrderItems(response);
       }
     });
+  },
+
+  shipPO: function(purchaseOrder) {
+    $.ajax({
+      url: '/api/purchase_orders/ship',
+      method: 'POST',
+      data: {
+        purchase_order: {
+          id: purchaseOrder.id
+        }
+      },
+      success: function(response) {
+        console.log(response);
+        // ServerActions.receivePurchaseOrderItems(response);
+      }
+    });
+  },
+
+  fetchInvoices: function() {
+    $.ajax({
+      url: '/api/invoices',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveInvoices(response);
+      }
+    });
+  },
+
+  fetchInvoice: function(id) {
+    $.ajax({
+      url: '/api/invoices/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveInvoices(response);
+      }
+    });
   }
 }
 

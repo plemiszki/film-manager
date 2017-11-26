@@ -167,6 +167,16 @@ var ServerActions = {
       items: response.items,
       otherItems: response.otherItems
     });
+  },
+
+  // INVOICES ---
+
+  receiveInvoices: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "INVOICES_RECEIVED",
+      invoices: response.invoices,
+      rows: response.rows
+    });
   }
 }
 

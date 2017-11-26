@@ -66,6 +66,39 @@ class Api::PurchaseOrdersController < ApplicationController
     end
   end
 
+  def ship
+    @purchase_order = PurchaseOrder.find(params[:purchase_order][:id])
+    if @purchase_order.send_invoice
+      number = Invoice.where(invoice_type: 'dvd').length
+      invoice = Invoice.create_invoice({
+        invoice_type: 'dvd',
+        from: @purchase_order,
+        number: "#{number + 1}D",
+        sent_date: Date.today,
+        po_number: @purchase_order.number,
+        shipping_name: @purchase_order.name,
+        shipping_address1: @purchase_order.address1,
+        shipping_address2: @purchase_order.address2,
+        shipping_city: @purchase_order.city,
+        shipping_state: @purchase_order.state,
+        shipping_zip: @purchase_order.zip,
+        shipping_country: @purchase_order.country
+      })
+      # pathname = Rails.root.join('tmp', Time.now.to_s)
+      # FileUtils.mkdir_p("#{pathname}")
+      # invoice.export!(pathname)
+      # mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
+      # message_params =  { from: current_user.email,
+      #                     to: 'plemiszki@gmail.com',
+      #                     subject: "Invoice",
+      #                     text: "here we go",
+      #                     # attachment: attachments
+      #                   }
+      # mg_client.send_message 'filmmovement.com', message_params
+    end
+    render json: { message: 'ok' }, status: 200
+  end
+
   private
 
   def purchase_order_params
