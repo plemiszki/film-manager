@@ -89,7 +89,16 @@ class Invoice < ActiveRecord::Base
     string += "th {"
     string +=   "padding-bottom: 10px;"
     string += "}"
-    string += "tr:last-of-type td {"
+    string += "th, td {"
+    string +=   "width: 20%;"
+    string += "}"
+    string += "th:first-of-type, td:first-of-type {"
+    string +=   "width: 50%;"
+    string += "}"
+    string += "th:nth-of-type(3), td:nth-of-type(3) {"
+    string +=   "width: 10%;"
+    string += "}"
+    string += "tr.total-row td {"
     string +=   "font-weight: bold;"
     string +=   "padding-top: 10px;"
     string += "}"
@@ -122,12 +131,15 @@ class Invoice < ActiveRecord::Base
       string += "#{self.shipping_country}"
     end
     string += "<table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>"
-    self.invoice_rows.each do |row|
+    self.invoice_rows.each_with_index do |row, index|
+      if index == 38 || ((index - 38) % 51 == 0)
+        string += '</table><div class="page-break"><table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>'
+      end
       string += "<tr>"
       string += "<td>#{row.item_label}</td><td>#{dollarify(row.unit_price.to_s)}</td><td>#{row.item_qty}</td><td>#{dollarify(row.total_price.to_s)}</td>"
       string += "</tr>"
     end
-    string += "<tr><td>Total</td><td></td><td></td><td>#{dollarify(self.total.to_s)}</td></tr>"
+    string += "<tr class=\"total-row\"><td>Total</td><td></td><td></td><td>#{dollarify(self.total.to_s)}</td></tr>"
     string += "</table>"
 
     pdf = WickedPdf.new.pdf_from_string(string)

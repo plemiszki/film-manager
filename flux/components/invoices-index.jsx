@@ -8,6 +8,8 @@ var InvoicesIndex = React.createClass({
   getInitialState: function() {
     return({
       fetching: true,
+      searchText: "",
+      sortBy: "sentDate",
       invoices: []
     });
   },
