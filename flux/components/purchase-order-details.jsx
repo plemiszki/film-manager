@@ -263,7 +263,7 @@ var PurchaseOrderDetails = React.createClass({
   },
 
   clickShip: function() {
-    if (this.state.changesToSave === false) {
+    if (!this.state.purchaseOrder.shipDate && this.state.changesToSave === false) {
       this.setState({
         fetching: true
       }, function() {
@@ -283,58 +283,58 @@ var PurchaseOrderDetails = React.createClass({
             <div className="row">
               <div className="col-xs-6">
                 <h2>Number</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.number || ""} data-field="number" />
+                <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.number || ""} data-field="number" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, Common.errors.number)}
               </div>
               <div className="col-xs-6">
                 <h2>Order Date</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.orderDate || ""} data-field="orderDate" />
+                <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.orderDate || ""} data-field="orderDate" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, Common.errors.orderDate)}
               </div>
             </div>
             <hr />
-            <a className={'blue-outline-button small'} onClick={this.clickUseSavedShippingAddressButton}>Use Saved Shipping Address</a>
+            { this.renderSavedShippingAddressButton() }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.name || ""} data-field="name" />
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.name || ""} data-field="name" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
               <div className="col-xs-4">
                 <h2>Address 1</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.address1 || ""} data-field="address1" />
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.address1 || ""} data-field="address1" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
               <div className="col-xs-4">
                 <h2>Address 2</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.address2 || ""} data-field="address2" />
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.address2 || ""} data-field="address2" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.city || ""} data-field="city" />
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.city || ""} data-field="city" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.state || ""} data-field="state" />
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.state || ""} data-field="state" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.zip || ""} data-field="zip" />
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.zip || ""} data-field="zip" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.country || ""} data-field="country" />
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.country || ""} data-field="country" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
               <div className="col-xs-4">
                 <h2>Customer</h2>
-                <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state.purchaseOrder.customerId}>
+                <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state.purchaseOrder.customerId} disabled={this.state.purchaseOrder.shipDate}>
                   <option key={0} value={'0'}>(None)</option>
                   {PurchaseOrdersStore.dvdCustomers().map(function(dvdCustomer, index) {
                     return(
@@ -345,7 +345,7 @@ var PurchaseOrderDetails = React.createClass({
                 {Common.renderFieldError(this.state.errors, [])}
               </div>
             </div>
-            <a id="save-address" className={'blue-outline-button small'} onClick={this.clickSaveShippingAddress}>Save Shipping Address</a>
+            { this.renderSaveShippingAddressButton() }
             <hr />
             <table className={"admin-table"}>
               <thead>
@@ -363,7 +363,7 @@ var PurchaseOrderDetails = React.createClass({
                   return(
                     <tr key={index}>
                       <td className="name-column">
-                        <div onClick={Common.redirect.bind(this, "dvds", item.id)}>
+                        <div>
                           { item.label }
                         </div>
                       </td>
@@ -376,26 +376,23 @@ var PurchaseOrderDetails = React.createClass({
                       <td>
                           { this.state.purchaseOrderSaved.sendInvoice ? item.price : '' }
                       </td>
-                      <td>
-                        <div className="x-button" onClick={this.clickXButton} data-id={item.id}></div>
-                      </td>
+                      { this.renderXButton(item) }
                     </tr>
                   );
                 }.bind(this))}
               </tbody>
             </table>
-            <a className={'blue-outline-button small'} onClick={this.clickAddItemButton}>Add Item</a>
+            { this.renderAddItemButton() }
             <hr />
             <div className="row">
               <div className="col-xs-12 text-center">
-                <input id="send-invoice" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.purchaseOrder.sendInvoice} data-field="sendInvoice" disabled={this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment} /><label className="checkbox">Send Invoice</label>
+                <input id="send-invoice" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.purchaseOrder.sendInvoice} data-field="sendInvoice" disabled={this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment} /><label className="checkbox">Send Invoice</label>
                 {this.renderDisabledNotification()}
                 <a id="ship" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "")} onClick={this.clickShip}>
                   {this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now")}
                 </a>
               </div>
             </div>
-            <hr />
             {this.renderButtons()}
           </div>
         </div>
@@ -444,22 +441,59 @@ var PurchaseOrderDetails = React.createClass({
     );
   },
 
-  renderButtons: function() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
+  renderSavedShippingAddressButton: function() {
+    if (!this.state.purchaseOrder.shipDate) {
+      return(
+        <a className={'blue-outline-button small'} onClick={this.clickUseSavedShippingAddressButton}>Use Saved Shipping Address</a>
+      )
     }
-    return(
-      <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
-          {buttonText}
-        </a>
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
-          Delete Purchase Order
-        </a>
-      </div>
-    )
+  },
+
+  renderSaveShippingAddressButton: function() {
+    if (!this.state.purchaseOrder.shipDate) {
+      return(
+        <a id="save-address" className={'blue-outline-button small'} onClick={this.clickSaveShippingAddress}>Save Shipping Address</a>
+      )
+    }
+  },
+
+  renderXButton: function(item) {
+    if (!this.state.purchaseOrder.shipDate) {
+      return(
+        <td>
+          <div className="x-button" onClick={this.clickXButton} data-id={item.id}></div>
+        </td>
+      )
+    }
+  },
+
+  renderAddItemButton: function() {
+    if (!this.state.purchaseOrder.shipDate) {
+      return(
+        <a className={'blue-outline-button small'} onClick={this.clickAddItemButton}>Add Item</a>
+      )
+    }
+  },
+
+  renderButtons: function() {
+    if (!this.state.purchaseOrder.shipDate) {
+      if (this.state.changesToSave) {
+        var buttonText = "Save";
+      } else {
+        var buttonText = this.state.justSaved ? "Saved" : "No Changes";
+      }
+      return(
+        <div>
+          <hr />
+          <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
+            {buttonText}
+          </a>
+          <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+            Delete Purchase Order
+          </a>
+        </div>
+      )
+    }
   },
 
   renderDisabledNotification: function() {

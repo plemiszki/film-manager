@@ -806,8 +806,7 @@ var ClientActions = {
         }
       },
       success: function(response) {
-        console.log(response);
-        // ServerActions.receivePurchaseOrderItems(response);
+        window.location.href = '/purchase_orders'
       }
     });
   },

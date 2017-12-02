@@ -42,6 +42,7 @@ class Invoice < ActiveRecord::Base
       end
     end
     invoice.update(total: total)
+    invoice
   end
 
   def self.get_item_price(id, type, dvd_customer)

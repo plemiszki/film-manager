@@ -43,8 +43,16 @@
   table {
     margin-bottom: 15px;
 
+    tr {
+      cursor: default;
+    }
+
     .name-column {
       color: #5F5F5F;
+    }
+
+    .x-button {
+      cursor: pointer;
     }
   }
 
@@ -53,13 +61,18 @@
     width: 200px;
     margin: auto;
     margin-top: 15px;
-    margin-bottom: 30px;
+
+    &:not(.shipped) {
+      margin-bottom: 30px;
+    }
 
     &.shipped {
       background-color: white;
       color: black;
       cursor: default;
       border: solid 1px black;
+      padding-right: 0;
+      padding-left: 0;
     }
   }
 
