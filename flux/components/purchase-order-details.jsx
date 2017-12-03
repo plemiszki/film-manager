@@ -353,7 +353,7 @@ var PurchaseOrderDetails = React.createClass({
                   <th>Items</th>
                   <th>Qty</th>
                   <th>Stock</th>
-                  <th>{this.state.purchaseOrderSaved.sendInvoice ? 'Price' : ''}</th>
+                  <th>{this.state.purchaseOrderSaved.sendInvoice ? 'Unit Price' : ''}</th>
                   <th></th>
                 </tr>
               </thead>

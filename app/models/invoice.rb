@@ -19,8 +19,8 @@ class Invoice < ActiveRecord::Base
       if row.class.to_s == "PurchaseOrderItem"
         item = row.item
         if item.class.to_s == "Dvd"
-          price = Invoice.get_item_price(item.id, 'dvd', dvd_customer).to_f * row.qty
-          total += price
+          price = Invoice.get_item_price(item.id, 'dvd', dvd_customer).to_f
+          total += (price * row.qty)
           InvoiceRow.create({
             invoice_id: invoice.id,
             item_label: item.feature.title,
@@ -29,8 +29,8 @@ class Invoice < ActiveRecord::Base
             total_price: price * row.qty
           })
         else
-          price = Invoice.get_item_price(item.id, 'giftbox', dvd_customer).to_f * row.qty
-          total += price
+          price = Invoice.get_item_price(item.id, 'giftbox', dvd_customer).to_f
+          total += (price * row.qty)
           InvoiceRow.create({
             invoice_id: invoice.id,
             item_label: item.name,

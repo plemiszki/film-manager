@@ -6,6 +6,10 @@ class SendDvdPoAndInvoice
     purchase_order = PurchaseOrder.find(id)
     current_user = User.find(current_user_id)
     dvd_customer = DvdCustomer.find(purchase_order.customer_id)
+    pathname = Rails.root.join('tmp', Time.now.to_s)
+    FileUtils.mkdir_p("#{pathname}")
+
+    # send invoice
     if purchase_order.send_invoice
       number = Invoice.where(invoice_type: 'dvd').length
       invoice = Invoice.create_invoice({
@@ -22,19 +26,33 @@ class SendDvdPoAndInvoice
         shipping_zip: purchase_order.zip,
         shipping_country: purchase_order.country
       })
-      pathname = Rails.root.join('tmp', Time.now.to_s)
-      FileUtils.mkdir_p("#{pathname}")
       invoice.export!(pathname)
       attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]
       mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
-      message_params =  { from: current_user.email,
-                          to: dvd_customer.invoices_email,
-                          subject: "Invoice for PO #{purchase_order.number}",
-                          text: "Hello,\n\nPlease find your invoice attached, in PDF format.\n\nKind Regards,\n\n#{current_user.email_signature}",
-                          attachment: attachments
-                        }
+      message_params = {
+        from: current_user.email,
+        to: dvd_customer.invoices_email,
+        cc: current_user.email,
+        subject: "Invoice for PO #{purchase_order.number}",
+        text: "Hello,\n\nPlease find your invoice attached, in PDF format.\n\nKind Regards,\n\n#{current_user.email_signature}",
+        attachment: attachments
+      }
       mg_client.send_message 'filmmovement.com', message_params
     end
-    purchase_order.update({ ship_date: Date.today })
+
+    # send shipping files
+    source_doc = 1000 + PurchaseOrder.where.not(ship_date: nil).count
+    purchase_order.create_shipping_files(pathname, source_doc)
+    attachments = [File.open("#{pathname}/#{source_doc}_worderline.txt", "r"), File.open("#{pathname}/#{source_doc}_worder.txt", "r")]
+    message_params = {
+      from: current_user.email,
+      to: 'plemiszki@gmail.com',
+      cc: current_user.email,
+      subject: "Film Movement Sales Order #{source_doc}",
+      text: "Please see attached shipping files.",
+      attachment: attachments
+    }
+    mg_client.send_message 'filmmovement.com', message_params
+    purchase_order.update({ ship_date: Date.today, source_doc: source_doc })
   end
 end
