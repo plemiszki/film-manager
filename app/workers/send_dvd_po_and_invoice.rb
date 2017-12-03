@@ -46,7 +46,7 @@ class SendDvdPoAndInvoice
     attachments = [File.open("#{pathname}/#{source_doc}_worderline.txt", "r"), File.open("#{pathname}/#{source_doc}_worder.txt", "r")]
     message_params = {
       from: current_user.email,
-      to: 'plemiszki@gmail.com',
+      to: 'fulfillment@theadsgroup.com',
       cc: current_user.email,
       subject: "Film Movement Sales Order #{source_doc}",
       text: "Please see attached shipping files.",
