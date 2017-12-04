@@ -27,4 +27,16 @@ class PurchaseOrder < ActiveRecord::Base
     end
   end
 
+  def decrement_stock!
+    purchase_order_items.each do |item|
+      if item.item_type == "dvd"
+        dvd = Dvd.find(item.item_id)
+        dvd.update({ stock: [dvd.stock - item.qty, 0].max, units_shipped: dvd.units_shipped + item.qty })
+      else
+        giftbox = Giftbox.find(item.item_id)
+        giftbox.update({ quantity: [giftbox.quantity - item.qty, 0].max })
+      end
+    end
+  end
+
 end

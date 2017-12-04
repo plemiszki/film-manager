@@ -54,5 +54,6 @@ class SendDvdPoAndInvoice
     }
     mg_client.send_message 'filmmovement.com', message_params
     purchase_order.update({ ship_date: Date.today, source_doc: source_doc })
+    purchase_order.decrement_stock!
   end
 end
