@@ -15,7 +15,7 @@ class SendDvdPoAndInvoice
       invoice = Invoice.create_invoice({
         invoice_type: 'dvd',
         from: purchase_order,
-        number: "#{number + 1}D",
+        number: "#{number + 2464}D",
         sent_date: Date.today,
         po_number: purchase_order.number,
         shipping_name: purchase_order.name,
@@ -42,7 +42,7 @@ class SendDvdPoAndInvoice
     end
 
     # send shipping files
-    source_doc = 1000 + PurchaseOrder.where.not(ship_date: nil).count
+    source_doc = 5533 + PurchaseOrder.where.not(ship_date: nil).count
     purchase_order.create_shipping_files(pathname, source_doc)
     attachments = [File.open("#{pathname}/#{source_doc}_worderline.txt", "r"), File.open("#{pathname}/#{source_doc}_worder.txt", "r")]
     message_params = {
