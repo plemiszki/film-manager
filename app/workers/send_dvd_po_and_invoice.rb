@@ -8,6 +8,7 @@ class SendDvdPoAndInvoice
     dvd_customer = DvdCustomer.find(purchase_order.customer_id)
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")
+    mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
 
     # send invoice
     if purchase_order.send_invoice
@@ -29,7 +30,6 @@ class SendDvdPoAndInvoice
       })
       invoice.export!(pathname)
       attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]
-      mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
       message_params = {
         from: current_user.email,
         to: dvd_customer.invoices_email,
