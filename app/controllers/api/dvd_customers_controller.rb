@@ -43,7 +43,7 @@ class Api::DvdCustomersController < ApplicationController
   private
 
   def dvd_customer_params
-    result = params[:dvd_customer].permit(:name, :discount, :consignment, :notes, :sage_id, :invoices_email, :payment_terms)
+    result = params[:dvd_customer].permit(:name, :discount, :consignment, :notes, :sage_id, :invoices_email, :payment_terms, :billing_name, :address1, :address2, :city, :state, :zip, :country)
     if result[:discount].gsub(' ', '').include?("/unit")
       result[:per_unit] = result[:discount].gsub(/[^\d.]/, '')
       result.delete(:discount)

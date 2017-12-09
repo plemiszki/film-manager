@@ -257,6 +257,24 @@ Common = {
     label: [
       "Label can't be blank",
       "Label has already been taken"
+    ],
+    billingName: [
+      "Billing name can't be blank"
+    ],
+    address1: [
+      "Address1 can't be blank"
+    ],
+    city: [
+      "City can't be blank"
+    ],
+    state: [
+      "State can't be blank"
+    ],
+    zip: [
+      "Zip can't be blank"
+    ],
+    country: [
+      "Country can't be blank"
     ]
   },
 

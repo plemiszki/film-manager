@@ -7,4 +7,11 @@ json.array! @dvd_customers do |dvd_customer|
   json.sageId dvd_customer.sage_id
   json.invoicesEmail dvd_customer.invoices_email
   json.paymentTerms dvd_customer.payment_terms
+  json.billingName dvd_customer.billing_name || ""
+  json.address1 dvd_customer.address1 || ""
+  json.address2 dvd_customer.address2 || ""
+  json.city dvd_customer.city || ""
+  json.state dvd_customer.state || ""
+  json.zip dvd_customer.zip || ""
+  json.country dvd_customer.country || ""
 end

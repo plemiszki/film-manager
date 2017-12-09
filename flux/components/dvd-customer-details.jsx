@@ -143,6 +143,48 @@ var DvdCustomerDetails = React.createClass({
                 {Common.renderFieldError(this.state.errors, Common.errors.paymentTerms)}
               </div>
             </div>
+            <hr />
+            <p>Billing Address:</p>
+            <div className="row">
+              <div className="col-xs-4">
+                <h2>Name</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.billingName)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.billingName || ""} data-field="billingName" />
+                {Common.renderFieldError(this.state.errors, Common.errors.billingName)}
+              </div>
+              <div className="col-xs-4">
+                <h2>Address 1</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.address1)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address1 || ""} data-field="address1" />
+                {Common.renderFieldError(this.state.errors, Common.errors.address1)}
+              </div>
+              <div className="col-xs-4">
+                <h2>Address 2</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address2 || ""} data-field="address2" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-3">
+                <h2>City</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.city)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.city || ""} data-field="city" />
+                {Common.renderFieldError(this.state.errors, Common.errors.city)}
+              </div>
+              <div className="col-xs-1">
+                <h2>State</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.state)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.state || ""} data-field="state" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-2">
+                <h2>Zip</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.zip)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.zip || ""} data-field="zip" />
+                {Common.renderFieldError(this.state.errors, Common.errors.zip)}
+              </div>
+              <div className="col-xs-2">
+                <h2>Country</h2>
+                <input className={Common.errorClass(this.state.errors, Common.errors.country)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.country || ""} data-field="country" />
+                {Common.renderFieldError(this.state.errors, Common.errors.country)}
+              </div>
+            </div>
+            <hr />
             <div className="row">
               <div className="col-xs-12">
                 <h2>Notes</h2>

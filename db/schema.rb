@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171206021532) do
+ActiveRecord::Schema.define(version: 20171209135927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,13 @@ ActiveRecord::Schema.define(version: 20171206021532) do
     t.string  "invoices_email",                                      null: false
     t.string  "payment_terms",                                       null: false
     t.decimal "per_unit",       precision: 5, scale: 2
+    t.string  "billing_name"
+    t.string  "address1"
+    t.string  "address2"
+    t.string  "city"
+    t.string  "state"
+    t.string  "zip"
+    t.string  "country"
   end
 
   create_table "dvd_shorts", force: :cascade do |t|
