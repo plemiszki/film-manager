@@ -12,6 +12,7 @@ json.purchaseOrders @purchase_orders do |purchase_order|
   json.orderDate purchase_order.order_date || ""
   json.shipDate purchase_order.ship_date || ""
   json.sendInvoice purchase_order.send_invoice
+  json.duplicate (PurchaseOrder.where(number: purchase_order.number).length > 1)
 end
 json.dvdCustomers @dvd_customers do |dvd_customer|
   json.id dvd_customer.id

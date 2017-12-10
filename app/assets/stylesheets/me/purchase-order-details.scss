@@ -1,5 +1,13 @@
 #purchase-order-details {
 
+  p {
+    background-color: lightyellow;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-family: 'teachablesansbold';
+  }
+
   input, .nice-select {
     width: 100%;
   }
