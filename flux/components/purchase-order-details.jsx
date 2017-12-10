@@ -285,7 +285,7 @@ var PurchaseOrderDetails = React.createClass({
                 <h2>Number</h2>
                 <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.number || ""} data-field="number" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
                 {Common.renderFieldError(this.state.errors, Common.errors.number)}
-                <p className={this.state.purchaseOrder.duplicate ? "" : "hidden"}>A PO with this number already exists</p>
+                <p className={(this.state.purchaseOrder.duplicate && !this.state.purchaseOrder.shipDate) ? "" : "hidden"}>A PO with this number already exists</p>
               </div>
               <div className="col-xs-6">
                 <h2>Order Date</h2>
