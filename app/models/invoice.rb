@@ -6,6 +6,24 @@ class Invoice < ActiveRecord::Base
 
   has_many :invoice_rows
 
+  def self.fill_in
+    Invoice.all.each do |invoice|
+      if invoice.billing_name == ""
+        po = PurchaseOrder.find_by_number(invoice.po_number)
+        dvd_customer = DvdCustomer.find(po.customer_id)
+        invoice.update({
+          billing_name: dvd_customer.billing_name,
+          billing_address1: dvd_customer.address1,
+          billing_address2: dvd_customer.address2,
+          billing_city: dvd_customer.city,
+          billing_state: dvd_customer.state,
+          billing_zip: dvd_customer.zip,
+          billing_country: dvd_customer.country
+        })
+      end
+    end
+  end
+
   def self.create_invoice(args)
     if args[:from].class.to_s == "PurchaseOrder"
       purchase_order = args[:from]
