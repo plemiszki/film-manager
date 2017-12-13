@@ -368,10 +368,10 @@ var PurchaseOrderDetails = React.createClass({
                           { item.label }
                         </div>
                       </td>
-                      <td>
+                      <td className={ item.qty > item.stock ? "warning" : "" } >
                           { item.qty }
                       </td>
-                      <td>
+                      <td className={ item.qty > item.stock ? "warning" : "" } >
                           { item.stock }
                       </td>
                       <td>
