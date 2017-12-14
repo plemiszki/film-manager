@@ -57,12 +57,21 @@ var InvoiceDetails = React.createClass({
               </div>
             </div>
             <div className="row">
-              <div className="col-xs-12">
+              <div className="col-xs-4">
+                <h2>Billing Address</h2>
+                <p>{ this.state.invoice.billingName }</p>
+                <p>{ this.state.invoice.billingAddress1 }</p>
+                <p>{ this.state.invoice.billingAddress2 }</p>
+                <p>{ this.state.invoice.billingCity }, { this.state.invoice.billingState } { this.state.invoice.billingZip }</p>
+                <p>{ this.state.invoice.billingCountry == 'USA' ? '' : this.state.invoice.billingCountry }</p>
+              </div>
+              <div className="col-xs-4">
                 <h2>Shipping Address</h2>
                 <p>{ this.state.invoice.shippingName }</p>
                 <p>{ this.state.invoice.shippingAddress1 }</p>
                 <p>{ this.state.invoice.shippingAddress2 }</p>
                 <p>{ this.state.invoice.shippingCity }, { this.state.invoice.shippingState } { this.state.invoice.shippingZip }</p>
+                <p>{ this.state.invoice.shippingCountry == 'USA' ? '' : this.state.invoice.shippingCountry }</p>
               </div>
             </div>
             <hr />

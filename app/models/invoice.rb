@@ -112,6 +112,12 @@ class Invoice < ActiveRecord::Base
     string += ".page-break {"
     string +=   "page-break-before: always;"
     string += "}"
+    string += ".address-block {"
+    string +=   "display: inline-block;"
+    string += "}"
+    string += ".address-block.first {"
+    string +=   "margin-right: 50px;"
+    string += "}"
     string += "</style>"
     string += "<div class=\"upper-right\">"
     string +=   "<div class=\"invoice-header\">INVOICE</div>"
@@ -132,6 +138,18 @@ class Invoice < ActiveRecord::Base
     string += "New York, NY 10001<br>"
     string += "212.941.7744<br><br><br>"
 
+    string += '<div class="address-block first">'
+    string += "<b>Bill To:</b></br>"
+    string += "#{self.billing_name}<br />"
+    string += "#{self.billing_address1}<br />"
+    unless self.billing_address2.empty?
+      string += "#{self.billing_address2}<br />"
+    end
+    string += "#{self.billing_city}, #{self.billing_state} #{self.billing_zip}<br />"
+    unless self.billing_country == 'USA'
+      string += "#{self.billing_country}"
+    end
+    string += '</div><div class="address-block">'
     string += "<b>Ship To:</b></br>"
     string += "#{self.shipping_name}<br />"
     string += "#{self.shipping_address1}<br />"
@@ -142,6 +160,8 @@ class Invoice < ActiveRecord::Base
     unless self.shipping_country == 'USA'
       string += "#{self.shipping_country}"
     end
+    string += "</div>"
+
     string += "<table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>"
     self.invoice_rows.each_with_index do |row, index|
       if index == 38 || ((index - 38) % 51 == 0)
