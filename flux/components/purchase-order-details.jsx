@@ -386,6 +386,13 @@ var PurchaseOrderDetails = React.createClass({
             { this.renderAddItemButton() }
             <hr />
             <div className="row">
+              <div className="col-xs-12">
+                <h2>Notes</h2>
+                <textarea rows="5" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.notes } data-field="notes" />
+              </div>
+            </div>
+            <hr />
+            <div className="row">
               <div className="col-xs-12 text-center">
                 <input id="send-invoice" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.purchaseOrder.sendInvoice} data-field="sendInvoice" disabled={this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment} /><label className="checkbox">Send Invoice</label>
                 {this.renderDisabledNotification()}

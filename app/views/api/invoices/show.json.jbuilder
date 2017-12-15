@@ -20,6 +20,7 @@ json.invoices @invoices do |invoice|
   json.subTotal dollarify(invoice.sub_total.to_s)
   json.shipFee dollarify(invoice.ship_fee.to_s)
   json.total dollarify(invoice.total.to_s)
+  json.notes invoice.notes
 end
 json.rows @rows do |row|
   json.label row.item_label

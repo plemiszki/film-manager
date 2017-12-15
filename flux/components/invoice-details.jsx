@@ -114,6 +114,7 @@ var InvoiceDetails = React.createClass({
                 { this.state.invoice.total }
               </div>
             </div>
+            { this.renderNotes() }
             <a id="export" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>
               Export
             </a>
@@ -131,6 +132,25 @@ var InvoiceDetails = React.createClass({
           { this.state.invoice.shipFee }
         </div>
       </div>
+    }
+  },
+
+  renderNotes: function() {
+    if (this.state.invoice.notes) {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Notes</h2>
+            { this.state.invoice.notes.split('\n').map(function(line, key) {
+              return(
+                <span key={ key }>
+                  { line }<br />
+                </span>
+              )
+            }) }
+          </div>
+        </div>
+      )
     }
   },
 

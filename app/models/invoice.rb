@@ -115,6 +115,10 @@ class Invoice < ActiveRecord::Base
     string += ".address-block {"
     string +=   "display: inline-block;"
     string += "}"
+    string += ".address-block p, .notes p {"
+    string +=   "font-weight: bold;"
+    string +=   "margin-bottom: 5px;"
+    string += "}"
     string += ".address-block.first {"
     string +=   "margin-right: 50px;"
     string += "}"
@@ -139,7 +143,7 @@ class Invoice < ActiveRecord::Base
     string += "212.941.7744<br><br><br>"
 
     string += '<div class="address-block first">'
-    string += "<b>Bill To:</b></br>"
+    string += "<p>Bill To:</p>"
     string += "#{self.billing_name}<br />"
     string += "#{self.billing_address1}<br />"
     unless self.billing_address2.empty?
@@ -150,7 +154,7 @@ class Invoice < ActiveRecord::Base
       string += "#{self.billing_country}"
     end
     string += '</div><div class="address-block">'
-    string += "<b>Ship To:</b></br>"
+    string += "<p>Ship To:</p>"
     string += "#{self.shipping_name}<br />"
     string += "#{self.shipping_address1}<br />"
     unless self.shipping_address2.empty?
@@ -173,6 +177,13 @@ class Invoice < ActiveRecord::Base
     end
     string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td></td><td>#{dollarify(self.total.to_s)}</td></tr>"
     string += "</table>"
+    unless self.notes.empty?
+      string += "<div class=\"notes\">"
+      string += "<p>Notes:</p>"
+      string += self.notes.gsub("\n", "<br />")
+      string += "</div>"
+    end
+    string += "</div>"
 
     pdf = WickedPdf.new.pdf_from_string(string)
     save_path = "#{path}/Invoice #{self.number}.pdf"

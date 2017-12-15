@@ -33,7 +33,8 @@ class SendDvdPoAndInvoice
         shipping_state: purchase_order.state,
         shipping_zip: purchase_order.zip,
         shipping_country: purchase_order.country,
-        payment_terms: dvd_customer.payment_terms
+        payment_terms: dvd_customer.payment_terms,
+        notes: purchase_order.notes
       })
       invoice.export!(pathname)
       attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]

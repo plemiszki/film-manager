@@ -4,4 +4,5 @@ json.invoices @invoices do |invoice|
   json.number invoice.number
   json.type invoice.invoice_type == "dvd" ? "DVD" : "Booking"
   json.poNumber invoice.po_number || ""
+  json.notes invoice.notes
 end

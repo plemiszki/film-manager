@@ -678,7 +678,8 @@ var ClientActions = {
           zip: purchaseOrder.zip,
           country: purchaseOrder.country,
           customer_id: purchaseOrder.customerId,
-          send_invoice: purchaseOrder.sendInvoice
+          send_invoice: purchaseOrder.sendInvoice,
+          notes: purchaseOrder.notes
         }
       },
       success: function(response) {
