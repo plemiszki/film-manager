@@ -22,6 +22,10 @@ String.prototype.pluralize = function(n) {
   }
 };
 
+String.prototype.removeFromEnd = function(n) {
+  return this.split('').splice(0, this.length - n).join('');
+};
+
 Number.prototype.formatMoney = function() {
   var n = this,
       c = 2,

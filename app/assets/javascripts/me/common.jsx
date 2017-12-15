@@ -6,6 +6,12 @@ $(document).ready(function() {
   Common.initialize();
 });
 
+Array.prototype.filterInvoices = function(type, number) {
+  return this.filter(function(invoice) {
+    return ((type == "all" || invoice.type == type) && invoice.number.removeFromEnd(1) >= number);
+  });
+}
+
 Array.prototype.filterSearchText = function(searchText, property) {
   if (searchText !== '') {
     var re = new RegExp(searchText, "i");

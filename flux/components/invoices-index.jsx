@@ -25,11 +25,11 @@ var InvoicesIndex = React.createClass({
     return({
       fetching: true,
       searchText: "",
-      sortBy: "sentDate",
+      sortBy: "number",
       invoices: [],
       filterModalOpen: false,
       filterType: "all",
-      filterNumber: "0"
+      filterNumber: 0
     });
   },
 
@@ -63,14 +63,23 @@ var InvoicesIndex = React.createClass({
     });
   },
 
-  updateFilter: function() {
+  validateFilterInput: function() {
     var type = $('.filter-modal select').val();
     var number = $('.filter-modal input').val();
-    this.setState({
-      filterType: type,
-      filterNumber: number,
-      filterModalOpen: false
-    });
+    var numberOK = !isNaN(+number);
+    if (numberOK) {
+      this.setState({
+        filterType: type,
+        filterNumber: +number,
+        filterModalOpen: false
+      });
+    } else {
+      $('.filter-modal input').addClass('error');
+    }
+  },
+
+  clearStartingNumberError: function(e) {
+    e.target.classList.remove('error');
   },
 
   handleModalClose: function() {
@@ -86,7 +95,7 @@ var InvoicesIndex = React.createClass({
   },
 
   render: function() {
-    var filteredOrders = this.state.invoices.filterSearchText(this.state.searchText, this.state.sortBy);
+    var filteredOrders = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber).filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="invoices-index" className="component">
         <h1>Invoices</h1>
@@ -99,28 +108,28 @@ var InvoicesIndex = React.createClass({
           <table className={"admin-table"}>
             <thead>
               <tr>
-                <th><div className={Common.sortClass.call(this, "sentDate")} onClick={Common.clickHeader.bind(this, "sentDate")}>Sent Date</div></th>
                 <th><div className={Common.sortClass.call(this, "number")} onClick={Common.clickHeader.bind(this, "number")}>Invoice Number</div></th>
+                <th><div className={Common.sortClass.call(this, "sentDate")} onClick={Common.clickHeader.bind(this, "sentDate")}>Sent Date</div></th>
                 <th><div className={Common.sortClass.call(this, "type")} onClick={Common.clickHeader.bind(this, "type")}>Type</div></th>
                 <th><div className={Common.sortClass.call(this, "poNumber")} onClick={Common.clickHeader.bind(this, "poNumber")}>PO Number</div></th>
               </tr>
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {_.orderBy(filteredOrders, [Common.commonSort.bind(this)], [this.state.sortBy === 'sentDate' ? 'desc' : 'asc']).map(function(invoice, index) {
+              {_.orderBy(filteredOrders, [Common.commonSort.bind(this)], [['sentDate', 'number'].indexOf(this.state.sortBy) > -1 ? 'desc' : 'asc']).map(function(invoice, index) {
                 return(
                   <tr key={index} onClick={this.redirect.bind(this, invoice.id)}>
                     <td className="indent">
-                      {invoice.sentDate}
+                      { invoice.number }
                     </td>
                     <td>
-                      {invoice.number}
+                      { invoice.sentDate }
                     </td>
                     <td>
-                      {invoice.type}
+                      { invoice.type }
                     </td>
                     <td>
-                      {invoice.poNumber}
+                      { invoice.poNumber }
                     </td>
                   </tr>
                 );
@@ -128,7 +137,7 @@ var InvoicesIndex = React.createClass({
             </tbody>
           </table>
         </div>
-        <Modal isOpen={this.state.filterModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={filterModalStyles}>
+        <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ filterModalStyles }>
           <div className="filter-modal">
             <div className="row">
               <div className="col-xs-6">
@@ -141,12 +150,12 @@ var InvoicesIndex = React.createClass({
               </div>
               <div className="col-xs-6">
                 <h2>Starting Number</h2>
-                <input />
+                <input onChange={ this.clearStartingNumberError } />
               </div>
             </div>
             <div className="row button-row">
               <div className="col-xs-12">
-                <a className="orange-button" onClick={this.updateFilter}>Update Filter</a>
+                <a className="orange-button" onClick={ this.validateFilterInput }>Update Filter</a>
               </div>
             </div>
           </div>
