@@ -8,9 +8,8 @@ class Invoice < ActiveRecord::Base
 
   def self.fill_in
     Invoice.all.each do |invoice|
-      p invoice.billing_name
       customer = DvdCustomer.find_by_billing_name(invoice.billing_name)
-      p customer.name
+      invoice.update(customer_id: customer.id)
     end
   end
 
