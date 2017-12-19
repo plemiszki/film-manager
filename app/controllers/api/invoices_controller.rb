@@ -21,4 +21,12 @@ class Api::InvoicesController < ApplicationController
     end
   end
 
+  def export_sage
+    invoice_ids = params[:invoices].keys.map(&:to_i)
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "export invoices", first_line: "Exporting Invoices", second_line: true, current_value: 0, total_value: invoice_ids.length)
+    ExportInvoices.perform_async(invoice_ids, time_started)
+    render json: job
+  end
+
 end

@@ -837,6 +837,19 @@ var ClientActions = {
         ServerActions.receiveInvoices(response);
       }
     });
+  },
+
+  exportInvoices: function(invoices) {
+    $.ajax({
+      url: '/api/invoices/export',
+      method: 'POST',
+      data: {
+        invoices: invoices
+      },
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
   }
 }
 

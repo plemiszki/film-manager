@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :dvd_customers, only: [:index, :show]
   resources :shipping_addresses, only: [:index, :show]
   resources :purchase_orders, only: [:index, :show]
+  get '/dvd_reports' => 'purchase_orders#reporting'
   resources :giftboxes, only: [:index, :show]
   resources :royalty_reports, only: [:index, :show]
   resources :users, only: [:index, :show]
@@ -43,6 +44,7 @@ Rails.application.routes.draw do
     resources :shipping_addresses, only: [:index, :create, :show, :update, :destroy]
     resources :invoices, only: [:index, :show]
     get '/invoices/:id/export' => '/api/invoices#export'
+    post '/invoices/export' => '/api/invoices#export_sage'
   end
 
   # Clearance ------------------------

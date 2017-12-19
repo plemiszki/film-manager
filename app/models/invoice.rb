@@ -6,6 +6,14 @@ class Invoice < ActiveRecord::Base
 
   has_many :invoice_rows
 
+  def self.fill_in
+    Invoice.all.each do |invoice|
+      p invoice.billing_name
+      customer = DvdCustomer.find_by_billing_name(invoice.billing_name)
+      p customer.name
+    end
+  end
+
   def self.create_invoice(args)
     if args[:from].class.to_s == "PurchaseOrder"
       purchase_order = args[:from]
@@ -21,12 +29,15 @@ class Invoice < ActiveRecord::Base
         if item.class.to_s == "Dvd"
           price = Invoice.get_item_price(item.id, 'dvd', dvd_customer).to_f
           total += (price * row.qty)
+          film = item.feature
           InvoiceRow.create({
             invoice_id: invoice.id,
-            item_label: item.feature.title,
+            item_label: (film.title + (["Retail", "Club"].include?(item.dvd_type.name) ? "" : " (#{item.dvd_type.name})")),
             item_qty: row.qty,
             unit_price: price,
-            total_price: price * row.qty
+            total_price: price * row.qty,
+            item_id: film.id,
+            item_type: 'dvd'
           })
         else
           price = Invoice.get_item_price(item.id, 'giftbox', dvd_customer).to_f
@@ -36,7 +47,9 @@ class Invoice < ActiveRecord::Base
             item_label: item.name,
             item_qty: row.qty,
             unit_price: price,
-            total_price: price * row.qty
+            total_price: price * row.qty,
+            item_id: item.id,
+            item_type: 'giftbox'
           })
         end
       end

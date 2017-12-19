@@ -33,4 +33,8 @@ class Film < ActiveRecord::Base
     end
   end
 
+  def get_sage_id
+    sage_id.empty? ? title.upcase : sage_id
+  end
+
 end

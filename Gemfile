@@ -23,6 +23,7 @@ gem 'aws-sdk'
 gem 'mailgun-ruby', '~>1.1.6'
 gem 'validates_timeliness', '~> 4.0'
 gem 'timeliness'
+gem 'xlsx_writer'
 # ------------------------------
 
 group :development, :test do

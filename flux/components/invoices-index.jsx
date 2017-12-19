@@ -1,7 +1,9 @@
 var React = require('react');
 var Modal = require('react-modal');
 var ClientActions = require('../actions/client-actions.js');
+var ServerActions = require('../actions/server-actions.js');
 var InvoicesStore = require('../stores/invoices-store.js');
+var JobStore = require('../stores/job-store.js');
 
 var filterModalStyles = {
   overlay: {
@@ -22,6 +24,9 @@ var filterModalStyles = {
 var InvoicesIndex = React.createClass({
 
   getInitialState: function() {
+    var job = {
+      errors_text: ""
+    };
     return({
       fetching: true,
       searchText: "",
@@ -29,12 +34,15 @@ var InvoicesIndex = React.createClass({
       invoices: [],
       filterModalOpen: false,
       filterType: "all",
-      filterNumber: 0
+      filterNumber: 0,
+      jobModalOpen: !!job.id,
+      job: job
     });
   },
 
   componentDidMount: function() {
     this.invoicesListener = InvoicesStore.addListener(this.getInvoices);
+    this.jobListener = JobStore.addListener(this.getJob);
     ClientActions.fetchInvoices();
   },
 
@@ -47,6 +55,25 @@ var InvoicesIndex = React.createClass({
       fetching: false,
       invoices: InvoicesStore.all()
     });
+  },
+
+  getJob: function() {
+    var job = JobStore.job();
+    if (job.done) {
+      this.setState({
+        jobModalOpen: false,
+        job: job
+      }, function() {
+        console.log(this.state.job);
+        window.location.href = job.first_line;
+      });
+    } else {
+      this.setState({
+        jobModalOpen: true,
+        job: job,
+        fetching: false
+      });
+    }
   },
 
   redirect: function(id) {
@@ -91,6 +118,15 @@ var InvoicesIndex = React.createClass({
       return " green";
     } else {
       return "";
+    }
+  },
+
+  ClickExport: function() {
+    if (!this.state.fetching) {
+      this.setState({
+        fetching: true
+      });
+      ClientActions.exportInvoices(this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber));
     }
   },
 
@@ -160,12 +196,28 @@ var InvoicesIndex = React.createClass({
             </div>
           </div>
         </Modal>
+        { Common.jobModal.call(this, this.state.job) }
       </div>
     );
   },
 
   componentDidUpdate: function() {
     $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: function(response) {
+            ServerActions.receiveJob(response);
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 

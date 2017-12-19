@@ -14,12 +14,13 @@ class SendDvdPoAndInvoice
     if purchase_order.send_invoice
       number = Invoice.where(invoice_type: 'dvd').length
       invoice = Invoice.create_invoice({
-        invoice_type: 'dvd',
         from: purchase_order,
+        invoice_type: 'dvd',
+        customer_id: dvd_customer.id,
         number: "#{number + 2464}D",
         sent_date: Date.today,
         po_number: purchase_order.number,
-        billing_name: dvd_customer.name,
+        billing_name: dvd_customer.billing_name,
         billing_address1: dvd_customer.address1,
         billing_address2: dvd_customer.address2,
         billing_city: dvd_customer.city,

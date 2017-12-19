@@ -9,4 +9,8 @@ class PurchaseOrdersController < ApplicationController
     render "show.html.erb"
   end
 
+  def reporting
+    render "reporting.html.erb"
+  end
+
 end

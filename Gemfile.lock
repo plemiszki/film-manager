@@ -591,6 +591,7 @@ GEM
     erubi (1.7.0)
     erubis (2.7.0)
     execjs (2.7.0)
+    fast_xs (0.8.0)
     ffi (1.9.18)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
@@ -622,6 +623,7 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.10.3)
     multi_json (1.12.2)
+    murmurhash3 (0.1.6)
     netrc (0.11.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
@@ -725,6 +727,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
+    unix_utils (0.0.15)
     validates_timeliness (4.0.2)
       timeliness (~> 0.3.7)
     web-console (2.3.0)
@@ -734,6 +737,11 @@ GEM
       sprockets-rails (>= 2.0, < 4.0)
     wicked_pdf (1.1.0)
     wkhtmltopdf-binary (0.12.3.1)
+    xlsx_writer (0.4.4)
+      activesupport
+      fast_xs
+      murmurhash3 (>= 0.1.4)
+      unix_utils
 
 PLATFORMS
   ruby
@@ -766,6 +774,7 @@ DEPENDENCIES
   web-console (~> 2.0)
   wicked_pdf
   wkhtmltopdf-binary
+  xlsx_writer
 
 RUBY VERSION
    ruby 2.3.1p112
