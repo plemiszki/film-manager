@@ -92,12 +92,18 @@ class ExportInvoices
       items = invoice.invoice_rows
       items.each_with_index do |item, index|
         sheet.add_row([
-          'customer sage id will go here',
-          'customer name will go here',
+          invoice.customer.sage_id,
+          '',
           invoice.number,
-          "FALSE",
+          '',
+          'FALSE',
+          '',
           invoice.sent_date,
-          "FALSE",
+          '',
+          '',
+          '', # 10
+          '',
+          'FALSE',
           invoice.shipping_name,
           invoice.shipping_address1,
           invoice.shipping_address2,
@@ -105,20 +111,34 @@ class ExportInvoices
           invoice.shipping_state,
           invoice.shipping_zip,
           invoice.shipping_country,
-          invoice.po_number,
-          "Net #{invoice.sent_date + invoice.payment_terms}",
+          invoice.po_number, # 20
+          '',
+          '',
+          invoice.sent_date + invoice.payment_terms,
+          '', '',
+          "Net #{invoice.payment_terms}",
+          '',
           "10200",
-          "FALSE",
+          '', '', '', '', '', '', '',
+          'FALSE',
+          '',
           items.length,
           index,
-          "FALSE",
-          "FALSE",
+          '', # 40
+          'FALSE',
+          'FALSE',
           item.item_qty,
+          '', '', '', '',
           item.item_label,
           (invoice.invoice_type == "dvd" ? "30200" : "FIX ME!"),
+          '', # 50
           item.unit_price,
-          "1",
+          '1',
+          '', '',
           item.total_price,
+          '', '', '', '', '',
+          '1',
+          '', '', '',
           'film job id will go here'
         ])
       end

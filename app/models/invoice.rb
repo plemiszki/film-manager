@@ -4,13 +4,20 @@ class Invoice < ActiveRecord::Base
 
   validates :invoice_type, :number, presence: true
 
-  has_many :invoice_rows
+  has_many :invoice_rows, dependent: :destroy
+  belongs_to :customer, class_name: 'DvdCustomer'
 
   def self.fill_in
+    result = []
     Invoice.all.each do |invoice|
-      customer = DvdCustomer.find_by_billing_name(invoice.billing_name)
-      invoice.update(customer_id: customer.id)
+      rows = invoice.invoice_rows
+      rows.each do |row|
+        film = Film.find_by_title(row.item_label)
+        row.update!(item_id: film.id, item_type: "dvd")
+        result << row.item_label
+      end
     end
+    return result
   end
 
   def self.create_invoice(args)
