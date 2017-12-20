@@ -139,7 +139,7 @@ class ExportInvoices
           '', '', '', '', '',
           '1',
           '', '', '',
-          'film job id will go here'
+          (item.item_type == "dvd" ? Film.find(item.item_id).sage_id : Giftbox.find(item.item_id).sage_id)
         ])
       end
       job.update({ current_value: invoice_index + 1 })
