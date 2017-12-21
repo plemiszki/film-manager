@@ -75,7 +75,7 @@ class Api::PurchaseOrdersController < ApplicationController
     @dvd_customers = DvdCustomer.all
     @sales = []
     1.upto(12) do |index|
-      @sales[index] = index
+      @sales[index] = PurchaseOrder.where(year: params[:year]).map { |po| Invoice.find_by_po_number(po.number) }.reduce(0) { |total, invoice| total += (invoice ? invoice.total : 0) }
     end
     render "reporting.json.jbuilder"
   end
@@ -83,7 +83,7 @@ class Api::PurchaseOrdersController < ApplicationController
   private
 
   def purchase_order_params
-    params[:purchase_order].permit(:number, :order_date, :name, :address1, :address2, :city, :state, :zip, :country, :customer_id, :shipping_address_id, :send_invoice, :notes, :year)
+    params[:purchase_order].permit(:number, :order_date, :name, :address1, :address2, :city, :state, :zip, :country, :customer_id, :shipping_address_id, :send_invoice, :notes, :month, :year)
   end
 
 end

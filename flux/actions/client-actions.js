@@ -650,6 +650,7 @@ var ClientActions = {
         purchase_order: {
           number: purchaseOrder.number,
           order_date: purchaseOrder.orderDate,
+          month: ((new Date(purchaseOrder.orderDate)).getMonth() + 1),
           year: (new Date(purchaseOrder.orderDate)).getFullYear(),
           shipping_address_id: purchaseOrder.shippingAddressId
         }
@@ -670,6 +671,7 @@ var ClientActions = {
       data: {
         purchase_order: {
           order_date: purchaseOrder.orderDate,
+          month: ((new Date(purchaseOrder.orderDate)).getMonth() + 1),
           year: (new Date(purchaseOrder.orderDate)).getFullYear(),
           number: purchaseOrder.number,
           name: purchaseOrder.name,
@@ -854,10 +856,13 @@ var ClientActions = {
     });
   },
 
-  fetchDvdReports: function() {
+  fetchDvdReports: function(year) {
     $.ajax({
       url: '/api/dvd_reports',
       method: 'GET',
+      data: {
+        year: year
+      },
       success: function(response) {
         ServerActions.receiveDvdReports(response);
       }

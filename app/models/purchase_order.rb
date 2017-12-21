@@ -13,6 +13,13 @@ class PurchaseOrder < ActiveRecord::Base
     primary_key: :id
   )
 
+  def self.fill_in
+    pos = PurchaseOrder.all
+    pos.each do |po|
+      po.update(month: po.order_date.month)
+    end
+  end
+
   def create_shipping_files(pathname, source_doc)
     save_path = "#{pathname}/#{source_doc}_worderline.txt"
     File.open(save_path, 'wb') do |f|

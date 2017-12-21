@@ -15,7 +15,7 @@ var DvdReports = React.createClass({
   componentDidMount: function() {
     this.customerListener = DvdCustomersStore.addListener(this.getCustomers);
     $('#admin-right-column-content').css('padding', '30px 20px');
-    ClientActions.fetchDvdReports();
+    ClientActions.fetchDvdReports(this.state.year);
   },
 
   componentWillUnmount: function() {
@@ -34,7 +34,7 @@ var DvdReports = React.createClass({
       year: (this.state.year -= 1),
       fetching: true
     }, function() {
-      ClientActions.fetchDvdReports();
+      ClientActions.fetchDvdReports(this.state.year);
     });
   },
 
@@ -43,7 +43,7 @@ var DvdReports = React.createClass({
       year: (this.state.year += 1),
       fetching: true
     }, function() {
-      ClientActions.fetchDvdReports();
+      ClientActions.fetchDvdReports(this.state.year);
     });
   },
 
