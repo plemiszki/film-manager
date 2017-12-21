@@ -71,7 +71,6 @@ var NewThing = React.createClass({
   },
 
   render: function() {
-    console.log(this.state);
     return(
       <div id="new-thing" className="component">
         <div className="white-box">

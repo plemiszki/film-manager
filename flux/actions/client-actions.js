@@ -650,6 +650,7 @@ var ClientActions = {
         purchase_order: {
           number: purchaseOrder.number,
           order_date: purchaseOrder.orderDate,
+          year: (new Date(purchaseOrder.orderDate)).getFullYear(),
           shipping_address_id: purchaseOrder.shippingAddressId
         }
       },
@@ -669,6 +670,7 @@ var ClientActions = {
       data: {
         purchase_order: {
           order_date: purchaseOrder.orderDate,
+          year: (new Date(purchaseOrder.orderDate)).getFullYear(),
           number: purchaseOrder.number,
           name: purchaseOrder.name,
           address1: purchaseOrder.address1,

@@ -83,7 +83,7 @@ class Api::PurchaseOrdersController < ApplicationController
   private
 
   def purchase_order_params
-    params[:purchase_order].permit(:number, :order_date, :name, :address1, :address2, :city, :state, :zip, :country, :customer_id, :shipping_address_id, :send_invoice, :notes)
+    params[:purchase_order].permit(:number, :order_date, :name, :address1, :address2, :city, :state, :zip, :country, :customer_id, :shipping_address_id, :send_invoice, :notes, :year)
   end
 
 end
