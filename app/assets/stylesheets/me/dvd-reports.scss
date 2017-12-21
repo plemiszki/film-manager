@@ -1,0 +1,56 @@
+#dvd-reports {
+
+  .white-box {
+    padding: 30px 20px;
+
+    .grayed-out {
+      margin-top: -30px;
+      margin-left: -20px;
+    }
+
+    .col-xs-3 {
+
+      td {
+        border-right: solid 1px #DADEE2;
+      }
+
+      thead {
+        border-bottom: none;
+      }
+    }
+
+    .col-xs-9 {
+      overflow-y: scroll;
+
+      table {
+        table-layout: fixed;
+        width: 1500px;
+      }
+    }
+  }
+
+  .clearfix {
+    display: inline-block;
+
+    h1 {
+      float: right;
+      padding: 0 70px;
+    }
+
+    .arrow-button {
+      min-width: 25px;
+    }
+  }
+
+  th {
+    height: 37px;
+  }
+
+  th.name-column {
+    width: 300px;
+  }
+
+  th:not(.name-column) {
+    width: 100px;
+  }
+}

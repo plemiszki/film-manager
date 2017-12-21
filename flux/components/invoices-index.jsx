@@ -64,7 +64,6 @@ var InvoicesIndex = React.createClass({
         jobModalOpen: false,
         job: job
       }, function() {
-        console.log(this.state.job);
         window.location.href = job.first_line;
       });
     } else {

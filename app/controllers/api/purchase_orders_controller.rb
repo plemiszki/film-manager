@@ -71,6 +71,15 @@ class Api::PurchaseOrdersController < ApplicationController
     render json: { message: 'ok' }, status: 200
   end
 
+  def reporting
+    @dvd_customers = DvdCustomer.all
+    @sales = []
+    1.upto(12) do |index|
+      @sales[index] = index
+    end
+    render "reporting.json.jbuilder"
+  end
+
   private
 
   def purchase_order_params

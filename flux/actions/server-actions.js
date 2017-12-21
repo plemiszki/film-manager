@@ -177,6 +177,13 @@ var ServerActions = {
       invoices: response.invoices,
       rows: response.rows
     });
+  },
+
+  receiveDvdReports: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "DVD_REPORTS_RECEIVED",
+      dvdCustomers: response.dvdCustomers
+    });
   }
 }
 

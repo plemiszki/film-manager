@@ -294,6 +294,11 @@ body {
         color: #96939B;
       }
 
+      tr.bold td, td.bold {
+        font-family: 'TeachableSansMedium';
+        color: black;
+      }
+
       td.name-column {
         font-family: 'TeachableSansMedium';
         color: black;
@@ -318,14 +323,6 @@ body {
         }
       }
 
-      tr:not(:first-child) {
-        cursor: pointer;
-      }
-
-      tr:not(:first-child):hover {
-        background-color: #F5F5F5;
-      }
-
       .x-button {
         display: inline-block;
         position: absolute;
@@ -336,6 +333,18 @@ body {
         background-size: contain;
         width: 17px;
         height: 17px;
+      }
+    }
+
+    &:not(.no-hover) {
+      tr:not(:first-child) {
+          cursor: pointer;
+      }
+    }
+
+    &:not(.no-highlight) {
+      tr:not(:first-child):hover {
+        background-color: #F5F5F5;
       }
     }
   }

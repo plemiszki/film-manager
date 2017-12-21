@@ -850,6 +850,16 @@ var ClientActions = {
         ServerActions.receiveJob(response);
       }
     });
+  },
+
+  fetchDvdReports: function() {
+    $.ajax({
+      url: '/api/dvd_reports',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveDvdReports(response);
+      }
+    });
   }
 }
 

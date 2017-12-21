@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]
     resources :dvds, only: [:show, :create, :update, :destroy]
     resources :dvd_shorts, only: [:create, :destroy]
+    get '/dvd_reports' => '/api/purchase_orders#reporting'
     resources :purchase_orders, only: [:index, :show, :create, :update, :destroy]
     post '/purchase_orders/ship' => '/api/purchase_orders#ship'
     resources :purchase_order_items, only: [:create, :destroy]

@@ -28,6 +28,10 @@ DvdCustomersStore.__onDispatch = function(payload) {
       this.setDvdCustomers(payload.dvdCustomers);
       this.__emitChange();
       break;
+    case "DVD_REPORTS_RECEIVED":
+      this.setDvdCustomers(payload.dvdCustomers);
+      this.__emitChange();
+      break;
   }
 };
 
