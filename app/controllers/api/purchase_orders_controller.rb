@@ -72,10 +72,22 @@ class Api::PurchaseOrdersController < ApplicationController
   end
 
   def reporting
-    @dvd_customers = DvdCustomer.all
-    @sales = []
-    1.upto(12) do |index|
-      @sales[index] = PurchaseOrder.where(year: params[:year]).map { |po| Invoice.find_by_po_number(po.number) }.reduce(0) { |total, invoice| total += (invoice ? invoice.total : 0) }
+    @sales = {}
+    month_totals = Hash.new(0)
+    @dvd_customers = DvdCustomer.all.order(:name)
+    @dvd_customers.each_with_index do |dvd_customer, index|
+      months = {}
+      total = 0
+      1.upto(12) do |month|
+        sales = PurchaseOrder.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:invoice).map { |po| po.invoice }.reduce(0) { |total, invoice| total += (invoice ? invoice.total : 0) }
+        total += sales
+        month_totals[month] += sales
+        months[month] = sales
+      end
+      months[:total] = total
+      @sales[dvd_customer.id] = months
+      @sales[:month_totals] = month_totals
+      @sales[:year_total] = month_totals.values.reduce(:+)
     end
     render "reporting.json.jbuilder"
   end

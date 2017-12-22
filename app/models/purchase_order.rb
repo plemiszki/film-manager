@@ -12,6 +12,12 @@ class PurchaseOrder < ActiveRecord::Base
     foreign_key: :customer_id,
     primary_key: :id
   )
+  belongs_to(
+    :invoice,
+    class_name: "Invoice",
+    foreign_key: :number,
+    primary_key: :po_number
+  )
 
   def self.fill_in
     pos = PurchaseOrder.all

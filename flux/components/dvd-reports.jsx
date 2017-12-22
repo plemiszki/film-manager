@@ -110,36 +110,29 @@ var DvdReports = React.createClass({
                     {DvdCustomersStore.all().map(function(dvdCustomer, index) {
                       return(
                         <tr key={index}>
-                          <td className="bold">{ dvdCustomer.value }</td>
-                          <td>{ dvdCustomer.janSales }</td>
-                          <td>{ dvdCustomer.febSales }</td>
-                          <td>{ dvdCustomer.marSales }</td>
-                          <td>{ dvdCustomer.aprSales }</td>
-                          <td>{ dvdCustomer.maySales }</td>
-                          <td>{ dvdCustomer.junSales }</td>
-                          <td>{ dvdCustomer.julSales }</td>
-                          <td>{ dvdCustomer.augSales }</td>
-                          <td>{ dvdCustomer.sepSales }</td>
-                          <td>{ dvdCustomer.octSales }</td>
-                          <td>{ dvdCustomer.novSales }</td>
-                          <td>{ dvdCustomer.decSales }</td>
+                          <td className="bold">{ dvdCustomer.sales.total }</td>
+                          <td>{ dvdCustomer.sales[1] }</td>
+                          <td>{ dvdCustomer.sales[2] }</td>
+                          <td>{ dvdCustomer.sales[3] }</td>
+                          <td>{ dvdCustomer.sales[4] }</td>
+                          <td>{ dvdCustomer.sales[5] }</td>
+                          <td>{ dvdCustomer.sales[6] }</td>
+                          <td>{ dvdCustomer.sales[7] }</td>
+                          <td>{ dvdCustomer.sales[8] }</td>
+                          <td>{ dvdCustomer.sales[9] }</td>
+                          <td>{ dvdCustomer.sales[10] }</td>
+                          <td>{ dvdCustomer.sales[11] }</td>
+                          <td>{ dvdCustomer.sales[12] }</td>
                         </tr>
                       );
                     }.bind(this))}
                     <tr className="bold">
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
-                      <td>{ 10000.00 }</td>
+                      <td>{ DvdCustomersStore.yearTotal() }</td>
+                      { DvdCustomersStore.monthTotals().map(function(month, index) {
+                        return(
+                          <td key={index}>{ month }</td>
+                        );
+                      }.bind(this)) }
                     </tr>
                   </tbody>
                 </table>

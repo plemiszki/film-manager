@@ -182,7 +182,9 @@ var ServerActions = {
   receiveDvdReports: function(response) {
     AppDispatcher.dispatch({
       actionType: "DVD_REPORTS_RECEIVED",
-      dvdCustomers: response.dvdCustomers
+      dvdCustomers: response.dvdCustomers,
+      monthTotals: response.monthTotals,
+      yearTotal: response.yearTotal
     });
   }
 }
