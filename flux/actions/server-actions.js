@@ -184,7 +184,8 @@ var ServerActions = {
       actionType: "DVD_REPORTS_RECEIVED",
       dvdCustomers: response.dvdCustomers,
       monthTotals: response.monthTotals,
-      yearTotal: response.yearTotal
+      yearTotal: response.yearTotal,
+      dvds: response.dvds
     });
   }
 }

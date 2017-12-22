@@ -26,6 +26,14 @@ String.prototype.removeFromEnd = function(n) {
   return this.split('').splice(0, this.length - n).join('');
 };
 
+String.prototype.ellipsis = function(n) {
+	if (this.length > n) {
+    return this.slice(0, n) + "...";
+  } else {
+    return this;
+  }
+};
+
 Number.prototype.formatMoney = function() {
   var n = this,
       c = 2,

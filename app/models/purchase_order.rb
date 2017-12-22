@@ -4,7 +4,7 @@ class PurchaseOrder < ActiveRecord::Base
   validates_date :order_date
   validates_date :ship_date, allow_blank: true
 
-  has_many :purchase_order_items
+  has_many :purchase_order_items, dependent: :destroy
   has_many :items, through: :purchase_order_items
   belongs_to(
     :customer,

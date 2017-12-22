@@ -24,7 +24,14 @@
 
       table {
         table-layout: fixed;
-        width: 1500px;
+
+        &.month {
+          width: 1500px;
+        }
+
+        &.title {
+          width: 830px;
+        }
       }
     }
   }
@@ -52,5 +59,13 @@
 
   th:not(.name-column) {
     width: 100px;
+  }
+
+  th.date {
+    width: 130px;
+  }
+
+  th.units {
+    width: 40px;
   }
 }

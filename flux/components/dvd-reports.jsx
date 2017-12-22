@@ -87,7 +87,7 @@ var DvdReports = React.createClass({
                 </table>
               </div>
               <div className="col-xs-9">
-                <table className="admin-table no-hover no-highlight">
+                <table className="month admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th>TOTAL</th>
@@ -134,6 +134,74 @@ var DvdReports = React.createClass({
                         );
                       }.bind(this)) }
                     </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="component">
+          <div className="white-box">
+            {Common.renderSpinner(this.state.fetching)}
+            {Common.renderGrayedOut(this.state.fetching)}
+            <div className="row">
+              <div className="col-xs-3">
+                <table className="admin-table no-hover no-highlight">
+                  <thead>
+                    <tr>
+                      <th className="name-column"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td></tr>
+                    {DvdCustomersStore.dvds().map(function(dvd, index) {
+                      return(
+                        <tr key={index}>
+                          <td className="name-column">
+                            <div>{ dvd.title.ellipsis(25) + (dvd.type != "Retail" ? (" - " + dvd.type) : "") }</div>
+                          </td>
+                        </tr>
+                      );
+                    }.bind(this))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="col-xs-9">
+                <table className="title admin-table no-hover no-highlight">
+                  <thead>
+                    <tr>
+                      <th className="date">Date</th>
+                      <th className="units">TOTAL</th>
+                      <th></th>
+                      <th className="units">Amazon</th>
+                      <th></th>
+                      <th className="units">B & T</th>
+                      <th></th>
+                      <th className="units">Ingram</th>
+                      <th></th>
+                      <th className="units">Midwest</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    {DvdCustomersStore.dvds().map(function(dvd, index) {
+                      return(
+                        <tr key={index}>
+                          <td>{ dvd.retailDate }</td>
+                          <td className="bold">{ dvd.totalUnits }</td>
+                          <td className="bold">{ dvd.totalSales }</td>
+                          <td>{ dvd.amazonUnits }</td>
+                          <td>{ dvd.amazonSales }</td>
+                          <td>{ dvd.bakerUnits }</td>
+                          <td>{ dvd.bakerSales }</td>
+                          <td>{ dvd.ingramUnits }</td>
+                          <td>{ dvd.ingramSales }</td>
+                          <td>{ dvd.midwestUnits }</td>
+                          <td>{ dvd.midwestSales }</td>
+                        </tr>
+                      );
+                    }.bind(this))}
                   </tbody>
                 </table>
               </div>

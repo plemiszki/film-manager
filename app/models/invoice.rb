@@ -51,13 +51,13 @@ class Invoice < ActiveRecord::Base
     invoice
   end
 
-  def self.get_item_price(id, type, dvd_customer)
+  def self.get_item_price(id, type, dvd_customer, item)
     return dvd_customer.per_unit if dvd_customer.per_unit
     if type == "dvd"
-      item = Dvd.find(id)
+      item ||= Dvd.find(id)
       price = item.price
     elsif type == "giftbox"
-      item = Giftbox.find(id)
+      item ||= Giftbox.find(id)
       price = item.msrp
     end
     (price * ((100 - dvd_customer.discount) / 100)).floor(2)
