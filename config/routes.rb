@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :royalty_reports, only: [:index, :show]
   resources :users, only: [:index, :show]
   resources :invoices, only: [:index, :show]
+  resources :returns, only: [:index, :show]
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
@@ -46,6 +47,7 @@ Rails.application.routes.draw do
     resources :invoices, only: [:index, :show]
     get '/invoices/:id/export' => '/api/invoices#export'
     post '/invoices/export' => '/api/invoices#export_sage'
+    resources :returns, only: [:index, :show]
   end
 
   # Clearance ------------------------

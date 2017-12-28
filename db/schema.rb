@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171221215731) do
+ActiveRecord::Schema.define(version: 20171228145903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -218,6 +218,25 @@ ActiveRecord::Schema.define(version: 20171221215731) do
     t.integer "year",                        null: false
     t.integer "month",                       null: false
   end
+
+  create_table "return_items", force: :cascade do |t|
+    t.integer "return_id", null: false
+    t.string  "item_type", null: false
+    t.integer "item_id",   null: false
+    t.integer "order",     null: false
+    t.integer "qty",       null: false
+  end
+
+  add_index "return_items", ["item_id"], name: "index_return_items_on_item_id", using: :btree
+  add_index "return_items", ["return_id"], name: "index_return_items_on_return_id", using: :btree
+
+  create_table "returns", force: :cascade do |t|
+    t.string  "number",      null: false
+    t.date    "date",        null: false
+    t.integer "customer_id", null: false
+  end
+
+  add_index "returns", ["customer_id"], name: "index_returns_on_customer_id", using: :btree
 
   create_table "revenue_streams", force: :cascade do |t|
     t.string  "name",     null: false

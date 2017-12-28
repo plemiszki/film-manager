@@ -867,6 +867,16 @@ var ClientActions = {
         ServerActions.receiveDvdReports(response);
       }
     });
+  },
+
+  fetchReturns: function() {
+    $.ajax({
+      url: '/api/returns',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveReturns(response);
+      }
+    });
   }
 }
 

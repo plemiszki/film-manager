@@ -187,6 +187,13 @@ var ServerActions = {
       yearTotal: response.yearTotal,
       dvds: response.dvds
     });
+  },
+
+  receiveReturns: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "RETURNS_RECEIVED",
+      returns: response.returns
+    });
   }
 }
 

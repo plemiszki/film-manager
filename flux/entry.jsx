@@ -22,6 +22,7 @@ var ShippingAddressDetails = require('./components/shipping-address-details.jsx'
 var InvoicesIndex = require('./components/invoices-index.jsx');
 var InvoiceDetails = require('./components/invoice-details.jsx');
 var DvdReports = require('./components/dvd-reports.jsx');
+var ReturnsIndex = require('./components/returns-index.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -93,5 +94,8 @@ $(document).ready(function() {
   }
   if ($('#dvd-reports')[0]) {
     ReactDOM.render(<DvdReports />, document.getElementById("dvd-reports"));
+  }
+  if ($('#returns-index')[0]) {
+    ReactDOM.render(<ReturnsIndex />, document.getElementById("returns-index"));
   }
 });
