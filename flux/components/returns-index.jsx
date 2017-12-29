@@ -13,7 +13,7 @@ var ModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 341
+    height: 270
   }
 };
 
@@ -111,7 +111,7 @@ var ReturnsIndex = React.createClass({
           </table>
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing="return" initialObject={ { number: "", date: "" } } />
+          <NewThing thing="return" initialObject={ { number: "", date: "", customerId: ReturnsStore.customers()[0] ? ReturnsStore.customers()[0].id : "" } } />
         </Modal>
       </div>
     );

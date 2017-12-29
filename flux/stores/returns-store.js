@@ -4,10 +4,14 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var ReturnsStore = new Store(AppDispatcher);
 
 var _returns = {};
+var _customers = {};
 
 ReturnsStore.setStuff = function(payload) {
   payload.returns.forEach(function(r) {
     _returns[r.id] = r;
+  });
+  payload.customers.forEach(function(c) {
+    _customers[c.id] = c;
   });
 };
 
@@ -20,6 +24,13 @@ ReturnsStore.all = function() {
     return(_returns[id]);
   });
   return returns;
+};
+
+ReturnsStore.customers = function() {
+  var customers = Object.keys(_customers).map(function(id) {
+    return(_customers[id]);
+  });
+  return customers;
 };
 
 ReturnsStore.__onDispatch = function(payload) {

@@ -877,6 +877,26 @@ var ClientActions = {
         ServerActions.receiveReturns(response);
       }
     });
+  },
+
+  createReturn: function(r) {
+    $.ajax({
+      url: '/api/returns',
+      method: 'POST',
+      data: {
+        return: {
+          number: r.number,
+          customer_id: r.customerId,
+          date: r.date
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveReturns(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

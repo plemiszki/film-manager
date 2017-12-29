@@ -192,7 +192,8 @@ var ServerActions = {
   receiveReturns: function(response) {
     AppDispatcher.dispatch({
       actionType: "RETURNS_RECEIVED",
-      returns: response.returns
+      returns: response.returns,
+      customers: response.customers
     });
   }
 }

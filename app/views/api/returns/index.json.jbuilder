@@ -4,3 +4,7 @@ json.returns @returns do |r|
   json.date r.date
   json.customer r.customer.name
 end
+json.customers @dvd_customers do |customer|
+  json.id customer.id
+  json.name customer.name
+end

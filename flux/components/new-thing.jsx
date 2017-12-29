@@ -3,6 +3,7 @@ var ErrorsStore = require('../stores/errors-store.js');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
 var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
+var ReturnsStore = require('../stores/returns-store.js');
 
 var NewThing = React.createClass({
 
@@ -83,7 +84,8 @@ var NewThing = React.createClass({
           {this.renderUpcField()}
           {this.renderDvdCustomerFields()}
           {this.renderDvdTypeField()}
-          {this.renderPOFields()}
+          { this.renderPOFields() }
+          { this.renderReturnFields() }
           { this.renderLabelField() }
           { this.renderShippingAddress() }
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
@@ -234,6 +236,37 @@ var NewThing = React.createClass({
                 );
               })}
             </select>
+          </div>
+        </div>
+      )
+    }
+  },
+
+  renderReturnFields: function() {
+    if (this.props.thing === "return") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-4 return-customer">
+              <h2>Customer</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state[this.props.thing].customerId }>
+                {ReturnsStore.customers().map(function(customer, index) {
+                  return(
+                    <option key={index} value={ customer.id }>{ customer.name }</option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="col-xs-4">
+              <h2>Date</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.date) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].date } data-field="date" />
+              {Common.renderFieldError(this.state.errors, Common.errors.date)}
+            </div>
+            <div className="col-xs-4">
+              <h2>Number</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.number) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].number } data-field="number" />
+              {Common.renderFieldError(this.state.errors, Common.errors.number)}
+            </div>
           </div>
         </div>
       )
