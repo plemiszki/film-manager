@@ -1,0 +1,33 @@
+class Api::ReturnItemsController < ApplicationController
+
+  include ReturnItems
+  include Reorderable
+
+  def create
+    current_length = ReturnItem.where(return_id: return_item_params[:return_id]).length
+    @return_item = ReturnItem.new(return_id: return_item_params[:return_id], item_id: return_item_params[:item_id], item_type: return_item_params[:item_type], qty: return_item_params[:qty], order: current_length)
+    if @return_item.save
+      @returns = Return.where(id: @return_item.return_id)
+      get_data_for_items
+      render 'index.json.jbuilder'
+    else
+      render json: @return_item.errors.full_messages, status: 422
+    end
+  end
+
+  def destroy
+    @return_item = ReturnItem.find(params[:id])
+    @return_item.destroy
+    reorder(ReturnItem.where(return_id: @return_item.return_id).order(:order))
+    @returns = Return.where(id: @return_item.return_id)
+    get_data_for_items
+    render 'index.json.jbuilder'
+  end
+
+  private
+
+  def return_item_params
+    params[:return_item].permit(:return_id, :item_id, :item_type, :qty)
+  end
+
+end

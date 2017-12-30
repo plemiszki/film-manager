@@ -897,6 +897,57 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  fetchReturn: function(id) {
+    $.ajax({
+      url: '/api/returns/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveReturns(response);
+      }
+    });
+  },
+
+  updateReturn: function(r) {
+    $.ajax({
+      url: '/api/returns/' + r.id,
+      method: 'PATCH',
+      data: {
+        return: {
+          date: r.date,
+          number: r.number,
+          customer_id: r.customerId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveReturns(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  addReturnItem: function(returnId, itemId, itemType, qty) {
+    $.ajax({
+      url: '/api/return_items/',
+      method: 'POST',
+      data: {
+        return_item: {
+          return_id: returnId,
+          item_id: itemId,
+          item_type: itemType,
+          qty: qty
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveReturnItems(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

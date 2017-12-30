@@ -5,6 +5,11 @@ var ReturnsStore = new Store(AppDispatcher);
 
 var _returns = {};
 var _customers = {};
+var _items = {};
+var _otherItems = {
+  'dvd': {},
+  'giftbox': {}
+};
 
 ReturnsStore.setStuff = function(payload) {
   payload.returns.forEach(function(r) {
@@ -13,6 +18,16 @@ ReturnsStore.setStuff = function(payload) {
   payload.customers.forEach(function(c) {
     _customers[c.id] = c;
   });
+  if (payload.items) {
+    payload.items.forEach(function(item) {
+      _items[item.id] = item;
+    });
+  }
+  if (payload.otherItems) {
+    payload.otherItems.forEach(function(otherItem) {
+      _otherItems[otherItem.itemType][otherItem.id] = otherItem;
+    });
+  }
 };
 
 ReturnsStore.find = function(id) {
@@ -31,6 +46,23 @@ ReturnsStore.customers = function() {
     return(_customers[id]);
   });
   return customers;
+};
+
+ReturnsStore.items = function() {
+  var items = Object.keys(_items).map(function(id) {
+    return(_items[id]);
+  });
+  return Tools.sortArrayOfObjects(items, 'order');
+};
+
+ReturnsStore.otherItems = function() {
+  var otherDvds = Object.keys(_otherItems.dvd).map(function(id) {
+    return(_otherItems['dvd'][id]);
+  });
+  var otherGiftboxes = Object.keys(_otherItems.giftbox).map(function(id) {
+    return(_otherItems['giftbox'][id]);
+  });
+  return Tools.alphabetizeArrayOfObjects(otherDvds.concat(otherGiftboxes), 'label');
 };
 
 ReturnsStore.__onDispatch = function(payload) {

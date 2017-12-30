@@ -48,6 +48,7 @@ Rails.application.routes.draw do
     get '/invoices/:id/export' => '/api/invoices#export'
     post '/invoices/export' => '/api/invoices#export_sage'
     resources :returns, only: [:index, :create, :show, :update, :destroy]
+    resources :return_items, only: [:create, :destroy]
   end
 
   # Clearance ------------------------

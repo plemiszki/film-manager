@@ -193,7 +193,17 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "RETURNS_RECEIVED",
       returns: response.returns,
-      customers: response.customers
+      customers: response.customers,
+      items: response.items,
+      otherItems: response.otherItems
+    });
+  },
+
+  receiveReturnItems: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "RETURN_ITEMS_RECEIVED",
+      items: response.items,
+      otherItems: response.otherItems
     });
   }
 }
