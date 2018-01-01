@@ -948,6 +948,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  deleteReturnItem: function(id) {
+    $.ajax({
+      url: '/api/return_items/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveReturnItems(response);
+      }
+    });
   }
 }
 

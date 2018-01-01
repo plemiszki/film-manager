@@ -144,7 +144,7 @@ var ReturnDetails = React.createClass({
     this.setState({
       fetching: true
     });
-    ClientActions.deletePurchaseOrderItem(e.target.dataset.id);
+    ClientActions.deleteReturnItem(e.target.dataset.id);
   },
 
   handleModalClose: function() {
