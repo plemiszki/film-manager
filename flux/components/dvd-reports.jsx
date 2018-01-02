@@ -175,6 +175,8 @@ var DvdReports = React.createClass({
                       <th></th>
                       <th className="units">Amazon</th>
                       <th></th>
+                      <th className="units">AEC</th>
+                      <th></th>
                       <th className="units">B & T</th>
                       <th></th>
                       <th className="units">Ingram</th>
@@ -184,7 +186,7 @@ var DvdReports = React.createClass({
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                     {DvdCustomersStore.dvds().map(function(dvd, index) {
                       return(
                         <tr key={index}>
@@ -193,6 +195,8 @@ var DvdReports = React.createClass({
                           <td className="bold">{ dvd.totalSales }</td>
                           <td>{ dvd.amazonUnits }</td>
                           <td>{ dvd.amazonSales }</td>
+                          <td>{ dvd.aecUnits }</td>
+                          <td>{ dvd.aecSales }</td>
                           <td>{ dvd.bakerUnits }</td>
                           <td>{ dvd.bakerSales }</td>
                           <td>{ dvd.ingramUnits }</td>

@@ -80,10 +80,11 @@ class Api::PurchaseOrdersController < ApplicationController
       total = 0
       1.upto(12) do |month|
         sales = PurchaseOrder.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:invoice).map { |po| po.invoice }.reduce(0) { |total, invoice| total += (invoice ? invoice.total : 0) }
-        returns = Return.where(customer_id: dvd_customer.id, month: month, year: params[:year])
-        total += sales
-        month_totals[month] += sales
-        months[month] = sales
+        returns = Return.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:return_items).map { |r| r.return_items }.flatten.reduce(0) { |total, item| total += item.amount }
+        difference = sales - returns
+        total += difference
+        month_totals[month] += difference
+        months[month] = difference
       end
       months[:total] = total
       @sales[dvd_customer.id] = months
@@ -94,17 +95,23 @@ class Api::PurchaseOrdersController < ApplicationController
     @dvd_units = Hash.new { |hash, key| hash[key] = {} }
     @dvd_sales = Hash.new { |hash, key| hash[key] = {} }
     @dvds.each do |dvd|
-      { amazon: 8, baker: 3, ingram: 4, midwest: 2 }.each do |key, value|
+      { amazon: 8, aec: 1, baker: 3, ingram: 4, midwest: 2 }.each do |key, value|
         units = PurchaseOrderItem.where(item_id: dvd.id, item_type: "dvd").includes(:purchase_order).select { |item| item.purchase_order.customer_id == value && item.purchase_order.ship_date }.reduce(0) { |total, item| total += item.qty }
+        returned_units = ReturnItem.where(item_id: dvd.id, item_type: "dvd").includes(:return).select { |item| item.return.customer_id == value }.reduce(0) { |total, item| total += item.qty }
+        units -= returned_units
         @dvd_units[dvd.id][key] = units
         sales = units * Invoice.get_item_price(dvd.id, 'dvd', DvdCustomer.find(value), dvd).to_f
         @dvd_sales[dvd.id][key] = sales
       end
       all_rows = PurchaseOrderItem.where(item_id: dvd.id, item_type: "dvd").includes(purchase_order: :customer).select { |item| item.purchase_order.ship_date }
-      @dvd_units[dvd.id][:total_units] = all_rows.reduce(0) { |total, item| total += item.qty }
+      all_return_rows = ReturnItem.where(item_id: dvd.id, item_type: "dvd").includes(return: :customer)
+      @dvd_units[dvd.id][:total_units] = (all_rows.reduce(0) { |total, item| total += item.qty } - all_return_rows.reduce(0) { |total, item| total += item.qty } )
       total_sales = 0.0
       all_rows.each do |row|
         total_sales += row.qty * Invoice.get_item_price(dvd.id, 'dvd', row.purchase_order.customer, dvd).to_f
+      end
+      all_return_rows.each do |row|
+        total_sales -= row.qty * Invoice.get_item_price(dvd.id, 'dvd', row.return.customer, dvd).to_f
       end
       @dvd_sales[dvd.id][:total_sales] = total_sales
     end

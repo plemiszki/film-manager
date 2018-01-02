@@ -3,7 +3,7 @@ class Api::ReturnsController < ApplicationController
   include ReturnItems
 
   def index
-    @returns = Return.all.includes(:customer)
+    @returns = Return.all.includes(:customer, :return_items)
     @dvd_customers = DvdCustomer.all
     render "index.json.jbuilder"
   end

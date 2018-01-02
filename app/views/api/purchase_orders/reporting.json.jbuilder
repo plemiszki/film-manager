@@ -12,6 +12,8 @@ json.dvds @dvds do |dvd|
   json.retailDate dvd.retail_date.strftime("%m/%d/%Y")
   json.amazonUnits @dvd_units[dvd.id][:amazon]
   json.amazonSales dollarify(number_with_precision(@dvd_sales[dvd.id][:amazon], precision: 2, delimiter: ','))
+  json.aecUnits @dvd_units[dvd.id][:aec]
+  json.aecSales dollarify(number_with_precision(@dvd_sales[dvd.id][:aec], precision: 2, delimiter: ','))
   json.bakerUnits @dvd_units[dvd.id][:baker]
   json.bakerSales dollarify(number_with_precision(@dvd_sales[dvd.id][:baker], precision: 2, delimiter: ','))
   json.ingramUnits @dvd_units[dvd.id][:ingram]
