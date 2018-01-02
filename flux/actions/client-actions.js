@@ -887,7 +887,9 @@ var ClientActions = {
         return: {
           number: r.number,
           customer_id: r.customerId,
-          date: r.date
+          date: r.date,
+          month: ((new Date(r.date)).getMonth() + 1),
+          year: (new Date(r.date)).getFullYear()
         }
       },
       success: function(response) {
@@ -917,7 +919,9 @@ var ClientActions = {
         return: {
           date: r.date,
           number: r.number,
-          customer_id: r.customerId
+          customer_id: r.customerId,
+          month: ((new Date(r.date)).getMonth() + 1),
+          year: (new Date(r.date)).getFullYear()
         }
       },
       success: function(response) {

@@ -49,7 +49,7 @@ class Api::ReturnsController < ApplicationController
   private
 
   def return_params
-    params[:return].permit(:date, :number, :customer_id)
+    params[:return].permit(:date, :number, :customer_id, :month, :year)
   end
 
 end

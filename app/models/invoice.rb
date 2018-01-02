@@ -51,7 +51,7 @@ class Invoice < ActiveRecord::Base
     invoice
   end
 
-  def self.get_item_price(id, type, dvd_customer, item)
+  def self.get_item_price(id, type, dvd_customer, item = nil)
     return dvd_customer.per_unit if dvd_customer.per_unit
     if type == "dvd"
       item ||= Dvd.find(id)

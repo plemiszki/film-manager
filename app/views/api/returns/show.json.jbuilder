@@ -14,6 +14,7 @@ json.items @items do |return_item|
   json.itemId return_item[:item_id]
   json.qty return_item[:qty]
   json.order return_item[:order]
+  json.amount dollarify(return_item[:amount].to_s)
 end
 json.otherItems @other_items do |item|
   json.id item['id']

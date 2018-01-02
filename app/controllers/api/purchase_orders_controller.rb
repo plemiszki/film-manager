@@ -80,6 +80,7 @@ class Api::PurchaseOrdersController < ApplicationController
       total = 0
       1.upto(12) do |month|
         sales = PurchaseOrder.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:invoice).map { |po| po.invoice }.reduce(0) { |total, invoice| total += (invoice ? invoice.total : 0) }
+        returns = Return.where(customer_id: dvd_customer.id, month: month, year: params[:year])
         total += sales
         month_totals[month] += sales
         months[month] = sales

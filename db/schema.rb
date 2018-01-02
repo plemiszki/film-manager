@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171228145903) do
+ActiveRecord::Schema.define(version: 20180102015354) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -220,11 +220,12 @@ ActiveRecord::Schema.define(version: 20171228145903) do
   end
 
   create_table "return_items", force: :cascade do |t|
-    t.integer "return_id", null: false
-    t.string  "item_type", null: false
-    t.integer "item_id",   null: false
-    t.integer "order",     null: false
-    t.integer "qty",       null: false
+    t.integer "return_id",                                       null: false
+    t.string  "item_type",                                       null: false
+    t.integer "item_id",                                         null: false
+    t.integer "order",                                           null: false
+    t.integer "qty",                                             null: false
+    t.decimal "amount",    precision: 8, scale: 2, default: 0.0
   end
 
   add_index "return_items", ["item_id"], name: "index_return_items_on_item_id", using: :btree
@@ -234,6 +235,8 @@ ActiveRecord::Schema.define(version: 20171228145903) do
     t.string  "number",      null: false
     t.date    "date",        null: false
     t.integer "customer_id", null: false
+    t.integer "month",       null: false
+    t.integer "year",        null: false
   end
 
   add_index "returns", ["customer_id"], name: "index_returns_on_customer_id", using: :btree

@@ -216,10 +216,11 @@ var ReturnDetails = React.createClass({
                 <tr>
                   <th>Item</th>
                   <th>Qty</th>
+                  <th>Amount</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td></tr>
                 {this.state.items.map(function(item, index) {
                   return(
                     <tr key={index}>
@@ -232,7 +233,7 @@ var ReturnDetails = React.createClass({
                           { item.qty }
                       </td>
                       <td>
-                          { item.price }
+                          { item.amount }
                       </td>
                       { this.renderXButton(item) }
                     </tr>
