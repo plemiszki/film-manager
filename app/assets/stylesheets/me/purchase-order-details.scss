@@ -80,7 +80,6 @@
   }
 
   a#ship {
-    margin-right: 20px;
 
     &:not(.shipped) {
       margin-bottom: 30px;
@@ -94,6 +93,10 @@
       padding-right: 0;
       padding-left: 0;
     }
+  }
+
+  a#reporting-only {
+    margin-left: 20px;
   }
 
   a#delete {
