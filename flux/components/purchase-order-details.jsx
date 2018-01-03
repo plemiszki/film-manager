@@ -363,13 +363,17 @@ var PurchaseOrderDetails = React.createClass({
                 <tr>
                   <th>Items</th>
                   <th>Qty</th>
-                  <th>Stock</th>
+                  { function() {
+                    if (!this.state.purchaseOrder.shipDate) {
+                      return(<th>Stock</th>)
+                    }
+                  }.bind(this)() }
                   <th>{this.state.purchaseOrderSaved.sendInvoice ? 'Unit Price' : ''}</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td></tr>
                 {this.state.items.map(function(item, index) {
                   return(
                     <tr key={index}>
@@ -381,9 +385,15 @@ var PurchaseOrderDetails = React.createClass({
                       <td className={ item.qty > item.stock ? "warning" : "" } >
                           { item.qty }
                       </td>
-                      <td className={ item.qty > item.stock ? "warning" : "" } >
-                          { item.stock }
-                      </td>
+                      { function() {
+                        if (!this.state.purchaseOrder.shipDate) {
+                          return(
+                            <td className={ item.qty > item.stock ? "warning" : "" } >
+                                { item.stock }
+                            </td>
+                          )
+                        }
+                      }.bind(this)() }
                       <td>
                           { this.state.purchaseOrderSaved.sendInvoice ? item.price : '' }
                       </td>
