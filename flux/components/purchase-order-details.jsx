@@ -406,10 +406,12 @@ var PurchaseOrderDetails = React.createClass({
               <div className="col-xs-12 text-center">
                 <input id="send-invoice" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.purchaseOrder.sendInvoice} data-field="sendInvoice" disabled={this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment} /><label className="checkbox">Send Invoice</label>
                 {this.renderDisabledNotification()}
-                <a id="ship" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "")} onClick={this.clickShip}>
-                  {this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now")}
-                </a>
-                { this.renderReportingOnlyButton() }
+                <div>
+                  <a id="ship" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "")} onClick={this.clickShip}>
+                    {this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now")}
+                  </a>
+                  { this.renderReportingOnlyButton() }
+                </div>
               </div>
             </div>
             {this.renderButtons()}
