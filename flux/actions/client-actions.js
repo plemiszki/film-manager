@@ -808,14 +808,15 @@ var ClientActions = {
     });
   },
 
-  shipPO: function(purchaseOrder) {
+  shipPO: function(purchaseOrder, reportingOnly) {
     $.ajax({
       url: '/api/purchase_orders/ship',
       method: 'POST',
       data: {
         purchase_order: {
           id: purchaseOrder.id
-        }
+        },
+        reporting_only: reportingOnly
       },
       success: function(response) {
         window.location.href = '/purchase_orders'

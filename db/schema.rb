@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180102015354) do
+ActiveRecord::Schema.define(version: 20180103175456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -201,22 +201,23 @@ ActiveRecord::Schema.define(version: 20180102015354) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.string  "number",                      null: false
-    t.integer "customer_id",  default: 0
-    t.string  "address1",     default: ""
-    t.string  "address2",     default: ""
-    t.string  "city",         default: ""
-    t.string  "state",        default: ""
-    t.string  "zip",          default: ""
+    t.string  "number",                         null: false
+    t.integer "customer_id",    default: 0
+    t.string  "address1",       default: ""
+    t.string  "address2",       default: ""
+    t.string  "city",           default: ""
+    t.string  "state",          default: ""
+    t.string  "zip",            default: ""
     t.date    "order_date"
     t.date    "ship_date"
-    t.string  "name",         default: ""
-    t.string  "country",      default: ""
-    t.boolean "send_invoice", default: true
+    t.string  "name",           default: ""
+    t.string  "country",        default: ""
+    t.boolean "send_invoice",   default: true
     t.string  "source_doc"
-    t.string  "notes",        default: ""
-    t.integer "year",                        null: false
-    t.integer "month",                       null: false
+    t.string  "notes",          default: ""
+    t.integer "year",                           null: false
+    t.integer "month",                          null: false
+    t.boolean "reporting_only", default: false
   end
 
   create_table "return_items", force: :cascade do |t|

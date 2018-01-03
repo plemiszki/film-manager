@@ -267,7 +267,17 @@ var PurchaseOrderDetails = React.createClass({
       this.setState({
         fetching: true
       }, function() {
-        ClientActions.shipPO(this.state.purchaseOrder)
+        ClientActions.shipPO(this.state.purchaseOrder, false)
+      });
+    }
+  },
+
+  clickReportingOnly: function() {
+    if (!this.state.purchaseOrder.shipDate && this.state.changesToSave === false) {
+      this.setState({
+        fetching: true
+      }, function() {
+        ClientActions.shipPO(this.state.purchaseOrder, true)
       });
     }
   },
@@ -399,6 +409,7 @@ var PurchaseOrderDetails = React.createClass({
                 <a id="ship" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "")} onClick={this.clickShip}>
                   {this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now")}
                 </a>
+                { this.renderReportingOnlyButton() }
               </div>
             </div>
             {this.renderButtons()}
@@ -514,6 +525,16 @@ var PurchaseOrderDetails = React.createClass({
       return(
         <div className="notification">Invoice cannot be sent because {customer.name} sells on consignment.</div>
       );
+    }
+  },
+
+  renderReportingOnlyButton: function() {
+    if (!this.state.purchaseOrder.shipDate) {
+      return(
+        <a id="reporting-only" className={ "orange-button " + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickReportingOnly }>
+          { this.state.changesToSave ? "Save to Ship" : "Reporting Only" }
+        </a>
+      )
     }
   },
 

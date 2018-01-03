@@ -67,7 +67,7 @@ class Api::PurchaseOrdersController < ApplicationController
   end
 
   def ship
-    SendDvdPoAndInvoice.perform_async(params[:purchase_order][:id], current_user.id)
+    SendDvdPoAndInvoice.perform_async(params[:purchase_order][:id], current_user.id, params[:reporting_only])
     render json: { message: 'ok' }, status: 200
   end
 

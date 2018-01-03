@@ -73,11 +73,14 @@
     margin-bottom: 30px;
   }
 
-  a#ship {
-    display: block;
-    width: 200px;
-    margin: auto;
+  a#ship, a#reporting-only {
     margin-top: 15px;
+    display: inline-block;
+    width: 200px;
+  }
+
+  a#ship {
+    margin-right: 20px;
 
     &:not(.shipped) {
       margin-bottom: 30px;
