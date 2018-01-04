@@ -80,7 +80,7 @@ class Api::PurchaseOrdersController < ApplicationController
       total = 0
       1.upto(12) do |month|
         if dvd_customer.consignment
-          pos = PurchaseOrder.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:purchase_order_items)
+          pos = PurchaseOrder.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:purchase_order_items).select { |po| po.ship_date != nil }
           sales = 0
           pos.each do |po|
             po.purchase_order_items.each do |item|
@@ -88,7 +88,7 @@ class Api::PurchaseOrdersController < ApplicationController
             end
           end
         else
-          sales = PurchaseOrder.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:invoice).map { |po| po.invoice }.reduce(0) { |total, invoice| total += (invoice ? invoice.total : 0) }
+          sales = PurchaseOrder.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:invoice).select { |po| po.ship_date != nil }.map { |po| po.invoice }.reduce(0) { |total, invoice| total += (invoice ? invoice.total : 0) }
         end
         returns = Return.where(customer_id: dvd_customer.id, month: month, year: params[:year]).includes(:return_items).map { |r| r.return_items }.flatten.reduce(0) { |total, item| total += item.amount }
         difference = sales - returns

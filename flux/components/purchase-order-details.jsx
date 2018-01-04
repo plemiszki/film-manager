@@ -382,7 +382,7 @@ var PurchaseOrderDetails = React.createClass({
                           { item.label }
                         </div>
                       </td>
-                      <td className={ item.qty > item.stock ? "warning" : "" } >
+                      <td className={ !this.state.purchaseOrder.shipDate && item.qty > item.stock ? "warning" : "" } >
                           { item.qty }
                       </td>
                       { function() {
