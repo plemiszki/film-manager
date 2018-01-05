@@ -76,6 +76,7 @@ class Api::PurchaseOrdersController < ApplicationController
     month_totals = Hash.new(0)
     @dvd_customers = DvdCustomer.all.order(:name)
     @dvd_customers.each_with_index do |dvd_customer, index|
+      next if dvd_customer.id == 33 # do not include Unobstructed View
       months = {}
       total = 0
       1.upto(12) do |month|

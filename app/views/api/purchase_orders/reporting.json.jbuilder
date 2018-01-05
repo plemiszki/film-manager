@@ -1,4 +1,5 @@
 json.dvdCustomers @dvd_customers do |dvd_customer|
+  next if dvd_customer.id == 33 # do not include Unobstructed View
   json.id dvd_customer.id
   json.name dvd_customer.name
   json.sales @sales[dvd_customer.id].map { |key, value| [key, dollarify(number_with_precision(value, precision: 2, delimiter: ','))] }.to_h
