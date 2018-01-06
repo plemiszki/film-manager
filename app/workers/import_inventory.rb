@@ -23,12 +23,21 @@ class ImportInventory
       errors = []
       job.update!(first_line: "Updating Stock", second_line: true, current_value: 0, total_value: xls.last_row)
       dvds = Dvd.all.includes(:feature)
+      dvds_check_object = {}
+      dvds.each do |dvd|
+        dvds_check_object[dvd.id] = false
+      end
       giftboxes = Giftbox.all
+      giftboxes_check_object = {}
+      giftboxes.each do |dvd|
+        giftboxes_check_object[giftbox.id] = false
+      end
       while index <= xls.last_row
         columns = sheet.row(index)
         upc, qty = columns[1], columns[4]
         dvd = dvds.find_by_upc(upc)
         if dvd
+          dvds_check_object[dvd.id] = true
           before_qty = dvd.stock
           difference = qty.to_i - before_qty
           errors << "(#{difference > 0 ? "+" : ""}#{difference}) #{dvd.feature.title} - #{dvd.dvd_type.name}#{difference > 0 ? " :)" : ""}" unless difference == 0
@@ -36,6 +45,7 @@ class ImportInventory
         else
           giftbox = giftboxes.find_by_upc(upc)
           if giftbox
+            giftboxes_check_object[giftbox.id] = true
             before_qty = giftbox.quantity
             difference = qty.to_i - before_qty
             errors << "(#{difference > 0 ? "+" : ""}#{difference}) #{giftbox.name}#{difference > 0 ? " :)" : ""}" unless difference == 0
@@ -45,9 +55,13 @@ class ImportInventory
         index += 1
         job.update!(current_value: index)
       end
+      missing_dvd_ids = dvds_check_object.select { |key, value| value == false }.keys
+      Dvd.where(id: missing_dvd_ids).update_all(stock: 0)
+      missing_giftbox_ids = giftboxes_check_object.select { |key, value| value == false }.keys
+      Giftbox.where(id: missing_giftbox_ids).update_all(stock: 0)
       errors.sort! do |a, b|
-        a_num = a[/^\([\+\-\d]+\)/].gsub(/[\(\)]/, '').to_i
-        b_num = b[/^\([\+\-\d]+\)/].gsub(/[\(\)]/, '').to_i
+        a_num = a[/^\([\+\-\d]+\)/].gsub(/[\(\)]/, '').to_i.abs
+        b_num = b[/^\([\+\-\d]+\)/].gsub(/[\(\)]/, '').to_i.abs
         case
         when a_num <= b_num
           1
