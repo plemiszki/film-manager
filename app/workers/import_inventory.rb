@@ -29,7 +29,7 @@ class ImportInventory
       end
       giftboxes = Giftbox.all
       giftboxes_check_object = {}
-      giftboxes.each do |dvd|
+      giftboxes.each do |giftbox|
         giftboxes_check_object[giftbox.id] = false
       end
       while index <= xls.last_row
@@ -58,7 +58,7 @@ class ImportInventory
       missing_dvd_ids = dvds_check_object.select { |key, value| value == false }.keys
       Dvd.where(id: missing_dvd_ids).update_all(stock: 0)
       missing_giftbox_ids = giftboxes_check_object.select { |key, value| value == false }.keys
-      Giftbox.where(id: missing_giftbox_ids).update_all(stock: 0)
+      Giftbox.where(id: missing_giftbox_ids).update_all(quantity: 0)
       errors.sort! do |a, b|
         a_num = a[/^\([\+\-\d]+\)/].gsub(/[\(\)]/, '').to_i.abs
         b_num = b[/^\([\+\-\d]+\)/].gsub(/[\(\)]/, '').to_i.abs
