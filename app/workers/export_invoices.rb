@@ -132,10 +132,10 @@ class ExportInvoices
           item.item_label,
           (invoice.invoice_type == "dvd" ? "30200" : "FIX ME!"),
           '', # 50
-          item.unit_price,
+          (item.unit_price * -1),
           '1',
           '', '',
-          item.total_price,
+          (item.total_price * -1),
           '', '', '', '', '',
           '1',
           '', '', '',
