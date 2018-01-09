@@ -87,7 +87,7 @@ class ExportInvoices
       "Recur Frequency"
     ])
 
-    invoices = Invoice.where(id: invoice_ids.sort)
+    invoices = Invoice.where(id: invoice_ids).order(:id)
     invoices.each_with_index do |invoice, invoice_index|
       items = invoice.invoice_rows
       items.each_with_index do |item, index|

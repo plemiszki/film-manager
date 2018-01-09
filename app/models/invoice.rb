@@ -4,7 +4,7 @@ class Invoice < ActiveRecord::Base
 
   validates :invoice_type, :number, presence: true
 
-  has_many :invoice_rows, dependent: :destroy
+  has_many :invoice_rows, -> { order('invoice_rows.id') }, dependent: :destroy
   belongs_to :customer, class_name: 'DvdCustomer'
 
   def self.create_invoice(args)
