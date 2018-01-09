@@ -82,7 +82,10 @@ class Importer < ActiveRecord::Base
       films = 0
       until films == total
         a = file.gets.split("\t")
-        next if a[1][0..8] == "(NEW FILM"
+        if a[1][0..8] == "(NEW FILM" || ["Captive Beauty", "The Dark Sea", "The Condemned", "Camino del Vino", "Mundo Secreto", "Sal", "Chance", "Nairobi Half Life", "School's Out", "Something Necessary", "War Witch", "Things From Another World", "Pulce is Not Here", "Climate of Change", "Fire in Babylon", "Booker's Place: A Mississippi Story", "Boys of Summer", "Felony", "Deep Throat Part II Collection"].include?(a[1])
+          films += 1
+          next
+        end
 
         # first check for new licensor
         licensor = Licensor.find_by_name(a[8])
