@@ -179,8 +179,8 @@ var InvoicesIndex = React.createClass({
                 <h2>Type</h2>
                 <select>
                   <option value="all">All</option>
-                  <option value="booking">Booking</option>
-                  <option value="dvd">DVD</option>
+                  <option value="Booking">Booking</option>
+                  <option value="DVD">DVD</option>
                 </select>
               </div>
               <div className="col-xs-6">
