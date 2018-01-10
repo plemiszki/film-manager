@@ -460,7 +460,14 @@ var ClientActions = {
           consignment: dvdCustomer.consignment,
           sage_id: dvdCustomer.sageId,
           invoices_email: dvdCustomer.invoicesEmail,
-          payment_terms: dvdCustomer.paymentTerms
+          payment_terms: dvdCustomer.paymentTerms,
+          billing_name: dvdCustomer.billingName,
+          address1: dvdCustomer.address1,
+          address2: dvdCustomer.address2,
+          city: dvdCustomer.city,
+          state: dvdCustomer.state,
+          zip: dvdCustomer.zip,
+          country: dvdCustomer.country
         }
       },
       success: function(response) {

@@ -13,7 +13,7 @@ var ModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 351
+    height: 703
   }
 };
 

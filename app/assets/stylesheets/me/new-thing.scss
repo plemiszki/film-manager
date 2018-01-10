@@ -1,8 +1,11 @@
 #new-thing.component {
   margin-bottom: 0 !important;
+  height: 100%;
 
   .white-box {
+    position: relative;
     box-shadow: none !important;
+    height: 100%;
 
     input, .nice-select {
       width: 100%;
@@ -60,18 +63,27 @@
       }
     }
 
+    h1 {
+      font-weight: bold;
+      font-size: 16px;
+      font-family: 'teachablesansmedium';
+      color: #5F5F5F;
+      margin-bottom: 30px;
+    }
+
     ul {
       height: 200px;
       overflow-y: scroll;
     }
 
-    .return-customer {
-      margin-bottom: 44px;
-      
-      ul {
-        height: 120px;
-        overflow-y: scroll;
-      }
+    a {
+      position: absolute;
+      bottom: 36px;
+    }
+
+    .return-customer ul {
+      height: 120px;
+      overflow-y: scroll;
     }
   }
 }
