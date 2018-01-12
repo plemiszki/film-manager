@@ -300,7 +300,7 @@ var ReturnDetails = React.createClass({
           {buttonText}
         </a>
         <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
-          Delete Purchase Order
+          Delete Return
         </a>
       </div>
     )
