@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180103175456) do
+ActiveRecord::Schema.define(version: 20180113180939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -329,5 +329,29 @@ ActiveRecord::Schema.define(version: 20180103175456) do
 
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
   add_index "users", ["remember_token"], name: "index_users_on_remember_token", using: :btree
+
+  create_table "venues", force: :cascade do |t|
+    t.string "label",                          null: false
+    t.string "billing_name",      default: ""
+    t.string "billing_address1",  default: ""
+    t.string "billing_address2",  default: ""
+    t.string "billing_city",      default: ""
+    t.string "billing_state",     default: ""
+    t.string "billing_zip",       default: ""
+    t.string "billing_country",   default: ""
+    t.string "shipping_name",     default: ""
+    t.string "shipping_address1", default: ""
+    t.string "shipping_address2", default: ""
+    t.string "shipping_city",     default: ""
+    t.string "shipping_state",    default: ""
+    t.string "shipping_zip",      default: ""
+    t.string "shipping_country",  default: ""
+    t.string "website",           default: ""
+    t.string "sage_id",                        null: false
+    t.string "email",             default: ""
+    t.string "phone",             default: ""
+    t.string "notes",             default: ""
+    t.string "venue_type",                     null: false
+  end
 
 end

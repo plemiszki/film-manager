@@ -75,21 +75,22 @@ var NewThing = React.createClass({
     return(
       <div id="new-thing" className="component">
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
-          {this.renderNameField()}
-          {this.renderTitleField()}
-          {this.renderEmailField()}
-          {this.renderPasswordField()}
-          {this.renderUpcField()}
-          {this.renderDvdCustomerFields()}
-          {this.renderDvdTypeField()}
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching) }
+          { this.renderNameField() }
+          { this.renderTitleField() }
+          { this.renderEmailField() }
+          { this.renderPasswordField() }
+          { this.renderUpcField() }
+          { this.renderDvdCustomerFields() }
+          { this.renderDvdTypeField() }
           { this.renderPOFields() }
           { this.renderReturnFields() }
           { this.renderLabelField() }
           { this.renderShippingAddress() }
+          { this.renderVenueFields() }
           <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
-            {this.renderAddButton()}
+            { this.renderAddButton() }
           </a>
         </div>
       </div>
@@ -357,6 +358,32 @@ var NewThing = React.createClass({
             <h2>Label</h2>
             <input className={Common.errorClass(this.state.errors, Common.errors.label)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].label} data-field="label" />
             {Common.renderFieldError(this.state.errors, Common.errors.label)}
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderVenueFields: function() {
+    if (this.props.thing === "venue") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-6">
+              <h2>Label</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.label) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.label || "" } data-field="label" />
+              { Common.renderFieldError(this.state.errors, Common.errors.label) }
+            </div>
+            <div className="col-xs-3">
+              <h2>Sage ID</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.sageId) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.sageId || "" } data-field="sageId" />
+              { Common.renderFieldError(this.state.errors, Common.errors.sageId) }
+            </div>
+            <div className="col-xs-3">
+              <h2>Type</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.venueType) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.venueType || "" } data-field="venueType" />
+              { Common.renderFieldError(this.state.errors, Common.errors.venueType) }
+            </div>
           </div>
         </div>
       );

@@ -24,6 +24,7 @@ var InvoiceDetails = require('./components/invoice-details.jsx');
 var DvdReports = require('./components/dvd-reports.jsx');
 var ReturnsIndex = require('./components/returns-index.jsx');
 var ReturnDetails = require('./components/return-details.jsx');
+var VenuesIndex = require('./components/venues-index.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -101,5 +102,11 @@ $(document).ready(function() {
   }
   if ($('#return-details')[0]) {
     ReactDOM.render(<ReturnDetails />, document.getElementById("return-details"));
+  }
+  if ($('#venues-index')[0]) {
+    ReactDOM.render(<VenuesIndex />, document.getElementById("venues-index"));
+  }
+  if ($('#venue-details')[0]) {
+    ReactDOM.render(<VenueDetails />, document.getElementById("venue-details"));
   }
 });

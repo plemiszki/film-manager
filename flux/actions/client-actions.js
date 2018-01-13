@@ -970,6 +970,37 @@ var ClientActions = {
         ServerActions.receiveReturnItems(response);
       }
     });
+  },
+
+  fetchVenues: function(id) {
+    $.ajax({
+      url: '/api/venues/',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveVenues(response);
+      }
+    });
+  },
+
+  createVenue: function(venue) {
+    $.ajax({
+      url: '/api/venues',
+      method: 'POST',
+      data: {
+        venue: {
+          label: venue.label,
+          sage_id: venue.sageId,
+          venue_type: venue.venueType
+        }
+      },
+      success: function(response) {
+        console.log(response);
+        ServerActions.receiveVenues(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

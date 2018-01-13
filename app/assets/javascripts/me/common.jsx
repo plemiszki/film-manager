@@ -255,7 +255,8 @@ Common = {
       "Date is not a valid date"
     ],
     sageId: [
-      "Sage can't be blank"
+      "Sage can't be blank",
+      "Sage has already been taken"
     ],
     invoicesEmail: [
       "Invoices email can't be blank"
@@ -284,6 +285,9 @@ Common = {
     ],
     country: [
       "Country can't be blank"
+    ],
+    venueType: [
+      "Venue type can't be blank"
     ]
   },
 

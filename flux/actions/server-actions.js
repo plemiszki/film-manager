@@ -205,6 +205,14 @@ var ServerActions = {
       items: response.items,
       otherItems: response.otherItems
     });
+  },
+
+  receiveVenues: function(response) {
+    console.log(response);
+    AppDispatcher.dispatch({
+      actionType: "VENUES_RECEIVED",
+      venues: response
+    });
   }
 }
 
