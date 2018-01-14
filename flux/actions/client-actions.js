@@ -994,11 +994,20 @@ var ClientActions = {
         }
       },
       success: function(response) {
-        console.log(response);
         ServerActions.receiveVenues(response);
       },
       error: function(response) {
         ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchVenue: function(id) {
+    $.ajax({
+      url: '/api/venues/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveVenues(response);
       }
     });
   }

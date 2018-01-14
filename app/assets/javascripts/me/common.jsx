@@ -548,6 +548,11 @@ Common = {
     $dropDowns.niceSelect().on('change', func);
   },
 
+  setUpNiceSelect: function(selector, func) {
+    var $dropDowns = $(selector);
+    $dropDowns.niceSelect().on('change', func);
+  },
+
   sortClass: function(which) {
     return this.state.sortBy === which ? "sort-header-active" : "sort-header-inactive";
   },

@@ -1,19 +1,5 @@
 #giftbox-details {
 
-  input, .nice-select {
-    width: 100%;
-  }
-
-  .noFieldError {
-    margin-bottom: 30px;
-  }
-
-  .yesFieldError {
-    margin-top: 10px;
-    height: 10px;
-    margin-bottom: 40px;
-  }
-
   textarea {
     margin-bottom: 30px;
   }
@@ -28,9 +14,5 @@
     .name-column {
       color: #5F5F5F;
     }
-  }
-
-  a#delete {
-    float: right;
   }
 }

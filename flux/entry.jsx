@@ -25,6 +25,7 @@ var DvdReports = require('./components/dvd-reports.jsx');
 var ReturnsIndex = require('./components/returns-index.jsx');
 var ReturnDetails = require('./components/return-details.jsx');
 var VenuesIndex = require('./components/venues-index.jsx');
+var VenueDetails = require('./components/venue-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);

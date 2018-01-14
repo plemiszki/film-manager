@@ -142,7 +142,7 @@ var GiftboxDetails = React.createClass({
   render: function() {
     return(
       <div id="giftbox-details">
-        <div className="component">
+        <div className="component details-component">
           <h1>Gift Box Details</h1>
           <div id="giftbox-profile-box" className="white-box">
             {Common.renderSpinner(this.state.fetching)}
