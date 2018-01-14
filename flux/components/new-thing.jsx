@@ -381,8 +381,11 @@ var NewThing = React.createClass({
             </div>
             <div className="col-xs-3">
               <h2>Type</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.venueType) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.venueType || "" } data-field="venueType" />
-              { Common.renderFieldError(this.state.errors, Common.errors.venueType) }
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs())} data-field="venueType" value={ this.state[this.props.thing].venueType }>
+                <option value={ "Theater" }>{ "Theater" }</option>
+                <option value={ "Non-Theatrical" }>{ "Non-Theatrical" }</option>
+                <option value={ "Festival" }>{ "Festival" }</option>
+              </select>
             </div>
           </div>
         </div>

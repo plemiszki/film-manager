@@ -94,7 +94,7 @@ var VenuesIndex = React.createClass({
           </table>
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing="venue" initialObject={ { label: "", sageId: "", venueType: "" } } />
+          <NewThing thing="venue" initialObject={ { label: "", sageId: "", venueType: "Theater" } } />
         </Modal>
       </div>
     );
