@@ -1010,6 +1010,43 @@ var ClientActions = {
         ServerActions.receiveVenues(response);
       }
     });
+  },
+
+  updateVenue: function(venue) {
+    $.ajax({
+      url: '/api/venues/' + venue.id,
+      method: 'PATCH',
+      data: {
+        venue: {
+          label: venue.label,
+          sage_id: venue.sageId,
+          venue_type: venue.venueType,
+          email: venue.email,
+          phone: venue.phone,
+          billing_name: venue.billingName,
+          billing_address1: venue.billingAddress1,
+          billing_address2: venue.billingAddress2,
+          billing_city: venue.billingCity,
+          billing_state: venue.billingState,
+          billing_zip: venue.billingZip,
+          billing_country: venue.billingCountry,
+          shipping_name: venue.shippingName,
+          shipping_address1: venue.shippingAddress1,
+          shipping_address2: venue.shippingAddress2,
+          shipping_city: venue.shippingCity,
+          shipping_state: venue.shippingState,
+          shipping_zip: venue.shippingZip,
+          shipping_country: venue.shippingCountry,
+          notes: venue.notes
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveVenues(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    })
   }
 }
 

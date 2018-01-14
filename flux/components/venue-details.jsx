@@ -49,6 +49,24 @@ var VenueDetails = React.createClass({
     });
   },
 
+  clickCopyAddress: function() {
+    var venue = this.state.venue;
+    venue["shippingName"] = this.state.venue.billingName;
+    venue["shippingAddress1"] = this.state.venue.billingAddress1;
+    venue["shippingAddress2"] = this.state.venue.billingAddress2;
+    venue["shippingCity"] = this.state.venue.billingCity;
+    venue["shippingState"] = this.state.venue.billingState;
+    venue["shippingZip"] = this.state.venue.billingZip;
+    venue["shippingCountry"] = this.state.venue.billingCountry;
+    this.setState({
+      venue: venue
+    }, function() {
+      this.setState({
+        changesToSave: this.checkForChanges()
+      });
+    });
+  },
+
   clickSave: function() {
     if (this.state.changesToSave) {
       this.setState({
@@ -71,7 +89,7 @@ var VenueDetails = React.createClass({
       fetching: true,
       deleteModalOpen: false
     }, function() {
-      ClientActions.deleteVenue(this.state.venue.id);
+      ClientActions.deleteAndGoToIndex('venues', this.state.venue.id);
     });
   },
 
@@ -167,12 +185,17 @@ var VenueDetails = React.createClass({
               <div className="col-xs-2">
                 <h2>Zip</h2>
                 <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.billingZip || ""} data-field="billingZip" />
-                {Common.renderFieldError(this.state.errors, [])}
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.billingCountry || ""} data-field="billingCountry" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.billingCountry || "" } data-field="billingCountry" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-4">
+                <a className={ "orange-button copy-address-button " + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress }>
+                  Copy to Shipping Address
+                </a>
               </div>
             </div>
             <hr />
@@ -229,7 +252,7 @@ var VenueDetails = React.createClass({
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this Venue&#63;</h1>
+            <h1>Are you sure you want to permanently delete this venue&#63;</h1>
             Deleting a venue will erase ALL of its information and data<br />
             <a className={"red-button"} onClick={ this.confirmDelete }>
               Yes
@@ -251,10 +274,10 @@ var VenueDetails = React.createClass({
     }
     return(
       <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
+        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={ this.clickSave }>
           { buttonText }
         </a>
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={ this.clickDelete }>
           Delete Venue
         </a>
       </div>
