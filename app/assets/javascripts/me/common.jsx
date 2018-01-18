@@ -557,6 +557,51 @@ Common = {
     return this.state.sortBy === which ? "sort-header-active" : "sort-header-inactive";
   },
 
+  splitAddress: function(input) {
+    var states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "PR"];
+    var provinces = ["AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT"];
+
+    var splitCityStateZipLine = function(input) {
+      var result = {};
+      var commaSplit = input.split(',');
+      result.city = commaSplit[0].capitalize();
+      var stateZipSplit = commaSplit[1].split(' ');
+      result.state = stateZipSplit[1].toUpperCase();
+      result.zip = stateZipSplit[2];
+      return result;
+    };
+
+    var result = {};
+    var splitObj;
+    var lines = input.split('\n');
+    if (lines.length < 3 || lines.length > 4) {
+      throw 'Address must be 3 or 4 lines';
+    } else {
+      result.name = lines[0];
+      result.address1 = lines[1];
+      var cityStateRegEx = /^[\w\s]+, \w{2} [\w\d]+$/;
+      if (lines[2].match(cityStateRegEx)) {
+        splitObj = splitCityStateZipLine(lines[2]);
+      } else if (lines[3].match(cityStateRegEx)) {
+        result.address2 = lines[2];
+        splitObj = splitCityStateZipLine(lines[3]);
+      } else {
+        throw 'Did not find CITY, STATE/PROVINCE ZIP on line 3 or 4';
+      }
+    }
+    result.city = splitObj.city;
+    result.state = splitObj.state;
+    result.zip = splitObj.zip;
+    if (states.indexOf(splitObj.state) > -1) {
+      result.country = 'USA';
+    } else if(provinces.indexOf(splitObj.state) > -1) {
+      result.country = 'Canada';
+    } else {
+      throw 'State not recognized';
+    }
+    return result;
+  },
+
   user: {}
 }
 

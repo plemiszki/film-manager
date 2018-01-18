@@ -1,0 +1,28 @@
+#venue-details {
+
+  .address-block {
+    position: relative;
+
+    img {
+      position: absolute;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      top: -20px;
+      right: -20px;
+    }
+  }
+}
+
+.shredder-modal {
+
+  textarea {
+    height: 150px;
+  }
+
+  .errorMessage {
+    height: 18px;
+    color: red;
+    margin-bottom: 10px;
+  }
+}
