@@ -1,4 +1,5 @@
 var Store = require('flux/utils').Store;
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var ReturnItemsStore = new Store(AppDispatcher);
@@ -27,7 +28,7 @@ ReturnItemsStore.items = function() {
   var items = Object.keys(_items).map(function(id) {
     return(_items[id]);
   });
-  return Tools.sortArrayOfObjects(items, 'order');
+  return HandyTools.sortArrayOfObjects(items, 'order');
 };
 
 ReturnItemsStore.otherItems = function() {
@@ -37,7 +38,7 @@ ReturnItemsStore.otherItems = function() {
   var otherGiftboxes = Object.keys(_otherItems.giftbox).map(function(id) {
     return(_otherItems['giftbox'][id]);
   });
-  return Tools.alphabetizeArrayOfObjects(otherDvds.concat(otherGiftboxes), 'label');
+  return HandyTools.alphabetizeArrayOfObjects(otherDvds.concat(otherGiftboxes), 'label');
 };
 
 ReturnItemsStore.__onDispatch = function(payload) {

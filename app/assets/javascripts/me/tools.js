@@ -7,18 +7,6 @@ Tools = {
     return object;
   },
 
-  alphabetizeArrayOfObjects: function(array, property) {
-    return array.sort(function(a, b) {
-      if (a[property].toUpperCase() < b[property].toUpperCase()) {
-        return -1;
-      } else if (a[property].toUpperCase() > b[property].toUpperCase()) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-  },
-
   convertBooleanToTFString: function(boolean) {
     return boolean ? "t" : "f";
   },
@@ -112,25 +100,5 @@ Tools = {
       }
     }
     return result;
-  },
-
-  removeFromArray: function(array, element) {
-    var index = array.indexOf(element);
-    if (index >= 0) {
-      array.splice(index, 1);
-    }
-    return array;
-  },
-
-  sortArrayOfObjects: function(array, property) {
-    return array.sort(function(a, b) {
-      if (parseInt(a[property]) < parseInt(b[property])) {
-        return -1;
-      } else if (parseInt(a[property]) > parseInt(b[property])) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
   }
 }

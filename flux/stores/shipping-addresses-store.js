@@ -1,4 +1,5 @@
 var Store = require('flux/utils').Store;
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var ShippingAddressesStore = new Store(AppDispatcher);
@@ -21,7 +22,7 @@ ShippingAddressesStore.all = function() {
   var shippingAddresses = Object.keys(_shippingAddresses).map(function(id) {
     return(_shippingAddresses[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(shippingAddresses, 'label');
+  return HandyTools.alphabetizeArrayOfObjects(shippingAddresses, 'label');
 };
 
 ShippingAddressesStore.find = function(id) {
@@ -32,7 +33,7 @@ ShippingAddressesStore.dvdCustomers = function() {
   var dvdCustomers = Object.keys(_dvdCustomers).map(function(id) {
     return(_dvdCustomers[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
+  return HandyTools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
 };
 
 ShippingAddressesStore.__onDispatch = function(payload) {

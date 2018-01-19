@@ -1,4 +1,5 @@
 var Store = require('flux/utils').Store;
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var DvdCustomersStore = new Store(AppDispatcher);
@@ -28,7 +29,7 @@ DvdCustomersStore.all = function() {
   var dvdCustomers = Object.keys(_dvdCustomers).map(function (id) {
     return(_dvdCustomers[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
+  return HandyTools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
 };
 
 DvdCustomersStore.monthTotals = function() {

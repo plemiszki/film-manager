@@ -1,4 +1,5 @@
 var Store = require('flux/utils').Store;
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var LicensorsStore = new Store(AppDispatcher);
@@ -24,7 +25,7 @@ LicensorsStore.all = function() {
   var licensors = Object.keys(_licensors).map(function (id) {
     return(_licensors[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(licensors, 'name');
+  return HandyTools.alphabetizeArrayOfObjects(licensors, 'name');
 };
 
 LicensorsStore.films = function() {

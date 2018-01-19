@@ -1,4 +1,5 @@
 var Store = require('flux/utils').Store;
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var PurchaseOrdersStore = new Store(AppDispatcher);
@@ -55,7 +56,7 @@ PurchaseOrdersStore.dvdCustomers = function() {
   var dvdCustomers = Object.keys(_dvdCustomers).map(function(id) {
     return(_dvdCustomers[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
+  return HandyTools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
 };
 
 PurchaseOrdersStore.findDvdCustomer = function(id) {
@@ -66,14 +67,14 @@ PurchaseOrdersStore.shippingAddresses = function() {
   var shippingAddresses = Object.keys(_shippingAddresses).map(function(id) {
     return(_shippingAddresses[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(shippingAddresses, 'label');
+  return HandyTools.alphabetizeArrayOfObjects(shippingAddresses, 'label');
 };
 
 PurchaseOrdersStore.items = function() {
   var items = Object.keys(_items).map(function(id) {
     return(_items[id]);
   });
-  return Tools.sortArrayOfObjects(items, 'order');
+  return HandyTools.sortArrayOfObjects(items, 'order');
 };
 
 PurchaseOrdersStore.otherItems = function() {
@@ -83,7 +84,7 @@ PurchaseOrdersStore.otherItems = function() {
   var otherGiftboxes = Object.keys(_otherItems.giftbox).map(function(id) {
     return(_otherItems['giftbox'][id]);
   });
-  return Tools.alphabetizeArrayOfObjects(otherDvds.concat(otherGiftboxes), 'label');
+  return HandyTools.alphabetizeArrayOfObjects(otherDvds.concat(otherGiftboxes), 'label');
 };
 
 PurchaseOrdersStore.needToUpdate = function() {

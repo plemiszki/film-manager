@@ -1,4 +1,5 @@
 var Store = require('flux/utils').Store;
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var ReportStore = new Store(AppDispatcher);
@@ -26,7 +27,7 @@ ReportStore.report = function() {
 };
 
 ReportStore.all = function() {
-  return Tools.alphabetizeArrayOfObjects(_reports, 'title');
+  return HandyTools.alphabetizeArrayOfObjects(_reports, 'title');
 };
 
 ReportStore.errors = function() {
@@ -38,7 +39,7 @@ ReportStore.streams = function() {
   Object.keys(_streams).forEach(function(id) {
     result.push(_streams[id]);
   });
-  return Tools.sortArrayOfObjects(result, 'order');
+  return HandyTools.sortArrayOfObjects(result, 'order');
 };
 
 ReportStore.__onDispatch = function(payload) {

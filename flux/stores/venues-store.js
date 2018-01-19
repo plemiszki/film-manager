@@ -1,4 +1,5 @@
 var Store = require('flux/utils').Store;
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var VenuesStore = new Store(AppDispatcher);
@@ -19,7 +20,7 @@ VenuesStore.all = function() {
   var venues = Object.keys(_venues).map(function(id) {
     return(_venues[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(venues, 'label');
+  return HandyTools.alphabetizeArrayOfObjects(venues, 'label');
 };
 
 VenuesStore.__onDispatch = function(payload) {

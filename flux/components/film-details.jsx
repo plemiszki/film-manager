@@ -177,16 +177,16 @@ var FilmDetails = React.createClass({
     if (property === "reserve" && e.target.checked === false) {
       film.reservePercentage = 0;
       Common.errors.reservePercentage.forEach(function(message) {
-        Tools.removeFromArray(filmErrors, message);
+        HandyTools.removeFromArray(filmErrors, message);
       });
       film.reserveQuarters = 0;
       Common.errors.reserveQuarters.forEach(function(message) {
-        Tools.removeFromArray(filmErrors, message);
+        HandyTools.removeFromArray(filmErrors, message);
       });
     } else if (property === "autoRenew" && e.target.checked === false) {
       film.autoRenewTerm = 0;
       Common.errors.autoRenewTerm.forEach(function(message) {
-        Tools.removeFromArray(filmErrors, message);
+        HandyTools.removeFromArray(filmErrors, message);
       });
     }
     this.setState({

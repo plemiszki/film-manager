@@ -1,4 +1,5 @@
 var Store = require('flux/utils').Store;
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var FilmsStore = new Store(AppDispatcher);
@@ -67,7 +68,7 @@ FilmsStore.all = function() {
   var films = Object.keys(_films).map(function(id) {
     return(_films[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(films, 'title');
+  return HandyTools.alphabetizeArrayOfObjects(films, 'title');
 };
 
 FilmsStore.dealTemplates = function() {
@@ -78,14 +79,14 @@ FilmsStore.licensors = function() {
   var licensors = Object.keys(_licensors).map(function(id) {
     return(_licensors[id]);
   });
-  return Tools.alphabetizeArrayOfObjects(licensors, 'name');
+  return HandyTools.alphabetizeArrayOfObjects(licensors, 'name');
 };
 
 FilmsStore.rights = function() {
   var rights = Object.keys(_rights).map(function(id) {
     return(_rights[id]);
   });
-  return Tools.sortArrayOfObjects(rights, 'order');
+  return HandyTools.sortArrayOfObjects(rights, 'order');
 };
 
 FilmsStore.findLicensor = function(id) {

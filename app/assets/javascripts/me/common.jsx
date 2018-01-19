@@ -498,7 +498,7 @@ Common = {
         console.log("no errors array!!!");
       }
       Common.errors[fieldName].forEach(function(message) {
-        Tools.removeFromArray(errorsArray, message);
+        HandyTools.removeFromArray(errorsArray, message);
       });
     } else if (+fieldName >= 1) { // if the field name is a number, assume all errors for this model can be removed
       errorsArray.length = 0;
