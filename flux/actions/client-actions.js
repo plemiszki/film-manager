@@ -1,3 +1,4 @@
+var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 var ServerActions = require('../actions/server-actions.js');
 
@@ -203,9 +204,9 @@ var ClientActions = {
           deal_type_id: film.dealTypeId,
           days_statement_due: film.daysStatementDue,
           gr_percentage: film.grPercentage,
-          expense_cap: film.expenseCap.removeFinanceSymbols(),
-          mg: film.mg.removeFinanceSymbols(),
-          e_and_o: film.eAndO.removeFinanceSymbols(),
+          expense_cap: HandyTools.removeFinanceSymbols(film.expenseCap),
+          mg: HandyTools.removeFinanceSymbols(film.mg),
+          e_and_o: HandyTools.removeFinanceSymbols(film.eAndO),
           sage_id: film.sageId,
           royalty_notes: film.royaltyNotes,
           send_reports: film.sendReports,
@@ -267,10 +268,10 @@ var ClientActions = {
     streams.forEach(function(stream) {
       newStreams[stream.id] = {
         licensor_percentage: stream.licensorPercentage,
-        current_revenue: stream.currentRevenue.removeFinanceSymbols(),
-        current_expense: stream.currentExpense.removeFinanceSymbols(),
-        cume_revenue: stream.cumeRevenue.removeFinanceSymbols(),
-        cume_expense: stream.cumeExpense.removeFinanceSymbols()
+        current_revenue: HandyTools.removeFinanceSymbols(stream.currentRevenue),
+        current_expense: HandyTools.removeFinanceSymbols(stream.currentExpense),
+        cume_revenue: HandyTools.removeFinanceSymbols(stream.cumeRevenue),
+        cume_expense: HandyTools.removeFinanceSymbols(stream.cumeExpense)
       }
     });
     $.ajax({
@@ -278,11 +279,11 @@ var ClientActions = {
       method: 'PATCH',
       data: {
         report: {
-          mg: report.mg.removeFinanceSymbols(),
-          e_and_o: report.eAndO.removeFinanceSymbols(),
-          amount_paid: report.amountPaid.removeFinanceSymbols(),
-          current_total_expenses: report.currentTotalExpenses.removeFinanceSymbols(),
-          cume_total_expenses: report.cumeTotalExpenses.removeFinanceSymbols()
+          mg: HandyTools.removeFinanceSymbols(report.mg),
+          e_and_o: HandyTools.removeFinanceSymbols(report.eAndO),
+          amount_paid: HandyTools.removeFinanceSymbols(report.amountPaid),
+          current_total_expenses: HandyTools.removeFinanceSymbols(report.currentTotalExpenses),
+          cume_total_expenses: HandyTools.removeFinanceSymbols(report.cumeTotalExpenses)
         },
         streams: newStreams
       },
@@ -383,7 +384,7 @@ var ClientActions = {
         giftbox: {
           name: giftbox.name,
           upc: giftbox.upc,
-          msrp: giftbox.msrp.removeFinanceSymbols(),
+          msrp: HandyTools.removeFinanceSymbols(giftbox.msrp),
           on_demand: giftbox.onDemand === "yes" ? true : false,
           sage_id: giftbox.sageId
         }
@@ -496,7 +497,7 @@ var ClientActions = {
       data: {
         dvd_customer: {
           name: dvdCustomer.name,
-          discount: dvdCustomer.discount.removeFinanceSymbols(),
+          discount: HandyTools.removeFinanceSymbols(dvdCustomer.discount),
           consignment: dvdCustomer.consignment,
           notes: dvdCustomer.notes,
           sage_id: dvdCustomer.sageId,
@@ -567,7 +568,7 @@ var ClientActions = {
         dvd: {
           dvd_type_id: dvd.dvdTypeId,
           upc: dvd.upc,
-          price: dvd.price.removeFinanceSymbols(),
+          price: HandyTools.removeFinanceSymbols(dvd.price),
           discs: dvd.discs,
           stock: dvd.stock,
           repressing: dvd.repressing,

@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var ServerActions = require('../actions/server-actions.js');
 var ReportsStore = require('../stores/reports-store.js');
@@ -334,7 +335,7 @@ var ReportsIndex = React.createClass({
                   return(
                     <tr key={index} onClick={this.redirect.bind(this, report.id)}>
                       <td className="name-column">
-                        {report.title.cap(42)}
+                        { HandyTools.ellipsis(report.title, 42) }
                       </td>
                       <td>
                         {report.licensor}
@@ -379,31 +380,31 @@ var ReportsIndex = React.createClass({
     if (unsent === total) {
       return(
         <div className="send-modal">
-          <h1>Send all {unsent} reports now&#63;</h1>
-          <a className="orange-button" onClick={this.clickConfirmSend}>Yes</a>
-          <a className="orange-button" onClick={this.handleModalClose}>No</a>
+          <h1>Send all { unsent } reports now&#63;</h1>
+          <a className="orange-button" onClick={ this.clickConfirmSend }>Yes</a>
+          <a className="orange-button" onClick={ this.handleModalClose }>No</a>
         </div>
       )
     } else if (unsent === 0) {
       return(
         <div className="send-modal">
           <h1>All reports have been sent.</h1>
-          <a className="orange-button" onClick={this.handleModalClose}>OK</a>
+          <a className="orange-button" onClick={ this.handleModalClose }>OK</a>
         </div>
       )
     } else {
       return(
         <div className="send-modal">
-          <h1>Send remaining {unsent} {'report'.pluralize(unsent)} now&#63;</h1>
-          <a className="orange-button" onClick={this.clickConfirmSend}>Yes</a>
-          <a className="orange-button" onClick={this.handleModalClose}>No</a>
+          <h1>Send remaining { unsent } { HandyTools.pluralize('report', unsent) } now&#63;</h1>
+          <a className="orange-button" onClick={ this.clickConfirmSend }>Yes</a>
+          <a className="orange-button" onClick={ this.handleModalClose }>No</a>
         </div>
       )
     }
   },
 
   componentDidUpdate: function() {
-    Common.resetNiceSelect('select', function(e) { this.setState({daysDue: e.target.value}); }.bind(this));
+    Common.resetNiceSelect('select', function(e) { this.setState({ daysDue: e.target.value }); }.bind(this));
     $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {
       window.setTimeout(function() {

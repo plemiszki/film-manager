@@ -1,4 +1,5 @@
 var React = require('react');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var DvdCustomersStore = require('../stores/dvd-customers-store.js');
 
@@ -158,7 +159,7 @@ var DvdReports = React.createClass({
                       return(
                         <tr key={index}>
                           <td className="name-column">
-                            <div>{ dvd.title.ellipsis(25) + (dvd.type != "Retail" ? (" - " + dvd.type) : "") }</div>
+                            <div>{ HandyTools.ellipsis(dvd.title, 25) + (dvd.type != "Retail" ? (" - " + dvd.type) : "") }</div>
                           </td>
                         </tr>
                       );

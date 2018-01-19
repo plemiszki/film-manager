@@ -1,4 +1,5 @@
 var React = require('react');
+var HandyTools = require('handy-tools');
 var ErrorsStore = require('../stores/errors-store.js');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
@@ -60,7 +61,7 @@ var NewThing = React.createClass({
     this.setState({
       fetching: true
     });
-    ClientActions["create" + this.props.thing.capitalize()].call(ClientActions, this.state[this.props.thing]);
+    ClientActions["create" + HandyTools.capitalize(this.props.thing)].call(ClientActions, this.state[this.props.thing]);
   },
 
   disableIfBlank: function() {
@@ -108,7 +109,7 @@ var NewThing = React.createClass({
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
     } else {
-      return "Add " + this.props.thing.capitalize();
+      return "Add " + HandyTools.capitalize(this.props.thing);
     }
   },
 

@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var _ = require('lodash');
 
 $(document).ready(function() {
@@ -8,7 +9,7 @@ $(document).ready(function() {
 
 Array.prototype.filterInvoices = function(type, number) {
   return this.filter(function(invoice) {
-    return ((type == "all" || invoice.type == type) && invoice.number.removeFromEnd(1) >= number);
+    return ((type == "all" || invoice.type == type) && invoice.number.slice(0, -1) >= number);
   });
 }
 
@@ -564,7 +565,7 @@ Common = {
     var splitCityStateZipLine = function(input) {
       var result = {};
       var commaSplit = input.split(',');
-      result.city = commaSplit[0].capitalize();
+      result.city = HandyTools.capitalize(commaSplit[0]);
       var stateZipSplit = commaSplit[1].split(' ');
       result.state = stateZipSplit[1].toUpperCase();
       result.zip = stateZipSplit[2];
