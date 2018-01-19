@@ -1,16 +1,5 @@
 Tools = {
 
-  addNextNumberKeyToObject: function(object, value) {
-    var keys = Object.keys(object);
-    var nextKey = keys.length;
-    object[nextKey] = value;
-    return object;
-  },
-
-  convertBooleanToTFString: function(boolean) {
-    return boolean ? "t" : "f";
-  },
-
   convertTrueFalseFromStringToBoolean: function(string) {
     if (string === "t") {
       return true;
@@ -19,27 +8,6 @@ Tools = {
     } else {
       return string;
     }
-  },
-
-  convertToNumber: function(input) {
-    return input.replace('$', '').replace(',', '');
-  },
-
-  copyArray: function(array) {
-    return array.slice(0);
-  },
-
-  copyObject: function(object) {
-    return Object.assign({}, object);
-  },
-
-  createArray: function(length, value) {
-    var result = [];
-    var element = Array.isArray(value) ? Tools.copyArray(value) : value;
-    for (var i = 0; i < length; i++) {
-      result.push(element);
-    }
-    return result;
   },
 
   deepCopy: function(obj) {
@@ -61,19 +29,6 @@ Tools = {
       }
     }
     return obj;
-  },
-
-  ifGreaterThanZero: function(n) {
-    return n > 0 ? n : 0;
-  },
-
-  findObjectInArrayById: function(array, id) {
-    for (var i = 0; i < array.length; i++) {
-      if (array[i].id == id) {
-        return array[i];
-      }
-    }
-    return null;
   },
 
   formatDate: function(date) {
