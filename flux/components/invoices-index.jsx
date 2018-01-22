@@ -210,7 +210,7 @@ var InvoicesIndex = React.createClass({
   },
 
   renderSeeAllButton: function() {
-    if (this.state.invoices.length === 25) {
+    if (this.state.invoices.length === 100) {
       return(
         <div className="text-center">
           <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>
