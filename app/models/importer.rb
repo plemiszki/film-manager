@@ -332,7 +332,20 @@ class Importer < ActiveRecord::Base
         films += 1
       end
     end
+    object.delete
+  end
 
+  def self.import_theaters(time_started)
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Theaters.txt")
+    object.get(response_target: Rails.root.join("tmp/#{time_started}/Theaters.txt"))
+    File.open(Rails.root.join("tmp/#{time_started}/Theaters.txt")) do |f|
+      array = f.gets.split('%')
+    end
     object.delete
   end
 

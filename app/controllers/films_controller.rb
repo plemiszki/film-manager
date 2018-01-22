@@ -15,12 +15,16 @@ class FilmsController < ApplicationController
 
   def upload
     films_io = params[:user][:films_file]
+    theaters_io = params[:user][:theaters_file]
     admin_io = params[:user][:admin_file]
     time_started = Time.now.to_s
     # upload files to server
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     File.open(Rails.root.join('tmp', time_started, films_io.original_filename), 'wb') do |file|
       file.write(films_io.read)
+    end
+    File.open(Rails.root.join('tmp', time_started, films_io.original_filename), 'wb') do |file|
+      file.write(theaters_io.read)
     end
     File.open(Rails.root.join('tmp', time_started, admin_io.original_filename), 'wb') do |file|
       file.write(admin_io.read)
@@ -33,6 +37,8 @@ class FilmsController < ApplicationController
     bucket = s3.bucket(ENV['S3_BUCKET'])
     films_obj = bucket.object("#{time_started}/Films.txt")
     films_obj.upload_file(Rails.root.join('tmp', time_started, 'Films.txt'), acl:'private')
+    films_obj = bucket.object("#{time_started}/Theaters.txt")
+    films_obj.upload_file(Rails.root.join('tmp', time_started, 'Theaters.txt'), acl:'private')
     admin_obj = bucket.object("#{time_started}/Admin.txt")
     admin_obj.upload_file(Rails.root.join('tmp', time_started, 'Admin.txt'), acl:'private')
     # start worker

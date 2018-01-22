@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var DvdsStore = require('../stores/dvds-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
