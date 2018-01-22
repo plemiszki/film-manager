@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var ReturnsStore = require('../stores/returns-store.js');
 var ReturnItemsStore = require('../stores/return-items-store.js');
@@ -149,11 +150,11 @@ var ReturnDetails = React.createClass({
 
   handleModalClose: function() {
     this.setState({
-        addAddressModalOpen: false,
-        selectAddressModalOpen: false,
-        selectItemModalOpen: false,
-        qtyModalOpen: false,
-        deleteModalOpen: false
+      addAddressModalOpen: false,
+      selectAddressModalOpen: false,
+      selectItemModalOpen: false,
+      qtyModalOpen: false,
+      deleteModalOpen: false
     });
   },
 
@@ -185,28 +186,28 @@ var ReturnDetails = React.createClass({
         <div className="component">
           <h1>Return Details</h1>
           <div className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Customer</h2>
-                <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state.return.customerId} disabled={this.state.return.shipDate}>
-                  {ReturnsStore.customers().map(function(dvdCustomer, index) {
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="customerId" value={ this.state.return.customerId } disabled={ this.state.return.shipDate }>
+                  { ReturnsStore.customers().map(function(dvdCustomer, index) {
                     return(
-                      <option key={index + 1} value={dvdCustomer.id}>{dvdCustomer.name}</option>
+                      <option key={ index + 1 } value={ dvdCustomer.id }>{ dvdCustomer.name }</option>
                     )
-                  })}
+                  }) }
                 </select>
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Number</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.return.number || ""} data-field="number" />
+                <input className={ Common.errorClass(this.state.errors, Common.errors.number) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.number || "" } data-field="number" />
                 { Common.renderFieldError(this.state.errors, Common.errors.number) }
               </div>
               <div className="col-xs-4">
                 <h2>Date</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.date) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.return.date || ""} data-field="date" />
+                <input className={ Common.errorClass(this.state.errors, Common.errors.date) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.date || "" } data-field="date" />
                 { Common.renderFieldError(this.state.errors, Common.errors.date) }
               </div>
             </div>
@@ -296,10 +297,10 @@ var ReturnDetails = React.createClass({
     }
     return(
       <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
-          {buttonText}
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+          { buttonText }
         </a>
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete Return
         </a>
       </div>

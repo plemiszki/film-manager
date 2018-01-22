@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var GiftboxesStore = require('../stores/giftboxes-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
@@ -145,18 +146,18 @@ var GiftboxDetails = React.createClass({
         <div className="component details-component">
           <h1>Gift Box Details</h1>
           <div id="giftbox-profile-box" className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.giftbox.name || ""} data-field="name" />
-                {Common.renderFieldError(this.state.errors, Common.errors.name)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.giftbox.name || ""} data-field="name" />
+                { Common.renderFieldError(this.state.errors, Common.errors.name) }
               </div>
               <div className="col-xs-4">
                 <h2>UPC</h2>
                 <input className={Common.errorClass(this.state.errors, Common.errors.upc)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.giftbox.upc || ""} data-field="upc" />
-                {Common.renderFieldError(this.state.errors, Common.errors.upc)}
+                { Common.renderFieldError(this.state.errors, Common.errors.upc) }
               </div>
               <div className="col-xs-2">
                 <h2>MSRP</h2>
@@ -237,10 +238,10 @@ var GiftboxDetails = React.createClass({
     }
     return(
       <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
-          {buttonText}
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave == false) } onClick={ this.clickSave }>
+          { buttonText }
         </a>
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete Gift Box
         </a>
       </div>

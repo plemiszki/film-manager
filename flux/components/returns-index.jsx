@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var ReturnsStore = require('../stores/returns-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -61,7 +62,9 @@ var ReturnsIndex = React.createClass({
   },
 
   handleAddNewClick: function() {
-    this.setState({ modalOpen: true });
+    if (!this.state.fetching) {
+      this.setState({ modalOpen: true });
+    }
   },
 
   handleModalClose: function() {
@@ -73,23 +76,23 @@ var ReturnsIndex = React.createClass({
     return(
       <div id="returns-index" className="component">
         <h1>DVD Returns</h1>
-        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add New</a>
-        <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add New</a>
+        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
-          <table className={"admin-table"}>
+          { HandyTools.renderSpinner(this.state.fetching) }
+          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <table className={ "admin-table" }>
             <thead>
               <tr>
-                <th><div className={Common.sortClass.call(this, "date")} onClick={Common.clickHeader.bind(this, "date")}>Date</div></th>
-                <th><div className={Common.sortClass.call(this, "number")} onClick={Common.clickHeader.bind(this, "number")}>Number</div></th>
-                <th><div className={Common.sortClass.call(this, "customer")} onClick={Common.clickHeader.bind(this, "customer")}>Customer</div></th>
-                <th><div className={Common.sortClass.call(this, "units")} onClick={Common.clickHeader.bind(this, "units")}>Units</div></th>
+                <th><div className={ Common.sortClass.call(this, "date") } onClick={ Common.clickHeader.bind(this, "date") }>Date</div></th>
+                <th><div className={ Common.sortClass.call(this, "number") } onClick={ Common.clickHeader.bind(this, "number") }>Number</div></th>
+                <th><div className={ Common.sortClass.call(this, "customer") } onClick={ Common.clickHeader.bind(this, "customer") }>Customer</div></th>
+                <th><div className={ Common.sortClass.call(this, "units") } onClick={ Common.clickHeader.bind(this, "units") }>Units</div></th>
               </tr>
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {_.orderBy(filteredReturns, [Common.commonSort.bind(this)], [this.state.sortBy === 'date' ? 'desc' : 'asc']).map(function(r, index) {
+              { _.orderBy(filteredReturns, [Common.commonSort.bind(this)], [this.state.sortBy === 'date' ? 'desc' : 'asc']).map(function(r, index) {
                 return(
                   <tr key={index} onClick={this.redirect.bind(this, r.id)}>
                     <td className="indent">

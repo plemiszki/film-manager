@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var LicensorsStore = require('../stores/licensors-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -50,22 +51,22 @@ var LicensorsIndex = React.createClass({
   },
 
   handleAddNewClick: function() {
-    this.setState({modalOpen: true});
+    this.setState({ modalOpen: true });
   },
 
   handleModalClose: function() {
-    this.setState({modalOpen: false});
+    this.setState({ modalOpen: false });
   },
 
   render: function() {
     return(
       <div id="licensors-index" className="component">
         <h1>Licensors</h1>
-        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Licensor</a>
-        <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Licensor</a>
+        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
+          { HandyTools.renderSpinner(this.state.fetching) }
+          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={"admin-table"}>
             <thead>
               <tr>

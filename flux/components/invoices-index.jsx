@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var ServerActions = require('../actions/server-actions.js');
 var InvoicesStore = require('../stores/invoices-store.js');
@@ -134,12 +135,12 @@ var InvoicesIndex = React.createClass({
     return(
       <div id="invoices-index" className="component">
         <h1>Invoices</h1>
-        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.ClickExport}>Export</a>
-        <a className={"orange-button float-button" + this.filterExists() + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.openFilterModal}>Filter</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.ClickExport }>Export</a>
+        <a className={ "orange-button float-button" + this.filterExists() + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal }>Filter</a>
         <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
+          { HandyTools.renderSpinner(this.state.fetching) }
+          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={"admin-table"}>
             <thead>
               <tr>

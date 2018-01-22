@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -62,12 +63,12 @@ var FilmsIndex = React.createClass({
       <div id="films-index" className="component">
         <div className="clearfix">
           {this.renderHeader()}
-          <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Film</a>
-          <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
+          <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Film</a>
+          <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
+          { HandyTools.renderSpinner(this.state.fetching) }
+          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={"admin-table"}>
             <thead>
               <tr>

@@ -302,70 +302,70 @@ var ReportsIndex = React.createClass({
       <div>
         <div id="reports-index" className="component">
           <div className="clearfix">
-            <h1>Statements - Q{this.state.quarter}, {this.state.year}</h1>
-            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all' || this.state.reports.length === 0)} onClick={this.clickSend}>Send All</a>
-            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.daysDue === 'all' || this.state.reports.length === 0)} onClick={this.clickExport}>Export All</a>
-            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderDisabledButtonClass(this.state.reports.length === 0)} onClick={this.clickErrorCheck}>Error Check</a>
-            <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickImport}>Import</a>
-            <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickNext}>&#62;&#62;</a>
-            <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickPrev}>&#60;&#60;</a>
+            <h1>Statements - Q{ this.state.quarter }, { this.state.year }</h1>
+            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickSend }>Send All</a>
+            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickExport }>Export All</a>
+            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickErrorCheck }>Error Check</a>
+            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickImport }>Import</a>
+            <a className={ "orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext }>&#62;&#62;</a>
+            <a className={ "orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev }>&#60;&#60;</a>
           </div>
           <div className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
-            <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
-            <select onChange={function(e) { this.setState({daysDue: e.target.value}); }.bind(this)} value={this.state.daysDue}>
-              <option value={"all"}>All</option>
-              <option value={"30"}>30 days</option>
-              <option value={"45"}>45 days</option>
-              <option value={"60"}>60 days</option>
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+            <select onChange={ function(e) { this.setState({ daysDue: e.target.value }); }.bind(this)} value={ this.state.daysDue }>
+              <option value={ "all" }>All</option>
+              <option value={ "30" }>30 days</option>
+              <option value={ "45" }>45 days</option>
+              <option value={ "60" }>60 days</option>
             </select>
             <table className={"admin-table"}>
               <thead>
                 <tr>
-                  <th><div className={Common.sortClass.call(this, "title")} onClick={this.clickTitle}>Title</div></th>
-                  <th><div className={Common.sortClass.call(this, "licensor")} onClick={this.clickLicensor}>Licensor</div></th>
+                  <th><div className={ Common.sortClass.call(this, "title") } onClick={ this.clickTitle }>Title</div></th>
+                  <th><div className={ Common.sortClass.call(this, "licensor") } onClick={ this.clickLicensor }>Licensor</div></th>
                   <th></th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td></tr>
-                {this.state.reports.sort(this.sortReports).filterDaysDue(this.state.daysDue).filterSearchText(this.state.searchText, this.state.sortBy).map(function(report, index) {
+                { this.state.reports.sort(this.sortReports).filterDaysDue(this.state.daysDue).filterSearchText(this.state.searchText, this.state.sortBy).map(function(report, index) {
                   return(
-                    <tr key={index} onClick={this.redirect.bind(this, report.id)}>
+                    <tr key={ index } onClick={ this.redirect.bind(this, report.id) }>
                       <td className="name-column">
                         { HandyTools.ellipsis(report.title, 42) }
                       </td>
                       <td>
-                        {report.licensor}
+                        { report.licensor }
                       </td>
                       <td>
-                        {report.days} days
+                        { report.days } days
                       </td>
                       <td>
-                        {report.sendReport ? (report.dateSent ? Tools.formatDate(new Date(report.dateSent + " 0:00")) : "Not Sent") : "Do Not Send"}
+                        { report.sendReport ? (report.dateSent ? Tools.formatDate(new Date(report.dateSent + " 0:00")) : "Not Sent") : "Do Not Send" }
                       </td>
                     </tr>
                   );
-                }.bind(this))}
+                }.bind(this)) }
               </tbody>
             </table>
           </div>
         </div>
-        <Modal isOpen={this.state.importModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.importModalStyles}>
+        <Modal isOpen={ this.state.importModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.importModalStyles }>
           <div className="import-file">
             <h1>Import File</h1>
-            <a className="orange-button" onClick={this.clickImportRevenue}>Import Revenue</a>
-            <a className="orange-button" onClick={this.clickImportExpenses}>Import Expenses</a>
+            <a className="orange-button" onClick={ this.clickImportRevenue }>Import Revenue</a>
+            <a className="orange-button" onClick={ this.clickImportExpenses }>Import Expenses</a>
           </div>
         </Modal>
-        <Modal isOpen={this.state.sendModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.sendModalStyles}>
-          {this.renderSendModalHeader()}
+        <Modal isOpen={this.state.sendModalOpen} onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.sendModalStyles }>
+          { this.renderSendModalHeader() }
         </Modal>
-        {Common.jobModal.call(this, this.state.job)}
-        {Common.jobErrorsModal.call(this)}
-        {Common.jobNoErrorsModal.call(this)}
+        { Common.jobModal.call(this, this.state.job) }
+        { Common.jobErrorsModal.call(this) }
+        { Common.jobNoErrorsModal.call(this) }
       </div>
     );
   },

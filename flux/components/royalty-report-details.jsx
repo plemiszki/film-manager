@@ -103,8 +103,8 @@ var ReportDetails = React.createClass({
         <h1><span onClick={this.clickTitle}>{this.state.report.film}</span></h1>
         <h3>{this.state.report.year} - Q{this.state.report.quarter}</h3>
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
+          {HandyTools.renderSpinner(this.state.fetching)}
+          {HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5)}
           <h4>Current Period</h4>
           {this.renderRowHeaders()}
           {this.state.streams.map(function(stream, index) {

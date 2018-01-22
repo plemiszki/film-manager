@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var UsersStore = require('../stores/users-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -50,11 +51,11 @@ var UsersIndex = React.createClass({
   },
 
   handleAddNewClick: function() {
-    this.setState({modalOpen: true});
+    this.setState({ modalOpen: true });
   },
 
   handleModalClose: function() {
-    this.setState({modalOpen: false});
+    this.setState({ modalOpen: false });
   },
 
   render: function() {
@@ -62,12 +63,12 @@ var UsersIndex = React.createClass({
       <div id="users-index" className="component">
         <div className="clearfix">
           <h1>Users</h1>
-          {this.renderButton()}
+          { this.renderButton() }
         </div>
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
-          <table className={"admin-table"}>
+          { HandyTools.renderSpinner(this.state.fetching) }
+          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <table className={ "admin-table" }>
             <thead>
               <tr>
                 <th>Name</th>
@@ -76,23 +77,23 @@ var UsersIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td><td></td></tr>
-              {this.state.users.map(function(user, index) {
+              { this.state.users.map(function(user, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, user.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, user.id) }>
                     <td className="name-column">
-                      {user.name}
+                      { user.name }
                     </td>
                     <td>
-                      {user.title}
+                      { user.title }
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }.bind(this)) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="user" initialObject={{name: "", email: "", password: ""}} />
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+          <NewThing thing="user" initialObject={ { name: "", email: "", password: "" } } />
         </Modal>
       </div>
     );
@@ -101,7 +102,7 @@ var UsersIndex = React.createClass({
   renderButton: function() {
     if (Common.user.admin) {
       return(
-        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add User</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add User</a>
       )
     }
   }

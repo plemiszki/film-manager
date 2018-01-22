@@ -155,8 +155,8 @@ var DvdDetails = React.createClass({
         <div className="component">
           <h1>DVD Details</h1>
           <div className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            {HandyTools.renderSpinner(this.state.fetching)}
+            {HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5)}
             <div className="row">
               <div className="col-xs-6">
                 <h2>Title</h2>
@@ -286,10 +286,10 @@ var DvdDetails = React.createClass({
     }
     return(
       <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
-          {buttonText}
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+          { buttonText }
         </a>
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete DVD
         </a>
       </div>

@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
 var PurchaseOrderItemsStore = require('../stores/purchase-order-items-store.js');
@@ -288,8 +289,8 @@ var PurchaseOrderDetails = React.createClass({
         <div className="component">
           <h1>Purchase Order Details</h1>
           <div className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            {HandyTools.renderSpinner(this.state.fetching)}
+            {HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5)}
             <div className="row">
               <div className="col-xs-6">
                 <h2>Number</h2>
@@ -414,17 +415,17 @@ var PurchaseOrderDetails = React.createClass({
             <hr />
             <div className="row">
               <div className="col-xs-12 text-center">
-                <input id="send-invoice" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.purchaseOrder.sendInvoice} data-field="sendInvoice" disabled={this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment} /><label className="checkbox">Send Invoice</label>
-                {this.renderDisabledNotification()}
+                <input id="send-invoice" className="checkbox" type="checkbox" onChange={ Common.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.purchaseOrder.sendInvoice } data-field="sendInvoice" disabled={ this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment } /><label className="checkbox">Send Invoice</label>
+                { this.renderDisabledNotification() }
                 <div>
-                  <a id="ship" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "")} onClick={this.clickShip}>
-                    {this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now")}
+                  <a id="ship" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "") } onClick={ this.clickShip }>
+                    { this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now") }
                   </a>
                   { this.renderReportingOnlyButton() }
                 </div>
               </div>
             </div>
-            {this.renderButtons()}
+            { this.renderButtons() }
           </div>
         </div>
         <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
@@ -516,10 +517,10 @@ var PurchaseOrderDetails = React.createClass({
       return(
         <div>
           <hr />
-          <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
-            {buttonText}
+          <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+            { buttonText }
           </a>
-          <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+          <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
             Delete Purchase Order
           </a>
         </div>
@@ -535,7 +536,7 @@ var PurchaseOrderDetails = React.createClass({
       );
     } else if (customer.consignment) {
       return(
-        <div className="notification">Invoice cannot be sent because {customer.name} sells on consignment.</div>
+        <div className="notification">Invoice cannot be sent because { customer.name } sells on consignment.</div>
       );
     }
   },
@@ -543,7 +544,7 @@ var PurchaseOrderDetails = React.createClass({
   renderReportingOnlyButton: function() {
     if (!this.state.purchaseOrder.shipDate) {
       return(
-        <a id="reporting-only" className={ "orange-button " + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickReportingOnly }>
+        <a id="reporting-only" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickReportingOnly }>
           { this.state.changesToSave ? "Save to Ship" : "Reporting Only" }
         </a>
       )

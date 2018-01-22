@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var InvoicesStore = require('../stores/invoices-store.js');
 
@@ -40,8 +41,8 @@ var InvoiceDetails = React.createClass({
         <div className="component">
           <h1>Invoice Details</h1>
           <div className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Number</h2>
@@ -115,7 +116,7 @@ var InvoiceDetails = React.createClass({
               </div>
             </div>
             { this.renderNotes() }
-            <a id="export" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>
+            <a id="export" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport }>
               Export
             </a>
           </div>

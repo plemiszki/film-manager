@@ -505,10 +505,6 @@ Common = {
     }
   },
 
-  renderDisabledButtonClass: function(fetching) {
-    return fetching ? " inactive" : "";
-  },
-
   renderFieldError: function(stateErrors, fieldErrors) {
     for (i = 0; i < fieldErrors.length; i++) {
       if (stateErrors.indexOf(fieldErrors[i]) > -1) {
@@ -520,26 +516,6 @@ Common = {
     return(
       <div className="noFieldError"></div>
     );
-  },
-
-  renderGrayedOut: function(fetching) {
-    if (fetching) {
-      return(
-        <div className="grayed-out"></div>
-      );
-    }
-  },
-
-  renderInactiveButtonClass: function(changesToSave) {
-    return changesToSave ? "" : " inactive";
-  },
-
-  renderSpinner: function(fetching) {
-    if (fetching) {
-      return(
-        <div className="spinner"></div>
-      );
-    }
   },
 
   resetNiceSelect: function(selector, func) {

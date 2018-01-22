@@ -54,14 +54,14 @@ var DvdReports = React.createClass({
         <div className="component">
           <div className="text-center">
             <div className="clearfix">
-              <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickNext}>&#62;&#62;</a>
+              <a className={ "orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext }>&#62;&#62;</a>
               <h1>DVD Reports - { this.state.year }</h1>
-              <a className={"orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickPrev}>&#60;&#60;</a>
+              <a className={"orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev }>&#60;&#60;</a>
             </div>
           </div>
           <div className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
                 <table className="admin-table no-hover no-highlight">
@@ -143,8 +143,8 @@ var DvdReports = React.createClass({
         </div>
         <div className="component">
           <div className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
                 <table className="admin-table no-hover no-highlight">

@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -116,15 +117,15 @@ var PurchaseOrdersIndex = React.createClass({
     return(
       <div id="purchase-orders-index" className="component">
         <h1>DVD Purchase Orders</h1>
-        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add New</a>
-        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickUpdateStock}>
-          <img className={ PurchaseOrdersStore.needToUpdate() ? "" : "hidden" } src={Images.attention} />
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add New</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickUpdateStock }>
+          <img className={ PurchaseOrdersStore.needToUpdate() ? "" : "hidden" } src={ Images.attention } />
           Update Stock
         </a>
         <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
+          {HandyTools.renderSpinner(this.state.fetching)}
+          {HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5)}
           <table className={"admin-table"}>
             <thead>
               <tr>

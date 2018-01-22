@@ -76,8 +76,8 @@ var NewThing = React.createClass({
     return(
       <div id="new-thing" className="component">
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching) }
+          { HandyTools.renderSpinner(this.state.fetching) }
+          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderNameField() }
           { this.renderTitleField() }
           { this.renderEmailField() }
@@ -90,7 +90,7 @@ var NewThing = React.createClass({
           { this.renderLabelField() }
           { this.renderShippingAddress() }
           { this.renderVenueFields() }
-          <a className={"orange-button" + Common.renderDisabledButtonClass(this.state.fetching) + this.addMargin()} onClick={this.clickAddButton}>
+          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
         </div>

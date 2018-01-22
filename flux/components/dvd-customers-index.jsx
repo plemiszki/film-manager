@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var DvdCustomersStore = require('../stores/dvd-customers-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -50,22 +51,22 @@ var DvdCustomersIndex = React.createClass({
   },
 
   handleAddNewClick: function() {
-    this.setState({modalOpen: true});
+    this.setState({ modalOpen: true });
   },
 
   handleModalClose: function() {
-    this.setState({modalOpen: false});
+    this.setState({ modalOpen: false });
   },
 
   render: function() {
     return(
       <div id="dvdCustomers-index" className="component">
         <h1>DVD Customers</h1>
-        <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add DVD Customer</a>
-        <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add DVD Customer</a>
+        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          {Common.renderSpinner(this.state.fetching)}
-          {Common.renderGrayedOut(this.state.fetching)}
+          { HandyTools.renderSpinner(this.state.fetching) }
+          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={"admin-table"}>
             <thead>
               <tr>
@@ -74,20 +75,20 @@ var DvdCustomersIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.dvdCustomers.filterSearchText(this.state.searchText).map(function(dvdCustomer, index) {
+              { this.state.dvdCustomers.filterSearchText(this.state.searchText).map(function(dvdCustomer, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, dvdCustomer.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, dvdCustomer.id) }>
                     <td className="name-column">
-                      {dvdCustomer.name}
+                      { dvdCustomer.name }
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }.bind(this)) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="dvdCustomer" initialObject={{name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: ""}} />
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+          <NewThing thing="dvdCustomer" initialObject={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
         </Modal>
       </div>
     );

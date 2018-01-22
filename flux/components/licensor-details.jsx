@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var LicensorsStore = require('../stores/licensors-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
@@ -99,8 +100,8 @@ var LicensorDetails = React.createClass({
         <div className="component">
           <h1>Licensor Details</h1>
           <div id="licensor-profile-box" className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            {HandyTools.renderSpinner(this.state.fetching)}
+            {HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5)}
             <div className="row">
               <div className="col-xs-12 col-sm-6">
                 <h2>Name</h2>
@@ -169,10 +170,10 @@ var LicensorDetails = React.createClass({
     }
     return(
       <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
-          {buttonText}
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+          { buttonText }
         </a>
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete Licensor
         </a>
       </div>

@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var UsersStore = require('../stores/users-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
@@ -67,14 +68,15 @@ var UserDetails = React.createClass({
 
   confirmDelete: function() {
     this.setState({
-      fetching: true
+      fetching: true,
+      deleteModalOpen: false
     }, function() {
       ClientActions.deleteUser(this.state.user.id);
     });
   },
 
   handleModalClose: function() {
-    this.setState({deleteModalOpen: false});
+    this.setState({ deleteModalOpen: false });
   },
 
   checkForChanges: function() {
@@ -95,8 +97,8 @@ var UserDetails = React.createClass({
         <div className="component">
           <h1>User Details</h1>
           <div id="user-profile-box" className="white-box">
-            {Common.renderSpinner(this.state.fetching)}
-            {Common.renderGrayedOut(this.state.fetching)}
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-12 col-sm-4">
                 <h2>Name</h2>
@@ -119,17 +121,17 @@ var UserDetails = React.createClass({
                 <textarea rows="5" cols="20" onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.emailSignature || ""} data-field="emailSignature" />
               </div>
             </div>
-            {this.renderButtons()}
+            { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this user&#63;</h1>
             Deleting a user will erase ALL of their information and data<br />
-            <a className={"red-button"} onClick={this.confirmDelete}>
+            <a className={ "red-button" } onClick={ this.confirmDelete }>
               Yes
             </a>
-            <a className={"orange-button"} onClick={this.handleModalClose}>
+            <a className={ "orange-button" } onClick={ this.handleModalClose }>
               No
             </a>
           </div>
@@ -146,10 +148,10 @@ var UserDetails = React.createClass({
     }
     return(
       <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
-          {buttonText}
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+          { buttonText }
         </a>
-        {this.renderDeleteButton()}
+        { this.renderDeleteButton() }
       </div>
     )
   },
@@ -157,7 +159,7 @@ var UserDetails = React.createClass({
   renderDeleteButton: function() {
     if (Common.user.admin && (Common.user.id != window.location.pathname.split("/")[2])) {
       return(
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickDelete}>
+        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete User
         </a>
       )

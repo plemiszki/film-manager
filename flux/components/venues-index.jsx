@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var VenuesStore = require('../stores/venues-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -51,7 +52,9 @@ var VenuesIndex = React.createClass({
   },
 
   handleAddNewClick: function() {
-    this.setState({ modalOpen: true });
+    if (!this.state.fetching) {
+      this.setState({ modalOpen: true });
+    }
   },
 
   handleModalClose: function() {
@@ -63,12 +66,12 @@ var VenuesIndex = React.createClass({
       <div id="venues-index" className="component">
         <div className="clearfix">
           <h1>Venues</h1>
-          <a className={"orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.handleAddNewClick}>Add Venue</a>
-          <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
+          <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Venue</a>
+          <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching) }
+          { HandyTools.renderSpinner(this.state.fetching) }
+          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={ "admin-table" }>
             <thead>
               <tr>

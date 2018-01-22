@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var VenuesStore = require('../stores/venues-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
@@ -165,8 +166,8 @@ var VenueDetails = React.createClass({
         <div className="component details-component">
           <h1>Venue Details</h1>
           <div id="venue-profile-box" className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching) }
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Label</h2>
@@ -243,7 +244,7 @@ var VenueDetails = React.createClass({
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
-                <a className={ "orange-button copy-address-button " + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress }>
+                <a className={ "orange-button copy-address-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress }>
                   Copy to Shipping Address
                 </a>
               </div>
@@ -334,10 +335,10 @@ var VenueDetails = React.createClass({
     }
     return(
       <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
           { buttonText }
         </a>
-        <a id="delete" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete Venue
         </a>
       </div>
