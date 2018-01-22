@@ -1,7 +1,8 @@
 class Api::InvoicesController < ApplicationController
 
   def index
-    @invoices = Invoice.all
+    @invoices = Invoice.all.order('id DESC')
+    @invoices = @invoices.limit(25) unless params[:all]
     render "index.json.jbuilder"
   end
 

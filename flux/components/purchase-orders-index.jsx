@@ -104,12 +104,19 @@ var PurchaseOrdersIndex = React.createClass({
     window.location.pathname = "purchase_orders/" + id;
   },
 
+  clickSeeAll: function() {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.fetchPurchaseOrders('all');
+  },
+
   handleAddNewClick: function() {
-    this.setState({modalOpen: true});
+    this.setState({ modalOpen: true });
   },
 
   handleModalClose: function() {
-    this.setState({modalOpen: false});
+    this.setState({ modalOpen: false });
   },
 
   render: function() {
@@ -137,35 +144,46 @@ var PurchaseOrdersIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {_.orderBy(filteredOrders, [Common.commonSort.bind(this)], [this.state.sortBy === 'shipDate' ? 'desc' : 'asc']).map(function(purchaseOrder, index) {
+              { _.orderBy(filteredOrders, [Common.commonSort.bind(this)], [this.state.sortBy === 'shipDate' ? 'desc' : 'asc']).map(function(purchaseOrder, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, purchaseOrder.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, purchaseOrder.id) }>
                     <td className="indent">
-                      {purchaseOrder.shipDate}
+                      { purchaseOrder.shipDate }
                     </td>
                     <td>
-                      {purchaseOrder.number}
+                      { purchaseOrder.number }
                     </td>
                     <td>
-                      {purchaseOrder.customer}
+                      { purchaseOrder.customer }
                     </td>
                     <td>
-                      {purchaseOrder.units}
+                      { purchaseOrder.units }
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }.bind(this)) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="purchaseOrder" initialObject={{number: "", orderDate: ""}} />
+        { this.renderSeeAllButton() }
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+          <NewThing thing="purchaseOrder" initialObject={ { number: "", orderDate: "" } } />
         </Modal>
-        {Common.jobModal.call(this, this.state.job)}
-        {Common.jobErrorsModal.call(this)}
-        {Common.jobNoErrorsModal.call(this)}
+        { Common.jobModal.call(this, this.state.job) }
+        { Common.jobErrorsModal.call(this) }
+        { Common.jobNoErrorsModal.call(this) }
       </div>
     );
+  },
+
+  renderSeeAllButton: function() {
+    if (this.state.purchaseOrders.length === 25) {
+      return(
+        <div className="text-center">
+          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>
+        </div>
+      )
+    }
   },
 
   componentDidUpdate: function() {

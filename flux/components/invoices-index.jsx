@@ -80,6 +80,13 @@ var InvoicesIndex = React.createClass({
     window.location.pathname = "invoices/" + id;
   },
 
+  clickSeeAll: function() {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.fetchInvoices('all');
+  },
+
   openFilterModal: function() {
     this.setState({
       filterModalOpen: true
@@ -173,6 +180,7 @@ var InvoicesIndex = React.createClass({
             </tbody>
           </table>
         </div>
+        { this.renderSeeAllButton() }
         <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ filterModalStyles }>
           <div className="filter-modal">
             <div className="row">
@@ -199,6 +207,16 @@ var InvoicesIndex = React.createClass({
         { Common.jobModal.call(this, this.state.job) }
       </div>
     );
+  },
+
+  renderSeeAllButton: function() {
+    if (this.state.invoices.length === 25) {
+      return(
+        <div className="text-center">
+          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>
+        </div>
+      )
+    }
   },
 
   componentDidUpdate: function() {

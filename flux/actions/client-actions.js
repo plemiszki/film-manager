@@ -630,10 +630,11 @@ var ClientActions = {
     });
   },
 
-  fetchPurchaseOrders: function() {
+  fetchPurchaseOrders: function(arg) {
     $.ajax({
       url: '/api/purchase_orders',
       method: 'GET',
+      data: (arg ? { all: true } : null),
       success: function(response) {
         ServerActions.receivePurchaseOrders(response);
       }
@@ -832,10 +833,11 @@ var ClientActions = {
     });
   },
 
-  fetchInvoices: function() {
+  fetchInvoices: function(arg) {
     $.ajax({
       url: '/api/invoices',
       method: 'GET',
+      data: (arg ? { all: true } : null),
       success: function(response) {
         ServerActions.receiveInvoices(response);
       }

@@ -3,7 +3,8 @@ class Api::PurchaseOrdersController < ApplicationController
   include PurchaseOrderItems
 
   def index
-    @purchase_orders = PurchaseOrder.all.includes(:customer, :purchase_order_items)
+    @purchase_orders = PurchaseOrder.all.includes(:customer, :purchase_order_items).order('ship_date DESC')
+    @purchase_orders = @purchase_orders.limit(25) unless params[:all]
     @shipping_addresses = ShippingAddress.all
     @jobs = Job.where(name: "import inventory").order(:id)
     render "index.json.jbuilder"

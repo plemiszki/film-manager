@@ -1,6 +1,6 @@
 #purchase-orders-index {
 
-  a:not(:first-of-type) {
+  a:not(:first-of-type):not(.see-all) {
     position: relative;
     margin-right: 20px;
 
