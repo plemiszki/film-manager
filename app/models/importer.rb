@@ -344,7 +344,56 @@ class Importer < ActiveRecord::Base
     object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Theaters.txt")
     object.get(response_target: Rails.root.join("tmp/#{time_started}/Theaters.txt"))
     File.open(Rails.root.join("tmp/#{time_started}/Theaters.txt")) do |f|
-      array = f.gets.split('%')
+
+      a = f.gets.split('%')
+      total = a[0].to_i
+      a.shift
+      Venue.destroy_all
+      venues = 0
+
+      until venues == total
+        # venue = Venue.find_by_label(a[2])
+
+        venue_vars = {
+          label: a[1],
+          shipping_name: a[1],
+          billing_name: a[1],
+          shipping_address1: a[2],
+          shipping_address2: a[3],
+          shipping_city: a[4],
+          shipping_state: a[5],
+          shipping_zip: a[6],
+          website: a[7],
+          email: a[9],
+          phone: a[10],
+          shipping_country: a[15],
+          billing_country: a[15],
+          billing_address1: a[16],
+          billing_address2: a[17],
+          billing_city: a[18],
+          billing_state: a[19],
+          billing_zip: a[20],
+          venue_type: a[24],
+          sage_id: a[26]
+        }
+
+        if venue_vars[:label] == "Roxie Theater" && Venue.where(label: "Roxie Theater").length > 0
+          venues += 1
+          a.shift(27)
+        elsif venue_vars[:label] == "Chicago International Film Festival" && Venue.where(label: "Chicago International Film Festival").length > 0
+          venues += 1
+          a.shift(27)
+        elsif venue_vars[:label] == "Cinematique of Daytona" && Venue.where(label: "Cinematique of Daytona").length > 0
+          venues += 1
+          a.shift(27)
+        else
+          p "Adding Venue: #{venue_vars[:label]}"
+          venue = Venue.create(venue_vars)
+          venue.save!
+          venues += 1
+          a.shift(27)
+        end
+      end
     end
     object.delete
   end

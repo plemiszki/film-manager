@@ -23,7 +23,7 @@ class FilmsController < ApplicationController
     File.open(Rails.root.join('tmp', time_started, films_io.original_filename), 'wb') do |file|
       file.write(films_io.read)
     end
-    File.open(Rails.root.join('tmp', time_started, films_io.original_filename), 'wb') do |file|
+    File.open(Rails.root.join('tmp', time_started, theaters_io.original_filename), 'wb') do |file|
       file.write(theaters_io.read)
     end
     File.open(Rails.root.join('tmp', time_started, admin_io.original_filename), 'wb') do |file|

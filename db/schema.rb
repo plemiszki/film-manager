@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180113180939) do
+ActiveRecord::Schema.define(version: 20180126201451) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -347,7 +347,7 @@ ActiveRecord::Schema.define(version: 20180113180939) do
     t.string "shipping_zip",      default: ""
     t.string "shipping_country",  default: ""
     t.string "website",           default: ""
-    t.string "sage_id",                        null: false
+    t.string "sage_id"
     t.string "email",             default: ""
     t.string "phone",             default: ""
     t.string "notes",             default: ""
