@@ -449,7 +449,7 @@ Common = {
     return(
       <Modal isOpen={this.state.jobModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.jobModalStyles}>
         <div className="jobs-modal">
-          <div className="spinner jobs-spinner"></div>
+          { HandyTools.renderSpinner(true) }
           <div className="first-line">{this.state.job.first_line}</div>
           <div className={"second-line" + (this.state.job.second_line ? "" : " hidden")}>({this.state.job.current_value} of {this.state.job.total_value})</div>
         </div>

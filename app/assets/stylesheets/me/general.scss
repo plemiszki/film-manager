@@ -8,6 +8,10 @@ html {
   clear: both;
 }
 
+.jobs-modal .spinner {
+  top: calc(35% - 45px) !important;
+}
+
 body {
   background-color: #F5F6F7;
   height: 100%;

@@ -1,5 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var ReportStore = require('../stores/reports-store.js');
 var ReportErrorsStore = require('../stores/report-errors-store.js');
@@ -393,14 +394,14 @@ var ReportDetails = React.createClass({
     }
     return(
       <div>
-        <a className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching) + Common.renderInactiveButtonClass(this.state.changesToSave)} onClick={this.clickSave}>
-          {buttonText}
+        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSave }>
+          { buttonText }
         </a>
-        <a id="export" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickExport}>
+        <a id="export" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport }>
           Export PDF
         </a>
-        <a id="toggle" className={"orange-button " + Common.renderDisabledButtonClass(this.state.fetching)} onClick={this.clickToggle}>
-          {this.state.showJoined ? "Including Current Period" : "Not Including Current Period"}
+        <a id="toggle" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickToggle }>
+          { this.state.showJoined ? "Including Current Period" : "Not Including Current Period" }
         </a>
       </div>
     )
