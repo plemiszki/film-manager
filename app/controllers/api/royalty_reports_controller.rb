@@ -145,7 +145,9 @@ class Api::RoyaltyReportsController < ApplicationController
       if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue > 0
         unless report.year == 2017 && report.quarter == 1 # returns against reserves didn't start until Q2 2017
           report.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
-          report.cume_reserve = report.get_total_past_reserves.values.sum
+          total_past_reserves = report.get_total_past_reserves
+          report.cume_reserve = total_past_reserves.values.sum
+          report.liquidated_reserve = total_past_reserves.values[0..(film.reserve_quarters * -1)].sum
         end
       end
       if film.deal_type_id == 1 # No Expenses Recouped
@@ -223,10 +225,10 @@ class Api::RoyaltyReportsController < ApplicationController
 
     if film.deal_type_id == 4
       report.amount_due = report.cume_total - report.cume_total_expenses - report.cume_reserve - report.e_and_o - report.mg - report.amount_paid
-      report.joined_amount_due = report.joined_total - report.current_total_expenses - report.cume_total_expenses - report.joined_reserve - report.e_and_o - report.mg - report.amount_paid
+      report.joined_amount_due = report.joined_total - report.current_total_expenses - report.cume_total_expenses - report.joined_reserve + report.liquidated_reserve - report.e_and_o - report.mg - report.amount_paid
     else
       report.amount_due = report.cume_total - report.cume_reserve - report.e_and_o - report.mg - report.amount_paid
-      report.joined_amount_due = report.joined_total - report.joined_reserve - report.e_and_o - report.mg - report.amount_paid
+      report.joined_amount_due = report.joined_total - report.joined_reserve + report.liquidated_reserve - report.e_and_o - report.mg - report.amount_paid
     end
     if film.deal_type_id == 4
       report.current_share_minus_expenses = report.current_total - report.current_total_expenses

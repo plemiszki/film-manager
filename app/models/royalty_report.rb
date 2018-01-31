@@ -4,8 +4,8 @@ class RoyaltyReport < ActiveRecord::Base
 
   validates :film_id, :quarter, :year, presence: true
   validates :film_id, uniqueness: { scope: [:quarter, :year] }
-  validates_numericality_of :current_total_expenses, :greater_than_or_equal_to => 0
-  validates_numericality_of :cume_total_expenses, :greater_than_or_equal_to => 0
+  validates_numericality_of :current_total_expenses
+  validates_numericality_of :cume_total_expenses
   validates_numericality_of :mg, :greater_than_or_equal_to => 0
   validates_numericality_of :e_and_o, :greater_than_or_equal_to => 0
   validates_numericality_of :amount_paid, :greater_than_or_equal_to => 0
@@ -254,6 +254,12 @@ class RoyaltyReport < ActiveRecord::Base
       string +=     "<td>#{negafy(self.joined_reserve)}</td>"
       string +=   "</tr>"
     end
+    if self.liquidated_reserve > 0
+      string +=   "<tr>"
+      string +=     "<td>Liquidated Reserve</td>"
+      string +=     "<td>#{dollarify(self.liquidated_reserve)}</td>"
+      string +=   "</tr>"
+    end
     string +=   "<tr>"
     string +=     "<td>Amount Paid</td>"
     string +=     "<td>#{negafy(self.amount_paid)}</td>"
@@ -275,10 +281,12 @@ class RoyaltyReport < ActiveRecord::Base
       total_reserves = 0
       total_liquidated = 0
       total_remaining = 0
-      self.get_total_past_reserves.each do |quarter, amount|
+      total_past_reserves = self.get_total_past_reserves
+      quarters_with_reserves = total_past_reserves.length
+      total_past_reserves.each_with_index do |(quarter, amount), index|
         if amount > 0
           total_reserves += amount
-          liquidated = 0
+          liquidated = (index < (quarters_with_reserves - film.reserve_quarters + 1) ? amount : 0)
           total_liquidated += liquidated
           difference = amount - liquidated
           total_remaining += difference
@@ -323,7 +331,9 @@ class RoyaltyReport < ActiveRecord::Base
       if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue > 0
         unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
           self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
-          self.cume_reserve = self.get_total_past_reserves.values.sum
+          total_past_reserves = self.get_total_past_reserves
+          self.cume_reserve = total_past_reserves.values.sum
+          self.liquidated_reserve = total_past_reserves.values[0..(film.reserve_quarters * -1)].sum
         end
       end
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
@@ -413,7 +423,7 @@ class RoyaltyReport < ActiveRecord::Base
   end
 
   def past_reports
-    RoyaltyReport.where("film_id = ? AND id < ?", film_id, id)
+    RoyaltyReport.where("film_id = ? AND id < ?", film_id, id).order(:id)
   end
 
   private

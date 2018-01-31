@@ -124,7 +124,7 @@ FilmsStore.findRevenuePercentage = function(revenueStreamId) {
 };
 
 FilmsStore.reports = function() {
-  return _reports;
+  return HandyTools.sortArrayOfObjects(_reports, 'id');
 };
 
 FilmsStore.dvds = function() {

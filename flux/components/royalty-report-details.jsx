@@ -394,7 +394,7 @@ var ReportDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSave }>
+        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave }>
           { buttonText }
         </a>
         <a id="export" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport }>

@@ -8,7 +8,7 @@ class ImportData
     p '---------------------------'
     Importer.import_admin(time_started)
     Importer.import_films(time_started)
-    Importer.import_theaters(time_started)
+    # Importer.import_theaters(time_started)
     p '---------------------------'
     p 'FINISHED DATA IMPORT'
     p '---------------------------'
