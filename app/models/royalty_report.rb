@@ -15,7 +15,7 @@ class RoyaltyReport < ActiveRecord::Base
 
   def self.get_total_due(quarter, year, days_statement_due = nil)
     if days_statement_due
-      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { days_statement_due: days_statement_due })
+      reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { days_statement_due: days_statement_due })
     else
       reports = RoyaltyReport.where(quarter: quarter, year: year)
     end
