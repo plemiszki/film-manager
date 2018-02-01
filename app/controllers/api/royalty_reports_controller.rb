@@ -142,7 +142,7 @@ class Api::RoyaltyReportsController < ApplicationController
     streams.each do |stream|
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
       stream.joined_expense = stream.current_expense + stream.cume_expense
-      if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue > 0
+      if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue != 0
         unless report.year == 2017 && report.quarter == 1 # returns against reserves didn't start until Q2 2017
           report.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
           total_past_reserves = report.get_total_past_reserves
