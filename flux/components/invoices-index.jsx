@@ -133,7 +133,10 @@ var InvoicesIndex = React.createClass({
       this.setState({
         fetching: true
       });
-      ClientActions.exportInvoices(this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber));
+      var invoiceIds = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber).map(function(invoice) {
+        return invoice.id;
+      });
+      ClientActions.exportInvoices(invoiceIds);
     }
   },
 

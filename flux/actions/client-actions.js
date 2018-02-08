@@ -854,12 +854,12 @@ var ClientActions = {
     });
   },
 
-  exportInvoices: function(invoices) {
+  exportInvoices: function(invoiceIds) {
     $.ajax({
       url: '/api/invoices/export',
       method: 'POST',
       data: {
-        invoices: invoices
+        invoice_ids: invoiceIds
       },
       success: function(response) {
         ServerActions.receiveJob(response);
