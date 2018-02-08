@@ -62,6 +62,7 @@ var VenuesIndex = React.createClass({
   },
 
   render: function() {
+    var filteredVenues = this.state.venues.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="venues-index" className="component">
         <div className="clearfix">
@@ -81,7 +82,7 @@ var VenuesIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td><td></td></tr>
-              {this.state.venues.filterSearchText(this.state.searchText, this.state.sortBy).map(function(venue, index) {
+              { _.orderBy(filteredVenues, [Common.commonSort.bind(this)]).map(function(venue, index) {
                 return(
                   <tr key={index} onClick={this.redirect.bind(this, venue.id)}>
                     <td className="name-column">

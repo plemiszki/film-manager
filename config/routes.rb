@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: "films#index"
   resources :films, only: [:index, :show]
   resources :venues, only: [:index, :show]
+  resources :bookings, only: [:index, :show]
   resources :dvds, only: [:show]
   resources :shorts, only: [:index]
   resources :licensors, only: [:index, :show]
@@ -28,6 +29,7 @@ Rails.application.routes.draw do
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     resources :films, only: [:index, :show, :create, :update, :destroy]
     resources :venues, only: [:index, :show, :create, :update, :destroy]
+    resources :bookings, only: [:index, :show, :create, :update, :destroy]
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]
     resources :giftbox_dvds, only: [:create, :destroy]
     get '/royalty_reports/zip' => '/api/royalty_reports#zip'

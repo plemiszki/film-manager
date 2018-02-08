@@ -1050,6 +1050,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     })
+  },
+
+  fetchBookings: function(id) {
+    $.ajax({
+      url: '/api/bookings/',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      }
+    });
   }
 }
 

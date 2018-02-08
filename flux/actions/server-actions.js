@@ -212,6 +212,13 @@ var ServerActions = {
       actionType: "VENUES_RECEIVED",
       venues: response.venues
     });
+  },
+
+  receiveBookings: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "BOOKINGS_RECEIVED",
+      bookings: response.bookings
+    });
   }
 }
 
