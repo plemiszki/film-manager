@@ -414,10 +414,10 @@ class RoyaltyReport < ActiveRecord::Base
       self.current_share_minus_expenses = self.current_total - self.current_total_expenses
       self.joined_total_expenses = self.current_total_expenses + self.cume_total_expenses
       self.amount_due = self.cume_total - self.cume_total_expenses - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
-      self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.joined_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.joined_reserve + self.liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
     else
       self.amount_due = self.cume_total - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
-      self.joined_amount_due = self.joined_total - self.joined_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due = self.joined_total - self.joined_reserve + self.liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
     end
     return royalty_revenue_streams
   end
