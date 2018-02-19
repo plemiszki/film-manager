@@ -217,7 +217,10 @@ var ServerActions = {
   receiveBookings: function(response) {
     AppDispatcher.dispatch({
       actionType: "BOOKINGS_RECEIVED",
-      bookings: response.bookings
+      bookings: response.bookings,
+      films: response.films,
+      venues: response.venues,
+      users: response.users
     });
   }
 }

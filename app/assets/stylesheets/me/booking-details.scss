@@ -1,0 +1,20 @@
+.booking-details {
+
+  input.checkbox {
+    display: inline-block;
+    width: auto;
+    margin-right: 25px;
+  }
+
+  label.checkbox {
+    display: inline-block;
+    font-family: 'teachablesansmedium';
+    color: #2C2F33;
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  a.confirmation-button {
+    margin-bottom: 30px;
+  }
+}

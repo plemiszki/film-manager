@@ -1052,12 +1052,74 @@ var ClientActions = {
     })
   },
 
-  fetchBookings: function(id) {
+  fetchBookings: function() {
     $.ajax({
       url: '/api/bookings/',
       method: 'GET',
       success: function(response) {
         ServerActions.receiveBookings(response);
+      }
+    });
+  },
+
+  fetchBooking: function(id) {
+    $.ajax({
+      url: '/api/bookings/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      }
+    });
+  },
+
+  updateBooking: function(booking) {
+    $.ajax({
+      url: '/api/bookings/' + booking.id,
+      method: 'PATCH',
+      data: {
+        booking: {
+          film_id: booking.filmId,
+          venue_id: booking.venueId,
+          start_date: booking.startDate,
+          end_date: booking.endDate,
+          booking_type: booking.bookingType,
+          status: booking.status,
+          screenings: booking.screenings,
+          email: booking.email,
+          booker_id: booking.bookerId,
+          user_id: booking.userId,
+          format: booking.format,
+          premiere: booking.premiere,
+          advance: HandyTools.removeFinanceSymbols(booking.advance),
+          shipping_fee: HandyTools.removeFinanceSymbols(booking.shippingFee),
+          deduction: HandyTools.removeFinanceSymbols(booking.deduction),
+          house_expense: HandyTools.removeFinanceSymbols(booking.houseExpense),
+          terms_change: booking.termsChange,
+          terms: booking.terms,
+          billing_name: booking.billingName,
+          billing_address1: booking.billingAddress1,
+          billing_address2: booking.billingAddress2,
+          billing_city: booking.billingCity,
+          billing_state: booking.billingState,
+          billing_zip: booking.billingZip,
+          billing_country: booking.billingCountry,
+          shipping_name: booking.shippingName,
+          shipping_address1: booking.shippingAddress1,
+          shipping_address2: booking.shippingAddress2,
+          shipping_city: booking.shippingCity,
+          shipping_state: booking.shippingState,
+          shipping_zip: booking.shippingZip,
+          shipping_country: booking.shippingCountry,
+          materials_sent: booking.materialsSent,
+          tracking_number: booking.trackingNumber,
+          shipping_notes: booking.shippingNotes
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
       }
     });
   }

@@ -27,6 +27,7 @@ var ReturnDetails = require('./components/return-details.jsx');
 var VenuesIndex = require('./components/venues-index.jsx');
 var VenueDetails = require('./components/venue-details.jsx');
 var BookingsIndex = require('./components/bookings-index.jsx');
+var BookingDetails = require('./components/booking-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -113,5 +114,8 @@ $(document).ready(function() {
   }
   if ($('#bookings-index')[0]) {
     ReactDOM.render(<BookingsIndex />, document.getElementById("bookings-index"));
+  }
+  if ($('#booking-details')[0]) {
+    ReactDOM.render(<BookingDetails />, document.getElementById("booking-details"));
   }
 });

@@ -289,6 +289,29 @@ Common = {
     ],
     venueType: [
       "Venue type can't be blank"
+    ],
+    materialsSent: [
+      "Materials sent is not a valid date"
+    ],
+    startDate: [
+      "Start date is not a valid date",
+      "Start date can't be blank"
+    ],
+    endDate: [
+      "End date is not a valid date",
+      "End date can't be blank"
+    ],
+    advance: [
+      "Advance is not a number"
+    ],
+    shippingFee: [
+      "Shipping fee is not a number"
+    ],
+    houseExpense: [
+      "House expense is not a number"
+    ],
+    deduction: [
+      "Deduction is not a number"
     ]
   },
 

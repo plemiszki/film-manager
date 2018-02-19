@@ -1,0 +1,490 @@
+var React = require('react');
+var Modal = require('react-modal');
+var HandyTools = require('handy-tools');
+var ClientActions = require('../actions/client-actions.js');
+var BookingsStore = require('../stores/bookings-store.js');
+var ErrorsStore = require('../stores/errors-store.js');
+import ModalSelect from './modal-select.jsx';
+
+var BookingDetails = React.createClass({
+
+  getInitialState: function() {
+    return({
+      fetching: true,
+      booking: {},
+      bookingSaved: {},
+      users: [],
+      errors: [],
+      changesToSave: false,
+      justSaved: false,
+      deleteModalOpen: false
+    });
+  },
+
+  componentDidMount: function() {
+    Common.setUpNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    this.bookingListener = BookingsStore.addListener(this.getBooking);
+    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+    ClientActions.fetchBooking(window.location.pathname.split("/")[2]);
+  },
+
+  componentWillUnmount: function() {
+    this.bookingListener.remove();
+    this.errorsListener.remove();
+  },
+
+  getBooking: function() {
+    this.setState({
+      booking: Tools.deepCopy(BookingsStore.find(window.location.pathname.split("/")[2])),
+      bookingSaved: BookingsStore.find(window.location.pathname.split("/")[2]),
+      users: BookingsStore.users(),
+      fetching: false
+    }, function() {
+      this.setState({
+        changesToSave: this.checkForChanges()
+      });
+    });
+  },
+
+  getErrors: function() {
+    this.setState({
+      errors: ErrorsStore.all(),
+      fetching: false
+    });
+  },
+
+  clickSave: function() {
+    if (this.state.changesToSave) {
+      this.setState({
+        fetching: true,
+        justSaved: true
+      }, function() {
+        ClientActions.updateBooking(this.state.booking);
+      });
+    }
+  },
+
+  clickDelete: function() {
+    this.setState({
+      deleteModalOpen: true
+    });
+  },
+
+  clickSelectFilmButton: function() {
+    this.setState({
+      filmsModalOpen: true
+    });
+  },
+
+  clickSelectFilm: function(event) {
+    var booking = this.state.booking;
+    booking.filmId = +event.target.dataset.id;
+    this.setState({
+      booking: booking,
+      filmsModalOpen: false,
+    }, function() {
+      this.setState({
+        changesToSave: this.checkForChanges()
+      })
+    });
+  },
+
+  clickSelectVenueButton: function() {
+    this.setState({
+      venuesModalOpen: true
+    });
+  },
+
+  clickSelectVenue: function(event) {
+    var booking = this.state.booking;
+    booking.venueId = +event.target.dataset.id;
+    this.setState({
+      booking: booking,
+      venuesModalOpen: false
+    }, function() {
+      this.setState({
+        changesToSave: this.checkForChanges()
+      })
+    });
+  },
+
+  confirmDelete: function() {
+    this.setState({
+      fetching: true,
+      deleteModalOpen: false
+    }, function() {
+      ClientActions.deleteAndGoToIndex('bookings', this.state.booking.id);
+    });
+  },
+
+  handleModalClose: function() {
+    this.setState({
+      deleteModalOpen: false,
+      filmsModalOpen: false,
+      venuesModalOpen: false
+    });
+  },
+
+  checkForChanges: function() {
+    return !Tools.objectsAreEqual(this.state.booking, this.state.bookingSaved);
+  },
+
+  changeFieldArgs: function() {
+    return {
+      thing: "booking",
+      errorsArray: this.state.errors,
+      changesFunction: this.checkForChanges
+    }
+  },
+
+  render: function() {
+    return(
+      <div className="booking-details">
+        <div className="component details-component">
+          <h1>Booking Details</h1>
+          <div className="white-box">
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <div className="row">
+              <div className="col-xs-5">
+                <h2>Film</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly="true" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-1 select-from-modal">
+                <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+              </div>
+              <div className="col-xs-5">
+                <h2>Venue</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly="true" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-1 select-from-modal">
+                <img src={ Images.openModal } onClick={ this.clickSelectVenueButton } />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-2">
+                <h2>Start Date</h2>
+                <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.startDate || "" } data-field="startDate" />
+                { Common.renderFieldError(this.state.errors, Common.errors.startDate) }
+              </div>
+              <div className="col-xs-2">
+                <h2>End Date</h2>
+                <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.endDate || "" } data-field="endDate" />
+                { Common.renderFieldError(this.state.errors, Common.errors.endDate) }
+              </div>
+              <div className="col-xs-3">
+                <h2>Type</h2>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookingType" value={ this.state.booking.bookingType }>
+                  <option value={ "Theatrical" }>Theatrical</option>
+                  <option value={ "Non-Theatrical" }>Non-Theatrical</option>
+                  <option value={ "Festival" }>Festival</option>
+                </select>
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-3">
+                <h2>Status</h2>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="status" value={ this.state.booking.status }>
+                  <option value={ "Tentative" }>Tentative</option>
+                  <option value={ "Confirmed" }>Confirmed</option>
+                </select>
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-2">
+                <h2>Screenings</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.screenings || "" } data-field="screenings" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-6">
+                <h2>Email</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.email || "" } data-field="email" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-3">
+                <h2>Booked By</h2>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
+                  { this.state.users.map(function(user) {
+                    return(
+                      <option key={ user.id } value={ user.id }>{ user.name }</option>
+                    );
+                  }) }
+                </select>
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-3">
+                <h2>Entered By</h2>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="userId" value={ this.state.booking.userId }>
+                  { this.state.users.map(function(user) {
+                    return(
+                      <option key={ user.id } value={ user.id }>{ user.name }</option>
+                    );
+                  }) }
+                </select>
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-3">
+                <h2>Format</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.format || "" } data-field="format" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-5">
+                <h2>Premiere</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.premiere || "" } data-field="premiere" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-2">
+                <h2>Advance</h2>
+                <input className={ Common.errorClass(this.state.errors, Common.errors.advance) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.advance || "" } data-field="advance" />
+                { Common.renderFieldError(this.state.errors, Common.errors.advance) }
+              </div>
+              <div className="col-xs-2">
+                <h2>Shipping Fee</h2>
+                <input className={ Common.errorClass(this.state.errors, Common.errors.shippingFee) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.shippingFee || "" } data-field="shippingFee" />
+                { Common.renderFieldError(this.state.errors, Common.errors.shippingFee) }
+              </div>
+              <div className="col-xs-2">
+                <h2>Deduction</h2>
+                <input className={ Common.errorClass(this.state.errors, Common.errors.deduction) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.deduction || "" } data-field="deduction" />
+                { Common.renderFieldError(this.state.errors, Common.errors.deduction) }
+              </div>
+              <div className="col-xs-2">
+                <h2>House Expense</h2>
+                <input className={ Common.errorClass(this.state.errors, Common.errors.houseExpense) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.houseExpense || "" } data-field="houseExpense" />
+                { Common.renderFieldError(this.state.errors, Common.errors.houseExpense) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-3">
+                <input id="terms-change-weekly" className="checkbox" type="checkbox" onChange={ Common.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.booking.termsChange || false } data-field="termsChange" /><label className="checkbox" htmlFor="terms-change-weekly">Terms Change Weekly</label>
+              </div>
+              <div className="col-xs-3">
+                <h2>Terms</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <hr />
+            <h3>Billing Address:</h3>
+            <div className="row">
+              <div className="col-xs-4">
+                <h2>Name</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingName || ""} data-field="billingName" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-4">
+                <h2>Address 1</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingAddress1 || ""} data-field="billingAddress1" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-4">
+                <h2>Address 2</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingAddress2 || ""} data-field="billingAddress2" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-3">
+                <h2>City</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingCity || ""} data-field="billingCity" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-1">
+                <h2>State</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingState || ""} data-field="billingState" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-2">
+                <h2>Zip</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingZip || ""} data-field="billingZip" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-2">
+                <h2>Country</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.billingCountry || "" } data-field="billingCountry" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <hr />
+            <h3>Shipping Address:</h3>
+            <div className="row">
+              <div className="col-xs-4">
+                <h2>Name</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingName || ""} data-field="shippingName" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-4">
+                <h2>Address 1</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingAddress1 || ""} data-field="shippingAddress1" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-4">
+                <h2>Address 2</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingAddress2 || ""} data-field="shippingAddress2" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-3">
+                <h2>City</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingCity || ""} data-field="shippingCity" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-1">
+                <h2>State</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingState || ""} data-field="shippingState" />
+                {Common.renderFieldError(this.state.errors, [])}
+              </div>
+              <div className="col-xs-2">
+                <h2>Zip</h2>
+                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingZip || ""} data-field="shippingZip" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-2">
+                <h2>Country</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.shippingCountry || "" } data-field="shippingCountry" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <hr />
+            <h3>Booking Confirmation:</h3>
+            { this.renderConfirmationSection() }
+            <hr />
+            <h3>Invoices:</h3>
+            { this.renderInvoicesSection() }
+            <hr />
+            <h3>Payments:</h3>
+            <hr />
+            <h3>Screening Materials:</h3>
+              <div className="row">
+                <div className="col-xs-3">
+                  <h2>Materials Sent</h2>
+                  <input className={ Common.errorClass(this.state.errors, Common.errors.materialsSent) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.materialsSent || "" } data-field="materialsSent" />
+                  { Common.renderFieldError(this.state.errors, Common.errors.materialsSent) }
+                </div>
+                <div className="col-xs-3">
+                  <h2>Tracking Number</h2>
+                  <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.trackingNumber || "" } data-field="trackingNumber" />
+                  { Common.renderFieldError(this.state.errors, []) }
+                </div>
+                <div className="col-xs-6">
+                  <h2>Shipping Notes</h2>
+                  <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.shippingNotes || "" } data-field="shippingNotes" />
+                  { Common.renderFieldError(this.state.errors, []) }
+                </div>
+              </div>
+            { this.renderButtons() }
+          </div>
+        </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+          <div className="confirm-delete">
+            <h1>Are you sure you want to permanently delete this booking&#63;</h1>
+            Deleting a booking will erase ALL of its information and data<br />
+            <a className={ "red-button" } onClick={ this.confirmDelete }>
+              Yes
+            </a>
+            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+              No
+            </a>
+          </div>
+        </Modal>
+        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm } />
+        </Modal>
+        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue } />
+        </Modal>
+      </div>
+    );
+  },
+
+  renderConfirmationSection: function() {
+    if (this.state.booking.bookingConfirmationSent) {
+      return(
+        <div className="row">
+          <div className="col-xs-3">
+            <h2>Booking Confirmation Sent</h2>
+            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.bookingConfirmationSent || "" } data-field="bookingConfirmationSent" readOnly={ true } />
+            { Common.renderFieldError(this.state.errors, []) }
+          </div>
+        </div>
+      )
+    } else {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <a className={ "orange-button confirmation-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSendConfirmation }>
+              Send Booking Confirmation
+            </a>
+          </div>
+        </div>
+      )
+    }
+  },
+
+  renderInvoicesSection: function() {
+    if (this.state.booking.importedAdvanceInvoiceSent || this.state.booking.importedAdvanceInvoiceNumber || this.state.booking.importedOverageInvoiceSent || this.state.booking.importedOverageInvoiceNumber) {
+      return(
+        <div className="row">
+          <div className="col-xs-3">
+            <h2>Advance Invoice Sent</h2>
+            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedAdvanceInvoiceSent || "" } data-field="importedAdvanceInvoiceSent" readOnly={ true } />
+            { Common.renderFieldError(this.state.errors, []) }
+          </div>
+          <div className="col-xs-3">
+            <h2>Advance Invoice Number</h2>
+            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedAdvanceInvoiceNumber || "" } data-field="importedAdvanceInvoiceNumber" readOnly={ true } />
+            { Common.renderFieldError(this.state.errors, []) }
+          </div>
+          <div className="col-xs-3">
+            <h2>Overage Invoice Sent</h2>
+            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedOverageInvoiceSent || "" } data-field="importedOverageInvoiceSent" readOnly={ true } />
+            { Common.renderFieldError(this.state.errors, []) }
+          </div>
+          <div className="col-xs-3">
+            <h2>Overage Invoice Number</h2>
+            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedOverageInvoiceNumber || "" } data-field="importedOverageInvoiceNumber" readOnly={ true } />
+            { Common.renderFieldError(this.state.errors, []) }
+          </div>
+        </div>
+      )
+    } else {
+      return(
+        <div className="row">
+        </div>
+      )
+    }
+  },
+
+  renderButtons: function() {
+    if (this.state.changesToSave) {
+      var buttonText = "Save";
+    } else {
+      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
+    }
+    return(
+      <div>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+          { buttonText }
+        </a>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+          Delete Booking
+        </a>
+      </div>
+    )
+  },
+
+  componentDidUpdate: function() {
+    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    $('.match-height-layout').matchHeight();
+  }
+});
+
+module.exports = BookingDetails;
