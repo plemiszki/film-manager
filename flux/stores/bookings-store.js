@@ -44,6 +44,14 @@ BookingsStore.users = function() {
   return HandyTools.alphabetizeArrayOfObjects(users, 'name');
 };
 
+BookingsStore.bookers = function() {
+  var users = Object.keys(_users).map(function(id) {
+    return(_users[id]);
+  });
+  users = users.filter(function(user) { return user.booker });
+  return HandyTools.alphabetizeArrayOfObjects(users, 'name');
+};
+
 BookingsStore.films = function() {
   var films = Object.keys(_films).map(function(id) {
     return(_films[id]);

@@ -14,7 +14,7 @@ var ModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 351
+    height: 500
   }
 };
 
@@ -102,7 +102,7 @@ var BookingsIndex = React.createClass({
           </table>
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing="booking" initialObject={ {} } />
+          <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.users()[0] && BookingsStore.users()[0].id, userId: Common.user.id } } />
         </Modal>
       </div>
     );

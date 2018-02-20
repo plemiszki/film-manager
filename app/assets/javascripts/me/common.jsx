@@ -312,6 +312,15 @@ Common = {
     ],
     deduction: [
       "Deduction is not a number"
+    ],
+    terms: [
+      "Terms can't be blank"
+    ],
+    film: [
+      "Film can't be blank"
+    ],
+    venue: [
+      "Venue can't be blank"
     ]
   },
 

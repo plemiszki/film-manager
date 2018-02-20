@@ -207,7 +207,7 @@ var BookingDetails = React.createClass({
               <div className="col-xs-3">
                 <h2>Booked By</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
-                  { this.state.users.map(function(user) {
+                  { BookingsStore.bookers().map(function(user) {
                     return(
                       <option key={ user.id } value={ user.id }>{ user.name }</option>
                     );

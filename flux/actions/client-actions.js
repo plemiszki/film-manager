@@ -1072,6 +1072,34 @@ var ClientActions = {
     });
   },
 
+  createBooking: function(booking) {
+    var date = new Date;
+    $.ajax({
+      url: '/api/bookings',
+      method: 'POST',
+      data: {
+        booking: {
+          film_id: booking.filmId,
+          venue_id: booking.venueId,
+          date_added: ((date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear().toString().slice(2, 4)),
+          start_date: booking.startDate,
+          end_date: booking.endDate,
+          booking_type: booking.bookingType,
+          status: booking.status,
+          user_id: booking.userId,
+          booker_id: booking.bookerId,
+          terms: booking.terms
+        }
+      },
+      success: function(response) {
+        window.location.pathname = "/bookings/" + response.booking.id;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
+      }
+    });
+  },
+
   updateBooking: function(booking) {
     $.ajax({
       url: '/api/bookings/' + booking.id,
