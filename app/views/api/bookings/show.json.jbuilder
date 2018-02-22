@@ -45,6 +45,11 @@ json.bookings @bookings do |booking|
   json.notes booking.notes
   json.deduction dollarify(number_with_precision(booking.deduction, precision: 2, delimiter: ','))
 end
+json.weeklyTerms @weekly_terms do |weekly_term|
+  json.id weekly_term.id
+  json.order weekly_term.order
+  json.terms weekly_term.terms
+end
 json.films @films do |film|
   json.id film.id
   json.title film.title

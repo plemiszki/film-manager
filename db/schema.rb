@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180219142058) do
+ActiveRecord::Schema.define(version: 20180222145933) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -409,5 +409,13 @@ ActiveRecord::Schema.define(version: 20180219142058) do
     t.string "notes",             default: ""
     t.string "venue_type",                     null: false
   end
+
+  create_table "weekly_terms", force: :cascade do |t|
+    t.integer "booking_id", null: false
+    t.string  "terms",      null: false
+    t.integer "order",      null: false
+  end
+
+  add_index "weekly_terms", ["booking_id"], name: "index_weekly_terms_on_booking_id", using: :btree
 
 end

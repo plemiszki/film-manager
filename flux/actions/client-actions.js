@@ -1086,7 +1086,6 @@ var ClientActions = {
           end_date: booking.endDate,
           booking_type: booking.bookingType,
           status: booking.status,
-          user_id: booking.userId,
           booker_id: booking.bookerId,
           terms: booking.terms
         }
@@ -1115,7 +1114,6 @@ var ClientActions = {
           screenings: booking.screenings,
           email: booking.email,
           booker_id: booking.bookerId,
-          user_id: booking.userId,
           format: booking.format,
           premiere: booking.premiere,
           advance: HandyTools.removeFinanceSymbols(booking.advance),
@@ -1148,6 +1146,35 @@ var ClientActions = {
       },
       error: function(response) {
         ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  createWeeklyTerm: function(weeklyTerm) {
+    $.ajax({
+      url: '/api/weekly_terms/',
+      method: 'POST',
+      data: {
+        weekly_terms: {
+          terms: weeklyTerm.terms,
+          booking_id: weeklyTerm.bookingId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveWeeklyTerms(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deleteWeeklyTerm: function(id) {
+    $.ajax({
+      url: '/api/weekly_terms/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveWeeklyTerms(response);
       }
     });
   }

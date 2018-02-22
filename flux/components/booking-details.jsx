@@ -3,8 +3,23 @@ var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var BookingsStore = require('../stores/bookings-store.js');
+var WeeklyTermsStore = require('../stores/weekly-terms-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
 import ModalSelect from './modal-select.jsx';
+import NewThing from './new-thing.jsx';
+
+var WeeklyTermStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 700,
+    height: 240
+  }
+};
 
 var BookingDetails = React.createClass({
 
@@ -14,22 +29,26 @@ var BookingDetails = React.createClass({
       booking: {},
       bookingSaved: {},
       users: [],
+      weeklyTerms: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      newWeeklyTermsModalOpen: false
     });
   },
 
   componentDidMount: function() {
     Common.setUpNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     this.bookingListener = BookingsStore.addListener(this.getBooking);
+    this.weeklyTermsListener = WeeklyTermsStore.addListener(this.getWeeklyTerms);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
     ClientActions.fetchBooking(window.location.pathname.split("/")[2]);
   },
 
   componentWillUnmount: function() {
     this.bookingListener.remove();
+    this.weeklyTermsListener.remove();
     this.errorsListener.remove();
   },
 
@@ -38,11 +57,20 @@ var BookingDetails = React.createClass({
       booking: Tools.deepCopy(BookingsStore.find(window.location.pathname.split("/")[2])),
       bookingSaved: BookingsStore.find(window.location.pathname.split("/")[2]),
       users: BookingsStore.users(),
+      weeklyTerms: BookingsStore.weeklyTerms(),
       fetching: false
     }, function() {
       this.setState({
         changesToSave: this.checkForChanges()
       });
+    });
+  },
+
+  getWeeklyTerms: function() {
+    this.setState({
+      weeklyTerms: WeeklyTermsStore.all(),
+      fetching: false,
+      newWeeklyTermsModalOpen: false
     });
   },
 
@@ -64,9 +92,18 @@ var BookingDetails = React.createClass({
     }
   },
 
-  clickDelete: function() {
+  clickDelete: function(e) {
     this.setState({
       deleteModalOpen: true
+    });
+  },
+
+  confirmDelete: function() {
+    this.setState({
+      fetching: true,
+      deleteModalOpen: false
+    }, function() {
+      ClientActions.deleteAndGoToIndex('bookings', this.state.booking.id);
     });
   },
 
@@ -108,20 +145,30 @@ var BookingDetails = React.createClass({
     });
   },
 
-  confirmDelete: function() {
+  clickAddWeek: function() {
     this.setState({
-      fetching: true,
-      deleteModalOpen: false
-    }, function() {
-      ClientActions.deleteAndGoToIndex('bookings', this.state.booking.id);
+      newWeeklyTermsModalOpen: true
     });
   },
 
-  handleModalClose: function() {
+  clickDeleteWeek: function(e) {
     this.setState({
+      fetching: true
+    });
+    var id = e.target.dataset.id;
+    ClientActions.deleteWeeklyTerm(id);
+  },
+
+  handleModalClose: function() {
+    var errors = this.state.errors;
+    HandyTools.removeFromArray(errors, "Terms can't be blank");
+    this.setState({
+      errors: errors,
       deleteModalOpen: false,
       filmsModalOpen: false,
-      venuesModalOpen: false
+      venuesModalOpen: false,
+      newWeeklyTermsModalOpen: false,
+      newBoxOfficeWeekModalOpen: false
     });
   },
 
@@ -216,30 +263,17 @@ var BookingDetails = React.createClass({
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-3">
-                <h2>Entered By</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="userId" value={ this.state.booking.userId }>
-                  { this.state.users.map(function(user) {
-                    return(
-                      <option key={ user.id } value={ user.id }>{ user.name }</option>
-                    );
-                  }) }
-                </select>
-                { Common.renderFieldError(this.state.errors, []) }
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-xs-3">
                 <h2>Format</h2>
                 <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.format || "" } data-field="format" />
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
-              <div className="col-xs-5">
+            </div>
+            <div className="row">
+              <div className="col-xs-4">
                 <h2>Premiere</h2>
                 <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.premiere || "" } data-field="premiere" />
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
-            </div>
-            <div className="row">
               <div className="col-xs-2">
                 <h2>Advance</h2>
                 <input className={ Common.errorClass(this.state.errors, Common.errors.advance) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.advance || "" } data-field="advance" />
@@ -261,15 +295,12 @@ var BookingDetails = React.createClass({
                 { Common.renderFieldError(this.state.errors, Common.errors.houseExpense) }
               </div>
             </div>
+            <hr />
             <div className="row">
               <div className="col-xs-3">
                 <input id="terms-change-weekly" className="checkbox" type="checkbox" onChange={ Common.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.booking.termsChange || false } data-field="termsChange" /><label className="checkbox" htmlFor="terms-change-weekly">Terms Change Weekly</label>
               </div>
-              <div className="col-xs-3">
-                <h2>Terms</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
-                { Common.renderFieldError(this.state.errors, []) }
-              </div>
+              { this.renderTermsColumn() }
             </div>
             <hr />
             <h3>Billing Address:</h3>
@@ -401,8 +432,37 @@ var BookingDetails = React.createClass({
         <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue } />
         </Modal>
+        <Modal isOpen={ this.state.newWeeklyTermsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
+          <NewThing thing="weeklyTerm" initialObject={ { bookingId: this.state.booking.id } } />
+        </Modal>
       </div>
     );
+  },
+
+  renderTermsColumn: function() {
+    if (this.state.booking.termsChange) {
+      return(
+        <div className="col-xs-6">
+          <h2>Terms by Week</h2>
+          <ul>
+            { this.state.weeklyTerms.map(function(weeklyTerms) {
+              return(
+                <li key={ weeklyTerms.id }>Week { +weeklyTerms.order + 1 } - { weeklyTerms.terms }<div className="x-button" onClick={ this.clickDeleteWeek } data-id={ weeklyTerms.id }></div></li>
+              );
+            }.bind(this)) }
+          </ul>
+          <a className={ 'blue-outline-button small' } onClick={ this.clickAddWeek }>Add Week</a>
+        </div>
+      );
+    } else {
+      return(
+        <div className="col-xs-3">
+          <h2>Terms</h2>
+          <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
+          { Common.renderFieldError(this.state.errors, Common.errors.terms) }
+        </div>
+      );
+    }
   },
 
   renderConfirmationSection: function() {

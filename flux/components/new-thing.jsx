@@ -133,6 +133,7 @@ var NewThing = React.createClass({
           { this.renderShippingAddress() }
           { this.renderVenueFields() }
           { this.renderBookingFields() }
+          { this.renderWeeklyTermsFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -147,7 +148,8 @@ var NewThing = React.createClass({
       giftbox: "Gift Box",
       dvd: "DVD",
       purchaseOrder: "Purchase Order",
-      shippingAddress: "Shipping Address"
+      shippingAddress: "Shipping Address",
+      weeklyTerm: "Weekly Terms"
     };
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
@@ -301,6 +303,20 @@ var NewThing = React.createClass({
           <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
             <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue } />
           </Modal>
+        </div>
+      );
+    }
+  },
+
+  renderWeeklyTermsFields: function() {
+    if (this.props.thing === "weeklyTerm") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Weekly Terms</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.weeklyTerm.terms || "" } data-field="terms" />
+            { Common.renderFieldError(this.state.errors, Common.errors.terms) }
+          </div>
         </div>
       );
     }

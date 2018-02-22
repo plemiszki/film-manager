@@ -8,6 +8,7 @@ var _bookings = {};
 var _films = {};
 var _venues = {};
 var _users = {};
+var _weeklyTerms = {};
 
 BookingsStore.setStuff = function(payload) {
   payload.bookings.forEach(function(booking) {
@@ -19,6 +20,11 @@ BookingsStore.setStuff = function(payload) {
   payload.venues.forEach(function(venue) {
     _venues[venue.id] = venue;
   });
+  if (payload.weeklyTerms) {
+    payload.weeklyTerms.forEach(function(weeklyTerm) {
+      _weeklyTerms[weeklyTerm.id] = weeklyTerm;
+    });
+  }
   if (payload.users) {
     payload.users.forEach(function(user) {
       _users[user.id] = user;
@@ -72,6 +78,13 @@ BookingsStore.venues = function() {
 
 BookingsStore.findVenue = function(id) {
   return _venues[id];
+};
+
+BookingsStore.weeklyTerms = function() {
+  var weeklyTerms = Object.keys(_weeklyTerms).map(function(id) {
+    return(_weeklyTerms[id]);
+  });
+  return HandyTools.sortArrayOfObjects(weeklyTerms, 'week');
 };
 
 BookingsStore.__onDispatch = function(payload) {

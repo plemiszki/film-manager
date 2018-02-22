@@ -8,4 +8,6 @@ class Booking < ActiveRecord::Base
   belongs_to :film
   belongs_to :venue
 
+  has_many :weekly_terms
+
 end

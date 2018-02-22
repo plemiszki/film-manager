@@ -218,9 +218,17 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "BOOKINGS_RECEIVED",
       bookings: response.bookings,
+      weeklyTerms: response.weeklyTerms,
       films: response.films,
       venues: response.venues,
       users: response.users
+    });
+  },
+
+  receiveWeeklyTerms: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "WEEKLY_TERMS_RECEIVED",
+      weeklyTerms: response.weeklyTerms
     });
   }
 }
