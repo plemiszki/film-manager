@@ -44,11 +44,17 @@ json.bookings @bookings do |booking|
   json.houseExpense dollarify(number_with_precision(booking.house_expense, precision: 2, delimiter: ','))
   json.notes booking.notes
   json.deduction dollarify(number_with_precision(booking.deduction, precision: 2, delimiter: ','))
+  json.boxOffice dollarify(number_with_precision(booking.box_office, precision: 2, delimiter: ','))
 end
 json.weeklyTerms @weekly_terms do |weekly_term|
   json.id weekly_term.id
   json.order weekly_term.order
   json.terms weekly_term.terms
+end
+json.weeklyBoxOffice @weekly_box_offices do |weekly_box_office|
+  json.id weekly_box_office.id
+  json.order weekly_box_office.order
+  json.amount dollarify(number_with_precision(weekly_box_office.amount, precision: 2, delimiter: ','))
 end
 json.films @films do |film|
   json.id film.id

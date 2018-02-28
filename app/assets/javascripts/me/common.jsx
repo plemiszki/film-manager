@@ -321,6 +321,13 @@ Common = {
     ],
     venue: [
       "Venue can't be blank"
+    ],
+    boxOffice: [
+      "Box office is not a number"
+    ],
+    amount: [
+      "Amount can't be blank",
+      "Amount is not a number"
     ]
   },
 

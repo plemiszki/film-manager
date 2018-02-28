@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180222145933) do
+ActiveRecord::Schema.define(version: 20180225201842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 20180222145933) do
     t.decimal "house_expense",                   precision: 5, scale: 2, default: 0.0
     t.string  "notes",                                                   default: ""
     t.decimal "deduction",                       precision: 5, scale: 2, default: 0.0
+    t.decimal "box_office",                      precision: 8, scale: 2, default: 0.0
   end
 
   add_index "bookings", ["booker_id"], name: "index_bookings_on_booker_id", using: :btree
@@ -409,6 +410,14 @@ ActiveRecord::Schema.define(version: 20180222145933) do
     t.string "notes",             default: ""
     t.string "venue_type",                     null: false
   end
+
+  create_table "weekly_box_offices", force: :cascade do |t|
+    t.integer "order",                                            null: false
+    t.integer "booking_id",                                       null: false
+    t.decimal "amount",     precision: 8, scale: 2, default: 0.0
+  end
+
+  add_index "weekly_box_offices", ["booking_id"], name: "index_weekly_box_offices_on_booking_id", using: :btree
 
   create_table "weekly_terms", force: :cascade do |t|
     t.integer "booking_id", null: false

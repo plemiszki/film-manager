@@ -11,6 +11,7 @@ class Api::BookingsController < ApplicationController
   def show
     @bookings = Booking.where(id: params[:id])
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
+    @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])
     @films = Film.where(short_film: false)
     @venues = Venue.all
     @users = User.all
@@ -69,7 +70,7 @@ class Api::BookingsController < ApplicationController
   private
 
   def booking_params
-    params[:booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :booking_type, :status, :screenings, :email, :booker_id, :format, :premiere, :advance, :shipping_fee, :deduction, :house_expense, :terms_change, :terms, :billing_name, :billing_address1, :billing_address2, :billing_city, :billing_state, :billing_zip, :billing_country, :shipping_name, :shipping_address1, :shipping_address2, :shipping_city, :shipping_state, :shipping_zip, :shipping_country, :materials_sent, :tracking_number, :shipping_notes)
+    params[:booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :booking_type, :status, :screenings, :email, :booker_id, :format, :premiere, :advance, :shipping_fee, :deduction, :house_expense, :terms_change, :terms, :billing_name, :billing_address1, :billing_address2, :billing_city, :billing_state, :billing_zip, :billing_country, :shipping_name, :shipping_address1, :shipping_address2, :shipping_city, :shipping_state, :shipping_zip, :shipping_country, :materials_sent, :tracking_number, :shipping_notes, :box_office)
   end
 
 end

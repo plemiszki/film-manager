@@ -219,6 +219,7 @@ var ServerActions = {
       actionType: "BOOKINGS_RECEIVED",
       bookings: response.bookings,
       weeklyTerms: response.weeklyTerms,
+      weeklyBoxOffice: response.weeklyBoxOffice,
       films: response.films,
       venues: response.venues,
       users: response.users
@@ -229,6 +230,13 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "WEEKLY_TERMS_RECEIVED",
       weeklyTerms: response.weeklyTerms
+    });
+  },
+
+  receiveWeeklyBoxOffices: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "WEEKLY_BOX_OFFICES_RECEIVED",
+      weeklyBoxOffices: response.weeklyBoxOffices
     });
   }
 }

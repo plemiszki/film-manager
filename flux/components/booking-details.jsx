@@ -4,6 +4,7 @@ var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var BookingsStore = require('../stores/bookings-store.js');
 var WeeklyTermsStore = require('../stores/weekly-terms-store.js');
+var WeeklyBoxOfficesStore = require('../stores/weekly-box-offices-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
 import ModalSelect from './modal-select.jsx';
 import NewThing from './new-thing.jsx';
@@ -30,11 +31,13 @@ var BookingDetails = React.createClass({
       bookingSaved: {},
       users: [],
       weeklyTerms: [],
+      weeklyBoxOffices: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
-      newWeeklyTermsModalOpen: false
+      newWeeklyTermsModalOpen: false,
+      newWeeklyBoxOfficeModalOpen: false
     });
   },
 
@@ -42,6 +45,7 @@ var BookingDetails = React.createClass({
     Common.setUpNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     this.bookingListener = BookingsStore.addListener(this.getBooking);
     this.weeklyTermsListener = WeeklyTermsStore.addListener(this.getWeeklyTerms);
+    this.weeklyBoxOfficesListener = WeeklyBoxOfficesStore.addListener(this.getWeeklyBoxOffices);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
     ClientActions.fetchBooking(window.location.pathname.split("/")[2]);
   },
@@ -49,6 +53,7 @@ var BookingDetails = React.createClass({
   componentWillUnmount: function() {
     this.bookingListener.remove();
     this.weeklyTermsListener.remove();
+    this.weeklyBoxOfficesListener.remove();
     this.errorsListener.remove();
   },
 
@@ -58,6 +63,7 @@ var BookingDetails = React.createClass({
       bookingSaved: BookingsStore.find(window.location.pathname.split("/")[2]),
       users: BookingsStore.users(),
       weeklyTerms: BookingsStore.weeklyTerms(),
+      weeklyBoxOffices: BookingsStore.weeklyBoxOffice(),
       fetching: false
     }, function() {
       this.setState({
@@ -71,6 +77,14 @@ var BookingDetails = React.createClass({
       weeklyTerms: WeeklyTermsStore.all(),
       fetching: false,
       newWeeklyTermsModalOpen: false
+    });
+  },
+
+  getWeeklyBoxOffices: function() {
+    this.setState({
+      weeklyBoxOffices: WeeklyBoxOfficesStore.all(),
+      fetching: false,
+      newWeeklyBoxOfficeModalOpen: false
     });
   },
 
@@ -159,6 +173,20 @@ var BookingDetails = React.createClass({
     ClientActions.deleteWeeklyTerm(id);
   },
 
+  clickAddWeeklyBoxOffice: function() {
+    this.setState({
+      newWeeklyBoxOfficeModalOpen: true
+    });
+  },
+
+  clickDeleteWeeklyBoxOffice: function(e) {
+    this.setState({
+      fetching: true
+    });
+    var id = e.target.dataset.id;
+    ClientActions.deleteWeeklyBoxOffice(id);
+  },
+
   handleModalClose: function() {
     var errors = this.state.errors;
     HandyTools.removeFromArray(errors, "Terms can't be blank");
@@ -168,7 +196,7 @@ var BookingDetails = React.createClass({
       filmsModalOpen: false,
       venuesModalOpen: false,
       newWeeklyTermsModalOpen: false,
-      newBoxOfficeWeekModalOpen: false
+      newWeeklyBoxOfficeModalOpen: false
     });
   },
 
@@ -388,11 +416,6 @@ var BookingDetails = React.createClass({
             <h3>Booking Confirmation:</h3>
             { this.renderConfirmationSection() }
             <hr />
-            <h3>Invoices:</h3>
-            { this.renderInvoicesSection() }
-            <hr />
-            <h3>Payments:</h3>
-            <hr />
             <h3>Screening Materials:</h3>
               <div className="row">
                 <div className="col-xs-3">
@@ -411,6 +434,15 @@ var BookingDetails = React.createClass({
                   { Common.renderFieldError(this.state.errors, []) }
                 </div>
               </div>
+            <hr />
+            <h3>Box Office:</h3>
+            { this.renderBoxOfficeSection() }
+            <hr />
+            <h3>Invoices:</h3>
+            { this.renderInvoicesSection() }
+            <hr />
+            <h3>Payments:</h3>
+            <hr />
             { this.renderButtons() }
           </div>
         </div>
@@ -434,6 +466,9 @@ var BookingDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.newWeeklyTermsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="weeklyTerm" initialObject={ { bookingId: this.state.booking.id } } />
+        </Modal>
+        <Modal isOpen={ this.state.newWeeklyBoxOfficeModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
+          <NewThing thing="weeklyBoxOffice" initialObject={ { bookingId: this.state.booking.id } } />
         </Modal>
       </div>
     );
@@ -486,6 +521,36 @@ var BookingDetails = React.createClass({
           </div>
         </div>
       )
+    }
+  },
+
+  renderBoxOfficeSection: function() {
+    if (this.state.booking.termsChange) {
+      return(
+        <div className="row">
+          <div className="col-xs-6">
+            <h2>Box Office by Week</h2>
+            <ul>
+              { this.state.weeklyBoxOffices.map(function(weeklyBoxOffice) {
+                return(
+                  <li key={ weeklyBoxOffice.id }>Week { +weeklyBoxOffice.order + 1 } - { weeklyBoxOffice.amount }<div className="x-button" onClick={ this.clickDeleteWeeklyBoxOffice } data-id={ weeklyBoxOffice.id }></div></li>
+                );
+              }.bind(this)) }
+            </ul>
+            <a className={ 'blue-outline-button small' } onClick={ this.clickAddWeeklyBoxOffice }>Add Weekly Box Office</a>
+          </div>
+        </div>
+      );
+    } else {
+      return(
+        <div className="row">
+          <div className="col-xs-3">
+            <h2>Box Office</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.boxOffice) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.boxOffice || "" } data-field="boxOffice" />
+            { Common.renderFieldError(this.state.errors, Common.errors.boxOffice) }
+          </div>
+        </div>
+      );
     }
   },
 

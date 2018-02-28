@@ -1138,7 +1138,8 @@ var ClientActions = {
           shipping_country: booking.shippingCountry,
           materials_sent: booking.materialsSent,
           tracking_number: booking.trackingNumber,
-          shipping_notes: booking.shippingNotes
+          shipping_notes: booking.shippingNotes,
+          box_office: HandyTools.removeFinanceSymbols(booking.boxOffice)
         }
       },
       success: function(response) {
@@ -1175,6 +1176,35 @@ var ClientActions = {
       method: 'DELETE',
       success: function(response) {
         ServerActions.receiveWeeklyTerms(response);
+      }
+    });
+  },
+
+  createWeeklyBoxOffice: function(weeklyBoxOffice) {
+    $.ajax({
+      url: '/api/weekly_box_offices/',
+      method: 'POST',
+      data: {
+        weekly_box_office: {
+          amount: weeklyBoxOffice.amount,
+          booking_id: weeklyBoxOffice.bookingId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveWeeklyBoxOffices(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deleteWeeklyBoxOffice: function(id) {
+    $.ajax({
+      url: '/api/weekly_box_offices/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveWeeklyBoxOffices(response);
       }
     });
   }
