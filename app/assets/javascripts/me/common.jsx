@@ -253,6 +253,7 @@ Common = {
       "Order date is not a valid date"
     ],
     date: [
+      "Date can't be blank",
       "Date is not a valid date"
     ],
     sageId: [

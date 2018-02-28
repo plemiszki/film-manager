@@ -56,6 +56,12 @@ json.weeklyBoxOffice @weekly_box_offices do |weekly_box_office|
   json.order weekly_box_office.order
   json.amount dollarify(number_with_precision(weekly_box_office.amount, precision: 2, delimiter: ','))
 end
+json.payments @payments do |payment|
+  json.id payment.id
+  json.date payment.date.strftime("%-m/%-d/%y")
+  json.notes payment.notes
+  json.amount dollarify(number_with_precision(payment.amount, precision: 2, delimiter: ','))
+end
 json.films @films do |film|
   json.id film.id
   json.title film.title

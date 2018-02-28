@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180225201842) do
+ActiveRecord::Schema.define(version: 20180228172200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -247,6 +247,13 @@ ActiveRecord::Schema.define(version: 20180225201842) do
   end
 
   add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
+
+  create_table "payments", force: :cascade do |t|
+    t.integer "booking_id"
+    t.decimal "amount",     precision: 8, scale: 2, default: 0.0
+    t.date    "date"
+    t.string  "notes"
+  end
 
   create_table "purchase_order_items", force: :cascade do |t|
     t.integer "purchase_order_id",             null: false

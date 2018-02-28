@@ -10,6 +10,7 @@ var _venues = {};
 var _users = {};
 var _weeklyTerms = {};
 var _weeklyBoxOffice = {};
+var _payments = {};
 
 BookingsStore.setStuff = function(payload) {
   payload.bookings.forEach(function(booking) {
@@ -29,6 +30,11 @@ BookingsStore.setStuff = function(payload) {
   if (payload.weeklyBoxOffice) {
     payload.weeklyBoxOffice.forEach(function(weeklyBoxOffice) {
       _weeklyBoxOffice[weeklyBoxOffice.id] = weeklyBoxOffice;
+    });
+  }
+  if (payload.payments) {
+    payload.payments.forEach(function(payment) {
+      _payments[payment.id] = payment;
     });
   }
   if (payload.users) {
@@ -98,6 +104,13 @@ BookingsStore.weeklyBoxOffice = function() {
     return(_weeklyBoxOffice[id]);
   });
   return HandyTools.sortArrayOfObjects(weeklyBoxOffice, 'order');
+};
+
+BookingsStore.payments = function() {
+  var payments = Object.keys(_payments).map(function(id) {
+    return(_payments[id]);
+  });
+  return HandyTools.sortArrayOfDateStrings(payments, 'date');
 };
 
 BookingsStore.__onDispatch = function(payload) {

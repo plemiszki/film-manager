@@ -12,6 +12,7 @@ class Api::BookingsController < ApplicationController
     @bookings = Booking.where(id: params[:id])
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
     @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])
+    @payments = Payment.where(booking_id: params[:id])
     @films = Film.where(short_film: false)
     @venues = Venue.all
     @users = User.all

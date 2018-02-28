@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     resources :return_items, only: [:create, :destroy]
     resources :weekly_terms, only: [:create, :destroy]
     resources :weekly_box_offices, only: [:create, :destroy]
+    resources :payments, only: [:create, :destroy]
   end
 
   # Clearance ------------------------

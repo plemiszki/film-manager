@@ -1207,6 +1207,37 @@ var ClientActions = {
         ServerActions.receiveWeeklyBoxOffices(response);
       }
     });
+  },
+
+  createPayment: function(payment) {
+    $.ajax({
+      url: '/api/payments',
+      method: 'POST',
+      data: {
+        payment: {
+          booking_id: payment.bookingId,
+          date: payment.date,
+          amount: payment.amount,
+          notes: payment.notes
+        }
+      },
+      success: function(response) {
+        ServerActions.receivePayments(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deletePayment: function(id) {
+    $.ajax({
+      url: '/api/payments/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receivePayments(response);
+      }
+    });
   }
 }
 

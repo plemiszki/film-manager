@@ -5,6 +5,7 @@ var ClientActions = require('../actions/client-actions.js');
 var BookingsStore = require('../stores/bookings-store.js');
 var WeeklyTermsStore = require('../stores/weekly-terms-store.js');
 var WeeklyBoxOfficesStore = require('../stores/weekly-box-offices-store.js');
+var PaymentsStore = require('../stores/payments-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
 import ModalSelect from './modal-select.jsx';
 import NewThing from './new-thing.jsx';
@@ -32,12 +33,14 @@ var BookingDetails = React.createClass({
       users: [],
       weeklyTerms: [],
       weeklyBoxOffices: [],
+      payments: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
       newWeeklyTermsModalOpen: false,
-      newWeeklyBoxOfficeModalOpen: false
+      newWeeklyBoxOfficeModalOpen: false,
+      newPaymentModalOpen: false
     });
   },
 
@@ -46,6 +49,7 @@ var BookingDetails = React.createClass({
     this.bookingListener = BookingsStore.addListener(this.getBooking);
     this.weeklyTermsListener = WeeklyTermsStore.addListener(this.getWeeklyTerms);
     this.weeklyBoxOfficesListener = WeeklyBoxOfficesStore.addListener(this.getWeeklyBoxOffices);
+    this.paymentsListener = PaymentsStore.addListener(this.getPayments);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
     ClientActions.fetchBooking(window.location.pathname.split("/")[2]);
   },
@@ -54,6 +58,7 @@ var BookingDetails = React.createClass({
     this.bookingListener.remove();
     this.weeklyTermsListener.remove();
     this.weeklyBoxOfficesListener.remove();
+    this.paymentsListener.remove();
     this.errorsListener.remove();
   },
 
@@ -64,6 +69,7 @@ var BookingDetails = React.createClass({
       users: BookingsStore.users(),
       weeklyTerms: BookingsStore.weeklyTerms(),
       weeklyBoxOffices: BookingsStore.weeklyBoxOffice(),
+      payments: BookingsStore.payments(),
       fetching: false
     }, function() {
       this.setState({
@@ -85,6 +91,14 @@ var BookingDetails = React.createClass({
       weeklyBoxOffices: WeeklyBoxOfficesStore.all(),
       fetching: false,
       newWeeklyBoxOfficeModalOpen: false
+    });
+  },
+
+  getPayments: function() {
+    this.setState({
+      payments: PaymentsStore.all(),
+      fetching: false,
+      newPaymentModalOpen: false
     });
   },
 
@@ -187,6 +201,20 @@ var BookingDetails = React.createClass({
     ClientActions.deleteWeeklyBoxOffice(id);
   },
 
+  clickAddPayment: function() {
+    this.setState({
+      newPaymentModalOpen: true
+    });
+  },
+
+  clickDeletePayment: function(e) {
+    this.setState({
+      fetching: false
+    });
+    var id = e.target.dataset.id;
+    ClientActions.deletePayment(id);
+  },
+
   handleModalClose: function() {
     var errors = this.state.errors;
     HandyTools.removeFromArray(errors, "Terms can't be blank");
@@ -196,7 +224,8 @@ var BookingDetails = React.createClass({
       filmsModalOpen: false,
       venuesModalOpen: false,
       newWeeklyTermsModalOpen: false,
-      newWeeklyBoxOfficeModalOpen: false
+      newWeeklyBoxOfficeModalOpen: false,
+      newPaymentModalOpen: false
     });
   },
 
@@ -442,6 +471,18 @@ var BookingDetails = React.createClass({
             { this.renderInvoicesSection() }
             <hr />
             <h3>Payments:</h3>
+            <div className="row">
+              <div className="col-xs-6">
+                <ul>
+                  { this.state.payments.map(function(payment) {
+                    return(
+                      <li key={ payment.id }>{ payment.date } - { payment.amount }{ payment.notes && " (" + payment.notes + ")" }<div className="x-button" onClick={ this.clickDeletePayment } data-id={ payment.id }></div></li>
+                    );
+                  }.bind(this)) }
+                </ul>
+                <a className={ 'blue-outline-button small' } onClick={ this.clickAddPayment }>Add Payment</a>
+              </div>
+            </div>
             <hr />
             { this.renderButtons() }
           </div>
@@ -469,6 +510,9 @@ var BookingDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.newWeeklyBoxOfficeModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="weeklyBoxOffice" initialObject={ { bookingId: this.state.booking.id } } />
+        </Modal>
+        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
+          <NewThing thing="payment" initialObject={ { bookingId: this.state.booking.id, date: "", amount: "", notes: "" } } />
         </Modal>
       </div>
     );

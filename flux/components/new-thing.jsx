@@ -135,6 +135,7 @@ var NewThing = React.createClass({
           { this.renderBookingFields() }
           { this.renderWeeklyTermsFields() }
           { this.renderWeeklyBoxOfficeFields() }
+          { this.renderPaymentFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -338,6 +339,30 @@ var NewThing = React.createClass({
     }
   },
 
+  renderPaymentFields: function() {
+    if (this.props.thing === "payment") {
+      return(
+        <div className="row">
+          <div className="col-xs-3">
+            <h2>Date</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.date) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.date || "" } data-field="date" />
+            { Common.renderFieldError(this.state.errors, Common.errors.date) }
+          </div>
+          <div className="col-xs-3">
+            <h2>Amount</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.amount) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.amount || "" } data-field="amount" />
+            { Common.renderFieldError(this.state.errors, Common.errors.amount) }
+          </div>
+          <div className="col-xs-6">
+            <h2>Note</h2>
+            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.notes || "" } data-field="notes" />
+            { Common.renderFieldError(this.state.errors, []) }
+          </div>
+        </div>
+      );
+    }
+  },
+
   renderDvdCustomerFields: function() {
     if (this.props.thing === "dvdCustomer") {
       return(
@@ -498,7 +523,7 @@ var NewThing = React.createClass({
             <div className="col-xs-6">
               <h2>Order Date</h2>
               <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].orderDate} data-field="orderDate" />
-              {Common.renderFieldError(this.state.errors, Common.errors.orderDate)}
+              { Common.renderFieldError(this.state.errors, Common.errors.orderDate) }
             </div>
           </div>
         </div>
@@ -512,8 +537,8 @@ var NewThing = React.createClass({
         <div className="row">
           <div className="col-xs-12">
             <h2>Label</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.label)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].label} data-field="label" />
-            {Common.renderFieldError(this.state.errors, Common.errors.label)}
+            <input className={ Common.errorClass(this.state.errors, Common.errors.label) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].label } data-field="label" />
+            { Common.renderFieldError(this.state.errors, Common.errors.label) }
           </div>
         </div>
       );
