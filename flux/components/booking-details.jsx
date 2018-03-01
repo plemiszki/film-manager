@@ -237,7 +237,15 @@ var BookingDetails = React.createClass({
     return {
       thing: "booking",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges,
+      beforeSave: function(newThing, key, value) {
+        if (key == "terms") {
+          if (value !== "90/10") {
+            newThing.houseExpense = "$0.00";
+            Common.removeFieldError(this.state.errors, "houseExpense")
+          }
+        }
+      }
     }
   },
 
@@ -346,11 +354,7 @@ var BookingDetails = React.createClass({
                 <input className={ Common.errorClass(this.state.errors, Common.errors.deduction) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.deduction || "" } data-field="deduction" />
                 { Common.renderFieldError(this.state.errors, Common.errors.deduction) }
               </div>
-              <div className="col-xs-2">
-                <h2>House Expense</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.houseExpense) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.houseExpense || "" } data-field="houseExpense" />
-                { Common.renderFieldError(this.state.errors, Common.errors.houseExpense) }
-              </div>
+              { this.renderHouseExpense() }
             </div>
             <hr />
             <div className="row">
@@ -539,6 +543,18 @@ var BookingDetails = React.createClass({
           <h2>Terms</h2>
           <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
           { Common.renderFieldError(this.state.errors, Common.errors.terms) }
+        </div>
+      );
+    }
+  },
+
+  renderHouseExpense: function() {
+    if (!this.state.booking.termsChange && this.state.booking.terms === "90/10") {
+      return(
+        <div className="col-xs-2">
+          <h2>House Expense</h2>
+          <input className={ Common.errorClass(this.state.errors, Common.errors.houseExpense) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.houseExpense || "" } data-field="houseExpense" />
+          { Common.renderFieldError(this.state.errors, Common.errors.houseExpense) }
         </div>
       );
     }
