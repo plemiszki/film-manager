@@ -329,6 +329,9 @@ Common = {
     amount: [
       "Amount can't be blank",
       "Amount is not a number"
+    ],
+    bookingConfirmationText: [
+      "Booking confirmation text can't be blank"
     ]
   },
 
