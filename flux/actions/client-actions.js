@@ -1238,6 +1238,34 @@ var ClientActions = {
         ServerActions.receivePayments(response);
       }
     });
+  },
+
+  fetchSettings: function() {
+    $.ajax({
+      url: '/api/settings/',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveSettings(response);
+      }
+    });
+  },
+
+  updateSettings: function(settings) {
+    $.ajax({
+      url: '/api/settings',
+      method: 'PATCH',
+      data: {
+        settings: {
+          booking_confirmation_text: settings.bookingConfirmationText
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveSettings(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

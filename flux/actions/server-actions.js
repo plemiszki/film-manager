@@ -246,6 +246,13 @@ var ServerActions = {
       actionType: "PAYMENTS_RECEIVED",
       payments: response.payments
     });
+  },
+
+  receiveSettings: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "SETTINGS_RECEIVED",
+      settings: response.settings
+    });
   }
 }
 

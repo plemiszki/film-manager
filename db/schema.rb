@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180228172200) do
+ActiveRecord::Schema.define(version: 20180305223037) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -363,6 +363,10 @@ ActiveRecord::Schema.define(version: 20180228172200) do
     t.decimal "joined_expense",         precision: 8, scale: 2, default: 0.0
     t.decimal "joined_difference",      precision: 8, scale: 2, default: 0.0
     t.decimal "joined_licensor_share",  precision: 8, scale: 2, default: 0.0
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.string "booking_confirmation_text"
   end
 
   create_table "shipping_addresses", force: :cascade do |t|

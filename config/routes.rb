@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show]
   resources :invoices, only: [:index, :show]
   resources :returns, only: [:index, :show]
+  resource :setting, path: "settings"
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
@@ -56,6 +57,7 @@ Rails.application.routes.draw do
     resources :weekly_terms, only: [:create, :destroy]
     resources :weekly_box_offices, only: [:create, :destroy]
     resources :payments, only: [:create, :destroy]
+    resource :settings
   end
 
   # Clearance ------------------------
