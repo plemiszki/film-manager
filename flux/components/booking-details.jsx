@@ -215,6 +215,15 @@ var BookingDetails = React.createClass({
     ClientActions.deletePayment(id);
   },
 
+  clickSendConfirmation: function() {
+    if (this.state.changesToSave === false) {
+      this.setState({
+        fetching: true
+      });
+      ClientActions.sendConfirmation(this.state.booking);
+    }
+  },
+
   handleModalClose: function() {
     var errors = this.state.errors;
     HandyTools.removeFromArray(errors, "Terms can't be blank");
@@ -446,9 +455,7 @@ var BookingDetails = React.createClass({
               </div>
             </div>
             <hr />
-            <h3>Booking Confirmation:</h3>
             { this.renderConfirmationSection() }
-            <hr />
             <h3>Screening Materials:</h3>
               <div className="row">
                 <div className="col-xs-3">
@@ -563,24 +570,34 @@ var BookingDetails = React.createClass({
   renderConfirmationSection: function() {
     if (this.state.booking.bookingConfirmationSent) {
       return(
-        <div className="row">
-          <div className="col-xs-3">
-            <h2>Booking Confirmation Sent</h2>
-            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.bookingConfirmationSent || "" } data-field="bookingConfirmationSent" readOnly={ true } />
-            { Common.renderFieldError(this.state.errors, []) }
+        <div>
+          <h3>Booking Confirmation:</h3>
+          <div className="row">
+            <div className="col-xs-3">
+              <h2>Booking Confirmation Sent</h2>
+              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.bookingConfirmationSent || "" } data-field="bookingConfirmationSent" readOnly={ true } />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
           </div>
+          <hr />
         </div>
       )
     } else {
-      return(
-        <div className="row">
-          <div className="col-xs-12">
-            <a className={ "orange-button confirmation-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSendConfirmation }>
-              Send Booking Confirmation
-            </a>
+      if (this.state.bookingSaved.email) {
+        return(
+          <div>
+            <h3>Booking Confirmation:</h3>
+            <div className="row">
+              <div className="col-xs-12">
+                <a className={ "orange-button confirmation-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSendConfirmation }>
+                  { this.state.changesToSave ? "Save to Send" : "Send Booking Confirmation" }
+                </a>
+              </div>
+            </div>
+            <hr />
           </div>
-        </div>
-      )
+        );
+      }
     }
   },
 

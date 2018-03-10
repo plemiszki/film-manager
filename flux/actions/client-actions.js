@@ -1266,6 +1266,20 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  sendConfirmation: function(booking) {
+    $.ajax({
+      url: '/api/bookings/' + booking.id + '/confirm',
+      method: 'POST',
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      },
+      error: function(response) {
+        console.log(response);
+        // ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

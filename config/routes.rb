@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     resources :films, only: [:index, :show, :create, :update, :destroy]
     resources :venues, only: [:index, :show, :create, :update, :destroy]
     resources :bookings, only: [:index, :show, :create, :update, :destroy]
+    post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]
     resources :giftbox_dvds, only: [:create, :destroy]
     get '/royalty_reports/zip' => '/api/royalty_reports#zip'

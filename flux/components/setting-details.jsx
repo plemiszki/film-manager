@@ -81,7 +81,7 @@ var SettingsDetails = React.createClass({
             <div className="row">
               <div className="col-xs-12">
                 <h2>Booking Confirmation Email Text</h2>
-                <textarea rows="5" cols="20" onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.settings.bookingConfirmationText || ""} data-field="bookingConfirmationText" />
+                <textarea rows="15" cols="20" onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.settings.bookingConfirmationText || ""} data-field="bookingConfirmationText" />
                 { Common.renderFieldError(this.state.errors, Common.errors.bookingConfirmationText) }
               </div>
             </div>
