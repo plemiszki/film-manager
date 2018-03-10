@@ -332,6 +332,12 @@ Common = {
     ],
     bookingConfirmationText: [
       "Booking confirmation text can't be blank"
+    ],
+    year: [
+      "Year is not a number"
+    ],
+    length: [
+      "Length is not a number"
     ]
   },
 

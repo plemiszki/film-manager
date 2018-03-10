@@ -101,19 +101,29 @@ class Api::BookingsController < ApplicationController
     string += "#{booking.shipping_address2}\n" unless booking.shipping_address2.empty?
     string += "#{booking.shipping_city}, #{booking.shipping_state} #{booking.shipping_zip}\n"
     string += "#{booking.shipping_country}\n" unless booking.shipping_country == "USA" || booking.shipping_country == "US"
-    string += "\nYou will find the synopsis, photos, poster art and press kit to download on our website:\n"
-    string += "http://www.filmmovement.com/films/#{booking.film.title.gsub(/\s'.,?]/, "")}\n\n"
-    if booking.film.standalone_site
-      # standalone site
+    string += "\n"
+    # string += "You will find the synopsis, photos, poster art and press kit to download on our website:\n"
+    # string += "http://www.filmmovement.com/films/#{booking.film.title.gsub(/[\s'.,?]/, "")}\n\n"
+    unless booking.film.standalone_site.empty?
+      string += "The film's official website is:\n"
+      string += "#{booking.film.standalone_site}\n\n"
     end
-    if booking.film.youtube_trailer
-      # youtube trailer
+    unless booking.film.youtube_trailer.empty?
+      string += "Here's a link to the trailer:\n"
+      string += "#{booking.film.youtube_trailer}\n\n"
     end
-    if booking.film.prores_trailer
-      # prores trailer download
+    unless booking.film.prores_trailer.empty?
+      string += "You can download a ProRes version of the trailer at:\n"
+      string += "#{booking.film.prores_trailer}\n\n"
     end
     string += "#{Setting.first.booking_confirmation_text}\n\n"
-    # social media links
+    unless booking.film.facebook_link.empty? && booking.film.twitter_link.empty? && booking.film.instagram_link.empty?
+      string += "SOCIAL MEDIA LINKS\n"
+      string += "Facebook: #{booking.film.facebook_link}\n" unless booking.film.facebook_link.empty?
+      string += "Twitter: #{booking.film.twitter_link}\n" unless booking.film.twitter_link.empty?
+      string += "Instagram: #{booking.film.instagram_link}\n" unless booking.film.instagram_link.empty?
+      string += "\n"
+    end
     string += "Best,\n\n"
     string += current_user.email_signature
   end

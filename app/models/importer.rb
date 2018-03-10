@@ -110,8 +110,22 @@ class Importer < ActiveRecord::Base
           expense_cap: a[358],
           sage_id: a[276],
           royalty_notes: a[337],
-          send_reports: a[348] == "False"
-          # TODO: feature id
+          send_reports: a[348] == "False",
+          year: a[7].to_i,
+          length: a[6].to_i,
+          director: a[2],
+          synopsis: a[18],
+          short_synopsis: a[81],
+          vod_synopsis: a[204],
+          logline: a[189],
+          institutional_synopsis: a[355],
+          vimeo_trailer: a[97],
+          youtube_trailer: a[98],
+          prores_trailer: a[343],
+          standalone_site: a[347],
+          facebook_link: a[344],
+          twitter_link: a[345],
+          instagram_link: a[346]
         }
         film = Film.find_by({title: film_vars[:title], short_film: film_vars[:short_film]})
         if film

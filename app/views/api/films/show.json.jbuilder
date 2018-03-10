@@ -19,6 +19,21 @@ json.films @films do |film|
   json.sellOffPeriod film.sell_off_period
   json.autoRenew film.auto_renew
   json.autoRenewTerm film.auto_renew_term
+  json.year film.year.to_s || ""
+  json.length film.length.to_s || ""
+  json.director film.director
+  json.synopsis film.synopsis || ""
+  json.shortSynopsis film.short_synopsis || ""
+  json.vodSynopsis film.vod_synopsis || ""
+  json.logline film.logline || ""
+  json.institutionalSynopsis film.institutional_synopsis || ""
+  json.vimeoTrailer film.vimeo_trailer || ""
+  json.youtubeTrailer film.youtube_trailer || ""
+  json.proresTrailer film.prores_trailer || ""
+  json.standaloneSite film.standalone_site || ""
+  json.facebookLink film.facebook_link || ""
+  json.twitterLink film.twitter_link || ""
+  json.instagramLink film.instagram_link || ""
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

@@ -216,7 +216,22 @@ var ClientActions = {
           reserve_quarters: film.reserveQuarters,
           auto_renew: film.autoRenew,
           auto_renew_term: film.autoRenewTerm,
-          sell_off_period: film.sellOffPeriod
+          sell_off_period: film.sellOffPeriod,
+          year: film.year,
+          length: film.length,
+          director: film.director,
+          synopsis: film.synopsis,
+          short_synopsis: film.shortSynopsis,
+          logline: film.logline,
+          vod_synopsis: film.vodSynopsis,
+          institutional_synopsis: film.institutionalSynopsis,
+          vimeo_trailer: film.vimeoTrailer,
+          youtube_trailer: film.youtubeTrailer,
+          prores_trailer: film.proresTrailer,
+          standalone_site: film.standaloneSite,
+          facebook_link: film.facebookLink,
+          twitter_link: film.twitterLink,
+          instagram_link: film.instagramLink
         },
         percentages: percentages
       },
