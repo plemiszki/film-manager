@@ -80,7 +80,7 @@ class Api::BookingsController < ApplicationController
                         text: email_text
                       }
     mg_client.send_message 'filmmovement.com', message_params
-    # @bookings.first.update(booking_confirmation_sent: )
+    @bookings.first.update(booking_confirmation_sent: Date.today)
     render "show.json.jbuilder"
   end
 
