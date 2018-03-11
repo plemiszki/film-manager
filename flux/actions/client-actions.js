@@ -14,6 +14,16 @@ var ClientActions = {
     });
   },
 
+  deleteAndGoToSettings: function(directory, id) {
+    $.ajax({
+      url: '/api/' + directory + '/' + id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = '/settings';
+      }
+    });
+  },
+
   fetchUsers: function() {
     $.ajax({
       url: '/api/users',
@@ -1293,6 +1303,230 @@ var ClientActions = {
       error: function(response) {
         console.log(response);
         // ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchCountries: function() {
+    $.ajax({
+      url: '/api/countries',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveCountries(response);
+      }
+    });
+  },
+
+  fetchCountry: function(id) {
+    $.ajax({
+      url: '/api/countries/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveCountries(response);
+      }
+    });
+  },
+
+  updateCountry: function(country) {
+    $.ajax({
+      url: '/api/countries/' + country.id,
+      method: 'PATCH',
+      data: {
+        country: {
+          name: country.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveCountries(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchLanguages: function() {
+    $.ajax({
+      url: '/api/languages',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveLanguages(response);
+      }
+    });
+  },
+
+  fetchLanguage: function(id) {
+    $.ajax({
+      url: '/api/languages/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveLanguages(response);
+      }
+    });
+  },
+
+  updateLanguage: function(language) {
+    $.ajax({
+      url: '/api/languages/' + language.id,
+      method: 'PATCH',
+      data: {
+        language: {
+          name: language.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveLanguages(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchGenres: function() {
+    $.ajax({
+      url: '/api/genres',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveGenres(response);
+      }
+    });
+  },
+
+  fetchGenre: function(id) {
+    $.ajax({
+      url: '/api/genres/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveGenres(response);
+      }
+    });
+  },
+
+  updateGenre: function(genre) {
+    $.ajax({
+      url: '/api/genres/' + genre.id,
+      method: 'PATCH',
+      data: {
+        genre: {
+          name: genre.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveGenres(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchTopics: function() {
+    $.ajax({
+      url: '/api/topics',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveTopics(response);
+      }
+    });
+  },
+
+  fetchTopic: function(id) {
+    $.ajax({
+      url: '/api/topics/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveTopics(response);
+      }
+    });
+  },
+
+  updateTopic: function(topic) {
+    $.ajax({
+      url: '/api/topics/' + topic.id,
+      method: 'PATCH',
+      data: {
+        topic: {
+          name: topic.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveTopics(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  createCountry: function(country) {
+    $.ajax({
+      url: '/api/countries',
+      method: 'POST',
+      data: {
+        country: {
+          name: country.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveCountries(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  createLanguage: function(language) {
+    $.ajax({
+      url: '/api/languages',
+      method: 'POST',
+      data: {
+        language: {
+          name: language.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveLanguages(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  createGenre: function(genre) {
+    $.ajax({
+      url: '/api/genres',
+      method: 'POST',
+      data: {
+        genre: {
+          name: genre.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveGenres(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  createTopic: function(topic) {
+    $.ajax({
+      url: '/api/topics',
+      method: 'POST',
+      data: {
+        topic: {
+          name: topic.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveTopics(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
       }
     });
   }

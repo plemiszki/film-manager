@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180310174800) do
+ActiveRecord::Schema.define(version: 20180311164430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,10 @@ ActiveRecord::Schema.define(version: 20180310174800) do
   add_index "bookings", ["user_id"], name: "index_bookings_on_user_id", using: :btree
   add_index "bookings", ["venue_id"], name: "index_bookings_on_venue_id", using: :btree
 
+  create_table "countries", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
   create_table "deal_templates", force: :cascade do |t|
     t.string "name", null: false
   end
@@ -125,6 +129,21 @@ ActiveRecord::Schema.define(version: 20180310174800) do
   add_index "dvds", ["dvd_type_id"], name: "index_dvds_on_dvd_type_id", using: :btree
   add_index "dvds", ["feature_film_id"], name: "index_dvds_on_feature_film_id", using: :btree
 
+  create_table "film_countries", force: :cascade do |t|
+    t.integer "film_id",    null: false
+    t.integer "country_id", null: false
+  end
+
+  create_table "film_genres", force: :cascade do |t|
+    t.integer "film_id",  null: false
+    t.integer "genre_id", null: false
+  end
+
+  create_table "film_languages", force: :cascade do |t|
+    t.integer "film_id",     null: false
+    t.integer "language_id", null: false
+  end
+
   create_table "film_revenue_percentages", force: :cascade do |t|
     t.integer "film_id",                                                 null: false
     t.integer "revenue_stream_id",                                       null: false
@@ -141,6 +160,11 @@ ActiveRecord::Schema.define(version: 20180310174800) do
   end
 
   add_index "film_rights", ["film_id", "right_id"], name: "index_film_rights_on_film_id_and_right_id", unique: true, using: :btree
+
+  create_table "film_topics", force: :cascade do |t|
+    t.integer "film_id",  null: false
+    t.integer "topic_id", null: false
+  end
 
   create_table "films", force: :cascade do |t|
     t.string  "title",                                                          null: false
@@ -186,6 +210,10 @@ ActiveRecord::Schema.define(version: 20180310174800) do
   add_index "films", ["label_id"], name: "index_films_on_label_id", using: :btree
   add_index "films", ["licensor_id"], name: "index_films_on_licensor_id", using: :btree
   add_index "films", ["title", "short_film"], name: "index_films_on_title_and_short_film", unique: true, using: :btree
+
+  create_table "genres", force: :cascade do |t|
+    t.string "name", null: false
+  end
 
   create_table "giftbox_dvds", force: :cascade do |t|
     t.integer "dvd_id",     null: false
@@ -252,6 +280,10 @@ ActiveRecord::Schema.define(version: 20180310174800) do
   end
 
   create_table "labels", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  create_table "languages", force: :cascade do |t|
     t.string "name", null: false
   end
 
@@ -394,6 +426,10 @@ ActiveRecord::Schema.define(version: 20180310174800) do
     t.string  "country"
     t.integer "customer_id", default: 0
     t.string  "name"
+  end
+
+  create_table "topics", force: :cascade do |t|
+    t.string "name", null: false
   end
 
   create_table "users", force: :cascade do |t|

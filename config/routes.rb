@@ -20,6 +20,10 @@ Rails.application.routes.draw do
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
   patch '/users/3' => 'api/dvds#update_stock'
+  resources :countries, only: [:show]
+  resources :languages, only: [:show]
+  resources :genres, only: [:show]
+  resources :topics, only: [:show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -59,6 +63,10 @@ Rails.application.routes.draw do
     resources :weekly_box_offices, only: [:create, :destroy]
     resources :payments, only: [:create, :destroy]
     resource :settings
+    resources :countries, only: [:index, :create, :show, :update, :destroy]
+    resources :languages, only: [:index, :create, :show, :update, :destroy]
+    resources :genres, only: [:index, :create, :show, :update, :destroy]
+    resources :topics, only: [:index, :create, :show, :update, :destroy]
   end
 
   # Clearance ------------------------

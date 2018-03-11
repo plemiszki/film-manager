@@ -29,6 +29,14 @@ var VenueDetails = require('./components/venue-details.jsx');
 var BookingsIndex = require('./components/bookings-index.jsx');
 var BookingDetails = require('./components/booking-details.jsx');
 var SettingDetails = require('./components/setting-details.jsx');
+var CountriesIndex = require('./components/countries-index.jsx');
+var CountryDetails = require('./components/country-details.jsx');
+var LanguagesIndex = require('./components/languages-index.jsx');
+var LanguageDetails = require('./components/language-details.jsx');
+var GenresIndex = require('./components/genres-index.jsx');
+var GenreDetails = require('./components/genre-details.jsx');
+var TopicsIndex = require('./components/topics-index.jsx');
+var TopicDetails = require('./components/topic-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -121,5 +129,29 @@ $(document).ready(function() {
   }
   if ($('#setting-details')[0]) {
     ReactDOM.render(<SettingDetails />, document.getElementById("setting-details"));
+  }
+  if ($('#countries-index')[0]) {
+    ReactDOM.render(<CountriesIndex />, document.getElementById("countries-index"));
+  }
+  if ($('#country-details')[0]) {
+    ReactDOM.render(<CountryDetails />, document.getElementById("country-details"));
+  }
+  if ($('#languages-index')[0]) {
+    ReactDOM.render(<LanguagesIndex />, document.getElementById("languages-index"));
+  }
+  if ($('#language-details')[0]) {
+    ReactDOM.render(<LanguageDetails />, document.getElementById("language-details"));
+  }
+  if ($('#genres-index')[0]) {
+    ReactDOM.render(<GenresIndex />, document.getElementById("genres-index"));
+  }
+  if ($('#genre-details')[0]) {
+    ReactDOM.render(<GenreDetails />, document.getElementById("genre-details"));
+  }
+  if ($('#topics-index')[0]) {
+    ReactDOM.render(<TopicsIndex />, document.getElementById("topics-index"));
+  }
+  if ($('#topic-details')[0]) {
+    ReactDOM.render(<TopicDetails />, document.getElementById("topic-details"));
   }
 });

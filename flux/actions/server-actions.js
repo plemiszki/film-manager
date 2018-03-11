@@ -253,6 +253,34 @@ var ServerActions = {
       actionType: "SETTINGS_RECEIVED",
       settings: response.settings
     });
+  },
+
+  receiveCountries: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "COUNTRIES_RECEIVED",
+      countries: response
+    });
+  },
+
+  receiveLanguages: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "LANGUAGES_RECEIVED",
+      languages: response
+    });
+  },
+
+  receiveGenres: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "GENRES_RECEIVED",
+      genres: response
+    });
+  },
+
+  receiveTopics: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "TOPICS_RECEIVED",
+      topics: response
+    });
   }
 }
 
