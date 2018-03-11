@@ -90,7 +90,22 @@ class Api::FilmsController < ApplicationController
       :reserve_quarters,
       :sell_off_period,
       :auto_renew,
-      :auto_renew_term
+      :auto_renew_term,
+      :year,
+      :length,
+      :director,
+      :synopsis,
+      :short_synopsis,
+      :vod_synopsis,
+      :logline,
+      :institutional_synopsis,
+      :vimeo_trailer,
+      :youtube_trailer,
+      :prores_trailer,
+      :standalone_site,
+      :facebook_link,
+      :twitter_link,
+      :instagram_link
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

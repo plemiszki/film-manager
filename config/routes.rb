@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: "films#index"
   resources :films, only: [:index, :show]
   resources :venues, only: [:index, :show]
+  resources :bookings, only: [:index, :show]
   resources :dvds, only: [:show]
   resources :shorts, only: [:index]
   resources :licensors, only: [:index, :show]
@@ -14,6 +15,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show]
   resources :invoices, only: [:index, :show]
   resources :returns, only: [:index, :show]
+  resource :setting, path: "settings"
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
@@ -28,6 +30,8 @@ Rails.application.routes.draw do
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     resources :films, only: [:index, :show, :create, :update, :destroy]
     resources :venues, only: [:index, :show, :create, :update, :destroy]
+    resources :bookings, only: [:index, :show, :create, :update, :destroy]
+    post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]
     resources :giftbox_dvds, only: [:create, :destroy]
     get '/royalty_reports/zip' => '/api/royalty_reports#zip'
@@ -51,6 +55,10 @@ Rails.application.routes.draw do
     post '/invoices/export' => '/api/invoices#export_sage'
     resources :returns, only: [:index, :create, :show, :update, :destroy]
     resources :return_items, only: [:create, :destroy]
+    resources :weekly_terms, only: [:create, :destroy]
+    resources :weekly_box_offices, only: [:create, :destroy]
+    resources :payments, only: [:create, :destroy]
+    resource :settings
   end
 
   # Clearance ------------------------

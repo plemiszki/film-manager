@@ -3,6 +3,7 @@ class Film < ActiveRecord::Base
   validates :title, :label_id, presence: true
   validates :title, uniqueness: { scope: :short_film }
   validate :gr_percentage_tenth_decimal
+  validates_numericality_of :year, :length
   validates_numericality_of :mg, :greater_than_or_equal_to => 0
   validates_numericality_of :expense_cap, :greater_than_or_equal_to => 0
   validates_numericality_of :e_and_o, :greater_than_or_equal_to => 0

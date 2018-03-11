@@ -53,7 +53,7 @@ var FilmDetails = React.createClass({
       deleteModalOpen: false,
       licensorModalOpen: false,
       dvdModalOpen: false,
-      tab: 'Contract'
+      tab: 'General'
     });
   },
 
@@ -277,9 +277,12 @@ var FilmDetails = React.createClass({
     if (this.state.film.shortFilm === "no") {
       return(
         <div className="tabs-row">
-          {this.renderTopTab("Contract")}
-          {this.renderTopTab("DVDs")}
-          {this.renderTopTab("Statements")}
+          { this.renderTopTab("General") }
+          { this.renderTopTab("Contract") }
+          { this.renderTopTab("Synopses") }
+          { this.renderTopTab("Marketing") }
+          { this.renderTopTab("DVDs") }
+          { this.renderTopTab("Statements") }
         </div>
       )
     }
@@ -380,9 +383,113 @@ var FilmDetails = React.createClass({
           </table>
         </div>
       )
+    } else if (this.state.tab === "General") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-8">
+              <h2>Director</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.director || "" } data-field="director" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className="col-xs-2">
+              <h2>Year</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.year) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.year || "" } data-field="year" />
+              { Common.renderFieldError(this.state.filmErrors, Common.errors.year) }
+            </div>
+            <div className="col-xs-2">
+              <h2>Length (minutes)</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.length) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length || "" } data-field="length" />
+              { Common.renderFieldError(this.state.filmErrors, Common.errors.length) }
+            </div>
+          </div>
+        </div>
+      )
+    } else if (this.state.tab === "Marketing") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-6">
+              <h2>Standalone Site</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.standaloneSite || "" } data-field="standaloneSite" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className="col-xs-6">
+              <h2>Vimeo Trailer Link</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vimeoTrailer || "" } data-field="vimeoTrailer" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-6">
+              <h2>YouTube Trailer Link</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.youtubeTrailer || "" } data-field="youtubeTrailer" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className="col-xs-6">
+              <h2>ProRes Trailer Link</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.proresTrailer || "" } data-field="proresTrailer" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-4">
+              <h2>Facebook Link</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.facebookLink || "" } data-field="facebookLink" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className="col-xs-4">
+              <h2>Twitter Link</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.twitterLink || "" } data-field="twitterLink" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className="col-xs-4">
+              <h2>Instagram Link</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+          </div>
+        </div>
+      )
+    } else if (this.state.tab === "Synopses") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>Synopsis</h2>
+              <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.synopsis || "" } data-field="synopsis" />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>Short Synopsis</h2>
+              <textarea rows="4" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.shortSynopsis || "" } data-field="shortSynopsis" />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>Logline</h2>
+              <textarea rows="2" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.logline || "" } data-field="logline" />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>VOD Synopsis</h2>
+              <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vodSynopsis || "" } data-field="vodSynopsis" />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>institutional Synopsis</h2>
+              <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.institutionalSynopsis || "" } data-field="institutionalSynopsis" />
+            </div>
+          </div>
+        </div>
+      )
     } else {
       return(
-        <div></div>
+        <div>
+        </div>
       )
     }
   },

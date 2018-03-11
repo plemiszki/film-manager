@@ -1,0 +1,50 @@
+.booking-details {
+
+  input.checkbox {
+    display: inline-block;
+    width: auto;
+    margin-right: 25px;
+  }
+
+  label.checkbox {
+    display: inline-block;
+    font-family: 'teachablesansmedium';
+    color: #2C2F33;
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  a.confirmation-button {
+    margin-bottom: 30px;
+  }
+
+  ul {
+    border: 1px solid #E4E9ED;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+
+    li {
+      position: relative;
+
+      &:not(:last-of-type) {
+        margin-bottom: 15px;
+      }
+
+      .x-button {
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        background-image: asset-url('gray-x.png');
+        background-size: contain;
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  a.blue-outline-button {
+    margin-bottom: 30px;
+  }
+}

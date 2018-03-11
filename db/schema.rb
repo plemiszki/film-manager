@@ -11,10 +11,66 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180126201451) do
+ActiveRecord::Schema.define(version: 20180310174800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "bookings", force: :cascade do |t|
+    t.integer "film_id",                                                                 null: false
+    t.integer "venue_id",                                                                null: false
+    t.date    "date_added",                                                              null: false
+    t.string  "booking_type",                                                            null: false
+    t.string  "status",                                                                  null: false
+    t.date    "start_date",                                                              null: false
+    t.date    "end_date",                                                                null: false
+    t.string  "terms",                                                                   null: false
+    t.boolean "terms_change",                                            default: false
+    t.decimal "advance",                         precision: 5, scale: 2, default: 0.0
+    t.decimal "shipping_fee",                    precision: 5, scale: 2, default: 0.0
+    t.integer "screenings",                                              default: 1
+    t.integer "booker_id",                                                               null: false
+    t.integer "user_id",                                                                 null: false
+    t.string  "billing_name",                                            default: ""
+    t.string  "billing_address1",                                        default: ""
+    t.string  "billing_address2",                                        default: ""
+    t.string  "billing_city",                                            default: ""
+    t.string  "billing_state",                                           default: ""
+    t.string  "billing_zip",                                             default: ""
+    t.string  "billing_country",                                         default: ""
+    t.string  "shipping_name",                                           default: ""
+    t.string  "shipping_address1",                                       default: ""
+    t.string  "shipping_address2",                                       default: ""
+    t.string  "shipping_city",                                           default: ""
+    t.string  "shipping_state",                                          default: ""
+    t.string  "shipping_zip",                                            default: ""
+    t.string  "shipping_country",                                        default: ""
+    t.string  "format",                                                  default: ""
+    t.string  "email",                                                   default: ""
+    t.string  "imported_advance_invoice_number"
+    t.date    "imported_advance_invoice_sent"
+    t.date    "booking_confirmation_sent"
+    t.string  "imported_overage_invoice_number"
+    t.date    "imported_overage_invoice_sent"
+    t.string  "premiere",                                                default: ""
+    t.date    "materials_sent"
+    t.boolean "no_materials",                                            default: false
+    t.string  "shipping_notes",                                          default: ""
+    t.string  "tracking_number",                                         default: ""
+    t.boolean "delivered",                                               default: false
+    t.date    "date_paid"
+    t.decimal "house_expense",                   precision: 5, scale: 2, default: 0.0
+    t.string  "notes",                                                   default: ""
+    t.decimal "deduction",                       precision: 5, scale: 2, default: 0.0
+    t.decimal "box_office",                      precision: 8, scale: 2, default: 0.0
+  end
+
+  add_index "bookings", ["booker_id"], name: "index_bookings_on_booker_id", using: :btree
+  add_index "bookings", ["film_id"], name: "index_bookings_on_film_id", using: :btree
+  add_index "bookings", ["imported_advance_invoice_number"], name: "index_bookings_on_imported_advance_invoice_number", using: :btree
+  add_index "bookings", ["imported_overage_invoice_number"], name: "index_bookings_on_imported_overage_invoice_number", using: :btree
+  add_index "bookings", ["user_id"], name: "index_bookings_on_user_id", using: :btree
+  add_index "bookings", ["venue_id"], name: "index_bookings_on_venue_id", using: :btree
 
   create_table "deal_templates", force: :cascade do |t|
     t.string "name", null: false
@@ -87,27 +143,42 @@ ActiveRecord::Schema.define(version: 20180126201451) do
   add_index "film_rights", ["film_id", "right_id"], name: "index_film_rights_on_film_id_and_right_id", unique: true, using: :btree
 
   create_table "films", force: :cascade do |t|
-    t.string  "title",                                                      null: false
-    t.boolean "short_film",                                 default: false
+    t.string  "title",                                                          null: false
+    t.boolean "short_film",                                     default: false
     t.integer "feature_id"
-    t.integer "label_id",                                                   null: false
+    t.integer "label_id",                                                       null: false
     t.integer "licensor_id"
-    t.integer "deal_type_id",                               default: 1
+    t.integer "deal_type_id",                                   default: 1
     t.integer "days_statement_due"
-    t.decimal "gr_percentage",      precision: 5, scale: 2
-    t.decimal "mg",                 precision: 8, scale: 2, default: 0.0
-    t.decimal "e_and_o",            precision: 8, scale: 2, default: 0.0
-    t.decimal "expense_cap",        precision: 8, scale: 2, default: 0.0
-    t.string  "sage_id",                                    default: ""
-    t.string  "royalty_notes",                              default: ""
-    t.boolean "export_reports",                             default: true
-    t.boolean "send_reports",                               default: true
-    t.boolean "reserve",                                    default: false
-    t.decimal "reserve_percentage", precision: 5, scale: 2, default: 0.0
-    t.integer "reserve_quarters",                           default: 0
-    t.integer "sell_off_period",                            default: 0
-    t.boolean "auto_renew",                                 default: false
-    t.integer "auto_renew_term",                            default: 0
+    t.decimal "gr_percentage",          precision: 5, scale: 2
+    t.decimal "mg",                     precision: 8, scale: 2, default: 0.0
+    t.decimal "e_and_o",                precision: 8, scale: 2, default: 0.0
+    t.decimal "expense_cap",            precision: 8, scale: 2, default: 0.0
+    t.string  "sage_id",                                        default: ""
+    t.string  "royalty_notes",                                  default: ""
+    t.boolean "export_reports",                                 default: true
+    t.boolean "send_reports",                                   default: true
+    t.boolean "reserve",                                        default: false
+    t.decimal "reserve_percentage",     precision: 5, scale: 2, default: 0.0
+    t.integer "reserve_quarters",                               default: 0
+    t.integer "sell_off_period",                                default: 0
+    t.boolean "auto_renew",                                     default: false
+    t.integer "auto_renew_term",                                default: 0
+    t.integer "year"
+    t.integer "length"
+    t.string  "synopsis",                                       default: ""
+    t.string  "short_synopsis",                                 default: ""
+    t.string  "logline",                                        default: ""
+    t.string  "vod_synopsis",                                   default: ""
+    t.string  "institutional_synopsis",                         default: ""
+    t.string  "vimeo_trailer",                                  default: ""
+    t.string  "youtube_trailer",                                default: ""
+    t.string  "prores_trailer",                                 default: ""
+    t.string  "standalone_site",                                default: ""
+    t.string  "facebook_link",                                  default: ""
+    t.string  "twitter_link",                                   default: ""
+    t.string  "instagram_link",                                 default: ""
+    t.string  "director",                                       default: ""
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree
@@ -191,6 +262,13 @@ ActiveRecord::Schema.define(version: 20180126201451) do
   end
 
   add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
+
+  create_table "payments", force: :cascade do |t|
+    t.integer "booking_id"
+    t.decimal "amount",     precision: 8, scale: 2, default: 0.0
+    t.date    "date"
+    t.string  "notes"
+  end
 
   create_table "purchase_order_items", force: :cascade do |t|
     t.integer "purchase_order_id",             null: false
@@ -302,6 +380,10 @@ ActiveRecord::Schema.define(version: 20180126201451) do
     t.decimal "joined_licensor_share",  precision: 8, scale: 2, default: 0.0
   end
 
+  create_table "settings", force: :cascade do |t|
+    t.string "booking_confirmation_text"
+  end
+
   create_table "shipping_addresses", force: :cascade do |t|
     t.string  "label"
     t.string  "address1"
@@ -325,6 +407,7 @@ ActiveRecord::Schema.define(version: 20180126201451) do
     t.string   "title"
     t.string   "email_signature"
     t.boolean  "admin",                          default: false
+    t.boolean  "booker",                         default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
@@ -353,5 +436,21 @@ ActiveRecord::Schema.define(version: 20180126201451) do
     t.string "notes",             default: ""
     t.string "venue_type",                     null: false
   end
+
+  create_table "weekly_box_offices", force: :cascade do |t|
+    t.integer "order",                                            null: false
+    t.integer "booking_id",                                       null: false
+    t.decimal "amount",     precision: 8, scale: 2, default: 0.0
+  end
+
+  add_index "weekly_box_offices", ["booking_id"], name: "index_weekly_box_offices_on_booking_id", using: :btree
+
+  create_table "weekly_terms", force: :cascade do |t|
+    t.integer "booking_id", null: false
+    t.string  "terms",      null: false
+    t.integer "order",      null: false
+  end
+
+  add_index "weekly_terms", ["booking_id"], name: "index_weekly_terms_on_booking_id", using: :btree
 
 end

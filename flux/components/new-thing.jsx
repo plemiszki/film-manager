@@ -1,10 +1,13 @@
 var React = require('react');
+var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
+import ModalSelect from './modal-select.jsx';
 var ErrorsStore = require('../stores/errors-store.js');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
 var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
 var ReturnsStore = require('../stores/returns-store.js');
+var BookingsStore = require('../stores/bookings-store.js');
 
 var NewThing = React.createClass({
 
@@ -57,6 +60,45 @@ var NewThing = React.createClass({
     }
   },
 
+  handleModalClose: function() {
+    this.setState({
+      filmsModalOpen: false,
+      venuesModalOpen: false
+    });
+  },
+
+  clickSelectFilmButton: function() {
+    this.setState({
+      filmsModalOpen: true
+    });
+  },
+
+  clickSelectFilm: function(event) {
+    var booking = this.state.booking;
+    booking.filmId = +event.target.dataset.id;
+    Common.removeFieldError(this.state.errors, "film");
+    this.setState({
+      booking: booking,
+      filmsModalOpen: false,
+    });
+  },
+
+  clickSelectVenueButton: function() {
+    this.setState({
+      venuesModalOpen: true
+    });
+  },
+
+  clickSelectVenue: function(event) {
+    var booking = this.state.booking;
+    booking.venueId = +event.target.dataset.id;
+    Common.removeFieldError(this.state.errors, "venue");
+    this.setState({
+      booking: booking,
+      venuesModalOpen: false
+    });
+  },
+
   clickAddButton: function(e) {
     this.setState({
       fetching: true
@@ -90,6 +132,10 @@ var NewThing = React.createClass({
           { this.renderLabelField() }
           { this.renderShippingAddress() }
           { this.renderVenueFields() }
+          { this.renderBookingFields() }
+          { this.renderWeeklyTermsFields() }
+          { this.renderWeeklyBoxOfficeFields() }
+          { this.renderPaymentFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -104,7 +150,9 @@ var NewThing = React.createClass({
       giftbox: "Gift Box",
       dvd: "DVD",
       purchaseOrder: "Purchase Order",
-      shippingAddress: "Shipping Address"
+      shippingAddress: "Shipping Address",
+      weeklyTerm: "Weekly Terms",
+      weeklyBoxOffice: "Weekly Box Office"
     };
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
@@ -180,6 +228,138 @@ var NewThing = React.createClass({
           </div>
         </div>
       )
+    }
+  },
+
+  renderBookingFields: function() {
+    if (this.props.thing === "booking") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-5">
+              <h2>Film</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.film) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly="true" />
+              { Common.renderFieldError(this.state.errors, Common.errors.film) }
+            </div>
+            <div className="col-xs-1 select-from-modal">
+              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+            </div>
+            <div className="col-xs-5">
+              <h2>Venue</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.venue) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly="true" />
+              { Common.renderFieldError(this.state.errors, Common.errors.venue) }
+            </div>
+            <div className="col-xs-1 select-from-modal">
+              <img src={ Images.openModal } onClick={ this.clickSelectVenueButton } />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-3">
+              <h2>Start Date</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.startDate || "" } data-field="startDate" />
+              { Common.renderFieldError(this.state.errors, Common.errors.startDate) }
+            </div>
+            <div className="col-xs-3">
+              <h2>End Date</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.endDate || "" } data-field="endDate" />
+              { Common.renderFieldError(this.state.errors, Common.errors.endDate) }
+            </div>
+            <div className="col-xs-3">
+              <h2>Type</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookingType" value={ this.state.booking.bookingType }>
+                <option value={ "Theatrical" }>Theatrical</option>
+                <option value={ "Non-Theatrical" }>Non-Theatrical</option>
+                <option value={ "Festival" }>Festival</option>
+              </select>
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+            <div className="col-xs-3">
+              <h2>Status</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="status" value={ this.state.booking.status }>
+                <option value={ "Tentative" }>Tentative</option>
+                <option value={ "Confirmed" }>Confirmed</option>
+              </select>
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-4">
+              <h2>Terms</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
+              { Common.renderFieldError(this.state.errors, Common.errors.terms) }
+            </div>
+            <div className="col-xs-3">
+              <h2>Booked By</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
+                { BookingsStore.bookers().map(function(user) {
+                  return(
+                    <option key={ user.id } value={ user.id }>{ user.name }</option>
+                  );
+                }) }
+              </select>
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+          </div>
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+            <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm } />
+          </Modal>
+          <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+            <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue } />
+          </Modal>
+        </div>
+      );
+    }
+  },
+
+  renderWeeklyTermsFields: function() {
+    if (this.props.thing === "weeklyTerm") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Weekly Terms</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.weeklyTerm.terms || "" } data-field="terms" />
+            { Common.renderFieldError(this.state.errors, Common.errors.terms) }
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderWeeklyBoxOfficeFields: function() {
+    if (this.props.thing === "weeklyBoxOffice") {
+      return(
+        <div className="row">
+          <div className="col-xs-12">
+            <h2>Weekly Box Office</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.amount) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.weeklyBoxOffice.amount || "" } data-field="amount" />
+            { Common.renderFieldError(this.state.errors, Common.errors.amount) }
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderPaymentFields: function() {
+    if (this.props.thing === "payment") {
+      return(
+        <div className="row">
+          <div className="col-xs-3">
+            <h2>Date</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.date) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.date || "" } data-field="date" />
+            { Common.renderFieldError(this.state.errors, Common.errors.date) }
+          </div>
+          <div className="col-xs-3">
+            <h2>Amount</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.amount) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.amount || "" } data-field="amount" />
+            { Common.renderFieldError(this.state.errors, Common.errors.amount) }
+          </div>
+          <div className="col-xs-6">
+            <h2>Note</h2>
+            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.notes || "" } data-field="notes" />
+            { Common.renderFieldError(this.state.errors, []) }
+          </div>
+        </div>
+      );
     }
   },
 
@@ -343,7 +523,7 @@ var NewThing = React.createClass({
             <div className="col-xs-6">
               <h2>Order Date</h2>
               <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].orderDate} data-field="orderDate" />
-              {Common.renderFieldError(this.state.errors, Common.errors.orderDate)}
+              { Common.renderFieldError(this.state.errors, Common.errors.orderDate) }
             </div>
           </div>
         </div>
@@ -357,8 +537,8 @@ var NewThing = React.createClass({
         <div className="row">
           <div className="col-xs-12">
             <h2>Label</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.label)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].label} data-field="label" />
-            {Common.renderFieldError(this.state.errors, Common.errors.label)}
+            <input className={ Common.errorClass(this.state.errors, Common.errors.label) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].label } data-field="label" />
+            { Common.renderFieldError(this.state.errors, Common.errors.label) }
           </div>
         </div>
       );

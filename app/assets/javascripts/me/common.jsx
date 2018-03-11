@@ -253,6 +253,7 @@ Common = {
       "Order date is not a valid date"
     ],
     date: [
+      "Date can't be blank",
       "Date is not a valid date"
     ],
     sageId: [
@@ -289,6 +290,54 @@ Common = {
     ],
     venueType: [
       "Venue type can't be blank"
+    ],
+    materialsSent: [
+      "Materials sent is not a valid date"
+    ],
+    startDate: [
+      "Start date is not a valid date",
+      "Start date can't be blank"
+    ],
+    endDate: [
+      "End date is not a valid date",
+      "End date can't be blank"
+    ],
+    advance: [
+      "Advance is not a number"
+    ],
+    shippingFee: [
+      "Shipping fee is not a number"
+    ],
+    houseExpense: [
+      "House expense is not a number"
+    ],
+    deduction: [
+      "Deduction is not a number"
+    ],
+    terms: [
+      "Terms can't be blank"
+    ],
+    film: [
+      "Film can't be blank"
+    ],
+    venue: [
+      "Venue can't be blank"
+    ],
+    boxOffice: [
+      "Box office is not a number"
+    ],
+    amount: [
+      "Amount can't be blank",
+      "Amount is not a number"
+    ],
+    bookingConfirmationText: [
+      "Booking confirmation text can't be blank"
+    ],
+    year: [
+      "Year is not a number"
+    ],
+    length: [
+      "Length is not a number"
     ]
   },
 
@@ -376,7 +425,7 @@ Common = {
 
   commonSort: function(object) {
     var property = object[this.state.sortBy];
-    if (["shipDate"].indexOf(this.state.sortBy) > -1) {
+    if (["shipDate", "startDate", "dateAdded"].indexOf(this.state.sortBy) > -1) {
       if (property === "(Not Sent)") {
         return Date.now();
       } else {

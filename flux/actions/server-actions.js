@@ -212,6 +212,47 @@ var ServerActions = {
       actionType: "VENUES_RECEIVED",
       venues: response.venues
     });
+  },
+
+  receiveBookings: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "BOOKINGS_RECEIVED",
+      bookings: response.bookings,
+      weeklyTerms: response.weeklyTerms,
+      weeklyBoxOffice: response.weeklyBoxOffice,
+      payments: response.payments,
+      films: response.films,
+      venues: response.venues,
+      users: response.users
+    });
+  },
+
+  receiveWeeklyTerms: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "WEEKLY_TERMS_RECEIVED",
+      weeklyTerms: response.weeklyTerms
+    });
+  },
+
+  receiveWeeklyBoxOffices: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "WEEKLY_BOX_OFFICES_RECEIVED",
+      weeklyBoxOffices: response.weeklyBoxOffices
+    });
+  },
+
+  receivePayments: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "PAYMENTS_RECEIVED",
+      payments: response.payments
+    });
+  },
+
+  receiveSettings: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "SETTINGS_RECEIVED",
+      settings: response.settings
+    });
   }
 }
 

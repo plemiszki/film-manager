@@ -216,7 +216,22 @@ var ClientActions = {
           reserve_quarters: film.reserveQuarters,
           auto_renew: film.autoRenew,
           auto_renew_term: film.autoRenewTerm,
-          sell_off_period: film.sellOffPeriod
+          sell_off_period: film.sellOffPeriod,
+          year: film.year,
+          length: film.length,
+          director: film.director,
+          synopsis: film.synopsis,
+          short_synopsis: film.shortSynopsis,
+          logline: film.logline,
+          vod_synopsis: film.vodSynopsis,
+          institutional_synopsis: film.institutionalSynopsis,
+          vimeo_trailer: film.vimeoTrailer,
+          youtube_trailer: film.youtubeTrailer,
+          prores_trailer: film.proresTrailer,
+          standalone_site: film.standaloneSite,
+          facebook_link: film.facebookLink,
+          twitter_link: film.twitterLink,
+          instagram_link: film.instagramLink
         },
         percentages: percentages
       },
@@ -1050,6 +1065,236 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     })
+  },
+
+  fetchBookings: function() {
+    $.ajax({
+      url: '/api/bookings/',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      }
+    });
+  },
+
+  fetchBooking: function(id) {
+    $.ajax({
+      url: '/api/bookings/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      }
+    });
+  },
+
+  createBooking: function(booking) {
+    var date = new Date;
+    $.ajax({
+      url: '/api/bookings',
+      method: 'POST',
+      data: {
+        booking: {
+          film_id: booking.filmId,
+          venue_id: booking.venueId,
+          date_added: ((date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear().toString().slice(2, 4)),
+          start_date: booking.startDate,
+          end_date: booking.endDate,
+          booking_type: booking.bookingType,
+          status: booking.status,
+          booker_id: booking.bookerId,
+          terms: booking.terms
+        }
+      },
+      success: function(response) {
+        window.location.pathname = "/bookings/" + response.booking.id;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
+      }
+    });
+  },
+
+  updateBooking: function(booking) {
+    $.ajax({
+      url: '/api/bookings/' + booking.id,
+      method: 'PATCH',
+      data: {
+        booking: {
+          film_id: booking.filmId,
+          venue_id: booking.venueId,
+          start_date: booking.startDate,
+          end_date: booking.endDate,
+          booking_type: booking.bookingType,
+          status: booking.status,
+          screenings: booking.screenings,
+          email: booking.email,
+          booker_id: booking.bookerId,
+          format: booking.format,
+          premiere: booking.premiere,
+          advance: HandyTools.removeFinanceSymbols(booking.advance),
+          shipping_fee: HandyTools.removeFinanceSymbols(booking.shippingFee),
+          deduction: HandyTools.removeFinanceSymbols(booking.deduction),
+          house_expense: HandyTools.removeFinanceSymbols(booking.houseExpense),
+          terms_change: booking.termsChange,
+          terms: booking.terms,
+          billing_name: booking.billingName,
+          billing_address1: booking.billingAddress1,
+          billing_address2: booking.billingAddress2,
+          billing_city: booking.billingCity,
+          billing_state: booking.billingState,
+          billing_zip: booking.billingZip,
+          billing_country: booking.billingCountry,
+          shipping_name: booking.shippingName,
+          shipping_address1: booking.shippingAddress1,
+          shipping_address2: booking.shippingAddress2,
+          shipping_city: booking.shippingCity,
+          shipping_state: booking.shippingState,
+          shipping_zip: booking.shippingZip,
+          shipping_country: booking.shippingCountry,
+          materials_sent: booking.materialsSent,
+          tracking_number: booking.trackingNumber,
+          shipping_notes: booking.shippingNotes,
+          box_office: HandyTools.removeFinanceSymbols(booking.boxOffice)
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  createWeeklyTerm: function(weeklyTerm) {
+    $.ajax({
+      url: '/api/weekly_terms/',
+      method: 'POST',
+      data: {
+        weekly_terms: {
+          terms: weeklyTerm.terms,
+          booking_id: weeklyTerm.bookingId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveWeeklyTerms(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deleteWeeklyTerm: function(id) {
+    $.ajax({
+      url: '/api/weekly_terms/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveWeeklyTerms(response);
+      }
+    });
+  },
+
+  createWeeklyBoxOffice: function(weeklyBoxOffice) {
+    $.ajax({
+      url: '/api/weekly_box_offices/',
+      method: 'POST',
+      data: {
+        weekly_box_office: {
+          amount: weeklyBoxOffice.amount,
+          booking_id: weeklyBoxOffice.bookingId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveWeeklyBoxOffices(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deleteWeeklyBoxOffice: function(id) {
+    $.ajax({
+      url: '/api/weekly_box_offices/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveWeeklyBoxOffices(response);
+      }
+    });
+  },
+
+  createPayment: function(payment) {
+    $.ajax({
+      url: '/api/payments',
+      method: 'POST',
+      data: {
+        payment: {
+          booking_id: payment.bookingId,
+          date: payment.date,
+          amount: payment.amount,
+          notes: payment.notes
+        }
+      },
+      success: function(response) {
+        ServerActions.receivePayments(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deletePayment: function(id) {
+    $.ajax({
+      url: '/api/payments/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receivePayments(response);
+      }
+    });
+  },
+
+  fetchSettings: function() {
+    $.ajax({
+      url: '/api/settings/',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveSettings(response);
+      }
+    });
+  },
+
+  updateSettings: function(settings) {
+    $.ajax({
+      url: '/api/settings',
+      method: 'PATCH',
+      data: {
+        settings: {
+          booking_confirmation_text: settings.bookingConfirmationText
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveSettings(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  sendConfirmation: function(booking) {
+    $.ajax({
+      url: '/api/bookings/' + booking.id + '/confirm',
+      method: 'POST',
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      },
+      error: function(response) {
+        console.log(response);
+        // ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 
