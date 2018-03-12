@@ -1529,6 +1529,46 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  deleteFilmCountry: function(id) {
+    $.ajax({
+      url: '/api/film_countries/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveFilmCountries(response);
+      }
+    });
+  },
+
+  deleteFilmLanguage: function(id) {
+    $.ajax({
+      url: '/api/film_languages/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveFilmLanguages(response);
+      }
+    });
+  },
+
+  deleteFilmGenre: function(id) {
+    $.ajax({
+      url: '/api/film_genres/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveFilmGenres(response);
+      }
+    });
+  },
+
+  deleteFilmTopic: function(id) {
+    $.ajax({
+      url: '/api/film_topics/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveFilmTopics(response);
+      }
+    });
   }
 }
 

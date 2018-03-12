@@ -67,6 +67,10 @@ Rails.application.routes.draw do
     resources :languages, only: [:index, :create, :show, :update, :destroy]
     resources :genres, only: [:index, :create, :show, :update, :destroy]
     resources :topics, only: [:index, :create, :show, :update, :destroy]
+    resources :film_countries, only: [:index, :create, :destroy]
+    resources :film_languages, only: [:index, :create, :destroy]
+    resources :film_genres, only: [:index, :create, :destroy]
+    resources :film_topics, only: [:index, :create, :destroy]
   end
 
   # Clearance ------------------------

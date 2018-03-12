@@ -386,3 +386,29 @@ body {
   margin-top: 35px;
   cursor: pointer;
 }
+
+ul.standard-list {
+  border: 1px solid #E4E9ED;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+
+  li {
+    position: relative;
+
+    &:not(:last-of-type) {
+      margin-bottom: 15px;
+    }
+
+    .x-button {
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      background-image: asset-url('gray-x.png');
+      background-size: contain;
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+    }
+  }
+}

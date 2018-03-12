@@ -15,6 +15,10 @@ class Api::FilmsController < ApplicationController
     @rights = FilmRight.where(film_id: params[:id])
     @dvds = Dvd.where(feature_film_id: params[:id])
     @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
+    @film_countries = FilmCountry.where(film_id: @films.first.id).includes(:country)
+    @film_languages = FilmLanguage.where(film_id: @films.first.id).includes(:language)
+    @film_genres = FilmGenre.where(film_id: @films.first.id).includes(:genre)
+    @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
     render "show.json.jbuilder"
   end
 

@@ -4,6 +4,10 @@ var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
 var FilmErrorsStore = require('../stores/film-errors-store.js');
+var CountriesStore = require('../stores/countries-store.js');
+var LanguagesStore = require('../stores/languages-store.js');
+var GenresStore = require('../stores/genres-store.js');
+var TopicsStore = require('../stores/topics-store.js');
 var NewThing = require('./new-thing.jsx');
 
 var FilmDetails = React.createClass({
@@ -53,18 +57,34 @@ var FilmDetails = React.createClass({
       deleteModalOpen: false,
       licensorModalOpen: false,
       dvdModalOpen: false,
-      tab: 'General'
+      tab: 'General',
+      filmCountries: [],
+      filmLanguages: [],
+      filmGenres: [],
+      filmTopics: [],
+      countries: [],
+      languages: [],
+      genres: [],
+      topics: []
     });
   },
 
   componentDidMount: function() {
     this.filmListener = FilmsStore.addListener(this.getFilm);
+    this.countriesListener = CountriesStore.addListener(this.getCountries);
+    this.languagesListener = LanguagesStore.addListener(this.getLanguages);
+    this.genresListener = GenresStore.addListener(this.getGenres);
+    this.topicsListener = TopicsStore.addListener(this.getTopics);
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
     ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
   },
 
   componentWillUnmount: function() {
     this.filmListener.remove();
+    this.countriesListener.remove();
+    this.languagesListener.remove();
+    this.genresListener.remove();
+    this.topicsListener.remove();
     this.errorsListener.remove();
   },
 
@@ -81,6 +101,30 @@ var FilmDetails = React.createClass({
       this.setState({
         changesToSave: this.checkForChanges()
       });
+    });
+  },
+
+  getCountries: function() {
+    this.setState({
+      filmCountries: CountriesStore.filmCountries()
+    });
+  },
+
+  getLanguages: function() {
+    this.setState({
+      filmLanguages: LanguagesStore.filmLanguages()
+    });
+  },
+
+  getGenres: function() {
+    this.setState({
+      filmGenres: GenresStore.filmGenres()
+    });
+  },
+
+  getTopics: function() {
+    this.setState({
+      filmTopics: TopicsStore.filmTopics()
     });
   },
 
@@ -116,6 +160,22 @@ var FilmDetails = React.createClass({
     this.setState({
       deleteModalOpen: true
     });
+  },
+
+  clickDeleteCountry: function(e) {
+    ClientActions.deleteFilmCountry(e.target.dataset.id);
+  },
+
+  clickDeleteLanguage: function(e) {
+    ClientActions.deleteFilmLanguage(e.target.dataset.id);
+  },
+
+  clickDeleteGenre: function(e) {
+    ClientActions.deleteFilmGenre(e.target.dataset.id);
+  },
+
+  clickDeleteTopic: function(e) {
+    ClientActions.deleteFilmTopic(e.target.dataset.id);
   },
 
   clickSelectLicensorButton: function() {
@@ -220,7 +280,7 @@ var FilmDetails = React.createClass({
 
   render: function() {
     return(
-      <div className="film-details component">
+      <div className="film-details component details-component">
         <h1>Film Details</h1>
         {this.renderTopTabs()}
         <div className="white-box">
@@ -403,6 +463,56 @@ var FilmDetails = React.createClass({
               { Common.renderFieldError(this.state.filmErrors, Common.errors.length) }
             </div>
           </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-6">
+              <h3>Countries:</h3>
+              <ul className="standard-list">
+                { this.state.filmCountries.map(function(filmCountry) {
+                  return(
+                    <li key={ filmCountry.id }>{ filmCountry.country }<div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddCountry }>Add Country</a>
+            </div>
+            <div className="col-xs-6">
+              <h3>Languages:</h3>
+              <ul className="standard-list">
+                { this.state.filmLanguages.map(function(filmLanguage) {
+                  return(
+                    <li key={ filmLanguage.id }>{ filmLanguage.language }<div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddLanguage }>Add Language</a>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-6">
+              <h3>Genres:</h3>
+              <ul className="standard-list">
+                { this.state.filmGenres.map(function(filmGenre) {
+                  return(
+                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddGenre }>Add Genre</a>
+            </div>
+            <div className="col-xs-6">
+              <h3>Topics:</h3>
+              <ul className="standard-list">
+                { this.state.filmTopics.map(function(filmTopic) {
+                  return(
+                    <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic } data-id={ filmTopic.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddTopic }>Add Topic</a>
+            </div>
+          </div>
+          <hr />
         </div>
       )
     } else if (this.state.tab === "Marketing") {

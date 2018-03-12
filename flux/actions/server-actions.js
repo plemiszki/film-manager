@@ -29,7 +29,15 @@ var ServerActions = {
       reports: response.reports,
       rights: response.rights,
       dvds: response.dvds,
-      dvdTypes: response.dvdTypes
+      dvdTypes: response.dvdTypes,
+      filmCountries: response.filmCountries,
+      filmLanguages: response.filmLanguages,
+      filmGenres: response.filmGenres,
+      filmTopics: response.filmTopics,
+      countries: response.countries,
+      languages: response.languages,
+      genres: response.genres,
+      topics: response.topics
     });
   },
 
@@ -262,10 +270,24 @@ var ServerActions = {
     });
   },
 
+  receiveFilmCountries: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILM_COUNTRIES_RECEIVED",
+      filmCountries: response.filmCountries
+    });
+  },
+
   receiveLanguages: function(response) {
     AppDispatcher.dispatch({
       actionType: "LANGUAGES_RECEIVED",
       languages: response
+    });
+  },
+
+  receiveFilmLanguages: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILM_LANGUAGES_RECEIVED",
+      filmLanguages: response.filmLanguages
     });
   },
 
@@ -276,10 +298,24 @@ var ServerActions = {
     });
   },
 
+  receiveFilmGenres: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILM_GENRES_RECEIVED",
+      filmGenres: response.filmGenres
+    });
+  },
+
   receiveTopics: function(response) {
     AppDispatcher.dispatch({
       actionType: "TOPICS_RECEIVED",
       topics: response
+    });
+  },
+
+  receiveFilmTopics: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILM_TOPICS_RECEIVED",
+      filmTopics: response.filmTopics
     });
   }
 }

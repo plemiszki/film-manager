@@ -70,3 +70,35 @@ json.dvdTypes @dvd_types do |dvd_type|
   json.id dvd_type.id
   json.name dvd_type.name
 end
+json.countries @countries do |country|
+  json.id country.id
+  json.name country.name
+end
+json.filmCountries @film_countries do |film_country|
+  json.id film_country.id
+  json.country film_country.country.name
+end
+json.languages @languages do |language|
+  json.id language.id
+  json.name language.name
+end
+json.filmLanguages @film_languages do |film_language|
+  json.id film_language.id
+  json.language film_language.language.name
+end
+json.genres @genres do |genre|
+  json.id genre.id
+  json.name genre.name
+end
+json.filmGenres @film_genres do |film_genre|
+  json.id film_genre.id
+  json.genre film_genre.genre.name
+end
+json.topics @topics do |topic|
+  json.id topic.id
+  json.name topic.name
+end
+json.filmTopics @film_topics do |film_topic|
+  json.id film_topic.id
+  json.topic film_topic.topic.name
+end
