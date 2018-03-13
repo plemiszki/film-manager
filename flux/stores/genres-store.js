@@ -46,6 +46,7 @@ GenresStore.__onDispatch = function(payload) {
       this.__emitChange();
       break;
     case "FILM_GENRES_RECEIVED":
+      this.setGenres(payload.genres);
       this.setFilmGenres(payload.filmGenres);
       this.__emitChange();
       break;

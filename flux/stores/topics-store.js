@@ -46,6 +46,7 @@ TopicsStore.__onDispatch = function(payload) {
       this.__emitChange();
       break;
     case "FILM_TOPICS_RECEIVED":
+      this.setTopics(payload.topics);
       this.setFilmTopics(payload.filmTopics);
       this.__emitChange();
       break;

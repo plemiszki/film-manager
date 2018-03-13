@@ -9,6 +9,7 @@ var LanguagesStore = require('../stores/languages-store.js');
 var GenresStore = require('../stores/genres-store.js');
 var TopicsStore = require('../stores/topics-store.js');
 var NewThing = require('./new-thing.jsx');
+var ModalSelect = require('./modal-select.jsx');
 
 var FilmDetails = React.createClass({
 
@@ -57,6 +58,10 @@ var FilmDetails = React.createClass({
       deleteModalOpen: false,
       licensorModalOpen: false,
       dvdModalOpen: false,
+      countriesModalOpen: false,
+      languagesModalOpen: false,
+      genresModalOpen: false,
+      topicsModalOpen: false,
       tab: 'General',
       filmCountries: [],
       filmLanguages: [],
@@ -106,25 +111,33 @@ var FilmDetails = React.createClass({
 
   getCountries: function() {
     this.setState({
-      filmCountries: CountriesStore.filmCountries()
+      filmCountries: CountriesStore.filmCountries(),
+      countries: CountriesStore.all(),
+      countriesModalOpen: false
     });
   },
 
   getLanguages: function() {
     this.setState({
-      filmLanguages: LanguagesStore.filmLanguages()
+      filmLanguages: LanguagesStore.filmLanguages(),
+      languages: LanguagesStore.all(),
+      languagesModalOpen: false
     });
   },
 
   getGenres: function() {
     this.setState({
-      filmGenres: GenresStore.filmGenres()
+      filmGenres: GenresStore.filmGenres(),
+      genres: GenresStore.all(),
+      genresModalOpen: false
     });
   },
 
   getTopics: function() {
     this.setState({
-      filmTopics: TopicsStore.filmTopics()
+      filmTopics: TopicsStore.filmTopics(),
+      topics: TopicsStore.all(),
+      topicsModalOpen: false
     });
   },
 
@@ -162,16 +175,56 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickAddCountry: function() {
+    this.setState({
+      countriesModalOpen: true
+    });
+  },
+
+  clickCountry: function(e) {
+    ClientActions.createFilmCountry({ film_id: this.state.film.id, country_id: e.target.dataset.id })
+  },
+
   clickDeleteCountry: function(e) {
     ClientActions.deleteFilmCountry(e.target.dataset.id);
+  },
+
+  clickAddLanguage: function() {
+    this.setState({
+      languagesModalOpen: true
+    });
+  },
+
+  clickLanguage: function(e) {
+    ClientActions.createFilmLanguage({ film_id: this.state.film.id, language_id: e.target.dataset.id })
   },
 
   clickDeleteLanguage: function(e) {
     ClientActions.deleteFilmLanguage(e.target.dataset.id);
   },
 
+  clickAddGenre: function() {
+    this.setState({
+      genresModalOpen: true
+    });
+  },
+
+  clickGenre: function(e) {
+    ClientActions.createFilmGenre({ film_id: this.state.film.id, genre_id: e.target.dataset.id })
+  },
+
   clickDeleteGenre: function(e) {
     ClientActions.deleteFilmGenre(e.target.dataset.id);
+  },
+
+  clickAddTopic: function() {
+    this.setState({
+      topicsModalOpen: true
+    });
+  },
+
+  clickTopic: function(e) {
+    ClientActions.createFilmTopic({ film_id: this.state.film.id, topic_id: e.target.dataset.id })
   },
 
   clickDeleteTopic: function(e) {
@@ -215,7 +268,11 @@ var FilmDetails = React.createClass({
     this.setState({
       deleteModalOpen: false,
       licensorModalOpen: false,
-      dvdModalOpen: false
+      dvdModalOpen: false,
+      countriesModalOpen: false,
+      languagesModalOpen: false,
+      genresModalOpen: false,
+      topicsModalOpen: false
     });
   },
 
@@ -328,6 +385,18 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={this.state.dvdModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdModalStyles}>
           <NewThing thing="dvd" initialObject={{featureFilmId: this.state.film.id, dvdTypeId: (this.state.film.id && this.state.dvds.length < 6) ? FilmsStore.dvdTypes()[0].id : 1}} />
+        </Modal>
+        <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.countries } property={ "name" } func={ this.clickCountry } />
+        </Modal>
+        <Modal isOpen={ this.state.languagesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.languages } property={ "name" } func={ this.clickLanguage } />
+        </Modal>
+        <Modal isOpen={ this.state.genresModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.genres } property={ "name" } func={ this.clickGenre } />
+        </Modal>
+        <Modal isOpen={ this.state.topicsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.topics } property={ "name" } func={ this.clickTopic } />
         </Modal>
       </div>
     );

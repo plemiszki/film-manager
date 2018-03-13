@@ -1531,6 +1531,70 @@ var ClientActions = {
     });
   },
 
+  createFilmCountry: function(obj) {
+    $.ajax({
+      url: '/api/film_countries',
+      method: 'POST',
+      data: {
+        film_country: {
+          film_id: obj.film_id,
+          country_id: obj.country_id
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFilmCountries(response);
+      }
+    });
+  },
+
+  createFilmLanguage: function(obj) {
+    $.ajax({
+      url: '/api/film_languages',
+      method: 'POST',
+      data: {
+        film_language: {
+          film_id: obj.film_id,
+          language_id: obj.language_id
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFilmLanguages(response);
+      }
+    });
+  },
+
+  createFilmGenre: function(obj) {
+    $.ajax({
+      url: '/api/film_genres',
+      method: 'POST',
+      data: {
+        film_genre: {
+          film_id: obj.film_id,
+          genre_id: obj.genre_id
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFilmGenres(response);
+      }
+    });
+  },
+
+  createFilmTopic: function(obj) {
+    $.ajax({
+      url: '/api/film_topics',
+      method: 'POST',
+      data: {
+        film_topic: {
+          film_id: obj.film_id,
+          topic_id: obj.topic_id
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFilmTopics(response);
+      }
+    });
+  },
+
   deleteFilmCountry: function(id) {
     $.ajax({
       url: '/api/film_countries/' + id,

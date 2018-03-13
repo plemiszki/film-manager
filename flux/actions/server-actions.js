@@ -273,6 +273,7 @@ var ServerActions = {
   receiveFilmCountries: function(response) {
     AppDispatcher.dispatch({
       actionType: "FILM_COUNTRIES_RECEIVED",
+      countries: response.countries,
       filmCountries: response.filmCountries
     });
   },
@@ -287,6 +288,7 @@ var ServerActions = {
   receiveFilmLanguages: function(response) {
     AppDispatcher.dispatch({
       actionType: "FILM_LANGUAGES_RECEIVED",
+      languages: response.languages,
       filmLanguages: response.filmLanguages
     });
   },
@@ -301,6 +303,7 @@ var ServerActions = {
   receiveFilmGenres: function(response) {
     AppDispatcher.dispatch({
       actionType: "FILM_GENRES_RECEIVED",
+      genres: response.genres,
       filmGenres: response.filmGenres
     });
   },
@@ -315,6 +318,7 @@ var ServerActions = {
   receiveFilmTopics: function(response) {
     AppDispatcher.dispatch({
       actionType: "FILM_TOPICS_RECEIVED",
+      topics: response.topics,
       filmTopics: response.filmTopics
     });
   }

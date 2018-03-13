@@ -46,6 +46,7 @@ CountriesStore.__onDispatch = function(payload) {
       this.__emitChange();
       break;
     case "FILM_COUNTRIES_RECEIVED":
+      this.setCountries(payload.countries);
       this.setFilmCountries(payload.filmCountries);
       this.__emitChange();
       break;

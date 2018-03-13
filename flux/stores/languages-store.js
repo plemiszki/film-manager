@@ -46,6 +46,7 @@ LanguagesStore.__onDispatch = function(payload) {
       this.__emitChange();
       break;
     case "FILM_LANGUAGES_RECEIVED":
+      this.setLanguages(payload.languages);
       this.setFilmLanguages(payload.filmLanguages);
       this.__emitChange();
       break;
