@@ -557,31 +557,6 @@ var FilmDetails = React.createClass({
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddLanguage }>Add Language</a>
             </div>
           </div>
-          <div className="row">
-            <div className="col-xs-6">
-              <h3>Genres:</h3>
-              <ul className="standard-list">
-                { this.state.filmGenres.map(function(filmGenre) {
-                  return(
-                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
-                  );
-                }.bind(this)) }
-              </ul>
-              <a className={ 'blue-outline-button small' } onClick={ this.clickAddGenre }>Add Genre</a>
-            </div>
-            <div className="col-xs-6">
-              <h3>Topics:</h3>
-              <ul className="standard-list">
-                { this.state.filmTopics.map(function(filmTopic) {
-                  return(
-                    <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic } data-id={ filmTopic.id }></div></li>
-                  );
-                }.bind(this)) }
-              </ul>
-              <a className={ 'blue-outline-button small' } onClick={ this.clickAddTopic }>Add Topic</a>
-            </div>
-          </div>
-          <hr />
         </div>
       )
     } else if (this.state.tab === "Marketing") {
@@ -626,6 +601,31 @@ var FilmDetails = React.createClass({
               <h2>Instagram Link</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
               { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-6">
+              <h3>Genres:</h3>
+              <ul className="standard-list">
+                { this.state.filmGenres.map(function(filmGenre) {
+                  return(
+                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddGenre }>Add Genre</a>
+            </div>
+            <div className="col-xs-6">
+              <h3>Topics:</h3>
+              <ul className="standard-list">
+                { this.state.filmTopics.map(function(filmTopic) {
+                  return(
+                    <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic } data-id={ filmTopic.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddTopic }>Add Topic</a>
             </div>
           </div>
         </div>
