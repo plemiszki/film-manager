@@ -37,7 +37,8 @@ var ServerActions = {
       countries: response.countries,
       languages: response.languages,
       genres: response.genres,
-      topics: response.topics
+      topics: response.topics,
+      labels: response.labels
     });
   },
 

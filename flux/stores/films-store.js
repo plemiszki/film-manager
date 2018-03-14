@@ -55,6 +55,10 @@ FilmsStore.setDvdTypes = function(dvdTypes) {
   _dvdTypes = dvdTypes;
 };
 
+FilmsStore.setLabels = function(labels) {
+  _labels = labels;
+};
+
 FilmsStore.setRights = function(rights) {
   rights.forEach(function(right) {
     _rights[right.id] = right;
@@ -156,6 +160,7 @@ FilmsStore.__onDispatch = function(payload) {
       }
       this.setDvds(payload.dvds);
       this.setDvdTypes(payload.dvdTypes);
+      this.setLabels(payload.labels);
       this.__emitChange();
       break;
   }

@@ -35,6 +35,7 @@ json.films @films do |film|
   json.facebookLink film.facebook_link || ""
   json.twitterLink film.twitter_link || ""
   json.instagramLink film.instagram_link || ""
+  json.labelId film.label_id.to_s
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
@@ -103,3 +104,4 @@ json.filmTopics @film_topics do |film_topic|
   json.id film_topic.id
   json.topic film_topic.topic.name
 end
+json.labels @labels

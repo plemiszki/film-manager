@@ -23,6 +23,7 @@ class Api::FilmsController < ApplicationController
     @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
     @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
     @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
+    @labels = Label.all
     render "show.json.jbuilder"
   end
 
@@ -68,6 +69,7 @@ class Api::FilmsController < ApplicationController
         @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
         @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
         @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
+        @labels = Label.all
         render "show.json.jbuilder"
       end
     rescue
@@ -122,7 +124,8 @@ class Api::FilmsController < ApplicationController
       :facebook_link,
       :twitter_link,
       :instagram_link,
-      :active
+      :active,
+      :label_id
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

@@ -242,7 +242,8 @@ var ClientActions = {
           facebook_link: film.facebookLink,
           twitter_link: film.twitterLink,
           instagram_link: film.instagramLink,
-          active: film.active
+          active: film.active,
+          label_id: film.labelId
         },
         percentages: percentages
       },
