@@ -357,9 +357,8 @@ var FilmDetails = React.createClass({
               </select>
             </div>
           </div>
-          <hr className={this.state.tab === "Statements" ? "smaller-margin" : ""} />
-          {this.renderTab(this.state.tab)}
-          {this.renderButtons()}
+          { this.renderTab(this.state.tab) }
+          { this.renderButtons() }
         </div>
         <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
           <div className="confirm-delete">
@@ -427,6 +426,7 @@ var FilmDetails = React.createClass({
     if (tab === "Contract") {
       return(
         <div>
+          <hr />
           <div className="row">
             <div className="col-xs-12 col-sm-5">
               <h2>Licensor</h2>
@@ -453,6 +453,7 @@ var FilmDetails = React.createClass({
     } else if (this.state.tab === "DVDs") {
       return(
         <div>
+          <hr />
           <table className={"admin-table"}>
             <thead>
               <tr>
@@ -478,6 +479,7 @@ var FilmDetails = React.createClass({
     } else if (this.state.tab === "Statements") {
       return(
         <div>
+          <hr className="smaller-margin" />
           <div className="row checkboxes">
             <div className="col-xs-6">
               <input id="export-reports" type="checkbox" checked={this.state.film.exportReports} onChange={this.changeCheckbox.bind(this, 'exportReports')} /><label htmlFor="export-reports">Export Reports</label>
@@ -511,10 +513,11 @@ var FilmDetails = React.createClass({
             </tbody>
           </table>
         </div>
-      )
+      );
     } else if (this.state.tab === "General") {
       return(
         <div>
+          <hr />
           <div className="row">
             <div className="col-xs-8">
               <h2>Director</h2>
@@ -562,6 +565,13 @@ var FilmDetails = React.createClass({
     } else if (this.state.tab === "Marketing") {
       return(
         <div>
+          <hr className="smaller-margin" />
+          <div className="row checkboxes">
+            <div className="col-xs-3">
+              <input id="active" type="checkbox" checked={ this.state.film.active } onChange={ this.changeCheckbox.bind(this, 'active') } /><label htmlFor="active">Active on Website</label>
+            </div>
+          </div>
+          <hr />
           <div className="row">
             <div className="col-xs-6">
               <h2>Standalone Site</h2>
@@ -633,6 +643,7 @@ var FilmDetails = React.createClass({
     } else if (this.state.tab === "Synopses") {
       return(
         <div>
+          <hr />
           <div className="row">
             <div className="col-xs-12">
               <h2>Synopsis</h2>
@@ -838,6 +849,10 @@ var FilmDetails = React.createClass({
           Common.errors.reservePercentage,
           Common.errors.reserveQuarters,
           Common.errors.autoRenewTerm
+        ],
+        general: [
+          Common.errors.year,
+          Common.errors.length
         ]
       }
       var result = [];
@@ -849,6 +864,13 @@ var FilmDetails = React.createClass({
           tabs.contract.forEach(function(errorsArray) {
             if (errorsArray.indexOf(error) > -1) {
               result.push("Contract Tab");
+            }
+          });
+        }
+        if (result.indexOf("General Tab") === -1) {
+          tabs.general.forEach(function(errorsArray) {
+            if (errorsArray.indexOf(error) > -1) {
+              result.push("General Tab");
             }
           });
         }
