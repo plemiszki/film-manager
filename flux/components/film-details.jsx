@@ -519,9 +519,20 @@ var FilmDetails = React.createClass({
         <div>
           <hr />
           <div className="row">
-            <div className="col-xs-8">
+            <div className="col-xs-6">
               <h2>Director</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.director || "" } data-field="director" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className="col-xs-2">
+              <h2>Label</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="labelId" value={ this.state.film.labelId }>
+                { FilmsStore.labels().map(function(label, index) {
+                  return(
+                    <option key={ index } value={ label.id }>{ label.name }</option>
+                  );
+                }) }
+              </select>
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-2">

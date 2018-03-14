@@ -13,6 +13,7 @@ var _reports = [];
 var _rights = {};
 var _dvds = {};
 var _dvdTypes = [];
+var _labels = [];
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -133,6 +134,10 @@ FilmsStore.dvds = function() {
 
 FilmsStore.dvdTypes = function() {
   return _dvdTypes;
+};
+
+FilmsStore.labels = function() {
+  return _labels;
 };
 
 FilmsStore.__onDispatch = function(payload) {

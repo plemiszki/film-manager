@@ -1,4 +1,46 @@
 @font-face {
+  font-family: 'TeachableSans-Regular';
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Regular.eot");
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Regular.eot?#iefix") format("embedded-opentype"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Regular.woff") format("woff"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TeachableSans-Medium";
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Medium.eot");
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Medium.eot?#iefix") format("embedded-opentype"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Medium.woff") format("woff"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TeachableSans-SemiBold';
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-SemiBold.eot");
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-SemiBold.eot?#iefix") format("embedded-opentype"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-SemiBold.woff") format("woff"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'TeachableSans-Bold';
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Bold.eot");
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Bold.eot?#iefix") format("embedded-opentype"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Bold.woff") format("woff"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'TeachableSans-ExtraBold';
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-ExtraBold.eot");
+  src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-ExtraBold.eot?#iefix") format("embedded-opentype"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-ExtraBold.woff") format("woff"),
+    url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-ExtraBold.ttf") format("truetype");
+}
+
+@font-face {
   font-family: "TeachableSans";
   src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Regular.eot");
   src: url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-Regular.eot?#iefix") format("embedded-opentype"),
@@ -76,30 +118,4 @@
     url("//d2oz8i5n9se8ej.cloudfront.net/fonts/teachable-sans/TeachableSans-SemiBoldItalic.ttf") format("truetype");
   font-weight: 600;
   font-style: italic;
-}
-
-@font-face {
-  font-family: 'TeachableSansRegular';
-  src: font-url('TeachableSans-Regular.woff') format('woff'), /* Pretty Modern Browsers */
-       font-url('TeachableSans-Regular.ttf')  format('truetype') /* Safari, Android, iOS */
-}
-@font-face {
-  font-family: 'TeachableSansMedium';
-  src: font-url('TeachableSans-Medium.woff') format('woff'), /* Pretty Modern Browsers */
-       font-url('TeachableSans-Medium.ttf')  format('truetype') /* Safari, Android, iOS */
-}
-@font-face {
-  font-family: 'TeachableSansSemiBold';
-  src: font-url('TeachableSans-SemiBold.woff') format('woff'), /* Pretty Modern Browsers */
-       font-url('TeachableSans-SemiBold.ttf')  format('truetype') /* Safari, Android, iOS */
-}
-@font-face {
-  font-family: 'TeachableSansBold';
-  src: font-url('TeachableSans-Bold.woff') format('woff'), /* Pretty Modern Browsers */
-       font-url('TeachableSans-Bold.ttf')  format('truetype') /* Safari, Android, iOS */
-}
-@font-face {
-  font-family: 'TeachableSansExtraBold';
-  src: font-url('TeachableSans-ExtraBold.woff') format('woff'), /* Pretty Modern Browsers */
-       font-url('TeachableSans-ExtraBold.ttf')  format('truetype') /* Safari, Android, iOS */
 }
