@@ -136,6 +136,7 @@ var NewThing = React.createClass({
           { this.renderWeeklyTermsFields() }
           { this.renderWeeklyBoxOfficeFields() }
           { this.renderPaymentFields() }
+          { this.renderQuoteFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -357,6 +358,34 @@ var NewThing = React.createClass({
             <h2>Note</h2>
             <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.notes || "" } data-field="notes" />
             { Common.renderFieldError(this.state.errors, []) }
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderQuoteFields: function() {
+    if (this.props.thing === "quote") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>Text</h2>
+              <textarea rows="5" cols="20" className={ Common.errorClass(this.state.errors, Common.errors.text) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.text || "" } data-field="text" />
+              { Common.renderFieldError(this.state.errors, Common.errors.text) }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-6">
+              <h2>Author</h2>
+              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.author || "" } data-field="author" />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+            <div className="col-xs-6">
+              <h2>Publication</h2>
+              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.publication || "" } data-field="publication" />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
           </div>
         </div>
       );

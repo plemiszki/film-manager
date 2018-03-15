@@ -37,6 +37,7 @@ var GenresIndex = require('./components/genres-index.jsx');
 var GenreDetails = require('./components/genre-details.jsx');
 var TopicsIndex = require('./components/topics-index.jsx');
 var TopicDetails = require('./components/topic-details.jsx');
+var QuoteDetails = require('./components/quote-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -153,5 +154,8 @@ $(document).ready(function() {
   }
   if ($('#topic-details')[0]) {
     ReactDOM.render(<TopicDetails />, document.getElementById("topic-details"));
+  }
+  if ($('#quote-details')[0]) {
+    ReactDOM.render(<QuoteDetails />, document.getElementById("quote-details"));
   }
 });

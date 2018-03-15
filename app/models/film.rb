@@ -23,6 +23,9 @@ class Film < ActiveRecord::Base
   has_many :film_rights, dependent: :destroy
   has_many :royalty_reports, dependent: :destroy
   has_many :dvds, foreign_key: :feature_film_id, dependent: :destroy
+  has_many :quotes, dependent: :destroy
+  has_many :laurels, dependent: :destroy
+  has_many :related_films, dependent: :destroy
 
   after_create :create_percentages
 

@@ -38,7 +38,8 @@ var ServerActions = {
       languages: response.languages,
       genres: response.genres,
       topics: response.topics,
-      labels: response.labels
+      labels: response.labels,
+      quotes: response.quotes
     });
   },
 
@@ -321,6 +322,13 @@ var ServerActions = {
       actionType: "FILM_TOPICS_RECEIVED",
       topics: response.topics,
       filmTopics: response.filmTopics
+    });
+  },
+
+  receiveQuotes: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "QUOTES_RECEIVED",
+      quotes: response.quotes
     });
   }
 }

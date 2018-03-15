@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :languages, only: [:show]
   resources :genres, only: [:show]
   resources :topics, only: [:show]
+  resources :quotes, only: [:show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -71,6 +72,7 @@ Rails.application.routes.draw do
     resources :film_languages, only: [:index, :create, :destroy]
     resources :film_genres, only: [:index, :create, :destroy]
     resources :film_topics, only: [:index, :create, :destroy]
+    resources :quotes, only: [:create, :show, :update, :destroy]
   end
 
   # Clearance ------------------------

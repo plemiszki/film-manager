@@ -105,3 +105,10 @@ json.filmTopics @film_topics do |film_topic|
   json.topic film_topic.topic.name
 end
 json.labels @labels
+json.quotes @quotes do |quote|
+  json.id quote.id
+  json.text quote.text
+  json.author quote.author
+  json.publication quote.publication
+  json.filmId quote.film_id
+end

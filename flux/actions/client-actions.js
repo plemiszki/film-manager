@@ -24,6 +24,16 @@ var ClientActions = {
     });
   },
 
+  deleteAndGoToFilm: function(directory, obj) {
+    $.ajax({
+      url: '/api/' + directory + '/' + obj.id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = '/films/' + obj.filmId;
+      }
+    });
+  },
+
   fetchUsers: function() {
     $.ajax({
       url: '/api/users',
@@ -1633,6 +1643,57 @@ var ClientActions = {
       method: 'DELETE',
       success: function(response) {
         ServerActions.receiveFilmTopics(response);
+      }
+    });
+  },
+
+  createQuote: function(quote) {
+    $.ajax({
+      url: '/api/quotes',
+      method: 'POST',
+      data: {
+        quote: {
+          film_id: quote.filmId,
+          text: quote.text,
+          author: quote.author,
+          publication: quote.publication
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveQuotes(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchQuote: function(id) {
+    $.ajax({
+      url: '/api/quotes/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveQuotes(response);
+      }
+    });
+  },
+
+  updateQuote: function(quote) {
+    $.ajax({
+      url: '/api/quotes/' + quote.id,
+      method: 'PATCH',
+      data: {
+        quote: {
+          text: quote.text,
+          author: quote.author,
+          publication: quote.publication
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveQuotes(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
       }
     });
   }

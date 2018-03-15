@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180313233929) do
+ActiveRecord::Schema.define(version: 20180314195649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -288,6 +288,13 @@ ActiveRecord::Schema.define(version: 20180313233929) do
     t.string "name", null: false
   end
 
+  create_table "laurels", force: :cascade do |t|
+    t.integer "film_id",    null: false
+    t.string  "result",     null: false
+    t.string  "award_name"
+    t.string  "festival",   null: false
+  end
+
   create_table "licensors", force: :cascade do |t|
     t.string "name",    null: false
     t.string "email"
@@ -329,6 +336,18 @@ ActiveRecord::Schema.define(version: 20180313233929) do
     t.integer "year",                           null: false
     t.integer "month",                          null: false
     t.boolean "reporting_only", default: false
+  end
+
+  create_table "quotes", force: :cascade do |t|
+    t.integer "film_id",     null: false
+    t.string  "text",        null: false
+    t.string  "author"
+    t.string  "publication"
+  end
+
+  create_table "related_films", force: :cascade do |t|
+    t.integer "film_id",       null: false
+    t.integer "other_film_id", null: false
   end
 
   create_table "return_items", force: :cascade do |t|

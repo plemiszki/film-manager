@@ -155,6 +155,26 @@
       user-select: none;
     }
   }
+
+  .quote-container {
+    padding: 0 20px 20px 20px;
+
+    .quote {
+      border: solid 1px #E4E9ED;
+      border-radius: 3px;
+      padding: 15px;
+      cursor: pointer;
+
+      p:first-of-type {
+        font-family: 'TeachableSans-Medium';
+        margin-bottom: 10px;
+      }
+
+      p:last-of-type {
+        font-family: 'TeachableSans-Medium';
+      }
+    }
+  }
 }
 
 .licensor-modal-list {

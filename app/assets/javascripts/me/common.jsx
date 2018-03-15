@@ -40,6 +40,8 @@ Array.prototype.filterDaysDue = function(daysDue) {
 
 Common = {
 
+  params: {},
+
   selectModalStyles: {
     overlay: {
       background: 'rgba(0, 0, 0, 0.50)'
@@ -338,6 +340,9 @@ Common = {
     ],
     length: [
       "Length is not a number"
+    ],
+    text: [
+      "Text can't be blank"
     ]
   },
 
@@ -490,6 +495,7 @@ Common = {
   initialize: function() {
     $.fn.matchHeight._maintainScroll = true;
     Common.highlightCurrentPageInMenu();
+    Common.storeURLParams();
     Common.user.id = +$('#current-user #id').html();
     Common.user.admin = ($('#current-user #admin').html() == "true");
   },
@@ -626,6 +632,19 @@ Common = {
       throw 'State not recognized';
     }
     return result;
+  },
+
+  storeURLParams: function() {
+    var urlParamString = window.location.search.substring(1);
+    if (urlParamString) {
+      var urlParams = urlParamString.split('&');
+      urlParams.forEach(function(param) {
+        var paramKeyValuePair = param.split('=');
+
+        // store all params in a nonpersistent Javascript object
+        Common.params[paramKeyValuePair[0]] = paramKeyValuePair[1];
+      });
+    }
   },
 
   user: {}

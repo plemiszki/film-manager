@@ -8,6 +8,7 @@ var CountriesStore = require('../stores/countries-store.js');
 var LanguagesStore = require('../stores/languages-store.js');
 var GenresStore = require('../stores/genres-store.js');
 var TopicsStore = require('../stores/topics-store.js');
+var QuotesStore = require('../stores/quotes-store.js');
 var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
 
@@ -42,6 +43,19 @@ var FilmDetails = React.createClass({
     }
   },
 
+  quoteModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 420
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -62,7 +76,8 @@ var FilmDetails = React.createClass({
       languagesModalOpen: false,
       genresModalOpen: false,
       topicsModalOpen: false,
-      tab: 'General',
+      quoteModalOpen: false,
+      tab: (Common.params.tab ? HandyTools.capitalize(Common.params.tab) : 'General'),
       filmCountries: [],
       filmLanguages: [],
       filmGenres: [],
@@ -70,7 +85,10 @@ var FilmDetails = React.createClass({
       countries: [],
       languages: [],
       genres: [],
-      topics: []
+      topics: [],
+      quotes: [],
+      laurels: [],
+      relatedFilms: []
     });
   },
 
@@ -80,6 +98,7 @@ var FilmDetails = React.createClass({
     this.languagesListener = LanguagesStore.addListener(this.getLanguages);
     this.genresListener = GenresStore.addListener(this.getGenres);
     this.topicsListener = TopicsStore.addListener(this.getTopics);
+    this.quotesListener = QuotesStore.addListener(this.getQuotes);
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
     ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
   },
@@ -90,6 +109,7 @@ var FilmDetails = React.createClass({
     this.languagesListener.remove();
     this.genresListener.remove();
     this.topicsListener.remove();
+    this.quotesListener.remove();
     this.errorsListener.remove();
   },
 
@@ -138,6 +158,13 @@ var FilmDetails = React.createClass({
       filmTopics: TopicsStore.filmTopics(),
       topics: TopicsStore.all(),
       topicsModalOpen: false
+    });
+  },
+
+  getQuotes: function() {
+    this.setState({
+      quotes: QuotesStore.all(),
+      quoteModalOpen: false
     });
   },
 
@@ -250,6 +277,16 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickQuote: function(e) {
+    window.location = '/quotes/' + e.target.dataset.id;
+  },
+
+  clickAddQuote: function() {
+    this.setState({
+      quoteModalOpen: true
+    });
+  },
+
   clickAddDVDButton: function() {
     this.setState({
       dvdModalOpen: true
@@ -272,7 +309,8 @@ var FilmDetails = React.createClass({
       countriesModalOpen: false,
       languagesModalOpen: false,
       genresModalOpen: false,
-      topicsModalOpen: false
+      topicsModalOpen: false,
+      quoteModalOpen: false
     });
   },
 
@@ -384,6 +422,9 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={this.state.dvdModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdModalStyles}>
           <NewThing thing="dvd" initialObject={{featureFilmId: this.state.film.id, dvdTypeId: (this.state.film.id && this.state.dvds.length < 6) ? FilmsStore.dvdTypes()[0].id : 1}} />
+        </Modal>
+        <Modal isOpen={this.state.quoteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.quoteModalStyles}>
+          <NewThing thing="quote" initialObject={{ filmId: this.state.film.id, text: "", author: "", publication: "" }} />
         </Modal>
         <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ this.state.countries } property={ "name" } func={ this.clickCountry } />
@@ -579,7 +620,48 @@ var FilmDetails = React.createClass({
           <hr className="smaller-margin" />
           <div className="row checkboxes">
             <div className="col-xs-3">
-              <input id="active" type="checkbox" checked={ this.state.film.active } onChange={ this.changeCheckbox.bind(this, 'active') } /><label htmlFor="active">Active on Website</label>
+              <input id="active" type="checkbox" checked={ this.state.film.active || false } onChange={ this.changeCheckbox.bind(this, 'active') } /><label htmlFor="active">Active on Website</label>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <h3>Quotes:</h3>
+            { this.state.quotes.map(function(quote) {
+              return(
+                <div key={ quote.id } className="col-xs-6 quote-container">
+                  { this.renderQuote(quote) }
+                </div>
+              );
+            }.bind(this)) }
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddQuote }>Add Quote</a>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-6">
+              <h3>Genres:</h3>
+              <ul className="standard-list">
+                { this.state.filmGenres.map(function(filmGenre) {
+                  return(
+                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddGenre }>Add Genre</a>
+            </div>
+            <div className="col-xs-6">
+              <h3>Topics:</h3>
+              <ul className="standard-list">
+                { this.state.filmTopics.map(function(filmTopic) {
+                  return(
+                    <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic } data-id={ filmTopic.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddTopic }>Add Topic</a>
             </div>
           </div>
           <hr />
@@ -622,31 +704,6 @@ var FilmDetails = React.createClass({
               <h2>Instagram Link</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
               { Common.renderFieldError(this.state.filmErrors, []) }
-            </div>
-          </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-6">
-              <h3>Genres:</h3>
-              <ul className="standard-list">
-                { this.state.filmGenres.map(function(filmGenre) {
-                  return(
-                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
-                  );
-                }.bind(this)) }
-              </ul>
-              <a className={ 'blue-outline-button small' } onClick={ this.clickAddGenre }>Add Genre</a>
-            </div>
-            <div className="col-xs-6">
-              <h3>Topics:</h3>
-              <ul className="standard-list">
-                { this.state.filmTopics.map(function(filmTopic) {
-                  return(
-                    <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic } data-id={ filmTopic.id }></div></li>
-                  );
-                }.bind(this)) }
-              </ul>
-              <a className={ 'blue-outline-button small' } onClick={ this.clickAddTopic }>Add Topic</a>
             </div>
           </div>
         </div>
@@ -893,6 +950,19 @@ var FilmDetails = React.createClass({
         </div>
       )
     }
+  },
+
+  renderQuote: function(quote) {
+    var bottomLine = "";
+    bottomLine += quote.author ? quote.author : "";
+    bottomLine += quote.author && quote.publication ? ", " : "";
+    bottomLine += quote.publication ? quote.publication : "";
+    return(
+      <div className="quote" onClick={ this.clickQuote } data-id={ quote.id }>
+        <p data-id={ quote.id }>"{ quote.text }"</p>
+        <p data-id={ quote.id }>- { bottomLine }</p>
+      </div>
+    );
   },
 
   componentDidUpdate: function() {
