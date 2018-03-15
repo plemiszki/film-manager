@@ -179,6 +179,7 @@ var FilmDetails = React.createClass({
   clickTab: function(event) {
     var tab = event.target.innerText;
     if (this.state.tab !== tab) {
+      $('select').niceSelect('destroy');
       this.setState({
         tab: tab
       });
