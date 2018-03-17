@@ -9,6 +9,7 @@ var LanguagesStore = require('../stores/languages-store.js');
 var GenresStore = require('../stores/genres-store.js');
 var TopicsStore = require('../stores/topics-store.js');
 var QuotesStore = require('../stores/quotes-store.js');
+var LaurelsStore = require('../stores/laurels-store.js');
 var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
 
@@ -56,6 +57,19 @@ var FilmDetails = React.createClass({
     }
   },
 
+  laurelModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 360
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -77,6 +91,7 @@ var FilmDetails = React.createClass({
       genresModalOpen: false,
       topicsModalOpen: false,
       quoteModalOpen: false,
+      laurelModalOpen: false,
       tab: (Common.params.tab ? HandyTools.capitalize(Common.params.tab) : 'General'),
       filmCountries: [],
       filmLanguages: [],
@@ -99,6 +114,7 @@ var FilmDetails = React.createClass({
     this.genresListener = GenresStore.addListener(this.getGenres);
     this.topicsListener = TopicsStore.addListener(this.getTopics);
     this.quotesListener = QuotesStore.addListener(this.getQuotes);
+    this.laurelsListener = LaurelsStore.addListener(this.getLaurels);
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
     ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
   },
@@ -165,6 +181,14 @@ var FilmDetails = React.createClass({
     this.setState({
       quotes: QuotesStore.all(),
       quoteModalOpen: false
+    });
+  },
+
+  getLaurels: function() {
+    this.setState({
+      laurels: LaurelsStore.all(),
+      laurelModalOpen: false,
+      fetching: false
     });
   },
 
@@ -288,10 +312,23 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickAddLaurel: function() {
+    this.setState({
+      laurelModalOpen: true
+    });
+  },
+
   clickAddDVDButton: function() {
     this.setState({
       dvdModalOpen: true
     });
+  },
+
+  clickDeleteLaurel: function(e) {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.deleteLaurel(e.target.dataset.id)
   },
 
   confirmDelete: function() {
@@ -311,7 +348,8 @@ var FilmDetails = React.createClass({
       languagesModalOpen: false,
       genresModalOpen: false,
       topicsModalOpen: false,
-      quoteModalOpen: false
+      quoteModalOpen: false,
+      laurelModalOpen: false
     });
   },
 
@@ -378,7 +416,7 @@ var FilmDetails = React.createClass({
     return(
       <div className="film-details component details-component">
         <h1>Film Details</h1>
-        {this.renderTopTabs()}
+        { this.renderTopTabs() }
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -426,6 +464,9 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={this.state.quoteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.quoteModalStyles}>
           <NewThing thing="quote" initialObject={{ filmId: this.state.film.id, text: "", author: "", publication: "" }} />
+        </Modal>
+        <Modal isOpen={this.state.laurelModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.laurelModalStyles}>
+          <NewThing thing="laurel" initialObject={{ filmId: this.state.film.id, result: "Official Selection", awardName: "", festival: "" }} />
         </Modal>
         <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ this.state.countries } property={ "name" } func={ this.clickCountry } />
@@ -626,7 +667,23 @@ var FilmDetails = React.createClass({
           </div>
           <hr />
           <div className="row">
-            <h3>Quotes:</h3>
+            <div className="col-xs-12">
+              <h3>Laurels:</h3>
+              <ul className="standard-list">
+                { this.state.laurels.map(function(laurel) {
+                  return(
+                    <li key={ laurel.id }>{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="x-button" onClick={ this.clickDeleteLaurel } data-id={ laurel.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddLaurel }>Add Laurel</a>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-12">
+              <h3>Quotes:</h3>
+            </div>
             { this.state.quotes.map(function(quote) {
               return(
                 <div key={ quote.id } className="col-xs-6 quote-container">

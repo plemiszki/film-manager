@@ -24,7 +24,8 @@ class Api::FilmsController < ApplicationController
     @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
     @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
     @labels = Label.all
-    @quotes = Quote.where(film_id: @films.first.id)
+    @laurels = Laurel.where(film_id: @films.first.id).order(:order)
+    @quotes = Quote.where(film_id: @films.first.id).order(:order)
     render "show.json.jbuilder"
   end
 

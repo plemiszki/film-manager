@@ -39,7 +39,8 @@ var ServerActions = {
       genres: response.genres,
       topics: response.topics,
       labels: response.labels,
-      quotes: response.quotes
+      quotes: response.quotes,
+      laurels: response.laurels
     });
   },
 
@@ -329,6 +330,13 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "QUOTES_RECEIVED",
       quotes: response.quotes
+    });
+  },
+
+  receiveLaurels: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "LAURELS_RECEIVED",
+      laurels: response.laurels
     });
   }
 }

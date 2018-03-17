@@ -1,12 +1,15 @@
 class Api::QuotesController < ApplicationController
 
+  include Reorderable
+
   def show
-    @quotes = Quote.where(id: params[:id])
+    @quotes = Quote.where(id: params[:id]).order(:order)
     render "show.json.jbuilder"
   end
 
   def create
-    @quote = Quote.new(quote_params)
+    current_length = Quote.where(film_id: quote_params[:film_id]).length
+    @quote = Quote.new(quote_params.merge({ order: current_length }))
     if @quote.save
       @quotes = Quote.all
       render "show.json.jbuilder"
@@ -27,11 +30,9 @@ class Api::QuotesController < ApplicationController
 
   def destroy
     @quote = Quote.find(params[:id])
-    if @quote.destroy
-      render json: @quote, status: 200
-    else
-      render json: @quote.errors.full_messages, status: 422
-    end
+    @quote.destroy
+    reorder(Quote.where(film_id: @quote.film_id).order(:order))
+    render json: @quote, status: 200
   end
 
   private

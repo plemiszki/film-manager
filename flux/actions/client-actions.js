@@ -1696,6 +1696,37 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  createLaurel: function(laurel) {
+    $.ajax({
+      url: '/api/laurels',
+      method: 'POST',
+      data: {
+        laurel: {
+          film_id: laurel.filmId,
+          result: laurel.result,
+          award_name: laurel.awardName,
+          festival: laurel.festival
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveLaurels(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deleteLaurel: function(id) {
+    $.ajax({
+      url: '/api/laurels/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveLaurels(response);
+      }
+    });
   }
 }
 

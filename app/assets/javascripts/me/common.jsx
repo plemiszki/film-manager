@@ -343,6 +343,9 @@ Common = {
     ],
     text: [
       "Text can't be blank"
+    ],
+    festival: [
+      "Festival can't be blank"
     ]
   },
 

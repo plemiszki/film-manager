@@ -137,6 +137,7 @@ var NewThing = React.createClass({
           { this.renderWeeklyBoxOfficeFields() }
           { this.renderPaymentFields() }
           { this.renderQuoteFields() }
+          { this.renderLaurelFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -385,6 +386,38 @@ var NewThing = React.createClass({
               <h2>Publication</h2>
               <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.publication || "" } data-field="publication" />
               { Common.renderFieldError(this.state.errors, []) }
+            </div>
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderLaurelFields: function() {
+    if (this.props.thing === "laurel") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-4">
+              <h2>Result</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs())} data-field="result" value={ this.state.laurel.result }>
+                <option value={ "Official Selection" }>{ "Official Selection" }</option>
+                <option value={ "Nominated" }>{ "Nominated" }</option>
+                <option value={ "Winner" }>{ "Winner" }</option>
+              </select>
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+            <div className="col-xs-8">
+              <h2>Award Name (Optional)</h2>
+              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.laurel.awardName || "" } data-field="awardName" />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>Festival</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.festival) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.laurel.festival || "" } data-field="festival" />
+              { Common.renderFieldError(this.state.errors, Common.errors.festival) }
             </div>
           </div>
         </div>
