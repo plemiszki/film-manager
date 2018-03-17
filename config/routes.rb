@@ -74,6 +74,7 @@ Rails.application.routes.draw do
     resources :film_topics, only: [:index, :create, :destroy]
     resources :quotes, only: [:create, :show, :update, :destroy]
     resources :laurels, only: [:create, :destroy]
+    resources :related_films, only: [:create, :destroy]
   end
 
   # Clearance ------------------------

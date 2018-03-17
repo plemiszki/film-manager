@@ -10,6 +10,7 @@ var GenresStore = require('../stores/genres-store.js');
 var TopicsStore = require('../stores/topics-store.js');
 var QuotesStore = require('../stores/quotes-store.js');
 var LaurelsStore = require('../stores/laurels-store.js');
+var RelatedFilmsStore = require('../stores/related-films-store.js');
 var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
 
@@ -92,6 +93,7 @@ var FilmDetails = React.createClass({
       topicsModalOpen: false,
       quoteModalOpen: false,
       laurelModalOpen: false,
+      relatedFilmsModalOpen: false,
       tab: (Common.params.tab ? HandyTools.capitalize(Common.params.tab) : 'General'),
       filmCountries: [],
       filmLanguages: [],
@@ -103,7 +105,8 @@ var FilmDetails = React.createClass({
       topics: [],
       quotes: [],
       laurels: [],
-      relatedFilms: []
+      relatedFilms: [],
+      otherFilms: []
     });
   },
 
@@ -115,6 +118,7 @@ var FilmDetails = React.createClass({
     this.topicsListener = TopicsStore.addListener(this.getTopics);
     this.quotesListener = QuotesStore.addListener(this.getQuotes);
     this.laurelsListener = LaurelsStore.addListener(this.getLaurels);
+    this.relatedFilmsListener = RelatedFilmsStore.addListener(this.getRelatedFilms);
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
     ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
   },
@@ -126,6 +130,8 @@ var FilmDetails = React.createClass({
     this.genresListener.remove();
     this.topicsListener.remove();
     this.quotesListener.remove();
+    this.laurelsListener.remove();
+    this.relatedFilmsListener.remove();
     this.errorsListener.remove();
   },
 
@@ -188,6 +194,15 @@ var FilmDetails = React.createClass({
     this.setState({
       laurels: LaurelsStore.all(),
       laurelModalOpen: false,
+      fetching: false
+    });
+  },
+
+  getRelatedFilms: function() {
+    this.setState({
+      relatedFilms: RelatedFilmsStore.all(),
+      otherFilms: RelatedFilmsStore.otherFilms(),
+      relatedFilmsModalOpen: false,
       fetching: false
     });
   },
@@ -318,6 +333,12 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickAddRelatedFilm: function() {
+    this.setState({
+      relatedFilmsModalOpen: true
+    });
+  },
+
   clickAddDVDButton: function() {
     this.setState({
       dvdModalOpen: true
@@ -329,6 +350,17 @@ var FilmDetails = React.createClass({
       fetching: true
     });
     ClientActions.deleteLaurel(e.target.dataset.id)
+  },
+
+  clickDeleteRelatedFilm: function(e) {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.deleteRelatedFilm(e.target.dataset.id)
+  },
+
+  clickRelatedFilm: function(e) {
+    ClientActions.createRelatedFilm({ filmId: this.state.film.id, otherFilmId: e.target.dataset.id })
   },
 
   confirmDelete: function() {
@@ -349,7 +381,8 @@ var FilmDetails = React.createClass({
       genresModalOpen: false,
       topicsModalOpen: false,
       quoteModalOpen: false,
-      laurelModalOpen: false
+      laurelModalOpen: false,
+      relatedFilmsModalOpen: false
     });
   },
 
@@ -479,6 +512,9 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.topicsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ this.state.topics } property={ "name" } func={ this.clickTopic } />
+        </Modal>
+        <Modal isOpen={ this.state.relatedFilmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.otherFilms } property={ "title" } func={ this.clickRelatedFilm } />
         </Modal>
       </div>
     );
@@ -720,6 +756,20 @@ var FilmDetails = React.createClass({
                 }.bind(this)) }
               </ul>
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddTopic }>Add Topic</a>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-12">
+              <h3>Related Films:</h3>
+              <ul className="standard-list">
+                { this.state.relatedFilms.map(function(relatedFilm) {
+                  return(
+                    <li key={ relatedFilm.id }>{ relatedFilm.title }<div className="x-button" onClick={ this.clickDeleteRelatedFilm } data-id={ relatedFilm.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddRelatedFilm }>Add Related Film</a>
             </div>
           </div>
           <hr />

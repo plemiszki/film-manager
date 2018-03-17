@@ -1727,6 +1727,32 @@ var ClientActions = {
         ServerActions.receiveLaurels(response);
       }
     });
+  },
+
+  createRelatedFilm: function(relatedFilm) {
+    $.ajax({
+      url: '/api/related_films',
+      method: 'POST',
+      data: {
+        related_film: {
+          film_id: relatedFilm.filmId,
+          other_film_id: relatedFilm.otherFilmId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveRelatedFilms(response);
+      }
+    });
+  },
+
+  deleteRelatedFilm: function(id) {
+    $.ajax({
+      url: '/api/related_films/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveRelatedFilms(response);
+      }
+    });
   }
 }
 

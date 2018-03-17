@@ -40,7 +40,9 @@ var ServerActions = {
       topics: response.topics,
       labels: response.labels,
       quotes: response.quotes,
-      laurels: response.laurels
+      laurels: response.laurels,
+      relatedFilms: response.relatedFilms,
+      otherFilms: response.otherFilms
     });
   },
 
@@ -337,6 +339,14 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "LAURELS_RECEIVED",
       laurels: response.laurels
+    });
+  },
+
+  receiveRelatedFilms: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "RELATED_FILMS_RECEIVED",
+      relatedFilms: response.relatedFilms,
+      otherFilms: response.otherFilms
     });
   }
 }
