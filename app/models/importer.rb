@@ -383,6 +383,25 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # directors
+        unless Director.find_by(film_id: film.id)
+          director_strings = a[2].gsub(' and', ',').split(',').map(&:strip)
+          director_strings.each do |director_string|
+            words = director_string.split(" ")
+            if words.length == 1
+              Director.create!(film_id: film.id, last_name: words[0])
+            elsif words.length == 2
+              Director.create!(film_id: film.id, first_name: words[0], last_name: words[1])
+            else
+              if ["da", "de", "di", "ten", "van", "von"].include?(words[-2].downcase)
+                Director.create!(film_id: film.id, first_name: words[0...-2].join(" "), last_name: words[-2..-1].join(" "))
+              else
+                Director.create!(film_id: film.id, first_name: words[0...-1].join(" "), last_name: words[-1])
+              end
+            end
+          end
+        end
+
         films += 1
       end
     end
