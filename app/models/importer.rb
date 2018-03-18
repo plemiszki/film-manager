@@ -370,6 +370,19 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # topics
+        topic_strings = a[364].split('\n').map(&:strip)
+        topic_strings.each do |topic_string|
+          next if topic_string.empty?
+          topic = Topic.find_by_name(topic_string)
+          unless topic
+            topic = Topic.create!(name: topic_string)
+          end
+          unless FilmTopic.find_by(film_id: film.id, topic_id: topic.id)
+            FilmTopic.create!(film_id: film.id, topic_id: topic.id)
+          end
+        end
+
         films += 1
       end
     end
