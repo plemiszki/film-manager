@@ -333,6 +333,30 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # languages
+        a[4].gsub!("Dutch & English w/English subtitles", "Dutch, English")
+        a[4].gsub!("English/Malay", "English, Malay")
+        a[4].gsub!("n/a", "")
+        a[4].gsub!("No Dialogue", "")
+        a[4].gsub!("Polish w/English subtitles", "")
+        a[4].gsub!("Russian & German w/ English subtitles", "Russian, German")
+        a[4].gsub!("Spanish w/English subtitles", "Spanish")
+        a[4].gsub!("Swedish/English", "Swedish, English")
+        a[4].gsub!("with English subs", "")
+        a[4].gsub!("Various", "")
+
+        language_strings = a[4].split(",").map(&:strip)
+        language_strings.each do |language_string|
+          next if language_string.empty?
+          language = Language.find_by_name(language_string)
+          unless language
+            language = Language.create!(name: language_string)
+          end
+          unless FilmLanguage.find_by(film_id: film.id, language_id: language.id)
+            FilmLanguage.create!(film_id: film.id, language_id: language.id)
+          end
+        end
+
         films += 1
       end
     end
