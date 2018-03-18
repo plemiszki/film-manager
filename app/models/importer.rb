@@ -357,6 +357,19 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # genres
+        genre_strings = a[55].split('\n').map(&:strip)
+        genre_strings.each do |genre_string|
+          next if genre_string.empty?
+          genre = Genre.find_by_name(genre_string)
+          unless genre
+            genre = Genre.create!(name: genre_string)
+          end
+          unless FilmGenre.find_by(film_id: film.id, genre_id: genre.id)
+            FilmGenre.create!(film_id: film.id, genre_id: genre.id)
+          end
+        end
+
         films += 1
       end
     end
