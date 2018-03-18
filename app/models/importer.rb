@@ -82,7 +82,7 @@ class Importer < ActiveRecord::Base
       films = 0
       until films == total
         a = file.gets.split("\t")
-        if a[1][0..8] == "(NEW FILM" || ["Captive Beauty", "The Dark Sea", "The Condemned", "Camino del Vino", "Mundo Secreto", "Sal", "Chance", "Nairobi Half Life", "School's Out", "Something Necessary", "War Witch", "Things From Another World", "Pulce is Not Here", "Climate of Change", "Fire in Babylon", "Booker's Place: A Mississippi Story", "Boys of Summer", "Felony", "Deep Throat Part II Collection"].include?(a[1])
+        if a[1].empty? || a[1][0..8] == "(NEW FILM" || ["Captive Beauty", "The Dark Sea", "The Condemned", "Camino del Vino", "Mundo Secreto", "Sal", "Chance", "Nairobi Half Life", "School's Out", "Something Necessary", "War Witch", "Things From Another World", "Pulce is Not Here", "Climate of Change", "Fire in Babylon", "Booker's Place: A Mississippi Story", "Boys of Summer", "Felony", "Deep Throat Part II Collection"].include?(a[1])
           films += 1
           next
         end
@@ -97,6 +97,17 @@ class Importer < ActiveRecord::Base
         end
 
         # then add/update film
+
+        if a[301] == "True"
+          label_id = 2
+        elsif a[300] == "True"
+          label_id = 3
+        elsif a[192] == "True"
+          label_id = 4
+        else
+          label_id = 1
+        end
+
         film_vars = {
           title: a[1],
           short_film: a[54] == "short",
@@ -113,7 +124,6 @@ class Importer < ActiveRecord::Base
           send_reports: a[348] == "False",
           year: a[7].to_i,
           length: a[6].to_i,
-          director: a[2],
           synopsis: a[18],
           short_synopsis: a[81],
           vod_synopsis: a[204],
@@ -125,7 +135,9 @@ class Importer < ActiveRecord::Base
           standalone_site: a[347],
           facebook_link: a[344],
           twitter_link: a[345],
-          instagram_link: a[346]
+          instagram_link: a[346],
+          label_id: label_id,
+          active: (a[53] != "12:00:00 AM")
         }
         film = Film.find_by({title: film_vars[:title], short_film: film_vars[:short_film]})
         if film
@@ -306,6 +318,21 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # countries
+        country_strings = a[3].split(",").map(&:strip)
+        country_strings.each do |country_string|
+          country_string = "United Kingdom" if country_string == "UK"
+          country_string = "USA" if country_string == "US"
+          country_string = "USA" if country_string == "U.S."
+          country = Country.find_by_name(country_string)
+          unless country
+            country = Country.create!(name: country_string)
+          end
+          unless FilmCountry.find_by(film_id: film.id, country_id: country.id)
+            FilmCountry.create!(film_id: film.id, country_id: country.id)
+          end
+        end
+
         films += 1
       end
     end
@@ -362,11 +389,9 @@ class Importer < ActiveRecord::Base
       a = f.gets.split('%')
       total = a[0].to_i
       a.shift
-      Venue.destroy_all
       venues = 0
 
       until venues == total
-        # venue = Venue.find_by_label(a[2])
 
         venue_vars = {
           label: a[1],
@@ -401,8 +426,13 @@ class Importer < ActiveRecord::Base
           venues += 1
           a.shift(27)
         else
-          p "Adding Venue: #{venue_vars[:label]}"
-          venue = Venue.create(venue_vars)
+          venue = Venue.find_by({ label: venue_vars[:label] })
+          if venue
+            venue.update(venue_vars)
+          else
+            p "Adding Venue: #{venue_vars[:label]}"
+            venue = Venue.new(venue_vars)
+          end
           venue.save!
           venues += 1
           a.shift(27)
