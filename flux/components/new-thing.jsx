@@ -138,6 +138,7 @@ var NewThing = React.createClass({
           { this.renderPaymentFields() }
           { this.renderQuoteFields() }
           { this.renderLaurelFields() }
+          { this.renderActorOrDirectorFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -418,6 +419,27 @@ var NewThing = React.createClass({
               <h2>Festival</h2>
               <input className={ Common.errorClass(this.state.errors, Common.errors.festival) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.laurel.festival || "" } data-field="festival" />
               { Common.renderFieldError(this.state.errors, Common.errors.festival) }
+            </div>
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderActorOrDirectorFields: function() {
+    if (this.props.thing === "director" || this.props.thing === "actor") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-6">
+              <h2>First Name</h2>
+              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].firstName || "" } data-field="firstName" />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+            <div className="col-xs-6">
+              <h2>Last Name</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.lastName) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].lastName || "" } data-field="lastName" />
+              { Common.renderFieldError(this.state.errors, Common.errors.lastName) }
             </div>
           </div>
         </div>

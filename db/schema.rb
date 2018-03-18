@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180317140025) do
+ActiveRecord::Schema.define(version: 20180318134128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "actors", force: :cascade do |t|
+    t.integer "film_id",    null: false
+    t.string  "first_name"
+    t.string  "last_name",  null: false
+  end
+
+  add_index "actors", ["film_id"], name: "index_actors_on_film_id", using: :btree
 
   create_table "bookings", force: :cascade do |t|
     t.integer "film_id",                                                                 null: false
@@ -79,6 +87,14 @@ ActiveRecord::Schema.define(version: 20180317140025) do
   create_table "deal_templates", force: :cascade do |t|
     t.string "name", null: false
   end
+
+  create_table "directors", force: :cascade do |t|
+    t.integer "film_id",    null: false
+    t.string  "first_name"
+    t.string  "last_name",  null: false
+  end
+
+  add_index "directors", ["film_id"], name: "index_directors_on_film_id", using: :btree
 
   create_table "dvd_customers", force: :cascade do |t|
     t.string  "name",                                                null: false
@@ -202,7 +218,6 @@ ActiveRecord::Schema.define(version: 20180317140025) do
     t.string  "facebook_link",                                  default: ""
     t.string  "twitter_link",                                   default: ""
     t.string  "instagram_link",                                 default: ""
-    t.string  "director",                                       default: ""
     t.boolean "active",                                         default: true
   end
 

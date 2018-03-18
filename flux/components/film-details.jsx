@@ -10,6 +10,8 @@ var GenresStore = require('../stores/genres-store.js');
 var TopicsStore = require('../stores/topics-store.js');
 var QuotesStore = require('../stores/quotes-store.js');
 var LaurelsStore = require('../stores/laurels-store.js');
+var DirectorsStore = require('../stores/directors-store.js');
+var ActorsStore = require('../stores/actors-store.js');
 var RelatedFilmsStore = require('../stores/related-films-store.js');
 var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
@@ -71,6 +73,19 @@ var FilmDetails = React.createClass({
     }
   },
 
+  directorModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 250
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -93,6 +108,8 @@ var FilmDetails = React.createClass({
       topicsModalOpen: false,
       quoteModalOpen: false,
       laurelModalOpen: false,
+      directorModalOpen: false,
+      actorModalOpen: false,
       relatedFilmsModalOpen: false,
       tab: (Common.params.tab ? HandyTools.capitalize(Common.params.tab) : 'General'),
       filmCountries: [],
@@ -106,7 +123,9 @@ var FilmDetails = React.createClass({
       quotes: [],
       laurels: [],
       relatedFilms: [],
-      otherFilms: []
+      otherFilms: [],
+      actors: [],
+      directors: []
     });
   },
 
@@ -118,6 +137,8 @@ var FilmDetails = React.createClass({
     this.topicsListener = TopicsStore.addListener(this.getTopics);
     this.quotesListener = QuotesStore.addListener(this.getQuotes);
     this.laurelsListener = LaurelsStore.addListener(this.getLaurels);
+    this.directorsListener = DirectorsStore.addListener(this.getDirectors);
+    this.actorsListener = ActorsStore.addListener(this.getActors);
     this.relatedFilmsListener = RelatedFilmsStore.addListener(this.getRelatedFilms);
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
     ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
@@ -131,6 +152,8 @@ var FilmDetails = React.createClass({
     this.topicsListener.remove();
     this.quotesListener.remove();
     this.laurelsListener.remove();
+    this.directorsListener.remove();
+    this.actorsListener.remove();
     this.relatedFilmsListener.remove();
     this.errorsListener.remove();
   },
@@ -203,6 +226,22 @@ var FilmDetails = React.createClass({
       relatedFilms: RelatedFilmsStore.all(),
       otherFilms: RelatedFilmsStore.otherFilms(),
       relatedFilmsModalOpen: false,
+      fetching: false
+    });
+  },
+
+  getDirectors: function() {
+    this.setState({
+      directors: DirectorsStore.all(),
+      directorModalOpen: false,
+      fetching: false
+    });
+  },
+
+  getActors: function() {
+    this.setState({
+      actors: ActorsStore.all(),
+      actorModalOpen: false,
       fetching: false
     });
   },
@@ -339,6 +378,18 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickAddDirector: function() {
+    this.setState({
+      directorModalOpen: true
+    });
+  },
+
+  clickAddActor: function() {
+    this.setState({
+      actorModalOpen: true
+    });
+  },
+
   clickAddDVDButton: function() {
     this.setState({
       dvdModalOpen: true
@@ -350,6 +401,20 @@ var FilmDetails = React.createClass({
       fetching: true
     });
     ClientActions.deleteLaurel(e.target.dataset.id)
+  },
+
+  clickDeleteDirector: function(e) {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.deleteDirector(e.target.dataset.id)
+  },
+
+  clickDeleteActor: function(e) {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.deleteActor(e.target.dataset.id)
   },
 
   clickDeleteRelatedFilm: function(e) {
@@ -382,6 +447,8 @@ var FilmDetails = React.createClass({
       topicsModalOpen: false,
       quoteModalOpen: false,
       laurelModalOpen: false,
+      directorModalOpen: false,
+      actorModalOpen: false,
       relatedFilmsModalOpen: false
     });
   },
@@ -500,6 +567,12 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={this.state.laurelModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.laurelModalStyles}>
           <NewThing thing="laurel" initialObject={{ filmId: this.state.film.id, result: "Official Selection", awardName: "", festival: "" }} />
+        </Modal>
+        <Modal isOpen={this.state.directorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.directorModalStyles}>
+          <NewThing thing="director" initialObject={{ filmId: this.state.film.id, firstName: "", lastName: "" }} />
+        </Modal>
+        <Modal isOpen={this.state.actorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.directorModalStyles}>
+          <NewThing thing="actor" initialObject={{ filmId: this.state.film.id, firstName: "", lastName: "" }} />
         </Modal>
         <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ this.state.countries } property={ "name" } func={ this.clickCountry } />
@@ -639,9 +712,15 @@ var FilmDetails = React.createClass({
           <hr />
           <div className="row">
             <div className="col-xs-6">
-              <h2>Director</h2>
-              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.director || "" } data-field="director" />
-              { Common.renderFieldError(this.state.filmErrors, []) }
+              <h2>Director(s):</h2>
+              <ul className="standard-list">
+                { this.state.directors.map(function(director) {
+                  return(
+                    <li key={ director.id }>{ director.firstName } { director.lastName }<div className="x-button" onClick={ this.clickDeleteDirector } data-id={ director.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddDirector }>Add Director</a>
             </div>
             <div className="col-xs-2">
               <h2>Label</h2>
@@ -690,8 +769,22 @@ var FilmDetails = React.createClass({
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddLanguage }>Add Language</a>
             </div>
           </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-6">
+              <h3>Cast:</h3>
+              <ul className="standard-list">
+                { this.state.actors.map(function(actor) {
+                  return(
+                    <li key={ actor.id }>{ actor.firstName } { actor.lastName }<div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddActor }>Add Actor</a>
+            </div>
+          </div>
         </div>
-      )
+      );
     } else if (this.state.tab === "Marketing") {
       return(
         <div>

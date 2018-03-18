@@ -28,6 +28,8 @@ class Api::FilmsController < ApplicationController
     @quotes = Quote.where(film_id: @films.first.id).order(:order)
     @related_films = RelatedFilm.where(film_id: @films.first.id).includes(:other_film)
     @other_films = Film.where.not(id: ([@films.first.id] + @related_films.pluck(:other_film_id)))
+    @actors = Actor.where(film_id: @films.first.id)
+    @directors = Director.where(film_id: @films.first.id)
     render "show.json.jbuilder"
   end
 
@@ -74,6 +76,12 @@ class Api::FilmsController < ApplicationController
         @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
         @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
         @labels = Label.all
+        @laurels = Laurel.where(film_id: @films.first.id).order(:order)
+        @quotes = Quote.where(film_id: @films.first.id).order(:order)
+        @related_films = RelatedFilm.where(film_id: @films.first.id).includes(:other_film)
+        @other_films = Film.where.not(id: ([@films.first.id] + @related_films.pluck(:other_film_id)))
+        @actors = Actor.where(film_id: @films.first.id)
+        @directors = Director.where(film_id: @films.first.id)
         render "show.json.jbuilder"
       end
     rescue
@@ -115,7 +123,6 @@ class Api::FilmsController < ApplicationController
       :auto_renew_term,
       :year,
       :length,
-      :director,
       :synopsis,
       :short_synopsis,
       :vod_synopsis,

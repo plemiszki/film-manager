@@ -22,7 +22,6 @@ json.films @films do |film|
   json.autoRenewTerm film.auto_renew_term
   json.year film.year.to_s || ""
   json.length film.length.to_s || ""
-  json.director film.director
   json.synopsis film.synopsis || ""
   json.shortSynopsis film.short_synopsis || ""
   json.vodSynopsis film.vod_synopsis || ""
@@ -128,4 +127,16 @@ end
 json.otherFilms @other_films do |film|
   json.id film.id
   json.title film.title
+end
+json.directors @directors do |director|
+  json.id director.id
+  json.filmId director.film_id
+  json.firstName director.first_name
+  json.lastName director.last_name
+end
+json.actors @actors do |actor|
+  json.id actor.id
+  json.filmId actor.film_id
+  json.firstName actor.first_name
+  json.lastName actor.last_name
 end

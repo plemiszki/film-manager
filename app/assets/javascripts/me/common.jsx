@@ -346,6 +346,9 @@ Common = {
     ],
     festival: [
       "Festival can't be blank"
+    ],
+    lastName: [
+      "Last name can't be blank"
     ]
   },
 

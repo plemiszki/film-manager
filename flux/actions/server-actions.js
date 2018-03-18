@@ -41,6 +41,8 @@ var ServerActions = {
       labels: response.labels,
       quotes: response.quotes,
       laurels: response.laurels,
+      directors: response.directors,
+      actors: response.actors,
       relatedFilms: response.relatedFilms,
       otherFilms: response.otherFilms
     });
@@ -347,6 +349,20 @@ var ServerActions = {
       actionType: "RELATED_FILMS_RECEIVED",
       relatedFilms: response.relatedFilms,
       otherFilms: response.otherFilms
+    });
+  },
+
+  receiveDirectors: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "DIRECTORS_RECEIVED",
+      directors: response.directors
+    });
+  },
+
+  receiveActors: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "ACTORS_RECEIVED",
+      actors: response.actors
     });
   }
 }

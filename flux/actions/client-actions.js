@@ -167,7 +167,7 @@ var ClientActions = {
     $.ajax({
       url: '/api/films',
       method: 'GET',
-      data: {shorts: shorts},
+      data: { shorts: shorts },
       success: function(response) {
         ServerActions.receiveFilms(response);
       }
@@ -239,7 +239,6 @@ var ClientActions = {
           sell_off_period: film.sellOffPeriod,
           year: film.year,
           length: film.length,
-          director: film.director,
           synopsis: film.synopsis,
           short_synopsis: film.shortSynopsis,
           logline: film.logline,
@@ -1751,6 +1750,66 @@ var ClientActions = {
       method: 'DELETE',
       success: function(response) {
         ServerActions.receiveRelatedFilms(response);
+      }
+    });
+  },
+
+  createDirector: function(director) {
+    $.ajax({
+      url: '/api/directors',
+      method: 'POST',
+      data: {
+        director: {
+          film_id: director.filmId,
+          first_name: director.firstName,
+          last_name: director.lastName
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDirectors(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deleteDirector: function(id) {
+    $.ajax({
+      url: '/api/directors/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveDirectors(response);
+      }
+    });
+  },
+
+  createActor: function(actor) {
+    $.ajax({
+      url: '/api/actors',
+      method: 'POST',
+      data: {
+        actor: {
+          film_id: actor.filmId,
+          first_name: actor.firstName,
+          last_name: actor.lastName
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveActors(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deleteActor: function(id) {
+    $.ajax({
+      url: '/api/actors/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveActors(response);
       }
     });
   }
