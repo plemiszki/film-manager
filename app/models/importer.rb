@@ -423,6 +423,20 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # laurels
+        unless Laurel.find_by(film_id: film.id)
+          laurel_strings = a[19].split('\n').map(&:strip)
+          laurel_strings.each_with_index do |laurel_string, index|
+            next if laurel_string.empty?
+            words = laurel_string.split("-").map(&:strip)
+            if words.length == 2
+              Laurel.create!(film_id: film.id, result: words[0], festival: words[1], order: index)
+            elsif words.length == 3
+              Laurel.create!(film_id: film.id, result: words[0], award_name: words[1], festival: words[2], order: index)
+            end
+          end
+        end
+
         films += 1
       end
     end
