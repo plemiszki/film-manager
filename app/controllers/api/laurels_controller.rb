@@ -1,4 +1,4 @@
-class Api::LaurelsController < ApplicationController
+class Api::LaurelsController < AdminController
 
   include Reorderable
 

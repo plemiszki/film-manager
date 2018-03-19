@@ -1,4 +1,4 @@
-class DvdsController < ApplicationController
+class DvdsController < AdminController
 
   def show
     @dvd = Dvd.find_by(id: params[:id])

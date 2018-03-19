@@ -1,4 +1,4 @@
-class PurchaseOrdersController < ApplicationController
+class PurchaseOrdersController < AdminController
 
   def index
     render "index.html.erb"

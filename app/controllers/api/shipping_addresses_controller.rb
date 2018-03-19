@@ -1,4 +1,4 @@
-class Api::ShippingAddressesController < ApplicationController
+class Api::ShippingAddressesController < AdminController
 
   def index
     @shipping_addresses = ShippingAddress.all

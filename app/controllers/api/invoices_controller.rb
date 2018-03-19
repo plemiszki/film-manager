@@ -1,4 +1,4 @@
-class Api::InvoicesController < ApplicationController
+class Api::InvoicesController < AdminController
 
   def index
     @invoices = Invoice.all.order('id DESC')

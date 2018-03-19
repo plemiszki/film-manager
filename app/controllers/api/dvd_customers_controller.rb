@@ -1,4 +1,4 @@
-class Api::DvdCustomersController < ApplicationController
+class Api::DvdCustomersController < AdminController
 
   def index
     @dvd_customers = DvdCustomer.all

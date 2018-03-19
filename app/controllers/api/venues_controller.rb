@@ -1,4 +1,4 @@
-class Api::VenuesController < ApplicationController
+class Api::VenuesController < AdminController
 
   def index
     @venues = Venue.all

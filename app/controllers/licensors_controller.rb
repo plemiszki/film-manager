@@ -1,4 +1,4 @@
-class LicensorsController < ApplicationController
+class LicensorsController < AdminController
 
   def index
     render "index.html.erb"

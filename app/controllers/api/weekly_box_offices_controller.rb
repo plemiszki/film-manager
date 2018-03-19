@@ -1,4 +1,4 @@
-class Api::WeeklyBoxOfficesController < ApplicationController
+class Api::WeeklyBoxOfficesController < AdminController
 
   include Reorderable
 

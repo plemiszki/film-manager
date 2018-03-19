@@ -1,4 +1,4 @@
-class GenresController < ApplicationController
+class GenresController < AdminController
 
   def show
     @genre = Genre.find_by(id: params[:id])

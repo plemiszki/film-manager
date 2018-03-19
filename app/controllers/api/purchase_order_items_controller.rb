@@ -1,4 +1,4 @@
-class Api::PurchaseOrderItemsController < ApplicationController
+class Api::PurchaseOrderItemsController < AdminController
 
   include PurchaseOrderItems
   include Reorderable

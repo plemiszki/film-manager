@@ -1,4 +1,4 @@
-class Api::PurchaseOrdersController < ApplicationController
+class Api::PurchaseOrdersController < AdminController
 
   include PurchaseOrderItems
 

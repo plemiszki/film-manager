@@ -1,4 +1,4 @@
-class Api::BookingsController < ApplicationController
+class Api::BookingsController < AdminController
 
   def index
     @bookings = Booking.all.includes(:film, :venue)

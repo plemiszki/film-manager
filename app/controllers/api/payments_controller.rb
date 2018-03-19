@@ -1,4 +1,4 @@
-class Api::PaymentsController < ApplicationController
+class Api::PaymentsController < AdminController
 
   def create
     @payment = Payment.new(payment_params)

@@ -1,4 +1,4 @@
-class DvdCustomersController < ApplicationController
+class DvdCustomersController < AdminController
 
   def index
     render "index.html.erb"

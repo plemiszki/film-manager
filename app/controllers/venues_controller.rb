@@ -1,4 +1,4 @@
-class VenuesController < ApplicationController
+class VenuesController < AdminController
 
   def index
     render "index.html.erb"

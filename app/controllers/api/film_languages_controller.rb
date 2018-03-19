@@ -1,4 +1,4 @@
-class Api::FilmLanguagesController < ApplicationController
+class Api::FilmLanguagesController < AdminController
 
   def create
     @film_language = FilmLanguage.new(film_language_params)

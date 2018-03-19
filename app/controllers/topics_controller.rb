@@ -1,4 +1,4 @@
-class TopicsController < ApplicationController
+class TopicsController < AdminController
 
   def show
     @topic = Topic.find_by(id: params[:id])

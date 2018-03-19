@@ -1,4 +1,4 @@
-class Api::RoyaltyReportsController < ApplicationController
+class Api::RoyaltyReportsController < AdminController
 
   include ActionView::Helpers::NumberHelper
 

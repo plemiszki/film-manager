@@ -1,4 +1,4 @@
-class Api::WeeklyTermsController < ApplicationController
+class Api::WeeklyTermsController < AdminController
 
   include Reorderable
 

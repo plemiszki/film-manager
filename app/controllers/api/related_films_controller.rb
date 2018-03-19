@@ -1,4 +1,4 @@
-class Api::RelatedFilmsController < ApplicationController
+class Api::RelatedFilmsController < AdminController
 
   include Reorderable
 

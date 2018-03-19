@@ -1,4 +1,4 @@
-class QuotesController < ApplicationController
+class QuotesController < AdminController
 
   def show
     @quote = Quote.find_by(id: params[:id])

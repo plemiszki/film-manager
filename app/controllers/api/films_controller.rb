@@ -1,4 +1,4 @@
-class Api::FilmsController < ApplicationController
+class Api::FilmsController < AdminController
 
   def index
     @films = Film.where(short_film: params[:shorts])

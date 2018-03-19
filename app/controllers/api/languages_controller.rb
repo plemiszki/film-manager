@@ -1,4 +1,4 @@
-class Api::LanguagesController < ApplicationController
+class Api::LanguagesController < AdminController
 
   def index
     @languages = Language.all

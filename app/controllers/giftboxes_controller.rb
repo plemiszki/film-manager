@@ -1,4 +1,4 @@
-class GiftboxesController < ApplicationController
+class GiftboxesController < AdminController
 
   def index
     render "index.html.erb"

@@ -1,4 +1,4 @@
-class Api::ReturnItemsController < ApplicationController
+class Api::ReturnItemsController < AdminController
 
   include ReturnItems
   include Reorderable

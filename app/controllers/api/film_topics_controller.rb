@@ -1,4 +1,4 @@
-class Api::FilmTopicsController < ApplicationController
+class Api::FilmTopicsController < AdminController
 
   def create
     @film_topic = FilmTopic.new(film_topic_params)

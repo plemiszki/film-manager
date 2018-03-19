@@ -1,4 +1,4 @@
-class ShippingAddressesController < ApplicationController
+class ShippingAddressesController < AdminController
 
   def index
     render "index.html.erb"

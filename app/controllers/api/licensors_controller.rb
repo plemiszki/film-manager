@@ -1,4 +1,4 @@
-class Api::LicensorsController < ApplicationController
+class Api::LicensorsController < AdminController
 
   def index
     @licensors = Licensor.all

@@ -1,4 +1,4 @@
-class Api::FilmGenresController < ApplicationController
+class Api::FilmGenresController < AdminController
 
   def create
     @film_genre = FilmGenre.new(film_genre_params)

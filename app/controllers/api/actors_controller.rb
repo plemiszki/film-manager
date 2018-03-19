@@ -1,4 +1,4 @@
-class Api::ActorsController < ApplicationController
+class Api::ActorsController < AdminController
 
   def create
     @actor = Actor.new(actor_params)

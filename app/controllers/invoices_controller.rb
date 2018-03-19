@@ -1,4 +1,4 @@
-class InvoicesController < ApplicationController
+class InvoicesController < AdminController
 
   def index
     render "index.html.erb"

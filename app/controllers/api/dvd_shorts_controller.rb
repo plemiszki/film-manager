@@ -1,4 +1,4 @@
-class Api::DvdShortsController < ApplicationController
+class Api::DvdShortsController < AdminController
 
   def create
     @dvd_short = DvdShort.new(dvd_short_params)

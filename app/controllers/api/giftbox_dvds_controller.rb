@@ -1,4 +1,4 @@
-class Api::GiftboxDvdsController < ApplicationController
+class Api::GiftboxDvdsController < AdminController
 
   def create
     @giftbox_dvd = GiftboxDvd.new(giftbox_dvd_params)

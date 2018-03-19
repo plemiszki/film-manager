@@ -77,6 +77,8 @@ Rails.application.routes.draw do
     resources :related_films, only: [:create, :destroy]
     resources :directors, only: [:create, :destroy]
     resources :actors, only: [:create, :destroy]
+
+    get '/website/films' => '/api/website#films'
   end
 
   # Clearance ------------------------

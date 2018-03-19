@@ -1,4 +1,4 @@
-class Api::QuotesController < ApplicationController
+class Api::QuotesController < AdminController
 
   include Reorderable
 

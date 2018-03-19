@@ -1,4 +1,4 @@
-class Api::GiftboxesController < ApplicationController
+class Api::GiftboxesController < AdminController
 
   def index
     @giftboxes = Giftbox.all

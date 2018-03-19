@@ -1,4 +1,4 @@
-class Api::FilmCountriesController < ApplicationController
+class Api::FilmCountriesController < AdminController
 
   def create
     @film_country = FilmCountry.new(film_country_params)

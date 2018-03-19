@@ -1,4 +1,4 @@
-class Api::ReturnsController < ApplicationController
+class Api::ReturnsController < AdminController
 
   include ReturnItems
 

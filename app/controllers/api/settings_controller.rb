@@ -1,4 +1,4 @@
-class Api::SettingsController < ApplicationController
+class Api::SettingsController < AdminController
 
   def show
     @settings = Setting.first

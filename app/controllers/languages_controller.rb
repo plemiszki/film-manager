@@ -1,4 +1,4 @@
-class LanguagesController < ApplicationController
+class LanguagesController < AdminController
 
   def show
     @language = Language.find_by(id: params[:id])

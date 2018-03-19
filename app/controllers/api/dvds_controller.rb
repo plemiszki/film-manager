@@ -1,4 +1,4 @@
-class Api::DvdsController < ApplicationController
+class Api::DvdsController < AdminController
 
   def show
     @dvds = Dvd.where(id: params[:id])

@@ -1,4 +1,4 @@
-class Api::DirectorsController < ApplicationController
+class Api::DirectorsController < AdminController
 
   def create
     @director = Director.new(director_params)
