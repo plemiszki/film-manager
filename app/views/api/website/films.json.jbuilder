@@ -18,6 +18,22 @@ json.array!(@films) do |film|
   json.facebook_link film.facebook_link
   json.twitter_link film.twitter_link
   json.instagram_link film.instagram_link
+  json.countries film.countries do |country|
+    json.id country.id
+    json.name country.name
+  end
+  json.languages film.languages do |language|
+    json.id language.id
+    json.name language.name
+  end
+  json.genres film.genres do |genre|
+    json.id genre.id
+    json.name genre.name
+  end
+  json.topics film.topics do |topic|
+    json.id topic.id
+    json.name topic.name
+  end
   json.directors film.directors do |director|
     json.id director.id
     json.first_name director.first_name

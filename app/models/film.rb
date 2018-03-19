@@ -29,6 +29,14 @@ class Film < ActiveRecord::Base
   has_many :related_films, dependent: :destroy
   has_many :directors, dependent: :destroy
   has_many :actors, dependent: :destroy
+  has_many :film_countries, dependent: :destroy
+  has_many :film_languages, dependent: :destroy
+  has_many :film_genres, dependent: :destroy
+  has_many :film_topics, dependent: :destroy
+  has_many :countries, through: :film_countries
+  has_many :languages, through: :film_languages
+  has_many :genres, through: :film_genres
+  has_many :topics, through: :film_topics
 
   after_create :create_percentages
 
