@@ -815,7 +815,7 @@ var FilmDetails = React.createClass({
             </div>
             { this.state.quotes.map(function(quote) {
               return(
-                <div key={ quote.id } className="col-xs-6 quote-container">
+                <div key={ quote.id } className="col-xs-12 quote-container">
                   { this.renderQuote(quote) }
                 </div>
               );

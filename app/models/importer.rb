@@ -437,6 +437,19 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # quotes
+        unless Quote.find_by(film_id: film.id)
+          unless a[26].empty?
+            Quote.create!(film_id: film.id, text: a[26], author: a[29], publication: a[32], order: 0)
+          end
+          unless a[27].empty?
+            Quote.create!(film_id: film.id, text: a[27], author: a[30], publication: a[33], order: 1)
+          end
+          unless a[28].empty?
+            Quote.create!(film_id: film.id, text: a[28], author: a[31], publication: a[34], order: 2)
+          end
+        end
+
         films += 1
       end
     end
