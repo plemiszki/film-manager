@@ -450,6 +450,31 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        # related films
+        related_strings = a[99].split('\n').map(&:strip)
+        related_strings.each_with_index do |related_string, order|
+          next if related_string.empty?
+          related_string = "Helena from the Wedding" if related_string == "Helena From The Wedding"
+          related_string = "A Life in Dirty Movies" if related_string == "A Life In Dirty Movies"
+          related_string = "Anytown, USA" if related_string == "Anytown USA"
+          related_string = "The Chambermaid Lynn" if related_string == "The Chambermaid"
+          related_string = "King of Devil's Island" if related_string == "The King of Devil's Island"
+          related_string = "Sea Fog (Haemoo)" if related_string == "Sea Fog"
+          related_string = "Sea Fog (Haemoo)" if related_string == "Sea Fog"
+          related_string = "In the Name of" if related_string == "In The Name Of"
+          related_string = "The Greatest Ears in Town: The Arif Mardin Story" if related_string == "The Greatest Ears in Town"
+          related_string = "After The Storm" if related_string == "After the Storm"
+          related_string = "Time to Die" if related_string == "Time To Die"
+          related_film = Film.find_by_title(related_string)
+          if related_film
+            unless RelatedFilm.find_by({ film_id: film.id, other_film_id: related_film.id })
+              RelatedFilm.create!(film_id: film.id, other_film_id: related_film.id, order: order)
+            end
+          else
+            p "could not find #{related_string}"
+          end
+        end
+
         films += 1
       end
     end
