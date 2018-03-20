@@ -793,6 +793,11 @@ var FilmDetails = React.createClass({
             <div className="col-xs-3">
               <input id="active" type="checkbox" checked={ this.state.film.active || false } onChange={ this.changeCheckbox.bind(this, 'active') } /><label htmlFor="active">Active on Website</label>
             </div>
+            <div className="col-xs-3">
+              <h2>Club Date</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.clubDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" />
+              { Common.renderFieldError(this.state.filmErrors, Common.errors.clubDate) }
+            </div>
           </div>
           <hr />
           <div className="row">

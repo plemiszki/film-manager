@@ -349,6 +349,10 @@ Common = {
     ],
     lastName: [
       "Last name can't be blank"
+    ],
+    clubDate: [
+      "Club date is not a valid date",
+      "Club date has already been taken"
     ]
   },
 

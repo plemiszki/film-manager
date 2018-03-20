@@ -252,7 +252,8 @@ var ClientActions = {
           twitter_link: film.twitterLink,
           instagram_link: film.instagramLink,
           active: film.active,
-          label_id: film.labelId
+          label_id: film.labelId,
+          club_date: film.clubDate
         },
         percentages: percentages
       },

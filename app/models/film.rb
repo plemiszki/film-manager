@@ -11,6 +11,8 @@ class Film < ActiveRecord::Base
   validates_numericality_of :reserve_quarters, :greater_than_or_equal_to => 0
   validates_numericality_of :auto_renew_term, :greater_than_or_equal_to => 0
   validates_numericality_of :sell_off_period, :greater_than_or_equal_to => 0
+  validates_date :club_date, allow_blank: true
+  validates :club_date, uniqueness: true
 
   def gr_percentage_tenth_decimal
     if [5, 6].include?(deal_type_id)
