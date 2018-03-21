@@ -5,4 +5,9 @@ class Api::WebsiteController < CyberController
     render "films.json.jbuilder"
   end
 
+  def gift_boxes
+    @gift_boxes = Giftbox.all.includes(:dvds)
+    render "gift_boxes.json.jbuilder"
+  end
+
 end

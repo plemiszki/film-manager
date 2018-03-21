@@ -71,15 +71,23 @@ var GiftboxesIndex = React.createClass({
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Type</th>
+                <th>Stock</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td></td></tr>
+              <tr><td></td><td></td><td></td></tr>
               {this.state.giftboxes.filterSearchText(this.state.searchText).map(function(giftbox, index) {
                 return(
                   <tr key={index} onClick={this.redirect.bind(this, giftbox.id)}>
                     <td className="name-column">
-                      {giftbox.name}
+                      { giftbox.name }
+                    </td>
+                    <td>
+                      { giftbox.type }
+                    </td>
+                    <td>
+                      { giftbox.quantity }
                     </td>
                   </tr>
                 );

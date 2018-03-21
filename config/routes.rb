@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     resources :actors, only: [:create, :destroy]
 
     get '/website/films' => '/api/website#films'
+    get '/website/gift_boxes' => '/api/website#gift_boxes'
   end
 
   # Clearance ------------------------
