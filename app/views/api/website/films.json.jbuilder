@@ -18,6 +18,7 @@ json.array!(@films) do |film|
   json.facebook_link film.facebook_link
   json.twitter_link film.twitter_link
   json.instagram_link film.instagram_link
+  json.club_date film.club_date ? film.club_date.strftime("%-m/%-d/%y") : ""
   json.countries film.countries do |country|
     json.id country.id
     json.name country.name
@@ -72,6 +73,7 @@ json.array!(@films) do |film|
     json.sound_config dvd.sound_config
     json.special_features dvd.special_features
     json.retail_date dvd.retail_date
+    json.stock dvd.stock
     json.shorts dvd.dvd_shorts do |dvd_short|
       json.id dvd_short.id
       json.short_id dvd_short.short_id

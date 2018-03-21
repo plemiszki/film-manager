@@ -44,27 +44,6 @@ class Importer < ActiveRecord::Base
         array.shift(3)
         actors += 1
       end
-
-      # dvd customers
-      # total = array[0].to_i
-      # array.shift
-      # customers = 0
-      # until customers == total
-      #   if ["Blockbuster", "Blockbuster Canada", "RepNet"].include?(array[1])
-      #     array.shift(7)
-      #     customers += 1
-      #     next
-      #   end
-      #   customer = DvdCustomer.find_by_name(array[1])
-      #   if customer
-      #     customer.update(discount: array[2], notes: array[3])
-      #   else
-      #     customer = DvdCustomer.new(name: array[1], discount: array[2], notes: array[3])
-      #   end
-      #   customer.save!
-      #   array.shift(7)
-      #   customers += 1
-      # end
     end
     object.delete
   end
@@ -139,6 +118,9 @@ class Importer < ActiveRecord::Base
           label_id: label_id,
           active: (a[53] != "12:00:00 AM")
         }
+        if a[21] != "12:00:00 AM"
+          film_vars[:club_date] = a[21]
+        end
         film = Film.find_by({title: film_vars[:title], short_film: film_vars[:short_film]})
         if film
           film.update(film_vars)
