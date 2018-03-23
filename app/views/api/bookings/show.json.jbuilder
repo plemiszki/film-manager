@@ -14,6 +14,8 @@ json.bookings @bookings do |booking|
   json.screenings booking.screenings.to_s
   json.bookerId booking.booker_id.to_s
   json.userId booking.user_id.to_s
+  json.pastBookerId booking.past_booker_id ? booking.past_booker.name : nil
+  json.pastUserId booking.past_user_id ? booking.past_user.name : nil
   json.billingName booking.billing_name
   json.billingAddress1 booking.billing_address1
   json.billingAddress2 booking.billing_address2

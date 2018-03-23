@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180320214850) do
+ActiveRecord::Schema.define(version: 20180323220648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,8 +37,8 @@ ActiveRecord::Schema.define(version: 20180320214850) do
     t.decimal "advance",                         precision: 5, scale: 2, default: 0.0
     t.decimal "shipping_fee",                    precision: 5, scale: 2, default: 0.0
     t.integer "screenings",                                              default: 1
-    t.integer "booker_id",                                                               null: false
-    t.integer "user_id",                                                                 null: false
+    t.integer "booker_id"
+    t.integer "user_id"
     t.string  "billing_name",                                            default: ""
     t.string  "billing_address1",                                        default: ""
     t.string  "billing_address2",                                        default: ""
@@ -71,6 +71,8 @@ ActiveRecord::Schema.define(version: 20180320214850) do
     t.string  "notes",                                                   default: ""
     t.decimal "deduction",                       precision: 5, scale: 2, default: 0.0
     t.decimal "box_office",                      precision: 8, scale: 2, default: 0.0
+    t.integer "old_booker_id"
+    t.integer "old_user_id"
   end
 
   add_index "bookings", ["booker_id"], name: "index_bookings_on_booker_id", using: :btree
@@ -319,6 +321,10 @@ ActiveRecord::Schema.define(version: 20180320214850) do
   end
 
   add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
+
+  create_table "past_bookers", force: :cascade do |t|
+    t.string "name", null: false
+  end
 
   create_table "payments", force: :cascade do |t|
     t.integer "booking_id"

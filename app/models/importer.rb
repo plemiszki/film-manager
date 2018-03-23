@@ -1,5 +1,106 @@
 class Importer < ActiveRecord::Base
 
+  @@vb_film_ids = {}
+
+  def self.import_bookings(time_started)
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Bookings.txt")
+    object.get(response_target: Rails.root.join("tmp/#{time_started}/Bookings.txt"))
+    File.open(Rails.root.join("tmp/#{time_started}/Bookings.txt")) do |f|
+      first_line = f.gets
+      total = first_line.gsub("\n", "").gsub("\r", "").to_i
+      bookings = 0
+      until bookings == total
+        a = f.gets.gsub("\n", "").gsub("\r", "").split("\t")
+        if a[2] == "291"
+          bookings += 1
+          next
+        end
+
+        venue = Venue.where('ltrim(rtrim(lower(label))) = ?', a[3].downcase.strip.gsub('jff', 'jewish film festival')).first
+        unless venue
+          venue = Venue.where('ltrim(rtrim(lower(label))) = ?', a[3].downcase.strip.gsub('ff', 'film festival')).first
+        end
+        unless venue
+          venue = Venue.where('ltrim(rtrim(lower(label))) = ?', a[3].downcase.strip.gsub("int'l", 'international')).first
+        end
+        unless venue
+          venue = Venue.where('ltrim(rtrim(lower(label))) = ?', a[3].downcase.strip.gsub('ff', 'film festival').gsub("int'l", 'international')).first
+        end
+        if a[3] == "McDaniel College - Dept. of World Lang."
+          venue = Venue.where(label: "McDaniel College").first
+        end
+        if a[3] == "Virgina Tech  - Foreign Lang. and Lit."
+          venue = Venue.where(label: "Virginia Tech").first
+        end
+        if a[3] == "CINÉMA-OKTÁ"
+          venue = Venue.find(1674)
+        end
+        if a[3] == "Palm Beach Country Library System"
+          venue = Venue.find(1573)
+        end
+        unless venue
+          bookings += 1
+          next
+        end
+
+        bookers = {
+          "JW": 9,
+          "MW": 8
+        }
+
+        booking_vars = {
+          film_id: @@vb_film_ids[a[2]],
+          venue_id: venue.id,
+          date_added: a[32],
+          booking_type: a[6],
+          status: a[27],
+          start_date: a[7],
+          end_date: a[8],
+          terms: a[9],
+          terms_change: a[10] == "True",
+          advance: a[15],
+          shipping_fee: a[16],
+          screenings: a[19],
+          format: a[22],
+          email: a[31],
+          imported_advance_invoice_number: a[26],
+          imported_advance_invoice_sent: a[24],
+          booking_confirmation_sent: a[25],
+          imported_overage_invoice_number: a[56],
+          imported_overage_invoice_sent: a[55],
+          premiere: a[28],
+          materials_sent: a[34],
+          no_materials: a[38] == "True",
+          shipping_notes: a[37],
+          tracking_number: a[35],
+          delivered: a[36],
+          house_expense: a[52],
+          notes: a[53],
+          deduction: a[54],
+          box_office: a[46]
+          # billing address
+          # shipping address
+          # booker_id: bookers[a[20]],
+          # user_id
+        }
+
+        # if booking
+        #   booking.update(booking_vars)
+        # else
+        #   booking = Booking.new(booking_vars)
+        # end
+        # booking.save!
+        bookings += 1
+      end
+      object.delete
+    end
+  end
+
   def self.import_admin(time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(
@@ -90,7 +191,6 @@ class Importer < ActiveRecord::Base
         film_vars = {
           title: a[1],
           short_film: a[54] == "short",
-          label_id: 0,
           licensor_id: licensor ? licensor.id : nil,
           deal_type_id: a[241] == "Template A" ? 1 : (a[241] == "Template B" ? 2 : (a[241] == "Template B (Theat. Only)" ? 3 : (a[241] == "Template C" ? 4 : (a[241] == "Template D" ? 5 : (a[241] == "Template E" ? 6 : nil))))),
           days_statement_due: a[54] == "short" ? nil : (a[357] == "0" ? 30 : a[357]),
@@ -163,6 +263,7 @@ class Importer < ActiveRecord::Base
           end
         end
         film.save!
+        @@vb_film_ids[a[0]] = film.id
 
         # retail dvd
         retail_dvd_vars = {

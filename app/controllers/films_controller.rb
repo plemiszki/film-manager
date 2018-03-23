@@ -17,6 +17,7 @@ class FilmsController < AdminController
     films_io = params[:user][:films_file]
     theaters_io = params[:user][:theaters_file]
     admin_io = params[:user][:admin_file]
+    bookings_io = params[:user][:bookings_file]
     time_started = Time.now.to_s
     # upload files to server
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
@@ -28,6 +29,9 @@ class FilmsController < AdminController
     end
     File.open(Rails.root.join('tmp', time_started, admin_io.original_filename), 'wb') do |file|
       file.write(admin_io.read)
+    end
+    File.open(Rails.root.join('tmp', time_started, bookings_io.original_filename), 'wb') do |file|
+      file.write(bookings_io.read)
     end
     # upload files to S3
     s3 = Aws::S3::Resource.new(
@@ -41,6 +45,8 @@ class FilmsController < AdminController
     films_obj.upload_file(Rails.root.join('tmp', time_started, 'Theaters.txt'), acl:'private')
     admin_obj = bucket.object("#{time_started}/Admin.txt")
     admin_obj.upload_file(Rails.root.join('tmp', time_started, 'Admin.txt'), acl:'private')
+    bookings_obj = bucket.object("#{time_started}/Bookings.txt")
+    bookings_obj.upload_file(Rails.root.join('tmp', time_started, 'Bookings.txt'), acl:'private')
     # start worker
     ImportData.perform_async(time_started)
     redirect_to "/films"
