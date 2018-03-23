@@ -18,7 +18,7 @@
     margin-bottom: 30px;
   }
 
-  ul {
+  ul:not(.list) {
     border: 1px solid #E4E9ED;
     border-radius: 5px;
     padding: 15px;

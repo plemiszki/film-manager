@@ -325,17 +325,7 @@ var BookingDetails = React.createClass({
                 <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.email || "" } data-field="email" />
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
-              <div className="col-xs-3">
-                <h2>Booked By</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
-                  { BookingsStore.bookers().map(function(user) {
-                    return(
-                      <option key={ user.id } value={ user.id }>{ user.name }</option>
-                    );
-                  }) }
-                </select>
-                { Common.renderFieldError(this.state.errors, []) }
-              </div>
+              { this.renderBookedByField() }
               <div className="col-xs-3">
                 <h2>Format</h2>
                 <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.format || "" } data-field="format" />
@@ -598,6 +588,32 @@ var BookingDetails = React.createClass({
           </div>
         );
       }
+    }
+  },
+
+  renderBookedByField: function() {
+    if (JSON.stringify(this.state.booking) == "{}" || this.state.booking.pastBooker) {
+      return(
+        <div className="col-xs-3">
+          <h2>Booked By</h2>
+          <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.pastBooker || "" } data-field="pastBooker" readOnly={ true } />
+          { Common.renderFieldError(this.state.errors, []) }
+        </div>
+      );
+    } else {
+      return(
+        <div className="col-xs-3">
+          <h2>Booked By</h2>
+          <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
+            { BookingsStore.bookers().map(function(user) {
+              return(
+                <option key={ user.id } value={ user.id }>{ user.name }</option>
+              );
+            }) }
+          </select>
+          { Common.renderFieldError(this.state.errors, []) }
+        </div>
+      );
     }
   },
 
