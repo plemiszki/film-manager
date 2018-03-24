@@ -50,51 +50,107 @@ class Importer < ActiveRecord::Base
 
         bookers = {
           "JW": 9,
-          "MW": 8
+          "MW": 8,
+          "Gathr": 8,
+          "CT": 10,
+          "producer": 11,
+          "N/A": 11,
+          "NA": 11,
+          "jw": 9
         }
+
+        past_bookers = {
+          "RC": 1,
+          "MJ": 2,
+          "RL": 3
+        }
+
+        # p "#{Film.find(@@vb_film_ids[a[2]]).title} - #{venue.label}"
+
+        if a[20].empty?
+          old_user_id = past_bookers[a[19].to_sym]
+        else
+          old_user_id = past_bookers[a[20].to_sym]
+        end
+        if a[19].empty?
+          old_booker_id = past_bookers[a[20].to_sym]
+        else
+          old_booker_id = past_bookers[a[19].to_sym]
+        end
+
+        unless old_booker_id
+          if a[19].empty?
+            booker_id = bookers[a[20].to_sym]
+            unless booker_id
+              raise "didn't find #{a[20]}"
+            end
+          else
+            booker_id = bookers[a[19].to_sym]
+            unless booker_id
+              raise "didn't find #{a[19]}"
+            end
+          end
+        end
+        unless old_user_id
+          if a[20].empty?
+            user_id = bookers[a[19].to_sym]
+            unless user_id
+              raise "didn't find #{a[19]}"
+            end
+          else
+            user_id = bookers[a[20].to_sym]
+            unless user_id
+              raise "didn't find #{a[20]}"
+            end
+          end
+        end
 
         booking_vars = {
           film_id: @@vb_film_ids[a[2]],
           venue_id: venue.id,
-          date_added: a[32],
-          booking_type: a[6],
-          status: a[27],
-          start_date: a[7],
-          end_date: a[8],
-          terms: a[9],
-          terms_change: a[10] == "True",
-          advance: a[15],
-          shipping_fee: a[16],
-          screenings: a[19],
-          format: a[22],
-          email: a[31],
-          imported_advance_invoice_number: a[26],
-          imported_advance_invoice_sent: a[24],
-          booking_confirmation_sent: a[25],
-          imported_overage_invoice_number: a[56],
-          imported_overage_invoice_sent: a[55],
-          premiere: a[28],
-          materials_sent: a[34],
-          no_materials: a[38] == "True",
-          shipping_notes: a[37],
-          tracking_number: a[35],
-          delivered: a[36],
-          house_expense: a[52],
-          notes: a[53],
-          deduction: a[54],
-          box_office: a[46]
+          date_added: (a[22] == "12:00:00 AM" ? a[6] : a[22]),
+          booking_type: a[5],
+          status: (a[26].empty? ? "Confirmed" : a[26]),
+          start_date: a[6],
+          end_date: a[7],
+          terms: a[8],
+          terms_change: a[9] == "True",
+          advance: a[14],
+          shipping_fee: a[15],
+          screenings: a[18],
+          format: a[21],
+          email: a[30],
+          imported_advance_invoice_number: a[25],
+          imported_advance_invoice_sent: (a[23] == "12:00:00 AM" ? "" : a[23]),
+          booking_confirmation_sent: (a[24] == "12:00:00 AM" ? "" : a[24]),
+          imported_overage_invoice_number: a[55],
+          imported_overage_invoice_sent: (a[54] == "12:00:00 AM" ? "" : a[54]),
+          premiere: a[27],
+          materials_sent: (a[33] == "12:00:00 AM" ? "" : a[33]),
+          no_materials: a[37] == "True",
+          shipping_notes: a[36],
+          tracking_number: a[34],
+          delivered: (a[35] == "True"),
+          house_expense: a[51],
+          notes: a[52],
+          deduction: a[53],
+          box_office: a[45],
+          booker_id: booker_id,
+          old_booker_id: old_booker_id,
+          user_id: user_id,
+          old_user_id: old_user_id
           # billing address
           # shipping address
-          # booker_id: bookers[a[20]],
-          # user_id
         }
 
-        # if booking
-        #   booking.update(booking_vars)
-        # else
-        #   booking = Booking.new(booking_vars)
-        # end
-        # booking.save!
+        booking = Booking.find_by(film_id: booking_vars[:film_id], venue_id: booking_vars[:venue_id], start_date: Date.strptime(booking_vars[:start_date], "%m/%d/%y"))
+        if booking
+          booking.update(booking_vars)
+        else
+          p "Adding Booking: #{venue.label}"
+          booking = Booking.new(booking_vars)
+        end
+        booking.save!
         bookings += 1
       end
       object.delete

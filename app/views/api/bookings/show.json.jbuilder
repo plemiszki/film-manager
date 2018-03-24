@@ -34,9 +34,9 @@ json.bookings @bookings do |booking|
   json.email booking.email
   json.bookingConfirmationSent booking.booking_confirmation_sent ? booking.booking_confirmation_sent.strftime("%-m/%-d/%y") : ''
   json.premiere booking.premiere
-  json.importedAdvanceInvoiceSent booking.imported_advance_invoice_sent || ''
+  json.importedAdvanceInvoiceSent booking.imported_advance_invoice_sent ? booking.imported_advance_invoice_sent.strftime("%-m/%-d/%y") : ''
   json.importedAdvanceInvoiceNumber booking.imported_advance_invoice_number || ''
-  json.importedOverageInvoiceSent booking.imported_overage_invoice_sent || ''
+  json.importedOverageInvoiceSent booking.imported_overage_invoice_sent ? booking.imported_overage_invoice_sent.strftime("%-m/%-d/%y") : ''
   json.importedOverageInvoiceNumber booking.imported_overage_invoice_number || ''
   json.materialsSent booking.materials_sent ? booking.materials_sent.strftime("%-m/%-d/%y") : ''
   json.noMaterials booking.no_materials

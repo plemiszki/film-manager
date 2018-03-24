@@ -1,7 +1,7 @@
 class Api::UsersController < Clearance::UsersController
 
   def api_index
-    @users = User.all
+    @users = User.where.not(name: "Producer")
     render "index.json.jbuilder"
   end
 

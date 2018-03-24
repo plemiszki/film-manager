@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323220648) do
+ActiveRecord::Schema.define(version: 20180324211410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,9 +32,9 @@ ActiveRecord::Schema.define(version: 20180323220648) do
     t.string  "status",                                                                  null: false
     t.date    "start_date",                                                              null: false
     t.date    "end_date",                                                                null: false
-    t.string  "terms",                                                                   null: false
+    t.string  "terms"
     t.boolean "terms_change",                                            default: false
-    t.decimal "advance",                         precision: 5, scale: 2, default: 0.0
+    t.decimal "advance",                         precision: 8, scale: 2, default: 0.0
     t.decimal "shipping_fee",                    precision: 5, scale: 2, default: 0.0
     t.integer "screenings",                                              default: 1
     t.integer "booker_id"
@@ -67,9 +67,9 @@ ActiveRecord::Schema.define(version: 20180323220648) do
     t.string  "tracking_number",                                         default: ""
     t.boolean "delivered",                                               default: false
     t.date    "date_paid"
-    t.decimal "house_expense",                   precision: 5, scale: 2, default: 0.0
+    t.decimal "house_expense",                   precision: 8, scale: 2, default: 0.0
     t.string  "notes",                                                   default: ""
-    t.decimal "deduction",                       precision: 5, scale: 2, default: 0.0
+    t.decimal "deduction",                       precision: 8, scale: 2, default: 0.0
     t.decimal "box_office",                      precision: 8, scale: 2, default: 0.0
     t.integer "old_booker_id"
     t.integer "old_user_id"
