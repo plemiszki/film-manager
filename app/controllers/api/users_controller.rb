@@ -32,11 +32,19 @@ class Api::UsersController < Clearance::UsersController
 
   def api_destroy
     @user = User.find(params[:id])
-    if @user.destroy
-      render json: @user, status: 200
-    else
-      render json: @user.errors.full_messages, status: 422
+    bookings = @user.bookings
+    entered_bookings = @user.entered_bookings
+    if bookings.length > 0 || entered_bookings.length > 0
+      past_booker = PastBooker.create(name: @user.name)
+      bookings.each do |booking|
+        booking.update(old_booker_id: past_booker.id)
+      end
+      entered_bookings.each do |entered_booking|
+        entered_booking.update(old_user_id: past_booker.id)
+      end
     end
+    @user.destroy
+    render json: @user, status: 200
   end
 
   private
