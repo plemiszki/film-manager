@@ -12,6 +12,7 @@ var _revenuePercentages = {};
 var _reports = [];
 var _rights = {};
 var _dvds = {};
+var _bookings = [];
 var _dvdTypes = [];
 var _labels = [];
 
@@ -49,6 +50,10 @@ FilmsStore.setReports = function(reports) {
 
 FilmsStore.setDvds = function(dvds) {
   _dvds = dvds;
+};
+
+FilmsStore.setBookings = function(bookings) {
+  _bookings = bookings;
 };
 
 FilmsStore.setDvdTypes = function(dvdTypes) {
@@ -136,6 +141,10 @@ FilmsStore.dvds = function() {
   return _dvds;
 };
 
+FilmsStore.bookings = function() {
+  return HandyTools.sortArrayOfDateStrings(_bookings, 'startDate').reverse();
+};
+
 FilmsStore.dvdTypes = function() {
   return _dvdTypes;
 };
@@ -161,6 +170,7 @@ FilmsStore.__onDispatch = function(payload) {
       this.setDvds(payload.dvds);
       this.setDvdTypes(payload.dvdTypes);
       this.setLabels(payload.labels);
+      this.setBookings(payload.bookings);
       this.__emitChange();
       break;
   }

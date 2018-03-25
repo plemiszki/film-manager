@@ -7,6 +7,7 @@ class Api::FilmsController < AdminController
 
   def show
     @films = Film.where(id: params[:id])
+    @bookings = Booking.where(film_id: @films.first.id).includes(:venue)
     @templates = DealTemplate.all
     @licensors = Licensor.all
     @revenue_streams = RevenueStream.all

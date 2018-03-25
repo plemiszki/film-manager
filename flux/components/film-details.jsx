@@ -97,6 +97,7 @@ var FilmDetails = React.createClass({
       percentageErrors: {},
       reports: [],
       dvds: [],
+      bookings:[],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -166,6 +167,7 @@ var FilmDetails = React.createClass({
       percentagesSaved: FilmsStore.percentages(),
       reports: FilmsStore.reports(),
       dvds: FilmsStore.dvds(),
+      bookings: FilmsStore.bookings(),
       fetching: false
     }, function() {
       this.setState({
@@ -601,6 +603,7 @@ var FilmDetails = React.createClass({
           { this.renderTopTab("Contract") }
           { this.renderTopTab("Synopses") }
           { this.renderTopTab("Marketing") }
+          { this.renderTopTab("Bookings") }
           { this.renderTopTab("DVDs") }
           { this.renderTopTab("Statements") }
         </div>
@@ -666,6 +669,35 @@ var FilmDetails = React.createClass({
             </tbody>
           </table>
           <a className={'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '')} onClick={this.clickAddDVDButton}>Add DVD</a>
+        </div>
+      )
+    } else if (this.state.tab === "Bookings") {
+      return(
+        <div>
+          <hr />
+          <table className={"admin-table"}>
+            <thead>
+              <tr>
+                <th>Start Date</th>
+                <th>Venue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td><td></td></tr>
+              {this.state.bookings.map(function(booking, index) {
+                return(
+                  <tr key={index} onClick={this.redirect.bind(this, "bookings", booking.id)}>
+                    <td className="indent">
+                      { booking.startDate }
+                    </td>
+                    <td>
+                      { booking.venue }
+                    </td>
+                  </tr>
+                );
+              }.bind(this))}
+            </tbody>
+          </table>
         </div>
       )
     } else if (this.state.tab === "Statements") {

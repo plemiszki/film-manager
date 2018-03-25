@@ -44,7 +44,8 @@ var ServerActions = {
       directors: response.directors,
       actors: response.actors,
       relatedFilms: response.relatedFilms,
-      otherFilms: response.otherFilms
+      otherFilms: response.otherFilms,
+      bookings: response.bookings
     });
   },
 

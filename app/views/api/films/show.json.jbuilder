@@ -141,3 +141,8 @@ json.actors @actors do |actor|
   json.firstName actor.first_name
   json.lastName actor.last_name
 end
+json.bookings @bookings do |booking|
+  json.id booking.id
+  json.venue booking.venue.label
+  json.startDate booking.start_date.strftime("%-m/%-d/%y")
+end
