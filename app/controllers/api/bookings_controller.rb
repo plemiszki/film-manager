@@ -1,11 +1,24 @@
 class Api::BookingsController < AdminController
 
   def index
-    @bookings = Booking.all.includes(:film, :venue)
+    if params[:all]
+      @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue)
+    else
+      @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue).order('start_date DESC').limit(25)
+    end
     @films = Film.where(short_film: false)
     @venues = Venue.all
     @users = User.all
     render "index.json.jbuilder"
+  end
+
+  def upcoming_index
+    if params[:all]
+      @bookings = Booking.where("start_date >= ?", Date.today).includes(:film, :venue)
+    else
+      @bookings = Booking.where("start_date >= ?", Date.today).includes(:film, :venue).order('start_date ASC').limit(25)
+    end
+    render "upcoming.json.jbuilder"
   end
 
   def show

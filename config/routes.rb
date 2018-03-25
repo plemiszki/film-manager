@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     resources :films, only: [:index, :show, :create, :update, :destroy]
     resources :venues, only: [:index, :show, :create, :update, :destroy]
+    get '/bookings/upcoming' => '/api/bookings#upcoming_index'
     resources :bookings, only: [:index, :show, :create, :update, :destroy]
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]

@@ -1089,12 +1089,20 @@ var ClientActions = {
     })
   },
 
-  fetchBookings: function() {
+  fetchBookings: function(upcoming, all) {
+    var url = upcoming ? '/api/bookings/upcoming' : '/api/bookings'
+    if (all) {
+      url += "?all=true";
+    }
     $.ajax({
-      url: '/api/bookings/',
+      url: url,
       method: 'GET',
       success: function(response) {
-        ServerActions.receiveBookings(response);
+        if (upcoming) {
+          ServerActions.receiveUpcomingBookings(response);
+        } else {
+          ServerActions.receiveBookings(response);
+        }
       }
     });
   },

@@ -123,7 +123,10 @@ $(document).ready(function() {
     ReactDOM.render(<VenueDetails />, document.getElementById("venue-details"));
   }
   if ($('#bookings-index')[0]) {
-    ReactDOM.render(<BookingsIndex />, document.getElementById("bookings-index"));
+    ReactDOM.render(<BookingsIndex timeframe={ 'upcoming' } />, document.getElementById("bookings-index"));
+  }
+  if ($('#bookings-index-past')[0]) {
+    ReactDOM.render(<BookingsIndex />, document.getElementById("bookings-index-past"));
   }
   if ($('#booking-details')[0]) {
     ReactDOM.render(<BookingDetails />, document.getElementById("booking-details"));

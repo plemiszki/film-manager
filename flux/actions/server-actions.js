@@ -242,6 +242,13 @@ var ServerActions = {
     });
   },
 
+  receiveUpcomingBookings: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "UPCOMING_BOOKINGS_RECEIVED",
+      bookings: response.bookings
+    });
+  },
+
   receiveWeeklyTerms: function(response) {
     AppDispatcher.dispatch({
       actionType: "WEEKLY_TERMS_RECEIVED",
