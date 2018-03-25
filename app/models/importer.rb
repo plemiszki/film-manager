@@ -10,6 +10,8 @@ class Importer < ActiveRecord::Base
     )
     object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Bookings.txt")
     object.get(response_target: Rails.root.join("tmp/#{time_started}/Bookings.txt"))
+    billings_skipped = 0
+    shippings_skipped = 0
     File.open(Rails.root.join("tmp/#{time_started}/Bookings.txt")) do |f|
       first_line = f.gets
       total = first_line.gsub("\n", "").gsub("\r", "").to_i
@@ -105,6 +107,164 @@ class Importer < ActiveRecord::Base
           end
         end
 
+        phone_regex = Regexp.new('\A[\)\(\d\.\s-]+\z')
+        email_regex = Regexp.new('\A\w+@\w+\.[a-zA-Z]+\z')
+        last_line_regex = Regexp.new('(?<city>[a-zA-Z\s]+)\s?,? (?<state>[a-zA-Z][a-zA-Z]),? (?<zip>\d+)')
+        last_line_regex_canada = Regexp.new('(?<city>[a-zA-Z\s]+)\s?,? (?<province>[a-zA-Z][a-zA-Z]) (?<zip>[\w\d\s]+)')
+        city_state_regex = Regexp.new('\A(?<city>[a-zA-Z\s]+)\s?,? (?<state>[a-zA-Z][a-zA-Z])\z')
+
+        skip_billing = false
+        billing_address_string = a[17]
+        if billing_address_string.strip.empty?
+          billing_name = ""
+          billing_address1 = ""
+          billing_address2 = ""
+          billing_city = ""
+          billing_state = ""
+          billing_zip = ""
+          billing_country = ""
+        else
+          billing_address_lines = billing_address_string.split('\n')
+          2.times do
+            if billing_address_lines[-1].strip.downcase == "usa" || billing_address_lines[-1].strip.downcase == "canada" || phone_regex.match(billing_address_lines[-1].strip) || email_regex.match(billing_address_lines[-1].strip)
+              billing_address_lines.pop
+            end
+          end
+          if billing_address_lines.length > 4
+            p "Skipping Booking Address: #{Film.find(@@vb_film_ids[a[2]]).title} - #{venue.label}"
+            p billing_address_lines
+            skip_billing = true
+            billings_skipped += 1
+          else
+            last_line = billing_address_lines[-1].strip
+            match_data = last_line_regex.match(last_line)
+            if !match_data
+              match_data = last_line_regex_canada.match(last_line)
+              if !match_data
+                match_data = city_state_regex.match(last_line)
+                if !match_data
+                  if billing_address_lines.length > 1
+                    p "Skipping Booking Address: #{Film.find(@@vb_film_ids[a[2]]).title} - #{venue.label}"
+                    p billing_address_lines
+                  end
+                  skip_billing = true
+                  billings_skipped += 1
+                else
+                  billing_name = billing_address_lines[0]
+                  billing_address1 = billing_address_lines[1]
+                  billing_address2 = billing_address_lines.length == 4 ? billing_address_lines[2] : ""
+                  billing_city = match_data[:city]
+                  billing_state = match_data[:state]
+                  billing_zip = ""
+                  billing_country = "USA"
+                end
+              else
+                billing_name = billing_address_lines[0]
+                billing_address1 = billing_address_lines[1]
+                billing_address2 = billing_address_lines.length == 4 ? billing_address_lines[2] : ""
+                billing_city = match_data[:city]
+                billing_state = match_data[:province]
+                billing_zip = match_data[:zip]
+                billing_country = "Canada"
+              end
+            else
+              billing_name = billing_address_lines[0]
+              billing_address1 = billing_address_lines[1]
+              billing_address2 = billing_address_lines.length == 4 ? billing_address_lines[2] : ""
+              billing_city = match_data[:city]
+              billing_state = match_data[:state]
+              billing_zip = match_data[:zip]
+              billing_country = "USA"
+            end
+          end
+        end
+
+        skip_shipping = false
+        shipping_address_string = a[16]
+        if shipping_address_string.strip.empty?
+          shipping_name = ""
+          shipping_address1 = ""
+          shipping_address2 = ""
+          shipping_city = ""
+          shipping_state = ""
+          shipping_zip = ""
+          shipping_country = ""
+        else
+          shipping_address_lines = shipping_address_string.split('\n')
+          2.times do
+            if shipping_address_lines[-1].strip.downcase == "usa" || shipping_address_lines[-1].strip.downcase == "canada" || phone_regex.match(shipping_address_lines[-1].strip) || email_regex.match(shipping_address_lines[-1].strip)
+              shipping_address_lines.pop
+            end
+          end
+          if shipping_address_lines.length > 4
+            p "Skipping Shipping Address: #{Film.find(@@vb_film_ids[a[2]]).title} - #{venue.label}"
+            p shipping_address_lines
+            skip_shipping = true
+            shippings_skipped += 1
+          else
+            last_line = shipping_address_lines[-1].strip
+            match_data = last_line_regex.match(last_line)
+            if !match_data
+              match_data = last_line_regex_canada.match(last_line)
+              if !match_data
+                match_data = city_state_regex.match(last_line)
+                if !match_data
+                  if shipping_address_lines.length > 1
+                    p "Skipping Shipping Address: #{Film.find(@@vb_film_ids[a[2]]).title} - #{venue.label}"
+                    p shipping_address_lines
+                  end
+                  skip_shipping = true
+                  shippings_skipped += 1
+                else
+                  shipping_name = shipping_address_lines[0]
+                  shipping_address1 = shipping_address_lines[1]
+                  shipping_address2 = shipping_address_lines.length == 4 ? shipping_address_lines[2] : ""
+                  shipping_city = match_data[:city]
+                  shipping_state = match_data[:state]
+                  shipping_zip = ""
+                  shipping_country = "USA"
+                end
+              else
+                shipping_name = shipping_address_lines[0]
+                shipping_address1 = shipping_address_lines[1]
+                shipping_address2 = shipping_address_lines.length == 4 ? shipping_address_lines[2] : ""
+                shipping_city = match_data[:city]
+                shipping_state = match_data[:province]
+                shipping_zip = match_data[:zip]
+                shipping_country = "Canada"
+              end
+            else
+              shipping_name = shipping_address_lines[0]
+              shipping_address1 = shipping_address_lines[1]
+              shipping_address2 = shipping_address_lines.length == 4 ? shipping_address_lines[2] : ""
+              shipping_city = match_data[:city]
+              shipping_state = match_data[:state]
+              shipping_zip = match_data[:zip]
+              shipping_country = "USA"
+            end
+          end
+        end
+
+        if skip_billing
+          billing_name = ""
+          billing_address1 = ""
+          billing_address2 = ""
+          billing_city = ""
+          billing_state = ""
+          billing_zip = ""
+          billing_country = ""
+        end
+
+        if skip_shipping
+          shipping_name = ""
+          shipping_address1 = ""
+          shipping_address2 = ""
+          shipping_city = ""
+          shipping_state = ""
+          shipping_zip = ""
+          shipping_country = ""
+        end
+
         booking_vars = {
           film_id: @@vb_film_ids[a[2]],
           venue_id: venue.id,
@@ -138,12 +298,24 @@ class Importer < ActiveRecord::Base
           booker_id: booker_id,
           old_booker_id: old_booker_id,
           user_id: user_id,
-          old_user_id: old_user_id
-          # billing address
-          # shipping address
+          old_user_id: old_user_id,
+          billing_name: billing_name,
+          billing_address1: billing_address1,
+          billing_address2: billing_address2,
+          billing_city: billing_city,
+          billing_state: billing_state,
+          billing_zip: billing_zip,
+          billing_country: billing_country,
+          shipping_name: shipping_name,
+          shipping_address1: shipping_address1,
+          shipping_address2: shipping_address2,
+          shipping_city: shipping_city,
+          shipping_state: shipping_state,
+          shipping_zip: shipping_zip,
+          shipping_country: shipping_country
         }
 
-        booking = Booking.find_by(film_id: booking_vars[:film_id], venue_id: booking_vars[:venue_id], start_date: Date.strptime(booking_vars[:start_date], "%m/%d/%y"))
+        booking = Booking.find_by(film_id: booking_vars[:film_id], venue_id: booking_vars[:venue_id], start_date: Date.strptime(booking_vars[:start_date], "%m/%d/%Y"))
         if booking
           booking.update(booking_vars)
         else
@@ -155,6 +327,8 @@ class Importer < ActiveRecord::Base
       end
       object.delete
     end
+    p "Billings Skipped: #{billings_skipped}"
+    p "Shippings Skipped: #{shippings_skipped}"
   end
 
   def self.import_admin(time_started)
