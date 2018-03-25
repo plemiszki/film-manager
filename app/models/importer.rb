@@ -126,7 +126,7 @@ class Importer < ActiveRecord::Base
         else
           billing_address_lines = billing_address_string.split('\n')
           2.times do
-            if billing_address_lines[-1].strip.downcase == "usa" || billing_address_lines[-1].strip.downcase == "canada" || phone_regex.match(billing_address_lines[-1].strip) || email_regex.match(billing_address_lines[-1].strip)
+            if billing_address_lines[-1].strip == "=" || billing_address_lines[-1].strip.downcase == "usa" || billing_address_lines[-1].strip.downcase == "canada" || phone_regex.match(billing_address_lines[-1].strip) || email_regex.match(billing_address_lines[-1].strip)
               billing_address_lines.pop
             end
           end
@@ -192,7 +192,7 @@ class Importer < ActiveRecord::Base
         else
           shipping_address_lines = shipping_address_string.split('\n')
           2.times do
-            if shipping_address_lines[-1].strip.downcase == "usa" || shipping_address_lines[-1].strip.downcase == "canada" || phone_regex.match(shipping_address_lines[-1].strip) || email_regex.match(shipping_address_lines[-1].strip)
+            if shipping_address_lines[-1].strip == "=" || shipping_address_lines[-1].strip.downcase == "usa" || shipping_address_lines[-1].strip.downcase == "canada" || phone_regex.match(shipping_address_lines[-1].strip) || email_regex.match(shipping_address_lines[-1].strip)
               shipping_address_lines.pop
             end
           end
@@ -323,6 +323,35 @@ class Importer < ActiveRecord::Base
           booking = Booking.new(booking_vars)
         end
         booking.save!
+
+        # weekly terms
+        if booking.attributes["terms_change"]
+          unless a[10].strip.empty?
+            unless WeeklyTerm.find_by({ booking_id: booking.id, order: 0, terms: a[10].strip })
+              WeeklyTerm.create!(booking_id: booking.id, terms: a[10].strip, order: 0)
+            end
+          end
+          unless a[11].strip.empty?
+            unless WeeklyTerm.find_by({ booking_id: booking.id, order: 1, terms: a[11].strip })
+              WeeklyTerm.create!(booking_id: booking.id, terms: a[11].strip, order: 1)
+            end
+          end
+          unless a[12].strip.empty?
+            unless WeeklyTerm.find_by({ booking_id: booking.id, order: 2, terms: a[12].strip })
+              WeeklyTerm.create!(booking_id: booking.id, terms: a[12].strip, order: 2)
+            end
+          end
+          unless a[13].strip.empty?
+            unless WeeklyTerm.find_by({ booking_id: booking.id, order: 3, terms: a[13].strip })
+              WeeklyTerm.create!(booking_id: booking.id, terms: a[13].strip, order: 3)
+            end
+          end
+        end
+
+        # weekly box office
+
+        # payments
+
         bookings += 1
       end
       object.delete
