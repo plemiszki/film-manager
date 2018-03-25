@@ -7,6 +7,7 @@ class Api::VenuesController < AdminController
 
   def show
     @venues = Venue.where(id: params[:id])
+    @bookings = Booking.where(venue_id: @venues.first.id).includes(:film)
     render "show.json.jbuilder"
   end
 

@@ -28,6 +28,7 @@ var VenueDetails = React.createClass({
       fetching: true,
       venue: {},
       venueSaved: {},
+      bookings: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -51,6 +52,7 @@ var VenueDetails = React.createClass({
     this.setState({
       venue: Tools.deepCopy(VenuesStore.find(window.location.pathname.split("/")[2])),
       venueSaved: VenuesStore.find(window.location.pathname.split("/")[2]),
+      bookings: VenuesStore.bookings(),
       fetching: false
     }, function() {
       this.setState({
@@ -158,6 +160,10 @@ var VenueDetails = React.createClass({
   clearShredderError: function() {
     $('.shredder-modal textarea').removeClass('error');
     $('.shredder-modal .errorMessage').text('');
+  },
+
+  redirect: function(directory, id) {
+    window.location.pathname = directory + "/" + id;
   },
 
   render: function() {
@@ -302,6 +308,38 @@ var VenueDetails = React.createClass({
               </div>
             </div>
             { this.renderButtons() }
+          </div>
+        </div>
+        <div className="venue-bookings-index component">
+          <h1>Venue Bookings</h1>
+          <div className="white-box">
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <div className="row">
+              <table className={"admin-table"}>
+                <thead>
+                  <tr>
+                    <th>Start Date</th>
+                    <th>Film</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td></td><td></td></tr>
+                  { this.state.bookings.map(function(booking, index) {
+                    return(
+                      <tr key={index} onClick={ this.redirect.bind(this, "bookings", booking.id) }>
+                        <td className="indent">
+                          { booking.startDate }
+                        </td>
+                        <td>
+                          { booking.film }
+                        </td>
+                      </tr>
+                    );
+                  }.bind(this)) }
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>

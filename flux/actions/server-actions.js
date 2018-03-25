@@ -226,7 +226,8 @@ var ServerActions = {
   receiveVenues: function(response) {
     AppDispatcher.dispatch({
       actionType: "VENUES_RECEIVED",
-      venues: response.venues
+      venues: response.venues,
+      bookings: response.bookings
     });
   },
 

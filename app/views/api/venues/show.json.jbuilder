@@ -21,3 +21,8 @@ json.venues @venues do |venue|
   json.shippingCountry venue.shipping_country
   json.notes venue.notes
 end
+json.bookings @bookings do |booking|
+  json.id booking.id
+  json.film booking.film.title
+  json.startDate booking.start_date.strftime("%-m/%-d/%y")
+end
