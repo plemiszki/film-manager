@@ -349,6 +349,28 @@ class Importer < ActiveRecord::Base
         end
 
         # weekly box office
+        if booking.attributes["terms_change"]
+          unless a[47] == "0"
+            unless WeeklyBoxOffice.find_by({ booking_id: booking.id, order: 0, amount: a[47].strip })
+              WeeklyBoxOffice.create!(booking_id: booking.id, amount: a[47].strip, order: 0)
+            end
+          end
+          unless a[48] == "0"
+            unless WeeklyBoxOffice.find_by({ booking_id: booking.id, order: 1, amount: a[48].strip })
+              WeeklyBoxOffice.create!(booking_id: booking.id, amount: a[48].strip, order: 1)
+            end
+          end
+          unless a[49] == "0"
+            unless WeeklyBoxOffice.find_by({ booking_id: booking.id, order: 2, amount: a[49].strip })
+              WeeklyBoxOffice.create!(booking_id: booking.id, amount: a[49].strip, order: 2)
+            end
+          end
+          unless a[50] == "0"
+            unless WeeklyBoxOffice.find_by({ booking_id: booking.id, order: 3, amount: a[50].strip })
+              WeeklyBoxOffice.create!(booking_id: booking.id, amount: a[50].strip, order: 3)
+            end
+          end
+        end
 
         # payments
 
