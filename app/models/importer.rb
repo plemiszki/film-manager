@@ -374,16 +374,16 @@ class Importer < ActiveRecord::Base
 
         # payments
         if a[38] == "True"
-          unless Payment.find_by({ booking_id: booking.id, date: a[39] })
+          date = (a[39] == "12:00:00 AM" ? booking.start_date : Date.strptime(a[39], "%m/%d/%Y"))
+          unless Payment.find_by({ booking_id: booking.id, date: date })
             p "Adding Payment: #{a[39]} #{a[40]}"
-            date = (a[39] == "12:00:00 AM" ? booking.start_date : a[39])
             Payment.create!(booking_id: booking.id, amount: a[40], date: date, notes: "")
           end
         end
         if a[60] == "True"
-          unless Payment.find_by({ booking_id: booking.id, date: a[61] })
+          date = (a[61] == "12:00:00 AM" ? booking.end_date : Date.strptime(a[61], "%m/%d/%Y"))
+          unless Payment.find_by({ booking_id: booking.id, date: date })
             p "Adding Payment: #{a[61]} #{a[62]}"
-            date = (a[61] == "12:00:00 AM" ? booking.end_date : a[61])
             Payment.create!(booking_id: booking.id, amount: a[62], date: date, notes: "")
           end
         end
