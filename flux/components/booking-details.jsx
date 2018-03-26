@@ -258,6 +258,24 @@ var BookingDetails = React.createClass({
     }
   },
 
+  termsValid: function(terms) {
+    if (!terms) {
+      return true;
+    }
+    terms = terms.toLowerCase();
+    if (terms == "90/10") {
+      return true;
+    } else if (terms.match(/^\$\d+ vs \d+%$/)) {
+      return true;
+    } else if (terms.match(/^\d+%$/)) {
+      return true;
+    } else if (terms.match(/^\$\d+$/)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   render: function() {
     return(
       <div className="booking-details">
@@ -537,7 +555,7 @@ var BookingDetails = React.createClass({
     } else {
       return(
         <div className="col-xs-3">
-          <h2>Terms</h2>
+          <h2 style={ this.termsValid(this.state.bookingSaved.terms) ? {} : { color: "red" } }>Terms</h2>
           <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
           { Common.renderFieldError(this.state.errors, Common.errors.terms) }
         </div>
