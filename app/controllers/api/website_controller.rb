@@ -6,7 +6,7 @@ class Api::WebsiteController < CyberController
   end
 
   def gift_boxes
-    @gift_boxes = Giftbox.all.includes(:dvds)
+    @gift_boxes = Giftbox.where(on_demand: false).includes(:dvds)
     render "gift_boxes.json.jbuilder"
   end
 
