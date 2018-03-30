@@ -1,6 +1,14 @@
 .bookings-index {
 
-  th:first-of-type {
+  th.small-column {
     min-width: 125px;
+  }
+
+  th.med-column {
+    min-width: 200px;
+  }
+
+  th.large-column {
+    min-width: 350px;
   }
 }

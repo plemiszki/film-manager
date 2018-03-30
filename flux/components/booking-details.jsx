@@ -484,7 +484,12 @@ var BookingDetails = React.createClass({
               </div>
             <hr />
             <h3>Box Office:</h3>
-            { this.renderBoxOfficeSection() }
+            <div className="row">
+              <div className="col-xs-3">
+                <input id="box-office-received" className="checkbox" type="checkbox" onChange={ Common.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.booking.boxOfficeReceived || false } data-field="boxOfficeReceived" /><label className="checkbox" htmlFor="box-office-received">Box Office Received</label>
+              </div>
+              { this.renderBoxOfficeSection() }
+            </div>
             <hr />
             <h3>Invoices:</h3>
             { this.renderInvoicesSection() }
@@ -638,28 +643,24 @@ var BookingDetails = React.createClass({
   renderBoxOfficeSection: function() {
     if (this.state.booking.termsChange) {
       return(
-        <div className="row">
-          <div className="col-xs-6">
-            <h2>Box Office by Week</h2>
-            <ul>
-              { this.state.weeklyBoxOffices.map(function(weeklyBoxOffice) {
-                return(
-                  <li key={ weeklyBoxOffice.id }>Week { +weeklyBoxOffice.order + 1 } - { weeklyBoxOffice.amount }<div className="x-button" onClick={ this.clickDeleteWeeklyBoxOffice } data-id={ weeklyBoxOffice.id }></div></li>
-                );
-              }.bind(this)) }
-            </ul>
-            <a className={ 'blue-outline-button small' } onClick={ this.clickAddWeeklyBoxOffice }>Add Weekly Box Office</a>
-          </div>
+        <div className="col-xs-6">
+          <h2>Box Office by Week</h2>
+          <ul>
+            { this.state.weeklyBoxOffices.map(function(weeklyBoxOffice) {
+              return(
+                <li key={ weeklyBoxOffice.id }>Week { +weeklyBoxOffice.order + 1 } - { weeklyBoxOffice.amount }<div className="x-button" onClick={ this.clickDeleteWeeklyBoxOffice } data-id={ weeklyBoxOffice.id }></div></li>
+              );
+            }.bind(this)) }
+          </ul>
+          <a className={ 'blue-outline-button small' } onClick={ this.clickAddWeeklyBoxOffice }>Add Weekly Box Office</a>
         </div>
       );
     } else {
       return(
-        <div className="row">
-          <div className="col-xs-3">
-            <h2>Box Office</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.boxOffice) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.boxOffice || "" } data-field="boxOffice" />
-            { Common.renderFieldError(this.state.errors, Common.errors.boxOffice) }
-          </div>
+        <div className="col-xs-3">
+          <h2>Box Office</h2>
+          <input className={ Common.errorClass(this.state.errors, Common.errors.boxOffice) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.boxOffice || "" } data-field="boxOffice" />
+          { Common.renderFieldError(this.state.errors, Common.errors.boxOffice) }
         </div>
       );
     }

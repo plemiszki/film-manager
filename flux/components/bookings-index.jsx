@@ -91,37 +91,67 @@ var BookingsIndex = React.createClass({
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={"admin-table"}>
-            <thead>
-              <tr>
-                <th><div className={ Common.sortClass.call(this, "startDate") } onClick={ Common.clickHeader.bind(this, "startDate") }>Start Date</div></th>
-                <th><div className={ Common.sortClass.call(this, "film") } onClick={ Common.clickHeader.bind(this, "film") }>Film</div></th>
-                <th><div className={ Common.sortClass.call(this, "venue") } onClick={ Common.clickHeader.bind(this, "venue") }>Venue</div></th>
-                <th><div className={ Common.sortClass.call(this, "dateAdded") } onClick={ Common.clickHeader.bind(this, "dateAdded") }>Date Added</div></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td><td></td><td></td></tr>
-              { _.orderBy(filteredBookings, [Common.commonSort.bind(this)], [this.state.sortBy == 'startDate' && this.props.timeframe !== 'upcoming' ? 'desc' : 'asc']).map(function(booking, index) {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, booking.id) }>
-                    <td className="indent">
-                      { booking.startDate }
-                    </td>
-                    <td>
-                      { booking.film }
-                    </td>
-                    <td>
-                      { booking.venue }
-                    </td>
-                    <td>
-                      { booking.dateAdded }
-                    </td>
-                  </tr>
-                );
-              }.bind(this)) }
-            </tbody>
-          </table>
+          <div className="horizontal-scroll">
+            <table className={"admin-table"}>
+              <thead>
+                <tr>
+                  <th className="small-column"><div className={ Common.sortClass.call(this, "startDate") } onClick={ Common.clickHeader.bind(this, "startDate") }>Start Date</div></th>
+                  <th className="small-column"><div className={ Common.sortClass.call(this, "endDate") } onClick={ Common.clickHeader.bind(this, "endDate") }>End Date</div></th>
+                  <th className="large-column"><div className={ Common.sortClass.call(this, "film") } onClick={ Common.clickHeader.bind(this, "film") }>Film</div></th>
+                  <th className="large-column"><div className={ Common.sortClass.call(this, "venue") } onClick={ Common.clickHeader.bind(this, "venue") }>Venue</div></th>
+                  <th className="small-column"><div className={ Common.sortClass.call(this, "shippingCity") } onClick={ Common.clickHeader.bind(this, "shippingCity") }>City</div></th>
+                  <th className="small-column"><div className={ Common.sortClass.call(this, "shippingState") } onClick={ Common.clickHeader.bind(this, "shippingState") }>State</div></th>
+                  <th className="small-column"><div className={ Common.sortClass.call(this, "dateAdded") } onClick={ Common.clickHeader.bind(this, "dateAdded") }>Date Added</div></th>
+                  <th className="med-column"><div className={ Common.sortClass.call(this, "terms") } onClick={ Common.clickHeader.bind(this, "terms") }>Terms</div></th>
+                  <th className="med-column"><div className={ Common.sortClass.call(this, "bookingType") } onClick={ Common.clickHeader.bind(this, "bookingType") }>Type</div></th>
+                  <th className="small-column"><div className={ Common.sortClass.call(this, "format") } onClick={ Common.clickHeader.bind(this, "format") }>Format</div></th>
+                  <th className="small-column"><div className={ Common.sortClass.call(this, "boxOfficeReceived") } onClick={ Common.clickHeader.bind(this, "boxOfficeReceived") }>BO Received</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                { _.orderBy(filteredBookings, [Common.commonSort.bind(this)], [this.state.sortBy == 'startDate' && this.props.timeframe !== 'upcoming' ? 'desc' : 'asc']).map(function(booking, index) {
+                  return(
+                    <tr key={ index } onClick={ this.redirect.bind(this, booking.id) }>
+                      <td className="indent">
+                        { booking.startDate }
+                      </td>
+                      <td>
+                        { booking.endDate }
+                      </td>
+                      <td>
+                        { booking.film }
+                      </td>
+                      <td>
+                        { booking.venue }
+                      </td>
+                      <td>
+                        { booking.shippingCity }
+                      </td>
+                      <td>
+                        { booking.shippingState }
+                      </td>
+                      <td>
+                        { booking.dateAdded }
+                      </td>
+                      <td>
+                        { booking.terms }
+                      </td>
+                      <td>
+                        { booking.bookingType }
+                      </td>
+                      <td>
+                        { booking.format }
+                      </td>
+                      <td>
+                        { booking.boxOfficeReceived }
+                      </td>
+                    </tr>
+                  );
+                }.bind(this)) }
+              </tbody>
+            </table>
+          </div>
         </div>
         { this.renderSeeAllButton() }
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>

@@ -12,6 +12,10 @@ html {
   top: calc(35% - 45px) !important;
 }
 
+.horizontal-scroll {
+  overflow-x: scroll;
+}
+
 body {
   background-color: #F5F6F7;
   height: 100%;

@@ -1184,7 +1184,8 @@ var ClientActions = {
           materials_sent: booking.materialsSent,
           tracking_number: booking.trackingNumber,
           shipping_notes: booking.shippingNotes,
-          box_office: HandyTools.removeFinanceSymbols(booking.boxOffice)
+          box_office: HandyTools.removeFinanceSymbols(booking.boxOffice),
+          box_office_received: booking.boxOfficeReceived
         }
       },
       success: function(response) {

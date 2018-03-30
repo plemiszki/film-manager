@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180324211410) do
+ActiveRecord::Schema.define(version: 20180330135149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 20180324211410) do
     t.decimal "box_office",                      precision: 8, scale: 2, default: 0.0
     t.integer "old_booker_id"
     t.integer "old_user_id"
+    t.boolean "box_office_received",                                     default: false
   end
 
   add_index "bookings", ["booker_id"], name: "index_bookings_on_booker_id", using: :btree
