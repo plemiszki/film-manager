@@ -128,6 +128,9 @@ $(document).ready(function() {
   if ($('#bookings-index-past')[0]) {
     ReactDOM.render(<BookingsIndex />, document.getElementById("bookings-index-past"));
   }
+  if ($('#bookings-index-advanced')[0]) {
+    ReactDOM.render(<BookingsIndex advanced={ true } />, document.getElementById("bookings-index-advanced"));
+  }
   if ($('#booking-details')[0]) {
     ReactDOM.render(<BookingDetails />, document.getElementById("booking-details"));
   }

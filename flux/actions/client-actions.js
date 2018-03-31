@@ -1107,6 +1107,17 @@ var ClientActions = {
     });
   },
 
+  fetchBookingsAdvanced: function() {
+    $.ajax({
+      url: '/api/bookings/advanced',
+      method: 'GET',
+      data: HandyTools.params(),
+      success: function(response) {
+        ServerActions.receiveBookings(response);
+      }
+    });
+  },
+
   fetchBooking: function(id) {
     $.ajax({
       url: '/api/bookings/' + id,

@@ -16,12 +16,16 @@ BookingsStore.setStuff = function(payload) {
   payload.bookings.forEach(function(booking) {
     _bookings[booking.id] = booking;
   });
-  payload.films.forEach(function(film) {
-    _films[film.id] = film;
-  });
-  payload.venues.forEach(function(venue) {
-    _venues[venue.id] = venue;
-  });
+  if (payload.films) {
+    payload.films.forEach(function(film) {
+      _films[film.id] = film;
+    });
+  }
+  if (payload.venues) {
+    payload.venues.forEach(function(venue) {
+      _venues[venue.id] = venue;
+    });
+  }
   if (payload.weeklyTerms) {
     payload.weeklyTerms.forEach(function(weeklyTerm) {
       _weeklyTerms[weeklyTerm.id] = weeklyTerm;

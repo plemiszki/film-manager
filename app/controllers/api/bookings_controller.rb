@@ -23,6 +23,55 @@ class Api::BookingsController < AdminController
     render "upcoming.json.jbuilder"
   end
 
+  def advanced
+    queries = []
+    if params[:film_id]
+      queries << "film_id = #{params[:film_id]}"
+    end
+    if params[:venue_id]
+      queries << "venue_id = #{params[:venue_id]}"
+    end
+    if params[:city]
+      queries << "lower(shipping_city) = '#{params[:city].downcase}'"
+    end
+    if params[:state]
+      queries << "lower(shipping_state) = '#{params[:state].downcase}'"
+    end
+    if params[:format]
+      queries << "lower(format) = '#{params[:format].downcase}'"
+    end
+    if params[:type]
+      queries << "lower(booking_type) = '#{params[:type].downcase}'"
+    end
+    if params[:box_office_received]
+      queries << "box_office_received = #{params[:box_office_received]}"
+    end
+    if params[:materials_sent] && params[:materials_sent].downcase == 'true'
+      queries << "materials_sent IS NOT NULL"
+    end
+    if params[:materials_sent] && params[:materials_sent].downcase == 'false'
+      queries << "materials_sent IS NULL"
+    end
+    if params[:start_date_start]
+      queries << "start_date >= DATE '#{params[:start_date_start]}'"
+    end
+    if params[:start_date_end]
+      queries << "start_date <= DATE '#{params[:start_date_end]}'"
+    end
+    if params[:end_date_start]
+      queries << "end_date >= DATE '#{params[:end_date_start]}'"
+    end
+    if params[:end_date_end]
+      queries << "end_date <= DATE '#{params[:end_date_end]}'"
+    end
+    if queries.empty?
+      @bookings = Booking.all.includes(:film, :venue)
+    else
+      @bookings = Booking.where(queries.join(' and ')).includes(:film, :venue)
+    end
+    render "advanced.json.jbuilder"
+  end
+
   def show
     @bookings = Booking.where(id: params[:id])
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])

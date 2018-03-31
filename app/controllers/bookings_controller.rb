@@ -9,4 +9,8 @@ class BookingsController < AdminController
     render "show.html.erb"
   end
 
+  def advanced
+    render "advanced.html.erb"
+  end
+
 end

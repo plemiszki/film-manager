@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: "films#index"
   resources :films, only: [:index, :show]
   resources :venues, only: [:index, :show]
+  get '/bookings/advanced' => 'bookings#advanced'
   resources :bookings, only: [:index, :show]
   resources :dvds, only: [:show]
   resources :shorts, only: [:index]
@@ -36,6 +37,7 @@ Rails.application.routes.draw do
     resources :films, only: [:index, :show, :create, :update, :destroy]
     resources :venues, only: [:index, :show, :create, :update, :destroy]
     get '/bookings/upcoming' => '/api/bookings#upcoming_index'
+    get '/bookings/advanced' => '/api/bookings#advanced'
     resources :bookings, only: [:index, :show, :create, :update, :destroy]
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]

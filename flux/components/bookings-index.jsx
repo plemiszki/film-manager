@@ -35,7 +35,11 @@ var BookingsIndex = React.createClass({
     } else {
       this.bookingsListener = BookingsStore.addListener(this.getBookings);
     }
-    ClientActions.fetchBookings(this.props.timeframe);
+    if (this.props.advanced) {
+      ClientActions.fetchBookingsAdvanced();
+    } else {
+      ClientActions.fetchBookings(this.props.timeframe);
+    }
   },
 
   componentWillUnmount: function() {
@@ -85,7 +89,7 @@ var BookingsIndex = React.createClass({
     var filteredBookings = this.state.bookings.filter(this.sortByTime).filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="bookings-index" className="bookings-index component">
-        <h1>{ this.props.timeframe == 'upcoming' ? 'Upcoming Bookings' : 'Past Bookings' }</h1>
+        <h1>{ this.renderHeader() }</h1>
         { this.renderAddButton() }
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" style={ this.props.timeframe == "upcoming" ? {} : { "marginRight": 0 } } />
         <div className="white-box">
@@ -110,7 +114,7 @@ var BookingsIndex = React.createClass({
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                { _.orderBy(filteredBookings, [Common.commonSort.bind(this)], [this.state.sortBy == 'startDate' && this.props.timeframe !== 'upcoming' ? 'desc' : 'asc']).map(function(booking, index) {
+                { _.orderBy(filteredBookings, [Common.commonSort.bind(this)], [this.state.sortBy == 'startDate' && this.props.timeframe !== 'upcoming' && !this.props.advanced ? 'desc' : 'asc']).map(function(booking, index) {
                   return(
                     <tr key={ index } onClick={ this.redirect.bind(this, booking.id) }>
                       <td className="indent">
@@ -161,6 +165,16 @@ var BookingsIndex = React.createClass({
     );
   },
 
+  renderHeader() {
+    if (this.props.timeframe == 'upcoming') {
+      return 'Upcoming Bookings';
+    } else if (this.props.advanced) {
+      return 'Bookings';
+    } else {
+      return 'Past Bookings';
+    }
+  },
+
   renderAddButton() {
     if (this.props.timeframe == 'upcoming') {
       return(
@@ -170,7 +184,7 @@ var BookingsIndex = React.createClass({
   },
 
   renderSeeAllButton: function() {
-    if (this.state.bookings.length === 25) {
+    if (!this.props.advanced && this.state.bookings.length === 25) {
       return(
         <div className="text-center">
           <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>

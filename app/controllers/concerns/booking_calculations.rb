@@ -64,6 +64,7 @@ module BookingCalculations
       valid = true
       our_share = terms.sub('$', '').to_i + booking.shipping_fee
     else
+      our_share = 0.0
       valid = false
     end
     [valid, our_share.round(2)]
