@@ -295,6 +295,7 @@ class Importer < ActiveRecord::Base
           notes: a[52],
           deduction: a[53],
           box_office: a[45],
+          box_office_received: a[43] == 'True',
           booker_id: booker_id,
           old_booker_id: old_booker_id,
           user_id: user_id,
