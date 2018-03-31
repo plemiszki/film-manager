@@ -240,7 +240,8 @@ var ServerActions = {
       payments: response.payments,
       films: response.films,
       venues: response.venues,
-      users: response.users
+      users: response.users,
+      calculations: response.calculations
     });
   },
 
@@ -254,21 +255,24 @@ var ServerActions = {
   receiveWeeklyTerms: function(response) {
     AppDispatcher.dispatch({
       actionType: "WEEKLY_TERMS_RECEIVED",
-      weeklyTerms: response.weeklyTerms
+      weeklyTerms: response.weeklyTerms,
+      calculations: response.calculations
     });
   },
 
   receiveWeeklyBoxOffices: function(response) {
     AppDispatcher.dispatch({
       actionType: "WEEKLY_BOX_OFFICES_RECEIVED",
-      weeklyBoxOffices: response.weeklyBoxOffices
+      weeklyBoxOffices: response.weeklyBoxOffices,
+      calculations: response.calculations
     });
   },
 
   receivePayments: function(response) {
     AppDispatcher.dispatch({
       actionType: "PAYMENTS_RECEIVED",
-      payments: response.payments
+      payments: response.payments,
+      calculations: response.calculations
     });
   },
 

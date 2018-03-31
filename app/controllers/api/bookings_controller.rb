@@ -1,5 +1,7 @@
 class Api::BookingsController < AdminController
 
+  include BookingCalculations
+
   def index
     if params[:all]
       @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue)
@@ -29,6 +31,7 @@ class Api::BookingsController < AdminController
     @films = Film.where(short_film: false)
     @venues = Venue.all
     @users = User.all
+    @calculations = booking_calculations(@bookings.first)
     render "show.json.jbuilder"
   end
 
@@ -66,6 +69,7 @@ class Api::BookingsController < AdminController
       @films = Film.where(short_film: false)
       @venues = Venue.all
       @users = User.all
+      @calculations = booking_calculations(@bookings.first)
       render "show.json.jbuilder"
     else
       render json: @booking.errors.full_messages, status: 422

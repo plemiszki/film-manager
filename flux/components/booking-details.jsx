@@ -6,6 +6,7 @@ var BookingsStore = require('../stores/bookings-store.js');
 var WeeklyTermsStore = require('../stores/weekly-terms-store.js');
 var WeeklyBoxOfficesStore = require('../stores/weekly-box-offices-store.js');
 var PaymentsStore = require('../stores/payments-store.js');
+var CalculationsStore = require('../stores/calculations-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
 import ModalSelect from './modal-select.jsx';
 import NewThing from './new-thing.jsx';
@@ -40,7 +41,13 @@ var BookingDetails = React.createClass({
       deleteModalOpen: false,
       newWeeklyTermsModalOpen: false,
       newWeeklyBoxOfficeModalOpen: false,
-      newPaymentModalOpen: false
+      newPaymentModalOpen: false,
+      calculations: {
+        totalGross: "$0.00",
+        ourShare: "$0.00",
+        received: "$0.00",
+        owed: "$0.00"
+      }
     });
   },
 
@@ -50,6 +57,7 @@ var BookingDetails = React.createClass({
     this.weeklyTermsListener = WeeklyTermsStore.addListener(this.getWeeklyTerms);
     this.weeklyBoxOfficesListener = WeeklyBoxOfficesStore.addListener(this.getWeeklyBoxOffices);
     this.paymentsListener = PaymentsStore.addListener(this.getPayments);
+    this.calculationsListener = CalculationsStore.addListener(this.getCalculations);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
     ClientActions.fetchBooking(window.location.pathname.split("/")[2]);
   },
@@ -59,6 +67,7 @@ var BookingDetails = React.createClass({
     this.weeklyTermsListener.remove();
     this.weeklyBoxOfficesListener.remove();
     this.paymentsListener.remove();
+    this.calculationsListener.remove();
     this.errorsListener.remove();
   },
 
@@ -99,6 +108,12 @@ var BookingDetails = React.createClass({
       payments: PaymentsStore.all(),
       fetching: false,
       newPaymentModalOpen: false
+    });
+  },
+
+  getCalculations: function() {
+    this.setState({
+      calculations: CalculationsStore.object()
     });
   },
 
@@ -255,24 +270,6 @@ var BookingDetails = React.createClass({
           }
         }
       }
-    }
-  },
-
-  termsValid: function(terms) {
-    if (!terms) {
-      return true;
-    }
-    terms = terms.toLowerCase();
-    if (terms == "90/10") {
-      return true;
-    } else if (terms.match(/^\$\d+ vs \d+%$/)) {
-      return true;
-    } else if (terms.match(/^\d+%$/)) {
-      return true;
-    } else if (terms.match(/^\$\d+$/)) {
-      return true;
-    } else {
-      return false;
     }
   },
 
@@ -494,9 +491,9 @@ var BookingDetails = React.createClass({
             <h3>Invoices:</h3>
             { this.renderInvoicesSection() }
             <hr />
-            <h3>Payments:</h3>
             <div className="row">
               <div className="col-xs-6">
+                <h3>Payments:</h3>
                 <ul>
                   { this.state.payments.map(function(payment) {
                     return(
@@ -505,6 +502,10 @@ var BookingDetails = React.createClass({
                   }.bind(this)) }
                 </ul>
                 <a className={ 'blue-outline-button small' } onClick={ this.clickAddPayment }>Add Payment</a>
+              </div>
+              <div className="col-xs-6">
+                <h3>Calculations:</h3>
+                { this.renderCalculations() }
               </div>
             </div>
             <hr />
@@ -542,6 +543,31 @@ var BookingDetails = React.createClass({
     );
   },
 
+  renderCalculations: function() {
+    if (this.state.bookingSaved.termsValid) {
+      return(
+        <div>
+          <h2>Total Gross</h2>
+          <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.totalGross } readOnly={ true } />
+          { Common.renderFieldError(this.state.errors, []) }
+          <h2>Our Share</h2>
+          <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.ourShare } readOnly={ true } />
+          { Common.renderFieldError(this.state.errors, []) }
+          <h2>Received</h2>
+          <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.received } readOnly={ true } />
+          { Common.renderFieldError(this.state.errors, []) }
+          <h2>Owed</h2>
+          <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.owed } readOnly={ true } />
+          { Common.renderFieldError(this.state.errors, []) }
+        </div>
+      );
+    } else {
+      return(
+        <div style={ { color: 'red' } }>Terms are not valid.</div>
+      );
+    }
+  },
+
   renderTermsColumn: function() {
     if (this.state.booking.termsChange) {
       return(
@@ -560,7 +586,7 @@ var BookingDetails = React.createClass({
     } else {
       return(
         <div className="col-xs-3">
-          <h2 style={ this.termsValid(this.state.bookingSaved.terms) ? {} : { color: "red" } }>Terms</h2>
+          <h2 style={ this.state.bookingSaved.termsValid ? {} : { color: "red" } }>Terms</h2>
           <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
           { Common.renderFieldError(this.state.errors, Common.errors.terms) }
         </div>

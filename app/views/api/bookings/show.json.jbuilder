@@ -48,6 +48,7 @@ json.bookings @bookings do |booking|
   json.deduction dollarify(number_with_precision(booking.deduction, precision: 2, delimiter: ','))
   json.boxOffice dollarify(number_with_precision(booking.box_office, precision: 2, delimiter: ','))
   json.boxOfficeReceived booking.box_office_received
+  json.termsValid @calculations[:valid]
 end
 json.weeklyTerms @weekly_terms do |weekly_term|
   json.id weekly_term.id
@@ -77,4 +78,10 @@ json.users @users do |user|
   json.id user.id
   json.name user.name
   json.booker user.booker
+end
+json.calculations do
+  json.totalGross dollarify(number_with_precision(@calculations[:total_gross], precision: 2, delimiter: ','))
+  json.ourShare dollarify(number_with_precision(@calculations[:our_share], precision: 2, delimiter: ','))
+  json.received dollarify(number_with_precision(@calculations[:received], precision: 2, delimiter: ','))
+  json.owed dollarify(number_with_precision(@calculations[:owed], precision: 2, delimiter: ','))
 end

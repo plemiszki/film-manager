@@ -12,6 +12,8 @@ class Booking < ActiveRecord::Base
   belongs_to :past_booker, foreign_key: :old_booker_id
   belongs_to :past_user, class_name: "PastBooker", foreign_key: :old_user_id
 
-  has_many :weekly_terms
+  has_many :weekly_terms, -> { order(:order) }
+  has_many :weekly_box_offices, -> { order(:order) }
+  has_many :payments
 
 end
