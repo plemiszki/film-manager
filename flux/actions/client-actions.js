@@ -904,6 +904,19 @@ var ClientActions = {
     });
   },
 
+  exportBookings: function(bookingIds) {
+    $.ajax({
+      url: '/api/bookings/export',
+      method: 'POST',
+      data: {
+        booking_ids: bookingIds
+      },
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
+  },
+
   fetchDvdReports: function(year) {
     $.ajax({
       url: '/api/dvd_reports',

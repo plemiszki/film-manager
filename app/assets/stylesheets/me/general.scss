@@ -136,6 +136,10 @@ body {
       &:focus {
         outline: none;
       }
+
+      &.no-margin {
+        margin-right: 0;
+      }
     }
 
     .white-box {

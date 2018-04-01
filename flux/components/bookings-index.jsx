@@ -2,9 +2,11 @@ var React = require('react');
 var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
+var ServerActions = require('../actions/server-actions.js');
 var BookingsStore = require('../stores/bookings-store.js');
 var UpcomingBookingsStore = require('../stores/upcoming-bookings-store.js');
 var NewThing = require('./new-thing.jsx');
+var JobStore = require('../stores/job-store.js');
 
 var ModalStyles = {
   overlay: {
@@ -22,10 +24,15 @@ var ModalStyles = {
 var BookingsIndex = React.createClass({
 
   getInitialState: function() {
+    var job = {
+      errors_text: ""
+    };
     return({
       fetching: true,
       bookings: [],
-      modalOpen: false
+      modalOpen: false,
+      jobModalOpen: !!job.id,
+      job: job
     });
   },
 
@@ -40,10 +47,12 @@ var BookingsIndex = React.createClass({
     } else {
       ClientActions.fetchBookings(this.props.timeframe);
     }
+    this.jobListener = JobStore.addListener(this.getJob);
   },
 
   componentWillUnmount: function() {
     this.bookingsListener.remove();
+    this.jobListener.remove();
   },
 
   getBookings: function() {
@@ -54,6 +63,24 @@ var BookingsIndex = React.createClass({
       bookings: (this.props.timeframe == 'upcoming' ? UpcomingBookingsStore.all() : BookingsStore.all()),
       modalOpen: false
     });
+  },
+
+  getJob: function() {
+    var job = JobStore.job();
+    if (job.done) {
+      this.setState({
+        jobModalOpen: false,
+        job: job
+      }, function() {
+        window.location.href = job.first_line;
+      });
+    } else {
+      this.setState({
+        jobModalOpen: true,
+        job: job,
+        fetching: false
+      });
+    }
   },
 
   redirect: function(id) {
@@ -75,6 +102,18 @@ var BookingsIndex = React.createClass({
     ClientActions.fetchBookings(this.props.timeframe, 'all');
   },
 
+  clickExport: function() {
+    if (!this.state.fetching) {
+      this.setState({
+        fetching: true
+      });
+      var bookingIds = this.state.bookings.map(function(booking) {
+        return booking.id;
+      });
+      ClientActions.exportBookings(bookingIds);
+    }
+  },
+
   sortByTime: function(booking) {
     var date = new Date(booking.startDate).setHours(0,0,0,0);
     var today = new Date().setHours(0,0,0,0);
@@ -91,7 +130,8 @@ var BookingsIndex = React.createClass({
       <div id="bookings-index" className="bookings-index component">
         <h1>{ this.renderHeader() }</h1>
         { this.renderAddButton() }
-        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" style={ this.props.timeframe == "upcoming" ? {} : { "marginRight": 0 } } />
+        { this.renderExportButton() }
+        <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? '' : ' no-margin') } onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -161,6 +201,7 @@ var BookingsIndex = React.createClass({
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.users()[0] && BookingsStore.users()[0].id, userId: Common.user.id } } />
         </Modal>
+        { Common.jobModal.call(this, this.state.job) }
       </div>
     );
   },
@@ -183,6 +224,14 @@ var BookingsIndex = React.createClass({
     }
   },
 
+  renderExportButton() {
+    if (this.props.advanced) {
+      return(
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport }>Export</a>
+      );
+    }
+  },
+
   renderSeeAllButton: function() {
     if (!this.props.advanced && this.state.bookings.length === 25) {
       return(
@@ -195,6 +244,21 @@ var BookingsIndex = React.createClass({
 
   componentDidUpdate: function() {
     $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: function(response) {
+            ServerActions.receiveJob(response);
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 
