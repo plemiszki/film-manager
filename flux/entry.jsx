@@ -38,6 +38,8 @@ var GenreDetails = require('./components/genre-details.jsx');
 var TopicsIndex = require('./components/topics-index.jsx');
 var TopicDetails = require('./components/topic-details.jsx');
 var QuoteDetails = require('./components/quote-details.jsx');
+var FormatsIndex = require('./components/formats-index.jsx');
+var FormatDetails = require('./components/format-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -163,5 +165,11 @@ $(document).ready(function() {
   }
   if ($('#quote-details')[0]) {
     ReactDOM.render(<QuoteDetails />, document.getElementById("quote-details"));
+  }
+  if ($('#formats-index')[0]) {
+    ReactDOM.render(<FormatsIndex />, document.getElementById("formats-index"));
+  }
+  if ($('#format-details')[0]) {
+    ReactDOM.render(<FormatDetails />, document.getElementById("format-details"));
   }
 });

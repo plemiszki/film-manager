@@ -1846,6 +1846,62 @@ var ClientActions = {
         ServerActions.receiveActors(response);
       }
     });
+  },
+
+  fetchFormats: function() {
+    $.ajax({
+      url: '/api/formats',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveFormats(response);
+      }
+    });
+  },
+
+  fetchFormat: function(id) {
+    $.ajax({
+      url: '/api/formats/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveFormats(response);
+      }
+    });
+  },
+
+  createFormat: function(format) {
+    $.ajax({
+      url: '/api/formats',
+      method: 'POST',
+      data: {
+        format: {
+          name: format.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFormats(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  updateFormat: function(format) {
+    $.ajax({
+      url: '/api/formats/' + format.id,
+      method: 'PATCH',
+      data: {
+        format: {
+          name: format.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFormats(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180330135149) do
+ActiveRecord::Schema.define(version: 20180401180738) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,12 +74,16 @@ ActiveRecord::Schema.define(version: 20180330135149) do
     t.integer "old_booker_id"
     t.integer "old_user_id"
     t.boolean "box_office_received",                                     default: false
+    t.integer "format_id",                                               default: 1
   end
 
   add_index "bookings", ["booker_id"], name: "index_bookings_on_booker_id", using: :btree
   add_index "bookings", ["film_id"], name: "index_bookings_on_film_id", using: :btree
+  add_index "bookings", ["format_id"], name: "index_bookings_on_format_id", using: :btree
   add_index "bookings", ["imported_advance_invoice_number"], name: "index_bookings_on_imported_advance_invoice_number", using: :btree
   add_index "bookings", ["imported_overage_invoice_number"], name: "index_bookings_on_imported_overage_invoice_number", using: :btree
+  add_index "bookings", ["old_booker_id"], name: "index_bookings_on_old_booker_id", using: :btree
+  add_index "bookings", ["old_user_id"], name: "index_bookings_on_old_user_id", using: :btree
   add_index "bookings", ["user_id"], name: "index_bookings_on_user_id", using: :btree
   add_index "bookings", ["venue_id"], name: "index_bookings_on_venue_id", using: :btree
 
@@ -230,6 +234,12 @@ ActiveRecord::Schema.define(version: 20180330135149) do
   add_index "films", ["label_id"], name: "index_films_on_label_id", using: :btree
   add_index "films", ["licensor_id"], name: "index_films_on_licensor_id", using: :btree
   add_index "films", ["title", "short_film"], name: "index_films_on_title_and_short_film", unique: true, using: :btree
+
+  create_table "formats", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  add_index "formats", ["name"], name: "index_formats_on_name", unique: true, using: :btree
 
   create_table "genres", force: :cascade do |t|
     t.string "name", null: false

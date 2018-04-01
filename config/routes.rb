@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   resources :genres, only: [:show]
   resources :topics, only: [:show]
   resources :quotes, only: [:show]
+  resources :formats, only: [:show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -81,6 +82,7 @@ Rails.application.routes.draw do
     resources :related_films, only: [:create, :destroy]
     resources :directors, only: [:create, :destroy]
     resources :actors, only: [:create, :destroy]
+    resources :formats, only: [:index, :create, :show, :update, :destroy]
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'

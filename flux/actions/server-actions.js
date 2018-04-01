@@ -377,6 +377,13 @@ var ServerActions = {
       actionType: "ACTORS_RECEIVED",
       actors: response.actors
     });
+  },
+
+  receiveFormats: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FORMATS_RECEIVED",
+      formats: response
+    });
   }
 }
 
