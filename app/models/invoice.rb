@@ -6,6 +6,7 @@ class Invoice < ActiveRecord::Base
 
   has_many :invoice_rows, -> { order('invoice_rows.id') }, dependent: :destroy
   belongs_to :customer, class_name: 'DvdCustomer'
+  belongs_to :booking
 
   def self.create_invoice(args)
     if args[:from].class.to_s == "PurchaseOrder"

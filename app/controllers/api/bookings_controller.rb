@@ -4,9 +4,9 @@ class Api::BookingsController < AdminController
 
   def index
     if params[:all]
-      @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue)
+      @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue, :format)
     else
-      @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue).order('start_date DESC').limit(25)
+      @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue, :format).order('start_date DESC').limit(25)
     end
     @films = Film.where(short_film: false)
     @venues = Venue.all
@@ -38,8 +38,8 @@ class Api::BookingsController < AdminController
     if params[:state]
       queries << "lower(shipping_state) = '#{params[:state].downcase}'"
     end
-    if params[:format]
-      queries << "lower(format) = '#{params[:format].downcase}'"
+    if params[:format_id]
+      queries << "format_id = #{params[:format_id]}"
     end
     if params[:type]
       queries << "lower(booking_type) = '#{params[:type].downcase}'"

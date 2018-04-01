@@ -47,7 +47,7 @@ class ExportBookings
       "Box Office"
     ])
 
-    bookings = Booking.where(id: booking_ids).order(:id).includes(:film, :venue)
+    bookings = Booking.where(id: booking_ids).order(:id).includes(:film, :venue, :format)
     bookings.each_with_index do |booking, booking_index|
       sheet.add_row([
         booking.start_date,
@@ -57,7 +57,7 @@ class ExportBookings
         booking.booking_type,
         booking.status,
         booking.terms,
-        booking.format,
+        booking.format.name,
         booking.advance.to_f,
         booking.shipping_fee.to_f,
         booking.screenings,

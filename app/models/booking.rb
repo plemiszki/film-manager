@@ -9,6 +9,7 @@ class Booking < ActiveRecord::Base
 
   belongs_to :film
   belongs_to :venue
+  belongs_to :format
   belongs_to :past_booker, foreign_key: :old_booker_id
   belongs_to :past_user, class_name: "PastBooker", foreign_key: :old_user_id
 

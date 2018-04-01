@@ -8,7 +8,7 @@ json.bookings @bookings do |booking|
   json.shippingCity booking.shipping_city
   json.shippingState booking.shipping_state
   json.terms booking.terms
-  json.format booking.format
+  json.format booking.format.name
   json.boxOfficeReceived booking.box_office_received ? 'Yes' : 'No'
   json.bookingType booking.booking_type
 end

@@ -50,6 +50,17 @@ class Importer < ActiveRecord::Base
           next
         end
 
+        format = a[21].strip
+        format = 'DVD' if format.empty?
+        format = format.sub('Prolduio', 'Proludio').sub('Blu-Ray', 'Blu-ray').sub('HDCam', 'HDCAM').sub('HD Cam', 'HDCAM').sub('CineConducotr', 'CineConductor').sub('CineCondcutor', 'CineConductor').sub('Cinecondcutor', 'CineConductor').sub('Cineconductor', 'CineConductor').sub('0', '').sub('Digital file', 'Digital').sub('DigiFile', 'Digital').sub('Digifile', 'Digital').sub('AVI/MP$', 'Digital')
+
+        format_record = Format.find_by_name(format)
+        if format_record
+          format_id = format_record.id
+        else
+          format_id = Format.create(name: format).id
+        end
+
         bookers = {
           "JW": 9,
           "MW": 8,
@@ -278,7 +289,6 @@ class Importer < ActiveRecord::Base
           advance: a[14],
           shipping_fee: a[15],
           screenings: a[18],
-          format: a[21],
           email: a[30],
           imported_advance_invoice_number: a[25],
           imported_advance_invoice_sent: (a[23] == "12:00:00 AM" ? "" : a[23]),
@@ -313,7 +323,8 @@ class Importer < ActiveRecord::Base
           shipping_city: shipping_city,
           shipping_state: shipping_state,
           shipping_zip: shipping_zip,
-          shipping_country: shipping_country
+          shipping_country: shipping_country,
+          format_id: format_id
         }
 
         booking = Booking.find_by(film_id: booking_vars[:film_id], venue_id: booking_vars[:venue_id], start_date: Date.strptime(booking_vars[:start_date], "%m/%d/%Y"))
