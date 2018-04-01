@@ -36,6 +36,7 @@ var BookingDetails = React.createClass({
       weeklyBoxOffices: [],
       payments: [],
       errors: [],
+      formats: [],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -76,6 +77,7 @@ var BookingDetails = React.createClass({
       booking: Tools.deepCopy(BookingsStore.find(window.location.pathname.split("/")[2])),
       bookingSaved: BookingsStore.find(window.location.pathname.split("/")[2]),
       users: BookingsStore.users(),
+      formats: BookingsStore.formats(),
       weeklyTerms: BookingsStore.weeklyTerms(),
       weeklyBoxOffices: BookingsStore.weeklyBoxOffice(),
       payments: BookingsStore.payments(),
@@ -341,9 +343,15 @@ var BookingDetails = React.createClass({
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               { this.renderBookedByField() }
-              <div className="col-xs-3">
+              <div className="col-xs-2">
                 <h2>Format</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.format || "" } data-field="format" />
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="formatId" value={ this.state.booking.formatId }>
+                  { this.state.formats.map(function(format) {
+                    return(
+                      <option key={ format.id } value={ format.id }>{ format.name }</option>
+                    );
+                  }) }
+                </select>
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
             </div>

@@ -31,6 +31,7 @@ json.bookings @bookings do |booking|
   json.shippingZip booking.shipping_zip
   json.shippingCountry booking.shipping_country
   json.format booking.format
+  json.formatId booking.format_id.to_s
   json.email booking.email
   json.bookingConfirmationSent booking.booking_confirmation_sent ? booking.booking_confirmation_sent.strftime("%-m/%-d/%y") : ''
   json.premiere booking.premiere
@@ -78,6 +79,10 @@ json.users @users do |user|
   json.id user.id
   json.name user.name
   json.booker user.booker
+end
+json.formats @formats do |format|
+  json.id format.id
+  json.name format.name
 end
 json.calculations do
   json.totalGross dollarify(number_with_precision(@calculations[:total_gross], precision: 2, delimiter: ','))

@@ -8,6 +8,7 @@ var _bookings = {};
 var _films = {};
 var _venues = {};
 var _users = {};
+var _formats = {};
 var _weeklyTerms = {};
 var _weeklyBoxOffice = {};
 var _payments = {};
@@ -46,6 +47,11 @@ BookingsStore.setStuff = function(payload) {
       _users[user.id] = user;
     });
   }
+  if (payload.formats) {
+    payload.formats.forEach(function(format) {
+      _formats[format.id] = format;
+    });
+  }
 };
 
 BookingsStore.find = function(id) {
@@ -64,6 +70,13 @@ BookingsStore.users = function() {
     return(_users[id]);
   });
   return HandyTools.alphabetizeArrayOfObjects(users, 'name');
+};
+
+BookingsStore.formats = function() {
+  var formats = Object.keys(_formats).map(function(id) {
+    return(_formats[id]);
+  });
+  return HandyTools.alphabetizeArrayOfObjects(formats, 'name');
 };
 
 BookingsStore.bookers = function() {

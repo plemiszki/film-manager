@@ -25,3 +25,7 @@ json.users @users do |user|
   json.name user.name
   json.booker user.booker
 end
+json.formats @formats do |format|
+  json.id format.id
+  json.name format.name
+end

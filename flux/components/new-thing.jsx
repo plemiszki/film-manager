@@ -257,12 +257,12 @@ var NewThing = React.createClass({
             </div>
           </div>
           <div className="row">
-            <div className="col-xs-3">
+            <div className="col-xs-2">
               <h2>Start Date</h2>
               <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.startDate || "" } data-field="startDate" />
               { Common.renderFieldError(this.state.errors, Common.errors.startDate) }
             </div>
-            <div className="col-xs-3">
+            <div className="col-xs-2">
               <h2>End Date</h2>
               <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.endDate || "" } data-field="endDate" />
               { Common.renderFieldError(this.state.errors, Common.errors.endDate) }
@@ -281,6 +281,17 @@ var NewThing = React.createClass({
               <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="status" value={ this.state.booking.status }>
                 <option value={ "Tentative" }>Tentative</option>
                 <option value={ "Confirmed" }>Confirmed</option>
+              </select>
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+            <div className="col-xs-2">
+              <h2>Format</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="formatId" value={ this.state.booking.formatId }>
+                { BookingsStore.formats().map(function(format) {
+                  return(
+                    <option key={ format.id } value={ format.id }>{ format.name }</option>
+                  );
+                }) }
               </select>
               { Common.renderFieldError(this.state.errors, []) }
             </div>

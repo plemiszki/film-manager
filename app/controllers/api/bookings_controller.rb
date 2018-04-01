@@ -11,6 +11,7 @@ class Api::BookingsController < AdminController
     @films = Film.where(short_film: false)
     @venues = Venue.all
     @users = User.all
+    @formats = Format.all
     render "index.json.jbuilder"
   end
 
@@ -80,6 +81,7 @@ class Api::BookingsController < AdminController
     @films = Film.where(short_film: false)
     @venues = Venue.all
     @users = User.all
+    @formats = Format.all
     @calculations = booking_calculations(@bookings.first)
     render "show.json.jbuilder"
   end
@@ -118,6 +120,7 @@ class Api::BookingsController < AdminController
       @films = Film.where(short_film: false)
       @venues = Venue.all
       @users = User.all
+      @formats = Format.all
       @calculations = booking_calculations(@bookings.first)
       render "show.json.jbuilder"
     else
@@ -140,7 +143,6 @@ class Api::BookingsController < AdminController
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
     message_params =  { from: 'michael@filmmovement.com',
                         to: @bookings.first.email,
-                        # to: 'plemiszki@gmail.com',
                         cc: current_user.email,
                         subject: "Your Film Movement Booking Confirmation",
                         text: email_text
@@ -161,7 +163,7 @@ class Api::BookingsController < AdminController
   private
 
   def booking_params
-    params[:booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :booking_type, :status, :screenings, :email, :booker_id, :format, :premiere, :advance, :shipping_fee, :deduction, :house_expense, :terms_change, :terms, :billing_name, :billing_address1, :billing_address2, :billing_city, :billing_state, :billing_zip, :billing_country, :shipping_name, :shipping_address1, :shipping_address2, :shipping_city, :shipping_state, :shipping_zip, :shipping_country, :materials_sent, :tracking_number, :shipping_notes, :box_office, :box_office_received)
+    params[:booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :booking_type, :status, :screenings, :email, :booker_id, :format, :premiere, :advance, :shipping_fee, :deduction, :house_expense, :terms_change, :terms, :billing_name, :billing_address1, :billing_address2, :billing_city, :billing_state, :billing_zip, :billing_country, :shipping_name, :shipping_address1, :shipping_address2, :shipping_city, :shipping_state, :shipping_zip, :shipping_country, :materials_sent, :tracking_number, :shipping_notes, :box_office, :box_office_received, :format_id)
   end
 
   def get_email_text(booking)

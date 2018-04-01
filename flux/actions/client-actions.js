@@ -1156,7 +1156,8 @@ var ClientActions = {
           booking_type: booking.bookingType,
           status: booking.status,
           booker_id: booking.bookerId,
-          terms: booking.terms
+          terms: booking.terms,
+          format_id: booking.formatId
         }
       },
       success: function(response) {
@@ -1209,7 +1210,8 @@ var ClientActions = {
           tracking_number: booking.trackingNumber,
           shipping_notes: booking.shippingNotes,
           box_office: HandyTools.removeFinanceSymbols(booking.boxOffice),
-          box_office_received: booking.boxOfficeReceived
+          box_office_received: booking.boxOfficeReceived,
+          format_id: booking.formatId
         }
       },
       success: function(response) {

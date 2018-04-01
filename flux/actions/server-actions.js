@@ -241,6 +241,7 @@ var ServerActions = {
       films: response.films,
       venues: response.venues,
       users: response.users,
+      formats: response.formats,
       calculations: response.calculations
     });
   },
