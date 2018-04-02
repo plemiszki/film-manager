@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180401223907) do
+ActiveRecord::Schema.define(version: 20180402005854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -290,7 +290,6 @@ ActiveRecord::Schema.define(version: 20180401223907) do
     t.string  "shipping_zip",                              default: ""
     t.string  "shipping_country",                          default: ""
     t.decimal "sub_total",         precision: 8, scale: 2, default: 0.0
-    t.decimal "ship_fee",          precision: 8, scale: 2, default: 0.0
     t.decimal "total",             precision: 8, scale: 2, default: 0.0
     t.string  "po_number"
     t.integer "payment_terms"
