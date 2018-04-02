@@ -1,5 +1,8 @@
 json.invoices @invoices do |invoice|
   json.id invoice.id
+  json.invoiceType invoice.invoice_type
+  json.film (invoice.booking_id ? invoice.booking.film.title : '')
+  json.venue (invoice.booking_id ? invoice.booking.venue.label : '')
   json.sentDate invoice.sent_date
   json.number invoice.number
   json.poNumber invoice.po_number

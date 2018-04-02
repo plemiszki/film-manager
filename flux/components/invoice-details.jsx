@@ -44,18 +44,16 @@ var InvoiceDetails = React.createClass({
             { HandyTools.renderSpinner(this.state.fetching) }
             { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
-              <div className="col-xs-4">
+              <div className={ this.state.invoice.invoiceType == "booking" ? "col-xs-2" : "col-xs-4" }>
                 <h2>Number</h2>
                 { this.state.invoice.number }
               </div>
-              <div className="col-xs-4">
+              <div className={ this.state.invoice.invoiceType == "booking" ? "col-xs-2" : "col-xs-4" }>
                 <h2>Sent Date</h2>
                 { this.state.invoice.sentDate }
               </div>
-              <div className="col-xs-4">
-                <h2>PO Number</h2>
-                { this.state.invoice.poNumber }
-              </div>
+              { this.renderPOSection() }
+              { this.renderFilmAndVenueSection() }
             </div>
             <div className="row">
               <div className="col-xs-4">
@@ -78,37 +76,14 @@ var InvoiceDetails = React.createClass({
             <hr />
             <table className={"admin-table"}>
               <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Price</th>
-                  <th>Qty</th>
-                  <th>Total Price</th>
-                </tr>
+                { this.renderTableHeaders() }
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td><td></td></tr>
-                {this.state.rows.map(function(row, index) {
-                  return(
-                    <tr key={index}>
-                      <td className="indent">
-                        { row.label }
-                      </td>
-                      <td>
-                        { row.price }
-                      </td>
-                      <td>
-                        { row.qty }
-                      </td>
-                      <td>
-                        { row.totalPrice }
-                      </td>
-                    </tr>
-                  );
-                }.bind(this))}
+                { this.state.rows.map(this.renderTableColumns) }
               </tbody>
             </table>
             <hr />
-            { this.renderShippingFee() }
             <div className="row">
               <div className="col-xs-12">
                 <h2>Total</h2>
@@ -125,14 +100,83 @@ var InvoiceDetails = React.createClass({
     );
   },
 
-  renderShippingFee: function() {
-    if (this.state.invoice.invoiceType == "Booking") {
-      <div className="row">
-        <div className="col-xs-12">
-          <h2>Shipping Fee</h2>
-          { this.state.invoice.shipFee }
+  renderTableHeaders: function() {
+    if (this.state.invoice.invoiceType == "dvd") {
+      return(
+        <tr>
+          <th>Item</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Total Price</th>
+        </tr>
+      );
+    } else {
+      return(
+        <tr>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+      );
+    }
+  },
+
+  renderTableColumns: function(row, index) {
+    if (this.state.invoice.invoiceType == "dvd") {
+      return(
+        <tr key={ index }>
+          <td className="indent">
+            { row.label }
+          </td>
+          <td>
+            { row.price }
+          </td>
+          <td>
+            { row.qty }
+          </td>
+          <td>
+            { row.totalPrice }
+          </td>
+        </tr>
+      );
+    } else {
+      return(
+        <tr key={ index }>
+          <td className="indent">
+            { row.label }
+          </td>
+          <td>
+            { row.totalPrice }
+          </td>
+        </tr>
+      );
+    }
+  },
+
+  renderPOSection: function() {
+    if (this.state.invoice.invoiceType == "dvd") {
+      return(
+        <div className="col-xs-4">
+          <h2>PO Number</h2>
+          { this.state.invoice.poNumber }
         </div>
-      </div>
+      );
+    }
+  },
+
+  renderFilmAndVenueSection: function() {
+    if (this.state.invoice.invoiceType == "booking") {
+      return(
+        <div>
+          <div className="col-xs-4">
+            <h2>Film</h2>
+            { this.state.invoice.film }
+          </div>
+          <div className="col-xs-4">
+            <h2>Venue</h2>
+            { this.state.invoice.venue }
+          </div>
+        </div>
+      );
     }
   },
 
