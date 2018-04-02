@@ -16,5 +16,6 @@ class Booking < ActiveRecord::Base
   has_many :weekly_terms, -> { order(:order) }
   has_many :weekly_box_offices, -> { order(:order) }
   has_many :payments
+  has_many :invoices
 
 end

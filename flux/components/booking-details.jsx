@@ -37,6 +37,7 @@ var BookingDetails = React.createClass({
       payments: [],
       errors: [],
       formats: [],
+      invoices: [],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -77,6 +78,7 @@ var BookingDetails = React.createClass({
       booking: Tools.deepCopy(BookingsStore.find(window.location.pathname.split("/")[2])),
       bookingSaved: BookingsStore.find(window.location.pathname.split("/")[2]),
       users: BookingsStore.users(),
+      invoices: BookingsStore.invoices(),
       formats: BookingsStore.formats(),
       weeklyTerms: BookingsStore.weeklyTerms(),
       weeklyBoxOffices: BookingsStore.weeklyBoxOffice(),
@@ -273,6 +275,10 @@ var BookingDetails = React.createClass({
         }
       }
     }
+  },
+
+  redirect: function(directory, id) {
+    window.location.pathname = directory + "/" + id;
   },
 
   render: function() {
@@ -729,6 +735,36 @@ var BookingDetails = React.createClass({
     } else {
       return(
         <div className="row">
+          <div className="col-xs-12">
+            <table className={"admin-table"}>
+              <thead>
+                <tr>
+                  <th>Sent</th>
+                  <th>Number</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td></td><td></td><td></td></tr>
+                { this.state.invoices.map(function(invoice, index) {
+                  return(
+                    <tr key={ index } onClick={ this.redirect.bind(this, "invoices", invoice.id) }>
+                      <td className="indent">
+                        { invoice.sentDate }
+                      </td>
+                      <td>
+                        { invoice.number }
+                      </td>
+                      <td>
+                        { invoice.total }
+                      </td>
+                    </tr>
+                  );
+                }.bind(this)) }
+              </tbody>
+            </table>
+            <a className='blue-outline-button small' onClick={ this.clickAddDVDButton }>Add Invoice</a>
+          </div>
         </div>
       )
     }

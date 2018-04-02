@@ -84,6 +84,12 @@ json.formats @formats do |format|
   json.id format.id
   json.name format.name
 end
+json.invoices @invoices do |invoice|
+  json.id invoice.id
+  json.sentDate invoice.sent_date.strftime("%-m/%-d/%y")
+  json.number invoice.number
+  json.total dollarify(number_with_precision(invoice.total, precision: 2, delimiter: ','))
+end
 json.calculations do
   json.totalGross dollarify(number_with_precision(@calculations[:total_gross], precision: 2, delimiter: ','))
   json.ourShare dollarify(number_with_precision(@calculations[:our_share], precision: 2, delimiter: ','))

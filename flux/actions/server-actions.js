@@ -235,6 +235,7 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "BOOKINGS_RECEIVED",
       bookings: response.bookings,
+      invoices: response.invoices,
       weeklyTerms: response.weeklyTerms,
       weeklyBoxOffice: response.weeklyBoxOffice,
       payments: response.payments,

@@ -5,6 +5,7 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var BookingsStore = new Store(AppDispatcher);
 
 var _bookings = {};
+var _invoices = {};
 var _films = {};
 var _venues = {};
 var _users = {};
@@ -17,6 +18,11 @@ BookingsStore.setStuff = function(payload) {
   payload.bookings.forEach(function(booking) {
     _bookings[booking.id] = booking;
   });
+  if (payload.invoices) {
+    payload.invoices.forEach(function(invoice) {
+      _invoices[invoice.id] = invoice;
+    });
+  }
   if (payload.films) {
     payload.films.forEach(function(film) {
       _films[film.id] = film;
@@ -70,6 +76,13 @@ BookingsStore.users = function() {
     return(_users[id]);
   });
   return HandyTools.alphabetizeArrayOfObjects(users, 'name');
+};
+
+BookingsStore.invoices = function() {
+  var invoices = Object.keys(_invoices).map(function(id) {
+    return(_invoices[id]);
+  });
+  return HandyTools.sortArrayOfDateStrings(invoices, 'sentDate');
 };
 
 BookingsStore.formats = function() {

@@ -74,7 +74,8 @@ class Api::BookingsController < AdminController
   end
 
   def show
-    @bookings = Booking.where(id: params[:id])
+    @bookings = Booking.where(id: params[:id]).includes(:invoices)
+    @invoices = @bookings.first.invoices
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
     @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])
     @payments = Payment.where(booking_id: params[:id])
@@ -116,7 +117,8 @@ class Api::BookingsController < AdminController
   def update
     @booking = Booking.find(params[:id])
     if @booking.update(booking_params)
-      @bookings = Booking.where(id: params[:id])
+      @bookings = Booking.where(id: params[:id]).includes(:invoices)
+      @invoices = @bookings.first.invoices
       @films = Film.where(short_film: false)
       @venues = Venue.all
       @users = User.all
