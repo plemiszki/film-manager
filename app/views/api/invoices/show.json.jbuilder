@@ -21,7 +21,6 @@ json.invoices @invoices do |invoice|
   json.shippingZip invoice.shipping_zip
   json.shippingCountry invoice.shipping_country
   json.subTotal dollarify(invoice.sub_total.to_s)
-  json.shipFee dollarify(invoice.ship_fee.to_s)
   json.total dollarify(invoice.total.to_s)
   json.notes invoice.notes
 end
