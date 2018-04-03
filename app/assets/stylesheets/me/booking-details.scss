@@ -68,6 +68,10 @@
     color: #2C2F33;
     font-size: 12px;
     margin-bottom: 15px;
+
+    &.disabled {
+      color: gray;
+    }
   }
 
   a {

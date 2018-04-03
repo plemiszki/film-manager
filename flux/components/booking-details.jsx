@@ -276,6 +276,30 @@ var BookingDetails = React.createClass({
     }
   },
 
+  newInvoiceAdvanceEnabled: function() {
+    if (this.state.booking.advance === "$0.00" || this.state.newInvoiceOwed) {
+      return false;
+    } else {
+      return true;
+    }
+  },
+
+  newInvoiceOwedEnabled: function() {
+    if (this.state.calculations.owed === "$0.00" || this.state.newInvoiceAdvance) {
+      return false;
+    } else {
+      return true;
+    }
+  },
+
+  newInvoiceShipFeeEnabled: function() {
+    if (this.state.booking.shippingFee === "$0.00") {
+      return false;
+    } else {
+      return true;
+    }
+  },
+
   handleModalClose: function() {
     var errors = this.state.errors;
     HandyTools.removeFromArray(errors, "Terms can't be blank");
@@ -610,9 +634,9 @@ var BookingDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ NewInvoiceStyles }>
           <div className="new-invoice-modal">
-            <div><input id="advance-checkbox" className="checkbox" type="checkbox" onChange={ this.changeAdvanceCheckbox } checked={ this.state.newInvoiceAdvance } /><label className="checkbox" htmlFor="advance-checkbox">Advance - { this.state.bookingSaved.advance }</label></div>
-            <div><input id="owed-checkbox" className="checkbox" type="checkbox" onChange={ this.changeOwedCheckbox } checked={ this.state.newInvoiceOwed } /><label className="checkbox" htmlFor="owed-checkbox">Owed - { this.state.calculations.owed }</label></div>
-            <div><input id="shipfee-checkbox" className="checkbox" type="checkbox" onChange={ this.changeShipFeeCheckbox } checked={ this.state.newInvoiceShipFee } /><label className="checkbox" htmlFor="shipfee-checkbox">Shipping Fee - { this.state.bookingSaved.shippingFee }</label></div>
+            <div><input id="advance-checkbox" className="checkbox" type="checkbox" onChange={ this.changeAdvanceCheckbox } checked={ this.state.newInvoiceAdvance } disabled={ !this.newInvoiceAdvanceEnabled() } /><label className={ "checkbox" + (this.newInvoiceAdvanceEnabled() ? "" : " disabled") } htmlFor="advance-checkbox">Advance - { this.state.bookingSaved.advance }</label></div>
+            <div><input id="owed-checkbox" className="checkbox" type="checkbox" onChange={ this.changeOwedCheckbox } checked={ this.state.newInvoiceOwed } disabled={ !this.newInvoiceOwedEnabled() } /><label className={ "checkbox" + (this.newInvoiceOwedEnabled() ? "" : " disabled") } htmlFor="owed-checkbox">Owed - { this.state.calculations.owed }</label></div>
+            <div><input id="shipfee-checkbox" className="checkbox" type="checkbox" onChange={ this.changeShipFeeCheckbox } checked={ this.state.newInvoiceShipFee } disabled={ !this.newInvoiceShipFeeEnabled() } /><label className={ "checkbox" + (this.newInvoiceShipFeeEnabled() ? "" : " disabled") } htmlFor="shipfee-checkbox">Shipping Fee - { this.state.bookingSaved.shippingFee }</label></div>
             <div className="text-center">
               <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(!this.state.newInvoiceAdvance && !this.state.newInvoiceOwed && !this.state.newInvoiceShipFee) } onClick={ this.clickSendInvoice }>
                 Send Invoice
