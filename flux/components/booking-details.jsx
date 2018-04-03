@@ -24,6 +24,19 @@ var WeeklyTermStyles = {
   }
 };
 
+var NewInvoiceStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 700,
+    height: 238
+  }
+};
+
 var BookingDetails = React.createClass({
 
   getInitialState: function() {
@@ -44,12 +57,16 @@ var BookingDetails = React.createClass({
       newWeeklyTermsModalOpen: false,
       newWeeklyBoxOfficeModalOpen: false,
       newPaymentModalOpen: false,
+      newInvoiceModalOpen: false,
       calculations: {
         totalGross: "$0.00",
         ourShare: "$0.00",
         received: "$0.00",
         owed: "$0.00"
-      }
+      },
+      newInvoiceAdvance: false,
+      newInvoiceOwed: false,
+      newInvoiceShipFee: false
     });
   },
 
@@ -234,12 +251,28 @@ var BookingDetails = React.createClass({
     ClientActions.deletePayment(id);
   },
 
+  clickAddInvoice: function() {
+    this.setState({
+      newInvoiceModalOpen: true
+    });
+  },
+
   clickSendConfirmation: function() {
     if (this.state.changesToSave === false) {
       this.setState({
         fetching: true
       });
       ClientActions.sendConfirmation(this.state.booking);
+    }
+  },
+
+  clickSendInvoice: function() {
+    if (this.state.newInvoiceAdvance || this.state.newInvoiceOwed || this.state.newInvoiceShipFee) {
+      this.setState({
+        newInvoiceModalOpen: false,
+        fetching: true
+      });
+      // ClientActions.sendInvoice(this.state.booking);
     }
   },
 
@@ -253,7 +286,11 @@ var BookingDetails = React.createClass({
       venuesModalOpen: false,
       newWeeklyTermsModalOpen: false,
       newWeeklyBoxOfficeModalOpen: false,
-      newPaymentModalOpen: false
+      newPaymentModalOpen: false,
+      newInvoiceModalOpen: false,
+      newInvoiceAdvance: false,
+      newInvoiceOwed: false,
+      newInvoiceShipFee: false
     });
   },
 
@@ -275,6 +312,24 @@ var BookingDetails = React.createClass({
         }
       }
     }
+  },
+
+  changeAdvanceCheckbox: function() {
+    this.setState({
+      newInvoiceAdvance: !this.state.newInvoiceAdvance
+    });
+  },
+
+  changeOwedCheckbox: function() {
+    this.setState({
+      newInvoiceOwed: !this.state.newInvoiceOwed
+    });
+  },
+
+  changeShipFeeCheckbox: function() {
+    this.setState({
+      newInvoiceShipFee: !this.state.newInvoiceShipFee
+    });
   },
 
   redirect: function(directory, id) {
@@ -553,6 +608,18 @@ var BookingDetails = React.createClass({
         <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="payment" initialObject={ { bookingId: this.state.booking.id, date: "", amount: "", notes: "" } } />
         </Modal>
+        <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ NewInvoiceStyles }>
+          <div className="new-invoice-modal">
+            <div><input id="advance-checkbox" className="checkbox" type="checkbox" onChange={ this.changeAdvanceCheckbox } checked={ this.state.newInvoiceAdvance } /><label className="checkbox" htmlFor="advance-checkbox">Advance - { this.state.bookingSaved.advance }</label></div>
+            <div><input id="owed-checkbox" className="checkbox" type="checkbox" onChange={ this.changeOwedCheckbox } checked={ this.state.newInvoiceOwed } /><label className="checkbox" htmlFor="owed-checkbox">Owed - { this.state.calculations.owed }</label></div>
+            <div><input id="shipfee-checkbox" className="checkbox" type="checkbox" onChange={ this.changeShipFeeCheckbox } checked={ this.state.newInvoiceShipFee } /><label className="checkbox" htmlFor="shipfee-checkbox">Shipping Fee - { this.state.bookingSaved.shippingFee }</label></div>
+            <div className="text-center">
+              <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(!this.state.newInvoiceAdvance && !this.state.newInvoiceOwed && !this.state.newInvoiceShipFee) } onClick={ this.clickSendInvoice }>
+                Send Invoice
+              </a>
+            </div>
+          </div>
+        </Modal>
       </div>
     );
   },
@@ -763,7 +830,7 @@ var BookingDetails = React.createClass({
                 }.bind(this)) }
               </tbody>
             </table>
-            <a className='blue-outline-button small' onClick={ this.clickAddDVDButton }>Add Invoice</a>
+            <a className='blue-outline-button small' onClick={ this.clickAddInvoice }>Add Invoice</a>
           </div>
         </div>
       )

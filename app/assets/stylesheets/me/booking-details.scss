@@ -52,3 +52,25 @@
     margin-bottom: 30px;
   }
 }
+
+.new-invoice-modal {
+  padding: 36px 32px;
+
+  input.checkbox {
+    display: inline-block;
+    width: auto;
+    margin-right: 25px;
+  }
+
+  label.checkbox {
+    display: inline-block;
+    font-family: 'TeachableSans-SemiBold';
+    color: #2C2F33;
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  a {
+    margin-top: 15px;
+  }
+}
