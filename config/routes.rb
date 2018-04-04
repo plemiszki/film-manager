@@ -63,6 +63,7 @@ Rails.application.routes.draw do
     resources :invoices, only: [:index, :show]
     get '/invoices/:id/export' => '/api/invoices#export'
     post '/invoices/export' => '/api/invoices#export_sage'
+    post '/invoices' => '/api/invoices#create'
     resources :returns, only: [:index, :create, :show, :update, :destroy]
     resources :return_items, only: [:create, :destroy]
     resources :weekly_terms, only: [:create, :destroy]

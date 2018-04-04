@@ -1,5 +1,6 @@
 var Store = require('flux/utils').Store;
 var AppDispatcher = require('../dispatcher/dispatcher.js');
+import HandyTools from 'handy-tools';
 
 var InvoicesStore = new Store(AppDispatcher);
 
@@ -21,7 +22,7 @@ InvoicesStore.all = function() {
   var invoices = Object.keys(_invoices).map(function(id) {
     return(_invoices[id]);
   });
-  return invoices;
+  return HandyTools.sortArrayOfDateStrings(invoices, 'sentDate');
 };
 
 InvoicesStore.rows = function() {

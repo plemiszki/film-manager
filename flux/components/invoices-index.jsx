@@ -31,7 +31,7 @@ var InvoicesIndex = React.createClass({
     return({
       fetching: true,
       searchText: "",
-      sortBy: "number",
+      sortBy: "sentDate",
       invoices: [],
       filterModalOpen: false,
       filterType: "all",
@@ -147,29 +147,29 @@ var InvoicesIndex = React.createClass({
         <h1>Invoices</h1>
         <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.ClickExport }>Export</a>
         <a className={ "orange-button float-button" + this.filterExists() + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal }>Filter</a>
-        <input className="search-box" onChange={Common.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
+        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={"admin-table"}>
             <thead>
               <tr>
-                <th><div className={Common.sortClass.call(this, "number")} onClick={Common.clickHeader.bind(this, "number")}>Invoice Number</div></th>
-                <th><div className={Common.sortClass.call(this, "sentDate")} onClick={Common.clickHeader.bind(this, "sentDate")}>Sent Date</div></th>
-                <th><div className={Common.sortClass.call(this, "type")} onClick={Common.clickHeader.bind(this, "type")}>Type</div></th>
-                <th><div className={Common.sortClass.call(this, "poNumber")} onClick={Common.clickHeader.bind(this, "poNumber")}>PO Number</div></th>
+                <th><div className={ Common.sortClass.call(this, "sentDate") } onClick={ Common.clickHeader.bind(this, "sentDate") }>Sent Date</div></th>
+                <th><div className={ Common.sortClass.call(this, "number") } onClick={ Common.clickHeader.bind(this, "number") }>Invoice Number</div></th>
+                <th><div className={ Common.sortClass.call(this, "type") } onClick={ Common.clickHeader.bind(this, "type") }>Type</div></th>
+                <th><div className={ Common.sortClass.call(this, "poNumber") } onClick={ Common.clickHeader.bind(this, "poNumber") }>PO Number</div></th>
               </tr>
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {_.orderBy(filteredOrders, [Common.commonSort.bind(this)], [['sentDate', 'number'].indexOf(this.state.sortBy) > -1 ? 'desc' : 'asc']).map(function(invoice, index) {
+              { _.orderBy(filteredOrders, [Common.commonSort.bind(this)], [['sentDate', 'number'].indexOf(this.state.sortBy) > -1 ? 'desc' : 'asc']).map(function(invoice, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, invoice.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, invoice.id) }>
                     <td className="indent">
-                      { invoice.number }
+                      { invoice.sentDate }
                     </td>
                     <td>
-                      { invoice.sentDate }
+                      { invoice.number }
                     </td>
                     <td>
                       { invoice.type }
@@ -179,7 +179,7 @@ var InvoicesIndex = React.createClass({
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }.bind(this)) }
             </tbody>
           </table>
         </div>

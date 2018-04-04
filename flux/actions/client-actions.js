@@ -1346,10 +1346,22 @@ var ClientActions = {
       method: 'POST',
       success: function(response) {
         ServerActions.receiveBookings(response);
+      }
+    });
+  },
+
+  sendInvoice: function(booking_id, advance, owed, shipFee) {
+    $.ajax({
+      url: '/api/invoices',
+      method: 'POST',
+      data: {
+        booking_id: booking_id,
+        advance: advance,
+        owed: owed,
+        ship_fee: shipFee
       },
-      error: function(response) {
-        console.log(response);
-        // ServerActions.receiveErrors(response);
+      success: function(response) {
+        ServerActions.receiveInvoices(response);
       }
     });
   },

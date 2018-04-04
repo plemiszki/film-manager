@@ -7,6 +7,7 @@ var WeeklyTermsStore = require('../stores/weekly-terms-store.js');
 var WeeklyBoxOfficesStore = require('../stores/weekly-box-offices-store.js');
 var PaymentsStore = require('../stores/payments-store.js');
 var CalculationsStore = require('../stores/calculations-store.js');
+var InvoicesStore = require('../stores/invoices-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
 import ModalSelect from './modal-select.jsx';
 import NewThing from './new-thing.jsx';
@@ -77,6 +78,7 @@ var BookingDetails = React.createClass({
     this.weeklyBoxOfficesListener = WeeklyBoxOfficesStore.addListener(this.getWeeklyBoxOffices);
     this.paymentsListener = PaymentsStore.addListener(this.getPayments);
     this.calculationsListener = CalculationsStore.addListener(this.getCalculations);
+    this.invoicesListener = InvoicesStore.addListener(this.getInvoices);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
     ClientActions.fetchBooking(window.location.pathname.split("/")[2]);
   },
@@ -87,6 +89,7 @@ var BookingDetails = React.createClass({
     this.weeklyBoxOfficesListener.remove();
     this.paymentsListener.remove();
     this.calculationsListener.remove();
+    this.invoicesListener.remove();
     this.errorsListener.remove();
   },
 
@@ -135,6 +138,16 @@ var BookingDetails = React.createClass({
   getCalculations: function() {
     this.setState({
       calculations: CalculationsStore.object()
+    });
+  },
+
+  getInvoices: function() {
+    this.setState({
+      fetching: false,
+      invoices: InvoicesStore.all(),
+      newInvoiceAdvance: false,
+      newInvoiceOwed: false,
+      newInvoiceShipFee: false
     });
   },
 
@@ -272,7 +285,7 @@ var BookingDetails = React.createClass({
         newInvoiceModalOpen: false,
         fetching: true
       });
-      // ClientActions.sendInvoice(this.state.booking);
+      ClientActions.sendInvoice(this.state.booking.id, this.state.newInvoiceAdvance, this.state.newInvoiceOwed, this.state.newInvoiceShipFee);
     }
   },
 

@@ -1,8 +1,42 @@
 class Api::InvoicesController < AdminController
 
+  include BookingCalculations
+
   def index
     @invoices = Invoice.all.order('id DESC')
     @invoices = @invoices.limit(100) unless params[:all]
+    render "index.json.jbuilder"
+  end
+
+  def create
+    booking = Booking.find(params[:booking_id])
+    calculations = booking_calculations(booking)
+    total = get_total(params, booking, calculations)
+    invoice = Invoice.create!(
+      invoice_type: 'booking',
+      sent_date: Date.today,
+      number: 'change this',
+      billing_name: booking.billing_name,
+      billing_address1: booking.billing_address1,
+      billing_address2: booking.billing_address2,
+      billing_city: booking.billing_city,
+      billing_state: booking.billing_state,
+      billing_zip: booking.billing_zip,
+      billing_country: booking.billing_country,
+      shipping_name: booking.shipping_name,
+      shipping_address1: booking.shipping_address1,
+      shipping_address2: booking.shipping_address2,
+      shipping_city: booking.shipping_city,
+      shipping_state: booking.shipping_state,
+      shipping_zip: booking.shipping_zip,
+      shipping_country: booking.shipping_country,
+      total: total,
+      booking_id: booking.id
+    )
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == "true"
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Owed', item_qty: 1, total_price: calculations[:owed]) if params[:owed] == "true"
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
+    @invoices = booking.invoices
     render "index.json.jbuilder"
   end
 
@@ -28,6 +62,16 @@ class Api::InvoicesController < AdminController
     job = Job.create!(job_id: time_started, name: "export invoices", first_line: "Exporting Invoices", second_line: true, current_value: 0, total_value: invoice_ids.length)
     ExportInvoices.perform_async(invoice_ids, time_started)
     render json: job
+  end
+
+  private
+
+  def get_total(params, booking, calculations)
+    total = 0
+    total += booking.advance if params[:advance] == "true"
+    total += calculations[:owed] if params[:owed] == "true"
+    total += booking.shipping_fee if params[:ship_fee] == "true"
+    total
   end
 
 end
