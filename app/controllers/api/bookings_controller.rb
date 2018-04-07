@@ -143,7 +143,7 @@ class Api::BookingsController < AdminController
     @bookings = Booking.where(id: params[:id]).includes(:film)
     email_text = get_email_text(@bookings.first)
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
-    message_params =  { from: 'michael@filmmovement.com',
+    message_params =  { from: current_user.email,
                         to: @bookings.first.email,
                         cc: current_user.email,
                         subject: "Your Film Movement Booking Confirmation",
@@ -151,6 +151,7 @@ class Api::BookingsController < AdminController
                       }
     mg_client.send_message 'filmmovement.com', message_params
     @bookings.first.update(booking_confirmation_sent: Date.today)
+    @calculations = booking_calculations(@bookings.first)
     render "show.json.jbuilder"
   end
 
@@ -171,7 +172,7 @@ class Api::BookingsController < AdminController
   def get_email_text(booking)
     string = "Hello,\n\n"
     string += "Please see the following booking confirmation for #{booking.film.title}"
-    string += " on #{booking.format}" unless booking.format.empty?
+    string += " on #{booking.format.name}"
     string += "\n\n"
     string += "#{booking.start_date == booking.end_date ? "Screening" : "Start"} Date: #{booking.start_date.strftime("%-m/%-d/%y")}\n\n"
     string += "#{booking.shipping_name}\n"
