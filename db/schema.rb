@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180402005854) do
+ActiveRecord::Schema.define(version: 20180407223145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,7 +53,6 @@ ActiveRecord::Schema.define(version: 20180402005854) do
     t.string  "shipping_state",                                          default: ""
     t.string  "shipping_zip",                                            default: ""
     t.string  "shipping_country",                                        default: ""
-    t.string  "format",                                                  default: ""
     t.string  "email",                                                   default: ""
     t.string  "imported_advance_invoice_number"
     t.date    "imported_advance_invoice_sent"
