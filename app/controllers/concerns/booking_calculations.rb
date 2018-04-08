@@ -11,7 +11,8 @@ module BookingCalculations
       total_gross: total_gross,
       our_share: our_share,
       received: received,
-      owed: (our_share - received)
+      owed: (our_share - received),
+      overage: our_share - booking.advance - booking.shipping_fee
     }
   end
 
@@ -48,6 +49,7 @@ module BookingCalculations
   def calculate_share_from_terms(booking, terms, gross)
     if !terms
       valid = false
+      our_share = 0.0
     elsif terms == "90/10"
       valid = true
       our_share = (gross - booking.house_expense) * 0.9

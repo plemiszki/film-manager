@@ -1350,14 +1350,14 @@ var ClientActions = {
     });
   },
 
-  sendInvoice: function(booking_id, advance, owed, shipFee) {
+  sendInvoice: function(booking_id, advance, overage, shipFee) {
     $.ajax({
       url: '/api/invoices',
       method: 'POST',
       data: {
         booking_id: booking_id,
         advance: advance,
-        owed: owed,
+        overage: overage,
         ship_fee: shipFee
       },
       success: function(response) {

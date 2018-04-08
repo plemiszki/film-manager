@@ -1,6 +1,8 @@
 class Api::InvoicesController < AdminController
 
   include BookingCalculations
+  include ActionView::Helpers::NumberHelper
+  include ApplicationHelper
 
   def index
     @invoices = Invoice.all.order('id DESC')
@@ -15,7 +17,7 @@ class Api::InvoicesController < AdminController
     invoice = Invoice.create!(
       invoice_type: 'booking',
       sent_date: Date.today,
-      number: 'change this',
+      number: "#{Invoice.where(invoice_type: "booking").count + 1}B",
       billing_name: booking.billing_name,
       billing_address1: booking.billing_address1,
       billing_address2: booking.billing_address2,
@@ -34,7 +36,7 @@ class Api::InvoicesController < AdminController
       booking_id: booking.id
     )
     InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == "true"
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Owed', item_qty: 1, total_price: calculations[:owed]) if params[:owed] == "true"
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"
     InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
     @invoices = booking.invoices
     render "index.json.jbuilder"
@@ -69,7 +71,7 @@ class Api::InvoicesController < AdminController
   def get_total(params, booking, calculations)
     total = 0
     total += booking.advance if params[:advance] == "true"
-    total += calculations[:owed] if params[:owed] == "true"
+    total += calculations[:overage] if params[:overage] == "true"
     total += booking.shipping_fee if params[:ship_fee] == "true"
     total
   end

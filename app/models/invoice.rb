@@ -116,6 +116,9 @@ class Invoice < ActiveRecord::Base
     string +=   "font-weight: bold;"
     string +=   "padding-top: 10px;"
     string += "}"
+    string += "td.big-margin {"
+    string +=   "padding-bottom: 20px;"
+    string += "}"
     string += ".page-break {"
     string +=   "page-break-before: always;"
     string += "}"
@@ -173,13 +176,38 @@ class Invoice < ActiveRecord::Base
     end
     string += "</div>"
 
-    string += "<table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>"
+    string += "<table>"
+    if self.invoice_type == "dvd"
+      string += "<tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>"
+    else
+      booking = self.booking
+      string += "<tr><th></th><th></th><th></th><th></th></tr>"
+    end
     self.invoice_rows.each_with_index do |row, index|
       if index == 38 || ((index - 38) % 51 == 0)
         string += '</table><div class="page-break"><table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>'
       end
       string += "<tr>"
-      string += "<td>#{row.item_label}</td><td>#{dollarify(row.unit_price.to_s)}</td><td>#{row.item_qty}</td><td>#{dollarify(row.total_price.to_s)}</td>"
+      if row.item_label == "Advance" || row.item_label[0..3] == "Owed"
+        gross = row.item_label[5..-1] if row.item_label[0..3] == "Owed"
+        string += "<td class='big-margin'>#{booking.film.title}<br>#{booking.start_date.strftime("%-m/%-d/%y")} - #{booking.end_date.strftime("%-m/%-d/%y")}<br>#{booking.screenings} screening#{booking.screenings > 1 ? 's' : ''}<br>#{booking.terms + (row.item_label[0..3] == "Owed" ? " #{row.item_label[5..-1]}" : "")}<br>#{booking.format.name}</td>"
+      elsif row.item_label == "Shipping Fee"
+        string += "<td class='big-margin'>#{row.item_label}</td>"
+      else
+        string += "<td>#{row.item_label}</td>"
+      end
+      if self.invoice_type == "dvd"
+        string += "<td>#{dollarify(row.unit_price.to_s)}</td><td>#{row.item_qty}</td>"
+      else
+        string += "<td></td><td></td>"
+      end
+      if row.item_label == "Advance" || row.item_label[0..3] == "Owed"
+        string += "<td class='big-margin'><br><br><br><br>#{dollarify(row.total_price.to_s)}</td>"
+      elsif row.item_label == "Shipping Fee"
+        string += "<td class='big-margin'>#{dollarify(row.total_price.to_s)}</td>"
+      else
+        string += "<td>#{dollarify(row.total_price.to_s)}</td>"
+      end
       string += "</tr>"
     end
     string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td></td><td>#{dollarify(self.total.to_s)}</td></tr>"

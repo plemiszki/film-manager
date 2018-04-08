@@ -20,13 +20,13 @@ json.invoices @invoices do |invoice|
   json.shippingState invoice.shipping_state
   json.shippingZip invoice.shipping_zip
   json.shippingCountry invoice.shipping_country
-  json.subTotal dollarify(invoice.sub_total.to_s)
-  json.total dollarify(invoice.total.to_s)
+  json.subTotal dollarify(number_with_precision(invoice.sub_total.to_s, precision: 2, delimiter: ','))
+  json.total dollarify(number_with_precision(invoice.total.to_s, precision: 2, delimiter: ','))
   json.notes invoice.notes
 end
 json.rows @rows do |row|
   json.label row.item_label
-  json.price dollarify(row.unit_price.to_s)
+  json.price dollarify(number_with_precision(row.unit_price.to_s, precision: 2, delimiter: ','))
   json.qty row.item_qty
-  json.totalPrice dollarify(row.total_price.to_s)
+  json.totalPrice dollarify(number_with_precision(row.total_price.to_s, precision: 2, delimiter: ','))
 end
