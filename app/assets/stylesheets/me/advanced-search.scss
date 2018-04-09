@@ -1,0 +1,50 @@
+#advanced-search {
+  margin-bottom: 0;
+
+  .white-box {
+    height: 573px;
+    position: relative;
+  }
+
+  label, .checkbox {
+    display: inline-block;
+  }
+
+  input:not([type]), .clearfix {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  input.select {
+    width: calc(100% - 50px);
+    margin-right: 17px;
+  }
+
+  label {
+    font-family: 'TeachableSans-SemiBold';
+    color: black;
+  }
+
+  .checkbox {
+    margin-right: 10px;
+  }
+
+  .nice-select {
+    min-width: 150px;
+  }
+
+  ul {
+    max-height: 120px;
+    overflow-y: scroll;
+  }
+
+  img {
+    cursor: pointer;
+  }
+
+  div.text-center {
+    position: absolute;
+    width: 100%;
+    bottom: 36px;
+  }
+}

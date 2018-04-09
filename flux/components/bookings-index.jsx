@@ -7,6 +7,7 @@ var BookingsStore = require('../stores/bookings-store.js');
 var UpcomingBookingsStore = require('../stores/upcoming-bookings-store.js');
 var NewThing = require('./new-thing.jsx');
 var JobStore = require('../stores/job-store.js');
+var AdvancedSearch = require('./advanced-search.jsx');
 
 var ModalStyles = {
   overlay: {
@@ -21,6 +22,19 @@ var ModalStyles = {
   }
 };
 
+var AdvancedSearchModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 1000,
+    height: 575
+  }
+};
+
 var BookingsIndex = React.createClass({
 
   getInitialState: function() {
@@ -32,7 +46,8 @@ var BookingsIndex = React.createClass({
       bookings: [],
       modalOpen: false,
       jobModalOpen: !!job.id,
-      job: job
+      job: job,
+      searchModalOpen: false
     });
   },
 
@@ -92,7 +107,16 @@ var BookingsIndex = React.createClass({
   },
 
   handleModalClose: function() {
-    this.setState({ modalOpen: false });
+    this.setState({
+      modalOpen: false,
+      searchModalOpen: false
+    });
+  },
+
+  clickAdvanced: function() {
+    this.setState({
+      searchModalOpen: true
+    });
   },
 
   clickSeeAll: function() {
@@ -130,6 +154,7 @@ var BookingsIndex = React.createClass({
       <div id="bookings-index" className="bookings-index component">
         <h1>{ this.renderHeader() }</h1>
         { this.renderAddButton() }
+        { this.renderAdvancedSearchButton() }
         { this.renderExportButton() }
         <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? '' : ' no-margin') } onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
@@ -201,6 +226,9 @@ var BookingsIndex = React.createClass({
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.users()[0] && BookingsStore.users()[0].id, userId: Common.user.id } } />
         </Modal>
+        <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ AdvancedSearchModalStyles }>
+          <AdvancedSearch />
+        </Modal>
         { Common.jobModal.call(this, this.state.job) }
       </div>
     );
@@ -220,6 +248,14 @@ var BookingsIndex = React.createClass({
     if (this.props.timeframe == 'upcoming') {
       return(
         <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Booking</a>
+      );
+    }
+  },
+
+  renderAdvancedSearchButton() {
+    if (this.props.timeframe == 'upcoming') {
+      return(
+        <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Advanced Search</a>
       );
     }
   },
