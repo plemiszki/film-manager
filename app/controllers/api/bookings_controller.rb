@@ -66,9 +66,9 @@ class Api::BookingsController < AdminController
       queries << "end_date <= DATE '#{params[:end_date_end]}'"
     end
     if queries.empty?
-      @bookings = Booking.all.includes(:film, :venue)
+      @bookings = Booking.all.includes(:film, :venue, :format)
     else
-      @bookings = Booking.where(queries.join(' and ')).includes(:film, :venue)
+      @bookings = Booking.where(queries.join(' and ')).includes(:film, :venue, :format)
     end
     render "advanced.json.jbuilder"
   end

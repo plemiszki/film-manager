@@ -139,12 +139,16 @@ var BookingsIndex = React.createClass({
   },
 
   sortByTime: function(booking) {
-    var date = new Date(booking.startDate).setHours(0,0,0,0);
-    var today = new Date().setHours(0,0,0,0);
-    if (this.props.timeframe === 'upcoming') {
-      return date >= today;
+    if (this.props.advanced) {
+      return true;
     } else {
-      return date < today;
+      var date = new Date(booking.startDate).setHours(0,0,0,0);
+      var today = new Date().setHours(0,0,0,0);
+      if (this.props.timeframe === 'upcoming') {
+        return date >= today;
+      } else {
+        return date < today;
+      }
     }
   },
 

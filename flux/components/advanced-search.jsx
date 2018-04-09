@@ -109,7 +109,7 @@ var AdvancedSearch = React.createClass({
     if (this.state.searchByBoxOfficeReceived) {
       params.push("box_office_received=" + this.state.boxOfficeReceived);
     }
-    if (this.state.materialsSent) {
+    if (this.state.searchByMaterialsSent) {
       params.push("materials_sent=" + this.state.materialsSent);
     }
     if (this.state.searchByStartDate) {
