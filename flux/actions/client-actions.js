@@ -253,7 +253,8 @@ var ClientActions = {
           instagram_link: film.instagramLink,
           active: film.active,
           label_id: film.labelId,
-          club_date: film.clubDate
+          club_date: film.clubDate,
+          ignore_sage_id: film.ignoreSageId
         },
         percentages: percentages
       },

@@ -36,6 +36,7 @@ json.films @films do |film|
   json.instagramLink film.instagram_link || ""
   json.labelId film.label_id.to_s
   json.clubDate film.club_date ? film.club_date.strftime("%-m/%-d/%y") : ""
+  json.ignoreSageId film.ignore_sage_id
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

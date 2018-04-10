@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180407223145) do
+ActiveRecord::Schema.define(version: 20180410220042) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -226,6 +226,7 @@ ActiveRecord::Schema.define(version: 20180407223145) do
     t.string  "instagram_link",                                 default: ""
     t.boolean "active",                                         default: true
     t.date    "club_date"
+    t.boolean "ignore_sage_id",                                 default: false
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree

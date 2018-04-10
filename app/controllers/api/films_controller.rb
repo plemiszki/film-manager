@@ -138,7 +138,8 @@ class Api::FilmsController < AdminController
       :instagram_link,
       :active,
       :label_id,
-      :club_date
+      :club_date,
+      :ignore_sage_id
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

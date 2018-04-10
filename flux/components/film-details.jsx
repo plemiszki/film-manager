@@ -705,11 +705,14 @@ var FilmDetails = React.createClass({
         <div>
           <hr className="smaller-margin" />
           <div className="row checkboxes">
-            <div className="col-xs-6">
+            <div className="col-xs-4">
               <input id="export-reports" type="checkbox" checked={this.state.film.exportReports} onChange={this.changeCheckbox.bind(this, 'exportReports')} /><label htmlFor="export-reports">Export Reports</label>
             </div>
-            <div className={"col-xs-6" + (this.state.film.exportReports ? "" : " hidden")}>
+            <div className={"col-xs-4" + (this.state.film.exportReports ? "" : " hidden")}>
               <input id="send-reports" type="checkbox" checked={this.state.film.sendReports} onChange={this.changeCheckbox.bind(this, 'sendReports')} /><label htmlFor="send-reports">Send Reports</label>
+            </div>
+            <div className="col-xs-4">
+              <input id="ignore-sage-id" type="checkbox" checked={this.state.film.ignoreSageId} onChange={this.changeCheckbox.bind(this, 'ignoreSageId')} /><label htmlFor="ignore-sage-id">Ignore Sage ID on Import</label>
             </div>
           </div>
           <hr />
