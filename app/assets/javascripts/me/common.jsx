@@ -440,7 +440,7 @@ Common = {
 
   commonSort: function(object) {
     var property = object[this.state.sortBy];
-    if (["shipDate", "startDate", "endDate", "dateAdded"].indexOf(this.state.sortBy) > -1) {
+    if (["shipDate", "startDate", "endDate", "dateAdded", "sentDate"].indexOf(this.state.sortBy) > -1) {
       if (property === "(Not Sent)") {
         return Date.now();
       } else {
