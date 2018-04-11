@@ -65,6 +65,12 @@ class Api::BookingsController < AdminController
     if params[:end_date_end]
       queries << "end_date <= DATE '#{params[:end_date_end]}'"
     end
+    if params[:date_added_start]
+      queries << "date_added >= DATE '#{params[:date_added_start]}'"
+    end
+    if params[:date_added_end]
+      queries << "date_added <= DATE '#{params[:date_added_end]}'"
+    end
     if queries.empty?
       @bookings = Booking.all.includes(:film, :venue, :format)
     else

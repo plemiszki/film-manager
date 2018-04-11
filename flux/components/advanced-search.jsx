@@ -22,6 +22,7 @@ var AdvancedSearch = React.createClass({
       searchByBoxOfficeReceived: false,
       searchByMaterialsSent: false,
       searchByType: false,
+      searchByDateAdded: false,
       filmId: 1,
       venueId: 1,
       city: "",
@@ -33,7 +34,9 @@ var AdvancedSearch = React.createClass({
       startDateStart: HandyTools.stringifyDate(new Date),
       startDateEnd: HandyTools.stringifyDate(new Date),
       endDateStart: HandyTools.stringifyDate(new Date),
-      endDateEnd: HandyTools.stringifyDate(new Date)
+      endDateEnd: HandyTools.stringifyDate(new Date),
+      dateAddedStart: HandyTools.stringifyDate(new Date),
+      dateAddedEnd: HandyTools.stringifyDate(new Date)
     });
   },
 
@@ -120,6 +123,10 @@ var AdvancedSearch = React.createClass({
       params.push("end_date_start=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.endDateStart)));
       params.push("end_date_end=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.endDateEnd)));
     }
+    if (this.state.searchByDateAdded) {
+      params.push("date_added_start=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.dateAddedStart)));
+      params.push("date_added_end=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.dateAddedEnd)));
+    }
     var path = "/bookings/advanced";
     if (params.length > 0) {
       path += ("?" + params.join("&"));
@@ -168,6 +175,10 @@ var AdvancedSearch = React.createClass({
               <input id="end-date-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByEndDate } data-thing={ "EndDate" } /><label className={ "checkbox" } htmlFor="end-date-checkbox">Search by End Date</label><br />
               <div className={ this.state.searchByEndDate ? '' : 'hidden' }>
                 <input onChange={ this.changeField } value={ this.state.endDateStart || "" } data-field="endDateStart" style={ { width: 100, marginRight: 15 } } />to<input onChange={ this.changeField } value={ this.state.endDateEnd || "" } data-field="endDateEnd" style={ { width: 100, marginLeft: 15 } } />
+              </div>
+              <input id="date-added-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByDateAdded } data-thing={ "DateAdded" } /><label className={ "checkbox" } htmlFor="date-added-checkbox">Search by Date Added</label><br />
+              <div className={ this.state.searchByDateAdded ? '' : 'hidden' }>
+                <input onChange={ this.changeField } value={ this.state.dateAddedStart || "" } data-field="dateAddedStart" style={ { width: 100, marginRight: 15 } } />to<input onChange={ this.changeField } value={ this.state.dateAddedEnd || "" } data-field="dateAddedEnd" style={ { width: 100, marginLeft: 15 } } />
               </div>
               <input id="type-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByType } data-thing={ "Type" } /><label className={ "checkbox" } htmlFor="type-checkbox">Search by Type</label><br />
               <div className={ this.state.searchByType ? 'clearfix' : 'hidden clearfix' }>
