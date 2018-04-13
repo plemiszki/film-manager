@@ -39,10 +39,10 @@ class Api::BookingsController < AdminController
       queries << "lower(shipping_state) = '#{params[:state].downcase}'"
     end
     if params[:format_id]
-      queries << "format_id = #{params[:format_id]}"
+      queries << "format_id IN (#{params[:format_id].map { |format_id| "'#{format_id}'" }.join(', ')})"
     end
     if params[:type]
-      queries << "lower(booking_type) = '#{params[:type].downcase}'"
+      queries << "lower(booking_type) IN (#{params[:type].map { |type| "'#{type.downcase}'" }.join(', ')})"
     end
     if params[:box_office_received]
       queries << "box_office_received = #{params[:box_office_received]}"
