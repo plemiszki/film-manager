@@ -51,6 +51,17 @@
   a.blue-outline-button {
     margin-bottom: 30px;
   }
+
+  .invoices-table {
+    td:last-of-type {
+      width: 80px;
+
+      img {
+        height: 17px;
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 .new-invoice-modal {

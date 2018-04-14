@@ -291,7 +291,7 @@ var BookingDetails = React.createClass({
   },
 
   newInvoiceAdvanceEnabled: function() {
-    if (this.state.booking.advance === "$0.00" || this.state.newInvoiceOverage) {
+    if (this.state.booking.advance === "$0.00") {
       return false;
     } else {
       return true;
@@ -299,7 +299,7 @@ var BookingDetails = React.createClass({
   },
 
   newInvoiceOverageEnabled: function() {
-    if (this.state.calculations.owed === "$0.00" || this.state.newInvoiceAdvance) {
+    if (this.state.calculations.overage === "$0.00") {
       return false;
     } else {
       return true;
@@ -368,6 +368,14 @@ var BookingDetails = React.createClass({
     this.setState({
       newInvoiceShipFee: !this.state.newInvoiceShipFee
     });
+  },
+
+  clickInvoice: function(id, e) {
+    if (e.target.tagName === 'IMG') {
+      console.log('edit');
+    } else {
+      this.redirect("invoices", id);
+    }
   },
 
   redirect: function(directory, id) {
@@ -849,19 +857,20 @@ var BookingDetails = React.createClass({
       return(
         <div className="row">
           <div className="col-xs-12">
-            <table className={"admin-table"}>
+            <table className={ "admin-table invoices-table" }>
               <thead>
                 <tr>
                   <th>Sent</th>
                   <th>Number</th>
                   <th>Total</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
                 { this.state.invoices.map(function(invoice, index) {
                   return(
-                    <tr key={ index } onClick={ this.redirect.bind(this, "invoices", invoice.id) }>
+                    <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id) }>
                       <td className="indent">
                         { invoice.sentDate }
                       </td>
@@ -870,6 +879,9 @@ var BookingDetails = React.createClass({
                       </td>
                       <td>
                         { invoice.total }
+                      </td>
+                      <td>
+                        <img src={ Images.edit } />
                       </td>
                     </tr>
                   );
