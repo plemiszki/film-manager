@@ -30,7 +30,7 @@ var AdvancedSearch = React.createClass({
       formatId: 1,
       boxOfficeReceived: true,
       materialsSent: true,
-      type: "theatrical",
+      types: [],
       startDateStart: HandyTools.stringifyDate(new Date),
       startDateEnd: HandyTools.stringifyDate(new Date),
       endDateStart: HandyTools.stringifyDate(new Date),
@@ -47,6 +47,18 @@ var AdvancedSearch = React.createClass({
   changeCheckbox: function(e) {
     this.setState({
       ["searchBy" + e.target.dataset.thing]: e.target.checked
+    });
+  },
+
+  changeArrayCheckbox: function(e) {
+    var array = this.state[e.target.parentElement.dataset.array];
+    if (e.target.checked) {
+      array.push(e.target.dataset.thing);
+    } else {
+      array.splice(array.indexOf(e.target.dataset.thing), 1);
+    }
+    this.setState({
+      [e.target.parentElement.dataset.array]: array
     });
   },
 
@@ -107,7 +119,9 @@ var AdvancedSearch = React.createClass({
       params.push("format_id=" + this.state.formatId);
     }
     if (this.state.searchByType) {
-      params.push("type=" + this.state.type);
+      for (var i = 0; i < this.state.types.length; i++) {
+        params.push("type[]=" + this.state.types[i]);
+      }
     }
     if (this.state.searchByBoxOfficeReceived) {
       params.push("box_office_received=" + this.state.boxOfficeReceived);
@@ -139,7 +153,7 @@ var AdvancedSearch = React.createClass({
       <div id="advanced-search" className="component">
         <div className="white-box">
           <div className="row">
-            <div className="col-xs-6">
+            <div className="col-xs-4">
               <input id="film-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByFilm } data-thing={ "Film" } /><label className={ "checkbox" } htmlFor="film-checkbox">Search by Film</label><br />
               <div className={ this.state.searchByFilm ? '' : 'hidden' }>
                 <input className="select" value={ BookingsStore.findFilm(this.state.filmId).title } data-field="filmId" readOnly="true" />
@@ -167,7 +181,17 @@ var AdvancedSearch = React.createClass({
                 </select>
               </div>
             </div>
-            <div className="col-xs-6">
+            <div className="col-xs-4">
+              <input id="type-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByType } data-thing={ "Type" } /><label className={ "checkbox" } htmlFor="type-checkbox">Search by Type</label><br />
+              <div className={ this.state.searchByType ? '' : 'hidden' }>
+                <div className="type-checkboxes" data-array={ 'types' } >
+                  <input id="theatrical" className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox } checked={ this.state.types.indexOf('theatrical') > -1 } data-thing={ "theatrical" } /><label className={ "checkbox" } htmlFor="theatrical">Theatrical</label><br />
+                  <input id="non-theatrical" className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox } checked={ this.state.types.indexOf('non-theatrical') > -1 } data-thing={ "non-theatrical" } /><label className={ "checkbox" } htmlFor="non-theatrical">Non-Theatrical</label><br />
+                  <input id="festival" className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox } checked={ this.state.types.indexOf('festival') > -1 } data-thing={ "festival" } /><label className={ "checkbox" } htmlFor="festival">Festival</label><br />
+                </div>
+              </div>
+            </div>
+            <div className="col-xs-4">
               <input id="start-date-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByStartDate } data-thing={ "StartDate" } /><label className={ "checkbox" } htmlFor="start-date-checkbox">Search by Start Date</label><br />
               <div className={ this.state.searchByStartDate ? '' : 'hidden' }>
                 <input onChange={ this.changeField } value={ this.state.startDateStart || "" } data-field="startDateStart" style={ { width: 100, marginRight: 15 } } />to<input onChange={ this.changeField } value={ this.state.startDateEnd || "" } data-field="startDateEnd" style={ { width: 100, marginLeft: 15 } } />
@@ -179,14 +203,6 @@ var AdvancedSearch = React.createClass({
               <input id="date-added-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByDateAdded } data-thing={ "DateAdded" } /><label className={ "checkbox" } htmlFor="date-added-checkbox">Search by Date Added</label><br />
               <div className={ this.state.searchByDateAdded ? '' : 'hidden' }>
                 <input onChange={ this.changeField } value={ this.state.dateAddedStart || "" } data-field="dateAddedStart" style={ { width: 100, marginRight: 15 } } />to<input onChange={ this.changeField } value={ this.state.dateAddedEnd || "" } data-field="dateAddedEnd" style={ { width: 100, marginLeft: 15 } } />
-              </div>
-              <input id="type-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByType } data-thing={ "Type" } /><label className={ "checkbox" } htmlFor="type-checkbox">Search by Type</label><br />
-              <div className={ this.state.searchByType ? 'clearfix' : 'hidden clearfix' }>
-                <select onChange={ this.changeField } data-field="type" value={ this.state.type } data-thing={ "type" }>
-                  <option value={ 'theatrical' }>Theatrical</option>
-                  <option value={ 'non-theatrical' }>Non-Theatrical</option>
-                  <option value={ 'festival' }>Festival</option>
-                </select>
               </div>
               <input id="box-office-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByBoxOfficeReceived } data-thing={ "BoxOfficeReceived" } /><label className={ "checkbox" } htmlFor="box-office-checkbox">Search by Box Office Received</label><br />
               <div className={ this.state.searchByBoxOfficeReceived ? 'clearfix' : 'hidden clearfix' }>

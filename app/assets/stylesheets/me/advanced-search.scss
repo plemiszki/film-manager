@@ -10,7 +10,7 @@
     display: inline-block;
   }
 
-  input:not([type]), .clearfix {
+  input:not([type]), .clearfix, .type-checkboxes {
     width: 100%;
     margin-bottom: 15px;
   }
@@ -46,5 +46,12 @@
     position: absolute;
     width: 100%;
     bottom: 36px;
+  }
+
+  div.type-checkboxes {
+    padding-left: 20px;
+    padding-top: 10px;
+    border: 1px solid #E4E9ED;
+    border-radius: 3px;
   }
 }
