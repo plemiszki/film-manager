@@ -1212,7 +1212,8 @@ var ClientActions = {
           shipping_notes: booking.shippingNotes,
           box_office: HandyTools.removeFinanceSymbols(booking.boxOffice),
           box_office_received: booking.boxOfficeReceived,
-          format_id: booking.formatId
+          format_id: booking.formatId,
+          notes: booking.notes
         }
       },
       success: function(response) {

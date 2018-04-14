@@ -33,7 +33,8 @@ class Api::InvoicesController < AdminController
       shipping_zip: booking.shipping_zip,
       shipping_country: booking.shipping_country,
       total: total,
-      booking_id: booking.id
+      booking_id: booking.id,
+      notes: booking.notes
     )
     InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == "true"
     InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"

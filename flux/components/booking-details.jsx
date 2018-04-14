@@ -567,6 +567,14 @@ var BookingDetails = React.createClass({
               </div>
             </div>
             <hr />
+            <h3>Notes:</h3>
+            <div className="row">
+              <div className="col-xs-12">
+                <textarea rows="5" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.notes || "" } data-field="notes" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <hr />
             { this.renderConfirmationSection() }
             <h3>Screening Materials:</h3>
               <div className="row">
