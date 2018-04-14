@@ -27,9 +27,9 @@ var AdvancedSearch = React.createClass({
       venueId: 1,
       city: "",
       state: "",
-      formatId: 1,
       boxOfficeReceived: true,
       materialsSent: true,
+      formats: [],
       types: [],
       startDateStart: HandyTools.stringifyDate(new Date),
       startDateEnd: HandyTools.stringifyDate(new Date),
@@ -115,12 +115,14 @@ var AdvancedSearch = React.createClass({
     if (this.state.searchByState) {
       params.push("state=" + this.state.state);
     }
-    if (this.state.searchByFormat) {
-      params.push("format_id=" + this.state.formatId);
-    }
     if (this.state.searchByType) {
       for (var i = 0; i < this.state.types.length; i++) {
         params.push("type[]=" + this.state.types[i]);
+      }
+    }
+    if (this.state.searchByFormat) {
+      for (var i = 0; i < this.state.formats.length; i++) {
+        params.push("format_id[]=" + this.state.formats[i]);
       }
     }
     if (this.state.searchByBoxOfficeReceived) {
@@ -170,18 +172,6 @@ var AdvancedSearch = React.createClass({
               <div className={ this.state.searchByState ? '' : 'hidden' }>
                 <input onChange={ this.changeField } value={ this.state.state || "" } data-field="state" style={ { width: 100 } } />
               </div>
-              <input id="format-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByFormat } data-thing={ "Format" } /><label className={ "checkbox" } htmlFor="format-checkbox">Search by Format</label><br />
-              <div className={ this.state.searchByFormat ? 'clearfix' : 'hidden clearfix' }>
-                <select onChange={ this.changeField } data-field="formatId" value={ this.state.formatId } data-thing={ "formatId" }>
-                  { BookingsStore.formats().map(function(format) {
-                    return(
-                      <option key={ format.id } value={ format.id }>{ format.name }</option>
-                    );
-                  }) }
-                </select>
-              </div>
-            </div>
-            <div className="col-xs-4">
               <input id="type-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByType } data-thing={ "Type" } /><label className={ "checkbox" } htmlFor="type-checkbox">Search by Type</label><br />
               <div className={ this.state.searchByType ? '' : 'hidden' }>
                 <div className="type-checkboxes" data-array={ 'types' } >
@@ -217,6 +207,20 @@ var AdvancedSearch = React.createClass({
                   <option value={ true }>Yes</option>
                   <option value={ false }>No</option>
                 </select>
+              </div>
+            </div>
+            <div className="col-xs-4">
+              <input id="format-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByFormat } data-thing={ "Format" } /><label className={ "checkbox" } htmlFor="format-checkbox">Search by Format</label><br />
+              <div className={ this.state.searchByFormat ? 'clearfix' : 'hidden clearfix' }>
+                <div className="type-checkboxes">
+                  { BookingsStore.formats().map(function(format, index) {
+                    return(
+                      <div key={ index } data-array={ 'formats' }>
+                        <input id={ format.name + "-checkbox" } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox } checked={ this.state.formats.indexOf(format.id.toString()) > -1 } data-thing={ format.id } /><label className={ "checkbox" } htmlFor={ format.name + '-checkbox' }>{ format.name }</label>
+                      </div>
+                    );
+                  }.bind(this)) }
+                </div>
               </div>
             </div>
           </div>
