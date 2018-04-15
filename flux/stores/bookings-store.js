@@ -85,6 +85,10 @@ BookingsStore.invoices = function() {
   return HandyTools.sortArrayOfDateStrings(invoices, 'sentDate');
 };
 
+BookingsStore.findInvoice = function(id) {
+  return _invoices[id];
+};
+
 BookingsStore.formats = function() {
   var formats = Object.keys(_formats).map(function(id) {
     return(_formats[id]);

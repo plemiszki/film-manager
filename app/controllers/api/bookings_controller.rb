@@ -81,7 +81,7 @@ class Api::BookingsController < AdminController
 
   def show
     @bookings = Booking.where(id: params[:id]).includes(:invoices)
-    @invoices = @bookings.first.invoices
+    @invoices = @bookings.first.invoices.includes(:invoice_rows)
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
     @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])
     @payments = Payment.where(booking_id: params[:id])

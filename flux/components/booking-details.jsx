@@ -68,7 +68,11 @@ var BookingDetails = React.createClass({
       },
       newInvoiceAdvance: false,
       newInvoiceOverage: false,
-      newInvoiceShipFee: false
+      newInvoiceShipFee: false,
+      resendInvoiceId: null,
+      oldInvoiceAdvance: null,
+      oldInvoiceOverage: null,
+      oldInvoiceShipFee: null
     });
   },
 
@@ -328,7 +332,11 @@ var BookingDetails = React.createClass({
       newInvoiceModalOpen: false,
       newInvoiceAdvance: false,
       newInvoiceOverage: false,
-      newInvoiceShipFee: false
+      newInvoiceShipFee: false,
+      resendInvoiceId: null,
+      oldInvoiceAdvance: null,
+      oldInvoiceOverage: null,
+      oldInvoiceShipFee: null
     });
   },
 
@@ -372,7 +380,30 @@ var BookingDetails = React.createClass({
 
   clickInvoice: function(id, e) {
     if (e.target.tagName === 'IMG') {
-      console.log('edit');
+      var invoice = BookingsStore.findInvoice(id);
+      var rows = invoice.rows;
+      var oldAdvance;
+      var oldOverage;
+      var oldShipFee;
+      rows.forEach(function(row) {
+        if (row.label === 'Advance') {
+          oldAdvance = row.amount;
+        } else if (row.label.slice(0,7) === 'Overage') {
+          oldOverage = row.amount;
+        } else if (row.label === 'Shipping Fee') {
+          oldShipFee = row.amount;
+        }
+      });
+      this.setState({
+        newInvoiceModalOpen: true,
+        oldInvoiceAdvance: oldAdvance,
+        oldInvoiceOverage: oldOverage,
+        oldInvoiceShipFee: oldShipFee,
+        newInvoiceAdvance: !!oldAdvance,
+        newInvoiceOverage: !!oldOverage,
+        newInvoiceShipFee: !!oldShipFee,
+        resendInvoiceId: invoice.number
+      });
     } else {
       this.redirect("invoices", id);
     }
@@ -664,12 +695,12 @@ var BookingDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ NewInvoiceStyles }>
           <div className="new-invoice-modal">
-            <div><input id="advance-checkbox" className="checkbox" type="checkbox" onChange={ this.changeAdvanceCheckbox } checked={ this.state.newInvoiceAdvance } disabled={ !this.newInvoiceAdvanceEnabled() } /><label className={ "checkbox" + (this.newInvoiceAdvanceEnabled() ? "" : " disabled") } htmlFor="advance-checkbox">Advance - { this.state.bookingSaved.advance }</label></div>
-            <div><input id="overage-checkbox" className="checkbox" type="checkbox" onChange={ this.changeOverageCheckbox } checked={ this.state.newInvoiceOverage } disabled={ !this.newInvoiceOverageEnabled() } /><label className={ "checkbox" + (this.newInvoiceOverageEnabled() ? "" : " disabled") } htmlFor="overage-checkbox">Overage - { this.state.calculations.overage }</label></div>
-            <div><input id="shipfee-checkbox" className="checkbox" type="checkbox" onChange={ this.changeShipFeeCheckbox } checked={ this.state.newInvoiceShipFee } disabled={ !this.newInvoiceShipFeeEnabled() } /><label className={ "checkbox" + (this.newInvoiceShipFeeEnabled() ? "" : " disabled") } htmlFor="shipfee-checkbox">Shipping Fee - { this.state.bookingSaved.shippingFee }</label></div>
+            <div><input id="advance-checkbox" className="checkbox" type="checkbox" onChange={ this.changeAdvanceCheckbox } checked={ this.state.newInvoiceAdvance } disabled={ !this.newInvoiceAdvanceEnabled() } /><label className={ "checkbox" + (this.newInvoiceAdvanceEnabled() ? "" : " disabled") } htmlFor="advance-checkbox">Advance - { (this.state.resendInvoiceId && this.state.oldInvoiceAdvance) ? (this.state.oldInvoiceAdvance + ' →') : '' } { this.state.bookingSaved.advance }</label></div>
+            <div><input id="overage-checkbox" className="checkbox" type="checkbox" onChange={ this.changeOverageCheckbox } checked={ this.state.newInvoiceOverage } disabled={ !this.newInvoiceOverageEnabled() } /><label className={ "checkbox" + (this.newInvoiceOverageEnabled() ? "" : " disabled") } htmlFor="overage-checkbox">Overage - { (this.state.resendInvoiceId && this.state.oldInvoiceOverage) ? (this.state.oldInvoiceOverage + ' →') : '' } { this.state.calculations.overage }</label></div>
+            <div><input id="shipfee-checkbox" className="checkbox" type="checkbox" onChange={ this.changeShipFeeCheckbox } checked={ this.state.newInvoiceShipFee } disabled={ !this.newInvoiceShipFeeEnabled() } /><label className={ "checkbox" + (this.newInvoiceShipFeeEnabled() ? "" : " disabled") } htmlFor="shipfee-checkbox">Shipping Fee - { (this.state.resendInvoiceId && this.state.oldInvoiceShipFee) ? (this.state.oldInvoiceShipFee + ' →') : '' } { this.state.bookingSaved.shippingFee }</label></div>
             <div className="text-center">
               <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(!this.state.newInvoiceAdvance && !this.state.newInvoiceOverage && !this.state.newInvoiceShipFee) } onClick={ this.clickSendInvoice }>
-                Send Invoice
+                { this.state.resendInvoiceId ? ('Resend Invoice ' + this.state.resendInvoiceId) : 'Send Invoice' }
               </a>
             </div>
           </div>
