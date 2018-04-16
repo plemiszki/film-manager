@@ -1368,6 +1368,23 @@ var ClientActions = {
     });
   },
 
+  resendInvoice: function(invoiceId, bookingId, advance, overage, shipFee) {
+    $.ajax({
+      url: '/api/invoices/' + invoiceId,
+      method: 'PATCH',
+      data: {
+        booking_id: bookingId,
+        advance: advance,
+        overage: overage,
+        ship_fee: shipFee
+      },
+      success: function(response) {
+        console.log(response);
+        ServerActions.receiveInvoices(response);
+      }
+    });
+  },
+
   fetchCountries: function() {
     $.ajax({
       url: '/api/countries',

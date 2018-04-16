@@ -40,14 +40,32 @@ class Api::InvoicesController < AdminController
     InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"
     InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
     SendBookingInvoice.perform_async(invoice.id, current_user.id, booking.email, params[:advance], params[:overage], (params[:advance] && booking.booking_type.strip != "Theatrical"))
-    @invoices = booking.invoices
-    render "index.json.jbuilder"
+    @invoices = booking.invoices.includes(:invoice_rows)
+    render 'booking.json.jbuilder'
+  end
+
+  def update
+    invoice = Invoice.find_by_number(params[:id])
+    booking = Booking.find(params[:booking_id])
+    calculations = booking_calculations(booking)
+    total = get_total(params, booking, calculations)
+    invoice.update!(
+      total: total,
+      notes: booking.notes
+    )
+    invoice.invoice_rows.destroy_all
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == "true"
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
+    SendBookingInvoice.perform_async(invoice.id, current_user.id, booking.email, params[:advance], params[:overage], (params[:advance] && booking.booking_type.strip != "Theatrical"))
+    @invoices = booking.invoices.includes(:invoice_rows)
+    render 'booking.json.jbuilder'
   end
 
   def show
     @invoices = Invoice.where(id: params[:id]).includes(booking: [:film, :venue])
     @rows = @invoices.first.invoice_rows
-    render "show.json.jbuilder"
+    render 'show.json.jbuilder'
   end
 
   def export

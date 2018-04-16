@@ -286,11 +286,23 @@ var BookingDetails = React.createClass({
 
   clickSendInvoice: function() {
     if (this.state.newInvoiceAdvance || this.state.newInvoiceOverage || this.state.newInvoiceShipFee) {
-      this.setState({
-        newInvoiceModalOpen: false,
-        fetching: true
-      });
-      ClientActions.sendInvoice(this.state.booking.id, this.state.newInvoiceAdvance, this.state.newInvoiceOverage, this.state.newInvoiceShipFee);
+      if (this.state.resendInvoiceId) {
+        ClientActions.resendInvoice(this.state.resendInvoiceId, this.state.booking.id, this.state.newInvoiceAdvance, this.state.newInvoiceOverage, this.state.newInvoiceShipFee);
+        this.setState({
+          newInvoiceModalOpen: false,
+          fetching: true,
+          resendInvoiceId: null,
+          oldInvoiceAdvance: null,
+          oldInvoiceOverage: null,
+          oldInvoiceShipFee: null
+        });
+      } else {
+        this.setState({
+          newInvoiceModalOpen: false,
+          fetching: true
+        });
+        ClientActions.sendInvoice(this.state.booking.id, this.state.newInvoiceAdvance, this.state.newInvoiceOverage, this.state.newInvoiceShipFee);
+      }
     }
   },
 
@@ -380,7 +392,7 @@ var BookingDetails = React.createClass({
 
   clickInvoice: function(id, e) {
     if (e.target.tagName === 'IMG') {
-      var invoice = BookingsStore.findInvoice(id);
+      var invoice = InvoicesStore.find(id) || BookingsStore.findInvoice(id);
       var rows = invoice.rows;
       var oldAdvance;
       var oldOverage;

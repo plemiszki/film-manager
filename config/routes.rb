@@ -60,7 +60,7 @@ Rails.application.routes.draw do
     post '/purchase_orders/ship' => '/api/purchase_orders#ship'
     resources :purchase_order_items, only: [:create, :destroy]
     resources :shipping_addresses, only: [:index, :create, :show, :update, :destroy]
-    resources :invoices, only: [:index, :show]
+    resources :invoices, only: [:index, :show, :update]
     get '/invoices/:id/export' => '/api/invoices#export'
     post '/invoices/export' => '/api/invoices#export_sage'
     post '/invoices' => '/api/invoices#create'
