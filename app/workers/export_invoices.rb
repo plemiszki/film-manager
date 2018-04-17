@@ -3,6 +3,7 @@ class ExportInvoices
   sidekiq_options retry: false
 
   def perform(invoice_ids, time_started)
+    errors = []
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
@@ -89,10 +90,17 @@ class ExportInvoices
 
     invoices = Invoice.where(id: invoice_ids).order(:id)
     invoices.each_with_index do |invoice, invoice_index|
+      if invoice.invoice_type == 'booking'
+        booking = invoice.booking
+        booking_venue = booking.venue
+        booking_film = booking.film
+        booking_gl_code = get_gl_code(booking)
+      end
       items = invoice.invoice_rows
       items.each_with_index do |item, index|
+        errors << "No Sage ID for #{booking_venue.label}" if invoice.invoice_type == 'booking' && booking_venue.sage_id.empty?
         sheet.add_row([
-          invoice.customer.sage_id,
+          (invoice.invoice_type == 'dvd' ? invoice.customer.sage_id : booking_venue.sage_id),
           '',
           invoice.number,
           '',
@@ -114,9 +122,9 @@ class ExportInvoices
           invoice.po_number, # 20
           '',
           '',
-          invoice.sent_date + invoice.payment_terms,
+          (invoice.invoice_type == 'dvd' ? (invoice.sent_date + invoice.payment_terms) : (invoice.sent_date + 30)),
           '', '',
-          "Net #{invoice.payment_terms}",
+          (invoice.invoice_type == 'dvd' ? "Net #{invoice.payment_terms}" : 'Net 30'),
           '',
           "10200",
           '', '', '', '', '', '', '',
@@ -130,7 +138,7 @@ class ExportInvoices
           item.item_qty,
           '', '', '', '',
           item.item_label,
-          (invoice.invoice_type == "dvd" ? "30200" : "FIX ME!"),
+          (invoice.invoice_type == "dvd" ? "30200" : booking_gl_code),
           '', # 50
           (item.unit_price * -1),
           '1',
@@ -139,7 +147,7 @@ class ExportInvoices
           '', '', '', '', '',
           '1',
           '', '', '',
-          (item.item_type == "dvd" ? Film.find(item.item_id).get_sage_id : Giftbox.find(item.item_id).sage_id)
+          (invoice.invoice_type == 'booking' ? booking_film.get_sage_id : (item.item_type == 'dvd' ? Film.find(item.item_id).get_sage_id : Giftbox.find(item.item_id).sage_id))
         ])
       end
       job.update({ current_value: invoice_index + 1 })
@@ -157,8 +165,17 @@ class ExportInvoices
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object("#{time_started}/invoices.xlsx")
     obj.upload_file(file_path, acl:'public-read')
+    job.update!({ done: true, first_line: errors.empty? ? obj.public_url : "Errors Found", errors_text: errors.empty? ? "" : errors.uniq.join("\n") })
+  end
 
-    job.update!({ done: true, first_line: obj.public_url })
+  def get_gl_code(booking)
+    if booking.booking_type == 'Theatrical'
+      return '30100'
+    elsif booking.booking_type == 'Festival'
+      ['DVD', 'Blu-ray'].include?(booking.format.name) ? '30415' : '30410'
+    elsif booking.booking_type == 'Non-Theatrical'
+      ['DVD', 'Blu-ray'].include?(booking.format.name) ? '30420' : '30430'
+    end
   end
 
 end

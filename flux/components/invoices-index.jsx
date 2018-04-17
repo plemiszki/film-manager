@@ -63,9 +63,12 @@ var InvoicesIndex = React.createClass({
     if (job.done) {
       this.setState({
         jobModalOpen: false,
+        errorsModalOpen: job.errors_text !== "",
         job: job
       }, function() {
-        window.location.href = job.first_line;
+        if (job.errors_text === "") {
+          window.location.href = job.first_line;
+        }
       });
     } else {
       this.setState({
@@ -117,7 +120,15 @@ var InvoicesIndex = React.createClass({
   },
 
   handleModalClose: function() {
-    this.setState({ filterModalOpen: false });
+    this.setState({
+      filterModalOpen: false,
+    });
+  },
+
+  modalCloseAndRefresh: function() {
+    this.setState({
+      errorsModalOpen: false
+    });
   },
 
   filterExists: function() {
@@ -208,6 +219,7 @@ var InvoicesIndex = React.createClass({
           </div>
         </Modal>
         { Common.jobModal.call(this, this.state.job) }
+        { Common.jobErrorsModal.call(this) }
       </div>
     );
   },
