@@ -1,11 +1,7 @@
 <%= form_for User.first do |f| %>
   Films:
   <%= f.file_field :films_file %>
-  Theaters:
-  <%= f.file_field :theaters_file %>
   Admin:
   <%= f.file_field :admin_file %>
-  Bookings:
-  <%= f.file_field :bookings_file %>
   <input type="submit" />
 <% end %>
