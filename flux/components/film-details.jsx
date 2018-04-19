@@ -517,7 +517,7 @@ var FilmDetails = React.createClass({
   render: function() {
     return(
       <div className="film-details component details-component">
-        <h1>Film Details</h1>
+        <h1>{ this.state.film.shortFilm == 'yes' ? 'Short' : 'Film' } Details</h1>
         { this.renderTopTabs() }
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -596,25 +596,25 @@ var FilmDetails = React.createClass({
   },
 
   renderTopTabs: function() {
-    if (this.state.film.shortFilm === "no") {
-      return(
-        <div className="tabs-row">
-          { this.renderTopTab("General") }
-          { this.renderTopTab("Contract") }
-          { this.renderTopTab("Synopses") }
-          { this.renderTopTab("Marketing") }
-          { this.renderTopTab("Bookings") }
-          { this.renderTopTab("DVDs") }
-          { this.renderTopTab("Statements") }
-        </div>
-      )
-    }
+    return(
+      <div className="tabs-row">
+        { this.renderTopTab("General") }
+        { this.renderTopTab("Contract") }
+        { this.renderTopTab("Synopses") }
+        { this.renderTopTab("Marketing") }
+        { this.renderTopTab("Bookings") }
+        { this.renderTopTab("DVDs") }
+        { this.renderTopTab("Statements") }
+      </div>
+    );
   },
 
   renderTopTab: function(label) {
-    return(
-      <div className={"tab" + (this.state.tab === label ? " selected" : "")} onClick={this.clickTab}>{label}</div>
-    )
+    if (this.state.film.id && (this.state.film.shortFilm === "no" || ['General', 'Synopses'].indexOf(label) > -1)) {
+      return(
+        <div className={ "tab" + (this.state.tab === label ? " selected" : "") } onClick={ this.clickTab }>{ label }</div>
+      );
+    }
   },
 
   renderTab: function(tab) {
@@ -959,25 +959,25 @@ var FilmDetails = React.createClass({
               <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.synopsis || "" } data-field="synopsis" />
             </div>
           </div>
-          <div className="row">
+          <div className={ 'row' + (this.state.film.shortFilm == 'yes' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h2>Short Synopsis</h2>
               <textarea rows="4" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.shortSynopsis || "" } data-field="shortSynopsis" />
             </div>
           </div>
-          <div className="row">
+          <div className={ 'row' + (this.state.film.shortFilm == 'yes' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h2>Logline</h2>
               <textarea rows="2" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.logline || "" } data-field="logline" />
             </div>
           </div>
-          <div className="row">
+          <div className={ 'row' + (this.state.film.shortFilm == 'yes' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h2>VOD Synopsis</h2>
               <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vodSynopsis || "" } data-field="vodSynopsis" />
             </div>
           </div>
-          <div className="row">
+          <div className={ 'row' + (this.state.film.shortFilm == 'yes' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h2>institutional Synopsis</h2>
               <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.institutionalSynopsis || "" } data-field="institutionalSynopsis" />
@@ -989,7 +989,7 @@ var FilmDetails = React.createClass({
       return(
         <div>
         </div>
-      )
+      );
     }
   },
 
