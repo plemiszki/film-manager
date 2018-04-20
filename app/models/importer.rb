@@ -475,7 +475,8 @@ class Importer < ActiveRecord::Base
         end
 
         # first check for new licensor
-        licensor = Licensor.find_by_name(a[8])
+        licensor = Licensor.find_by_name(a[8].strip)
+
         if licensor && (licensor.email == nil || licensor.email == "")
           licensor.update(email: a[240].strip)
         end
@@ -530,10 +531,10 @@ class Importer < ActiveRecord::Base
         end
         film = Film.find_by({title: film_vars[:title], short_film: film_vars[:short_film]})
         if film
-          film.update(film_vars)
+          film.update!(film_vars)
         else
           p "Adding Film: #{film_vars[:title]}"
-          film = Film.create(film_vars)
+          film = Film.create!(film_vars)
 
           FilmRight.create!(film_id: film.id, right_id: 1, value: a[57] == 'True') # Theatrical
           FilmRight.create!(film_id: film.id, right_id: 2, value: a[17] == 'True') # Educational
@@ -711,6 +712,8 @@ class Importer < ActiveRecord::Base
         # countries
         country_strings = a[3].split(",").map(&:strip)
         country_strings.each do |country_string|
+          next if country_string == 'Switzerland | France'
+          next if country_string == 'Itally'
           country_string = "United Kingdom" if country_string == "UK"
           country_string = "USA" if country_string == "US"
           country_string = "USA" if country_string == "U.S."
@@ -734,6 +737,8 @@ class Importer < ActiveRecord::Base
         a[4].gsub!("Swedish/English", "Swedish, English")
         a[4].gsub!("with English subs", "")
         a[4].gsub!("Various", "")
+        a[4].gsub!("German & English w/ English subs", "German, English")
+        a[4].gsub!("English w/English subtitles", "English")
 
         language_strings = a[4].split(",").map(&:strip)
         language_strings.each do |language_string|
