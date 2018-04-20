@@ -739,6 +739,7 @@ class Importer < ActiveRecord::Base
         a[4].gsub!("Various", "")
         a[4].gsub!("German & English w/ English subs", "German, English")
         a[4].gsub!("English w/English subtitles", "English")
+        a[4].gsub!("German w/ English subtitles", "German")
 
         language_strings = a[4].split(",").map(&:strip)
         language_strings.each do |language_string|
