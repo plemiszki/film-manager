@@ -21,7 +21,7 @@ class SendBookingInvoice
 
     # send invoice
     invoice.export!(pathname)
-    attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]
+    attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r"), File.open(Rails.root.join('app', 'workers', 'Film Movement W9.pdf'), "r")]
     message_params = {
       from: current_user.email,
       to: email,
