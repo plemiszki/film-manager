@@ -27,8 +27,8 @@ var AdvancedSearch = React.createClass({
       venueId: 1,
       city: "",
       state: "",
-      boxOfficeReceived: true,
-      materialsSent: true,
+      boxOfficeReceived: 'Yes',
+      materialsSent: 'Yes',
       formats: [],
       types: [],
       startDateStart: HandyTools.stringifyDate(new Date),
@@ -126,10 +126,10 @@ var AdvancedSearch = React.createClass({
       }
     }
     if (this.state.searchByBoxOfficeReceived) {
-      params.push("box_office_received=" + this.state.boxOfficeReceived);
+      params.push("box_office_received=" + (this.state.boxOfficeReceived == 'Yes' ? 'true' : 'false'));
     }
     if (this.state.searchByMaterialsSent) {
-      params.push("materials_sent=" + this.state.materialsSent);
+      params.push("materials_sent=" + (this.state.materialsSent == 'Yes' ? 'true' : 'false'));
     }
     if (this.state.searchByStartDate) {
       params.push("start_date_start=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.startDateStart)));
@@ -197,15 +197,15 @@ var AdvancedSearch = React.createClass({
               <input id="box-office-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByBoxOfficeReceived } data-thing={ "BoxOfficeReceived" } /><label className={ "checkbox" } htmlFor="box-office-checkbox">Search by Box Office Received</label><br />
               <div className={ this.state.searchByBoxOfficeReceived ? 'clearfix' : 'hidden clearfix' }>
                 <select onChange={ this.changeField } data-field="boxOfficeReceived" value={ this.state.boxOfficeReceived } data-thing={ "boxOfficeReceived" }>
-                  <option value={ true }>Yes</option>
-                  <option value={ false }>No</option>
+                  <option value={ 'Yes' }>Yes</option>
+                  <option value={ 'No' }>No</option>
                 </select>
               </div>
               <input id="materials-sent" className="checkbox" type="checkbox" onChange={ this.changeCheckbox } checked={ this.state.searchByMaterialsSent } data-thing={ "MaterialsSent" } /><label className={ "checkbox" } htmlFor="materials-sent">Search by Materials Sent</label><br />
               <div className={ this.state.searchByMaterialsSent ? 'clearfix' : 'hidden clearfix' }>
                 <select onChange={ this.changeField } data-field="materialsSent" value={ this.state.materialsSent } data-thing={ "materialsSent" }>
-                  <option value={ true }>Yes</option>
-                  <option value={ false }>No</option>
+                  <option value={ 'Yes' }>Yes</option>
+                  <option value={ 'No' }>No</option>
                 </select>
               </div>
             </div>

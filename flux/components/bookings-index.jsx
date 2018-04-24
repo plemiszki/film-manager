@@ -178,11 +178,12 @@ var BookingsIndex = React.createClass({
                   <th className="med-column"><div className={ Common.sortClass.call(this, "terms") } onClick={ Common.clickHeader.bind(this, "terms") }>Terms</div></th>
                   <th className="med-column"><div className={ Common.sortClass.call(this, "bookingType") } onClick={ Common.clickHeader.bind(this, "bookingType") }>Type</div></th>
                   <th className="small-column"><div className={ Common.sortClass.call(this, "format") } onClick={ Common.clickHeader.bind(this, "format") }>Format</div></th>
+                  <th className="small-column"><div className={ Common.sortClass.call(this, "materialsSent") } onClick={ Common.clickHeader.bind(this, "materialsSent") }>Materials Sent</div></th>
                   <th className="small-column"><div className={ Common.sortClass.call(this, "boxOfficeReceived") } onClick={ Common.clickHeader.bind(this, "boxOfficeReceived") }>BO Received</div></th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                 { _.orderBy(filteredBookings, [Common.commonSort.bind(this)], [this.state.sortBy == 'startDate' && this.props.timeframe !== 'upcoming' && !this.props.advanced ? 'desc' : 'asc']).map(function(booking, index) {
                   return(
                     <tr key={ index } onClick={ this.redirect.bind(this, booking.id) }>
@@ -215,6 +216,9 @@ var BookingsIndex = React.createClass({
                       </td>
                       <td>
                         { booking.format }
+                      </td>
+                      <td>
+                        { booking.materialsSent }
                       </td>
                       <td>
                         { booking.boxOfficeReceived }

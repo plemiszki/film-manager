@@ -10,5 +10,6 @@ json.bookings @bookings do |booking|
   json.terms booking.terms
   json.format booking.format ? booking.format.name : ''
   json.boxOfficeReceived booking.box_office_received ? 'Yes' : 'No'
+  json.materialsSent booking.materials_sent ? 'Yes' : 'No'
   json.bookingType booking.booking_type
 end
