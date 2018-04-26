@@ -78,6 +78,8 @@ var VenuesIndex = React.createClass({
               <tr>
                 <th><div className={ Common.sortClass.call(this, "label") } onClick={ Common.clickHeader.bind(this, "label") }>Label</div></th>
                 <th><div className={ Common.sortClass.call(this, "venueType") } onClick={ Common.clickHeader.bind(this, "venueType") }>Type</div></th>
+                <th><div className={ Common.sortClass.call(this, "city") } onClick={ Common.clickHeader.bind(this, "city") }>City</div></th>
+                <th><div className={ Common.sortClass.call(this, "state") } onClick={ Common.clickHeader.bind(this, "state") }>State</div></th>
               </tr>
             </thead>
             <tbody>
@@ -90,6 +92,12 @@ var VenuesIndex = React.createClass({
                     </td>
                     <td>
                       { venue.venueType }
+                    </td>
+                    <td>
+                      { venue.city }
+                    </td>
+                    <td>
+                      { venue.state }
                     </td>
                   </tr>
                 );
