@@ -74,9 +74,17 @@ class Api::BookingsController < AdminController
     if queries.empty?
       @bookings = Booking.all.includes(:film, :venue, :format)
     else
-      @bookings = Booking.where(queries.join(' and ')).includes(:film, :venue, :format)
+      @bookings = Booking.where(queries.join(' and ')).includes(:film, :venue, :format, :weekly_box_offices)
+      if params[:box_office_received] && params[:box_office_received].downcase == 'true'
+        ids = Booking.joins(:weekly_box_offices).group('bookings.id').map(&:id)
+        @new_bookings = Booking.where(id: ids).includes(:film, :venue, :format, :weekly_box_offices)
+        @bookings += @new_bookings
+      elsif params[:box_office_received] && params[:box_office_received].downcase == 'false'
+        ids = Booking.joins(:weekly_box_offices).group('bookings.id')
+        @bookings.delete(ids)
+      end
     end
-    render "advanced.json.jbuilder"
+    render 'advanced.json.jbuilder'
   end
 
   def show
