@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :venues, only: [:index, :show]
   get '/bookings/advanced' => 'bookings#advanced'
   resources :bookings, only: [:index, :show]
+  resources :bookers, only: [:index, :show]
   resources :dvds, only: [:show]
   resources :shorts, only: [:index]
   resources :licensors, only: [:index, :show]
@@ -42,6 +43,8 @@ Rails.application.routes.draw do
     post '/bookings/export' => '/api/bookings#export'
     resources :bookings, only: [:index, :show, :create, :update, :destroy]
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
+    resources :bookers, only: [:index, :show, :create, :update, :destroy]
+    resources :booker_venues, only: [:create, :destroy]
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]
     resources :giftbox_dvds, only: [:create, :destroy]
     get '/royalty_reports/zip' => '/api/royalty_reports#zip'

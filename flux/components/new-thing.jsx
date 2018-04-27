@@ -139,6 +139,7 @@ var NewThing = React.createClass({
           { this.renderQuoteFields() }
           { this.renderLaurelFields() }
           { this.renderActorOrDirectorFields() }
+          { this.renderBookerFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -681,6 +682,32 @@ var NewThing = React.createClass({
             <p>{ this.state[this.props.thing].country }</p>
             <br />
             <p>{ +this.state[this.props.thing].customerId ? "Customer: " + PurchaseOrdersStore.findDvdCustomer(this.state[this.props.thing].customerId).name : "No DVD Customer" }</p>
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderBookerFields: function() {
+    if (this.props.thing === "booker") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-4">
+              <h2>Name</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.name || "" } data-field="name" />
+              { Common.renderFieldError(this.state.errors, Common.errors.name) }
+            </div>
+            <div className="col-xs-4">
+              <h2>Email</h2>
+              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.email || "" } data-field="email" />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+            <div className="col-xs-4">
+              <h2>Phone</h2>
+              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.phone || "" } data-field="phone" />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
           </div>
         </div>
       );

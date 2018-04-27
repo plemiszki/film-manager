@@ -1935,6 +1935,68 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  fetchBookers: function() {
+    $.ajax({
+      url: '/api/bookers',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveBookers(response);
+      }
+    });
+  },
+
+  createBooker: function(booker) {
+    $.ajax({
+      url: '/api/bookers',
+      method: 'POST',
+      data: {
+        booker: booker
+      },
+      success: function(response) {
+        ServerActions.receiveBookers(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
+      }
+    });
+  },
+
+  fetchBooker: function(id) {
+    $.ajax({
+      url: '/api/bookers/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveBookers(response);
+      }
+    });
+  },
+
+  updateBooker: function(booker) {
+    $.ajax({
+      url: '/api/bookers/' + booker.id,
+      method: 'PATCH',
+      data: {
+        booker: booker
+      },
+      success: function(response) {
+        ServerActions.receiveBookers(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    })
+  },
+
+  deleteBooker: function(id) {
+    $.ajax({
+      url: '/api/bookers/' + id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = "/bookers";
+      }
+    });
   }
 }
 

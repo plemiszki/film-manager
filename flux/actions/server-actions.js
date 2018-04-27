@@ -386,6 +386,13 @@ var ServerActions = {
       actionType: "FORMATS_RECEIVED",
       formats: response
     });
+  },
+
+  receiveBookers: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "BOOKERS_RECEIVED",
+      bookers: response.bookers
+    });
   }
 }
 

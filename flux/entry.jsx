@@ -40,6 +40,8 @@ var TopicDetails = require('./components/topic-details.jsx');
 var QuoteDetails = require('./components/quote-details.jsx');
 var FormatsIndex = require('./components/formats-index.jsx');
 var FormatDetails = require('./components/format-details.jsx');
+var BookersIndex = require('./components/bookers-index.jsx');
+var BookerDetails = require('./components/booker-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -171,5 +173,11 @@ $(document).ready(function() {
   }
   if ($('#format-details')[0]) {
     ReactDOM.render(<FormatDetails />, document.getElementById("format-details"));
+  }
+  if ($('#bookers-index')[0]) {
+    ReactDOM.render(<BookersIndex />, document.getElementById("bookers-index"));
+  }
+  if ($('#booker-details')[0]) {
+    ReactDOM.render(<BookerDetails />, document.getElementById("booker-details"));
   }
 });
