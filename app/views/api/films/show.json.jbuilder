@@ -37,6 +37,9 @@ json.films @films do |film|
   json.labelId film.label_id.to_s
   json.clubDate film.club_date ? film.club_date.strftime("%-m/%-d/%y") : ""
   json.ignoreSageId film.ignore_sage_id
+  json.theatricalCount @bookings.where(booking_type: 'Theatrical').count
+  json.festivalCount @bookings.where(booking_type: 'Festival').count
+  json.nonTheatricalCount @bookings.where(booking_type: 'Non-Theatrical').count
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
@@ -146,4 +149,5 @@ json.bookings @bookings do |booking|
   json.id booking.id
   json.venue booking.venue.label
   json.startDate booking.start_date.strftime("%-m/%-d/%y")
+  json.type booking.booking_type
 end

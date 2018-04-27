@@ -126,7 +126,9 @@ var FilmDetails = React.createClass({
       relatedFilms: [],
       otherFilms: [],
       actors: [],
-      directors: []
+      directors: [],
+      searchText: '',
+      sortBy: 'startDate'
     });
   },
 
@@ -642,14 +644,14 @@ var FilmDetails = React.createClass({
               {Common.renderFieldError(this.state.filmErrors, Common.errors.eAndO)}
             </div>
           </div>
-          {this.renderRoyaltyFields()}
+          { this.renderRoyaltyFields() }
         </div>
       )
     } else if (this.state.tab === "DVDs") {
       return(
         <div>
           <hr />
-          <table className={"admin-table"}>
+          <table className={ "admin-table" }>
             <thead>
               <tr>
                 <th>Type</th>
@@ -657,45 +659,56 @@ var FilmDetails = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.dvds.map(function(dvd, index) {
+              { this.state.dvds.map(function(dvd, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, "dvds", dvd.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, "dvds", dvd.id) }>
                     <td className="name-column">
-                      {dvd.type}
+                      { dvd.type }
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }.bind(this)) }
             </tbody>
           </table>
-          <a className={'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '')} onClick={this.clickAddDVDButton}>Add DVD</a>
+          <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ this.clickAddDVDButton }>Add DVD</a>
         </div>
       )
     } else if (this.state.tab === "Bookings") {
+      var filteredBookings = this.state.bookings.filterSearchText(this.state.searchText, this.state.sortBy);
       return(
         <div>
           <hr />
-          <table className={"admin-table"}>
+          <ul className="bookings-count-list clearfix">
+            <li>Theatrical: { this.state.film.theatricalCount }</li>
+            <li>Festival: { this.state.film.festivalCount }</li>
+            <li>Non-Theatrical: { this.state.film.nonTheatricalCount }</li>
+          </ul>
+          <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+          <table className="admin-table bookings-table">
             <thead>
               <tr>
-                <th>Start Date</th>
-                <th>Venue</th>
+                <th><div className={ Common.sortClass.call(this, "startDate") } onClick={ Common.clickHeader.bind(this, "startDate") }>Start Date</div></th>
+                <th><div className={ Common.sortClass.call(this, "venue") } onClick={ Common.clickHeader.bind(this, "venue") }>Venue</div></th>
+                <th><div className={ Common.sortClass.call(this, "type") } onClick={ Common.clickHeader.bind(this, "type") }>Type</div></th>
               </tr>
             </thead>
             <tbody>
-              <tr><td></td><td></td></tr>
-              {this.state.bookings.map(function(booking, index) {
+              <tr><td></td><td></td><td></td></tr>
+              { _.orderBy(filteredBookings, [Common.commonSort.bind(this)]).map(function(booking, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, "bookings", booking.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, "bookings", booking.id) }>
                     <td className="indent">
                       { booking.startDate }
                     </td>
                     <td>
                       { booking.venue }
                     </td>
+                    <td>
+                      { booking.type }
+                    </td>
                   </tr>
                 );
-              }.bind(this))}
+              }.bind(this)) }
             </tbody>
           </table>
         </div>
