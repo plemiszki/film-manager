@@ -459,7 +459,7 @@ Common = {
     var month = date.getMonth();
     var year = date.getFullYear();
     month -= 2;
-    if (month <= 1) {
+    if (month < 1) {
       year -= 1;
       month += 12;
     }

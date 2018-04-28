@@ -1,3 +1,5 @@
+# Columns: Film, GL Code, _ , Amount
+
 class ImportSageData
   include Sidekiq::Worker
   sidekiq_options retry: false
@@ -55,7 +57,7 @@ class ImportSageData
         columns = sheet.row(index)
         found_film = false
         found_box_set = false
-        films = Film.where("short_film = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
+        films = Film.where("short_film = FALSE AND ignore_sage_id = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
         if films.length > 0
           found_film = true
         else
@@ -92,11 +94,6 @@ class ImportSageData
           gl = columns[1]
 
           if label == "revenue"
-            if film.ignore_sage_id
-              next
-              index += 1
-              job.update!(current_value: index)
-            end
             case gl
             when "30100"
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
@@ -351,12 +348,12 @@ class ImportSageData
         index += 1
         job.update!(current_value: index)
       end
-      job.update!({done: true, first_line: "Import Complete", errors_text: errors.join("\n")})
+      job.update!({ done: true, first_line: "Import Complete", errors_text: errors.join("\n") })
       p '---------------------------'
       p 'FINISHED SAGE IMPORT'
       p '---------------------------'
     rescue
-      job.update!({done: true, errors_text: "Unable to import spreadsheet"})
+      job.update!({ done: true, errors_text: "Unable to import spreadsheet" })
     end
   end
 
