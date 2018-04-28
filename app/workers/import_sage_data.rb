@@ -92,6 +92,11 @@ class ImportSageData
           gl = columns[1]
 
           if label == "revenue"
+            if film.ignore_sage_id
+              next
+              index += 1
+              job.update!(current_value: index)
+            end
             case gl
             when "30100"
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)

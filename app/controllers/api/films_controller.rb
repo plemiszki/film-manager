@@ -65,7 +65,13 @@ class Api::FilmsController < AdminController
         end
         fail if error_present
         @films = Film.where(id: params[:id])
+        @bookings = Booking.where(film_id: @films.first.id).includes(:venue)
+        @templates = DealTemplate.all
+        @licensors = Licensor.all
+        @revenue_streams = RevenueStream.all
+        @reports = RoyaltyReport.where(film_id: params[:id])
         @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
+        @rights = FilmRight.where(film_id: params[:id]).includes(:right)
         @dvds = Dvd.where(feature_film_id: params[:id])
         @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
         @film_countries = FilmCountry.where(film_id: @films.first.id).includes(:country)
