@@ -465,7 +465,7 @@ class Importer < ActiveRecord::Base
     object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Films.txt")
     object.get(response_target: "tmp/#{time_started}/Films.txt")
     File.open(Rails.root.join("tmp/#{time_started}/Films.txt")) do |file|
-      total = file.gets.to_i - 2
+      total = file.gets.to_i
       films = 0
       until films == total
         a = file.gets.split("\t")
