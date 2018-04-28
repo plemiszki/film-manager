@@ -391,7 +391,17 @@ var ServerActions = {
   receiveBookers: function(response) {
     AppDispatcher.dispatch({
       actionType: "BOOKERS_RECEIVED",
-      bookers: response.bookers
+      bookers: response.bookers,
+      bookerVenues: response.bookerVenues,
+      venues: response.venues
+    });
+  },
+
+  receiveBookerVenues: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "BOOKER_VENUES_RECEIVED",
+      venues: response.venues,
+      bookerVenues: response.bookerVenues
     });
   }
 }

@@ -7,7 +7,9 @@ class Api::BookersController < AdminController
 
   def show
     @bookers = Booker.where(id: params[:id])
-    render 'index.json.jbuilder'
+    @booker_venues = BookerVenue.where(booker_id: params[:id])
+    @venues = Venue.where.not(id: @booker_venues.pluck(:venue_id))
+    render 'show.json.jbuilder'
   end
 
   def create

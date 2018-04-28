@@ -1997,6 +1997,32 @@ var ClientActions = {
         window.location.pathname = "/bookers";
       }
     });
+  },
+
+  createBookerVenue: function(obj) {
+    $.ajax({
+      url: '/api/booker_venues',
+      method: 'POST',
+      data: {
+        booker_venue: {
+          booker_id: obj.booker_id,
+          venue_id: obj.venue_id
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveBookerVenues(response);
+      }
+    });
+  },
+
+  deleteBookerVenue: function(id) {
+    $.ajax({
+      url: '/api/booker_venues/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveBookerVenues(response);
+      }
+    });
   }
 }
 
