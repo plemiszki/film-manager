@@ -42,6 +42,7 @@ var FormatsIndex = require('./components/formats-index.jsx');
 var FormatDetails = require('./components/format-details.jsx');
 var BookersIndex = require('./components/bookers-index.jsx');
 var BookerDetails = require('./components/booker-details.jsx');
+var InTheatersIndex = require('./components/in-theaters.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -179,5 +180,8 @@ $(document).ready(function() {
   }
   if ($('#booker-details')[0]) {
     ReactDOM.render(<BookerDetails />, document.getElementById("booker-details"));
+  }
+  if ($('#in-theaters-index')[0]) {
+    ReactDOM.render(<InTheatersIndex />, document.getElementById("in-theaters-index"));
   }
 });
