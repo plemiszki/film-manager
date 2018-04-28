@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   resources :topics, only: [:show]
   resources :quotes, only: [:show]
   resources :formats, only: [:show]
+  get '/in_theaters' => 'in_theaters_films#index'
 
   namespace :api do
     get '/users' => '/api/users#api_index'
