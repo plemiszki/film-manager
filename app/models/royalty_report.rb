@@ -291,7 +291,7 @@ class RoyaltyReport < ActiveRecord::Base
           difference = amount - liquidated
           total_remaining += difference
           new_quarter = quarter.split[0].split('')[1].to_i + film.reserve_quarters
-          new_year = self.year
+          new_year = quarter.split[1].to_i
           until new_quarter < 5
             new_year += 1
             new_quarter -= 4
