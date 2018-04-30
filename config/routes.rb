@@ -88,6 +88,9 @@ Rails.application.routes.draw do
     resources :directors, only: [:create, :destroy]
     resources :actors, only: [:create, :destroy]
     resources :formats, only: [:index, :create, :show, :update, :destroy]
+    get '/in_theaters' => '/api/in_theaters_films#index'
+    post '/in_theaters' => '/api/in_theaters_films#create'
+    delete '/in_theaters/:id' => '/api/in_theaters_films#destroy'
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'

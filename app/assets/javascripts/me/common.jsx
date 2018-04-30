@@ -356,6 +356,21 @@ Common = {
     ]
   },
 
+  canIDrop: function($e) {
+    console.log('can i drop');
+    console.log($e);
+    var draggedIndex = $e[0].dataset.index;
+    console.log(this);
+    var dropZoneIndex = this.dataset.index;
+    var difference = Math.abs(draggedIndex - dropZoneIndex);
+    if (difference >= 2) {
+      return true;
+    } else if (difference == 1 && draggedIndex < dropZoneIndex) {
+      return true;
+    }
+    return false;
+  },
+
   changeSearchText: function(event) {
     this.setState({
       searchText: event.target.value
