@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   resources :topics, only: [:show]
   resources :quotes, only: [:show]
   resources :formats, only: [:show]
+  get '/in_theaters' => 'in_theaters_films#index'
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -87,6 +88,10 @@ Rails.application.routes.draw do
     resources :directors, only: [:create, :destroy]
     resources :actors, only: [:create, :destroy]
     resources :formats, only: [:index, :create, :show, :update, :destroy]
+    get '/in_theaters' => '/api/in_theaters_films#index'
+    post '/in_theaters' => '/api/in_theaters_films#create'
+    post '/in_theaters/rearrange' => '/api/in_theaters_films#rearrange'
+    delete '/in_theaters/:id' => '/api/in_theaters_films#destroy'
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'

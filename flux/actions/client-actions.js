@@ -2023,7 +2023,56 @@ var ClientActions = {
         ServerActions.receiveBookerVenues(response);
       }
     });
-  }
+  },
+
+  fetchInTheatersFilms: function() {
+    $.ajax({
+      url: '/api/in_theaters',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveInTheatersFilms(response);
+      }
+    });
+  },
+
+  createInTheatersFilm: function(film) {
+    $.ajax({
+      url: '/api/in_theaters',
+      method: 'POST',
+      data: {
+        film: {
+          film_id: film.filmId,
+          coming_soon: film.comingSoon
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveInTheatersFilms(response);
+      }
+    });
+  },
+
+  deleteInTheatersFilm: function(id) {
+    $.ajax({
+      url: '/api/in_theaters/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveInTheatersFilms(response);
+      }
+    });
+  },
+
+  rearrangeInTheatersFilms: function(newOrder) {
+    $.ajax({
+      url: '/api/in_theaters/rearrange',
+      method: 'POST',
+      data: {
+        new_order: newOrder
+      },
+      success: function(response) {
+        ServerActions.receiveInTheatersFilms(response);
+      }
+    });
+  },
 }
 
 module.exports = ClientActions;

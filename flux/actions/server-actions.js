@@ -403,6 +403,15 @@ var ServerActions = {
       venues: response.venues,
       bookerVenues: response.bookerVenues
     });
+  },
+
+  receiveInTheatersFilms: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "IN_THEATERS_RECEIVED",
+      inTheaters: response.inTheaters,
+      comingSoon: response.comingSoon,
+      films: response.films
+    });
   }
 }
 
