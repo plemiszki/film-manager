@@ -2059,7 +2059,21 @@ var ClientActions = {
         ServerActions.receiveInTheatersFilms(response);
       }
     });
-  }
+  },
+
+  rearrangeInTheatersFilms: function(newOrder, comingSoon) {
+    $.ajax({
+      url: '/api/in_theaters/rearrange',
+      method: 'POST',
+      data: {
+        new_order: newOrder,
+        coming_soon: comingSoon
+      },
+      success: function(response) {
+        ServerActions.receiveInTheatersFilms(response);
+      }
+    });
+  },
 }
 
 module.exports = ClientActions;

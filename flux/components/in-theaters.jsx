@@ -104,16 +104,19 @@ var InTheatersIndex = React.createClass({
 
   mouseDownHandler: function(e) {
     $('.handle, a, input, textarea, .x-button, .nice-select, tr').addClass('grabbing');
-    var download = e.target.parentElement.parentElement;
-    download.classList.add('highlight');
+    var film = e.target.parentElement.parentElement;
+    var section = e.target.parentElement.parentElement.parentElement.parentElement;
+    film.classList.add('highlight');
+    section.classList.add('grabbing');
   },
 
   mouseUpHandler: function(e) {
-    $('.handle, a, input, textarea, .x-button, .nice-select, tr').removeClass('grabbing');
+    $('.handle, a, input, textarea, .x-button, .nice-select, tr, table').removeClass('grabbing');
     e.target.parentElement.parentElement.classList.remove('highlight');
   },
 
   dragOverHandler: function(e) {
+    console.log('drag over');
     e.target.classList.add('highlight');
   },
 
@@ -122,20 +125,22 @@ var InTheatersIndex = React.createClass({
   },
 
   dragEndHandler: function(e) {
-    $('.handle, a, input, textarea, .x-button, .nice-select, tr').removeClass('grabbing');
+    $('.handle, a, input, textarea, .x-button, .nice-select, tr, table').removeClass('grabbing');
     $('tr.highlight').removeClass('highlight');
   },
 
   dropHandler: function(e, ui) {
+    var section = e.target.parentElement.parentElement.parentElement.parentElement;
+    var comingSoon = section.dataset.comingsoon;
     var draggedIndex = ui.draggable.attr('id').split('-')[1];
     var dropZoneIndex = e.target.dataset.index;
     $('.highlight').removeClass('highlight');
     var currentOrder = {};
-    this.props.downloads.forEach(function(download) {
-      currentOrder[download.order] = download.id;
+    this.state[comingSoon === 'true' ? 'comingSoon' : 'inTheaters'].forEach(function(film) {
+      currentOrder[film.order] = film.id;
     });
     var newOrder = Tools.rearrangeFields(currentOrder, draggedIndex, dropZoneIndex);
-    ClientActions.rearrangeWebinarObjects(newOrder, this.props.webinarId, "download");
+    ClientActions.rearrangeInTheatersFilms(newOrder, comingSoon);
   },
 
   render: function() {
@@ -145,7 +150,7 @@ var InTheatersIndex = React.createClass({
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className="admin-table no-hover no-highlight">
+          <table className="admin-table no-hover no-highlight" data-comingsoon={ false }>
             <thead>
               <tr>
                 <th>In Theaters</th>
@@ -172,7 +177,7 @@ var InTheatersIndex = React.createClass({
           </table>
           <a className={ 'blue-outline-button small' } onClick={ this.clickAddInTheatersFilm }>Add Film</a>
           <hr />
-          <table className="admin-table no-hover no-highlight">
+          <table className="admin-table no-hover no-highlight" data-comingsoon={ true }>
             <thead>
               <tr>
                 <th>Coming Soon</th>

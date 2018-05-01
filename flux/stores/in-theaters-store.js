@@ -17,6 +17,7 @@ InTheatersStore.setInTheaters = function(films) {
 };
 
 InTheatersStore.setComingSoon = function(films) {
+  console.log(films);
   _comingSoon = films;
 };
 

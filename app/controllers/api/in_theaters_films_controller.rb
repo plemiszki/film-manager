@@ -23,6 +23,15 @@ class Api::InTheatersFilmsController < AdminController
     render 'index.json.jbuilder'
   end
 
+  def rearrange
+    params[:new_order].each do |index, id|
+      film = InTheatersFilm.find(id)
+      film.update(order: index)
+    end
+    index_data
+    render 'index.json.jbuilder'
+  end
+
   private
 
   def film_params
