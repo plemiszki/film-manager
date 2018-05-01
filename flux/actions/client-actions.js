@@ -2061,13 +2061,12 @@ var ClientActions = {
     });
   },
 
-  rearrangeInTheatersFilms: function(newOrder, comingSoon) {
+  rearrangeInTheatersFilms: function(newOrder) {
     $.ajax({
       url: '/api/in_theaters/rearrange',
       method: 'POST',
       data: {
-        new_order: newOrder,
-        coming_soon: comingSoon
+        new_order: newOrder
       },
       success: function(response) {
         ServerActions.receiveInTheatersFilms(response);

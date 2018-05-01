@@ -357,12 +357,11 @@ Common = {
   },
 
   canIDrop: function($e) {
-    var section = this.parentElement.parentElement.parentElement.parentElement;
-    if (!section.classList.contains('grabbing')) {
-      return false;
-    }
     var draggedIndex = $e[0].dataset.index;
     var dropZoneIndex = this.dataset.index;
+    if ($e[0].dataset.section !== this.dataset.section) {
+      return false;
+    }
     var difference = Math.abs(draggedIndex - dropZoneIndex);
     if (difference >= 2) {
       return true;

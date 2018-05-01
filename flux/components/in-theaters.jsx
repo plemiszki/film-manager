@@ -5,6 +5,7 @@ var ClientActions = require('../actions/client-actions.js');
 var InTheatersStore = require('../stores/in-theaters-store.js');
 var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
+var InTheatersIndexItem = require('./in-theaters-index-item.jsx');
 
 var ModalStyles = {
   overlay: {
@@ -46,20 +47,6 @@ var InTheatersIndex = React.createClass({
       inTheaters: InTheatersStore.inTheaters(),
       comingSoon: InTheatersStore.comingSoon(),
       films: InTheatersStore.films()
-    }, function() {
-      $('.admin-table td').draggable({
-        cursor: '-webkit-grabbing',
-        handle: '.handle',
-        helper: function() { return '<div></div>'; },
-        stop: this.dragEndHandler
-      });
-      $('.top-drop-zone, .drop-zone').droppable({
-        accept: Common.canIDrop, // note that top-drop-zone and bottom-drop-zone within this component will automatically not be droppable (since they're within the draggable td element), this function is just for the bottom-drop-zone in the component directly above
-        tolerance: 'pointer',
-        over: this.dragOverHandler,
-        out: this.dragOutHandler,
-        drop: this.dropHandler
-      });
     });
   },
 
@@ -102,47 +89,6 @@ var InTheatersIndex = React.createClass({
     ClientActions.createInTheatersFilm({ filmId: e.target.dataset.id, comingSoon: this.state.addComingSoon });
   },
 
-  mouseDownHandler: function(e) {
-    $('.handle, a, input, textarea, .x-button, .nice-select, tr').addClass('grabbing');
-    var film = e.target.parentElement.parentElement;
-    var section = e.target.parentElement.parentElement.parentElement.parentElement;
-    film.classList.add('highlight');
-    section.classList.add('grabbing');
-  },
-
-  mouseUpHandler: function(e) {
-    $('.handle, a, input, textarea, .x-button, .nice-select, tr, table').removeClass('grabbing');
-    e.target.parentElement.parentElement.classList.remove('highlight');
-  },
-
-  dragOverHandler: function(e) {
-    console.log('drag over');
-    e.target.classList.add('highlight');
-  },
-
-  dragOutHandler: function(e) {
-    e.target.classList.remove('highlight');
-  },
-
-  dragEndHandler: function(e) {
-    $('.handle, a, input, textarea, .x-button, .nice-select, tr, table').removeClass('grabbing');
-    $('tr.highlight').removeClass('highlight');
-  },
-
-  dropHandler: function(e, ui) {
-    var section = e.target.parentElement.parentElement.parentElement.parentElement;
-    var comingSoon = section.dataset.comingsoon;
-    var draggedIndex = ui.draggable.attr('id').split('-')[1];
-    var dropZoneIndex = e.target.dataset.index;
-    $('.highlight').removeClass('highlight');
-    var currentOrder = {};
-    this.state[comingSoon === 'true' ? 'comingSoon' : 'inTheaters'].forEach(function(film) {
-      currentOrder[film.order] = film.id;
-    });
-    var newOrder = Tools.rearrangeFields(currentOrder, draggedIndex, dropZoneIndex);
-    ClientActions.rearrangeInTheatersFilms(newOrder, comingSoon);
-  },
-
   render: function() {
     return(
       <div id="in-theaters-index" className="component">
@@ -150,7 +96,7 @@ var InTheatersIndex = React.createClass({
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className="admin-table no-hover no-highlight" data-comingsoon={ false }>
+          <table className="admin-table no-hover no-highlight in-theaters">
             <thead>
               <tr>
                 <th>In Theaters</th>
@@ -158,26 +104,16 @@ var InTheatersIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              { this.state.inTheaters.map(function(film, index) {
+              {this.state.inTheaters.map(function(film, index) {
                 return(
-                  <tr key={ film.id }>
-                    <td id={"index-" + film.order} className="indent" data-index={ film.order }>
-                      <div className={ "top-drop-zone" + (film.order == 0 ? '' : ' hidden') } data-index={ "-1" }></div>
-                      <div>
-                        { film.film }
-                      </div>
-                      <img className="handle" src={ Images.handle } onMouseDown={ this.mouseDownHandler } onMouseUp={ this.mouseUpHandler } />
-                      <div className="x-button" onClick={ this.clickXButton } data-id={ film.id }></div>
-                      <div className="drop-zone" data-index={ film.order }></div>
-                    </td>
-                  </tr>
+                  <InTheatersIndexItem key={film.id} index={index} film={film} section={'in theaters'} clickXButton={this.clickXButton} renderHandle={this.state.inTheaters.length > 1} films={this.state.inTheaters} />
                 );
-              }.bind(this)) }
+              }.bind(this))}
             </tbody>
           </table>
           <a className={ 'blue-outline-button small' } onClick={ this.clickAddInTheatersFilm }>Add Film</a>
           <hr />
-          <table className="admin-table no-hover no-highlight" data-comingsoon={ true }>
+          <table className="admin-table no-hover no-highlight coming-soon">
             <thead>
               <tr>
                 <th>Coming Soon</th>
@@ -185,21 +121,11 @@ var InTheatersIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              { this.state.comingSoon.map(function(film, index) {
+              {this.state.comingSoon.map(function(film, index) {
                 return(
-                  <tr key={ film.id }>
-                    <td id={"index-" + film.order} className="indent" data-index={ film.order }>
-                      <div className={ "top-drop-zone" + (film.order == 0 ? '' : ' hidden') } data-index={ "-1" }></div>
-                      <div>
-                        { film.film }
-                      </div>
-                      <img className="handle" src={ Images.handle } onMouseDown={ this.mouseDownHandler } onMouseUp={ this.mouseUpHandler } />
-                      <div className="x-button" onClick={ this.clickXButton } data-id={ film.id }></div>
-                      <div className="drop-zone" data-index={ film.order }></div>
-                    </td>
-                  </tr>
+                  <InTheatersIndexItem key={film.id} index={index} film={film} section={'coming soon'} clickXButton={this.clickXButton} renderHandle={this.state.comingSoon.length > 1} films={this.state.comingSoon} />
                 );
-              }.bind(this)) }
+              }.bind(this))}
             </tbody>
           </table>
           <a className={ 'blue-outline-button small' } onClick={ this.clickAddComingSoonFilm }>Add Film</a>
