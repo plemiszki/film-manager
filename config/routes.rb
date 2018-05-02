@@ -95,6 +95,7 @@ Rails.application.routes.draw do
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'
+    get '/website/bookings' => '/api/website#bookings'
   end
 
   # Clearance ------------------------
