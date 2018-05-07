@@ -39,6 +39,7 @@ class Film < ActiveRecord::Base
   has_many :languages, through: :film_languages
   has_many :genres, through: :film_genres
   has_many :topics, through: :film_topics
+  has_many :bookings
 
   after_create :create_percentages
 

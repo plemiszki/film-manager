@@ -69,6 +69,14 @@ class Api::RoyaltyReportsController < AdminController
     render json: job
   end
 
+  def totals
+    time_started = Time.now.to_s
+    total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter])
+    job = Job.create!(job_id: time_started, first_line: "Calculating Totals", second_line: true, current_value: 0, total_value: total_reports.length)
+    CalculateTotals.perform_async(params[:quarter], params[:year], params[:days_due], time_started)
+    render json: job
+  end
+
   def export
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")

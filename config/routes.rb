@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     post '/royalty_reports/export_all' => '/api/royalty_reports#export_all'
     post '/royalty_reports/send_all' => '/api/royalty_reports#send_all'
     post '/royalty_reports/error_check' => '/api/royalty_reports#error_check'
+    post '/royalty_reports/totals' => '/api/royalty_reports#totals'
     get '/jobs/status' => '/api/jobs#status'
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]
     resources :dvds, only: [:show, :create, :update, :destroy]
@@ -95,6 +96,7 @@ Rails.application.routes.draw do
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'
+    get '/website/bookings' => '/api/website#bookings'
   end
 
   # Clearance ------------------------

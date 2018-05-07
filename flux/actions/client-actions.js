@@ -378,6 +378,21 @@ var ClientActions = {
     });
   },
 
+  statementTotals: function(quarter, year, daysDue) {
+    $.ajax({
+      url: '/api/royalty_reports/totals',
+      method: 'POST',
+      data: {
+        quarter: quarter,
+        year: year,
+        days_due: daysDue
+      },
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
+  },
+
   fetchGiftboxes: function() {
     $.ajax({
       url: '/api/giftboxes',
