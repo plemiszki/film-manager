@@ -224,6 +224,16 @@ var ReportsIndex = React.createClass({
     }
   },
 
+  clickTotals: function(e) {
+    if (!e.target.classList.contains('inactive')) {
+      this.setState({
+        fetching: true,
+        jobFirstLine: 'Calculating Totals'
+      });
+      ClientActions.statementTotals(this.state.quarter, this.state.year, this.state.daysDue);
+    }
+  },
+
   clickConfirmSend: function(e) {
     this.setState({
       fetching: true,
