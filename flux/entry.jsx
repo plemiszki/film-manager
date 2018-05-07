@@ -186,4 +186,10 @@ $(document).ready(function() {
   if ($('#in-theaters-index')[0]) {
     ReactDOM.render(<InTheatersIndex />, document.getElementById("in-theaters-index"));
   }
+  if ($('#territories-index')[0]) {
+    ReactDOM.render(<TerritoriesIndex />, document.getElementById("territories-index"));
+  }
+  if ($('#territory-details')[0]) {
+    ReactDOM.render(<TerritoryDetails />, document.getElementById("territory-details"));
+  }
 });
