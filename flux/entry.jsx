@@ -43,6 +43,8 @@ var FormatDetails = require('./components/format-details.jsx');
 var BookersIndex = require('./components/bookers-index.jsx');
 var BookerDetails = require('./components/booker-details.jsx');
 var InTheatersIndex = require('./components/in-theaters.jsx');
+var TerritoriesIndex = require('./components/territories-index.jsx');
+var TerritoryDetails = require('./components/territory-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -183,5 +185,11 @@ $(document).ready(function() {
   }
   if ($('#in-theaters-index')[0]) {
     ReactDOM.render(<InTheatersIndex />, document.getElementById("in-theaters-index"));
+  }
+  if ($('#territories-index')[0]) {
+    ReactDOM.render(<TerritoriesIndex />, document.getElementById("territories-index"));
+  }
+  if ($('#territory-details')[0]) {
+    ReactDOM.render(<TerritoryDetails />, document.getElementById("territory-details"));
   }
 });

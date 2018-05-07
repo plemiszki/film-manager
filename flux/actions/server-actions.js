@@ -412,6 +412,13 @@ var ServerActions = {
       comingSoon: response.comingSoon,
       films: response.films
     });
+  },
+
+  receiveTerritories: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "TERRITORIES_RECEIVED",
+      territories: response
+    });
   }
 }
 
