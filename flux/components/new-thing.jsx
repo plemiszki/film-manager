@@ -166,7 +166,7 @@ var NewThing = React.createClass({
   },
 
   renderNameField: function() {
-    if (["user", "licensor", "giftbox", "country", "language", "genre", "topic", "format"].indexOf(this.props.thing) > -1) {
+    if (["user", "licensor", "giftbox", "country", "language", "genre", "topic", "format", "territory"].indexOf(this.props.thing) > -1) {
       return(
         <div className="row">
           <div className="col-xs-12">

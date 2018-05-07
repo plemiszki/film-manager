@@ -1379,7 +1379,6 @@ var ClientActions = {
         ship_fee: shipFee
       },
       success: function(response) {
-        console.log(response);
         ServerActions.receiveInvoices(response);
       }
     });
@@ -2073,6 +2072,62 @@ var ClientActions = {
       }
     });
   },
+
+  fetchTerritories: function() {
+    $.ajax({
+      url: '/api/territories',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveTerritories(response);
+      }
+    });
+  },
+
+  fetchTerritory: function(id) {
+    $.ajax({
+      url: '/api/territories/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveTerritories(response);
+      }
+    });
+  },
+
+  createTerritory: function(territory) {
+    $.ajax({
+      url: '/api/territories',
+      method: 'POST',
+      data: {
+        territory: {
+          name: territory.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveTerritories(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  updateTerritory: function(territory) {
+    $.ajax({
+      url: '/api/territories/' + territory.id,
+      method: 'PATCH',
+      data: {
+        territory: {
+          name: territory.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveTerritories(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  }
 }
 
 module.exports = ClientActions;
