@@ -44,7 +44,7 @@ var BookersIndex = require('./components/bookers-index.jsx');
 var BookerDetails = require('./components/booker-details.jsx');
 var InTheatersIndex = require('./components/in-theaters.jsx');
 var TerritoriesIndex = require('./components/territories-index.jsx');
-// var TerritoryDetails = require('./components/territory-details.jsx');
+var TerritoryDetails = require('./components/territory-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
