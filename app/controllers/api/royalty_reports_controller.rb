@@ -71,7 +71,11 @@ class Api::RoyaltyReportsController < AdminController
 
   def totals
     time_started = Time.now.to_s
-    total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter])
+    if params[:days_due] == 'all'
+      total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter])
+    else
+      total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter], films: { days_statement_due: params[:days_due] }).includes(:film)
+    end
     job = Job.create!(job_id: time_started, first_line: "Calculating Totals", second_line: true, current_value: 0, total_value: total_reports.length)
     CalculateTotals.perform_async(params[:quarter], params[:year], params[:days_due], time_started)
     render json: job
