@@ -20,6 +20,7 @@ json.venues @venues do |venue|
   json.shippingZip venue.shipping_zip
   json.shippingCountry venue.shipping_country
   json.notes venue.notes
+  json.contactName venue.contact_name
 end
 json.bookings @bookings do |booking|
   json.id booking.id

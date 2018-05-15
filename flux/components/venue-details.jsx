@@ -189,12 +189,17 @@ var VenueDetails = React.createClass({
                 </select>
               </div>
               <div className="col-xs-3">
-                <h2>Sage Id</h2>
+                <h2>Sage ID</h2>
                 <input className={ Common.errorClass(this.state.errors, Common.errors.sageId) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.sageId || "" } data-field="sageId" />
                 { Common.renderFieldError(this.state.errors, Common.errors.sageId) }
               </div>
             </div>
             <div className="row">
+              <div className="col-xs-3">
+                <h2>Contact Name</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.contactName || "" } data-field="contactName" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
               <div className="col-xs-3">
                 <h2>Email</h2>
                 <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.email || "" } data-field="email" />
