@@ -933,25 +933,26 @@ class Importer < ActiveRecord::Base
 
         venue_vars = {
           label: a[1],
-          shipping_name: a[1],
-          billing_name: a[1],
-          shipping_address1: a[2],
-          shipping_address2: a[3],
-          shipping_city: a[4],
-          shipping_state: a[5],
-          shipping_zip: a[6],
-          website: a[7],
-          email: a[9],
-          phone: a[10],
-          shipping_country: a[15],
-          billing_country: a[15],
-          billing_address1: a[16],
-          billing_address2: a[17],
-          billing_city: a[18],
-          billing_state: a[19],
-          billing_zip: a[20],
-          venue_type: a[24],
-          sage_id: a[26]
+          # shipping_name: a[1],
+          # billing_name: a[1],
+          # shipping_address1: a[2],
+          # shipping_address2: a[3],
+          # shipping_city: a[4],
+          # shipping_state: a[5],
+          # shipping_zip: a[6],
+          # website: a[7],
+          # email: a[9],
+          # phone: a[10],
+          # shipping_country: a[15],
+          # billing_country: a[15],
+          # billing_address1: a[16],
+          # billing_address2: a[17],
+          # billing_city: a[18],
+          # billing_state: a[19],
+          # billing_zip: a[20],
+          # venue_type: a[24],
+          # sage_id: a[26],
+          contact_name: a[11]
         }
 
         if venue_vars[:label] == "Roxie Theater" && Venue.where(label: "Roxie Theater").length > 0
@@ -966,12 +967,13 @@ class Importer < ActiveRecord::Base
         else
           venue = Venue.find_by({ label: venue_vars[:label] })
           if venue
-            venue.update(venue_vars)
+            # venue.update(venue_vars)
+            venue.update(contact_name: venue_vars[:contact_name])
+            venue.save!
           else
-            p "Adding Venue: #{venue_vars[:label]}"
-            venue = Venue.new(venue_vars)
+            # p "Adding Venue: #{venue_vars[:label]}"
+            # venue = Venue.new(venue_vars)
           end
-          venue.save!
           venues += 1
           a.shift(27)
         end
