@@ -476,6 +476,7 @@ var BookingDetails = React.createClass({
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="status" value={ this.state.booking.status }>
                   <option value={ "Tentative" }>Tentative</option>
                   <option value={ "Confirmed" }>Confirmed</option>
+                  <option value={ "Cancelled" }>Cancelled</option>
                 </select>
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
