@@ -55,18 +55,18 @@ module BookingCalculations
     elsif terms == "90/10"
       valid = true
       our_share = (gross - booking.house_expense) * 0.9
-    elsif terms.match(/^\$\d+ vs \d+%$/)
+    elsif terms.match(/^\$[\d\.]+ vs \d+%$/)
       valid = true
-      match_data = terms.match(/^\$(?<flat>\d+) vs (?<percentage>\d+)%$/)
+      match_data = terms.match(/^\$(?<flat>[\d\.]+) vs (?<percentage>\d+)%$/)
       flat = match_data[:flat].to_f
       percentage = match_data[:percentage].to_f * 0.01 * gross
       our_share = [flat, percentage].max + booking.shipping_fee
     elsif terms.match(/^\d+%$/)
       valid = true
       our_share = (terms.sub('%', '').to_f * 0.01 * gross) + booking.shipping_fee
-    elsif terms.match(/^\$\d+$/)
+    elsif terms.match(/^\$[\d\.]+$/)
       valid = true
-      our_share = terms.sub('$', '').to_i + booking.shipping_fee
+      our_share = terms.sub('$', '').to_f + booking.shipping_fee
     else
       our_share = 0.0
       valid = false
