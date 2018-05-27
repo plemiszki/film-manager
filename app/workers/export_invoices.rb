@@ -126,7 +126,7 @@ class ExportInvoices
           '', '',
           (invoice.invoice_type == 'dvd' ? "Net #{invoice.payment_terms}" : 'Net 30'),
           '',
-          "10200",
+          '10200',
           '', '', '', '', '', '', '',
           'FALSE',
           '',
@@ -138,7 +138,7 @@ class ExportInvoices
           item.item_qty,
           '', '', '', '',
           item.item_label,
-          (invoice.invoice_type == "dvd" ? "30200" : booking_gl_code),
+          (invoice.invoice_type == 'dvd' ? '30200' : (item.item_label == 'Shipping Fee' ? '40069' : booking_gl_code)),
           '', # 50
           (item.unit_price * -1),
           '1',
@@ -147,7 +147,7 @@ class ExportInvoices
           '', '', '', '', '',
           '1',
           '', '', '',
-          (invoice.invoice_type == 'booking' ? booking_film.get_sage_id : (item.item_type == 'dvd' ? Film.find(item.item_id).get_sage_id : Giftbox.find(item.item_id).sage_id))
+          (invoice.invoice_type == 'booking' ? (item.item_label == 'Shipping Fee' ? '' : booking_film.get_sage_id) : (item.item_type == 'dvd' ? Film.find(item.item_id).get_sage_id : Giftbox.find(item.item_id).sage_id))
         ])
       end
       job.update({ current_value: invoice_index + 1 })
