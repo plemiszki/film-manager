@@ -43,6 +43,8 @@ module BookingCalculations
       terms = booking.terms.downcase
       valid, our_share_total = calculate_share_from_terms(booking, terms, total_gross)
     end
+    our_share_total -= booking.deduction
+    our_share_total = 0 if our_share_total < 0
     [valid, our_share_total]
   end
 
