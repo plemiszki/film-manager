@@ -656,7 +656,43 @@ var BookingDetails = React.createClass({
             </div>
             <hr />
             <h3>Invoices:</h3>
-            { this.renderInvoicesSection() }
+            { this.renderImportedInvoicesSection() }
+            <div className="row">
+              <div className="col-xs-12">
+                <table className={ "admin-table invoices-table" }>
+                  <thead>
+                    <tr>
+                      <th>Sent</th>
+                      <th>Number</th>
+                      <th>Total</th>
+                      <th>Edit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td><td></td><td></td><td></td></tr>
+                    { this.state.invoices.map(function(invoice, index) {
+                      return(
+                        <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id) }>
+                          <td className="indent">
+                            { invoice.sentDate }
+                          </td>
+                          <td>
+                            { invoice.number }
+                          </td>
+                          <td>
+                            { invoice.total }
+                          </td>
+                          <td>
+                            <img src={ Images.edit } />
+                          </td>
+                        </tr>
+                      );
+                    }.bind(this)) }
+                  </tbody>
+                </table>
+                <a className='blue-outline-button small' onClick={ this.clickAddInvoice }>Add Invoice</a>
+              </div>
+            </div>
             <hr />
             <div className="row">
               <div className="col-xs-6">
@@ -871,7 +907,7 @@ var BookingDetails = React.createClass({
     }
   },
 
-  renderInvoicesSection: function() {
+  renderImportedInvoicesSection: function() {
     if (this.state.booking.importedAdvanceInvoiceSent || this.state.booking.importedAdvanceInvoiceNumber || this.state.booking.importedOverageInvoiceSent || this.state.booking.importedOverageInvoiceNumber) {
       return(
         <div className="row">
@@ -894,45 +930,6 @@ var BookingDetails = React.createClass({
             <h2>Overage Invoice Number</h2>
             <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedOverageInvoiceNumber || "" } data-field="importedOverageInvoiceNumber" readOnly={ true } />
             { Common.renderFieldError(this.state.errors, []) }
-          </div>
-        </div>
-      )
-    } else {
-      return(
-        <div className="row">
-          <div className="col-xs-12">
-            <table className={ "admin-table invoices-table" }>
-              <thead>
-                <tr>
-                  <th>Sent</th>
-                  <th>Number</th>
-                  <th>Total</th>
-                  <th>Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td><td></td></tr>
-                { this.state.invoices.map(function(invoice, index) {
-                  return(
-                    <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id) }>
-                      <td className="indent">
-                        { invoice.sentDate }
-                      </td>
-                      <td>
-                        { invoice.number }
-                      </td>
-                      <td>
-                        { invoice.total }
-                      </td>
-                      <td>
-                        <img src={ Images.edit } />
-                      </td>
-                    </tr>
-                  );
-                }.bind(this)) }
-              </tbody>
-            </table>
-            <a className='blue-outline-button small' onClick={ this.clickAddInvoice }>Add Invoice</a>
           </div>
         </div>
       )
