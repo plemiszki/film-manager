@@ -26,12 +26,11 @@ class ExportAndSendReports
         job.update({current_value: job.current_value + 1})
       end
     end
-    job.update({first_line: "Adding Emails to Mailgun Queue", current_value: 0, total_value: Dir.entries(Rails.root.join('tmp', "#{time_started}")).length - 2})
-    licensors = Licensor.all.order(:id)
+    job.update({ first_line: "Adding Emails to Mailgun Queue", current_value: 0, total_value: Dir.entries(Rails.root.join('tmp', "#{time_started}")).length - 2 })
     Dir.foreach("#{Rails.root}/tmp/#{time_started}") do |entry|
       next if entry == "." || entry == ".."
-      licensor = licensors[entry.to_i - 1]
-      if licensor.email && licensor.email != ""
+      licensor = Licensor.find(entry.to_i)
+      if licensor.email && !licensor.email.strip.empty?
         file_names = Dir.entries(Rails.root.join('tmp', "#{time_started}", entry))
         file_names.select! { |string| (string != '.' && string != '..') }
         attachments = file_names.map { |string| File.open(Rails.root.join('tmp', "#{time_started}", entry, string), "r") }
@@ -39,7 +38,7 @@ class ExportAndSendReports
         mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
         message_params =  { from: 'michael@filmmovement.com',
                             to: licensor.email.strip,
-                            cc: "michael@filmmovement.com",
+                            cc: 'michael@filmmovement.com',
                             subject: "Your Q#{quarter} #{year} producer reports from Film Movement",
                             text: "#{royalty_email_text}",
                             attachment: attachments
@@ -54,10 +53,10 @@ class ExportAndSendReports
           end
         rescue
           p '-------------------------'
-          p "FAILED TO SEND EMAIL TO #{licensors[entry.to_i - 1].name}"
+          p "FAILED TO SEND EMAIL TO #{licensor.name}"
           p '-------------------------'
           new_line = (job.errors_text == "" ? "" : "\n")
-          job.update({errors_text: job.errors_text += (new_line + "Failed to send email to #{licensors[entry.to_i - 1].name}")})
+          job.update({errors_text: job.errors_text += (new_line + "Failed to send email to #{licensor.name}")})
         ensure
           job.update({current_value: job.current_value + 1})
         end
