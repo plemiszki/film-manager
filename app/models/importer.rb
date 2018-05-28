@@ -532,43 +532,78 @@ class Importer < ActiveRecord::Base
         film = Film.find_by({title: film_vars[:title], short_film: film_vars[:short_film]})
         if film
           film.update!(film_vars)
+
+          # what territories does this film have?
+          film_territories = ['USA']
+          film_territories += ['Anglophone Canada', 'French-speaking Canada'] if a[12] == 'Yes'
+          film_territories += ['Anglophone Canada'] if a[12] == 'Anglophone'
+
+          all_territories = Territory.all.pluck(:name)
+
+          additional_territories = a[327]
+          unless additional_territories.empty?
+            if additional_territories == "The World" || additional_territories == "World" || additional_territories == "Worldwide"
+              film_territories += all_territories
+              film_territories << 'The rest of the world'
+            elsif ["Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin", "Non-exclusive Bahamas, Bermuda, Caribbean Basin", "Non-excl. Bahamas, Bermuda, Caribbean Basin", "Non-exc. Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, the Caribbean Basin", "Non-excl. in Bahamas, Bermudas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean", "non-exclusively Bermuda, Bahamas, Caribbean Basin", "Non-excl:  Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin (non-exc)", "Bahams, Bermuda, Carribean Basin", "Bahamas, Bermuda, Carribean Basin", "Non-exc. Bermuda, Bahamas, Caribbean Basin", "Non-exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl Bahamas, Bermuda, Caribbean Basin", "Non-exclusive in Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, Caribbean", "Bermuda, Bahamas, non-exclusive in Caribbean", "Bermuda, Bahamas, non-exclusive Carribean Basin", "Bermuda, Bahamas, Caribbean non-exclusive", "Non-Exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean Basin", "Bahamas, Bermuda, Caribbean Basin", "Caribbean Basin, non-exclusive in Bahamas/Bermuda", 'Bermuda, Bahamas, non-exclusive in Caribbean Basin', 'Bermuda, Bahamas, Non-exclusively Caribbean Basin'].include?(additional_territories)
+              film_territories += ['Bermuda', 'Bahamas', 'Caribbean Basin']
+            elsif ['Bermuda, The Bahamas', 'Non-excl. Bermuda and Bahamas', 'Non-exclusive Bermuda and Bahamas', 'Bermuda, Bahamas (non-exclusive)'].include?(additional_territories)
+              film_territories += ['Bermuda', 'Bahamas']
+            elsif ['Carribean Basin'].include?(additional_territories)
+              film_territories += ['Caribbean Basin']
+            elsif additional_territories == 'UK, Ireland, Australia, NZ, Bermuda, Bahamas, Caribbean'
+              film_territories += ['UK, Ireland, Australia, New Zealand, Bermuda, Bahamas, Caribbean']
+            elsif additional_territories == 'World exc Canada, Italy, Poland; Canada DVD'
+              film_territories += (all_territories - ['Anglophone Canada', 'French-speaking Canada', 'Italy', 'Poland'])
+            elsif additional_territories == 'Australia, New Zealand, UK'
+              film_territories += ['UK', 'Australia', 'New Zealand']
+            elsif additional_territories == 'Worldwide except Japan, Israel, Hungary'
+              film_territories += (all_territories - ['Japan', 'Israel', 'Hungary'])
+            elsif additional_territories == 'Non-exclusive for rest of world excluding Netherlands'
+              film_territories += (all_territories - ['Netherlands'])
+            else
+              p "#{film.title} - #{additional_territories}"
+            end
+          end
+
+          # p "#{film_vars[:title]} has: #{film_territories}"
         else
           p "Adding Film: #{film_vars[:title]}"
-          film = Film.create!(film_vars)
-
-          FilmRight.create!(film_id: film.id, right_id: 1, value: a[57] == 'True') # Theatrical
-          FilmRight.create!(film_id: film.id, right_id: 2, value: a[17] == 'True') # Educational
-          FilmRight.create!(film_id: film.id, right_id: 3, value: a[17] == 'True') # Festival
-          FilmRight.create!(film_id: film.id, right_id: 4, value: a[17] == 'True') # Other Non-Theatrical
-          FilmRight.create!(film_id: film.id, right_id: 5, value: a[59] == 'True') # SVOD
-          FilmRight.create!(film_id: film.id, right_id: 6, value: a[60] == 'True') # TVOD (Cable)
-          FilmRight.create!(film_id: film.id, right_id: 7, value: a[102] == 'True') # EST/DTR
-          FilmRight.create!(film_id: film.id, right_id: 8, value: a[66] == 'True') # Pay TV
-          FilmRight.create!(film_id: film.id, right_id: 9, value: a[67] == 'True') # Free TV
-          FilmRight.create!(film_id: film.id, right_id: 10, value: a[61] == 'True') # FVOD
-          FilmRight.create!(film_id: film.id, right_id: 11, value: a[104] == 'True') # AVOD
-          FilmRight.create!(film_id: film.id, right_id: 12, value: a[16] == 'True') # DVD/Video
-          FilmRight.create!(film_id: film.id, right_id: 13, value: a[62] == 'True') # Hotels
-          FilmRight.create!(film_id: film.id, right_id: 14, value: a[63] == 'True') # Airlines
-          FilmRight.create!(film_id: film.id, right_id: 15, value: a[64] == 'True') # Ships
-          FilmRight.create!(film_id: film.id, right_id: 16, value: true) # FM Subscription
-
-          unless film.short_film
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 1).update(value: a[243]) #Theatrical
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 2).update(value: a[244]) #Non-Theatrical
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 3).update(value: a[249]) #Video
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 4).update(value: a[253]) #Commercial Video
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 5).update(value: a[247]) #VOD
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 6).update(value: a[246]) #SVOD
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 7).update(value: a[307]) #TVOD
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 8).update(value: a[306]) #AVOD
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 9).update(value: a[305]) #FVOD
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 10).update(value: a[248]) #Other Internet
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 11).update(value: a[250]) #Ancillary
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 12).update(value: a[245]) #TV
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 13).update(value: a[251]) #Club
-            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 14).update(value: a[252]) #Jewish
-          end
+          # film = Film.create!(film_vars)
+          #
+          # FilmRight.create!(film_id: film.id, right_id: 1, value: a[57] == 'True') # Theatrical
+          # FilmRight.create!(film_id: film.id, right_id: 2, value: a[17] == 'True') # Educational
+          # FilmRight.create!(film_id: film.id, right_id: 3, value: a[17] == 'True') # Festival
+          # FilmRight.create!(film_id: film.id, right_id: 4, value: a[17] == 'True') # Other Non-Theatrical
+          # FilmRight.create!(film_id: film.id, right_id: 5, value: a[59] == 'True') # SVOD
+          # FilmRight.create!(film_id: film.id, right_id: 6, value: a[60] == 'True') # TVOD (Cable)
+          # FilmRight.create!(film_id: film.id, right_id: 7, value: a[102] == 'True') # EST/DTR
+          # FilmRight.create!(film_id: film.id, right_id: 8, value: a[66] == 'True') # Pay TV
+          # FilmRight.create!(film_id: film.id, right_id: 9, value: a[67] == 'True') # Free TV
+          # FilmRight.create!(film_id: film.id, right_id: 10, value: a[61] == 'True') # FVOD
+          # FilmRight.create!(film_id: film.id, right_id: 11, value: a[104] == 'True') # AVOD
+          # FilmRight.create!(film_id: film.id, right_id: 12, value: a[16] == 'True') # DVD/Video
+          # FilmRight.create!(film_id: film.id, right_id: 13, value: a[62] == 'True') # Hotels
+          # FilmRight.create!(film_id: film.id, right_id: 14, value: a[63] == 'True') # Airlines
+          # FilmRight.create!(film_id: film.id, right_id: 15, value: a[64] == 'True') # Ships
+          # FilmRight.create!(film_id: film.id, right_id: 16, value: true) # FM Subscription
+          #
+          # unless film.short_film
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 1).update(value: a[243]) #Theatrical
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 2).update(value: a[244]) #Non-Theatrical
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 3).update(value: a[249]) #Video
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 4).update(value: a[253]) #Commercial Video
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 5).update(value: a[247]) #VOD
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 6).update(value: a[246]) #SVOD
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 7).update(value: a[307]) #TVOD
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 8).update(value: a[306]) #AVOD
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 9).update(value: a[305]) #FVOD
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 10).update(value: a[248]) #Other Internet
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 11).update(value: a[250]) #Ancillary
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 12).update(value: a[245]) #TV
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 13).update(value: a[251]) #Club
+          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 14).update(value: a[252]) #Jewish
+          # end
         end
         film.save!
         @@vb_film_ids[a[0]] = film.id
@@ -856,18 +891,28 @@ class Importer < ActiveRecord::Base
           related_string = "The Chambermaid Lynn" if related_string == "The Chambermaid"
           related_string = "King of Devil's Island" if related_string == "The King of Devil's Island"
           related_string = "Sea Fog (Haemoo)" if related_string == "Sea Fog"
-          related_string = "Sea Fog (Haemoo)" if related_string == "Sea Fog"
+          related_string = "You Will be Mine" if related_string == "You Will Be Mine"
           related_string = "In the Name of" if related_string == "In The Name Of"
           related_string = "The Greatest Ears in Town: The Arif Mardin Story" if related_string == "The Greatest Ears in Town"
           related_string = "After The Storm" if related_string == "After the Storm"
           related_string = "Time to Die" if related_string == "Time To Die"
+          related_string = "A Bottle in the Gaza Sea" if related_string == "A Bottle In The Gaza Sea"
+          related_string = "For a Woman" if related_string == "For A Woman"
+          related_string = "Somers Town" if related_string == "Somer's Town"
+          related_string = "I Am the Blues" if related_string == "I Am The Blues"
+          related_string = "Theory of Obscurity: A Film About the Residents" if related_string == "Theory of Obscurity"
+          related_string = "My Love, Don't Cross that River" if related_string == "My Love, Don't Cross That River"
+          related_string = "Men Go to Battle" if related_string == "Men Go To Battle"
+          related_string = "Hana-bi (Fireworks)" if related_string == "Hana-bi"
+          related_string = "Schneider vs. Bax" if related_string == "Schneider Vs. Bax"
+          related_string = "Kamikaze 89" if related_string == "Kamikaze '89"
           related_film = Film.find_by_title(related_string)
           if related_film
             unless RelatedFilm.find_by({ film_id: film.id, other_film_id: related_film.id })
               RelatedFilm.create!(film_id: film.id, other_film_id: related_film.id, order: order)
             end
           else
-            p "could not find #{related_string}"
+            p "could not find #{related_string} (#{film.title})"
           end
         end
 
