@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180528022548) do
+ActiveRecord::Schema.define(version: 20180530162113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -196,7 +196,7 @@ ActiveRecord::Schema.define(version: 20180528022548) do
     t.boolean "exclusive",    default: false
   end
 
-  add_index "film_rights", ["film_id", "right_id"], name: "index_film_rights_on_film_id_and_right_id", unique: true, using: :btree
+  add_index "film_rights", ["right_id", "film_id", "territory_id"], name: "index_film_rights_on_right_id_and_film_id_and_territory_id", unique: true, using: :btree
 
   create_table "film_topics", force: :cascade do |t|
     t.integer "film_id",  null: false
