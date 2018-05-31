@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180530162113) do
+ActiveRecord::Schema.define(version: 20180531191838) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -242,6 +242,9 @@ ActiveRecord::Schema.define(version: 20180530162113) do
     t.boolean "active",                                         default: true
     t.date    "club_date"
     t.boolean "ignore_sage_id",                                 default: false
+    t.date    "start_date"
+    t.date    "end_date"
+    t.string  "film_type"
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree
