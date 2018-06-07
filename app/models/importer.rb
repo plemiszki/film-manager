@@ -497,6 +497,8 @@ class Importer < ActiveRecord::Base
         end
 
         film_vars = {
+          film_type: (a[54] == 'short' ? 'Short' : 'Feature'),
+          start_date: (a[9] == '12:00:00 AM' ? '' : a[9]),
           title: a[1],
           short_film: a[54] == "short",
           licensor_id: licensor ? licensor.id : nil,
@@ -524,14 +526,18 @@ class Importer < ActiveRecord::Base
           twitter_link: a[345],
           instagram_link: a[346],
           label_id: label_id,
-          active: (a[53] != "12:00:00 AM")
+          active: (a[53] != '12:00:00 AM')
         }
-        if a[21] != "12:00:00 AM"
+        if a[21] != '12:00:00 AM'
           film_vars[:club_date] = a[21]
         end
-        film = Film.find_by({title: film_vars[:title], short_film: film_vars[:short_film]})
+        film = Film.find_by({ title: film_vars[:title], short_film: film_vars[:short_film] })
         if film
           film.update!(film_vars)
+          if film.start_date
+            end_date = ((a[52].empty? || a[52] == '12:00:00 AM') ? (film.start_date + a[10].to_i.years) : a[52])
+            film.update!(end_date: end_date)
+          end
 
           # what territories does this film have?
           film_territories = ['USA']
@@ -545,9 +551,9 @@ class Importer < ActiveRecord::Base
             if additional_territories == "The World" || additional_territories == "World" || additional_territories == "Worldwide"
               film_territories += all_territories
               film_territories << 'The rest of the world'
-            elsif ["Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin", "Non-exclusive Bahamas, Bermuda, Caribbean Basin", "Non-excl. Bahamas, Bermuda, Caribbean Basin", "Non-exc. Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, the Caribbean Basin", "Non-excl. in Bahamas, Bermudas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean", "non-exclusively Bermuda, Bahamas, Caribbean Basin", "Non-excl:  Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin (non-exc)", "Bahams, Bermuda, Carribean Basin", "Bahamas, Bermuda, Carribean Basin", "Non-exc. Bermuda, Bahamas, Caribbean Basin", "Non-exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl Bahamas, Bermuda, Caribbean Basin", "Non-exclusive in Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, Caribbean", "Bermuda, Bahamas, non-exclusive in Caribbean", "Bermuda, Bahamas, non-exclusive Carribean Basin", "Bermuda, Bahamas, Caribbean non-exclusive", "Non-Exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean Basin", "Bahamas, Bermuda, Caribbean Basin", "Caribbean Basin, non-exclusive in Bahamas/Bermuda", 'Bermuda, Bahamas, non-exclusive in Caribbean Basin', 'Bermuda, Bahamas, Non-exclusively Caribbean Basin'].include?(additional_territories)
+            elsif ["Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin", "Non-exclusive Bahamas, Bermuda, Caribbean Basin", "Non-excl. Bahamas, Bermuda, Caribbean Basin", "Non-exc. Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, the Caribbean Basin", "Non-excl. in Bahamas, Bermudas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean", "non-exclusively Bermuda, Bahamas, Caribbean Basin", "Non-excl:  Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin (non-exc)", "Bahams, Bermuda, Carribean Basin", "Bahamas, Bermuda, Carribean Basin", "Non-exc. Bermuda, Bahamas, Caribbean Basin", "Non-exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl Bahamas, Bermuda, Caribbean Basin", "Non-exclusive in Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, Caribbean", "Bermuda, Bahamas, non-exclusive in Caribbean", "Bermuda, Bahamas, non-exclusive Carribean Basin", "Bermuda, Bahamas, Caribbean non-exclusive", "Non-Exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean Basin", "Bahamas, Bermuda, Caribbean Basin", "Caribbean Basin, non-exclusive in Bahamas/Bermuda", 'Bermuda, Bahamas, non-exclusive in Caribbean Basin', 'Bermuda, Bahamas, Non-exclusively Caribbean Basin', 'Bahams, Bermuda, Saba Island, Eustatius, Kitts, Maarten, Carriben Basin'].include?(additional_territories)
               film_territories += ['Bermuda', 'Bahamas', 'Caribbean Basin']
-            elsif ['Bermuda, The Bahamas', 'Non-excl. Bermuda and Bahamas', 'Non-exclusive Bermuda and Bahamas', 'Bermuda, Bahamas (non-exclusive)'].include?(additional_territories)
+            elsif ['Bermuda, The Bahamas', 'Non-excl. Bermuda and Bahamas', 'Non-exclusive Bermuda and Bahamas', 'Bermuda, Bahamas (non-exclusive)', 'Bahamas, Bermuda, Saba Island, St. Eustatius Island, St. Kitts Island, St. Maarten Island', 'Bahamas, Bermuda, Saba Island, St. Eustatius, St. Kitts, St. Maarten', 'Bahamas, Bermuda, Saba Island, St. Eustatiuis Island, St. Kitts Island, St. Maarten Island'].include?(additional_territories)
               film_territories += ['Bermuda', 'Bahamas']
             elsif ['Carribean Basin'].include?(additional_territories)
               film_territories += ['Caribbean Basin']
@@ -561,6 +567,10 @@ class Importer < ActiveRecord::Base
               film_territories += (all_territories - ['Japan', 'Israel', 'Hungary'])
             elsif additional_territories == 'Non-exclusive for rest of world excluding Netherlands'
               film_territories += (all_territories - ['Netherlands'])
+            elsif additional_territories == 'Worldwide except Serbia, Kosovo, Croatia, Slovenia, Macedonia'
+              film_territories += (all_territories - ['Serbia', 'Kosovo', 'Croatia', 'Slovenia', 'Macedonia'])
+            elsif additional_territories == 'World excluding France, Argentina, Mexico, Spain, Australia, New Zealand, Central America, Greece, Taiwan, Brazil, Turkey'
+              film_territories += (all_territories - ['France', 'Argentina', 'Mexico', 'Spain', 'Australia', 'New Zealand', 'Greece', 'Taiwan', 'Brazil', 'Turkey', 'Belize', 'Guatemala', 'Costa Rica', 'Nicaragua', 'Honduras', 'Panama', 'El Salvador'])
             else
               p "#{film.title} - #{additional_territories}"
             end
