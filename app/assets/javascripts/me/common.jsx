@@ -458,6 +458,8 @@ Common = {
     if (["shipDate", "startDate", "endDate", "dateAdded", "sentDate"].indexOf(this.state.sortBy) > -1) {
       if (property === "(Not Sent)") {
         return Date.now();
+      } else if (property === "") {
+        return new Date('1/1/2099');
       } else {
         return new Date(property);
       }
