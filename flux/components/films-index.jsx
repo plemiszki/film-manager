@@ -23,7 +23,8 @@ var FilmsIndex = React.createClass({
   getInitialState: function() {
     return({
       fetching: true,
-      searchText: "",
+      searchText: '',
+      sortBy: 'title',
       films: [],
       modalOpen: false
     });
@@ -51,46 +52,51 @@ var FilmsIndex = React.createClass({
   },
 
   handleAddNewClick: function() {
-    this.setState({modalOpen: true});
+    this.setState({ modalOpen: true });
   },
 
   handleModalClose: function() {
-    this.setState({modalOpen: false});
+    this.setState({ modalOpen: false });
   },
 
   render: function() {
+    var filteredFilms = this.state.films.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="films-index" className="component">
         <div className="clearfix">
-          {this.renderHeader()}
+          { this.renderHeader() }
           <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Film</a>
           <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={"admin-table"}>
+          <table className={ "admin-table" }>
             <thead>
               <tr>
-                <th>Name</th>
+                <th><div className={ Common.sortClass.call(this, "title") } onClick={ Common.clickHeader.bind(this, "title") }>Title</div></th>
+                <th><div className={ Common.sortClass.call(this, "endDate") } onClick={ Common.clickHeader.bind(this, "endDate") }>Expiration Date</div></th>
               </tr>
             </thead>
             <tbody>
-              <tr><td></td></tr>
-              {this.state.films.filterSearchText(this.state.searchText).map(function(film, index) {
+              <tr><td></td><td></td></tr>
+              { _.orderBy(filteredFilms, [Common.commonSort.bind(this)]).map(function(film, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, film.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
                     <td className="name-column">
-                      {film.title}
+                      { film.title }
+                    </td>
+                    <td className={ new Date(film.endDate) < Date.now() ? 'expired' : '' }>
+                      { film.endDate }
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }.bind(this)) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing={this.props.shorts ? "short" : "film"} initialObject={{title: ""}} />
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+          <NewThing thing={ this.props.shorts ? "short" : "film" } initialObject={ { title: "" } } />
         </Modal>
       </div>
     );
