@@ -735,12 +735,6 @@ class Importer < ActiveRecord::Base
           end
         end
 
-        if film_territory_ids.include?(2)
-          unless FilmRight.find_by(film_id: film.id, right_id: 16, territory_id: 2)
-            FilmRight.create!(film_id: film.id, right_id: 16, territory_id: 2, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-          end
-        end
-
         # retail dvd
         retail_dvd_vars = {
           dvd_type_id: 1,
