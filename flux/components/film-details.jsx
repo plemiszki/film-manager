@@ -15,6 +15,7 @@ var ActorsStore = require('../stores/actors-store.js');
 var RelatedFilmsStore = require('../stores/related-films-store.js');
 var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
+var FilmRightsNew = require('./film-rights-new.jsx');
 
 var FilmDetails = React.createClass({
 
@@ -86,6 +87,19 @@ var FilmDetails = React.createClass({
     }
   },
 
+  newRightsModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 575
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -128,7 +142,9 @@ var FilmDetails = React.createClass({
       actors: [],
       directors: [],
       searchText: '',
-      sortBy: 'startDate'
+      sortBy: 'startDate',
+      newRightsModalOpen: false,
+      rightsSortBy: 'name'
     });
   },
 
@@ -440,6 +456,12 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickAddRight: function() {
+    this.setState({
+      newRightsModalOpen: true
+    });
+  },
+
   handleModalClose: function() {
     this.setState({
       deleteModalOpen: false,
@@ -453,7 +475,8 @@ var FilmDetails = React.createClass({
       laurelModalOpen: false,
       directorModalOpen: false,
       actorModalOpen: false,
-      relatedFilmsModalOpen: false
+      relatedFilmsModalOpen: false,
+      newRightsModalOpen: false
     });
   },
 
@@ -498,6 +521,25 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickRightsHeader: function(property) {
+    this.setState({
+      rightsSortBy: property
+    });
+  },
+
+  rightsSort: function(object) {
+    var property = object[this.state.rightsSortBy];
+    return property.toLowerCase();
+  },
+
+  rightsSortSecond: function(object) {
+    if (this.state.rightsSortBy === 'name') {
+      return object['territory'].toLowerCase();
+    } else {
+      return object['name'].toLowerCase();
+    }
+  },
+
   changeFieldArgs: function(errors) {
     return {
       thing: "film",
@@ -519,7 +561,7 @@ var FilmDetails = React.createClass({
   render: function() {
     return(
       <div className="film-details component details-component">
-        <h1>{ this.state.film.shortFilm == 'yes' ? 'Short' : 'Film' } Details</h1>
+        <h1>{ this.state.film.filmType === 'Short' ? 'Short' : 'Film' } Details</h1>
         { this.renderTopTabs() }
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -527,14 +569,15 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-12 col-sm-9">
               <h2>Title</h2>
-              <input className={Common.errorClass(this.state.filmErrors, ["Title can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
-              {Common.renderFieldError(this.state.filmErrors, ["Title can't be blank"])}
+              <input className={ Common.errorClass(this.state.filmErrors, ["Title can't be blank"]) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
+              { Common.renderFieldError(this.state.filmErrors, ["Title can't be blank"]) }
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>Type</h2>
-              <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="shortFilm" value={this.state.film.shortFilm} disabled={true}>
-                <option value={"no"}>Feature</option>
-                <option value={"yes"}>Short</option>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="filmType" value={ this.state.film.filmType } disabled={ true }>
+                <option value={ "Feature" }>Feature</option>
+                <option value={ "Short" }>Short</option>
+                <option value={ "TV Series" }>TV Series</option>
               </select>
             </div>
           </div>
@@ -545,7 +588,7 @@ var FilmDetails = React.createClass({
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this film&#63;</h1>
             Deleting a film will erase ALL of its information and data<br />
-            <a className={"red-button"} onClick={this.confirmDelete}>
+            <a className={ "red-button" } onClick={ this.confirmDelete }>
               Yes
             </a>
             <a className={"orange-button"} onClick={this.handleModalClose}>
@@ -593,6 +636,9 @@ var FilmDetails = React.createClass({
         <Modal isOpen={ this.state.relatedFilmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ this.state.otherFilms } property={ "title" } func={ this.clickRelatedFilm } />
         </Modal>
+        <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.newRightsModalStyles }>
+          <FilmRightsNew filmId={ this.state.film.id } />
+        </Modal>
       </div>
     );
   },
@@ -612,7 +658,7 @@ var FilmDetails = React.createClass({
   },
 
   renderTopTab: function(label) {
-    if (this.state.film.id && (this.state.film.shortFilm === "no" || ['General', 'Synopses'].indexOf(label) > -1)) {
+    if (this.state.film.id && (this.state.film.filmType === "Feature" || ['General', 'Synopses'].indexOf(label) > -1)) {
       return(
         <div className={ "tab" + (this.state.tab === label ? " selected" : "") } onClick={ this.clickTab }>{ label }</div>
       );
@@ -638,7 +684,7 @@ var FilmDetails = React.createClass({
               <input className={Common.errorClass(this.state.filmErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
               {Common.renderFieldError(this.state.filmErrors, Common.errors.mg)}
             </div>
-            <div className={"col-xs-12 col-sm-3" + (this.state.film.shortFilm === "yes" ? " hidden" : "")}>
+            <div className={"col-xs-12 col-sm-3" + (this.state.film.filmType === "Short" ? " hidden" : "")}>
               <h2>E & O</h2>
               <input className={Common.errorClass(this.state.filmErrors, Common.errors.eAndO)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
               {Common.renderFieldError(this.state.filmErrors, Common.errors.eAndO)}
@@ -972,25 +1018,25 @@ var FilmDetails = React.createClass({
               <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.synopsis || "" } data-field="synopsis" />
             </div>
           </div>
-          <div className={ 'row' + (this.state.film.shortFilm == 'yes' ? ' hidden' : '') }>
+          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h2>Short Synopsis</h2>
               <textarea rows="4" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.shortSynopsis || "" } data-field="shortSynopsis" />
             </div>
           </div>
-          <div className={ 'row' + (this.state.film.shortFilm == 'yes' ? ' hidden' : '') }>
+          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h2>Logline</h2>
               <textarea rows="2" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.logline || "" } data-field="logline" />
             </div>
           </div>
-          <div className={ 'row' + (this.state.film.shortFilm == 'yes' ? ' hidden' : '') }>
+          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h2>VOD Synopsis</h2>
               <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vodSynopsis || "" } data-field="vodSynopsis" />
             </div>
           </div>
-          <div className={ 'row' + (this.state.film.shortFilm == 'yes' ? ' hidden' : '') }>
+          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h2>institutional Synopsis</h2>
               <textarea rows="8" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.institutionalSynopsis || "" } data-field="institutionalSynopsis" />
@@ -1007,7 +1053,7 @@ var FilmDetails = React.createClass({
   },
 
   renderRoyaltyFields: function() {
-    if (this.state.film.shortFilm === 'no') {
+    if (this.state.film.filmType === 'Feature') {
       return(
         <div>
           <div className="row">
@@ -1058,30 +1104,52 @@ var FilmDetails = React.createClass({
               {Common.renderFieldError(this.state.filmErrors, Common.errors.sellOffPeriod)}
             </div>
           </div>
+          <hr />
+          <h3>Licensed Rights:</h3>
           <div className="row">
-            <div className="col-xs-3">
-              <div className="rights-checkboxes">
-                {FilmsStore.rights().slice(0, 8).map(function(right, index) {
-                  return(
-                    <div className="right" key={index}>
-                      <input id={"rights-checkbox-" + right.id} type="checkbox" checked={right.value} onChange={function() { console.log('woo');}} /><label htmlFor={"rights-checkbox-" + right.id}>{right.name}</label>
-                    </div>
-                  )
-                }.bind(this))}
-              </div>
+            <div className="col-xs-12">
+              <table className={ "admin-table" }>
+                <thead>
+                  <tr>
+                    <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'name') }>Right</div></th>
+                    <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'territory') }>Territory</div></th>
+                    <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'startDate') }>Start Date</div></th>
+                    <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'endDate') }>End Date</div></th>
+                    <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'exclusive') }>Exclusive</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                  { _.orderBy(FilmsStore.rights(), [this.rightsSort, this.rightsSortSecond]).map(function(right, index) {
+                    return(
+                      <tr key={ index } onClick={ this.redirect.bind(this, 'film_rights', right.id) }>
+                        <td className="indent">
+                          { right.name }
+                        </td>
+                        <td>
+                          { right.territory }
+                        </td>
+                        <td>
+                          { right.startDate }
+                        </td>
+                        <td>
+                          { right.endDate }
+                        </td>
+                        <td>
+                          { right.exclusive }
+                        </td>
+                      </tr>
+                    );
+                  }.bind(this)) }
+                </tbody>
+              </table>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddRight }>Add Rights</a>
             </div>
-            <div className="col-xs-3">
-              <div className="rights-checkboxes">
-                {FilmsStore.rights().slice(8, 16).map(function(right, index) {
-                  return(
-                    <div className="right" key={index}>
-                      <input id={"rights-checkbox-" + right.id} type="checkbox" checked={right.value} onChange={function() { console.log('woo');}} /><label htmlFor={"rights-checkbox-" + right.id}>{right.name}</label>
-                    </div>
-                  )
-                }.bind(this))}
-              </div>
-            </div>
-            <div className="col-xs-12 col-sm-6 percentage-column">
+          </div>
+          <hr />
+          <h3>Revenue Splits:</h3>
+          <div className="row">
+            <div className="col-xs-12 percentage-column">
               {FilmsStore.revenuePercentages().map(function(revenuePercentage, index) {
                 var properErrorsArray = this.state.percentageErrors[revenuePercentage.id] ? this.state.percentageErrors[revenuePercentage.id] : [];
                 return(

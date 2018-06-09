@@ -1,7 +1,7 @@
 class Film < ActiveRecord::Base
 
   validates :title, :label_id, :film_type, presence: true
-  validates :title, uniqueness: { scope: :short_film }
+  validates :title, uniqueness: { scope: :film_type }
   validate :gr_percentage_tenth_decimal
   validates_numericality_of :year, :length
   validates_numericality_of :mg, :greater_than_or_equal_to => 0
@@ -45,7 +45,7 @@ class Film < ActiveRecord::Base
   after_create :create_percentages
 
   def create_percentages
-    unless short_film
+    unless film_type == 'Short'
       RevenueStream.all.each do |revenue_stream|
         FilmRevenuePercentage.create!(film_id: id, revenue_stream_id: revenue_stream.id)
       end

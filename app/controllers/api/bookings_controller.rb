@@ -8,7 +8,7 @@ class Api::BookingsController < AdminController
     else
       @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue, :format).order('start_date DESC').limit(25)
     end
-    @films = Film.where(short_film: false)
+    @films = Film.where(film_type: 'Feature')
     @venues = Venue.all
     @users = User.all
     @formats = Format.all
@@ -93,7 +93,7 @@ class Api::BookingsController < AdminController
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
     @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])
     @payments = Payment.where(booking_id: params[:id])
-    @films = Film.where(short_film: false)
+    @films = Film.where(film_type: 'Feature')
     @venues = Venue.all
     @users = User.all
     @formats = Format.all
@@ -133,7 +133,7 @@ class Api::BookingsController < AdminController
     if @booking.update(booking_params)
       @bookings = Booking.where(id: params[:id]).includes(:invoices)
       @invoices = @bookings.first.invoices
-      @films = Film.where(short_film: false)
+      @films = Film.where(film_type: 'Feature')
       @venues = Venue.all
       @users = User.all
       @formats = Format.all

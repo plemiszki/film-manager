@@ -500,7 +500,7 @@ class Importer < ActiveRecord::Base
           film_type: (a[54] == 'short' ? 'Short' : 'Feature'),
           start_date: (a[9] == '12:00:00 AM' ? '' : a[9]),
           title: a[1],
-          short_film: a[54] == "short",
+          # short_film: a[54] == "short",
           licensor_id: licensor ? licensor.id : nil,
           deal_type_id: a[241] == "Template A" ? 1 : (a[241] == "Template B" ? 2 : (a[241] == "Template B (Theat. Only)" ? 3 : (a[241] == "Template C" ? 4 : (a[241] == "Template D" ? 5 : (a[241] == "Template E" ? 6 : nil))))),
           days_statement_due: a[54] == "short" ? nil : (a[357] == "0" ? 30 : a[357]),
@@ -531,7 +531,7 @@ class Importer < ActiveRecord::Base
         if a[21] != '12:00:00 AM'
           film_vars[:club_date] = a[21]
         end
-        film = Film.find_by({ title: film_vars[:title], short_film: film_vars[:short_film] })
+        film = Film.find_by({ title: film_vars[:title], film_type: film_vars[:film_type] })
         if film
           film.update!(film_vars)
           if film.start_date

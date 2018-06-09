@@ -1,7 +1,7 @@
 json.films @films do |film|
   json.id film.id
   json.title film.title
-  json.shortFilm film.short_film == true ? "yes" : "no"
+  json.filmType film.film_type
   json.licensorId film.licensor_id || ""
   json.dealTypeId film.deal_type_id.to_s
   json.daysStatementDue film.days_statement_due.to_s
@@ -66,7 +66,11 @@ json.rights @rights do |right|
   json.id right.id
   json.name right.right.name
   json.order right.right.order
+  json.territory right.territory.name
   json.value right.value
+  json.startDate right.start_date ? right.start_date.strftime("%-m/%-d/%y") : ''
+  json.endDate right.end_date ? right.end_date.strftime("%-m/%-d/%y") : ''
+  json.exclusive right.exclusive ? 'Yes' : 'No'
 end
 json.dvds @dvds do |dvd|
   json.id dvd.id

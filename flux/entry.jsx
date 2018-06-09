@@ -45,6 +45,7 @@ var BookerDetails = require('./components/booker-details.jsx');
 var InTheatersIndex = require('./components/in-theaters.jsx');
 var TerritoriesIndex = require('./components/territories-index.jsx');
 var TerritoryDetails = require('./components/territory-details.jsx');
+var FilmRightDetails = require('./components/film-right-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -191,5 +192,8 @@ $(document).ready(function() {
   }
   if ($('#territory-details')[0]) {
     ReactDOM.render(<TerritoryDetails />, document.getElementById("territory-details"));
+  }
+  if ($('#film-right-details')[0]) {
+    ReactDOM.render(<FilmRightDetails />, document.getElementById("film-right-details"));
   }
 });

@@ -8,12 +8,20 @@ html {
   clear: both;
 }
 
-.jobs-modal .spinner {
-  top: calc(35% - 45px) !important;
+.jobs-modal {
+  font-weight: normal;
+
+  .spinner {
+    top: calc(35% - 45px) !important;
+  }
 }
 
 .horizontal-scroll {
   overflow-x: scroll;
+}
+
+a.standard-link {
+  text-decoration: underline;
 }
 
 body {

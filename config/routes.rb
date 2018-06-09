@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   resources :quotes, only: [:show]
   resources :formats, only: [:show]
   resources :territories, only: [:show]
+  resources :film_rights, only: [:show]
   get '/in_theaters' => 'in_theaters_films#index'
 
   namespace :api do
@@ -91,6 +92,8 @@ Rails.application.routes.draw do
     resources :actors, only: [:create, :destroy]
     resources :formats, only: [:index, :create, :show, :update, :destroy]
     resources :territories, only: [:index, :create, :show, :update, :destroy]
+    resources :film_rights, only: [:create, :show, :update, :destroy]
+    get '/rights_and_territories' => '/api/film_rights#rights_and_territories'
     get '/in_theaters' => '/api/in_theaters_films#index'
     post '/in_theaters' => '/api/in_theaters_films#create'
     post '/in_theaters/rearrange' => '/api/in_theaters_films#rearrange'

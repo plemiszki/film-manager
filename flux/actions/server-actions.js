@@ -419,6 +419,15 @@ var ServerActions = {
       actionType: "TERRITORIES_RECEIVED",
       territories: response
     });
+  },
+
+  receiveFilmRights: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILM_RIGHT_RECEIVED",
+      filmRights: response.filmRights,
+      territories: response.territories,
+      rights: response.rights
+    });
   }
 }
 

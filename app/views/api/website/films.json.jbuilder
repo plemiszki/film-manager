@@ -2,7 +2,7 @@ json.array!(@films) do |film|
   json.id film.id
   json.title film.title
   json.active film.active
-  json.short_film film.short_film
+  json.film_type film.film_type
   json.label film.label.name
   json.year film.year
   json.length film.length

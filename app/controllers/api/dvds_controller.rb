@@ -4,7 +4,7 @@ class Api::DvdsController < AdminController
     @dvds = Dvd.where(id: params[:id])
     @dvd_types = DvdType.all
     @shorts = @dvds[0].shorts
-    @other_shorts = Film.where(short_film: true) - @shorts
+    @other_shorts = Film.where(film_type: 'Short') - @shorts
     render "show.json.jbuilder"
   end
 
@@ -23,7 +23,7 @@ class Api::DvdsController < AdminController
       @dvds = Dvd.where(id: params[:id])
       @dvd_types = DvdType.all
       @shorts = @dvds[0].shorts
-      @other_shorts = Film.where(short_film: true) - @shorts
+      @other_shorts = Film.where(film_type: 'Short') - @shorts
       render "show.json.jbuilder"
     else
       render json: @dvd.errors.full_messages, status: 422

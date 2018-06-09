@@ -12,7 +12,7 @@ class ImportSageData
     reports = RoyaltyReport.where(year: year, quarter: quarter)
     # create royalty_revenue_streams if we haven't seen this quarter before
     if reports.length == 0
-      films = Film.where(short_film: false)
+      films = Film.where(film_type: 'Feature')
       job.update!(first_line: "Transferring Previous Revenue/Expenses", second_line: true, current_value: 0, total_value: films.length)
       films.each_with_index do |film, index|
         prev_report, prev_streams = get_prev_report(film, quarter.to_i, year.to_i)
@@ -57,11 +57,11 @@ class ImportSageData
         columns = sheet.row(index)
         found_film = false
         found_box_set = false
-        films = Film.where("short_film = FALSE AND ignore_sage_id = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
+        films = Film.where("film_type = 'Feature' AND ignore_sage_id = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
         if films.length > 0
           found_film = true
         else
-          films = Film.where("short_film = FALSE AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
+          films = Film.where("film_type = 'Feature' AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
           if films.length > 0
             found_film = true
           else

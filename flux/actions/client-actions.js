@@ -219,7 +219,6 @@ var ClientActions = {
       data: {
         film: {
           title: film.title,
-          short_film: film.shortFilm == "yes" ? true : false,
           licensor_id: film.licensorId,
           deal_type_id: film.dealTypeId,
           days_statement_due: film.daysStatementDue,
@@ -2141,6 +2140,82 @@ var ClientActions = {
       },
       error: function(response) {
         ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchFilmRight: function(id) {
+    $.ajax({
+      url: '/api/film_rights/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveFilmRights(response);
+      }
+    });
+  },
+
+  updateFilmRight: function(filmRight) {
+    $.ajax({
+      url: '/api/film_rights/' + filmRight.id,
+      method: 'PATCH',
+      data: {
+        film_right: {
+          film_id: filmRight.filmId,
+          territory_id: filmRight.territoryId,
+          right_id: filmRight.rightId,
+          start_date: filmRight.startDate,
+          end_date: filmRight.endDate,
+          exclusive: (filmRight.exclusive === 'Yes' ? true : false)
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFilmRights(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    })
+  },
+
+  deleteFilmRight: function(id) {
+    $.ajax({
+      url: '/api/film_rights/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        window.location.pathname = '/films/' + response.film_id;
+      }
+    });
+  },
+
+  fetchRightsAndTerritories: function() {
+    $.ajax({
+      url: '/api/rights_and_territories',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveFilmRights(response);
+      }
+    });
+  },
+
+  createFilmRights: function(filmRight, rights, territories) {
+    $.ajax({
+      url: '/api/film_rights',
+      method: 'POST',
+      data: {
+        film_right: {
+          start_date: filmRight.startDate,
+          end_date: filmRight.endDate,
+          exclusive: (filmRight.exclusive === 'Yes' ? true : false),
+          film_id: filmRight.filmId
+        },
+        rights: rights,
+        territories: territories
+      },
+      success: function(response) {
+        window.location.pathname = '/films/' + response.film_id;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
       }
     });
   }

@@ -1,0 +1,74 @@
+#film-rights-new {
+  margin-bottom: 0;
+
+  .white-box {
+    height: 573px;
+    position: relative;
+  }
+
+  label, .checkbox {
+    display: inline-block;
+  }
+
+  input:not([type]), .clearfix, .type-checkboxes {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  input.select {
+    width: calc(100% - 50px);
+    margin-right: 17px;
+  }
+
+  label {
+    font-family: 'TeachableSans-SemiBold';
+    color: black;
+  }
+
+  .checkbox-container:first-of-type .checkbox {
+    margin-top: 20px;
+  }
+
+  .checkbox-container:last-of-type .checkbox {
+    margin-bottom: 20px;
+  }
+
+  .checkbox {
+    margin-right: 10px;
+    margin-left: 20px;
+  }
+
+  .nice-select {
+    min-width: 150px;
+  }
+
+  ul {
+    max-height: 120px;
+    overflow-y: scroll;
+  }
+
+  img {
+    cursor: pointer;
+  }
+
+  div.text-center {
+    position: absolute;
+    width: 100%;
+    bottom: 36px;
+  }
+
+  div.type-checkboxes {
+    padding-left: 20px;
+    padding-top: 10px;
+    border: 1px solid #E4E9ED;
+    border-radius: 3px;
+  }
+
+  div.rights-list {
+    border: 1px solid #E4E9ED;
+    border-radius: 3px;
+    height: 335px;
+    margin-bottom: 30px;
+    overflow-y: scroll;
+  }
+}
