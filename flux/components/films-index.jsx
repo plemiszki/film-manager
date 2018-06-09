@@ -103,15 +103,9 @@ var FilmsIndex = React.createClass({
   },
 
   renderHeader: function() {
-    if (this.props.shorts) {
-      return(
-        <h1>Shorts</h1>
-      )
-    } else {
-      return(
-        <h1>Films</h1>
-      )
-    }
+    return(
+      <h1>{ this.props.filmType }s</h1>
+    );
   },
 
   componentDidUpdate: function() {
