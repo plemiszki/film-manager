@@ -220,6 +220,8 @@ var ClientActions = {
         film: {
           title: film.title,
           licensor_id: film.licensorId,
+          start_date: film.startDate,
+          end_date: film.endDate,
           deal_type_id: film.dealTypeId,
           days_statement_due: film.daysStatementDue,
           gr_percentage: film.grPercentage,

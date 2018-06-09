@@ -110,6 +110,8 @@ class Api::FilmsController < AdminController
   def film_params
     result = params[:film].permit(
       :days_statement_due,
+      :start_date,
+      :end_date,
       :deal_type_id,
       :e_and_o,
       :expense_cap,

@@ -56,4 +56,17 @@ class Film < ActiveRecord::Base
     sage_id.empty? ? title.upcase : sage_id
   end
 
+  def proper_label_name
+    case label_id
+    when 1
+      "Film Movement"
+    when 2
+      "Omnibus Entertainment"
+    when 3
+      "Film Movement Classics"
+    when 4
+      licensor.name
+    end
+  end
+
 end

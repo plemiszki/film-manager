@@ -2,6 +2,8 @@ json.films @films do |film|
   json.id film.id
   json.title film.title
   json.filmType film.film_type
+  json.startDate film.start_date ? film.start_date.strftime("%-m/%-d/%y") : ""
+  json.endDate film.end_date ? film.end_date.strftime("%-m/%-d/%y") : ""
   json.licensorId film.licensor_id || ""
   json.dealTypeId film.deal_type_id.to_s
   json.daysStatementDue film.days_statement_due.to_s
