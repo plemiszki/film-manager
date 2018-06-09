@@ -613,127 +613,127 @@ class Importer < ActiveRecord::Base
 
         # create rights
 
-        if a[57] == 'True' # Theatrical
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 1, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 1, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[17] == 'True'
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 2, territory_id: territory_id) # Educational
-              FilmRight.create!(film_id: film.id, right_id: 2, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 3, territory_id: territory_id) # Festival
-              FilmRight.create!(film_id: film.id, right_id: 3, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 4, territory_id: territory_id) # Other Non-Theatrical
-              FilmRight.create!(film_id: film.id, right_id: 4, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[59] == 'True' # SVOD
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 5, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 5, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[60] == 'True' # TVOD (Cable)
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 6, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 6, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[102] == 'True' # EST/DTR
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 7, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 7, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[66] == 'True' # Pay TV
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 8, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 8, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[67] == 'True' # Free TV
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 9, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 9, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[61] == 'True' # FVOD
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 10, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 10, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[104] == 'True' # AVOD
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 11, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 11, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[16] == 'True' # DVD/Video
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 12, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 12, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[62] == 'True' # Hotels
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 13, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 13, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[63] == 'True' # Airlines
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 14, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 14, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[64] == 'True' # Ships
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 15, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 15, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
-
-        if a[64] == 'True' # Ships
-          film_territory_ids.each do |territory_id|
-            unless FilmRight.find_by(film_id: film.id, right_id: 15, territory_id: territory_id)
-              FilmRight.create!(film_id: film.id, right_id: 15, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
-            end
-          end
-        end
+        # if a[57] == 'True' # Theatrical
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 1, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 1, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[17] == 'True'
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 2, territory_id: territory_id) # Educational
+        #       FilmRight.create!(film_id: film.id, right_id: 2, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 3, territory_id: territory_id) # Festival
+        #       FilmRight.create!(film_id: film.id, right_id: 3, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 4, territory_id: territory_id) # Other Non-Theatrical
+        #       FilmRight.create!(film_id: film.id, right_id: 4, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[59] == 'True' # SVOD
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 5, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 5, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[60] == 'True' # TVOD (Cable)
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 6, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 6, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[102] == 'True' # EST/DTR
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 7, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 7, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[66] == 'True' # Pay TV
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 8, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 8, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[67] == 'True' # Free TV
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 9, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 9, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[61] == 'True' # FVOD
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 10, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 10, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[104] == 'True' # AVOD
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 11, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 11, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[16] == 'True' # DVD/Video
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 12, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 12, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[62] == 'True' # Hotels
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 13, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 13, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[63] == 'True' # Airlines
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 14, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 14, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[64] == 'True' # Ships
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 15, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 15, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
+        #
+        # if a[64] == 'True' # Ships
+        #   film_territory_ids.each do |territory_id|
+        #     unless FilmRight.find_by(film_id: film.id, right_id: 15, territory_id: territory_id)
+        #       FilmRight.create!(film_id: film.id, right_id: 15, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+        #     end
+        #   end
+        # end
 
         # retail dvd
         retail_dvd_vars = {
