@@ -534,89 +534,212 @@ class Importer < ActiveRecord::Base
         film = Film.find_by({ title: film_vars[:title], film_type: film_vars[:film_type] })
         if film
           film.update!(film_vars)
-          if film.start_date
-            end_date = ((a[52].empty? || a[52] == '12:00:00 AM') ? (film.start_date + a[10].to_i.years) : a[52])
-            film.update!(end_date: end_date)
-          end
-
-          # what territories does this film have?
-          film_territories = ['USA']
-          film_territories += ['Anglophone Canada', 'French-speaking Canada'] if a[12] == 'Yes'
-          film_territories += ['Anglophone Canada'] if a[12] == 'Anglophone'
-
-          all_territories = Territory.all.pluck(:name)
-
-          additional_territories = a[327]
-          unless additional_territories.empty?
-            if additional_territories == "The World" || additional_territories == "World" || additional_territories == "Worldwide"
-              film_territories += all_territories
-              film_territories << 'The rest of the world'
-            elsif ["Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin", "Non-exclusive Bahamas, Bermuda, Caribbean Basin", "Non-excl. Bahamas, Bermuda, Caribbean Basin", "Non-exc. Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, the Caribbean Basin", "Non-excl. in Bahamas, Bermudas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean", "non-exclusively Bermuda, Bahamas, Caribbean Basin", "Non-excl:  Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin (non-exc)", "Bahams, Bermuda, Carribean Basin", "Bahamas, Bermuda, Carribean Basin", "Non-exc. Bermuda, Bahamas, Caribbean Basin", "Non-exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl Bahamas, Bermuda, Caribbean Basin", "Non-exclusive in Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, Caribbean", "Bermuda, Bahamas, non-exclusive in Caribbean", "Bermuda, Bahamas, non-exclusive Carribean Basin", "Bermuda, Bahamas, Caribbean non-exclusive", "Non-Exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean Basin", "Bahamas, Bermuda, Caribbean Basin", "Caribbean Basin, non-exclusive in Bahamas/Bermuda", 'Bermuda, Bahamas, non-exclusive in Caribbean Basin', 'Bermuda, Bahamas, Non-exclusively Caribbean Basin', 'Bahams, Bermuda, Saba Island, Eustatius, Kitts, Maarten, Carriben Basin'].include?(additional_territories)
-              film_territories += ['Bermuda', 'Bahamas', 'Caribbean Basin']
-            elsif ['Bermuda, The Bahamas', 'Non-excl. Bermuda and Bahamas', 'Non-exclusive Bermuda and Bahamas', 'Bermuda, Bahamas (non-exclusive)', 'Bahamas, Bermuda, Saba Island, St. Eustatius Island, St. Kitts Island, St. Maarten Island', 'Bahamas, Bermuda, Saba Island, St. Eustatius, St. Kitts, St. Maarten', 'Bahamas, Bermuda, Saba Island, St. Eustatiuis Island, St. Kitts Island, St. Maarten Island'].include?(additional_territories)
-              film_territories += ['Bermuda', 'Bahamas']
-            elsif ['Carribean Basin'].include?(additional_territories)
-              film_territories += ['Caribbean Basin']
-            elsif additional_territories == 'UK, Ireland, Australia, NZ, Bermuda, Bahamas, Caribbean'
-              film_territories += ['UK, Ireland, Australia, New Zealand, Bermuda, Bahamas, Caribbean']
-            elsif additional_territories == 'World exc Canada, Italy, Poland; Canada DVD'
-              film_territories += (all_territories - ['Anglophone Canada', 'French-speaking Canada', 'Italy', 'Poland'])
-            elsif additional_territories == 'Australia, New Zealand, UK'
-              film_territories += ['UK', 'Australia', 'New Zealand']
-            elsif additional_territories == 'Worldwide except Japan, Israel, Hungary'
-              film_territories += (all_territories - ['Japan', 'Israel', 'Hungary'])
-            elsif additional_territories == 'Non-exclusive for rest of world excluding Netherlands'
-              film_territories += (all_territories - ['Netherlands'])
-            elsif additional_territories == 'Worldwide except Serbia, Kosovo, Croatia, Slovenia, Macedonia'
-              film_territories += (all_territories - ['Serbia', 'Kosovo', 'Croatia', 'Slovenia', 'Macedonia'])
-            elsif additional_territories == 'World excluding France, Argentina, Mexico, Spain, Australia, New Zealand, Central America, Greece, Taiwan, Brazil, Turkey'
-              film_territories += (all_territories - ['France', 'Argentina', 'Mexico', 'Spain', 'Australia', 'New Zealand', 'Greece', 'Taiwan', 'Brazil', 'Turkey', 'Belize', 'Guatemala', 'Costa Rica', 'Nicaragua', 'Honduras', 'Panama', 'El Salvador'])
-            else
-              p "#{film.title} - #{additional_territories}"
+          if a[52].empty? || a[52] == '12:00:00 AM'
+            if film.start_date
+              film_vars[:end_date] = film.start_date + a[10].to_i.years
             end
+          else
+            film_vars[:end_date] = a[52]
           end
-
-          # p "#{film_vars[:title]} has: #{film_territories}"
+          film.update!(end_date: film_vars[:end_date])
         else
           p "Adding Film: #{film_vars[:title]}"
-          # film = Film.create!(film_vars)
-          #
-          # FilmRight.create!(film_id: film.id, right_id: 1, value: a[57] == 'True') # Theatrical
-          # FilmRight.create!(film_id: film.id, right_id: 2, value: a[17] == 'True') # Educational
-          # FilmRight.create!(film_id: film.id, right_id: 3, value: a[17] == 'True') # Festival
-          # FilmRight.create!(film_id: film.id, right_id: 4, value: a[17] == 'True') # Other Non-Theatrical
-          # FilmRight.create!(film_id: film.id, right_id: 5, value: a[59] == 'True') # SVOD
-          # FilmRight.create!(film_id: film.id, right_id: 6, value: a[60] == 'True') # TVOD (Cable)
-          # FilmRight.create!(film_id: film.id, right_id: 7, value: a[102] == 'True') # EST/DTR
-          # FilmRight.create!(film_id: film.id, right_id: 8, value: a[66] == 'True') # Pay TV
-          # FilmRight.create!(film_id: film.id, right_id: 9, value: a[67] == 'True') # Free TV
-          # FilmRight.create!(film_id: film.id, right_id: 10, value: a[61] == 'True') # FVOD
-          # FilmRight.create!(film_id: film.id, right_id: 11, value: a[104] == 'True') # AVOD
-          # FilmRight.create!(film_id: film.id, right_id: 12, value: a[16] == 'True') # DVD/Video
-          # FilmRight.create!(film_id: film.id, right_id: 13, value: a[62] == 'True') # Hotels
-          # FilmRight.create!(film_id: film.id, right_id: 14, value: a[63] == 'True') # Airlines
-          # FilmRight.create!(film_id: film.id, right_id: 15, value: a[64] == 'True') # Ships
-          # FilmRight.create!(film_id: film.id, right_id: 16, value: true) # FM Subscription
-          #
-          # unless film.short_film
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 1).update(value: a[243]) #Theatrical
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 2).update(value: a[244]) #Non-Theatrical
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 3).update(value: a[249]) #Video
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 4).update(value: a[253]) #Commercial Video
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 5).update(value: a[247]) #VOD
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 6).update(value: a[246]) #SVOD
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 7).update(value: a[307]) #TVOD
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 8).update(value: a[306]) #AVOD
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 9).update(value: a[305]) #FVOD
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 10).update(value: a[248]) #Other Internet
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 11).update(value: a[250]) #Ancillary
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 12).update(value: a[245]) #TV
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 13).update(value: a[251]) #Club
-          #   FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 14).update(value: a[252]) #Jewish
-          # end
+          film = Film.create!(film_vars)
+
+          unless film.film_type == 'Short'
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 1).update(value: a[243]) #Theatrical
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 2).update(value: a[244]) #Non-Theatrical
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 3).update(value: a[249]) #Video
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 4).update(value: a[253]) #Commercial Video
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 5).update(value: a[247]) #VOD
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 6).update(value: a[246]) #SVOD
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 7).update(value: a[307]) #TVOD
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 8).update(value: a[306]) #AVOD
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 9).update(value: a[305]) #FVOD
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 10).update(value: a[248]) #Other Internet
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 11).update(value: a[250]) #Ancillary
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 12).update(value: a[245]) #TV
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 13).update(value: a[251]) #Club
+            FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: 14).update(value: a[252]) #Jewish
+          end
         end
         film.save!
         @@vb_film_ids[a[0]] = film.id
+
+        # FILM RIGHTS:
+
+        # what territories does this film have?
+        film_territories = ['USA']
+        film_territories += ['Anglophone Canada', 'French-speaking Canada'] if a[12] == 'Yes'
+        film_territories += ['Anglophone Canada'] if a[12] == 'Anglophone'
+
+        all_territories = Territory.all.pluck(:name)
+
+        additional_territories = a[327]
+        unless additional_territories.empty?
+          if additional_territories == "The World" || additional_territories == "World" || additional_territories == "Worldwide"
+            film_territories += all_territories
+            film_territories << 'The rest of the world'
+          elsif ["Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin", "Non-exclusive Bahamas, Bermuda, Caribbean Basin", "Non-excl. Bahamas, Bermuda, Caribbean Basin", "Non-exc. Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, the Caribbean Basin", "Non-excl. in Bahamas, Bermudas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean", "non-exclusively Bermuda, Bahamas, Caribbean Basin", "Non-excl:  Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin (non-exc)", "Bahams, Bermuda, Carribean Basin", "Bahamas, Bermuda, Carribean Basin", "Non-exc. Bermuda, Bahamas, Caribbean Basin", "Non-exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl Bahamas, Bermuda, Caribbean Basin", "Non-exclusive in Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, Caribbean", "Bermuda, Bahamas, non-exclusive in Caribbean", "Bermuda, Bahamas, non-exclusive Carribean Basin", "Bermuda, Bahamas, Caribbean non-exclusive", "Non-Exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean Basin", "Bahamas, Bermuda, Caribbean Basin", "Caribbean Basin, non-exclusive in Bahamas/Bermuda", 'Bermuda, Bahamas, non-exclusive in Caribbean Basin', 'Bermuda, Bahamas, Non-exclusively Caribbean Basin', 'Bahams, Bermuda, Saba Island, Eustatius, Kitts, Maarten, Carriben Basin'].include?(additional_territories)
+            film_territories += ['Bermuda', 'Bahamas', 'Caribbean Basin']
+          elsif ['Bermuda, The Bahamas', 'Non-excl. Bermuda and Bahamas', 'Non-exclusive Bermuda and Bahamas', 'Bermuda, Bahamas (non-exclusive)', 'Bahamas, Bermuda, Saba Island, St. Eustatius Island, St. Kitts Island, St. Maarten Island', 'Bahamas, Bermuda, Saba Island, St. Eustatius, St. Kitts, St. Maarten', 'Bahamas, Bermuda, Saba Island, St. Eustatiuis Island, St. Kitts Island, St. Maarten Island'].include?(additional_territories)
+            film_territories += ['Bermuda', 'Bahamas']
+          elsif ['Carribean Basin'].include?(additional_territories)
+            film_territories += ['Caribbean Basin']
+          elsif additional_territories == 'UK, Ireland, Australia, NZ, Bermuda, Bahamas, Caribbean'
+            film_territories += ['UK', 'Ireland', 'Australia', 'New Zealand', 'Bermuda', 'Bahamas', 'Caribbean Basin']
+          elsif additional_territories == 'World exc Canada, Italy, Poland; Canada DVD'
+            film_territories += (all_territories - ['Anglophone Canada', 'French-speaking Canada', 'Italy', 'Poland'])
+          elsif additional_territories == 'Australia, New Zealand, UK'
+            film_territories += ['UK', 'Australia', 'New Zealand']
+          elsif additional_territories == 'Worldwide except Japan, Israel, Hungary'
+            film_territories += (all_territories - ['Japan', 'Israel', 'Hungary'])
+          elsif additional_territories == 'Non-exclusive for rest of world excluding Netherlands'
+            film_territories += (all_territories - ['Netherlands'])
+          elsif additional_territories == 'Worldwide except Serbia, Kosovo, Croatia, Slovenia, Macedonia'
+            film_territories += (all_territories - ['Serbia', 'Kosovo', 'Croatia', 'Slovenia', 'Macedonia'])
+          elsif additional_territories == 'World excluding France, Argentina, Mexico, Spain, Australia, New Zealand, Central America, Greece, Taiwan, Brazil, Turkey'
+            film_territories += (all_territories - ['France', 'Argentina', 'Mexico', 'Spain', 'Australia', 'New Zealand', 'Greece', 'Taiwan', 'Brazil', 'Turkey', 'Belize', 'Guatemala', 'Costa Rica', 'Nicaragua', 'Honduras', 'Panama', 'El Salvador'])
+          elsif additional_territories == 'Australia, New Zealand, UK, Ireland, Bermuda, Bahamas, Caribbean Basin'
+            film_territories += ['Australia', 'New Zealand', 'UK', 'Ireland', 'Bermuda', 'Bahamas', 'Caribbean Basin']
+          else
+            p "#{film.title} - #{additional_territories}"
+          end
+        end
+
+        film_territory_ids = film_territories.map do |territory_name|
+          Territory.find_by_name(territory_name).id
+        end
+
+        # create rights
+
+        if a[57] == 'True' # Theatrical
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 1, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 1, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[17] == 'True'
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 2, territory_id: territory_id) # Educational
+              FilmRight.create!(film_id: film.id, right_id: 2, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 3, territory_id: territory_id) # Festival
+              FilmRight.create!(film_id: film.id, right_id: 3, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 4, territory_id: territory_id) # Other Non-Theatrical
+              FilmRight.create!(film_id: film.id, right_id: 4, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[59] == 'True' # SVOD
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 5, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 5, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[60] == 'True' # TVOD (Cable)
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 6, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 6, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[102] == 'True' # EST/DTR
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 7, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 7, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[66] == 'True' # Pay TV
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 8, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 8, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[67] == 'True' # Free TV
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 9, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 9, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[61] == 'True' # FVOD
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 10, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 10, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[104] == 'True' # AVOD
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 11, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 11, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[16] == 'True' # DVD/Video
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 12, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 12, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[62] == 'True' # Hotels
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 13, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 13, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[63] == 'True' # Airlines
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 14, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 14, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[64] == 'True' # Ships
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 15, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 15, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if a[64] == 'True' # Ships
+          film_territory_ids.each do |territory_id|
+            unless FilmRight.find_by(film_id: film.id, right_id: 15, territory_id: territory_id)
+              FilmRight.create!(film_id: film.id, right_id: 15, territory_id: territory_id, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+            end
+          end
+        end
+
+        if film_territory_ids.include?(2)
+          unless FilmRight.find_by(film_id: film.id, right_id: 16, territory_id: 2)
+            FilmRight.create!(film_id: film.id, right_id: 16, territory_id: 2, start_date: film_vars[:start_date], end_date: film_vars[:end_date], exclusive: true, value: true)
+          end
+        end
 
         # retail dvd
         retail_dvd_vars = {
@@ -938,10 +1061,10 @@ class Importer < ActiveRecord::Base
         next if a[1][0..8] == "(NEW FILM"
         short_title = a[24]
         unless short_title.empty?
-          short = Film.find_by_title(short_title)
+          short = Film.find_by(title: short_title, film_type: 'Short')
           if short
             feature_title = a[1]
-            feature = Film.find_by_title(feature_title)
+            feature = Film.find_by(title: feature_title, film_type: 'Feature')
             retail_dvd = Dvd.find_by(dvd_type_id: 1, feature_film_id: feature.id)
             retail_dvd_short = DvdShort.find_by(dvd_id: retail_dvd.id, short_id: short.id)
             unless retail_dvd_short
