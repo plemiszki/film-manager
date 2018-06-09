@@ -163,11 +163,11 @@ var ClientActions = {
     });
   },
 
-  fetchFilms: function(shorts) {
+  fetchFilms: function(filmType) {
     $.ajax({
       url: '/api/films',
       method: 'GET',
-      data: { shorts: shorts },
+      data: { film_type: filmType },
       success: function(response) {
         ServerActions.receiveFilms(response);
       }

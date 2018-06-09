@@ -1,7 +1,7 @@
 class Api::FilmsController < AdminController
 
   def index
-    @films = Film.where(film_type: (params[:shorts] ? 'Short' : 'Feature'))
+    @films = Film.where(film_type: (params[:film_type]))
     render 'index.json.jbuilder'
   end
 
@@ -35,9 +35,9 @@ class Api::FilmsController < AdminController
   end
 
   def create
-    @film = Film.new(title: film_params[:title], label_id: 1, days_statement_due: 30, film_type: (params[:short] ? 'Short' : 'Feature'))
+    @film = Film.new(title: film_params[:title], label_id: 1, days_statement_due: 30, film_type: params[:film_type])
     if @film.save
-      @films = Film.where(film_type: (params[:short] ? 'Short' : 'Feature'))
+      @films = Film.where(film_type: (params[:film_type])
       render 'index.json.jbuilder'
     else
       render json: @film.errors.full_messages, status: 422
