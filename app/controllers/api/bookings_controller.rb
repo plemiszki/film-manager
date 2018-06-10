@@ -12,7 +12,7 @@ class Api::BookingsController < AdminController
     @venues = Venue.all
     @users = User.all
     @formats = Format.all
-    render "index.json.jbuilder"
+    render 'index.json.jbuilder'
   end
 
   def upcoming_index
@@ -21,7 +21,7 @@ class Api::BookingsController < AdminController
     else
       @bookings = Booking.where("start_date >= ?", Date.today).includes(:film, :venue).order('start_date ASC').limit(25)
     end
-    render "upcoming.json.jbuilder"
+    render 'upcoming.json.jbuilder'
   end
 
   def advanced
@@ -84,6 +84,10 @@ class Api::BookingsController < AdminController
         @bookings.delete(ids)
       end
     end
+    @films = Film.where(film_type: 'Feature')
+    @venues = Venue.all
+    @users = User.all
+    @formats = Format.all
     render 'advanced.json.jbuilder'
   end
 

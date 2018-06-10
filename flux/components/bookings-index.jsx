@@ -158,8 +158,8 @@ var BookingsIndex = React.createClass({
       <div id="bookings-index" className="bookings-index component">
         <h1>{ this.renderHeader() }</h1>
         { this.renderAddButton() }
-        { this.renderAdvancedSearchButton() }
         { this.renderExportButton() }
+        { this.renderAdvancedSearchButton() }
         <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? '' : ' no-margin') } onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -261,7 +261,7 @@ var BookingsIndex = React.createClass({
   },
 
   renderAdvancedSearchButton() {
-    if (this.props.timeframe == 'upcoming') {
+    if (this.props.advanced || this.props.timeframe == 'upcoming') {
       return(
         <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Advanced Search</a>
       );
