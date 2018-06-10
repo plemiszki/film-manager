@@ -82,6 +82,14 @@ json.dvdTypes @dvd_types do |dvd_type|
   json.id dvd_type.id
   json.name dvd_type.name
 end
+json.formats @formats do |fmt|
+  json.id fmt.id
+  json.name fmt.name
+end
+json.filmFormats @film_formats do |film_format|
+  json.id film_format.id
+  json.format film_format.format.name
+end
 json.countries @countries do |country|
   json.id country.id
   json.name country.name

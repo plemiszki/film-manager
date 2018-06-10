@@ -1625,6 +1625,22 @@ var ClientActions = {
     });
   },
 
+  createFilmFormat: function(obj) {
+    $.ajax({
+      url: '/api/film_formats',
+      method: 'POST',
+      data: {
+        film_format: {
+          film_id: obj.filmId,
+          format_id: obj.formatId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveFilmFormats(response);
+      }
+    });
+  },
+
   createFilmCountry: function(obj) {
     $.ajax({
       url: '/api/film_countries',
@@ -1685,6 +1701,16 @@ var ClientActions = {
       },
       success: function(response) {
         ServerActions.receiveFilmTopics(response);
+      }
+    });
+  },
+
+  deleteFilmFormat: function(id) {
+    $.ajax({
+      url: '/api/film_formats/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveFilmFormats(response);
       }
     });
   },

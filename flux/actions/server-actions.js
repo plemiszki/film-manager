@@ -45,7 +45,9 @@ var ServerActions = {
       actors: response.actors,
       relatedFilms: response.relatedFilms,
       otherFilms: response.otherFilms,
-      bookings: response.bookings
+      bookings: response.bookings,
+      filmFormats: response.filmFormats,
+      formats: response.formats
     });
   },
 
@@ -385,6 +387,14 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "FORMATS_RECEIVED",
       formats: response
+    });
+  },
+
+  receiveFilmFormats: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILM_FORMATS_RECEIVED",
+      formats: response.formats,
+      filmFormats: response.filmFormats
     });
   },
 

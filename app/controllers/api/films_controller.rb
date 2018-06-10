@@ -7,6 +7,8 @@ class Api::FilmsController < AdminController
 
   def show
     @films = Film.where(id: params[:id])
+    @film_formats = FilmFormat.where(film_id: params[:id])
+    @formats = Format.where.not(id: @film_formats.map { |ff| ff.format_id })
     @bookings = Booking.where(film_id: @films.first.id).includes(:venue)
     @templates = DealTemplate.all
     @licensors = Licensor.all
@@ -31,7 +33,7 @@ class Api::FilmsController < AdminController
     @other_films = Film.where.not(id: ([@films.first.id] + @related_films.pluck(:other_film_id)))
     @actors = Actor.where(film_id: @films.first.id)
     @directors = Director.where(film_id: @films.first.id)
-    render "show.json.jbuilder"
+    render 'show.json.jbuilder'
   end
 
   def create

@@ -16,6 +16,7 @@ var RelatedFilmsStore = require('../stores/related-films-store.js');
 var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
 var FilmRightsNew = require('./film-rights-new.jsx');
+var FormatsStore = require('../stores/formats-store.js');
 
 var FilmDetails = React.createClass({
 
@@ -126,6 +127,7 @@ var FilmDetails = React.createClass({
       directorModalOpen: false,
       actorModalOpen: false,
       relatedFilmsModalOpen: false,
+      formatsModalOpen: false,
       tab: (Common.params.tab ? HandyTools.capitalize(Common.params.tab) : 'General'),
       filmCountries: [],
       filmLanguages: [],
@@ -144,7 +146,9 @@ var FilmDetails = React.createClass({
       searchText: '',
       sortBy: 'startDate',
       newRightsModalOpen: false,
-      rightsSortBy: 'name'
+      rightsSortBy: 'name',
+      filmFormats: [],
+      formats: []
     });
   },
 
@@ -160,6 +164,7 @@ var FilmDetails = React.createClass({
     this.actorsListener = ActorsStore.addListener(this.getActors);
     this.relatedFilmsListener = RelatedFilmsStore.addListener(this.getRelatedFilms);
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
+    this.formatsListener = FormatsStore.addListener(this.getFormats);
     ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
   },
 
@@ -175,6 +180,7 @@ var FilmDetails = React.createClass({
     this.actorsListener.remove();
     this.relatedFilmsListener.remove();
     this.errorsListener.remove();
+    this.formatsListener.remove();
   },
 
   getFilm: function() {
@@ -191,6 +197,14 @@ var FilmDetails = React.createClass({
       this.setState({
         changesToSave: this.checkForChanges()
       });
+    });
+  },
+
+  getFormats: function() {
+    this.setState({
+      filmFormats: FormatsStore.filmFormats(),
+      formats: FormatsStore.all(),
+      formatsModalOpen: false
     });
   },
 
@@ -299,6 +313,20 @@ var FilmDetails = React.createClass({
     this.setState({
       deleteModalOpen: true
     });
+  },
+
+  clickAddFormat: function() {
+    this.setState({
+      formatsModalOpen: true
+    });
+  },
+
+  clickFormat: function(e) {
+    ClientActions.createFilmFormat({ filmId: this.state.film.id, formatId: e.target.dataset.id })
+  },
+
+  clickDeleteFormat: function(e) {
+    ClientActions.deleteFilmFormat(e.target.dataset.id);
   },
 
   clickAddCountry: function() {
@@ -476,7 +504,8 @@ var FilmDetails = React.createClass({
       directorModalOpen: false,
       actorModalOpen: false,
       relatedFilmsModalOpen: false,
-      newRightsModalOpen: false
+      newRightsModalOpen: false,
+      formatsModalOpen: false
     });
   },
 
@@ -591,7 +620,7 @@ var FilmDetails = React.createClass({
             <a className={ "red-button" } onClick={ this.confirmDelete }>
               Yes
             </a>
-            <a className={"orange-button"} onClick={this.handleModalClose}>
+            <a className={ "orange-button" } onClick={ this.handleModalClose }>
               No
             </a>
           </div>
@@ -599,11 +628,11 @@ var FilmDetails = React.createClass({
         <Modal isOpen={this.state.licensorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.licensorModalStyles}>
           <ul className="licensor-modal-list">
             <li onClick={this.clickLicensorButton} data-id={null}>(None)</li>
-            {FilmsStore.licensors().map(function(licensor, index) {
+            { FilmsStore.licensors().map(function(licensor, index) {
               return(
                 <li key={index} onClick={this.clickLicensorButton} data-id={licensor.id}>{licensor.name}</li>
               );
-            }.bind(this))}
+            }.bind(this)) }
           </ul>
         </Modal>
         <Modal isOpen={this.state.dvdModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdModalStyles}>
@@ -635,6 +664,9 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.relatedFilmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ this.state.otherFilms } property={ "title" } func={ this.clickRelatedFilm } />
+        </Modal>
+        <Modal isOpen={ this.state.formatsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.formats } property={ "name" } func={ this.clickFormat } />
         </Modal>
         <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.newRightsModalStyles }>
           <FilmRightsNew filmId={ this.state.film.id } />
@@ -724,6 +756,21 @@ var FilmDetails = React.createClass({
       return(
         <div>
           <hr />
+          <h3>Screening Formats:</h3>
+          <div className="row">
+            <div className="col-xs-6">
+              <ul className="standard-list">
+                { this.state.filmFormats.map(function(filmFormat) {
+                  return(
+                    <li key={ filmFormat.id }>{ filmFormat.format }<div className="x-button" onClick={ this.clickDeleteFormat } data-id={ filmFormat.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddFormat }>Add Format</a>
+            </div>
+          </div>
+          <hr />
+          <h3>Bookings:</h3>
           <ul className="bookings-count-list clearfix">
             <li>Theatrical: { this.state.film.theatricalCount }</li>
             <li>Festival: { this.state.film.festivalCount }</li>
