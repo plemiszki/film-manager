@@ -19,6 +19,10 @@ json.array!(@films) do |film|
   json.twitter_link film.twitter_link
   json.instagram_link film.instagram_link
   json.club_date film.club_date ? film.club_date.strftime("%-m/%-d/%y") : ""
+  json.screening_formats film.formats do |format|
+    json.id format.id
+    json.name format.name
+  end
   json.countries film.countries do |country|
     json.id country.id
     json.name country.name

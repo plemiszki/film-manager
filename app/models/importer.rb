@@ -1086,6 +1086,48 @@ class Importer < ActiveRecord::Base
     object.delete
   end
 
+  def self.import_formats(time_started)
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Formats.txt")
+    object.get(response_target: Rails.root.join("tmp/#{time_started}/Formats.txt"))
+    format_ids = Format.all.map { |format| [format.name, format.id] }.to_h
+    format_ids['HDCam'] = 6
+    format_ids['HDCam SR'] = 6
+    File.open(Rails.root.join("tmp/#{time_started}/Formats.txt")) do |f|
+      a = f.gets.split('%')
+      total = a[0].to_i
+      a.shift
+      films = 1
+      until films == total
+        film_vars = {
+          vb_film_id: a[1],
+          formats_string: a[2]
+        }
+        if @@vb_film_ids[a[1]]
+          film_id = Film.find(@@vb_film_ids[a[1]]).id
+          film_vars[:formats_string].split('\n').each do |fmt|
+            if format_ids[fmt]
+              unless FilmFormat.find_by(film_id: film_id, format_id: format_ids[fmt])
+                FilmFormat.create!(film_id: film_id, format_id: format_ids[fmt])
+              end
+            else
+              p "Format #{fmt} not recognized!"
+            end
+          end
+        else
+          # p "Could Not Find Film with VB ID: #{film_vars[:vb_film_id]}"
+        end
+        films += 1
+        a.shift(3)
+      end
+    end
+    object.delete
+  end
+
   def self.import_theaters(time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(

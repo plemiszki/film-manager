@@ -38,6 +38,8 @@ class Film < ActiveRecord::Base
   has_many :film_topics, dependent: :destroy
   has_many :countries, through: :film_countries
   has_many :languages, through: :film_languages
+  has_many :film_formats, dependent: :destroy
+  has_many :formats, through: :film_formats
   has_many :genres, through: :film_genres
   has_many :topics, through: :film_topics
   has_many :bookings
