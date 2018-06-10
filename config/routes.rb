@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :shorts, only: [:index]
   resources :licensors, only: [:index, :show]
   resources :dvd_customers, only: [:index, :show]
+  resources :sublicensors, only: [:index, :show]
   resources :shipping_addresses, only: [:index, :show]
   resources :purchase_orders, only: [:index, :show]
   get '/dvd_reports' => 'purchase_orders#reporting'
@@ -60,6 +61,7 @@ Rails.application.routes.draw do
     post '/royalty_reports/totals' => '/api/royalty_reports#totals'
     get '/jobs/status' => '/api/jobs#status'
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]
+    resources :sublicensors, only: [:index, :show, :create, :update, :destroy]
     resources :dvds, only: [:show, :create, :update, :destroy]
     resources :dvd_shorts, only: [:create, :destroy]
     get '/dvd_reports' => '/api/purchase_orders#reporting'

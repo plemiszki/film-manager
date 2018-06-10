@@ -65,7 +65,8 @@ var FilmsIndex = React.createClass({
       <div id="films-index" className="component">
         <div className="clearfix">
           { this.renderHeader() }
-          <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Film</a>
+          <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add { this.props.filmType === 'Feature' ? 'Film' : 'Short' }</a>
+          <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Rights Search</a>
           <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">

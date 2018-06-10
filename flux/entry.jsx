@@ -46,6 +46,8 @@ var InTheatersIndex = require('./components/in-theaters.jsx');
 var TerritoriesIndex = require('./components/territories-index.jsx');
 var TerritoryDetails = require('./components/territory-details.jsx');
 var FilmRightDetails = require('./components/film-right-details.jsx');
+var SublicensorsIndex = require('./components/sublicensors-index.jsx');
+var SublicensorDetails = require('./components/sublicensor-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -195,5 +197,11 @@ $(document).ready(function() {
   }
   if ($('#film-right-details')[0]) {
     ReactDOM.render(<FilmRightDetails />, document.getElementById("film-right-details"));
+  }
+  if ($('#sublicensors-index')[0]) {
+    ReactDOM.render(<SublicensorsIndex />, document.getElementById("sublicensors-index"));
+  }
+  if ($('#sublicensor-details')[0]) {
+    ReactDOM.render(<SublicensorDetails />, document.getElementById("sublicensor-details"));
   }
 });

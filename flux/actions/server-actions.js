@@ -438,6 +438,13 @@ var ServerActions = {
       territories: response.territories,
       rights: response.rights
     });
+  },
+
+  receiveSublicensors: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "SUBLICENSORS_RECEIVED",
+      sublicensors: response
+    });
   }
 }
 

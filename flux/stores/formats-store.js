@@ -51,9 +51,11 @@ FormatsStore.__onDispatch = function(payload) {
       this.__emitChange();
       break;
     case "FILMS_RECEIVED":
-      this.setFormats(payload.formats);
-      this.setFilmFormats(payload.filmFormats);
-      this.__emitChange();
+      if (payload.formats && payload.filmFormats) {
+        this.setFormats(payload.formats);
+        this.setFilmFormats(payload.filmFormats);
+        this.__emitChange();
+      }
       break;
   }
 };

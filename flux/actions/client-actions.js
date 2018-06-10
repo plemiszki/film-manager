@@ -2246,6 +2246,80 @@ var ClientActions = {
         ServerActions.receiveErrors(response)
       }
     });
+  },
+
+  fetchSublicensors: function() {
+    $.ajax({
+      url: '/api/sublicensors',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveSublicensors(response);
+      }
+    });
+  },
+
+  createSublicensor: function(sublicensor) {
+    $.ajax({
+      url: '/api/sublicensors',
+      method: 'POST',
+      data: {
+        sublicensor: {
+          name: sublicensor.name,
+          email: sublicensor.email,
+          contact_name: sublicensor.contactName,
+          phone: sublicensor.phone,
+          w8: sublicensor.w8
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveSublicensors(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchSublicensor: function(id) {
+    $.ajax({
+      url: '/api/sublicensors/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveSublicensors(response);
+      }
+    })
+  },
+
+  updateSublicensor: function(sublicensor) {
+    $.ajax({
+      url: '/api/sublicensors/' + sublicensor.id,
+      method: 'PATCH',
+      data: {
+        sublicensor: {
+          name: sublicensor.name,
+          email: sublicensor.email,
+          contact_name: sublicensor.contactName,
+          phone: sublicensor.phone,
+          w8: sublicensor.w8
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveSublicensors(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    })
+  },
+
+  deleteSublicensor: function(id) {
+    $.ajax({
+      url: '/api/sublicensors/' + id,
+      method: 'DELETE',
+      success: function() {
+        window.location.pathname = "/sublicensors";
+      }
+    });
   }
 }
 
