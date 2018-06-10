@@ -579,7 +579,6 @@ class Importer < ActiveRecord::Base
         unless additional_territories.empty?
           if additional_territories == "The World" || additional_territories == "World" || additional_territories == "Worldwide"
             film_territories += all_territories
-            film_territories << 'The rest of the world'
           elsif ["Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin", "Non-exclusive Bahamas, Bermuda, Caribbean Basin", "Non-excl. Bahamas, Bermuda, Caribbean Basin", "Non-exc. Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, the Caribbean Basin", "Non-excl. in Bahamas, Bermudas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean", "non-exclusively Bermuda, Bahamas, Caribbean Basin", "Non-excl:  Bermuda, Bahamas, Caribbean Basin", "Bermuda, Bahamas, Carribean Basin (non-exc)", "Bahams, Bermuda, Carribean Basin", "Bahamas, Bermuda, Carribean Basin", "Non-exc. Bermuda, Bahamas, Caribbean Basin", "Non-exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl Bahamas, Bermuda, Caribbean Basin", "Non-exclusive in Bahamas, Bermuda, Caribbean Basin", "Bermuda, Bahamas, Caribbean", "Bermuda, Bahamas, non-exclusive in Caribbean", "Bermuda, Bahamas, non-exclusive Carribean Basin", "Bermuda, Bahamas, Caribbean non-exclusive", "Non-Exclusive Bermuda, Bahamas, Caribbean Basin", "Non-excl. Bermuda, Bahamas, Caribbean Basin", "Bahamas, Bermuda, Caribbean Basin", "Caribbean Basin, non-exclusive in Bahamas/Bermuda", 'Bermuda, Bahamas, non-exclusive in Caribbean Basin', 'Bermuda, Bahamas, Non-exclusively Caribbean Basin', 'Bahams, Bermuda, Saba Island, Eustatius, Kitts, Maarten, Carriben Basin'].include?(additional_territories)
             film_territories += ['Bermuda', 'Bahamas', 'Caribbean Basin']
           elsif ['Bermuda, The Bahamas', 'Non-excl. Bermuda and Bahamas', 'Non-exclusive Bermuda and Bahamas', 'Bermuda, Bahamas (non-exclusive)', 'Bahamas, Bermuda, Saba Island, St. Eustatius Island, St. Kitts Island, St. Maarten Island', 'Bahamas, Bermuda, Saba Island, St. Eustatius, St. Kitts, St. Maarten', 'Bahamas, Bermuda, Saba Island, St. Eustatiuis Island, St. Kitts Island, St. Maarten Island'].include?(additional_territories)
@@ -607,7 +606,7 @@ class Importer < ActiveRecord::Base
           end
         end
 
-        film_territory_ids = film_territories.map do |territory_name|
+        film_territory_ids = film_territories.uniq.map do |territory_name|
           Territory.find_by_name(territory_name).id
         end
 
