@@ -515,9 +515,9 @@ ActiveRecord::Schema.define(version: 20180610215005) do
 
   create_table "sublicensors", force: :cascade do |t|
     t.string  "name",                         null: false
-    t.string  "email"
-    t.string  "phone"
-    t.string  "contact_name"
+    t.string  "email",        default: ""
+    t.string  "phone",        default: ""
+    t.string  "contact_name", default: ""
     t.boolean "w8",           default: false
   end
 
