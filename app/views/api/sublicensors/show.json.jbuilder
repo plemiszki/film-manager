@@ -4,5 +4,5 @@ json.array! @sublicensors do |sublicensor|
   json.email sublicensor.email || ""
   json.phone sublicensor.phone || ""
   json.contactName sublicensor.contact_name || ""
-  json.w8 sublicensor.w8
+  json.w8 sublicensor.w8 == true ? "yes" : "no"
 end

@@ -2300,7 +2300,7 @@ var ClientActions = {
           email: sublicensor.email,
           contact_name: sublicensor.contactName,
           phone: sublicensor.phone,
-          w8: sublicensor.w8
+          w8: sublicensor.w8 === "yes" ? true : false
         }
       },
       success: function(response) {

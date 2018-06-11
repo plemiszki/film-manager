@@ -101,10 +101,34 @@ var SublicensorDetails = React.createClass({
             { HandyTools.renderSpinner(this.state.fetching) }
             { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
-              <div className="col-xs-6">
+              <div className="col-xs-4">
                 <h2>Name</h2>
                 <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.sublicensor.name || ""} data-field="name" />
                 { Common.renderFieldError(this.state.errors, Common.errors.name) }
+              </div>
+              <div className="col-xs-4">
+                <h2>Contact Name</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.sublicensor.contactName || ""} data-field="contactName" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-4">
+                <h2>Email</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.sublicensor.email || ""} data-field="email" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-4">
+                <h2>Phone</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.sublicensor.phone || ""} data-field="phone" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+              <div className="col-xs-2">
+                <h2>W-8 on File</h2>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="w8" value={this.state.sublicensor.w8} >
+                  <option value={ "no" }>No</option>
+                  <option value={ "yes" }>Yes</option>
+                </select>
               </div>
             </div>
             { this.renderButtons() }
