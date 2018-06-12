@@ -68,7 +68,20 @@
     border: 1px solid #E4E9ED;
     border-radius: 3px;
     height: 335px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     overflow-y: scroll;
+  }
+
+  .blue-outline-button {
+    float: right;
+    min-width: 75px;
+
+    &:last-of-type {
+      margin-right: 10px;
+    }
+  }
+
+  .orange-button {
+    margin-top: -9px;
   }
 }

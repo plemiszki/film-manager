@@ -80,8 +80,31 @@ var FilmRightsNew = React.createClass({
     });
   },
 
+  clickAllRights: function() {
+    this.setState({
+      selectedRights: this.state.rights.map(function(right) { return right.id })
+    });
+  },
+
+  clickNoRights: function() {
+    this.setState({
+      selectedRights: []
+    });
+  },
+
+  clickAllTerritories: function() {
+    this.setState({
+      selectedTerritories: this.state.territories.map(function(territory) { return territory.id })
+    });
+  },
+
+  clickNoTerritories: function() {
+    this.setState({
+      selectedTerritories: []
+    });
+  },
+
   render: function() {
-    console.log(this.state);
     return(
       <div id="film-rights-new" className="component">
         <div className="white-box">
@@ -118,6 +141,8 @@ var FilmRightsNew = React.createClass({
                   );
                 }.bind(this)) }
               </div>
+              <a className="blue-outline-button small" onClick={ this.clickNoRights }>NONE</a>
+              <a className="blue-outline-button small" onClick={ this.clickAllRights }>ALL</a>
             </div>
             <div className="col-xs-6">
               <div className="rights-list" data-array={ 'selectedTerritories' }>
@@ -129,6 +154,8 @@ var FilmRightsNew = React.createClass({
                   );
                 }.bind(this)) }
               </div>
+              <a className="blue-outline-button small" onClick={ this.clickNoTerritories }>NONE</a>
+              <a className="blue-outline-button small" onClick={ this.clickAllTerritories }>ALL</a>
             </div>
           </div>
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0) } onClick={ this.clickAdd }>
