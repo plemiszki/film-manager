@@ -126,7 +126,7 @@ class ImportSageData
               stream.save!
               check_for_empty_percentage(stream, errors, film.title, label)
             when "30400"
-              if FilmRight.find_by(film_id: film.id, right_id: 2).value == true
+              if FilmRight.find_by(film_id: film.id, right_id: 2)
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
                 stream.current_revenue += columns[3]
                 stream.save!
@@ -189,7 +189,7 @@ class ImportSageData
             end
           elsif label == "expenses"
             if film.deal_type_id == 2 || film.deal_type_id == 3 || film.deal_type_id == 5 || film.deal_type_id == 6
-              if (FilmRight.find_by(film_id: film.id, right_id: 13).value || FilmRight.find_by(film_id: film.id, right_id: 14).value || FilmRight.find_by(film_id: film.id, right_id: 15).value) && !FilmRight.find_by(film_id: film.id, right_id: 1).value && !FilmRight.find_by(film_id: film.id, right_id: 2).value && !FilmRight.find_by(film_id: film.id, right_id: 12).value && !FilmRight.find_by(film_id: film.id, right_id: 5).value && !FilmRight.find_by(film_id: film.id, right_id: 6).value && !FilmRight.find_by(film_id: film.id, right_id: 10).value && !FilmRight.find_by(film_id: film.id, right_id: 11).value && !FilmRight.find_by(film_id: film.id, right_id: 8).value && !FilmRight.find_by(film_id: film.id, right_id: 9).value
+              if (FilmRight.find_by(film_id: film.id, right_id: 13) || FilmRight.find_by(film_id: film.id, right_id: 14) || FilmRight.find_by(film_id: film.id, right_id: 15)) && !FilmRight.find_by(film_id: film.id, right_id: 1) && !FilmRight.find_by(film_id: film.id, right_id: 2) && !FilmRight.find_by(film_id: film.id, right_id: 12) && !FilmRight.find_by(film_id: film.id, right_id: 5) && !FilmRight.find_by(film_id: film.id, right_id: 6) && !FilmRight.find_by(film_id: film.id, right_id: 10) && !FilmRight.find_by(film_id: film.id, right_id: 11) && !FilmRight.find_by(film_id: film.id, right_id: 8) && !FilmRight.find_by(film_id: film.id, right_id: 9)
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
                 stream.current_expense += columns[3]
                 stream.save!
@@ -242,7 +242,7 @@ class ImportSageData
                   check_for_empty_percentage(stream, errors, film.title, label)
                 end
               elsif gl == "61110" || gl == "63104" || gl == "64101" || gl == "63114" || gl == "61140" || gl == "63103" || gl == "61120" || gl == "64100" || gl == "64103" || gl == "69111" || gl == "69113" || gl == "60200" || gl == "60400" || gl == "60300" || gl == "63110" || gl == "63120" || gl == "69109" || gl == "63105" || gl == "61100" || gl == "61160" || gl == "63111" || gl == "63106" || gl == "63118" || gl == "63107" || gl == "63112" || gl == "67160" || gl == "63119" || gl == "65101" || gl == "69110" || gl == "60100" || gl == "40071" || gl == "64104" || gl == "61150" || gl == "63116" || gl == "69100" || gl == "69112" || gl == "69101" || gl == "69102"
-                if FilmRight.find_by(film_id: film.id, right_id: 1).value
+                if FilmRight.find_by(film_id: film.id, right_id: 1)
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
                   stream.current_expense += columns[3]
                   stream.save!
@@ -255,7 +255,7 @@ class ImportSageData
                 end
               elsif gl == "50500" || gl == "40021"
                 unless film.deal_type_id == 3
-                  if FilmRight.find_by(film_id: film.id, right_id: 6).value
+                  if FilmRight.find_by(film_id: film.id, right_id: 6)
                     stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
                     stream.current_expense += columns[3]
                     stream.save!
@@ -269,7 +269,7 @@ class ImportSageData
                 end
               elsif gl == "40031"
                 unless film.deal_type_id == 3
-                  if FilmRight.find_by(film_id: film.id, right_id: 12).value
+                  if FilmRight.find_by(film_id: film.id, right_id: 12)
                     stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
                     stream.current_expense += columns[3]
                     stream.save!
@@ -282,12 +282,12 @@ class ImportSageData
                   end
                 end
               elsif gl == "40040"
-                if FilmRight.find_by(film_id: film.id, right_id: 1).value
+                if FilmRight.find_by(film_id: film.id, right_id: 1)
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
                   stream.current_expense += columns[3]
                   stream.save!
                   check_for_empty_percentage(stream, errors, film.title, label)
-                elsif FilmRight.find_by(film_id: film.id, right_id: 7).value
+                elsif FilmRight.find_by(film_id: film.id, right_id: 7)
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
                   stream.current_expense += columns[3]
                   stream.save!
@@ -300,7 +300,7 @@ class ImportSageData
                 end
               elsif gl == "40011" || gl == "48000" || gl == "50350"
                 unless film.deal_type_id == 3
-                  if FilmRight.find_by(film_id: film.id, right_id: 6).value
+                  if FilmRight.find_by(film_id: film.id, right_id: 6)
                     stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
                     stream.current_expense += columns[3]
                     stream.save!
@@ -314,7 +314,7 @@ class ImportSageData
                 end
               elsif gl == "48100"
                 unless film.deal_type_id == 3
-                  if FilmRight.find_by(film_id: film.id, right_id: 7).value
+                  if FilmRight.find_by(film_id: film.id, right_id: 7)
                     stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
                     stream.current_expense += columns[3]
                     stream.save!

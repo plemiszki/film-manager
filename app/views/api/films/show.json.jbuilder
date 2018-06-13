@@ -69,7 +69,6 @@ json.rights @rights do |right|
   json.name right.right.name
   json.order right.right.order
   json.territory right.territory.name
-  json.value right.value
   json.startDate right.start_date ? right.start_date.strftime("%-m/%-d/%y") : ''
   json.endDate right.end_date ? right.end_date.strftime("%-m/%-d/%y") : ''
   json.exclusive right.exclusive ? 'Yes' : 'No'
