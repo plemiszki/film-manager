@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180610215005) do
+ActiveRecord::Schema.define(version: 20180613123858) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,7 +194,6 @@ ActiveRecord::Schema.define(version: 20180610215005) do
   create_table "film_rights", force: :cascade do |t|
     t.integer "film_id",                      null: false
     t.integer "right_id",                     null: false
-    t.boolean "value",        default: false
     t.integer "territory_id"
     t.date    "start_date"
     t.date    "end_date"
