@@ -19,7 +19,7 @@ class Api::FilmRightsController < AdminController
             break
           end
         else
-          @film_right = FilmRight.new({ film_id: params[:film_right][:film_id], right_id: right_id, territory_id: territory_id, start_date: params[:film_right][:start_date], end_date: params[:film_right][:end_date], exclusive: params[:film_right][:exclusive], value: true })
+          @film_right = FilmRight.new({ film_id: params[:film_right][:film_id], right_id: right_id, territory_id: territory_id, start_date: params[:film_right][:start_date], end_date: params[:film_right][:end_date], exclusive: params[:film_right][:exclusive] })
           if @film_right.save
           else
             error = true
