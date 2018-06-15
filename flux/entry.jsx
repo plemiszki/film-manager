@@ -72,8 +72,14 @@ $(document).ready(function() {
   if ($('#films-index')[0]) {
     ReactDOM.render(<FilmsIndex filmType={ 'Feature' }/>, document.getElementById("films-index"));
   }
+  if ($('#films-index-advanced')[0]) {
+    ReactDOM.render(<FilmsIndex filmType={ 'Feature' } advanced={ true } />, document.getElementById("films-index-advanced"));
+  }
   if ($('#shorts-index')[0]) {
     ReactDOM.render(<FilmsIndex filmType={ 'Short' }/>, document.getElementById("shorts-index"));
+  }
+  if ($('#shorts-index-advanced')[0]) {
+    ReactDOM.render(<FilmsIndex filmType={ 'Short' } advanced={ true } />, document.getElementById("shorts-index-advanced"));
   }
   if ($('#film-details')[0]) {
     ReactDOM.render(<FilmDetails />, document.getElementById("film-details"));

@@ -32,7 +32,11 @@ var FilmsIndex = React.createClass({
 
   componentDidMount: function() {
     this.filmsListener = FilmsStore.addListener(this.getFilms);
-    ClientActions.fetchFilms(this.props.filmType);
+    if (this.props.advanced) {
+      ClientActions.fetchFilmsAdvanced(this.props.filmType);
+    } else {
+      ClientActions.fetchFilms(this.props.filmType);
+    }
   },
 
   componentWillUnmount: function() {

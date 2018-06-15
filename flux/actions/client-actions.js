@@ -174,6 +174,17 @@ var ClientActions = {
     });
   },
 
+  fetchFilmsAdvanced: function(filmType) {
+    $.ajax({
+      url: '/api/films/advanced',
+      method: 'GET',
+      data: Object.assign(HandyTools.params(), { film_type: filmType }),
+      success: function(response) {
+        ServerActions.receiveFilms(response);
+      }
+    });
+  },
+
   createFilm: function(film) {
     $.ajax({
       url: '/api/films',

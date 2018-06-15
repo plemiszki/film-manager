@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
   root to: "films#index"
+  get '/films/advanced' => 'films#advanced'
   resources :films, only: [:index, :show]
   resources :venues, only: [:index, :show]
   get '/bookings/advanced' => 'bookings#advanced'
   resources :bookings, only: [:index, :show]
   resources :bookers, only: [:index, :show]
   resources :dvds, only: [:show]
+  get '/shorts/advanced' => 'shorts#advanced'
   resources :shorts, only: [:index]
   resources :licensors, only: [:index, :show]
   resources :dvd_customers, only: [:index, :show]
@@ -40,6 +42,7 @@ Rails.application.routes.draw do
     patch '/users/:id' => '/api/users#api_update'
     delete '/users/:id' => '/api/users#api_destroy'
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
+    get '/films/advanced' => '/api/films#advanced'
     resources :films, only: [:index, :show, :create, :update, :destroy]
     resources :venues, only: [:index, :show, :create, :update, :destroy]
     get '/bookings/upcoming' => '/api/bookings#upcoming_index'
