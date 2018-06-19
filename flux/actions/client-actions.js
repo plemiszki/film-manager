@@ -2331,6 +2331,62 @@ var ClientActions = {
         window.location.pathname = "/sublicensors";
       }
     });
+  },
+
+  fetchDigitalRetailers: function() {
+    $.ajax({
+      url: '/api/digital_retailers',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveDigitalRetailers(response);
+      }
+    });
+  },
+
+  fetchDigitalRetailer: function(id) {
+    $.ajax({
+      url: '/api/digital_retailers/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveDigitalRetailers(response);
+      }
+    });
+  },
+
+  createDigitalRetailer: function(digitalRetailer) {
+    $.ajax({
+      url: '/api/digital_retailers',
+      method: 'POST',
+      data: {
+        digital_retailer: {
+          name: digitalRetailer.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDigitalRetailers(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  updateDigitalRetailer: function(digitalRetailer) {
+    $.ajax({
+      url: '/api/digital_retailers/' + digitalRetailer.id,
+      method: 'PATCH',
+      data: {
+        digital_retailer: {
+          name: digitalRetailer.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDigitalRetailers(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

@@ -445,6 +445,13 @@ var ServerActions = {
       actionType: "SUBLICENSORS_RECEIVED",
       sublicensors: response
     });
+  },
+
+  receiveDigitalRetailers: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "DIGITAL_RETAILERS_RECEIVED",
+      digitalRetailers: response
+    });
   }
 }
 

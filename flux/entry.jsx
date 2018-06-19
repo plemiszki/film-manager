@@ -48,6 +48,8 @@ var TerritoryDetails = require('./components/territory-details.jsx');
 var FilmRightDetails = require('./components/film-right-details.jsx');
 var SublicensorsIndex = require('./components/sublicensors-index.jsx');
 var SublicensorDetails = require('./components/sublicensor-details.jsx');
+var DigitalRetailersIndex = require('./components/digital-retailers-index.jsx');
+var DigitalRetailerDetails = require('./components/digital-retailer-details.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -209,5 +211,11 @@ $(document).ready(function() {
   }
   if ($('#sublicensor-details')[0]) {
     ReactDOM.render(<SublicensorDetails />, document.getElementById("sublicensor-details"));
+  }
+  if ($('#digital-retailers-index')[0]) {
+    ReactDOM.render(<DigitalRetailersIndex />, document.getElementById("digital-retailers-index"));
+  }
+  if ($('#digital-retailer-details')[0]) {
+    ReactDOM.render(<DigitalRetailerDetails />, document.getElementById("digital-retailer-details"));
   }
 });
