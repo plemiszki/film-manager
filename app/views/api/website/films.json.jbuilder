@@ -78,6 +78,7 @@ json.array!(@films) do |film|
     json.special_features dvd.special_features
     json.retail_date dvd.retail_date
     json.stock dvd.stock
+    json.discs dvd.discs
     json.shorts dvd.dvd_shorts do |dvd_short|
       json.id dvd_short.id
       json.short_id dvd_short.short_id
