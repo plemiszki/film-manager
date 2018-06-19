@@ -51,6 +51,34 @@ var FilmRightsNew = React.createClass({
     });
   },
 
+  clickSearch: function() {
+    if (this.state.fetching === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
+      this.setState({
+        fetching: true
+      }, function() {
+        var params = [];
+        for (var i = 0; i < this.state.selectedRights.length; i++) {
+          params.push("right_id[]=" + this.state.selectedRights[i]);
+        }
+        for (var i = 0; i < this.state.selectedTerritories.length; i++) {
+          params.push("territory_id[]=" + this.state.selectedTerritories[i]);
+        }
+        params.push("exclusive=" + (this.state.exclusive == 'Yes' ? 'true' : 'false'));
+        if (this.state.filmRight.startDate) {
+          params.push("start_date=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.filmRight.startDate)));
+        }
+        if (this.state.filmRight.endDate) {
+          params.push("end_date=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.filmRight.endDate)));
+        }
+        var path = "/films/advanced";
+        if (params.length > 0) {
+          path += ("?" + params.join("&"));
+        }
+        window.location.href = path;
+      });
+    }
+  },
+
   clickAdd: function() {
     if (this.state.fetching === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
       this.setState({
@@ -158,8 +186,8 @@ var FilmRightsNew = React.createClass({
               <a className="blue-outline-button small" onClick={ this.clickAllTerritories }>ALL</a>
             </div>
           </div>
-          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0) } onClick={ this.clickAdd }>
-            Add Rights
+          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0) } onClick={ this.props.search ? this.clickSearch : this.clickAdd }>
+            { this.props.search ? 'Search' : 'Add Rights' }
           </a>
         </div>
       </div>

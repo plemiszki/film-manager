@@ -4,6 +4,7 @@ var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var FilmsStore = require('../stores/films-store.js');
 var NewThing = require('./new-thing.jsx');
+var FilmRightsNew = require('./film-rights-new.jsx');
 
 var ModalStyles = {
   overlay: {
@@ -15,6 +16,19 @@ var ModalStyles = {
     margin: 'auto',
     maxWidth: 1000,
     height: 236
+  }
+};
+
+var newRightsModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 1000,
+    height: 575
   }
 };
 
@@ -60,7 +74,16 @@ var FilmsIndex = React.createClass({
   },
 
   handleModalClose: function() {
-    this.setState({ modalOpen: false });
+    this.setState({
+      modalOpen: false,
+      searchModalOpen: false
+    });
+  },
+
+  clickAdvanced: function() {
+    this.setState({
+      searchModalOpen: true
+    });
   },
 
   render: function() {
@@ -102,6 +125,9 @@ var FilmsIndex = React.createClass({
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing={ this.props.shorts ? "short" : "film" } initialObject={ { title: "" } } />
+        </Modal>
+        <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ newRightsModalStyles }>
+          <FilmRightsNew search={ true } />
         </Modal>
       </div>
     );

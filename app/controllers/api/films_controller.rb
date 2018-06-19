@@ -112,7 +112,9 @@ class Api::FilmsController < AdminController
     params[:right_id].each do |right_id|
       params[:territory_id].each do |territory_id|
         where_object = { right_id: right_id, territory_id: territory_id }
-        where_object[:exclusive] = params[:exclusive] if params[:exclusive]
+        if params[:exclusive] == 'true'
+          where_object[:exclusive] = true
+        end
         film_rights = FilmRight.where(where_object)
         if params[:start_date] && params[:end_date]
           film_rights = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date >= ? OR end_date IS NULL)', params[:start_date], params[:end_date])
@@ -129,7 +131,7 @@ class Api::FilmsController < AdminController
     rights_hash.each do |right_id, territories_hash|
       territories_hash.each do |territory_id, film_ids|
         if populated_starting_array
-          film_ids_result = film_ids_result & films_ids
+          film_ids_result = film_ids_result & film_ids
         else
           film_ids_result = film_ids
           populated_starting_array = true
