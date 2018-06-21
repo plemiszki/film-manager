@@ -92,7 +92,9 @@ var FilmsIndex = React.createClass({
       <div id="films-index" className="component">
         <div className="clearfix">
           { this.renderHeader() }
-          <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add { this.props.filmType === 'Feature' ? 'Film' : 'Short' }</a>
+          { this.renderAddNewButton() }
+          { this.renderExportCatalogButton() }
+          { this.renderExportMetadataButton() }
           <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Rights Search</a>
           <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
@@ -137,6 +139,30 @@ var FilmsIndex = React.createClass({
     return(
       <h1>{ this.props.filmType }s</h1>
     );
+  },
+
+  renderAddNewButton: function() {
+    if (!this.props.advanced) {
+      return(
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add { this.props.filmType === 'Feature' ? 'Film' : 'Short' }</a>
+      );
+    }
+  },
+
+  renderExportMetadataButton: function() {
+    if (this.props.advanced) {
+      return(
+        <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExportMetadata }>Export Metadata</a>
+      );
+    }
+  },
+
+  renderExportCatalogButton: function() {
+    if (this.props.advanced) {
+      return(
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExportCatalog }>Export Catalog</a>
+      );
+    }
   },
 
   componentDidUpdate: function() {
