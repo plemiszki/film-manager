@@ -24,6 +24,10 @@ a.standard-link {
   text-decoration: underline;
 }
 
+.nice-select.three-options ul {
+  max-height: 120px !important;
+}
+
 body {
   background-color: #F5F6F7;
   height: 100%;

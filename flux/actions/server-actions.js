@@ -47,7 +47,9 @@ var ServerActions = {
       otherFilms: response.otherFilms,
       bookings: response.bookings,
       filmFormats: response.filmFormats,
-      formats: response.formats
+      formats: response.formats,
+      digitalRetailers: response.digitalRetailers,
+      digitalRetailerFilms: response.digitalRetailerFilms
     });
   },
 
@@ -451,6 +453,14 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "DIGITAL_RETAILERS_RECEIVED",
       digitalRetailers: response
+    });
+  },
+
+  receiveDigitalRetailerFilms: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "DIGITAL_RETAILER_FILMS_RECEIVED",
+      digitalRetailers: response.digitalRetailers,
+      digitalRetailerFilms: response.digitalRetailerFilms
     });
   }
 }

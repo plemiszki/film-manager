@@ -33,6 +33,8 @@ class Api::FilmsController < AdminController
     @other_films = Film.where.not(id: ([@films.first.id] + @related_films.pluck(:other_film_id)))
     @actors = Actor.where(film_id: @films.first.id)
     @directors = Director.where(film_id: @films.first.id)
+    @digital_retailer_films = DigitalRetailerFilm.where(film_id: @films.first.id).includes(:digital_retailer)
+    @digital_retailers = DigitalRetailer.all
     render 'show.json.jbuilder'
   end
 

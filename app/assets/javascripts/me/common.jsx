@@ -353,6 +353,12 @@ Common = {
     clubDate: [
       "Club date is not a valid date",
       "Club date has already been taken"
+    ],
+    digitalRetailerId: [
+      'Digital retailer has already been taken'
+    ],
+    url: [
+      "Url can't be blank"
     ]
   },
 

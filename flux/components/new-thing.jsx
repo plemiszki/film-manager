@@ -8,6 +8,7 @@ var FilmsStore = require('../stores/films-store.js');
 var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
 var ReturnsStore = require('../stores/returns-store.js');
 var BookingsStore = require('../stores/bookings-store.js');
+var DigitalRetailersStore = require('../stores/digital-retailers-store.js');
 
 var NewThing = React.createClass({
 
@@ -140,6 +141,7 @@ var NewThing = React.createClass({
           { this.renderLaurelFields() }
           { this.renderActorOrDirectorFields() }
           { this.renderBookerFields() }
+          { this.renderDigitalRetailerFilmFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -157,7 +159,8 @@ var NewThing = React.createClass({
       shippingAddress: "Shipping Address",
       weeklyTerm: "Weekly Terms",
       weeklyBoxOffice: "Weekly Box Office",
-      digitalRetailer: "Digital Retailer"
+      digitalRetailer: "Digital Retailer",
+      digitalRetailerFilm: "Digital Retailer"
     };
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
@@ -709,6 +712,31 @@ var NewThing = React.createClass({
               <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.phone || "" } data-field="phone" />
               { Common.renderFieldError(this.state.errors, []) }
             </div>
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderDigitalRetailerFilmFields: function() {
+    if (this.props.thing === "digitalRetailerFilm") {
+      return(
+        <div className="row">
+          <div className="col-xs-4">
+            <h2>Company</h2>
+            <select className={ Common.errorClass(this.state.errors, Common.errors.digitalRetailerId) + " three-options" } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="digitalRetailerId" value={ this.state.digitalRetailerFilm.digitalRetailerId }>
+              { DigitalRetailersStore.all().map(function(digitalRetailer) {
+                return(
+                  <option key={ digitalRetailer.id } value={ digitalRetailer.id }>{ digitalRetailer.name }</option>
+                );
+              }) }
+            </select>
+            { Common.renderFieldError(this.state.errors, Common.errors.digitalRetailerId) }
+          </div>
+          <div className="col-xs-8">
+            <h2>URL</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.url) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.digitalRetailerFilm.url || "" } data-field="url" />
+            { Common.renderFieldError(this.state.errors, Common.errors.url) }
           </div>
         </div>
       );

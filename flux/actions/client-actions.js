@@ -2387,6 +2387,26 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  createDigitalRetailerFilm: function(digitalRetailerFilm) {
+    $.ajax({
+      url: '/api/digital_retailer_films',
+      method: 'POST',
+      data: {
+        digital_retailer_film: {
+          url: digitalRetailerFilm.url,
+          film_id: digitalRetailerFilm.filmId,
+          digital_retailer_id: digitalRetailerFilm.digitalRetailerId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDigitalRetailerFilms(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
+      }
+    });
   }
 }
 

@@ -5,21 +5,16 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var DigitalRetailersStore = new Store(AppDispatcher);
 
 var _digitalRetailers = {};
-var _films = [];
-var _otherFilms = [];
+var _digitalRetailerFilms = [];
 
 DigitalRetailersStore.setDigitalRetailers = function(digitalRetailers) {
-  digitalRetailers.forEach(function(giftbox) {
-    _digitalRetailers[giftbox.id] = giftbox;
+  digitalRetailers.forEach(function(digitalRetailer) {
+    _digitalRetailers[digitalRetailer.id] = digitalRetailer;
   });
 };
 
-DigitalRetailersStore.setFilms = function(films) {
-  _films = films;
-};
-
-DigitalRetailersStore.setOtherFilms = function(otherFilms) {
-  _otherFilms = otherFilms;
+DigitalRetailersStore.setDigitalRetailerFilms = function(digitalRetailerFilms) {
+  _digitalRetailerFilms = digitalRetailerFilms;
 };
 
 DigitalRetailersStore.find = function(id) {
@@ -33,12 +28,8 @@ DigitalRetailersStore.all = function() {
   return HandyTools.alphabetizeArrayOfObjects(digitalRetailers, 'name');
 };
 
-DigitalRetailersStore.films = function() {
-  return HandyTools.alphabetizeArrayOfObjects(_films, 'title');
-};
-
-DigitalRetailersStore.otherFilms = function() {
-  return HandyTools.alphabetizeArrayOfObjects(_otherFilms, 'title');
+DigitalRetailersStore.digitalRetailerFilms = function() {
+  return HandyTools.alphabetizeArrayOfObjects(_digitalRetailerFilms, 'name');
 };
 
 DigitalRetailersStore.__onDispatch = function(payload) {
@@ -49,8 +40,18 @@ DigitalRetailersStore.__onDispatch = function(payload) {
       break;
     case "DIGITAL_RETAILER_RECEIVED":
       this.setDigitalRetailers(payload.digitalRetailers);
-      this.setFilms(payload.films);
-      this.setOtherFilms(payload.otherFilms);
+      this.__emitChange();
+      break;
+    case "FILMS_RECEIVED":
+      if (payload.digitalRetailers && payload.digitalRetailerFilms) {
+        this.setDigitalRetailers(payload.digitalRetailers);
+        this.setDigitalRetailerFilms(payload.digitalRetailerFilms);
+        this.__emitChange();
+      }
+      break;
+    case "DIGITAL_RETAILER_FILMS_RECEIVED":
+      this.setDigitalRetailers(payload.digitalRetailers);
+      this.setDigitalRetailerFilms(payload.digitalRetailerFilms);
       this.__emitChange();
       break;
   }

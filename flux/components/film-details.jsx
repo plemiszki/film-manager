@@ -17,6 +17,7 @@ var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
 var FilmRightsNew = require('./film-rights-new.jsx');
 var FormatsStore = require('../stores/formats-store.js');
+var DigitalRetailersStore = require('../stores/digital-retailers-store.js');
 
 var FilmDetails = React.createClass({
 
@@ -148,7 +149,8 @@ var FilmDetails = React.createClass({
       newRightsModalOpen: false,
       rightsSortBy: 'name',
       filmFormats: [],
-      formats: []
+      formats: [],
+      digitalRetailerFilms: []
     });
   },
 
@@ -165,6 +167,7 @@ var FilmDetails = React.createClass({
     this.relatedFilmsListener = RelatedFilmsStore.addListener(this.getRelatedFilms);
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
     this.formatsListener = FormatsStore.addListener(this.getFormats);
+    this.digitalRetailersListener = DigitalRetailersStore.addListener(this.getDigitalRetailers);
     ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
   },
 
@@ -181,6 +184,7 @@ var FilmDetails = React.createClass({
     this.relatedFilmsListener.remove();
     this.errorsListener.remove();
     this.formatsListener.remove();
+    this.digitalRetailersListener.remove();
   },
 
   getFilm: function() {
@@ -284,6 +288,14 @@ var FilmDetails = React.createClass({
     this.setState({
       filmErrors: FilmErrorsStore.filmErrors(),
       percentageErrors: FilmErrorsStore.percentageErrors(),
+      fetching: false
+    });
+  },
+
+  getDigitalRetailers: function() {
+    this.setState({
+      digitalRetailerFilms: DigitalRetailersStore.digitalRetailerFilms(),
+      newDigitalRetailerModalOpen: false,
       fetching: false
     });
   },
@@ -476,6 +488,12 @@ var FilmDetails = React.createClass({
     ClientActions.createRelatedFilm({ filmId: this.state.film.id, otherFilmId: e.target.dataset.id })
   },
 
+  clickAddDigitalRetailer: function() {
+    this.setState({
+      newDigitalRetailerModalOpen: true
+    });
+  },
+
   confirmDelete: function() {
     this.setState({
       fetching: true
@@ -505,7 +523,8 @@ var FilmDetails = React.createClass({
       actorModalOpen: false,
       relatedFilmsModalOpen: false,
       newRightsModalOpen: false,
-      formatsModalOpen: false
+      formatsModalOpen: false,
+      newDigitalRetailerModalOpen: false
     });
   },
 
@@ -670,6 +689,9 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.newRightsModalStyles }>
           <FilmRightsNew filmId={ this.state.film.id } />
+        </Modal>
+        <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.directorModalStyles }>
+          <NewThing thing="digitalRetailerFilm" initialObject={ { filmId: this.state.film.id, url: "", digitalRetailerId: "1" } } />
         </Modal>
       </div>
     );
@@ -1009,6 +1031,36 @@ var FilmDetails = React.createClass({
                 }.bind(this)) }
               </ul>
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddRelatedFilm }>Add Related Film</a>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-12">
+              <h3>Digital Retailers:</h3>
+              <table className={ "admin-table" }>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Url</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td></td><td></td></tr>
+                  { this.state.digitalRetailerFilms.map(function(digitalRetailerFilm, index) {
+                    return(
+                      <tr key={ index } onClick={ this.redirect.bind(this, 'digital_retailer_films', digitalRetailerFilm.id) }>
+                        <td className="name-column">
+                          { digitalRetailerFilm.name }
+                        </td>
+                        <td>
+                          { digitalRetailerFilm.url }
+                        </td>
+                      </tr>
+                    );
+                  }.bind(this)) }
+                </tbody>
+              </table>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddDigitalRetailer }>Add Digital Retailer</a>
             </div>
           </div>
           <hr />
