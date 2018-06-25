@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   get '/import' => 'films#import_data'
   patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
-  patch '/users/3' => 'api/dvds#update_stock'
+  patch '/users/4' => 'api/dvds#update_stock'
   resources :countries, only: [:show]
   resources :languages, only: [:show]
   resources :genres, only: [:show]
