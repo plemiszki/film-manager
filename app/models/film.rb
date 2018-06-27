@@ -43,6 +43,8 @@ class Film < ActiveRecord::Base
   has_many :genres, through: :film_genres
   has_many :topics, through: :film_topics
   has_many :bookings
+  has_many :digital_retailer_films
+  has_many :digital_retailers, through: :digital_retailer_films
 
   after_create :create_percentages
 

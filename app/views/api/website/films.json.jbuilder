@@ -84,4 +84,8 @@ json.array!(@films) do |film|
       json.short_id dvd_short.short_id
     end
   end
+  json.digital_retailer_links film.digital_retailer_films do |digital_retailer_film|
+    json.name digital_retailer_film.digital_retailer.name
+    json.url digital_retailer_film.url
+  end
 end
