@@ -207,9 +207,17 @@
       width: 200px;
     }
   }
+
+  .digital-retailers-table {
+
+    th:first-of-type {
+      width: 200px;
+    }
+  }
 }
 
 .licensor-modal-list {
+
   li {
     cursor: pointer;
     padding: 10px;

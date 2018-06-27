@@ -1037,7 +1037,7 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-12">
               <h3>Digital Retailers:</h3>
-              <table className={ "admin-table" }>
+              <table className={ "admin-table digital-retailers-table" }>
                 <thead>
                   <tr>
                     <th>Name</th>
