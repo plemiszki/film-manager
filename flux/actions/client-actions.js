@@ -2407,6 +2407,35 @@ var ClientActions = {
         ServerActions.receiveErrors(response)
       }
     });
+  },
+
+  fetchDigitalRetailerFilm: function(id) {
+    $.ajax({
+      url: '/api/digital_retailer_films/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveDigitalRetailerFilms(response);
+      }
+    });
+  },
+
+  updateDigitalRetailerFilm: function(digitalRetailerFilm) {
+    $.ajax({
+      url: '/api/digital_retailer_films/' + digitalRetailerFilm.id,
+      method: 'PATCH',
+      data: {
+        digital_retailer_film: {
+          digital_retailer_id: digitalRetailerFilm.digitalRetailerId,
+          url: digitalRetailerFilm.url
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveDigitalRetailerFilms(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

@@ -5,7 +5,7 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var DigitalRetailersStore = new Store(AppDispatcher);
 
 var _digitalRetailers = {};
-var _digitalRetailerFilms = [];
+var _digitalRetailerFilms = {};
 
 DigitalRetailersStore.setDigitalRetailers = function(digitalRetailers) {
   digitalRetailers.forEach(function(digitalRetailer) {
@@ -14,11 +14,17 @@ DigitalRetailersStore.setDigitalRetailers = function(digitalRetailers) {
 };
 
 DigitalRetailersStore.setDigitalRetailerFilms = function(digitalRetailerFilms) {
-  _digitalRetailerFilms = digitalRetailerFilms;
+  digitalRetailerFilms.forEach(function(digitalRetailerFilm) {
+    _digitalRetailerFilms[digitalRetailerFilm.id] = digitalRetailerFilm;
+  });
 };
 
 DigitalRetailersStore.find = function(id) {
   return _digitalRetailers[id];
+};
+
+DigitalRetailersStore.findFilm = function(id) {
+  return _digitalRetailerFilms[id];
 };
 
 DigitalRetailersStore.all = function() {
@@ -29,7 +35,10 @@ DigitalRetailersStore.all = function() {
 };
 
 DigitalRetailersStore.digitalRetailerFilms = function() {
-  return HandyTools.alphabetizeArrayOfObjects(_digitalRetailerFilms, 'name');
+  var digitalRetailerFilms = Object.keys(_digitalRetailerFilms).map(function(id) {
+    return(_digitalRetailerFilms[id]);
+  });
+  return HandyTools.alphabetizeArrayOfObjects(digitalRetailerFilms, 'name');
 };
 
 DigitalRetailersStore.__onDispatch = function(payload) {
