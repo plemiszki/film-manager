@@ -1059,9 +1059,11 @@ class Importer < ActiveRecord::Base
             feature_title = a[1]
             feature = Film.find_by(title: feature_title, film_type: 'Feature')
             retail_dvd = Dvd.find_by(dvd_type_id: 1, feature_film_id: feature.id)
-            retail_dvd_short = DvdShort.find_by(dvd_id: retail_dvd.id, short_id: short.id)
-            unless retail_dvd_short
-              DvdShort.create(dvd_id: retail_dvd.id, short_id: short.id)
+            if retail_dvd
+              retail_dvd_short = DvdShort.find_by(dvd_id: retail_dvd.id, short_id: short.id)
+              unless retail_dvd_short
+                DvdShort.create(dvd_id: retail_dvd.id, short_id: short.id)
+              end
             end
             club_dvd = Dvd.find_by(dvd_type_id: 2, feature_film_id: feature.id)
             if club_dvd
