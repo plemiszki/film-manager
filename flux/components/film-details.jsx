@@ -950,7 +950,7 @@ var FilmDetails = React.createClass({
               <h2>SVOD Release</h2>
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.svodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" />
               { Common.renderFieldError(this.state.filmErrors, Common.errors.svodRelease) }
-              <h2>TVOD Release</h2>
+              <h2>TVOD/EST Release</h2>
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.tvodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.tvodRelease || "" } data-field="tvodRelease" />
               { Common.renderFieldError(this.state.filmErrors, Common.errors.tvodRelease) }
             </div>
