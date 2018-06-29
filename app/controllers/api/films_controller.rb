@@ -186,6 +186,9 @@ class Api::FilmsController < AdminController
       :active,
       :label_id,
       :club_date,
+      :avod_release,
+      :svod_release,
+      :tvod_release,
       :ignore_sage_id
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]

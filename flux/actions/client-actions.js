@@ -266,6 +266,9 @@ var ClientActions = {
           active: film.active,
           label_id: film.labelId,
           club_date: film.clubDate,
+          avod_release: film.avodRelease,
+          tvod_release: film.tvodRelease,
+          svod_release: film.svodRelease,
           ignore_sage_id: film.ignoreSageId
         },
         percentages: percentages

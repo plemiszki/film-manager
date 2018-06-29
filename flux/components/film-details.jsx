@@ -945,6 +945,24 @@ var FilmDetails = React.createClass({
               </ul>
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddActor }>Add Actor</a>
             </div>
+            <div className="col-xs-3">
+              <h3>Release Dates:</h3>
+              <h2>SVOD Release</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.svodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" />
+              { Common.renderFieldError(this.state.filmErrors, Common.errors.svodRelease) }
+              <h2>TVOD Release</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.tvodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.tvodRelease || "" } data-field="tvodRelease" />
+              { Common.renderFieldError(this.state.filmErrors, Common.errors.tvodRelease) }
+            </div>
+            <div className="col-xs-3">
+              <div style={ { width: '100%', height: '47px' } }></div>
+              <h2>AVOD Release</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.avodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.avodRelease || "" } data-field="avodRelease" />
+              { Common.renderFieldError(this.state.filmErrors, Common.errors.avodRelease) }
+              <h2>Club Release</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.clubDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" />
+              { Common.renderFieldError(this.state.filmErrors, Common.errors.clubDate) }
+            </div>
           </div>
         </div>
       );
@@ -955,11 +973,6 @@ var FilmDetails = React.createClass({
           <div className="row checkboxes">
             <div className="col-xs-3">
               <input id="active" type="checkbox" checked={ this.state.film.active || false } onChange={ this.changeCheckbox.bind(this, 'active') } /><label htmlFor="active">Active on Website</label>
-            </div>
-            <div className="col-xs-3">
-              <h2>Club Date</h2>
-              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.clubDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" />
-              { Common.renderFieldError(this.state.filmErrors, Common.errors.clubDate) }
             </div>
           </div>
           <hr />
@@ -1353,7 +1366,11 @@ var FilmDetails = React.createClass({
         ],
         general: [
           Common.errors.year,
-          Common.errors.length
+          Common.errors.length,
+          Common.errors.avodRelease,
+          Common.errors.svodRelease,
+          Common.errors.tvodRelease,
+          Common.errors.clubDate
         ]
       }
       var result = [];

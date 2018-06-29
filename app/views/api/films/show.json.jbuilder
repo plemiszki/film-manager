@@ -42,6 +42,9 @@ json.films @films do |film|
   json.theatricalCount @bookings.where(booking_type: 'Theatrical').count
   json.festivalCount @bookings.where(booking_type: 'Festival').count
   json.nonTheatricalCount @bookings.where(booking_type: 'Non-Theatrical').count
+  json.avodRelease film.avod_release ? film.avod_release.strftime("%-m/%-d/%y") : ""
+  json.svodRelease film.svod_release ? film.svod_release.strftime("%-m/%-d/%y") : ""
+  json.tvodRelease film.tvod_release ? film.tvod_release.strftime("%-m/%-d/%y") : ""
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

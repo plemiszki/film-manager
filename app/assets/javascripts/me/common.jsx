@@ -359,6 +359,15 @@ Common = {
     ],
     url: [
       "Url can't be blank"
+    ],
+    avodRelease: [
+      "Avod release is not a valid date"
+    ],
+    svodRelease: [
+      "Svod release is not a valid date"
+    ],
+    tvodRelease: [
+      "Tvod release is not a valid date"
     ]
   },
 
