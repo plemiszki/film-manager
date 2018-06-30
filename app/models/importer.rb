@@ -78,8 +78,6 @@ class Importer < ActiveRecord::Base
           "RL": 3
         }
 
-        # p "#{Film.find(@@vb_film_ids[a[2]]).title} - #{venue.label}"
-
         if a[20].empty?
           old_user_id = past_bookers[a[19].to_sym]
         else
@@ -499,8 +497,9 @@ class Importer < ActiveRecord::Base
         film_vars = {
           film_type: (a[54] == 'short' ? 'Short' : 'Feature'),
           start_date: (a[9] == '12:00:00 AM' ? '' : a[9]),
+          svod_release: (a[218] == '12:00:00 AM' ? '' : a[218]),
+          tvod_release: (a[340] == '12:00:00 AM' ? (a[338] == '12:00:00 AM' ? (a[216] == '12:00:00 AM' ? (a[215] == '12:00:00 AM' ? (a[214] == '12:00:00 AM' ? (a[211] == '12:00:00 AM' ? (a[209] == '12:00:00 AM' ? '' : a[209]) : a[211]) : a[214]) : a[215]) : a[216]) : a[338]) : a[340]),
           title: a[1],
-          # short_film: a[54] == "short",
           licensor_id: licensor ? licensor.id : nil,
           deal_type_id: a[241] == "Template A" ? 1 : (a[241] == "Template B" ? 2 : (a[241] == "Template B (Theat. Only)" ? 3 : (a[241] == "Template C" ? 4 : (a[241] == "Template D" ? 5 : (a[241] == "Template E" ? 6 : nil))))),
           days_statement_due: a[54] == "short" ? nil : (a[357] == "0" ? 30 : a[357]),
