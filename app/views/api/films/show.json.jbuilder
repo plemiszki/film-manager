@@ -176,3 +176,4 @@ json.digitalRetailerFilms @digital_retailer_films do |digital_retailer_film|
   json.name digital_retailer_film.digital_retailer.name
   json.url digital_retailer_film.url
 end
+json.schedule @schedule

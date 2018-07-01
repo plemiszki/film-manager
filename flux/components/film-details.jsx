@@ -150,7 +150,8 @@ var FilmDetails = React.createClass({
       rightsSortBy: 'name',
       filmFormats: [],
       formats: [],
-      digitalRetailerFilms: []
+      digitalRetailerFilms: [],
+      schedule: []
     });
   },
 
@@ -196,6 +197,7 @@ var FilmDetails = React.createClass({
       reports: FilmsStore.reports(),
       dvds: FilmsStore.dvds(),
       bookings: FilmsStore.bookings(),
+      schedule: FilmsStore.schedule(),
       fetching: false
     }, function() {
       this.setState({
@@ -962,6 +964,19 @@ var FilmDetails = React.createClass({
               <h2>Club Release</h2>
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.clubDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" />
               { Common.renderFieldError(this.state.filmErrors, Common.errors.clubDate) }
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-12">
+              <h3>Schedule:</h3>
+              <ul className="standard-list schedule">
+                { this.state.schedule.map(function(entry) {
+                  return(
+                    <li key={ entry.id }>{ entry.label } - { entry.date }</li>
+                  );
+                }.bind(this)) }
+              </ul>
             </div>
           </div>
         </div>

@@ -20,7 +20,7 @@ var ServerActions = {
 
   receiveFilm: function(response) {
     AppDispatcher.dispatch({
-      actionType: "FILMS_RECEIVED",
+      actionType: 'FILMS_RECEIVED',
       films: response.films,
       dealTemplates: response.dealTemplates,
       licensors: response.licensors,
@@ -49,7 +49,8 @@ var ServerActions = {
       filmFormats: response.filmFormats,
       formats: response.formats,
       digitalRetailers: response.digitalRetailers,
-      digitalRetailerFilms: response.digitalRetailerFilms
+      digitalRetailerFilms: response.digitalRetailerFilms,
+      schedule: response.schedule
     });
   },
 

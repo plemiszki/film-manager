@@ -35,6 +35,7 @@ class Api::FilmsController < AdminController
     @directors = Director.where(film_id: @films.first.id)
     @digital_retailer_films = DigitalRetailerFilm.where(film_id: @films.first.id).includes(:digital_retailer)
     @digital_retailers = DigitalRetailer.all
+    @schedule = create_schedule
     render 'show.json.jbuilder'
   end
 
@@ -76,7 +77,7 @@ class Api::FilmsController < AdminController
         @reports = RoyaltyReport.where(film_id: params[:id])
         @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
         @rights = FilmRight.where(film_id: params[:id]).includes(:right)
-        @dvds = Dvd.where(feature_film_id: params[:id])
+        @dvds = Dvd.where(feature_film_id: params[:id]).includes(:dvd_type)
         @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
         @film_countries = FilmCountry.where(film_id: @films.first.id).includes(:country)
         @countries = Country.where.not(id: @film_countries.pluck(:country_id))
@@ -192,6 +193,27 @@ class Api::FilmsController < AdminController
       :ignore_sage_id
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
+    result
+  end
+
+  def create_schedule
+    result = []
+    film = @films.first
+    if film.avod_release
+      result << { label: 'AVOD', date: film.avod_release.strftime("%-m/%-d/%y") }
+    end
+    if film.svod_release
+      result << { label: 'SVOD', date: film.svod_release.strftime("%-m/%-d/%y") }
+    end
+    if film.tvod_release
+      result << { label: 'TVOD/EST', date: film.tvod_release.strftime("%-m/%-d/%y") }
+    end
+    if film.club_date
+      result << { label: 'Club', date: film.club_date.strftime("%-m/%-d/%y") }
+    end
+    @dvds.each do |dvd|
+      result << { label: "#{dvd.dvd_type.name} DVD", date: dvd.retail_date.strftime("%-m/%-d/%y") }
+    end
     result
   end
 

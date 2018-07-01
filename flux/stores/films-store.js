@@ -15,6 +15,7 @@ var _dvds = {};
 var _bookings = [];
 var _dvdTypes = [];
 var _labels = [];
+var _schedule = [];
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -24,6 +25,10 @@ FilmsStore.setFilms = function(films) {
 
 FilmsStore.setDealTemplates = function(dealTemplates) {
   _dealTemplates = dealTemplates;
+};
+
+FilmsStore.setSchedule = function(schedule) {
+  _schedule = schedule;
 };
 
 FilmsStore.setLicensors = function(licensors) {
@@ -153,15 +158,20 @@ FilmsStore.labels = function() {
   return _labels;
 };
 
+FilmsStore.schedule = function() {
+  return HandyTools.sortArrayOfDateStrings(_schedule, 'date');
+};
+
 FilmsStore.__onDispatch = function(payload) {
   switch(payload.actionType){
-    case "FILMS_RECEIVED":
+    case 'FILMS_RECEIVED':
       this.setFilms(payload.films);
       if (payload.dealTemplates) {
         this.setDealTemplates(payload.dealTemplates);
         this.setLicensors(payload.licensors);
         this.setRevenueStreams(payload.revenueStreams);
         this.setReports(payload.reports);
+        this.setSchedule(payload.schedule);
       }
       if (payload.filmRevenuePercentages) {
         this.setFilmRevenuePercentages(payload.filmRevenuePercentages);
