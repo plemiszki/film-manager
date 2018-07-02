@@ -212,7 +212,9 @@ class Api::FilmsController < AdminController
       result << { label: 'Club', date: film.club_date.strftime("%-m/%-d/%y") }
     end
     @dvds.each do |dvd|
-      result << { label: "#{dvd.dvd_type.name} DVD", date: dvd.retail_date.strftime("%-m/%-d/%y") }
+      if dvd.retail_date
+        result << { label: "#{dvd.dvd_type.name} DVD", date: dvd.retail_date.strftime("%-m/%-d/%y") }
+      end
     end
     result
   end
