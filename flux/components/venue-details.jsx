@@ -307,6 +307,13 @@ var VenueDetails = React.createClass({
             <hr />
             <div className="row">
               <div className="col-xs-12">
+                <h2>Website</h2>
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.website || "" } data-field="website" />
+                { Common.renderFieldError(this.state.errors, []) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-12">
                 <h2>Notes</h2>
                 <textarea rows="5" className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.notes || "" } data-field="notes" />
                 { Common.renderFieldError(this.state.errors, []) }

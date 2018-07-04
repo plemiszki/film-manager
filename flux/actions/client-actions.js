@@ -1122,7 +1122,8 @@ var ClientActions = {
           shipping_zip: venue.shippingZip,
           shipping_country: venue.shippingCountry,
           notes: venue.notes,
-          contact_name: venue.contactName
+          contact_name: venue.contactName,
+          website: venue.website
         }
       },
       success: function(response) {
