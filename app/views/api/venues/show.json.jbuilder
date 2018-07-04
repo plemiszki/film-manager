@@ -21,6 +21,7 @@ json.venues @venues do |venue|
   json.shippingCountry venue.shipping_country
   json.notes venue.notes
   json.contactName venue.contact_name
+  json.website venue.website
 end
 json.bookings @bookings do |booking|
   json.id booking.id
