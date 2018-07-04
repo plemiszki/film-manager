@@ -971,9 +971,9 @@ var FilmDetails = React.createClass({
             <div className="col-xs-12">
               <h3>Schedule:</h3>
               <ul className="standard-list schedule">
-                { this.state.schedule.map(function(entry) {
+                { this.state.schedule.map(function(entry, index) {
                   return(
-                    <li key={ entry.id }>{ entry.label } - { entry.date }</li>
+                    <li key={ index } className={ entry.tentative ? 'tentative' : '' }>{ entry.label } - { entry.date + (entry.tentative ? ' (?)' : '') }</li>
                   );
                 }.bind(this)) }
               </ul>

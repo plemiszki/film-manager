@@ -6,36 +6,7 @@ class Api::FilmsController < AdminController
   end
 
   def show
-    @films = Film.where(id: params[:id])
-    @film_formats = FilmFormat.where(film_id: params[:id])
-    @formats = Format.where.not(id: @film_formats.map { |ff| ff.format_id })
-    @bookings = Booking.where(film_id: @films.first.id).includes(:venue)
-    @templates = DealTemplate.all
-    @licensors = Licensor.all
-    @revenue_streams = RevenueStream.all
-    @reports = RoyaltyReport.where(film_id: params[:id])
-    @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
-    @rights = FilmRight.where(film_id: params[:id]).includes(:right, :territory)
-    @dvds = Dvd.where(feature_film_id: params[:id])
-    @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
-    @film_countries = FilmCountry.where(film_id: @films.first.id).includes(:country)
-    @countries = Country.where.not(id: @film_countries.pluck(:country_id))
-    @film_languages = FilmLanguage.where(film_id: @films.first.id).includes(:language)
-    @languages = Language.where.not(id: @film_languages.pluck(:language_id))
-    @film_genres = FilmGenre.where(film_id: @films.first.id).includes(:genre)
-    @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
-    @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
-    @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
-    @labels = Label.all
-    @laurels = Laurel.where(film_id: @films.first.id).order(:order)
-    @quotes = Quote.where(film_id: @films.first.id).order(:order)
-    @related_films = RelatedFilm.where(film_id: @films.first.id).includes(:other_film)
-    @other_films = Film.where.not(id: ([@films.first.id] + @related_films.pluck(:other_film_id)))
-    @actors = Actor.where(film_id: @films.first.id)
-    @directors = Director.where(film_id: @films.first.id)
-    @digital_retailer_films = DigitalRetailerFilm.where(film_id: @films.first.id).includes(:digital_retailer)
-    @digital_retailers = DigitalRetailer.all
-    @schedule = create_schedule
+    gather_data_for_show_view
     render 'show.json.jbuilder'
   end
 
@@ -69,31 +40,7 @@ class Api::FilmsController < AdminController
           end
         end
         fail if error_present
-        @films = Film.where(id: params[:id])
-        @bookings = Booking.where(film_id: @films.first.id).includes(:venue)
-        @templates = DealTemplate.all
-        @licensors = Licensor.all
-        @revenue_streams = RevenueStream.all
-        @reports = RoyaltyReport.where(film_id: params[:id])
-        @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
-        @rights = FilmRight.where(film_id: params[:id]).includes(:right)
-        @dvds = Dvd.where(feature_film_id: params[:id]).includes(:dvd_type)
-        @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
-        @film_countries = FilmCountry.where(film_id: @films.first.id).includes(:country)
-        @countries = Country.where.not(id: @film_countries.pluck(:country_id))
-        @film_languages = FilmLanguage.where(film_id: @films.first.id).includes(:language)
-        @languages = Language.where.not(id: @film_languages.pluck(:language_id))
-        @film_genres = FilmGenre.where(film_id: @films.first.id).includes(:genre)
-        @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
-        @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
-        @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
-        @labels = Label.all
-        @laurels = Laurel.where(film_id: @films.first.id).order(:order)
-        @quotes = Quote.where(film_id: @films.first.id).order(:order)
-        @related_films = RelatedFilm.where(film_id: @films.first.id).includes(:other_film)
-        @other_films = Film.where.not(id: ([@films.first.id] + @related_films.pluck(:other_film_id)))
-        @actors = Actor.where(film_id: @films.first.id)
-        @directors = Director.where(film_id: @films.first.id)
+        gather_data_for_show_view
         render 'show.json.jbuilder'
       end
     rescue
@@ -190,23 +137,59 @@ class Api::FilmsController < AdminController
       :avod_release,
       :svod_release,
       :tvod_release,
-      :ignore_sage_id
+      :ignore_sage_id,
+      :avod_tentative,
+      :svod_tentative,
+      :tvod_tentative
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result
+  end
+
+  def gather_data_for_show_view
+    @films = Film.where(id: params[:id])
+    @film_formats = FilmFormat.where(film_id: params[:id])
+    @formats = Format.where.not(id: @film_formats.map { |ff| ff.format_id })
+    @bookings = Booking.where(film_id: @films.first.id).includes(:venue)
+    @templates = DealTemplate.all
+    @licensors = Licensor.all
+    @revenue_streams = RevenueStream.all
+    @reports = RoyaltyReport.where(film_id: params[:id])
+    @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
+    @rights = FilmRight.where(film_id: params[:id]).includes(:right, :territory)
+    @dvds = Dvd.where(feature_film_id: params[:id])
+    @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
+    @film_countries = FilmCountry.where(film_id: @films.first.id).includes(:country)
+    @countries = Country.where.not(id: @film_countries.pluck(:country_id))
+    @film_languages = FilmLanguage.where(film_id: @films.first.id).includes(:language)
+    @languages = Language.where.not(id: @film_languages.pluck(:language_id))
+    @film_genres = FilmGenre.where(film_id: @films.first.id).includes(:genre)
+    @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
+    @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
+    @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
+    @labels = Label.all
+    @laurels = Laurel.where(film_id: @films.first.id).order(:order)
+    @quotes = Quote.where(film_id: @films.first.id).order(:order)
+    @related_films = RelatedFilm.where(film_id: @films.first.id).includes(:other_film)
+    @other_films = Film.where.not(id: ([@films.first.id] + @related_films.pluck(:other_film_id)))
+    @actors = Actor.where(film_id: @films.first.id)
+    @directors = Director.where(film_id: @films.first.id)
+    @digital_retailer_films = DigitalRetailerFilm.where(film_id: @films.first.id).includes(:digital_retailer)
+    @digital_retailers = DigitalRetailer.all
+    @schedule = create_schedule
   end
 
   def create_schedule
     result = []
     film = @films.first
     if film.avod_release
-      result << { label: 'AVOD', date: film.avod_release.strftime("%-m/%-d/%y") }
+      result << { label: 'AVOD', date: film.avod_release.strftime("%-m/%-d/%y"), tentative: film.avod_tentative }
     end
     if film.svod_release
-      result << { label: 'SVOD', date: film.svod_release.strftime("%-m/%-d/%y") }
+      result << { label: 'SVOD', date: film.svod_release.strftime("%-m/%-d/%y"), tentative: film.svod_tentative }
     end
     if film.tvod_release
-      result << { label: 'TVOD/EST', date: film.tvod_release.strftime("%-m/%-d/%y") }
+      result << { label: 'TVOD/EST', date: film.tvod_release.strftime("%-m/%-d/%y"), tentative: film.tvod_tentative }
     end
     if film.club_date
       result << { label: 'Club', date: film.club_date.strftime("%-m/%-d/%y") }

@@ -615,6 +615,20 @@ Common = {
     );
   },
 
+  removeQuestion: function(string, prefix) {
+    if (string.slice(-1) === '?') {
+      return {
+        [prefix + '_release']: string.slice(0, -1),
+        [prefix + '_tentative']: true
+      }
+    } else {
+      return {
+        [prefix + '_release']: string,
+        [prefix + '_tentative']: false
+      }
+    }
+  },
+
   resetNiceSelect: function(selector, func) {
     var $dropDowns = $(selector);
     $dropDowns.niceSelect('destroy');

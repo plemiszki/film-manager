@@ -1,6 +1,12 @@
 .film-details {
 
   .schedule {
+
+    li.tentative {
+      color: red;
+      font-style: italic;
+    }
+    
     margin-bottom: 60px;
   }
 
