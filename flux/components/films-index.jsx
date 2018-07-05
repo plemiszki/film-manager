@@ -2,9 +2,11 @@ var React = require('react');
 var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
+var ServerActions = require('../actions/server-actions.js');
 var FilmsStore = require('../stores/films-store.js');
 var NewThing = require('./new-thing.jsx');
 var FilmRightsNew = require('./film-rights-new.jsx');
+var JobStore = require('../stores/job-store.js');
 
 var ModalStyles = {
   overlay: {
@@ -35,17 +37,23 @@ var newRightsModalStyles = {
 var FilmsIndex = React.createClass({
 
   getInitialState: function() {
+    var job = {
+      errors_text: ""
+    };
     return({
       fetching: true,
       searchText: '',
       sortBy: 'title',
       films: [],
-      modalOpen: false
+      modalOpen: false,
+      jobModalOpen: !!job.id,
+      job: job
     });
   },
 
   componentDidMount: function() {
     this.filmsListener = FilmsStore.addListener(this.getFilms);
+    this.jobListener = JobStore.addListener(this.getJob);
     if (this.props.advanced) {
       ClientActions.fetchFilmsAdvanced(this.props.filmType);
     } else {
@@ -55,6 +63,7 @@ var FilmsIndex = React.createClass({
 
   componentWillUnmount: function() {
     this.filmsListener.remove();
+    this.jobListener.remove();
   },
 
   getFilms: function() {
@@ -63,6 +72,24 @@ var FilmsIndex = React.createClass({
       films: FilmsStore.all(),
       modalOpen: false
     });
+  },
+
+  getJob: function() {
+    var job = JobStore.job();
+    if (job.done) {
+      this.setState({
+        jobModalOpen: false,
+        job: job
+      }, function() {
+        window.location.href = job.first_line;
+      });
+    } else {
+      this.setState({
+        jobModalOpen: true,
+        job: job,
+        fetching: false
+      });
+    }
   },
 
   redirect: function(id) {
@@ -84,6 +111,18 @@ var FilmsIndex = React.createClass({
     this.setState({
       searchModalOpen: true
     });
+  },
+
+  clickExportMetadata: function() {
+    if (!this.state.fetching) {
+      this.setState({
+        fetching: true
+      });
+      var filmIds = this.state.films.map(function(film) {
+        return film.id;
+      });
+      ClientActions.exportFilms(filmIds);
+    }
   },
 
   render: function() {
@@ -131,6 +170,7 @@ var FilmsIndex = React.createClass({
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ newRightsModalStyles }>
           <FilmRightsNew search={ true } />
         </Modal>
+        { Common.jobModal.call(this, this.state.job) }
       </div>
     );
   },
@@ -167,6 +207,21 @@ var FilmsIndex = React.createClass({
 
   componentDidUpdate: function() {
     $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: function(response) {
+            ServerActions.receiveJob(response);
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 

@@ -46,6 +46,7 @@ Rails.application.routes.draw do
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     get '/films/advanced' => '/api/films#advanced'
     resources :films, only: [:index, :show, :create, :update, :destroy]
+    post '/films/export' => '/api/films#export'
     resources :venues, only: [:index, :show, :create, :update, :destroy]
     get '/bookings/upcoming' => '/api/bookings#upcoming_index'
     get '/bookings/advanced' => '/api/bookings#advanced'

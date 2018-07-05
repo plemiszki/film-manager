@@ -949,6 +949,19 @@ var ClientActions = {
     });
   },
 
+  exportFilms: function(filmIds) {
+    $.ajax({
+      url: '/api/films/export',
+      method: 'POST',
+      data: {
+        film_ids: filmIds
+      },
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
+  },
+
   fetchDvdReports: function(year) {
     $.ajax({
       url: '/api/dvd_reports',

@@ -92,6 +92,14 @@ class Api::FilmsController < AdminController
     render 'index.json.jbuilder'
   end
 
+  def export
+    film_ids = params[:film_ids].to_a.map(&:to_i)
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "export films", first_line: "Exporting Metadata", second_line: true, current_value: 0, total_value: film_ids.length)
+    ExportFilms.perform_async(film_ids, time_started)
+    render json: job
+  end
+
   private
 
   def film_params
