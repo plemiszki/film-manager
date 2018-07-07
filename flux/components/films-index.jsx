@@ -190,11 +190,9 @@ var FilmsIndex = React.createClass({
   },
 
   renderExportMetadataButton: function() {
-    if (this.props.advanced) {
-      return(
-        <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExportMetadata }>Export Metadata</a>
-      );
-    }
+    return(
+      <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExportMetadata }>Export Metadata</a>
+    );
   },
 
   renderExportCatalogButton: function() {
