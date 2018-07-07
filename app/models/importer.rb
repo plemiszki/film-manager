@@ -527,7 +527,9 @@ class Importer < ActiveRecord::Base
           twitter_link: a[345],
           instagram_link: a[346],
           label_id: label_id,
-          active: (a[53] != '12:00:00 AM')
+          active: (a[53] != '12:00:00 AM'),
+          edu_page: (a[54] != 'short' && (label_id == 1 || label_id == 3)),
+          video_page: (a[54] != 'short' && (label_id == 1 || label_id == 3))
         }
         if a[21] != '12:00:00 AM'
           film_vars[:club_date] = a[21]
