@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   resources :film_rights, only: [:show]
   resources :digital_retailer_films, only: [:show]
   get '/in_theaters' => 'in_theaters_films#index'
+  get '/calendar' => 'calendar#show'
 
   namespace :api do
     get '/users' => '/api/users#api_index'

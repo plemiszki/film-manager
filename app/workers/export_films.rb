@@ -35,7 +35,7 @@ class ExportFilms
     films.each_with_index do |film, film_index|
       sheet.add_row([
         film.title,
-        film.licensor.name,
+        (film.licensor ? film.licensor.name : ''),
         film.start_date,
         film.end_date,
         film.proper_label_name,

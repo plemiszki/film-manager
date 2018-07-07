@@ -51,6 +51,7 @@ var SublicensorDetails = require('./components/sublicensor-details.jsx');
 var DigitalRetailersIndex = require('./components/digital-retailers-index.jsx');
 var DigitalRetailerDetails = require('./components/digital-retailer-details.jsx');
 var DigitalRetailerFilmDetails = require('./components/digital-retailer-film-details.jsx');
+var Calendar = require('./components/calendar.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -221,5 +222,8 @@ $(document).ready(function() {
   }
   if ($('#digital-retailer-film-details')[0]) {
     ReactDOM.render(<DigitalRetailerFilmDetails />, document.getElementById("digital-retailer-film-details"));
+  }
+  if ($('#calendar')[0]) {
+    ReactDOM.render(<Calendar />, document.getElementById("calendar"));
   }
 });
