@@ -986,8 +986,10 @@ var FilmDetails = React.createClass({
         <div>
           <hr className="smaller-margin" />
           <div className="row checkboxes">
-            <div className="col-xs-3">
+            <div className="col-xs-12">
               <input id="active" type="checkbox" checked={ this.state.film.active || false } onChange={ this.changeCheckbox.bind(this, 'active') } /><label htmlFor="active">Active on Website</label>
+              <input id="eduPage" type="checkbox" checked={ this.state.film.eduPage || false } onChange={ this.changeCheckbox.bind(this, 'eduPage') } /><label htmlFor="eduPage">Educational Page</label>
+              <input id="videoPage" type="checkbox" checked={ this.state.film.videoPage || false } onChange={ this.changeCheckbox.bind(this, 'videoPage') } /><label htmlFor="videoPage">Video Page</label>
             </div>
           </div>
           <hr />

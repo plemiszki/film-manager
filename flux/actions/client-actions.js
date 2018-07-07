@@ -260,6 +260,8 @@ var ClientActions = {
       twitter_link: film.twitterLink,
       instagram_link: film.instagramLink,
       active: film.active,
+      edu_page: film.eduPage,
+      video_page: film.videoPage,
       label_id: film.labelId,
       club_date: film.clubDate,
       ignore_sage_id: film.ignoreSageId

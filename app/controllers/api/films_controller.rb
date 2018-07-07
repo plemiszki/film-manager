@@ -148,7 +148,9 @@ class Api::FilmsController < AdminController
       :ignore_sage_id,
       :avod_tentative,
       :svod_tentative,
-      :tvod_tentative
+      :tvod_tentative,
+      :video_page,
+      :edu_page
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

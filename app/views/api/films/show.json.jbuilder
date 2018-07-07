@@ -45,6 +45,8 @@ json.films @films do |film|
   json.avodRelease film.avod_release ? (film.avod_release.strftime("%-m/%-d/%y") + (film.avod_tentative ? '?' : '')) : ""
   json.svodRelease film.svod_release ? (film.svod_release.strftime("%-m/%-d/%y") + (film.svod_tentative ? '?' : '')) : ""
   json.tvodRelease film.tvod_release ? (film.tvod_release.strftime("%-m/%-d/%y") + (film.tvod_tentative ? '?' : '')) : ""
+  json.eduPage film.edu_page
+  json.videoPage film.video_page
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
