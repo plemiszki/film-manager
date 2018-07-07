@@ -617,18 +617,18 @@ var FilmDetails = React.createClass({
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
-            <div className="col-xs-12 col-sm-9">
+            <div className="col-xs-1">
+              <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ { 'backgroundImage': `url(${this.state.film.artworkUrl})` } }></div>
+            </div>
+            <div className="col-xs-9">
               <h2>Title</h2>
               <input className={ Common.errorClass(this.state.filmErrors, ["Title can't be blank"]) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
               { Common.renderFieldError(this.state.filmErrors, ["Title can't be blank"]) }
             </div>
-            <div className="col-xs-12 col-sm-3">
+            <div className="col-xs-2">
               <h2>Type</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="filmType" value={ this.state.film.filmType } disabled={ true }>
-                <option value={ "Feature" }>Feature</option>
-                <option value={ "Short" }>Short</option>
-                <option value={ "TV Series" }>TV Series</option>
-              </select>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.filmType || ""} readOnly={ true } />
+              { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
           { this.renderTab(this.state.tab) }

@@ -1,5 +1,19 @@
 .film-details {
 
+  div.key-art {
+    width: 100%;
+    height: 74px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    cursor: pointer;
+
+    &.empty {
+      border: 1px solid #E4E9ED;
+      background-color: #FAFAFA;
+    }
+  }
+
   .schedule {
 
     li.tentative {
