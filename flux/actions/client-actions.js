@@ -2456,6 +2456,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  updateArtwork: function() {
+    $.ajax({
+      url: '/api/films/update_artwork',
+      method: 'POST',
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
   }
 }
 

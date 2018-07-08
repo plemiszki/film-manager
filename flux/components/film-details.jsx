@@ -2,6 +2,7 @@ var React = require('react');
 var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
+var ServerActions = require('../actions/server-actions.js');
 var FilmsStore = require('../stores/films-store.js');
 var FilmErrorsStore = require('../stores/film-errors-store.js');
 var CountriesStore = require('../stores/countries-store.js');
@@ -18,6 +19,7 @@ var ModalSelect = require('./modal-select.jsx');
 var FilmRightsNew = require('./film-rights-new.jsx');
 var FormatsStore = require('../stores/formats-store.js');
 var DigitalRetailersStore = require('../stores/digital-retailers-store.js');
+var JobStore = require('../stores/job-store.js');
 
 var FilmDetails = React.createClass({
 
@@ -103,6 +105,9 @@ var FilmDetails = React.createClass({
   },
 
   getInitialState: function() {
+    var job = {
+      errors_text: ""
+    };
     return({
       fetching: true,
       film: {},
@@ -151,12 +156,15 @@ var FilmDetails = React.createClass({
       filmFormats: [],
       formats: [],
       digitalRetailerFilms: [],
-      schedule: []
+      schedule: [],
+      jobModalOpen: !!job.id,
+      job: job
     });
   },
 
   componentDidMount: function() {
     this.filmListener = FilmsStore.addListener(this.getFilm);
+    this.jobListener = JobStore.addListener(this.getJob);
     this.countriesListener = CountriesStore.addListener(this.getCountries);
     this.languagesListener = LanguagesStore.addListener(this.getLanguages);
     this.genresListener = GenresStore.addListener(this.getGenres);
@@ -186,6 +194,7 @@ var FilmDetails = React.createClass({
     this.errorsListener.remove();
     this.formatsListener.remove();
     this.digitalRetailersListener.remove();
+    this.jobListener.remove();
   },
 
   getFilm: function() {
@@ -300,6 +309,22 @@ var FilmDetails = React.createClass({
       newDigitalRetailerModalOpen: false,
       fetching: false
     });
+  },
+
+  getJob: function() {
+    var job = JobStore.job();
+    if (job.done) {
+      this.setState({
+        jobModalOpen: false,
+        job: job
+      });
+    } else {
+      this.setState({
+        jobModalOpen: true,
+        job: job,
+        fetching: false
+      });
+    }
   },
 
   clickTab: function(event) {
@@ -577,6 +602,10 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickArtwork: function() {
+    ClientActions.updateArtwork();
+  },
+
   rightsSort: function(object) {
     var property = object[this.state.rightsSortBy];
     return property.toLowerCase();
@@ -618,7 +647,7 @@ var FilmDetails = React.createClass({
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
             <div className="col-xs-1">
-              <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ { 'backgroundImage': `url(${this.state.film.artworkUrl})` } }></div>
+              <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ { 'backgroundImage': `url(${this.state.film.artworkUrl})` } } onClick={ this.clickArtwork }></div>
             </div>
             <div className="col-xs-9">
               <h2>Title</h2>
@@ -695,6 +724,7 @@ var FilmDetails = React.createClass({
         <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.directorModalStyles }>
           <NewThing thing="digitalRetailerFilm" initialObject={ { filmId: this.state.film.id, url: "", digitalRetailerId: "1" } } />
         </Modal>
+        { Common.jobModal.call(this, this.state.job) }
       </div>
     );
   },
@@ -1435,6 +1465,21 @@ var FilmDetails = React.createClass({
   componentDidUpdate: function() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: function(response) {
+            ServerActions.receiveJob(response);
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 
