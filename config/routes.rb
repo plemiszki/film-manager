@@ -80,6 +80,7 @@ Rails.application.routes.draw do
     get '/invoices/:id/export' => '/api/invoices#export'
     post '/invoices/export' => '/api/invoices#export_sage'
     post '/invoices' => '/api/invoices#create'
+    get '/calendar' => 'calendar#show'
     resources :returns, only: [:index, :create, :show, :update, :destroy]
     resources :return_items, only: [:create, :destroy]
     resources :weekly_terms, only: [:create, :destroy]

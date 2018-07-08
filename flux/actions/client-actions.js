@@ -2456,6 +2456,19 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  fetchCalendar: function(year) {
+    $.ajax({
+      url: '/api/calendar',
+      method: 'GET',
+      data: {
+        year: year
+      },
+      success: function(response) {
+        ServerActions.receiveCalendar(response);
+      }
+    });
   }
 }
 
