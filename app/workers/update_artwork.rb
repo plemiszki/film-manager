@@ -8,7 +8,9 @@ class UpdateArtwork
 
     Film.all.each_with_index do |film, film_index|
       # p film.artwork_url
+      job.update({ current_value: film_index + 1 })
     end
+    job.update!({ done: true })
   end
 
 end

@@ -104,6 +104,19 @@ var FilmDetails = React.createClass({
     }
   },
 
+  artworkModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 600,
+      height: 162
+    }
+  },
+
   getInitialState: function() {
     var job = {
       errors_text: ""
@@ -157,6 +170,7 @@ var FilmDetails = React.createClass({
       formats: [],
       digitalRetailerFilms: [],
       schedule: [],
+      artworkModalOpen: false,
       jobModalOpen: !!job.id,
       job: job
     });
@@ -551,7 +565,8 @@ var FilmDetails = React.createClass({
       relatedFilmsModalOpen: false,
       newRightsModalOpen: false,
       formatsModalOpen: false,
-      newDigitalRetailerModalOpen: false
+      newDigitalRetailerModalOpen: false,
+      artworkModalOpen: false
     });
   },
 
@@ -603,6 +618,15 @@ var FilmDetails = React.createClass({
   },
 
   clickArtwork: function() {
+    this.setState({
+      artworkModalOpen: true
+    });
+  },
+
+  confirmUpdateArtwork: function() {
+    this.setState({
+      artworkModalOpen: false
+    });
     ClientActions.updateArtwork();
   },
 
@@ -723,6 +747,13 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.directorModalStyles }>
           <NewThing thing="digitalRetailerFilm" initialObject={ { filmId: this.state.film.id, url: "", digitalRetailerId: "1" } } />
+        </Modal>
+        <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.artworkModalStyles }>
+          <h1 className="my-modal-header">Update artwork for all films now?</h1>
+          <div className="text-center">
+            <div className="orange-button small margin" onClick={ this.confirmUpdateArtwork }>Yes</div>
+            <div className="cancel-button small" onClick={ this.handleModalClose }>No</div>
+          </div>
         </Modal>
         { Common.jobModal.call(this, this.state.job) }
       </div>
