@@ -165,7 +165,7 @@ var FilmsIndex = React.createClass({
           </table>
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing={ this.props.shorts ? "short" : "film" } initialObject={ { title: "" } } />
+          <NewThing thing={ "film" } initialObject={ { title: "", filmType: this.props.filmType, labelId: 1 } } />
         </Modal>
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ newRightsModalStyles }>
           <FilmRightsNew search={ true } />

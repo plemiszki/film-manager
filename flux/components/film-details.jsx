@@ -947,7 +947,7 @@ var FilmDetails = React.createClass({
               </ul>
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddActor }>Add Actor</a>
             </div>
-            <div className="col-xs-3">
+            <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <h3>Release Dates:</h3>
               <h2>SVOD Release</h2>
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.svodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" />
@@ -956,7 +956,7 @@ var FilmDetails = React.createClass({
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.tvodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.tvodRelease || "" } data-field="tvodRelease" />
               { Common.renderFieldError(this.state.filmErrors, Common.errors.tvodRelease) }
             </div>
-            <div className="col-xs-3">
+            <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <div style={ { width: '100%', height: '47px' } }></div>
               <h2>AVOD Release</h2>
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.avodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.avodRelease || "" } data-field="avodRelease" />
@@ -967,7 +967,7 @@ var FilmDetails = React.createClass({
             </div>
           </div>
           <hr />
-          <div className="row">
+          <div className={ "row" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
             <div className="col-xs-12">
               <h3>Schedule:</h3>
               <ul className="standard-list schedule">
