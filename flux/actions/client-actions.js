@@ -189,7 +189,13 @@ var ClientActions = {
     $.ajax({
       url: '/api/films',
       method: 'POST',
-      data: {film: film, short: false},
+      data: {
+        title: film.title,
+        film_type: film.filmType,
+        label_id: film.labelId,
+        length: film.length,
+        year: film.year
+      },
       success: function(response) {
         ServerActions.receiveFilms(response);
       },
@@ -2467,6 +2473,19 @@ var ClientActions = {
       },
       success: function(response) {
         ServerActions.receiveJob(response);
+      }
+    });
+  },
+
+  fetchCalendar: function(year) {
+    $.ajax({
+      url: '/api/calendar',
+      method: 'GET',
+      data: {
+        year: year
+      },
+      success: function(response) {
+        ServerActions.receiveCalendar(response);
       }
     });
   }

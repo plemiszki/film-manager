@@ -122,7 +122,6 @@ var NewThing = React.createClass({
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderNameField() }
-          { this.renderTitleField() }
           { this.renderEmailField() }
           { this.renderPasswordField() }
           { this.renderUpcField() }
@@ -142,6 +141,7 @@ var NewThing = React.createClass({
           { this.renderActorOrDirectorFields() }
           { this.renderBookerFields() }
           { this.renderDigitalRetailerFilmFields() }
+          { this.renderNewFilmFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
             { this.renderAddButton() }
           </a>
@@ -197,17 +197,27 @@ var NewThing = React.createClass({
     }
   },
 
-  renderTitleField: function() {
-    if (this.props.thing === "film" || this.props.thing === "short") {
+  renderNewFilmFields: function() {
+    if (this.props.thing === "film") {
       return(
         <div className="row">
-          <div className="col-xs-12">
+          <div className="col-xs-8">
             <h2>Title</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.title)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].title} data-field="title" />
-            {Common.renderFieldError(this.state.errors, Common.errors.title)}
+            <input className={Common.errorClass(this.state.errors, Common.errors.title)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title} data-field="title" />
+            { Common.renderFieldError(this.state.errors, Common.errors.title) }
+          </div>
+          <div className="col-xs-2">
+            <h2>Year</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.year)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.year} data-field="year" />
+            { Common.renderFieldError(this.state.errors, Common.errors.year) }
+          </div>
+          <div className="col-xs-2">
+            <h2>Length (minutes)</h2>
+            <input className={Common.errorClass(this.state.errors, Common.errors.length)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.length} data-field="length" />
+            { Common.renderFieldError(this.state.errors, Common.errors.length) }
           </div>
         </div>
-      )
+      );
     }
   },
 

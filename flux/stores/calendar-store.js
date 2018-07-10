@@ -11,13 +11,13 @@ CalendarStore.setMonths = function(months) {
 };
 
 CalendarStore.months = function() {
-  return HandyTools.alphabetizeArrayOfObjects(_months, 'month');
+  return _months;
 };
 
 CalendarStore.__onDispatch = function(payload) {
   switch(payload.actionType){
     case 'CALENDAR_RECEIVED':
-      this.setCalendar(payload.months);
+      this.setMonths(payload.months);
       this.__emitChange();
       break;
   }

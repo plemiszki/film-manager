@@ -463,6 +463,13 @@ var ServerActions = {
       digitalRetailers: response.digitalRetailers,
       digitalRetailerFilms: response.digitalRetailerFilms
     });
+  },
+
+  receiveCalendar: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "CALENDAR_RECEIVED",
+      months: response
+    });
   }
 }
 

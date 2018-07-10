@@ -11,7 +11,7 @@ class Api::FilmsController < AdminController
   end
 
   def create
-    @film = Film.new(title: film_params[:title], label_id: 1, days_statement_due: 30, film_type: params[:film_type])
+    @film = Film.new(title: params[:title], label_id: 1, days_statement_due: 30, film_type: params[:film_type], year: params[:year], length: params[:length])
     if @film.save
       @films = Film.where(film_type: params[:film_type])
       render 'index.json.jbuilder'
