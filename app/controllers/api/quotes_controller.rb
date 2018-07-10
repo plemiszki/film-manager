@@ -11,7 +11,7 @@ class Api::QuotesController < AdminController
     current_length = Quote.where(film_id: quote_params[:film_id]).length
     @quote = Quote.new(quote_params.merge({ order: current_length }))
     if @quote.save
-      @quotes = Quote.all
+      @quotes = Quote.where(film_id: quote_params[:film_id]).order(:order)
       render "show.json.jbuilder"
     else
       render json: @quote.errors.full_messages, status: 422
@@ -21,7 +21,7 @@ class Api::QuotesController < AdminController
   def update
     @quote = Quote.find(params[:id])
     if @quote.update(quote_params)
-      @quotes = Quote.all
+      @quotes = Quote.where(film_id: quote_params[:film_id]).order(:order)
       render "show.json.jbuilder"
     else
       render json: @quote.errors.full_messages, status: 422
