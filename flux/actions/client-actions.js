@@ -2458,10 +2458,13 @@ var ClientActions = {
     });
   },
 
-  updateArtwork: function() {
+  updateArtwork: function(triggerId) {
     $.ajax({
       url: '/api/films/update_artwork',
       method: 'POST',
+      data: {
+        trigger_id: triggerId
+      },
       success: function(response) {
         ServerActions.receiveJob(response);
       }

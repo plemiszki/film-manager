@@ -328,7 +328,13 @@ var FilmDetails = React.createClass({
   getJob: function() {
     var job = JobStore.job();
     if (job.done) {
+      var film = this.state.film;
+      film.artworkUrl = job.first_line;
+      var filmSaved = this.state.filmSaved;
+      filmSaved.artworkUrl = job.first_line;
       this.setState({
+        film: film,
+        filmSaved: filmSaved,
         jobModalOpen: false,
         job: job
       });
@@ -627,7 +633,7 @@ var FilmDetails = React.createClass({
     this.setState({
       artworkModalOpen: false
     });
-    ClientActions.updateArtwork();
+    ClientActions.updateArtwork(this.state.film.id);
   },
 
   rightsSort: function(object) {

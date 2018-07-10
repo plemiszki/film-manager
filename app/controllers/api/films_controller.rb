@@ -103,7 +103,7 @@ class Api::FilmsController < AdminController
   def update_artwork
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "update artwork", first_line: "Updating Artwork", second_line: true, current_value: 0, total_value: Film.count)
-    UpdateArtwork.perform_async(time_started)
+    UpdateArtwork.perform_async(time_started, params[:trigger_id])
     render json: job
   end
 
