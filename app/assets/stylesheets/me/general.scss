@@ -28,6 +28,16 @@ a.standard-link {
   max-height: 120px !important;
 }
 
+.my-modal-header {
+  margin-top: 30px;
+  font-size: 20px;
+  font-family: 'TeachableSans-Regular';
+  color: #2C2F33;
+  letter-spacing: 1.08px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 body {
   background-color: #F5F6F7;
   height: 100%;
@@ -188,12 +198,27 @@ body {
     color: #95949B;
   }
 
-  .orange-button, .light-orange-button, .blue-outline-button, .red-button {
+  .orange-button, .light-orange-button, .red-button, .cancel-button {
+    font-family: 'TeachableSans-Bold';
+    padding: 15px 40px;
+  }
+
+  .orange-button, .light-orange-button, .blue-outline-button, .red-button, .cancel-button {
     display: inline-block;
     min-width: 175px;
     text-align: center;
     font-size: 12px;
     border-radius: 100px;
+
+    &.small {
+      min-width: 100px;
+      padding: 15px 0;
+      font-family: 'TeachableSans-Regular';
+    }
+
+    &.margin {
+      margin-right: 30px;
+    }
 
     &:hover {
       cursor: pointer;
@@ -201,9 +226,8 @@ body {
     }
   }
 
-  .orange-button, .light-orange-button, .red-button {
-    font-family: 'TeachableSans-Bold';
-    padding: 15px 40px;
+  .cancel-button {
+    border: solid 1px black;
   }
 
   .blue-outline-button {
