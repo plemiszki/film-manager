@@ -1016,6 +1016,9 @@ var FilmDetails = React.createClass({
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <h3>Release Dates:</h3>
+              <h2>Theatrical Release</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, Common.errors.theatricalRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.theatricalRelease || "" } data-field="theatricalRelease" />
+              { Common.renderFieldError(this.state.filmErrors, Common.errors.theatricalRelease) }
               <h2>SVOD Release</h2>
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.svodRelease) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" />
               { Common.renderFieldError(this.state.filmErrors, Common.errors.svodRelease) }

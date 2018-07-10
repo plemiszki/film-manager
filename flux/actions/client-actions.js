@@ -275,6 +275,7 @@ var ClientActions = {
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.avodRelease, 'avod'));
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.svodRelease, 'svod'));
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.tvodRelease, 'tvod'));
+    filmObj = Object.assign(filmObj, Common.removeQuestion(film.theatricalRelease, 'theatrical'));
     $.ajax({
       url: '/api/films/' + film.id,
       method: 'PATCH',

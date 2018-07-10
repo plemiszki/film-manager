@@ -368,6 +368,9 @@ Common = {
     ],
     tvodRelease: [
       "Tvod release is not a valid date"
+    ],
+    theatricalRelease: [
+      "Theatrical release is not a valid date"
     ]
   },
 

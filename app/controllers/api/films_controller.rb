@@ -152,10 +152,12 @@ class Api::FilmsController < AdminController
       :avod_release,
       :svod_release,
       :tvod_release,
+      :theatrical_release,
       :ignore_sage_id,
       :avod_tentative,
       :svod_tentative,
       :tvod_tentative,
+      :theatrical_tentative,
       :video_page,
       :edu_page
     )
@@ -199,6 +201,9 @@ class Api::FilmsController < AdminController
   def create_schedule
     result = []
     film = @films.first
+    if film.theatrical_release
+      result << { label: 'Theatrical', date: film.theatrical_release.strftime("%-m/%-d/%y"), tentative: film.theatrical_tentative }
+    end
     if film.avod_release
       result << { label: 'AVOD', date: film.avod_release.strftime("%-m/%-d/%y"), tentative: film.avod_tentative }
     end
