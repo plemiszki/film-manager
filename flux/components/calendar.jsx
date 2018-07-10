@@ -64,10 +64,10 @@ var Calendar = React.createClass({
               <thead>
                 <tr>
                   <th></th>
+                  <th>Theatrical Releases</th>
                   <th>DVD Releases</th>
                   <th>TVOD/EST Releases</th>
                   <th>SVOD Releases</th>
-                  <th>AVOD Releases</th>
                   <th>Club Release</th>
                 </tr>
               </thead>
@@ -77,6 +77,17 @@ var Calendar = React.createClass({
                       <tr key={ index }>
                         <td className="monthCell">
                           { this.monthName(index) }
+                        </td>
+                        <td>
+                          { this.state.months[index].theatricalReleases.map(function(theatricalRelease, index) {
+                              return(
+                                <div key={ index } className={ "film" + (theatricalRelease.tentative ? ' tentative' : '') }>
+                                  { theatricalRelease.title }<br />
+                                { theatricalRelease.date }
+                                </div>
+                              );
+                            })
+                          }
                         </td>
                         <td>
                           { this.state.months[index].dvdReleases.map(function(dvdRelease, index) {
@@ -106,17 +117,6 @@ var Calendar = React.createClass({
                                 <div key={ index } className={ "film" + (svodRelease.tentative ? ' tentative' : '') }>
                                   { svodRelease.title }<br />
                                   { svodRelease.date }
-                                </div>
-                              );
-                            })
-                          }
-                        </td>
-                        <td>
-                          { this.state.months[index].avodReleases.map(function(avodRelease, index) {
-                              return(
-                                <div key={ index } className={ "film" + (avodRelease.tentative ? ' tentative' : '') }>
-                                  { avodRelease.title }<br />
-                                  { avodRelease.date }
                                 </div>
                               );
                             })
