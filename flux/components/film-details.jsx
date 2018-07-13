@@ -781,7 +781,7 @@ var FilmDetails = React.createClass({
   },
 
   renderTopTab: function(label) {
-    if (this.state.film.id && (this.state.film.filmType === "Feature" || ['General', 'Synopses'].indexOf(label) > -1)) {
+    if (this.state.film.id && (this.state.film.filmType === "Feature" || ['General', 'Synopses', 'DVDs'].indexOf(label) > -1)) {
       return(
         <div className={ "tab" + (this.state.tab === label ? " selected" : "") } onClick={ this.clickTab }>{ label }</div>
       );
@@ -816,7 +816,7 @@ var FilmDetails = React.createClass({
           { this.renderRoyaltyFields() }
         </div>
       )
-    } else if (this.state.tab === "DVDs") {
+    } else if (this.state.tab === "DVDs" && this.state.film.filmType === 'Feature') {
       return(
         <div>
           <hr />
@@ -841,7 +841,37 @@ var FilmDetails = React.createClass({
           </table>
           <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ this.clickAddDVDButton }>Add DVD</a>
         </div>
-      )
+      );
+    } else if (this.state.tab === "DVDs" && this.state.film.filmType === 'Short') {
+      return(
+        <div>
+          <hr />
+          <table className={ "admin-table" }>
+            <thead>
+              <tr>
+                <th>Feature Title</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td><td></td></tr>
+              { this.state.dvds.map(function(dvd, index) {
+                return(
+                  <tr key={ index } onClick={ this.redirect.bind(this, 'dvds', dvd.id) }>
+                    <td className="name-column">
+                      { dvd.featureTitle }
+                    </td>
+                    <td>
+                      { dvd.type }
+                    </td>
+                  </tr>
+                );
+              }.bind(this)) }
+            </tbody>
+          </table>
+          <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ this.clickAddDVDButton }>Add DVD</a>
+        </div>
+      );
     } else if (this.state.tab === "Bookings") {
       var filteredBookings = this.state.bookings.filterSearchText(this.state.searchText, this.state.sortBy);
       return(
