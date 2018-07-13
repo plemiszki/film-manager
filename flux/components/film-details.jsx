@@ -869,7 +869,6 @@ var FilmDetails = React.createClass({
               }.bind(this)) }
             </tbody>
           </table>
-          <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ this.clickAddDVDButton }>Add DVD</a>
         </div>
       );
     } else if (this.state.tab === "Bookings") {
