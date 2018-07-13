@@ -1166,40 +1166,47 @@ var FilmDetails = React.createClass({
           <hr />
           <div className="row">
             <div className="col-xs-6">
+              <h2>Film Movement Plus Link</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.fmPlusUrl || "" } data-field="fmPlusUrl" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className="col-xs-6">
               <h2>Standalone Site</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.standaloneSite || "" } data-field="standaloneSite" />
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
+          </div>
+          <div className="row">
             <div className="col-xs-6">
               <h2>Vimeo Trailer Link</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vimeoTrailer || "" } data-field="vimeoTrailer" />
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
-          </div>
-          <div className="row">
             <div className="col-xs-6">
               <h2>YouTube Trailer Link</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.youtubeTrailer || "" } data-field="youtubeTrailer" />
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
+          </div>
+          <div className="row">
             <div className="col-xs-6">
               <h2>ProRes Trailer Link</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.proresTrailer || "" } data-field="proresTrailer" />
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
-          </div>
-          <div className="row">
-            <div className="col-xs-4">
+            <div className="col-xs-6">
               <h2>Facebook Link</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.facebookLink || "" } data-field="facebookLink" />
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
-            <div className="col-xs-4">
+          </div>
+          <div className="row">
+            <div className="col-xs-6">
               <h2>Twitter Link</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.twitterLink || "" } data-field="twitterLink" />
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
-            <div className="col-xs-4">
+            <div className="col-xs-6">
               <h2>Instagram Link</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
               { Common.renderFieldError(this.state.filmErrors, []) }

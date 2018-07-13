@@ -49,6 +49,7 @@ json.films @films do |film|
   json.eduPage film.edu_page
   json.videoPage film.video_page
   json.artworkUrl film.artwork_url || ""
+  json.fmPlusUrl film.fm_plus_url
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
