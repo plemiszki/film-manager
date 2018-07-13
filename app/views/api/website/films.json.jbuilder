@@ -11,6 +11,7 @@ json.array!(@films) do |film|
   json.logline film.logline
   json.vod_synopsis film.vod_synopsis
   json.institutional_synopsis film.institutional_synopsis
+  json.fm_plus_link film.fm_plus_link
   json.vimeo_trailer film.vimeo_trailer
   json.youtube_trailer film.youtube_trailer
   json.prores_trailer film.prores_trailer
