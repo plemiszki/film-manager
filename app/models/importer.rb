@@ -454,6 +454,62 @@ class Importer < ActiveRecord::Base
     object.delete
   end
 
+  def self.check_genres(time_started)
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Films.txt")
+    object.get(response_target: "tmp/#{time_started}/Films.txt")
+    existing_genres = Genre.all.pluck(:name)
+    result = []
+    File.open(Rails.root.join("tmp/#{time_started}/Films.txt")) do |file|
+      total = file.gets.to_i
+      films = 0
+      until films == total
+        a = file.gets.split("\t")
+        if a[1].empty? || a[1][0..8] == "(NEW FILM" || ["Captive Beauty", "The Dark Sea", "The Condemned", "Camino del Vino", "Mundo Secreto", "Sal", "Chance", "Nairobi Half Life", "School's Out", "Something Necessary", "War Witch", "Things From Another World", "Pulce is Not Here", "Climate of Change", "Fire in Babylon", "Booker's Place: A Mississippi Story", "Boys of Summer", "Felony", "Deep Throat Part II Collection"].include?(a[1])
+          films += 1
+          next
+        end
+
+        film = Film.find_by({ title: a[1], film_type: (a[54] == 'short' ? 'Short' : 'Feature') })
+
+        text = a[5]
+        genres = text.split(/[,\/]/).map(&:strip)
+
+        genres.each do |genre|
+          if genre == 'drama'
+            genre = 'Drama'
+          elsif genre == 'Animated' || genre == 'Animated Short'
+            genre = 'Animation'
+          elsif genre == 'Biopic'
+            genre = 'Biography'
+          elsif genre == 'Dramatic thriller'
+            genre = 'Thriller'
+          elsif genre == 'Sports documentary'
+            genre = 'Sports'
+          elsif genre == 'Sci Fi'
+            genre = 'Science Fiction'
+          elsif genre == 'Sci-Fi'
+            genre = 'Science Fiction'
+          end
+          g = Genre.find_by_name(genre)
+          if g
+            unless FilmGenre.find_by({ film_id: film.id, genre_id: g.id })
+              p 'adding film genre!'
+              FilmGenre.create({ film_id: film.id, genre_id: g.id })
+            end
+          end
+        end
+
+        films += 1
+      end
+    end
+
+  end
+
   def self.import_films(time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(
