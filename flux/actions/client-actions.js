@@ -2527,7 +2527,7 @@ var ClientActions = {
 
   deleteSubRight: function(id) {
     $.ajax({
-      url: '/api/sublicensor_rights/' + id,
+      url: '/api/sub_rights/' + id,
       method: 'DELETE',
       success: function(response) {
         window.location.pathname = '/sublicensors/' + response.sublicensor_id;

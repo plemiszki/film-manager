@@ -38,7 +38,7 @@ class Api::SubRightsController < AdminController
   def update
     @sub_right = SubRight.find(params[:id])
     if @sub_right.update(sub_right_params)
-      @sub_rights = SubRight.where(id: params[:id]).includes(:sub)
+      @sub_rights = SubRight.where(id: params[:id])
       @territories = Territory.all
       @rights = Right.all
       render 'show.json.jbuilder'
@@ -59,7 +59,7 @@ class Api::SubRightsController < AdminController
   private
 
   def sub_right_params
-    params[:sub_right].permit(:sub_id, :right_id, :territory_id, :start_date, :end_date, :exclusive)
+    params[:sub_right].permit(:sublicensor_id, :right_id, :territory_id, :start_date, :end_date, :exclusive)
   end
 
 end

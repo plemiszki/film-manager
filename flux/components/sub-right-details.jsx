@@ -104,7 +104,7 @@ var SubRightDetails = React.createClass({
             { HandyTools.renderSpinner(this.state.fetching) }
             { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
-              <div className="col-xs-3">
+              <div className="col-xs-3 select-scroll">
                 <h2>Right</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.subRight.rightId }>
                   { SubRightsStore.rights().map(function(right, index) {
@@ -113,9 +113,9 @@ var SubRightDetails = React.createClass({
                     );
                   }) }
                 </select>
-                { Common.renderFieldError(this.state.errors, ['Film has already been taken']) }
+                { Common.renderDropdownFieldError(this.state.errors, Common.errors.rightId) }
               </div>
-              <div className="col-xs-3">
+              <div className="col-xs-3 select-scroll">
                 <h2>Territory</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="territoryId" value={ this.state.subRight.territoryId }>
                   { SubRightsStore.territories().map(function(territory, index) {
@@ -124,7 +124,7 @@ var SubRightDetails = React.createClass({
                     );
                   }) }
                 </select>
-                { Common.renderFieldError(this.state.errors, ['Film has already been taken']) }
+                { Common.renderDropdownFieldError(this.state.errors, Common.errors.territoryId) }
               </div>
               <div className="col-xs-2">
                 <h2>Start Date</h2>
