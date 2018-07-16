@@ -7,6 +7,7 @@ class Api::SublicensorsController < AdminController
 
   def show
     @sublicensors = Sublicensor.where(id: params[:id])
+    @rights = SubRight.where(sublicensor_id: params[:id]).includes(:right, :territory)
     render "show.json.jbuilder"
   end
 

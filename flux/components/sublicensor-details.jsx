@@ -4,6 +4,7 @@ var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var SublicensorsStore = require('../stores/sublicensors-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
+var FilmRightsNew = require('./film-rights-new.jsx');
 
 var SublicensorDetails = React.createClass({
 
@@ -16,7 +17,9 @@ var SublicensorDetails = React.createClass({
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      newRightsModalOpen: false,
+      rightsSortBy: 'name'
     });
   },
 
@@ -92,9 +95,25 @@ var SublicensorDetails = React.createClass({
     }
   },
 
+  clickRightsHeader: function(property) {
+    this.setState({
+      rightsSortBy: property
+    });
+  },
+
+  clickAddRight: function() {
+    this.setState({
+      newRightsModalOpen: true
+    });
+  },
+
+  redirect: function(directory, id) {
+    window.location.pathname = directory + "/" + id;
+  },
+
   render: function() {
     return(
-      <div id="sublicensor-details">
+      <div className="sublicensor-details">
         <div className="component details-component">
           <h1>Sublicensor Details</h1>
           <div className="white-box">
@@ -132,6 +151,48 @@ var SublicensorDetails = React.createClass({
               </div>
             </div>
             { this.renderButtons() }
+            <hr className="rights-divider" />
+            <h3>Sublicensed Rights:</h3>
+            <div className="row">
+              <div className="col-xs-12">
+                <table className={ "admin-table" }>
+                  <thead>
+                    <tr>
+                      <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'name') }>Right</div></th>
+                      <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'territory') }>Territory</div></th>
+                      <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'startDate') }>Start Date</div></th>
+                      <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'endDate') }>End Date</div></th>
+                      <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'exclusive') }>Exclusive</div></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                    { _.orderBy(SublicensorsStore.rights(), [this.rightsSort, this.rightsSortSecond]).map(function(right, index) {
+                      return(
+                        <tr key={ index } onClick={ this.redirect.bind(this, 'sub_rights', right.id) }>
+                          <td className="indent">
+                            { right.name }
+                          </td>
+                          <td>
+                            { right.territory }
+                          </td>
+                          <td>
+                            { right.startDate }
+                          </td>
+                          <td>
+                            { right.endDate }
+                          </td>
+                          <td>
+                            { right.exclusive }
+                          </td>
+                        </tr>
+                      );
+                    }.bind(this)) }
+                  </tbody>
+                </table>
+                <a className={ 'blue-outline-button small' } onClick={ this.clickAddRight }>Add Rights</a>
+              </div>
+            </div>
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
