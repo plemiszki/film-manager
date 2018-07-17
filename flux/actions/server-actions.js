@@ -440,7 +440,8 @@ var ServerActions = {
       actionType: "FILM_RIGHT_RECEIVED",
       filmRights: response.filmRights,
       territories: response.territories,
-      rights: response.rights
+      rights: response.rights,
+      films: response.films
     });
   },
 
@@ -479,7 +480,8 @@ var ServerActions = {
       actionType: "SUB_RIGHT_RECEIVED",
       subRights: response.subRights,
       territories: response.territories,
-      rights: response.rights
+      rights: response.rights,
+      films: response.films
     });
   }
 }

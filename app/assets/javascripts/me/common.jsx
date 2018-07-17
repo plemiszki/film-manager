@@ -379,6 +379,9 @@ Common = {
     territoryId: [
       "Film has already been taken",
       "Sublicensor has already been taken"
+    ],
+    filmId: [
+      "Sublicensor has already been taken"
     ]
   },
 

@@ -104,6 +104,17 @@ var SubRightDetails = React.createClass({
             { HandyTools.renderSpinner(this.state.fetching) }
             { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
+              <div className="col-xs-6 select-scroll">
+                <h2>Film</h2>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.subRight.filmId }>
+                  { SubRightsStore.films().map(function(film, index) {
+                    return(
+                      <option key={ index } value={ film.id }>{ film.title }</option>
+                    );
+                  }) }
+                </select>
+                { Common.renderDropdownFieldError(this.state.errors, Common.errors.filmId) }
+              </div>
               <div className="col-xs-3 select-scroll">
                 <h2>Right</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.subRight.rightId }>
@@ -126,6 +137,8 @@ var SubRightDetails = React.createClass({
                 </select>
                 { Common.renderDropdownFieldError(this.state.errors, Common.errors.territoryId) }
               </div>
+            </div>
+            <div className="row">
               <div className="col-xs-2">
                 <h2>Start Date</h2>
                 <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.startDate || "" } data-field="startDate" />

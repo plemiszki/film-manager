@@ -59,6 +59,7 @@ class Api::FilmRightsController < AdminController
   def rights_and_territories
     @rights = Right.all
     @territories = Territory.all
+    @films = Film.all if params[:films_too]
     render 'new.json.jbuilder'
   end
 

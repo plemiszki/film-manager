@@ -7,6 +7,7 @@ var SubRightsStore = new Store(AppDispatcher);
 var _subRight = {};
 var _rights = [];
 var _territores = [];
+var _films = [];
 
 SubRightsStore.setSubRight = function(subRight) {
   _subRight = subRight;
@@ -18,6 +19,10 @@ SubRightsStore.setTerritories = function(territories) {
 
 SubRightsStore.setRights = function(rights) {
   _rights = rights;
+};
+
+SubRightsStore.setFilms = function(films) {
+  _films = films;
 };
 
 SubRightsStore.subRight = function(id) {
@@ -32,6 +37,10 @@ SubRightsStore.rights = function(id) {
   return HandyTools.alphabetizeArrayOfObjects(_rights, 'name');
 };
 
+SubRightsStore.films = function(id) {
+  return HandyTools.alphabetizeArrayOfObjects(_films, 'title');
+};
+
 SubRightsStore.__onDispatch = function(payload) {
   switch(payload.actionType) {
     case "SUB_RIGHT_RECEIVED":
@@ -40,6 +49,7 @@ SubRightsStore.__onDispatch = function(payload) {
       }
       this.setTerritories(payload.territories);
       this.setRights(payload.rights);
+      this.setFilms(payload.films);
       this.__emitChange();
       break;
   }

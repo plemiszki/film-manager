@@ -2254,10 +2254,13 @@ var ClientActions = {
     });
   },
 
-  fetchRightsAndTerritories: function() {
+  fetchRightsAndTerritories: function(filmsToo) {
     $.ajax({
       url: '/api/rights_and_territories',
       method: 'GET',
+      data: {
+        films_too: filmsToo
+      },
       success: function(response) {
         ServerActions.receiveFilmRights(response);
       }
@@ -2279,7 +2282,7 @@ var ClientActions = {
         territories: territories
       },
       success: function(response) {
-        window.location.pathname = '/films/' + response.film_id;
+        window.location.href = '/films/' + response.film_id + '?tab=contract';
       },
       error: function(response) {
         ServerActions.receiveErrors(response)
@@ -2510,6 +2513,7 @@ var ClientActions = {
         sub_right: {
           sublicensor_id: subRight.sublicensorId,
           territory_id: subRight.territoryId,
+          film_id: subRight.filmId,
           right_id: subRight.rightId,
           start_date: subRight.startDate,
           end_date: subRight.endDate,
@@ -2544,7 +2548,8 @@ var ClientActions = {
           start_date: subRight.startDate,
           end_date: subRight.endDate,
           exclusive: (subRight.exclusive === 'Yes' ? true : false),
-          sublicensor_id: subRight.sublicensorId
+          sublicensor_id: subRight.sublicensorId,
+          film_id: subRight.filmId
         },
         rights: rights,
         territories: territories

@@ -19,6 +19,7 @@ var FilmRightsNew = React.createClass({
       },
       rights: [],
       territories: [],
+      films: [],
       selectedRights: [],
       selectedTerritories: [],
       errors: []
@@ -29,7 +30,7 @@ var FilmRightsNew = React.createClass({
     Common.setUpNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     this.rightsAndTerritoriesListener = FilmRightsStore.addListener(this.getRightsAndTerritories);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
-    ClientActions.fetchRightsAndTerritories();
+    ClientActions.fetchRightsAndTerritories(this.props.sublicensorId);
   },
 
   componentWillUnmount: function() {
@@ -41,7 +42,10 @@ var FilmRightsNew = React.createClass({
     this.setState({
       territories: FilmRightsStore.territories(),
       rights: FilmRightsStore.rights(),
+      films: (this.props.sublicensorId ? FilmRightsStore.films() : []),
       fetching: false
+    }, function() {
+      Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     });
   },
 
@@ -144,12 +148,23 @@ var FilmRightsNew = React.createClass({
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
-            <div className="col-xs-4">
+            <div className={ this.props.sublicensorId ? "col-xs-6 select-scroll" : "hidden" }>
+              <h2>Film</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.filmRight.filmId }>
+                { this.state.films.map(function(film, index) {
+                  return(
+                    <option key={ index } value={ film.id }>{ film.title }</option>
+                  );
+                }) }
+              </select>
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+            <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>Start Date</h2>
               <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
               { Common.renderFieldError(this.state.errors, []) }
             </div>
-            <div className="col-xs-4">
+            <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>End Date</h2>
               <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
               { Common.renderFieldError(this.state.errors, []) }
@@ -200,7 +215,6 @@ var FilmRightsNew = React.createClass({
   },
 
   componentDidUpdate: function() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 });

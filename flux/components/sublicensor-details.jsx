@@ -32,7 +32,7 @@ var SublicensorDetails = React.createClass({
       justSaved: false,
       deleteModalOpen: false,
       newRightsModalOpen: false,
-      rightsSortBy: 'name'
+      rightsSortBy: 'film'
     });
   },
 
@@ -174,6 +174,7 @@ var SublicensorDetails = React.createClass({
                 <table className={ "admin-table" }>
                   <thead>
                     <tr>
+                      <th><div className={ this.state.rightsSortBy === 'film' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'film') }>Film</div></th>
                       <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'name') }>Right</div></th>
                       <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'territory') }>Territory</div></th>
                       <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'startDate') }>Start Date</div></th>
@@ -183,10 +184,13 @@ var SublicensorDetails = React.createClass({
                   </thead>
                   <tbody>
                     <tr><td></td><td></td><td></td><td></td><td></td></tr>
-                    { _.orderBy(SublicensorsStore.rights(), [this.rightsSort, this.rightsSortSecond]).map(function(right, index) {
+                    { _.orderBy(SublicensorsStore.rights(), this.state.rightsSortBy).map(function(right, index) {
                       return(
                         <tr key={ index } onClick={ this.redirect.bind(this, 'sub_rights', right.id) }>
                           <td className="indent">
+                            { right.film }
+                          </td>
+                          <td>
                             { right.name }
                           </td>
                           <td>

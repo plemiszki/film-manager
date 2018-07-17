@@ -7,6 +7,7 @@ var FilmRightsStore = new Store(AppDispatcher);
 var _filmRight = {};
 var _rights = [];
 var _territores = [];
+var _films = [];
 
 FilmRightsStore.setFilmRight = function(filmRight) {
   _filmRight = filmRight;
@@ -18,6 +19,10 @@ FilmRightsStore.setTerritories = function(territories) {
 
 FilmRightsStore.setRights = function(rights) {
   _rights = rights;
+};
+
+FilmRightsStore.setFilms = function(films) {
+  _films = films;
 };
 
 FilmRightsStore.filmRight = function(id) {
@@ -32,6 +37,10 @@ FilmRightsStore.rights = function(id) {
   return HandyTools.alphabetizeArrayOfObjects(_rights, 'name');
 };
 
+FilmRightsStore.films = function(id) {
+  return HandyTools.alphabetizeArrayOfObjects(_films, 'title');
+};
+
 FilmRightsStore.__onDispatch = function(payload) {
   switch(payload.actionType) {
     case "FILM_RIGHT_RECEIVED":
@@ -40,6 +49,9 @@ FilmRightsStore.__onDispatch = function(payload) {
       }
       this.setTerritories(payload.territories);
       this.setRights(payload.rights);
+      if (payload.films) {
+        this.setFilms(payload.films);
+      }
       this.__emitChange();
       break;
   }
