@@ -2123,7 +2123,7 @@ var ClientActions = {
       data: {
         film: {
           film_id: film.filmId,
-          coming_soon: film.comingSoon
+          section: film.section
         }
       },
       success: function(response) {

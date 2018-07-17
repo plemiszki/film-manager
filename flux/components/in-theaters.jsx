@@ -70,14 +70,14 @@ var InTheatersIndex = React.createClass({
   clickAddComingSoonFilm: function() {
     this.setState({
       modalOpen: true,
-      addComingSoon: true
+      addSection: 'Coming Soon'
     });
   },
 
   clickAddInTheatersFilm: function() {
     this.setState({
       modalOpen: true,
-      addComingSoon: false
+      addSection: 'In Theaters'
     });
   },
 
@@ -86,7 +86,7 @@ var InTheatersIndex = React.createClass({
       modalOpen: false,
       fetching: true
     });
-    ClientActions.createInTheatersFilm({ filmId: e.target.dataset.id, comingSoon: this.state.addComingSoon });
+    ClientActions.createInTheatersFilm({ filmId: e.target.dataset.id, section: this.state.addSection });
   },
 
   render: function() {

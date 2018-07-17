@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180717120325) do
+ActiveRecord::Schema.define(version: 20180717123238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -304,10 +304,9 @@ ActiveRecord::Schema.define(version: 20180717120325) do
   end
 
   create_table "in_theaters_films", force: :cascade do |t|
-    t.integer "film_id",                     null: false
-    t.boolean "coming_soon", default: false
-    t.integer "order",                       null: false
-    t.text    "section"
+    t.integer "film_id", null: false
+    t.integer "order",   null: false
+    t.text    "section", null: false
   end
 
   create_table "invoice_rows", force: :cascade do |t|

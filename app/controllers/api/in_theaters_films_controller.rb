@@ -8,8 +8,8 @@ class Api::InTheatersFilmsController < AdminController
   end
 
   def create
-    current_length = InTheatersFilm.where(coming_soon: film_params[:coming_soon]).length
-    @film = InTheatersFilm.new(film_id: film_params[:film_id], coming_soon: film_params[:coming_soon], order: current_length)
+    current_length = InTheatersFilm.where(section: film_params[:section]).length
+    @film = InTheatersFilm.new(film_id: film_params[:film_id], section: film_params[:section], order: current_length)
     if @film.save
       index_data
       render 'index.json.jbuilder'
@@ -18,7 +18,7 @@ class Api::InTheatersFilmsController < AdminController
 
   def destroy
     @film = InTheatersFilm.find(params[:id]).destroy
-    reorder(InTheatersFilm.where(coming_soon: @film.coming_soon).order(:order))
+    reorder(InTheatersFilm.where(section: @film.section).order(:order))
     index_data
     render 'index.json.jbuilder'
   end
@@ -35,12 +35,12 @@ class Api::InTheatersFilmsController < AdminController
   private
 
   def film_params
-    params[:film].permit(:film_id, :order, :coming_soon)
+    params[:film].permit(:film_id, :order, :section)
   end
 
   def index_data
-    @in_theaters = InTheatersFilm.where(coming_soon: false).includes(:film)
-    @coming_soon = InTheatersFilm.where(coming_soon: true).includes(:film)
+    @in_theaters = InTheatersFilm.where(section: 'In Theaters').includes(:film)
+    @coming_soon = InTheatersFilm.where(section: 'Coming Soon').includes(:film)
     @films = Film.where.not(id: (@in_theaters.pluck(:film_id) + @coming_soon.pluck(:film_id))).where(film_type: 'Feature')
   end
 
