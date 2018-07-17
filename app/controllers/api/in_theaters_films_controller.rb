@@ -41,7 +41,8 @@ class Api::InTheatersFilmsController < AdminController
   def index_data
     @in_theaters = InTheatersFilm.where(section: 'In Theaters').includes(:film)
     @coming_soon = InTheatersFilm.where(section: 'Coming Soon').includes(:film)
-    @films = Film.where.not(id: (@in_theaters.pluck(:film_id) + @coming_soon.pluck(:film_id))).where(film_type: 'Feature')
+    @repertory = InTheatersFilm.where(section: 'Repertory').includes(:film)
+    @films = Film.where.not(id: (@in_theaters.pluck(:film_id) + @coming_soon.pluck(:film_id) + @repertory.pluck(:film_id))).where(film_type: 'Feature')
   end
 
 end

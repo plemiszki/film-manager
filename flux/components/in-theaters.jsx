@@ -27,6 +27,7 @@ var InTheatersIndex = React.createClass({
       fetching: true,
       inTheaters: [],
       comingSoon: [],
+      repertory: [],
       modalOpen: false,
       films: []
     });
@@ -46,6 +47,7 @@ var InTheatersIndex = React.createClass({
       fetching: false,
       inTheaters: InTheatersStore.inTheaters(),
       comingSoon: InTheatersStore.comingSoon(),
+      repertory: InTheatersStore.repertory(),
       films: InTheatersStore.films()
     });
   },
@@ -81,6 +83,13 @@ var InTheatersIndex = React.createClass({
     });
   },
 
+  clickAddRepertoryFilm: function() {
+    this.setState({
+      modalOpen: true,
+      addSection: 'Repertory'
+    });
+  },
+
   selectFilm: function(e) {
     this.setState({
       modalOpen: false,
@@ -92,7 +101,7 @@ var InTheatersIndex = React.createClass({
   render: function() {
     return(
       <div id="in-theaters-index" className="component">
-        <h1>In Theaters / Coming Soon</h1>
+        <h1>In Theaters</h1>
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -129,6 +138,23 @@ var InTheatersIndex = React.createClass({
             </tbody>
           </table>
           <a className={ 'blue-outline-button small' } onClick={ this.clickAddComingSoonFilm }>Add Film</a>
+          <hr />
+          <table className="admin-table no-hover no-highlight repertory">
+            <thead>
+              <tr>
+                <th>Repertory</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td></tr>
+              {this.state.repertory.map(function(film, index) {
+                return(
+                  <InTheatersIndexItem key={film.id} index={index} film={film} section={'repertory'} clickXButton={this.clickXButton} renderHandle={this.state.repertory.length > 1} films={this.state.repertory} />
+                );
+              }.bind(this))}
+            </tbody>
+          </table>
+          <a className={ 'blue-outline-button small' } onClick={ this.clickAddRepertoryFilm }>Add Film</a>
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ this.state.films } property={ "title" } func={ this.selectFilm } />

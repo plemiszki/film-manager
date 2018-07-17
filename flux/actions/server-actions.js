@@ -423,6 +423,7 @@ var ServerActions = {
       actionType: "IN_THEATERS_RECEIVED",
       inTheaters: response.inTheaters,
       comingSoon: response.comingSoon,
+      repertory: response.repertory,
       films: response.films
     });
   },

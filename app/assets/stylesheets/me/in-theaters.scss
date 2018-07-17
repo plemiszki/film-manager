@@ -1,6 +1,6 @@
 #in-theaters-index {
 
-  a.blue-outline-button:first-of-type {
+  a.blue-outline-button:not(:last-of-type) {
     margin-bottom: 30px;
   }
 

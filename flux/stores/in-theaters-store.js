@@ -6,6 +6,7 @@ var InTheatersStore = new Store(AppDispatcher);
 
 var _inTheaters = [];
 var _comingSoon = [];
+var _repertory = [];
 var _films = [];
 
 InTheatersStore.setFilms = function(films) {
@@ -20,12 +21,20 @@ InTheatersStore.setComingSoon = function(films) {
   _comingSoon = films;
 };
 
+InTheatersStore.setRepertory = function(films) {
+  _repertory = films;
+};
+
 InTheatersStore.inTheaters = function() {
   return HandyTools.sortArrayOfObjects(_inTheaters, 'order');
 };
 
 InTheatersStore.comingSoon = function() {
   return HandyTools.sortArrayOfObjects(_comingSoon, 'order');
+};
+
+InTheatersStore.repertory = function() {
+  return HandyTools.sortArrayOfObjects(_repertory, 'order');
 };
 
 InTheatersStore.films = function() {
@@ -38,6 +47,7 @@ InTheatersStore.__onDispatch = function(payload) {
       this.setFilms(payload.films);
       this.setInTheaters(payload.inTheaters);
       this.setComingSoon(payload.comingSoon);
+      this.setRepertory(payload.repertory);
       this.__emitChange();
       break;
   }
