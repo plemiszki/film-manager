@@ -2533,6 +2533,29 @@ var ClientActions = {
         window.location.pathname = '/sublicensors/' + response.sublicensor_id;
       }
     });
+  },
+
+  createSubRights: function(subRight, rights, territories) {
+    $.ajax({
+      url: '/api/sub_rights',
+      method: 'POST',
+      data: {
+        sub_right: {
+          start_date: subRight.startDate,
+          end_date: subRight.endDate,
+          exclusive: (subRight.exclusive === 'Yes' ? true : false),
+          sublicensor_id: subRight.sublicensorId
+        },
+        rights: rights,
+        territories: territories
+      },
+      success: function(response) {
+        window.location.pathname = '/sublicensors/' + response.sublicensor_id;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
+      }
+    });
   }
 }
 

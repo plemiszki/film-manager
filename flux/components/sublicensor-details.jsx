@@ -8,6 +8,19 @@ var FilmRightsNew = require('./film-rights-new.jsx');
 
 var SublicensorDetails = React.createClass({
 
+  newRightsModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 575
+    }
+  },
+
   getInitialState: function() {
     return({
       fetching: true,
@@ -80,7 +93,10 @@ var SublicensorDetails = React.createClass({
   },
 
   handleModalClose: function() {
-    this.setState({ deleteModalOpen: false });
+    this.setState({
+      deleteModalOpen: false,
+      newRightsModalOpen: false
+    });
   },
 
   checkForChanges: function() {
@@ -195,6 +211,9 @@ var SublicensorDetails = React.createClass({
             </div>
           </div>
         </div>
+        <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.newRightsModalStyles }>
+          <FilmRightsNew sublicensorId={ this.state.sublicensor.id } />
+        </Modal>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to delete this sublicensor&#63;</h1>
