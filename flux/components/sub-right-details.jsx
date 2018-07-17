@@ -2,16 +2,16 @@ var React = require('react');
 var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
-var FilmRightsStore = require('../stores/film-rights-store.js');
+var SubRightsStore = require('../stores/sub-rights-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
 
-var FilmRightDetails = React.createClass({
+var SubRightDetails = React.createClass({
 
   getInitialState: function() {
     return({
       fetching: true,
-      filmRight: {},
-      filmRightSaved: {},
+      subRight: {},
+      subRightSaved: {},
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -20,22 +20,22 @@ var FilmRightDetails = React.createClass({
   },
 
   componentDidMount: function() {
-    this.filmRightListener = FilmRightsStore.addListener(this.getFilmRight);
+    this.subRightListener = SubRightsStore.addListener(this.getSubRight);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
-    ClientActions.fetchFilmRight(window.location.pathname.split("/")[2]);
+    ClientActions.fetchSubRight(window.location.pathname.split("/")[2]);
   },
 
   componentWillUnmount: function() {
-    this.filmRightsListener.remove();
+    this.subRightsListener.remove();
     this.errorsListener.remove();
   },
 
-  getFilmRight: function() {
+  getSubRight: function() {
     this.setState({
-      filmRight: Tools.deepCopy(FilmRightsStore.filmRight()),
-      filmRightSaved: FilmRightsStore.filmRight(),
-      territories: FilmRightsStore.territories(),
-      rights: FilmRightsStore.rights(),
+      subRight: Tools.deepCopy(SubRightsStore.subRight()),
+      subRightSaved: SubRightsStore.subRight(),
+      territories: SubRightsStore.territories(),
+      rights: SubRightsStore.rights(),
       fetching: false
     }, function() {
       this.setState({
@@ -57,7 +57,7 @@ var FilmRightDetails = React.createClass({
         fetching: true,
         justSaved: true
       }, function() {
-        ClientActions.updateFilmRight(this.state.filmRight);
+        ClientActions.updateSubRight(this.state.subRight);
       });
     }
   },
@@ -73,7 +73,7 @@ var FilmRightDetails = React.createClass({
       fetching: true,
       deleteModalOpen: false
     }, function() {
-      ClientActions.deleteFilmRight(this.state.filmRight.id);
+      ClientActions.deleteSubRight(this.state.subRight.id);
     });
   },
 
@@ -84,12 +84,12 @@ var FilmRightDetails = React.createClass({
   },
 
   checkForChanges: function() {
-    return !Tools.objectsAreEqual(this.state.filmRight, this.state.filmRightSaved);
+    return !Tools.objectsAreEqual(this.state.subRight, this.state.subRightSaved);
   },
 
   changeFieldArgs: function() {
     return {
-      thing: "filmRight",
+      thing: "subRight",
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges
     }
@@ -97,17 +97,17 @@ var FilmRightDetails = React.createClass({
 
   render: function() {
     return(
-      <div id="filmRight-details">
+      <div id="subRight-details">
         <div className="component details-component">
-          <h1>Right Details</h1>
+          <h1>Sublicensed Right Details</h1>
           <div className="white-box">
             { HandyTools.renderSpinner(this.state.fetching) }
             { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-3 select-scroll">
                 <h2>Right</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.filmRight.rightId }>
-                  { FilmRightsStore.rights().map(function(right, index) {
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.subRight.rightId }>
+                  { SubRightsStore.rights().map(function(right, index) {
                     return(
                       <option key={ index } value={ right.id }>{ right.name }</option>
                     );
@@ -117,8 +117,8 @@ var FilmRightDetails = React.createClass({
               </div>
               <div className="col-xs-3 select-scroll">
                 <h2>Territory</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="territoryId" value={ this.state.filmRight.territoryId }>
-                  { FilmRightsStore.territories().map(function(territory, index) {
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="territoryId" value={ this.state.subRight.territoryId }>
+                  { SubRightsStore.territories().map(function(territory, index) {
                     return(
                       <option key={ index } value={ territory.id }>{ territory.name }</option>
                     );
@@ -128,17 +128,17 @@ var FilmRightDetails = React.createClass({
               </div>
               <div className="col-xs-2">
                 <h2>Start Date</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
+                <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.startDate || "" } data-field="startDate" />
                 { Common.renderFieldError(this.state.errors, Common.errors.startDate) }
               </div>
               <div className="col-xs-2">
                 <h2>End Date</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
+                <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.endDate || "" } data-field="endDate" />
                 { Common.renderFieldError(this.state.errors, Common.errors.endDate) }
               </div>
               <div className="col-xs-2">
                 <h2>Exclusive</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.filmRight.exclusive }>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.subRight.exclusive }>
                   <option value={ "Yes" }>Yes</option>
                   <option value={ "No" }>No</option>
                 </select>
@@ -188,4 +188,4 @@ var FilmRightDetails = React.createClass({
   }
 });
 
-module.exports = FilmRightDetails;
+module.exports = SubRightDetails;

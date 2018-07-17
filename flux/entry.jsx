@@ -46,6 +46,7 @@ var InTheatersIndex = require('./components/in-theaters.jsx');
 var TerritoriesIndex = require('./components/territories-index.jsx');
 var TerritoryDetails = require('./components/territory-details.jsx');
 var FilmRightDetails = require('./components/film-right-details.jsx');
+var SubRightDetails = require('./components/sub-right-details.jsx');
 var SublicensorsIndex = require('./components/sublicensors-index.jsx');
 var SublicensorDetails = require('./components/sublicensor-details.jsx');
 var DigitalRetailersIndex = require('./components/digital-retailers-index.jsx');
@@ -225,5 +226,8 @@ $(document).ready(function() {
   }
   if ($('#calendar')[0]) {
     ReactDOM.render(<Calendar />, document.getElementById("calendar"));
+  }
+  if ($('#sub-right-details')[0]) {
+    ReactDOM.render(<SubRightDetails />, document.getElementById("sub-right-details"));
   }
 });

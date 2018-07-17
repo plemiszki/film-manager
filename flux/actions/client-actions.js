@@ -2490,6 +2490,72 @@ var ClientActions = {
         ServerActions.receiveCalendar(response);
       }
     });
+  },
+
+  fetchSubRight: function(id) {
+    $.ajax({
+      url: '/api/sub_rights/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveSubRights(response);
+      }
+    });
+  },
+
+  updateSubRight: function(subRight) {
+    $.ajax({
+      url: '/api/sub_rights/' + subRight.id,
+      method: 'PATCH',
+      data: {
+        sub_right: {
+          sublicensor_id: subRight.sublicensorId,
+          territory_id: subRight.territoryId,
+          right_id: subRight.rightId,
+          start_date: subRight.startDate,
+          end_date: subRight.endDate,
+          exclusive: (subRight.exclusive === 'Yes' ? true : false)
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveSubRights(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    })
+  },
+
+  deleteSubRight: function(id) {
+    $.ajax({
+      url: '/api/sub_rights/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        window.location.pathname = '/sublicensors/' + response.sublicensor_id;
+      }
+    });
+  },
+
+  createSubRights: function(subRight, rights, territories) {
+    $.ajax({
+      url: '/api/sub_rights',
+      method: 'POST',
+      data: {
+        sub_right: {
+          start_date: subRight.startDate,
+          end_date: subRight.endDate,
+          exclusive: (subRight.exclusive === 'Yes' ? true : false),
+          sublicensor_id: subRight.sublicensorId
+        },
+        rights: rights,
+        territories: territories
+      },
+      success: function(response) {
+        window.location.pathname = '/sublicensors/' + response.sublicensor_id;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
+      }
+    });
   }
 }
 

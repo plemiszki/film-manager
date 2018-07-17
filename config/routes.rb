@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   resources :digital_retailer_films, only: [:show]
   get '/in_theaters' => 'in_theaters_films#index'
   get '/calendar' => 'calendar#show'
+  resources :sub_rights, only: [:show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -112,6 +113,7 @@ Rails.application.routes.draw do
     post '/in_theaters' => '/api/in_theaters_films#create'
     post '/in_theaters/rearrange' => '/api/in_theaters_films#rearrange'
     delete '/in_theaters/:id' => '/api/in_theaters_films#destroy'
+    resources :sub_rights, only: [:create, :show, :update, :destroy]
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'

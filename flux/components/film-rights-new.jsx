@@ -14,7 +14,8 @@ var FilmRightsNew = React.createClass({
         startDate: "",
         endDate: "",
         exclusive: "Yes",
-        filmId: this.props.filmId
+        filmId: this.props.filmId,
+        sublicensorId: this.props.sublicensorId
       },
       rights: [],
       territories: [],
@@ -84,7 +85,11 @@ var FilmRightsNew = React.createClass({
       this.setState({
         fetching: true
       }, function() {
-        ClientActions.createFilmRights(this.state.filmRight, this.state.selectedRights, this.state.selectedTerritories);
+        if (this.props.filmId) {
+          ClientActions.createFilmRights(this.state.filmRight, this.state.selectedRights, this.state.selectedTerritories);
+        } else {
+          ClientActions.createSubRights(this.state.filmRight, this.state.selectedRights, this.state.selectedTerritories);
+        }
       });
     }
   },

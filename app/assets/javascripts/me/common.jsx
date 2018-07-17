@@ -371,6 +371,14 @@ Common = {
     ],
     theatricalRelease: [
       "Theatrical release is not a valid date"
+    ],
+    rightId: [
+      "Film has already been taken",
+      "Sublicensor has already been taken"
+    ],
+    territoryId: [
+      "Film has already been taken",
+      "Sublicensor has already been taken"
     ]
   },
 
@@ -615,6 +623,19 @@ Common = {
     }
     return(
       <div className="noFieldError"></div>
+    );
+  },
+
+  renderDropdownFieldError: function(stateErrors, fieldErrors) {
+    for (i = 0; i < fieldErrors.length; i++) {
+      if (stateErrors.indexOf(fieldErrors[i]) > -1) {
+        return(
+          <div className="yesDropdownFieldError">{fieldErrors[i]}</div>
+        );
+      }
+    }
+    return(
+      <div className="noDropdownFieldError"></div>
     );
   },
 

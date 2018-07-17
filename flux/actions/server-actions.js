@@ -446,7 +446,8 @@ var ServerActions = {
   receiveSublicensors: function(response) {
     AppDispatcher.dispatch({
       actionType: "SUBLICENSORS_RECEIVED",
-      sublicensors: response
+      sublicensors: response.sublicensors,
+      rights: response.rights
     });
   },
 
@@ -469,6 +470,15 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "CALENDAR_RECEIVED",
       months: response
+    });
+  },
+
+  receiveSubRights: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "SUB_RIGHT_RECEIVED",
+      subRights: response.subRights,
+      territories: response.territories,
+      rights: response.rights
     });
   }
 }
