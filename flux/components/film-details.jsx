@@ -781,7 +781,7 @@ var FilmDetails = React.createClass({
   },
 
   renderTopTab: function(label) {
-    if (this.state.film.id && (this.state.film.filmType === "Feature" || ['General', 'Synopses', 'DVDs'].indexOf(label) > -1)) {
+    if (this.state.film.id && (this.state.film.filmType === "Feature" || ['General', 'Contract', 'Synopses', 'DVDs'].indexOf(label) > -1)) {
       return(
         <div className={ "tab" + (this.state.tab === label ? " selected" : "") } onClick={ this.clickTab }>{ label }</div>
       );
@@ -1288,9 +1288,9 @@ var FilmDetails = React.createClass({
   },
 
   renderRoyaltyFields: function() {
-    if (this.state.film.filmType === 'Feature') {
-      return(
-        <div>
+    return(
+      <div>
+        <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
           <div className="row">
             <div className="col-xs-12 col-sm-5">
               <h2>Deal Type</h2>
@@ -1349,48 +1349,50 @@ var FilmDetails = React.createClass({
               <textarea rows="3" className={Common.errorClass(this.state.filmErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" />
             </div>
           </div>
-          <hr />
-          <h3>Licensed Rights:</h3>
-          <div className="row">
-            <div className="col-xs-12">
-              <table className={ "admin-table" }>
-                <thead>
-                  <tr>
-                    <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'name') }>Right</div></th>
-                    <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'territory') }>Territory</div></th>
-                    <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'startDate') }>Start Date</div></th>
-                    <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'endDate') }>End Date</div></th>
-                    <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'exclusive') }>Exclusive</div></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td></td><td></td><td></td><td></td><td></td></tr>
-                  { _.orderBy(FilmsStore.rights(), [this.rightsSort, this.rightsSortSecond]).map(function(right, index) {
-                    return(
-                      <tr key={ index } onClick={ this.redirect.bind(this, 'film_rights', right.id) }>
-                        <td className="indent">
-                          { right.name }
-                        </td>
-                        <td>
-                          { right.territory }
-                        </td>
-                        <td>
-                          { right.startDate }
-                        </td>
-                        <td>
-                          { right.endDate }
-                        </td>
-                        <td>
-                          { right.exclusive }
-                        </td>
-                      </tr>
-                    );
-                  }.bind(this)) }
-                </tbody>
-              </table>
-              <a className={ 'blue-outline-button small' } onClick={ this.clickAddRight }>Add Rights</a>
-            </div>
+        </div>
+        <hr />
+        <h3>Licensed Rights:</h3>
+        <div className="row">
+          <div className="col-xs-12">
+            <table className={ "admin-table" }>
+              <thead>
+                <tr>
+                  <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'name') }>Right</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'territory') }>Territory</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'startDate') }>Start Date</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'endDate') }>End Date</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'exclusive') }>Exclusive</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                { _.orderBy(FilmsStore.rights(), [this.rightsSort, this.rightsSortSecond]).map(function(right, index) {
+                  return(
+                    <tr key={ index } onClick={ this.redirect.bind(this, 'film_rights', right.id) }>
+                      <td className="indent">
+                        { right.name }
+                      </td>
+                      <td>
+                        { right.territory }
+                      </td>
+                      <td>
+                        { right.startDate }
+                      </td>
+                      <td>
+                        { right.endDate }
+                      </td>
+                      <td>
+                        { right.exclusive }
+                      </td>
+                    </tr>
+                  );
+                }.bind(this)) }
+              </tbody>
+            </table>
+            <a className={ 'blue-outline-button small' } onClick={ this.clickAddRight }>Add Rights</a>
           </div>
+        </div>
+        <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
           <hr />
           <h3>Revenue Splits:</h3>
           <div className="row">
@@ -1435,8 +1437,8 @@ var FilmDetails = React.createClass({
             </div>
           </div>
         </div>
-      )
-    }
+      </div>
+    );
   },
 
   renderButtons: function() {
@@ -1455,7 +1457,7 @@ var FilmDetails = React.createClass({
           Delete Film
         </a>
       </div>
-    )
+    );
   },
 
   percentageErrorsExist: function() {
