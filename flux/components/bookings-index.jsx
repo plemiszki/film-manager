@@ -232,7 +232,7 @@ var BookingsIndex = React.createClass({
         </div>
         { this.renderSeeAllButton() }
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.users()[0] && BookingsStore.users()[0].id, userId: Common.user.id } } />
+          <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.bookers()[0] && BookingsStore.bookers()[0].id, userId: Common.user.id } } />
         </Modal>
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ AdvancedSearchModalStyles }>
           <AdvancedSearch />
