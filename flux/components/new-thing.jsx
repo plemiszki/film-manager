@@ -317,7 +317,7 @@ var NewThing = React.createClass({
               <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
               { Common.renderFieldError(this.state.errors, Common.errors.terms) }
             </div>
-            <div className="col-xs-3">
+            <div className="col-xs-3 select-scroll-3">
               <h2>Booked By</h2>
               <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
                 { BookingsStore.bookers().map(function(user) {
