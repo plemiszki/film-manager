@@ -100,6 +100,14 @@ class Api::FilmsController < AdminController
     render json: job
   end
 
+  def catalog
+    film_ids = params[:film_ids].to_a.map(&:to_i)
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "export catalog", first_line: "Exporting Catalog", second_line: true, current_value: 0, total_value: film_ids.length)
+    ExportCatalog.perform_async(film_ids, time_started)
+    render json: job
+  end
+
   def update_artwork
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "update artwork", first_line: "Updating Artwork", second_line: true, current_value: 0, total_value: Film.count)

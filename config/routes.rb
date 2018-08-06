@@ -49,6 +49,7 @@ Rails.application.routes.draw do
     get '/films/advanced' => '/api/films#advanced'
     resources :films, only: [:index, :show, :create, :update, :destroy]
     post '/films/export' => '/api/films#export'
+    post '/films/catalog' => '/api/films#catalog'
     post '/films/update_artwork' => '/api/films#update_artwork'
     resources :venues, only: [:index, :show, :create, :update, :destroy]
     get '/bookings/upcoming' => '/api/bookings#upcoming_index'
