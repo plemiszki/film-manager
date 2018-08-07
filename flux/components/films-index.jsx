@@ -125,6 +125,18 @@ var FilmsIndex = React.createClass({
     }
   },
 
+  clickExportCatalog: function() {
+    if (!this.state.fetching) {
+      this.setState({
+        fetching: true
+      });
+      var filmIds = this.state.films.map(function(film) {
+        return film.id;
+      });
+      ClientActions.exportCatalog(filmIds);
+    }
+  },
+
   render: function() {
     var filteredFilms = this.state.films.filterSearchText(this.state.searchText, this.state.sortBy);
     return(

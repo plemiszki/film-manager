@@ -26,6 +26,7 @@ gem 'validates_timeliness', '~> 4.0'
 gem 'timeliness'
 gem 'xlsx_writer'
 gem 'httparty'
+gem 'rtf'
 # ------------------------------
 
 group :development, :test do
