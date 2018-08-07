@@ -635,6 +635,10 @@ GEM
       sass (>= 3.3.4)
     builder (3.2.3)
     byebug (10.0.2)
+    caracal (1.2.0)
+      nokogiri (~> 1.6)
+      rubyzip (~> 1.1)
+      tilt (>= 1.4)
     clearance (1.16.1)
       bcrypt
       email_validator (~> 1.4)
@@ -754,7 +758,6 @@ GEM
       nokogiri
       roo (>= 2.0.0, < 3)
       spreadsheet (> 0.9.0)
-    rtf (0.3.3)
     ruby-ole (1.2.12.1)
     rubyzip (1.2.1)
     sass (3.5.6)
@@ -822,6 +825,7 @@ DEPENDENCIES
   better_errors
   bootstrap-sass
   byebug
+  caracal
   clearance (~> 1.11)
   database_cleaner
   dotenv-rails
@@ -836,7 +840,6 @@ DEPENDENCIES
   rails_12factor
   roo (~> 2.7.0)
   roo-xls
-  rtf
   rubyzip
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)

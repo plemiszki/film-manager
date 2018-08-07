@@ -7,26 +7,25 @@ class ExportCatalog
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
 
-    require 'rtf'
-    document = RTF::Document.new(RTF::Font.new(RTF::Font::ROMAN, 'Times New Roman'))
-    document.paragraph << "This is a short paragraph of text."
+    require 'caracal'
+    file_path = "/tmp/#{time_started}/catalog.docx"
+    document = Caracal::Document.save(file_path) do |docx|
+      docx.p 'Lorem ipsum dolor....'
+    end
 
     films = Film.where(id: film_ids).order(:title).includes(:licensor, :label, :laurels, :film_rights)
     films.each_with_index do |film, film_index|
       job.update({ current_value: film_index + 1 })
     end
-
-    file_path = "#{job_folder}/catalog.rtf"
-    File.open(file_path, 'w') { |file| file.write(document.to_rtf) }
-
+    
     job.update({ first_line: 'Uploading to AWS' })
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
     )
     bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object("#{time_started}/catalog.rtf")
-    obj.upload_file(file_path, acl:'public-read')
+    obj = bucket.object("#{time_started}/catalog.docx")
+    obj.upload_file("#{Rails.root}/tmp/#{time_started}/catalog.docx", acl:'public-read')
 
     job.update!({ done: true, first_line: obj.public_url })
   end
