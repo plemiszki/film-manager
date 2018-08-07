@@ -271,7 +271,8 @@ var ClientActions = {
       label_id: film.labelId,
       club_date: film.clubDate,
       ignore_sage_id: film.ignoreSageId,
-      fm_plus_url: film.fmPlusUrl
+      fm_plus_url: film.fmPlusUrl,
+      aspect_ratio: film.aspectRatio
     };
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.avodRelease, 'avod'));
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.svodRelease, 'svod'));

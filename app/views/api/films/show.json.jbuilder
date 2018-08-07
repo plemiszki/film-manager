@@ -50,6 +50,7 @@ json.films @films do |film|
   json.videoPage film.video_page
   json.artworkUrl film.artwork_url || ""
   json.fmPlusUrl film.fm_plus_url
+  json.aspectRatio film.aspect_ratio
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
