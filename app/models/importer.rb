@@ -454,6 +454,40 @@ class Importer < ActiveRecord::Base
     object.delete
   end
 
+  def self.aspect_ratios(time_started)
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Films.txt")
+    object.get(response_target: "tmp/#{time_started}/Films.txt")
+    result = []
+    File.open(Rails.root.join("tmp/#{time_started}/Films.txt")) do |file|
+      total = file.gets.to_i
+      films = 0
+      until films == total
+        a = file.gets.split("\t")
+        if a[1].empty? || a[1][0..8] == "(NEW FILM" || ["Captive Beauty", "The Dark Sea", "The Condemned", "Camino del Vino", "Mundo Secreto", "Sal", "Chance", "Nairobi Half Life", "School's Out", "Something Necessary", "War Witch", "Things From Another World", "Pulce is Not Here", "Climate of Change", "Fire in Babylon", "Booker's Place: A Mississippi Story", "Boys of Summer", "Felony", "Deep Throat Part II Collection", "Quality Time", "Smitten!"].include?(a[1])
+          films += 1
+          next
+        end
+
+        title = a[1]
+        if title == "As If I'm Not There"
+          title = "As If I Am Not There"
+        end
+        p title
+        film = Film.find_by({ title: title, film_type: (a[54] == 'short' ? 'Short' : 'Feature') })
+
+        ratio = a[203]
+        film.update(aspect_ratio: ratio)
+
+        films += 1
+      end
+    end
+  end
+
   def self.check_genres(time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(

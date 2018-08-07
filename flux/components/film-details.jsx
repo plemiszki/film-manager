@@ -972,7 +972,7 @@ var FilmDetails = React.createClass({
         <div>
           <hr />
           <div className="row">
-            <div className="col-xs-5">
+            <div className="col-xs-4">
               <h2>Director(s):</h2>
               <ul className="standard-list">
                 { this.state.directors.map(function(director) {
@@ -1004,8 +1004,8 @@ var FilmDetails = React.createClass({
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.length) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length || "" } data-field="length" />
               { Common.renderFieldError(this.state.filmErrors, Common.errors.length) }
             </div>
-            <div className="col-xs-1">
-              <h2>A. Ratio</h2>
+            <div className="col-xs-2">
+              <h2>Aspect Ratio</h2>
               <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.aspectRatio || "" } data-field="aspectRatio" />
               { Common.renderFieldError(this.state.filmErrors,[]) }
             </div>
