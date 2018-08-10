@@ -454,7 +454,7 @@ class Importer < ActiveRecord::Base
     object.delete
   end
 
-  def self.aspect_ratios(time_started)
+  def self.partial_import(time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
@@ -480,8 +480,9 @@ class Importer < ActiveRecord::Base
         p title
         film = Film.find_by({ title: title, film_type: (a[54] == 'short' ? 'Short' : 'Feature') })
 
-        ratio = a[203]
-        film.update(aspect_ratio: ratio)
+        sound_config = a[43]
+        rating = a[350]
+        film.update(sound_config: sound_config, rating: rating)
 
         films += 1
       end

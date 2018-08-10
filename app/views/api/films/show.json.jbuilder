@@ -51,6 +51,8 @@ json.films @films do |film|
   json.artworkUrl film.artwork_url || ""
   json.fmPlusUrl film.fm_plus_url
   json.aspectRatio film.aspect_ratio
+  json.rating film.rating
+  json.soundConfig film.sound_config
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

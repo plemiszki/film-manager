@@ -773,6 +773,7 @@ var FilmDetails = React.createClass({
         { this.renderTopTab("Contract") }
         { this.renderTopTab("Synopses") }
         { this.renderTopTab("Marketing") }
+        { this.renderTopTab("Specs") }
         { this.renderTopTab("Bookings") }
         { this.renderTopTab("DVDs") }
         { this.renderTopTab("Statements") }
@@ -869,6 +870,30 @@ var FilmDetails = React.createClass({
               }.bind(this)) }
             </tbody>
           </table>
+        </div>
+      );
+    } else if (this.state.tab === "Specs") {
+      return(
+        <div>
+          <hr />
+          <h3>Specifications:</h3>
+          <div className="row">
+            <div className="col-xs-2">
+              <h2>Rating</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.rating || "" } data-field="rating" />
+              { Common.renderFieldError(this.state.filmErrors,[]) }
+            </div>
+            <div className="col-xs-2">
+              <h2>Aspect Ratio</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.aspectRatio || "" } data-field="aspectRatio" />
+              { Common.renderFieldError(this.state.filmErrors,[]) }
+            </div>
+            <div className="col-xs-4">
+              <h2>Sound Configuration</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.soundConfig || "" } data-field="soundConfig" />
+              { Common.renderFieldError(this.state.filmErrors,[]) }
+            </div>
+          </div>
         </div>
       );
     } else if (this.state.tab === "Bookings") {
@@ -972,7 +997,7 @@ var FilmDetails = React.createClass({
         <div>
           <hr />
           <div className="row">
-            <div className="col-xs-4">
+            <div className="col-xs-6">
               <h2>Director(s):</h2>
               <ul className="standard-list">
                 { this.state.directors.map(function(director) {
@@ -1003,11 +1028,6 @@ var FilmDetails = React.createClass({
               <h2>Length (minutes)</h2>
               <input className={ Common.errorClass(this.state.filmErrors, Common.errors.length) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length || "" } data-field="length" />
               { Common.renderFieldError(this.state.filmErrors, Common.errors.length) }
-            </div>
-            <div className="col-xs-2">
-              <h2>Aspect Ratio</h2>
-              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.aspectRatio || "" } data-field="aspectRatio" />
-              { Common.renderFieldError(this.state.filmErrors,[]) }
             </div>
           </div>
           <hr />

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180806220310) do
+ActiveRecord::Schema.define(version: 20180810000125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -271,6 +271,8 @@ ActiveRecord::Schema.define(version: 20180806220310) do
     t.boolean "theatrical_tentative",                           default: false
     t.string  "fm_plus_url",                                    default: ""
     t.text    "aspect_ratio",                                   default: ""
+    t.text    "rating",                                         default: ""
+    t.text    "sound_config",                                   default: ""
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree
