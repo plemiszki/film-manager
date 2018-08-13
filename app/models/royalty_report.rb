@@ -450,7 +450,7 @@ class RoyaltyReport < ActiveRecord::Base
     if (input > 0)
       '($' + string + ')'
     else
-      '$' + string
+      '$' + string[1..-1]
     end
   end
 

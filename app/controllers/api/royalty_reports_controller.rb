@@ -135,7 +135,7 @@ class Api::RoyaltyReportsController < AdminController
     if (input > 0)
       '($' + string + ')'
     else
-      '$' + string
+      '$' + string[1..-1]
     end
   end
 
