@@ -1,26 +1,58 @@
 var React = require('react');
+var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
+var ServerActions = require('../actions/server-actions.js');
 var DvdCustomersStore = require('../stores/dvd-customers-store.js');
+var JobStore = require('../stores/job-store.js');
+
+var exportModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#FFFFFF',
+    margin: 'auto',
+    maxWidth: 540,
+    height: 250,
+    border: 'solid 1px black',
+    borderRadius: '6px',
+    color: '#5F5F5F',
+    padding: '30px'
+  }
+};
 
 var DvdReports = React.createClass({
 
   getInitialState: function() {
+    var job = {
+      errors_text: ""
+    };
     return({
       fetching: true,
       dvdCustomers: [],
-      year: (new Date).getFullYear()
+      year: (new Date).getFullYear(),
+      exportModalOpen: false,
+      export: {
+        startDate: HandyTools.stringifyDate(new Date),
+        endDate: HandyTools.stringifyDate(new Date)
+      },
+      errors: [],
+      jobModalOpen: !!job.id,
+      job: job
     });
   },
 
   componentDidMount: function() {
     this.customerListener = DvdCustomersStore.addListener(this.getCustomers);
+    this.jobListener = JobStore.addListener(this.getJob);
     $('#admin-right-column-content').css('padding', '30px 20px');
     ClientActions.fetchDvdReports(this.state.year);
   },
 
   componentWillUnmount: function() {
     this.customerListener.remove();
+    this.jobListener.remove();
   },
 
   getCustomers: function() {
@@ -28,6 +60,27 @@ var DvdReports = React.createClass({
       dvdSaved: DvdCustomersStore.all(),
       fetching: false
     });
+  },
+
+  getJob: function() {
+    var job = JobStore.job();
+    if (job.done) {
+      this.setState({
+        jobModalOpen: false,
+        errorsModalOpen: job.errors_text !== "",
+        job: job
+      }, function() {
+        if (job.errors_text === "") {
+          window.location.href = job.first_line;
+        }
+      });
+    } else {
+      this.setState({
+        jobModalOpen: true,
+        job: job,
+        fetching: false
+      });
+    }
   },
 
   clickPrev: function() {
@@ -48,11 +101,44 @@ var DvdReports = React.createClass({
     });
   },
 
+  openExportModal: function() {
+    this.setState({
+      exportModalOpen: true
+    });
+  },
+
+  clickExport: function() {
+    this.setState({
+      exportModalOpen: false,
+      fetching: true
+    });
+    ClientActions.exportDvdSales(this.state.export.startDate, this.state.export.endDate);
+  },
+
+  handleModalClose: function() {
+    this.setState({
+      exportModalOpen: false,
+    });
+  },
+
+  checkForChanges: function() {
+    return true;
+  },
+
+  changeFieldArgs: function() {
+    return {
+      thing: "export",
+      errorsArray: this.state.errors,
+      changesFunction: this.checkForChanges
+    }
+  },
+
   render: function() {
     return(
       <div id="dvd-reports">
         <div className="component">
           <div className="text-center">
+            <a className={"orange-button export-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal }>Export</a>
             <div className="clearfix">
               <a className={ "orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext }>&#62;&#62;</a>
               <h1>DVD Reports - { this.state.year }</h1>
@@ -213,12 +299,48 @@ var DvdReports = React.createClass({
             </div>
           </div>
         </div>
+        <Modal isOpen={ this.state.exportModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ exportModalStyles }>
+          <div className="export-modal">
+            <div className="row">
+              <div className="col-xs-6">
+                <h2>Start Date</h2>
+                <input value={ this.state.export.startDate } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="startDate" />
+              </div>
+              <div className="col-xs-6">
+                <h2>End Date</h2>
+                <input value={ this.state.export.endDate } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="endDate" />
+              </div>
+            </div>
+            <div className="row button-row">
+              <div className="col-xs-12">
+                <a className="orange-button" onClick={ this.clickExport }>Export Sales Report</a>
+              </div>
+            </div>
+          </div>
+        </Modal>
+        { Common.jobModal.call(this, this.state.job) }
+        { Common.jobErrorsModal.call(this) }
       </div>
     );
   },
 
   componentDidUpdate: function() {
     $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: function(response) {
+            ServerActions.receiveJob(response);
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 

@@ -988,6 +988,20 @@ var ClientActions = {
     });
   },
 
+  exportDvdSales: function(startDate, endDate) {
+    $.ajax({
+      url: '/api/dvd_reports/export',
+      method: 'POST',
+      data: {
+        start_date: startDate,
+        end_date: endDate
+      },
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
+  },
+
   fetchDvdReports: function(year) {
     $.ajax({
       url: '/api/dvd_reports',
