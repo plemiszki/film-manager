@@ -27,6 +27,7 @@ class ExportDvdSales
 
     orders = PurchaseOrder.where(order_date: start_date..end_date).includes(:customer)
     orders.each_with_index do |order, order_index|
+      next if !order.ship_date
       items = order.purchase_order_items
       items.each_with_index do |item, index|
         customer = order.customer
@@ -34,6 +35,7 @@ class ExportDvdSales
           dvd = item.item
           price = Invoice.get_item_price(dvd.id, 'dvd', customer).to_f
           feature = dvd.feature
+          licensor = feature.licensor
         else
           giftbox = item.item
           price = Invoice.get_item_price(giftbox.id, 'giftbox', customer).to_f
@@ -42,7 +44,7 @@ class ExportDvdSales
           order.order_date.strftime("%m/%d/%y"),
           order.number,
           customer.name,
-          item.item_type == 'dvd' ? feature.licensor.name : '',
+          licensor ? licensor.name : '',
           item.item_type == 'dvd' ? feature.title : giftbox.name,
           item.item_type == 'dvd' ? dvd.upc : giftbox.upc,
           item.item_type == 'dvd' ? dvd.dvd_type.name : '',
