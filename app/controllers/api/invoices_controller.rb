@@ -17,7 +17,7 @@ class Api::InvoicesController < AdminController
     invoice = Invoice.create!(
       invoice_type: 'booking',
       sent_date: Date.today,
-      number: "#{Invoice.where(invoice_type: "booking").count + 1}B",
+      number: "#{Setting.first.next_booking_invoice_number}B",
       billing_name: booking.billing_name,
       billing_address1: booking.billing_address1,
       billing_address2: booking.billing_address2,
@@ -40,6 +40,8 @@ class Api::InvoicesController < AdminController
     InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"
     InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
     SendBookingInvoice.perform_async(invoice.id, current_user.id, booking.email, params[:advance], params[:overage], (params[:advance] && booking.booking_type.strip != "Theatrical"))
+    settings = Setting.first
+    settings.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1)
     @invoices = booking.invoices.includes(:invoice_rows)
     render 'booking.json.jbuilder'
   end

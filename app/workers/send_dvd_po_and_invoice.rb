@@ -12,12 +12,11 @@ class SendDvdPoAndInvoice
 
     # send invoice
     if purchase_order.send_invoice
-      number = Invoice.where(invoice_type: 'dvd').length
       invoice = Invoice.create_invoice({
         from: purchase_order,
         invoice_type: 'dvd',
         customer_id: dvd_customer.id,
-        number: "#{number + 2464}D",
+        number: "#{Setting.first.next_dvd_invoice_number}D",
         sent_date: Date.today,
         po_number: purchase_order.number,
         billing_name: dvd_customer.billing_name,
@@ -48,6 +47,8 @@ class SendDvdPoAndInvoice
         attachment: attachments
       }
       mg_client.send_message 'filmmovement.com', message_params
+      settings = Setting.first
+      settings.update(next_dvd_invoice_number: settings.next_dvd_invoice_number + 1)
     end
 
     # send shipping files
