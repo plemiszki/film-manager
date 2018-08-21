@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180813220242) do
+ActiveRecord::Schema.define(version: 20180821230547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -522,7 +522,9 @@ ActiveRecord::Schema.define(version: 20180813220242) do
   end
 
   create_table "settings", force: :cascade do |t|
-    t.string "booking_confirmation_text"
+    t.string  "booking_confirmation_text"
+    t.integer "next_booking_invoice_number"
+    t.integer "next_dvd_invoice_number"
   end
 
   create_table "shipping_addresses", force: :cascade do |t|
