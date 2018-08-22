@@ -71,12 +71,17 @@ var ReturnsIndex = React.createClass({
     this.setState({ modalOpen: false });
   },
 
+  openExportModal: function() {
+
+  },
+
   render: function() {
     var filteredReturns = this.state.returns.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="returns-index" className="component">
         <h1>DVD Returns</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add New</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal }>Export</a>
+        <a className={ "orange-button float-button margin" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add New</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
