@@ -3,6 +3,7 @@ class Invoice < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
   validates :invoice_type, :number, presence: true
+  validates :number, uniqueness: true
 
   has_many :invoice_rows, -> { order('invoice_rows.id') }, dependent: :destroy
   belongs_to :customer, class_name: 'DvdCustomer'
