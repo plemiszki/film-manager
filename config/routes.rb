@@ -86,6 +86,7 @@ Rails.application.routes.draw do
     post '/dvd_reports/export' => '/api/purchase_orders#export'
     get '/calendar' => 'calendar#show'
     resources :returns, only: [:index, :create, :show, :update, :destroy]
+    post '/returns/export' => '/api/returns#export'
     resources :return_items, only: [:create, :destroy]
     resources :weekly_terms, only: [:create, :destroy]
     resources :weekly_box_offices, only: [:create, :destroy]
