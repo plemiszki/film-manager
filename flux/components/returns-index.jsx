@@ -2,6 +2,7 @@ var React = require('react');
 var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
+var ServerActions = require('../actions/server-actions.js');
 var ReturnsStore = require('../stores/returns-store.js');
 var NewThing = require('./new-thing.jsx');
 var JobStore = require('../stores/job-store.js');
@@ -225,6 +226,21 @@ var ReturnsIndex = React.createClass({
 
   componentDidUpdate: function() {
     $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(function() {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: function(response) {
+            ServerActions.receiveJob(response);
+          }.bind(this)
+        })
+      }.bind(this), 1500)
+    }
   }
 });
 
