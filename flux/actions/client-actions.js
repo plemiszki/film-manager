@@ -1079,6 +1079,20 @@ var ClientActions = {
     });
   },
 
+  exportReturns: function(startDate, endDate) {
+    $.ajax({
+      url: '/api/returns/export',
+      method: 'POST',
+      data: {
+        start_date: startDate,
+        end_date: endDate
+      },
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
+  },
+
   addReturnItem: function(returnId, itemId, itemType, qty) {
     $.ajax({
       url: '/api/return_items/',
