@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180822012255) do
+ActiveRecord::Schema.define(version: 20180826223436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20180822012255) do
     t.integer "film_id",    null: false
     t.string  "first_name"
     t.string  "last_name",  null: false
+    t.integer "order"
   end
 
   add_index "actors", ["film_id"], name: "index_actors_on_film_id", using: :btree
@@ -175,6 +176,7 @@ ActiveRecord::Schema.define(version: 20180822012255) do
   create_table "film_countries", force: :cascade do |t|
     t.integer "film_id",    null: false
     t.integer "country_id", null: false
+    t.integer "order"
   end
 
   create_table "film_formats", force: :cascade do |t|
@@ -185,11 +187,13 @@ ActiveRecord::Schema.define(version: 20180822012255) do
   create_table "film_genres", force: :cascade do |t|
     t.integer "film_id",  null: false
     t.integer "genre_id", null: false
+    t.integer "order"
   end
 
   create_table "film_languages", force: :cascade do |t|
     t.integer "film_id",     null: false
     t.integer "language_id", null: false
+    t.integer "order"
   end
 
   create_table "film_revenue_percentages", force: :cascade do |t|
