@@ -12,8 +12,8 @@ class ExportCatalog
     document = Caracal::Document.save(file_path) do |docx|
       films = Film.where(id: film_ids).order(:title).includes(:countries, :languages)
       films.each_with_index do |film, film_index|
-        country = film.countries.first
-        language = film.languages.first
+        country = film.film_countries.order(:order).first.country
+        language = film.film_languages.order(:order).first.language
 
         c1 = Caracal::Core::Models::TableCellModel.new margins: { top: 0, bottom: 100, left: 0, right: 0 } do
           if film.artwork_url
