@@ -29,17 +29,20 @@ json.array!(@films) do |film|
     json.id format.id
     json.name format.name
   end
-  json.countries film.countries do |country|
-    json.id country.id
-    json.name country.name
+  json.countries film.film_countries do |film_country|
+    json.id film_country.country.id
+    json.name film_country.country.name
+    json.order film_country.order
   end
-  json.languages film.languages do |language|
-    json.id language.id
-    json.name language.name
+  json.languages film.film_languages do |film_language|
+    json.id film_language.language.id
+    json.name film_language.language.name
+    json.order film_language.order
   end
-  json.genres film.genres do |genre|
-    json.id genre.id
-    json.name genre.name
+  json.genres film.film_genres do |film_genre|
+    json.id film_genre.genre.id
+    json.name film_genre.genre.name
+    json.order film_genre.order
   end
   json.topics film.topics do |topic|
     json.id topic.id
@@ -54,6 +57,7 @@ json.array!(@films) do |film|
     json.id actor.id
     json.first_name actor.first_name
     json.last_name actor.last_name
+    json.order actor.order
   end
   json.laurels film.laurels do |laurel|
     json.id laurel.id
@@ -61,6 +65,7 @@ json.array!(@films) do |film|
     json.result laurel.result
     json.award_name laurel.award_name
     json.festival laurel.festival
+    json.order laurel.order
   end
   json.quotes film.quotes do |quote|
     json.id quote.id
@@ -68,6 +73,7 @@ json.array!(@films) do |film|
     json.text quote.text
     json.author quote.author
     json.publication quote.publication
+    json.order quote.order
   end
   json.related_films film.related_films do |related_film|
     json.id related_film.id
