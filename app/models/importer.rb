@@ -454,6 +454,245 @@ class Importer < ActiveRecord::Base
     object.delete
   end
 
+  def self.get_orders(time_started)
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/Films.txt")
+    object.get(response_target: "tmp/#{time_started}/Films.txt")
+    File.open(Rails.root.join("tmp/#{time_started}/Films.txt")) do |file|
+      titles = []
+      total = file.gets.to_i
+      films = 0
+      mismatched_laurels = 0
+      until films == total
+        a = file.gets.split("\t")
+        if a[1].empty? || a[1][0..8] == "(NEW FILM" || ["Captive Beauty", "The Dark Sea", "The Condemned", "Camino del Vino", "Mundo Secreto", "Sal", "Chance", "Nairobi Half Life", "School's Out", "Something Necessary", "War Witch", "Things From Another World", "Pulce is Not Here", "Climate of Change", "Fire in Babylon", "Booker's Place: A Mississippi Story", "Boys of Summer", "Felony", "Deep Throat Part II Collection", "Quality Time", "Smitten!", "Farewell Herr Schwarz", "Arabian Nights: Volume 1, The Restless One", "Arabian Nights: Volume 2, The Desolate One", "Arabian Nights: Volume 3, The Enchanted One", "A Strange Course of Events", "Fire at Sea", "Marcel Proust's Time Regained", "The American Dreamer"].include?(a[1])
+          films += 1
+          next
+        end
+
+        title = a[1]
+        if title == "As If I'm Not There"
+          title = "As If I Am Not There"
+        elsif title == "Inch' Allah Dimanche"
+          title = "Inch'Allah Dimanche"
+        end
+        titles << title
+        film = Film.find_by({ title: title, film_type: (a[54] == 'short' ? 'Short' : 'Feature') })
+
+        # languages
+        data_languages = a[4]
+        data_languages = data_languages.sub('Swedish/English', 'Swedish, English')
+        data_languages = data_languages.sub('German & English w/ English subs', 'German, English')
+        data_languages = data_languages.sub('Polish w/English subtitles', 'Polish')
+        data_languages = data_languages.sub('Spanish w/English subtitles', 'Spanish')
+        data_languages = data_languages.sub('German w/ English subtitles', 'German')
+        data_languages = data_languages.sub('English w/English subtitles', 'English')
+        data_languages = data_languages.sub('English/Malay', 'English, Malay')
+        data_languages = data_languages.sub('n/a', '')
+        data_languages = data_languages.sub('No Dialogue', '')
+        data_languages = data_languages.sub('Various', '')
+        data_languages = data_languages.sub('with English subs', '')
+        data_languages = data_languages.split(",").map(&:strip)
+        film_languages = film.film_languages
+        languages = film_languages.map { |fl| fl.language.name }
+        if data_languages.sort != languages.sort
+          # order by what's in new database
+          film_languages.each_with_index do |film_language, index|
+            film_language.update(order: index)
+          end
+        else
+          # order by what's in VB database
+          data_languages.each_with_index do |data_language, index|
+            lang = Language.find_by_name(data_language)
+            FilmLanguage.find_by(film_id: film.id, language_id: lang.id).update(order: index)
+          end
+        end
+
+        # countries
+        data_countries = a[3]
+        data_countries = data_countries.sub('US,', 'USA,')
+        data_countries = data_countries.sub(/US\z/, 'USA')
+        data_countries = data_countries.sub('U.S.', 'USA')
+        data_countries = data_countries.sub('UK', 'United Kingdom')
+        data_countries = data_countries.sub('Switzerland | France', 'Switzerland, France')
+        data_countries = data_countries.sub('Itally', 'Italy')
+        data_countries = data_countries.split(',').map(&:strip)
+        film_countries = film.film_countries
+        countries = film_countries.map { |fc| fc.country.name }
+        if data_countries.sort != countries.sort
+          # order by what's in new database
+          film_countries.each_with_index do |film_country, index|
+            film_country.update(order: index)
+          end
+        else
+          # order by what's in VB database
+          data_countries.each_with_index do |data_country, index|
+            count = Country.find_by_name(data_country)
+            FilmCountry.find_by(film_id: film.id, country_id: count.id).update(order: index)
+          end
+        end
+
+        # genres
+        data_genres = a[55]
+        data_genres = data_genres.split('\n').map(&:strip)
+        film_genres = film.film_genres
+        genres = film_genres.map { |fg| fg.genre.name }
+        if data_genres.sort != genres.sort
+          # order by what's in new database
+          film_genres.each_with_index do |film_genre, index|
+            film_genre.update(order: index)
+          end
+        else
+          # order by what's in VB database
+          data_genres.each_with_index do |data_genre, index|
+            g = Genre.find_by_name(data_genre)
+            FilmGenre.find_by(film_id: film.id, genre_id: g.id).update(order: index)
+          end
+        end
+
+        # actors
+        data_actors = a[20]
+        data_actors = data_actors.sub('Virginia  Méndez', 'Virginia Méndez')
+        data_actors = data_actors.sub('Georges  Khabbaz', 'Georges Khabbaz')
+        data_actors = data_actors.sub('Leo  Minaya', 'Leo Minaya')
+        data_actors = data_actors.sub('Ilka  W. Fischer', 'Ilka W. Fischer')
+        data_actors = data_actors.sub('Aaron  Richard Golub', 'Aaron Richard Golub')
+        data_actors = data_actors.sub('Audrey Cumings', 'Audrey Cummings')
+        data_actors = data_actors.sub('Anatole Taubmann', 'Anatole Taubman')
+        data_actors = data_actors.split(',').map(&:strip)
+        data_actors.delete("")
+        actors = film.actors
+        names = actors.map { |actor| "#{actor.first_name}#{actor.first_name && actor.last_name ? ' ' : ''}#{actor.last_name}" }
+        if data_actors.sort != names.sort
+          # order by what's in new database
+          actors.each_with_index do |actor, index|
+            actor.update(order: index)
+          end
+        else
+          # order by what's in VB database
+          data_actors.each_with_index do |name, index|
+            act = Actor.find_by({ film_id: film.id, first_name: name.split(' ')[0], last_name: name.split(' ')[-1] })
+            act = Actor.find_by({ film_id: film.id, first_name: "#{name.split(' ')[0]} #{name.split(' ')[1]}", last_name: name.split(' ')[-1] }) if !act
+            act = Actor.find_by({ film_id: film.id, first_name: name.split(' ')[0] }) if !act
+            act = Actor.find_by({ film_id: film.id, last_name: name.split(' ')[-1] }) if !act
+            act = Actor.find_by({ film_id: film.id, last_name: name }) if !act
+            act = Actor.find_by({ film_id: film.id, first_name: name }) if !act
+            act = Actor.find_by({ film_id: film.id, last_name: "#{name.split(' ')[-2]} #{name.split(' ')[-1]}" }) if !act
+            act.update(order: index)
+          end
+        end
+
+        # laurels
+        data_laurels = a[19]
+        data_laurels = data_laurels.sub('Winner - Tom Skerritt Lumination Award  - Crested Butte Reel Fest', 'Winner - Tom Skerritt Lumination Award - Crested Butte Reel Fest')
+        data_laurels = data_laurels.sub('NOMINTAED - Audience Award , SXSW FF (2012)', 'Nominated - Audience Award - SXSW Film Festival')
+        data_laurels = data_laurels.sub('Torino Film Festival, Namur International Festival of French-Speaking Film', 'Official Selection - Torino Film Festival\nOfficial Selection - Namur International Festival of French-Speaking Film')
+        data_laurels = data_laurels.sub("FIPRESCI Award -- 57th Thessaloniki Int'l. Film Festival", "FIPRESCI Award - 57th Thessaloniki Int'l. Film Festival")
+        data_laurels = data_laurels.sub("Official Selection- Rendezvous with French Cinema, New York", "Official Selection - Rendezvous with French Cinema, New York")
+        data_laurels = data_laurels.sub("Winner - 1-2 Award for Best Film - Warsaw Int'l. Film Festival", "Winner - Competition 1-2 Award - Warsaw Int'l Film Festival")
+        data_laurels = data_laurels.sub("Winner - Silver Hobby-Horse - Best Director - Krakow Film Festival", "Winner - Best Director - Krakow Film Festival")
+        data_laurels = data_laurels.sub("Winner - Silver Horn - Best Feature - Krakow Film Festival", "Winner - Best Feature - Krakow Film Festival")
+        data_laurels = data_laurels.sub("Winner - Best Cinematographer - Tallin Black Nights FF (2016)", "Winner - Best Cinematographer - Tallinn Black Nights Film Festival")
+        data_laurels = data_laurels.sub("Winner - Best Director - Shanghai Int'l. Film Festival", "Winner - Best Director - Shanghai Int'l Film Festival")
+        data_laurels = data_laurels.sub("Winner - FIPRESCI Prize - Best Int'l. Film - Uruguay Int'l. Film Festival", "Winner - FIPRESCI Award for Best International Feature Film - Uruguay Int'l Film Festival")
+        data_laurels = data_laurels.sub("Winner - FIPRESCI Prize, Panorama - Berlin Int'l. Film Festival", "Winner - FIPRESCI Award for Best Film in the Panorama Section - Berlin Int'l Film Festival")
+        data_laurels = data_laurels.sub("Winner - Jury Award - Best Documentary - Rockport Film Festival", "Winner - Best Documentary Feature - Rockport Film Festival")
+        data_laurels = data_laurels.sub("Short-listed - Best Live-Action Short - Academy Awards", "")
+        data_laurels = data_laurels.sub("Guatemala's submission to the Academy Awards for Best Foreign Language Film", "")
+        data_laurels = data_laurels.sub("Winner - Best Film - Asian New Wave - Q Cinema International Film Festival", "Winner - Best Film, Asian New Wave - QCinema Int'l Film Festival")
+        data_laurels = data_laurels.sub("Winner - Interfaith Award - Best Narrative Feature - St. Louis International Film Festival", "Winner - Best Narrative Feature, Interfaith Awards - St. Louis Int'l Film Festival")
+        data_laurels = data_laurels.sub("OFFICIAL SELECTION - Karlovy Vary Int'l Film Festival WINNER - Best Director - European Film Festival Palic", "Official Selection - Karlovy Vary Int'l Film Festival\\nWinner - Best Director - Palić Film Festival")
+        data_laurels = data_laurels.sub("Norway’s Submission to the Academy Awards", "")
+        data_laurels = data_laurels.sub("Winner - John Schlesinger Award- Best Narrative - Provincetown Int'l Film Festival", "Winner - John Schlesinger Award, Best Narrative - Provincetown Int'l Film Festival")
+        data_laurels = data_laurels.sub("Official Selection – Sundance Film Festival", "Official Selection - Sundance Film Festival")
+        data_laurels = data_laurels.sub("Winner of 5 Israeli Academy Awards", "")
+        data_laurels = data_laurels.sub("India Int'l Film Festival", "")
+        data_laurels = data_laurels.sub("Official Selection - Cine-world Film Festival", "Official Selection - Cine-World Film Festival")
+        data_laurels = data_laurels.sub("Official Selection - Donostia-San Sebastian International Film Festival", "Official Selection - San Sebastian International Film Festival")
+        data_laurels = data_laurels.sub("Winner - Int'l Jury Award - Best Int'l Short Film - Cork Int'l Film Festival", "")
+        data_laurels = data_laurels.sub("Winner - Best Short Film  - Berlin Int'l Film Festival", "Winner - Best Short Film - Berlin Int'l Film Festival")
+        data_laurels = data_laurels.sub("Croatia's submission to the 2003 Academy Awards", "")
+        data_laurels = data_laurels.sub("Uruguay's submission to the 2007 Academy Awards", "")
+        data_laurels = data_laurels.sub("Slovenia's submission to the 2003 Academy Awards", "")
+        data_laurels = data_laurels.sub("Official Selection  - Sundance Film Festival", "Official Selection - Sundance Film Festival")
+        data_laurels = data_laurels.sub("Official Selection - Amer-Asia Film Festival", "Official Selection - AmerAsia Film Festival")
+        data_laurels = data_laurels.sub("Official Selection - Sundance Int'l Film Festival", "Official Selection - Sundance Film Festival")
+        data_laurels = data_laurels.sub("Winner - Best Film- Starz Denver Film Festival", "Winner - Best Film - Starz Denver Film Festival")
+        data_laurels = data_laurels.sub("Official Selection - Roterdam Int'l Film Festival", "Official Selection - Rotterdam Int'l Film Festival")
+        data_laurels = data_laurels.split('\n').map(&:strip)
+        data_laurels.delete("")
+        laurels = film.laurels
+        laurel_strings = laurels.map { |laurel| "#{laurel.result} - #{laurel.award_name.empty? ? '': (laurel.award_name + ' - ')}#{laurel.festival}" }
+        if data_laurels.sort != laurel_strings.sort
+          # order by what's in new database
+          laurels.each_with_index do |laurel, index|
+            laurel.update(order: index)
+          end
+        else
+          # order by what's in VB database
+          data_laurels.each_with_index do |laurel, index|
+            relation = Laurel.where(film_id: film.id, festival: laurel.split(' - ')[-1])
+            if relation.count == 1
+              relation.first.update(order: index)
+            else
+              p film.title
+              p laurel
+              sections = laurel.split(' - ').count
+              if sections == 3
+                Laurel.find_by({ film_id: film.id, festival: laurel.split(' - ')[-1], award_name: laurel.split(' - ')[-2] }).update(order: index)
+              elsif sections == 2
+                Laurel.find_by({ film_id: film.id, festival: laurel.split(' - ')[-1], result: laurel.split(' - ')[-2] }).update(order: index)
+              end
+            end
+          end
+        end
+
+        # quotes
+        data_quotes = []
+        data_quotes << a[26] unless a[26].empty?
+        data_quotes << a[27] unless a[27].empty?
+        data_quotes << a[28] unless a[28].empty?
+        quotes = film.quotes
+        quote_texts = quotes.map { |quote| quote.text }
+        if data_quotes.sort != quote_texts.sort
+          # order by what's in new database
+          quotes.each_with_index do |quote, index|
+            quote.update(order: index)
+          end
+        else
+          # order by what's in VB database
+          data_quotes.each_with_index do |quote, index|
+            q = Quote.find_by_text(quote)
+            q.update(order: index)
+          end
+        end
+
+        films += 1
+      end
+      p mismatched_laurels
+      titles_not_in_file = Film.all.pluck(:title) - titles
+      titles_not_in_file.each do |title|
+        film = Film.find_by_title(title)
+        film.film_languages.each_with_index do |fl, index|
+          fl.update(order: index)
+        end
+        film.film_countries.each_with_index do |fc, index|
+          fc.update(order: index)
+        end
+        film.film_genres.each_with_index do |fg, index|
+          fg.update(order: index)
+        end
+        film.actors.each_with_index do |a, index|
+          a.update(order: index)
+        end
+      end
+    end
+  end
+
   def self.partial_import(time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     s3 = Aws::S3::Resource.new(

@@ -21,7 +21,7 @@ ActorsStore.all = function() {
   var actors = Object.keys(_actors).map(function(id) {
     return(_actors[id]);
   });
-  return HandyTools.alphabetizeArrayOfObjects(actors, 'lastName');
+  return HandyTools.sortArrayOfObjects(actors, 'order');
 };
 
 ActorsStore.__onDispatch = function(payload) {

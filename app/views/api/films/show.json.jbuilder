@@ -108,6 +108,7 @@ end
 json.filmCountries @film_countries do |film_country|
   json.id film_country.id
   json.country film_country.country.name
+  json.order film_country.order
 end
 json.languages @languages do |language|
   json.id language.id
@@ -116,6 +117,7 @@ end
 json.filmLanguages @film_languages do |film_language|
   json.id film_language.id
   json.language film_language.language.name
+  json.order film_language.order
 end
 json.genres @genres do |genre|
   json.id genre.id
@@ -124,6 +126,7 @@ end
 json.filmGenres @film_genres do |film_genre|
   json.id film_genre.id
   json.genre film_genre.genre.name
+  json.order film_genre.order
 end
 json.topics @topics do |topic|
   json.id topic.id
@@ -140,6 +143,7 @@ json.quotes @quotes do |quote|
   json.author quote.author
   json.publication quote.publication
   json.filmId quote.film_id
+  json.order quote.order
 end
 json.laurels @laurels do |laurel|
   json.id laurel.id
@@ -147,6 +151,7 @@ json.laurels @laurels do |laurel|
   json.awardName laurel.award_name
   json.festival laurel.festival
   json.filmId laurel.film_id
+  json.order laurel.order
 end
 json.relatedFilms @related_films do |related_film|
   json.id related_film.id
@@ -169,6 +174,7 @@ json.actors @actors do |actor|
   json.filmId actor.film_id
   json.firstName actor.first_name
   json.lastName actor.last_name
+  json.order actor.order
 end
 json.bookings @bookings do |booking|
   json.id booking.id

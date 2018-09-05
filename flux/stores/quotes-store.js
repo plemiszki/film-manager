@@ -21,7 +21,7 @@ QuotesStore.all = function() {
   var quotes = Object.keys(_quotes).map(function(id) {
     return(_quotes[id]);
   });
-  return HandyTools.sortArrayOfObjects(quotes, 'id');
+  return HandyTools.sortArrayOfObjects(quotes, 'order');
 };
 
 QuotesStore.__onDispatch = function(payload) {

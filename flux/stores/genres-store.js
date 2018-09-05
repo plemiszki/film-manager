@@ -36,7 +36,7 @@ GenresStore.filmGenres = function() {
   var filmGenres = Object.keys(_filmGenres).map(function(id) {
     return(_filmGenres[id]);
   });
-  return HandyTools.alphabetizeArrayOfObjects(filmGenres, 'genre');
+  return HandyTools.sortArrayOfObjects(filmGenres, 'order');
 };
 
 GenresStore.__onDispatch = function(payload) {

@@ -1,7 +1,10 @@
 class Api::FilmCountriesController < AdminController
 
+  include Reorderable
+
   def create
-    @film_country = FilmCountry.new(film_country_params)
+    current_length = FilmCountry.where(film_id: film_country_params[:film_id]).length
+    @film_country = FilmCountry.new(film_country_params.merge({ order: current_length }))
     if @film_country.save
       @film_countries = FilmCountry.where(film_id: @film_country.film_id).includes(:film)
       @countries = Country.where.not(id: @film_countries.pluck(:country_id))
@@ -12,6 +15,7 @@ class Api::FilmCountriesController < AdminController
   def destroy
     @film_country = FilmCountry.find(params[:id])
     @film_country.destroy
+    reorder(FilmCountry.where(film_id: @film_country.film_id).order(:order))
     @film_countries = FilmCountry.where(film_id: @film_country.film_id).includes(:film)
     @countries = Country.where.not(id: @film_countries.pluck(:country_id))
     render 'index.json.jbuilder'

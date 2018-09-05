@@ -36,7 +36,7 @@ LanguagesStore.filmLanguages = function() {
   var filmLanguages = Object.keys(_filmLanguages).map(function(id) {
     return(_filmLanguages[id]);
   });
-  return HandyTools.alphabetizeArrayOfObjects(filmLanguages, 'language');
+  return HandyTools.sortArrayOfObjects(filmLanguages, 'order');
 };
 
 LanguagesStore.__onDispatch = function(payload) {

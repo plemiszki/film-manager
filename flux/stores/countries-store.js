@@ -36,7 +36,7 @@ CountriesStore.filmCountries = function() {
   var filmCountries = Object.keys(_filmCountries).map(function(id) {
     return(_filmCountries[id]);
   });
-  return HandyTools.alphabetizeArrayOfObjects(filmCountries, 'country');
+  return HandyTools.sortArrayOfObjects(filmCountries, 'order');
 };
 
 CountriesStore.__onDispatch = function(payload) {

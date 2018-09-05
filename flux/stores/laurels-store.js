@@ -21,7 +21,7 @@ LaurelsStore.all = function() {
   var laurels = Object.keys(_laurels).map(function(id) {
     return(_laurels[id]);
   });
-  return HandyTools.sortArrayOfObjects(laurels, 'id');
+  return HandyTools.sortArrayOfObjects(laurels, 'order');
 };
 
 LaurelsStore.__onDispatch = function(payload) {
