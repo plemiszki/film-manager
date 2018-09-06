@@ -480,4 +480,17 @@ ul.standard-list {
       cursor: pointer;
     }
   }
+
+  &.reorderable li .handle {
+    display: inline-block;
+    position: absolute;
+    right: 30px;
+    background-image: asset-url('handle.png');
+    background-position: 50%;
+    background-size: 17px;
+    background-repeat: no-repeat;
+    width: 17px;
+    height: 17px;
+    cursor: grab;
+  }
 }

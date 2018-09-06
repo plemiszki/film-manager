@@ -188,6 +188,7 @@
     padding: 0 20px 20px 20px;
 
     .quote {
+      position: relative;
       border: solid 1px #E4E9ED;
       border-radius: 3px;
       padding: 15px;
@@ -200,6 +201,20 @@
 
       p:last-of-type {
         font-family: 'TeachableSans-Medium';
+      }
+
+      .handle {
+        display: inline-block;
+        position: absolute;
+        top: calc(50% - 8px);
+        right: 30px;
+        background-image: asset-url('handle.png');
+        background-position: 50%;
+        background-size: 17px;
+        background-repeat: no-repeat;
+        width: 17px;
+        height: 17px;
+        cursor: grab;
       }
     }
   }

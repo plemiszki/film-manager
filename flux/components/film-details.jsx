@@ -464,7 +464,9 @@ var FilmDetails = React.createClass({
   },
 
   clickQuote: function(e) {
-    window.location = '/quotes/' + e.target.dataset.id;
+    if (e.target.dataset.id) {
+      window.location = '/quotes/' + e.target.dataset.id;
+    }
   },
 
   clickAddQuote: function() {
@@ -1034,10 +1036,10 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-6">
               <h3>Countries:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list reorderable">
                 { this.state.filmCountries.map(function(filmCountry) {
                   return(
-                    <li key={ filmCountry.id }>{ filmCountry.country }<div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
+                    <li key={ filmCountry.id }>{ filmCountry.country }<div className="handle"></div><div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1045,10 +1047,10 @@ var FilmDetails = React.createClass({
             </div>
             <div className="col-xs-6">
               <h3>Languages:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list reorderable">
                 { this.state.filmLanguages.map(function(filmLanguage) {
                   return(
-                    <li key={ filmLanguage.id }>{ filmLanguage.language }<div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
+                    <li key={ filmLanguage.id }>{ filmLanguage.language }<div className="handle"></div><div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1059,10 +1061,10 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-6">
               <h3>Cast:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list reorderable">
                 { this.state.actors.map(function(actor) {
                   return(
-                    <li key={ actor.id }>{ actor.firstName } { actor.lastName }<div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
+                    <li key={ actor.id }>{ actor.firstName } { actor.lastName }<div className="handle"></div><div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1120,10 +1122,10 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-12">
               <h3>Laurels:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list reorderable">
                 { this.state.laurels.map(function(laurel) {
                   return(
-                    <li key={ laurel.id }>{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="x-button" onClick={ this.clickDeleteLaurel } data-id={ laurel.id }></div></li>
+                    <li key={ laurel.id }>{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle"></div><div className="x-button" onClick={ this.clickDeleteLaurel } data-id={ laurel.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1152,10 +1154,11 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-6">
               <h3>Genres:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list reorderable">
                 { this.state.filmGenres.map(function(filmGenre) {
                   return(
-                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
+                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="handle"></div>
+                    <div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1561,6 +1564,7 @@ var FilmDetails = React.createClass({
       <div className="quote" onClick={ this.clickQuote } data-id={ quote.id }>
         <p data-id={ quote.id }>"{ quote.text }"</p>
         <p data-id={ quote.id }>- { bottomLine }</p>
+        <div className="handle"></div>
       </div>
     );
   },
