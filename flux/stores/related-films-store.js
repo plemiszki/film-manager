@@ -22,7 +22,7 @@ RelatedFilmsStore.all = function() {
   var relatedFilms = Object.keys(_relatedFilms).map(function(id) {
     return(_relatedFilms[id]);
   });
-  return HandyTools.sortArrayOfObjects(relatedFilms, 'order');
+  return HandyTools.alphabetizeArrayOfObjects(relatedFilms, 'title');
 };
 
 RelatedFilmsStore.setOtherFilms = function(otherFilms) {
