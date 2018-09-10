@@ -1067,10 +1067,10 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-6">
               <h3>Countries:</h3>
-              <ul className="standard-list reorderable">
+              <ul className="standard-list">
                 { this.state.filmCountries.map(function(filmCountry) {
                   return(
-                    <li key={ filmCountry.id }>{ filmCountry.country }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
+                    <li key={ filmCountry.id }>{ filmCountry.country }<div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1079,9 +1079,13 @@ var FilmDetails = React.createClass({
             <div className="col-xs-6">
               <h3>Languages:</h3>
               <ul className="standard-list reorderable">
+                <li className="drop-zone"></li>
                 { this.state.filmLanguages.map(function(filmLanguage) {
                   return(
-                    <li key={ filmLanguage.id }>{ filmLanguage.language }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
+                    <div>
+                      <li key={ filmLanguage.id }>{ filmLanguage.language }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
+                      <li key={ `${filmLanguage.id}-below` } className="drop-zone"></li>
+                    </div>
                   );
                 }.bind(this)) }
               </ul>

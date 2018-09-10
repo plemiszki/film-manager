@@ -4,6 +4,24 @@
     background-color: #CED8F6;
   }
 
+  ul.reorderable {
+    padding: 4px 11px;
+
+    li:not(.drop-zone) {
+      padding: 4px;
+      margin-bottom: 0;
+
+      .x-button {
+        right: 4px;
+      }
+    }
+
+    li.drop-zone {
+      // background-color: blue;
+      height: 7px;
+    }
+  }
+
   div.key-art {
     width: 100%;
     height: 74px;
