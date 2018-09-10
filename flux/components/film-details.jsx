@@ -347,6 +347,37 @@ var FilmDetails = React.createClass({
     }
   },
 
+  mouseDownHandle: function(e) {
+    $('*').addClass('grabbing');
+    let li = e.target.parentElement;
+    li.classList.add('grabbed-element');
+    let ul = e.target.parentElement.parentElement;
+    ul.classList.add('grab-section');
+  },
+
+  mouseUpHandle: function(e) {
+    $('*').removeClass('grabbing');
+    let li = e.target.parentElement;
+    li.classList.remove('grabbed-element');
+    let ul = e.target.parentElement.parentElement;
+    ul.classList.remove('grab-section');
+  },
+
+  dragOverHandler: function(e) {
+    // e.target.classList.add('highlight');
+  },
+
+  dragOutHandler: function(e) {
+    // e.target.classList.remove('highlight');
+  },
+
+  dragEndHandler: function() {
+    $('*').removeClass('grabbing');
+    $('body').removeAttr('style');
+    $('li.grabbed-element').removeClass('grabbed-element');
+    // $('tr.highlight').removeClass('highlight');
+  },
+
   clickTab: function(event) {
     var tab = event.target.innerText;
     if (this.state.tab !== tab) {
@@ -1039,7 +1070,7 @@ var FilmDetails = React.createClass({
               <ul className="standard-list reorderable">
                 { this.state.filmCountries.map(function(filmCountry) {
                   return(
-                    <li key={ filmCountry.id }>{ filmCountry.country }<div className="handle"></div><div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
+                    <li key={ filmCountry.id }>{ filmCountry.country }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1050,7 +1081,7 @@ var FilmDetails = React.createClass({
               <ul className="standard-list reorderable">
                 { this.state.filmLanguages.map(function(filmLanguage) {
                   return(
-                    <li key={ filmLanguage.id }>{ filmLanguage.language }<div className="handle"></div><div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
+                    <li key={ filmLanguage.id }>{ filmLanguage.language }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1064,7 +1095,7 @@ var FilmDetails = React.createClass({
               <ul className="standard-list reorderable">
                 { this.state.actors.map(function(actor) {
                   return(
-                    <li key={ actor.id }>{ actor.firstName } { actor.lastName }<div className="handle"></div><div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
+                    <li key={ actor.id }>{ actor.firstName } { actor.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1125,7 +1156,7 @@ var FilmDetails = React.createClass({
               <ul className="standard-list reorderable">
                 { this.state.laurels.map(function(laurel) {
                   return(
-                    <li key={ laurel.id }>{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle"></div><div className="x-button" onClick={ this.clickDeleteLaurel } data-id={ laurel.id }></div></li>
+                    <li key={ laurel.id }>{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteLaurel } data-id={ laurel.id }></div></li>
                   );
                 }.bind(this)) }
               </ul>
@@ -1157,7 +1188,7 @@ var FilmDetails = React.createClass({
               <ul className="standard-list reorderable">
                 { this.state.filmGenres.map(function(filmGenre) {
                   return(
-                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="handle"></div>
+                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div>
                     <div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
                   );
                 }.bind(this)) }
@@ -1564,13 +1595,19 @@ var FilmDetails = React.createClass({
       <div className="quote" onClick={ this.clickQuote } data-id={ quote.id }>
         <p data-id={ quote.id }>"{ quote.text }"</p>
         <p data-id={ quote.id }>- { bottomLine }</p>
-        <div className="handle"></div>
+        <div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div>
       </div>
     );
   },
 
   componentDidUpdate: function() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    $("li:not('drop-zone')").draggable({
+      cursor: '-webkit-grabbing',
+      handle: '.handle',
+      helper: function() { return '<div></div>'; },
+      stop: this.dragEndHandler
+    });
     $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {
       window.setTimeout(function() {
