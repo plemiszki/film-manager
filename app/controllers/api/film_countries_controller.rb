@@ -21,6 +21,9 @@ class Api::FilmCountriesController < AdminController
     render 'index.json.jbuilder'
   end
 
+  def rearrange
+  end
+
   private
 
   def film_country_params

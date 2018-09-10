@@ -35,6 +35,9 @@ class Api::QuotesController < AdminController
     render json: @quote, status: 200
   end
 
+  def rearrange
+  end
+
   private
 
   def quote_params

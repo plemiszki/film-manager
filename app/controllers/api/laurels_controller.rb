@@ -21,6 +21,9 @@ class Api::LaurelsController < AdminController
     render "index.json.jbuilder"
   end
 
+  def rearrange
+  end
+
   private
 
   def laurel_params

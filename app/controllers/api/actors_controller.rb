@@ -21,6 +21,9 @@ class Api::ActorsController < AdminController
     render "index.json.jbuilder"
   end
 
+  def rearrange
+  end
+
   private
 
   def actor_params

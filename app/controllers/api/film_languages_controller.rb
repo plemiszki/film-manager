@@ -21,6 +21,9 @@ class Api::FilmLanguagesController < AdminController
     render 'index.json.jbuilder'
   end
 
+  def rearrange
+  end
+
   private
 
   def film_language_params

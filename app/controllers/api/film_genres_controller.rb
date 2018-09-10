@@ -21,6 +21,9 @@ class Api::FilmGenresController < AdminController
     render 'index.json.jbuilder'
   end
 
+  def rearrange
+  end
+
   private
 
   def film_genre_params
