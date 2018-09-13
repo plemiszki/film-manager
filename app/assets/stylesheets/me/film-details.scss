@@ -1,5 +1,42 @@
 .film-details {
 
+  .grabbed-element {
+    background-color: #CED8F6;
+  }
+
+  ul.reorderable {
+    padding: 4px 11px;
+
+    li:not(.drop-zone) {
+      padding: 4px;
+      margin-bottom: 0;
+
+      .x-button {
+        right: 4px;
+      }
+    }
+
+    li.drop-zone {
+      height: 7px;
+
+      &.highlight {
+        border: dashed 1px black;
+      }
+    }
+  }
+
+  h3.quotes-header {
+    margin-bottom: 10px;
+  }
+
+  div.quote-drop-zone {
+    height: 20px;
+
+    &.highlight {
+      border: dashed 1px black;
+    }
+  }
+
   div.key-art {
     width: 100%;
     height: 74px;
@@ -185,9 +222,9 @@
   }
 
   .quote-container {
-    padding: 0 20px 20px 20px;
 
     .quote {
+      position: relative;
       border: solid 1px #E4E9ED;
       border-radius: 3px;
       padding: 15px;
@@ -200,6 +237,20 @@
 
       p:last-of-type {
         font-family: 'TeachableSans-Medium';
+      }
+
+      .handle {
+        display: inline-block;
+        position: absolute;
+        top: calc(50% - 8px);
+        right: 30px;
+        background-image: asset-url('handle.png');
+        background-position: 50%;
+        background-size: 17px;
+        background-repeat: no-repeat;
+        width: 17px;
+        height: 17px;
+        cursor: grab;
       }
     }
   }

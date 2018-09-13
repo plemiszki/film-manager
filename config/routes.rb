@@ -96,16 +96,25 @@ Rails.application.routes.draw do
     resources :languages, only: [:index, :create, :show, :update, :destroy]
     resources :genres, only: [:index, :create, :show, :update, :destroy]
     resources :topics, only: [:index, :create, :show, :update, :destroy]
-    resources :film_formats, only: [:index, :create, :destroy]
+
+    patch '/film_countries/rearrange' => '/api/film_countries#rearrange'
     resources :film_countries, only: [:index, :create, :destroy]
+    patch '/film_languages/rearrange' => '/api/film_languages#rearrange'
     resources :film_languages, only: [:index, :create, :destroy]
+    patch '/film_genres/rearrange' => '/api/film_genres#rearrange'
     resources :film_genres, only: [:index, :create, :destroy]
-    resources :film_topics, only: [:index, :create, :destroy]
+    patch '/quotes/rearrange' => '/api/quotes#rearrange'
     resources :quotes, only: [:create, :show, :update, :destroy]
+    patch '/laurels/rearrange' => '/api/laurels#rearrange'
     resources :laurels, only: [:create, :destroy]
-    resources :related_films, only: [:create, :destroy]
-    resources :directors, only: [:create, :destroy]
+    patch '/actors/rearrange' => '/api/actors#rearrange'
     resources :actors, only: [:create, :destroy]
+
+    resources :directors, only: [:create, :destroy]
+    resources :film_formats, only: [:index, :create, :destroy]
+    resources :film_topics, only: [:index, :create, :destroy]
+    resources :related_films, only: [:create, :destroy]
+
     resources :formats, only: [:index, :create, :show, :update, :destroy]
     resources :territories, only: [:index, :create, :show, :update, :destroy]
     resources :film_rights, only: [:create, :show, :update, :destroy]

@@ -4,4 +4,5 @@ json.quotes @quotes do |quote|
   json.text quote.text
   json.author quote.author || ""
   json.publication quote.publication || ""
+  json.order quote.order
 end
