@@ -22,6 +22,13 @@ class Api::FilmLanguagesController < AdminController
   end
 
   def rearrange
+    params[:new_order].each do |index, id|
+      filmLanguage = FilmLanguage.find(id)
+      filmLanguage.update(order: index)
+    end
+    @film_languages = FilmLanguage.where(film_id: params[:film_id]).includes(:film)
+    @languages = Language.where.not(id: @film_languages.pluck(:language_id))
+    render 'index.json.jbuilder'
   end
 
   private

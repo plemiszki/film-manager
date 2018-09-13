@@ -364,18 +364,53 @@ var FilmDetails = React.createClass({
   },
 
   dragOverHandler: function(e) {
-    // e.target.classList.add('highlight');
+    e.target.classList.add('highlight');
   },
 
   dragOutHandler: function(e) {
-    // e.target.classList.remove('highlight');
+    e.target.classList.remove('highlight');
   },
 
   dragEndHandler: function() {
     $('*').removeClass('grabbing');
     $('body').removeAttr('style');
-    $('li.grabbed-element').removeClass('grabbed-element');
-    // $('tr.highlight').removeClass('highlight');
+    $('.grabbed-element').removeClass('grabbed-element');
+    $('.highlight').removeClass('highlight');
+  },
+
+  dropHandler(e, ui) {
+    let draggedIndex = ui.draggable[0].dataset.index;
+    let dropZoneIndex = e.target.dataset.index;
+    let currentOrder = {};
+    let entityArray;
+    let directory;
+    switch (e.target.dataset.section) {
+      case 'countries':
+        entityArray = 'filmCountries';
+        directory = 'film_countries';
+        break
+      case 'languages':
+        entityArray = 'filmLanguages';
+        directory = 'film_languages';
+        break
+      case 'cast':
+        entityArray = 'actors';
+        break
+      case 'laurels':
+        entityArray = 'laurels';
+        break
+      case 'quotes':
+        entityArray = 'quotes';
+        break
+      case 'genres':
+        entityArray = 'filmGenres';
+        directory = 'film_genres'
+    }
+    this.state[entityArray].forEach(function(entity) {
+      currentOrder[entity.order] = entity.id;
+    });
+    let newOrder = HandyTools.rearrangeFields(currentOrder, draggedIndex, dropZoneIndex);
+    ClientActions.rearrangeFilmEntities(this.state.film.id, directory || entityArray, newOrder);
   },
 
   clickTab: function(event) {
@@ -1067,10 +1102,14 @@ var FilmDetails = React.createClass({
           <div className="row">
             <div className="col-xs-6">
               <h3>Countries:</h3>
-              <ul className="standard-list">
-                { this.state.filmCountries.map(function(filmCountry) {
+              <ul className="standard-list reorderable">
+                <li className="drop-zone" data-index="-1" data-section={ 'countries' }></li>
+                { this.state.filmCountries.map(function(filmCountry, index) {
                   return(
-                    <li key={ filmCountry.id }>{ filmCountry.country }<div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
+                    <div key={ filmCountry.id }>
+                      <li data-id={ filmCountry.id } data-index={ index } data-section={ 'countries' }>{ filmCountry.country }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteCountry } data-id={ filmCountry.id }></div></li>
+                      <li className="drop-zone" data-index={ index } data-section={ 'countries' }></li>
+                    </div>
                   );
                 }.bind(this)) }
               </ul>
@@ -1079,12 +1118,12 @@ var FilmDetails = React.createClass({
             <div className="col-xs-6">
               <h3>Languages:</h3>
               <ul className="standard-list reorderable">
-                <li className="drop-zone"></li>
-                { this.state.filmLanguages.map(function(filmLanguage) {
+                <li className="drop-zone" data-index="-1" data-section={ 'languages' }></li>
+                { this.state.filmLanguages.map(function(filmLanguage, index) {
                   return(
-                    <div>
-                      <li key={ filmLanguage.id }>{ filmLanguage.language }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
-                      <li key={ `${filmLanguage.id}-below` } className="drop-zone"></li>
+                    <div key={ filmLanguage.id }>
+                      <li data-index={ index } data-section={ 'languages' }>{ filmLanguage.language }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteLanguage } data-id={ filmLanguage.id }></div></li>
+                      <li className="drop-zone" data-index={ index } data-section={ 'languages' }></li>
                     </div>
                   );
                 }.bind(this)) }
@@ -1097,9 +1136,13 @@ var FilmDetails = React.createClass({
             <div className="col-xs-6">
               <h3>Cast:</h3>
               <ul className="standard-list reorderable">
-                { this.state.actors.map(function(actor) {
+                <li className="drop-zone" data-index="-1" data-section={ 'cast' }></li>
+                { this.state.actors.map(function(actor, index) {
                   return(
-                    <li key={ actor.id }>{ actor.firstName } { actor.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
+                    <div key={ actor.id }>
+                      <li data-index={ index } data-section={ 'cast' }>{ actor.firstName } { actor.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
+                      <li className="drop-zone" data-index={ index } data-section={ 'cast' }></li>
+                    </div>
                   );
                 }.bind(this)) }
               </ul>
@@ -1158,9 +1201,13 @@ var FilmDetails = React.createClass({
             <div className="col-xs-12">
               <h3>Laurels:</h3>
               <ul className="standard-list reorderable">
-                { this.state.laurels.map(function(laurel) {
+                <li className="drop-zone" data-index="-1" data-section={ 'laurels' }></li>
+                { this.state.laurels.map(function(laurel, index) {
                   return(
-                    <li key={ laurel.id }>{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteLaurel } data-id={ laurel.id }></div></li>
+                    <div key={ laurel.id }>
+                      <li data-index={ index } data-section={ 'laurels' }>{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteLaurel } data-id={ laurel.id }></div></li>
+                      <li className="drop-zone" data-index={ index } data-section={ 'laurels' }></li>
+                    </div>
                   );
                 }.bind(this)) }
               </ul>
@@ -1170,15 +1217,16 @@ var FilmDetails = React.createClass({
           <hr />
           <div className="row">
             <div className="col-xs-12">
-              <h3>Quotes:</h3>
+              <h3 className="quotes-header">Quotes:</h3>
+              <div className="quote-drop-zone" data-index="-1" data-section={ 'quotes' }></div>
+              { this.state.quotes.map(function(quote, index) {
+                return(
+                  <div key={ quote.id } className="quote-container">
+                    { this.renderQuote(quote, index) }
+                  </div>
+                );
+              }.bind(this)) }
             </div>
-            { this.state.quotes.map(function(quote) {
-              return(
-                <div key={ quote.id } className="col-xs-12 quote-container">
-                  { this.renderQuote(quote) }
-                </div>
-              );
-            }.bind(this)) }
           </div>
           <div className="row">
             <div className="col-xs-12">
@@ -1190,10 +1238,13 @@ var FilmDetails = React.createClass({
             <div className="col-xs-6">
               <h3>Genres:</h3>
               <ul className="standard-list reorderable">
-                { this.state.filmGenres.map(function(filmGenre) {
+                <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
+                { this.state.filmGenres.map(function(filmGenre, index) {
                   return(
-                    <li key={ filmGenre.id }>{ filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div>
-                    <div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
+                    <div key={ filmGenre.id }>
+                      <li data-index={ index } data-section={ 'genres' }>{ filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteGenre } data-id={ filmGenre.id }></div></li>
+                      <li className="drop-zone" data-index={ index } data-section={ 'genres' }></li>
+                    </div>
                   );
                 }.bind(this)) }
               </ul>
@@ -1590,27 +1641,37 @@ var FilmDetails = React.createClass({
     }
   },
 
-  renderQuote: function(quote) {
+  renderQuote: function(quote, index) {
     var bottomLine = "";
     bottomLine += quote.author ? quote.author : "";
     bottomLine += quote.author && quote.publication ? ", " : "";
     bottomLine += quote.publication ? quote.publication : "";
     return(
-      <div className="quote" onClick={ this.clickQuote } data-id={ quote.id }>
-        <p data-id={ quote.id }>"{ quote.text }"</p>
-        <p data-id={ quote.id }>- { bottomLine }</p>
-        <div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div>
+      <div>
+        <div className="quote" onClick={ this.clickQuote } data-id={ quote.id } data-index={ index } data-section={ 'quotes' }>
+          <p data-id={ quote.id }>"{ quote.text }"</p>
+          <p data-id={ quote.id }>- { bottomLine }</p>
+          <div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div>
+        </div>
+        <div className="quote-drop-zone" data-index={ index } data-section={ 'quotes' }></div>
       </div>
     );
   },
 
   componentDidUpdate: function() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
-    $("li:not('drop-zone')").draggable({
+    $("li:not('drop-zone'), div.quote").draggable({
       cursor: '-webkit-grabbing',
       handle: '.handle',
       helper: function() { return '<div></div>'; },
       stop: this.dragEndHandler
+    });
+    $('li.drop-zone, .quote-drop-zone').droppable({
+      accept: Common.canIDrop,
+      tolerance: 'pointer',
+      over: this.dragOverHandler,
+      out: this.dragOutHandler,
+      drop: this.dropHandler
     });
     $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {

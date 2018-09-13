@@ -22,6 +22,13 @@ class Api::FilmCountriesController < AdminController
   end
 
   def rearrange
+    params[:new_order].each do |index, id|
+      filmCountry = FilmCountry.find(id)
+      filmCountry.update(order: index)
+    end
+    @film_countries = FilmCountry.where(film_id: params[:film_id]).includes(:film)
+    @countries = Country.where.not(id: @film_countries.pluck(:country_id))
+    render 'index.json.jbuilder'
   end
 
   private

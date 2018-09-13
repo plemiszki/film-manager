@@ -4,4 +4,5 @@ json.laurels @laurels do |laurel|
   json.awardName laurel.award_name
   json.festival laurel.festival
   json.filmId laurel.film_id
+  json.order laurel.order
 end

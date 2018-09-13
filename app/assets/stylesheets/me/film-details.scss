@@ -17,8 +17,23 @@
     }
 
     li.drop-zone {
-      // background-color: blue;
       height: 7px;
+
+      &.highlight {
+        border: dashed 1px black;
+      }
+    }
+  }
+
+  h3.quotes-header {
+    margin-bottom: 10px;
+  }
+
+  div.quote-drop-zone {
+    height: 20px;
+
+    &.highlight {
+      border: dashed 1px black;
     }
   }
 
@@ -207,7 +222,6 @@
   }
 
   .quote-container {
-    padding: 0 20px 20px 20px;
 
     .quote {
       position: relative;

@@ -22,6 +22,12 @@ class Api::ActorsController < AdminController
   end
 
   def rearrange
+    params[:new_order].each do |index, id|
+      actor = Actor.find(id)
+      actor.update(order: index)
+    end
+    @actors = Actor.where(film_id: params[:film_id]).order(:order)
+    render 'index.json.jbuilder'
   end
 
   private

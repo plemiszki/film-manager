@@ -36,6 +36,12 @@ class Api::QuotesController < AdminController
   end
 
   def rearrange
+    params[:new_order].each do |index, id|
+      quote = Quote.find(id)
+      quote.update(order: index)
+    end
+    @quotes = Quote.where(film_id: params[:film_id]).order(:order)
+    render 'show.json.jbuilder'
   end
 
   private

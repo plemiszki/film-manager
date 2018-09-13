@@ -22,6 +22,12 @@ class Api::LaurelsController < AdminController
   end
 
   def rearrange
+    params[:new_order].each do |index, id|
+      laurel = Laurel.find(id)
+      laurel.update(order: index)
+    end
+    @laurels = Laurel.where(film_id: params[:film_id]).order(:order)
+    render 'index.json.jbuilder'
   end
 
   private

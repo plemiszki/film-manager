@@ -2199,6 +2199,38 @@ var ClientActions = {
     });
   },
 
+  rearrangeFilmEntities: function(filmId, directory, newOrder) {
+    $.ajax({
+      url: `/api/${directory}/rearrange`,
+      method: 'PATCH',
+      data: {
+        new_order: newOrder,
+        film_id: filmId
+      },
+      success: function(response) {
+        switch (directory) {
+          case 'film_countries':
+            ServerActions.receiveFilmCountries(response);
+            break
+          case 'film_languages':
+            ServerActions.receiveFilmLanguages(response);
+            break
+          case 'film_genres':
+            ServerActions.receiveFilmGenres(response);
+            break
+          case 'actors':
+            ServerActions.receiveActors(response);
+            break
+          case 'laurels':
+            ServerActions.receiveLaurels(response);
+            break
+          case 'quotes':
+            ServerActions.receiveQuotes(response);
+        }
+      }
+    });
+  },
+
   fetchTerritories: function() {
     $.ajax({
       url: '/api/territories',
