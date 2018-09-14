@@ -1,5 +1,6 @@
 class ExportFilms
   include Sidekiq::Worker
+  include ActionView::Helpers::NumberHelper
   sidekiq_options retry: false
 
   def perform(film_ids, time_started)
@@ -29,6 +30,8 @@ class ExportFilms
       'Languages',
       'Genres',
       'Topics',
+      'Retail DVD Price',
+      'Blu-ray Price',
       'Theatrical',
       'Educational',
       'Festival',
@@ -48,6 +51,9 @@ class ExportFilms
 
     films = Film.where(id: film_ids).order(:title).includes(:licensor, :label, :laurels, :film_rights)
     films.each_with_index do |film, film_index|
+      film_rights = film.film_rights
+      retail_dvd = Dvd.find_by({ feature_film_id: film.id, dvd_type_id: 1 })
+      blu_ray = Dvd.find_by({ feature_film_id: film.id, dvd_type_id: 6 })
       sheet.add_row([
         film.title,
         (film.licensor ? film.licensor.name : ''),
@@ -67,21 +73,23 @@ class ExportFilms
         film.languages.map(&:name).join(", "),
         film.genres.map(&:name).join(", "),
         film.topics.map(&:name).join(", "),
-        film.film_rights.select { |right| right.right_id == 1 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 2 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 3 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 4 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 5 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 6 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 7 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 8 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 9 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 10 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 11 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 12 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 13 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 14 }.length > 0 ? 'Yes' : 'No',
-        film.film_rights.select { |right| right.right_id == 15 }.length > 0 ? 'Yes' : 'No',
+        retail_dvd ? "$#{number_with_precision(retail_dvd.price, precision: 2, delimiter: ',')}" : 'n/a',
+        blu_ray ? "$#{number_with_precision(blu_ray.price, precision: 2, delimiter: ',')}" : 'n/a',
+        film_rights.select { |right| right.right_id == 1 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 2 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 3 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 4 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 5 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 6 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 7 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 8 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 9 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 10 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 11 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 12 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 13 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 14 }.length > 0 ? 'Yes' : 'No',
+        film_rights.select { |right| right.right_id == 15 }.length > 0 ? 'Yes' : 'No',
       ])
       job.update({ current_value: film_index + 1 })
     end
