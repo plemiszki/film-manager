@@ -241,8 +241,8 @@ var NewThing = React.createClass({
         <div className="row">
           <div className="col-xs-12">
             <h2>Password</h2>
-            <input type="password" className={Common.errorClass(this.state.errors, Common.errors.password)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].password} data-field="password" />
-            {Common.renderFieldError(this.state.errors, Common.errors.password)}
+            <input type="password" className={ Common.errorClass(this.state.errors, Common.errors.password) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].password } data-field="password" />
+            { Common.renderFieldError(this.state.errors, Common.errors.password) }
           </div>
         </div>
       )

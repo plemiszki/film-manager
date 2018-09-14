@@ -5,6 +5,8 @@ class Booking < ActiveRecord::Base
   validates_date :date_added, :start_date, :end_date
   validates_date :materials_sent, :imported_advance_invoice_sent, :imported_overage_invoice_sent, :booking_confirmation_sent, allow_blank: true
 
+  validate :booker_id_or_old_booker_id
+
   belongs_to :film
   belongs_to :venue
   belongs_to :format
@@ -15,5 +17,11 @@ class Booking < ActiveRecord::Base
   has_many :weekly_box_offices, -> { order(:order) }
   has_many :payments
   has_many :invoices, dependent: :destroy
+
+  def booker_id_or_old_booker_id
+    unless booker_id || old_booker_id
+      errors.add(:base, "Booker is mandatory")
+    end
+  end
 
 end
