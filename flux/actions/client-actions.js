@@ -274,7 +274,9 @@ var ClientActions = {
       fm_plus_url: film.fmPlusUrl,
       aspect_ratio: film.aspectRatio,
       rating: film.rating,
-      sound_config: film.soundConfig
+      sound_config: film.soundConfig,
+      critics_pick: film.criticsPick,
+      certified_fresh: film.certifiedFresh
     };
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.avodRelease, 'avod'));
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.svodRelease, 'svod'));

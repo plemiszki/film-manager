@@ -171,7 +171,9 @@ class Api::FilmsController < AdminController
       :fm_plus_url,
       :aspect_ratio,
       :rating,
-      :sound_config
+      :sound_config,
+      :certified_fresh,
+      :critics_pick
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

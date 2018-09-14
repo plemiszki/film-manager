@@ -1212,6 +1212,14 @@ var FilmDetails = React.createClass({
                 }.bind(this)) }
               </ul>
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddLaurel }>Add Laurel</a>
+              <div className="row checkboxes badge-checkboxes">
+                <div className="col-xs-4">
+                  <input id="certified-fresh" type="checkbox" checked={ this.state.film.certifiedFresh } onChange={ this.changeCheckbox.bind(this, 'certifiedFresh') } /><label htmlFor="certified-fresh">Certified Fresh</label>
+                </div>
+                <div className="col-xs-4">
+                  <input id="critics-pick" type="checkbox" checked={ this.state.film.criticsPick } onChange={ this.changeCheckbox.bind(this, 'criticsPick') } /><label htmlFor="critics-pick">Critic's Pick</label>
+                </div>
+              </div>
             </div>
           </div>
           <hr />
