@@ -2328,6 +2328,9 @@ var ClientActions = {
       method: 'DELETE',
       success: function(response) {
         window.location.pathname = '/films/' + response.film_id;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
       }
     });
   },

@@ -104,6 +104,7 @@ var FilmRightDetails = React.createClass({
             { HandyTools.renderSpinner(this.state.fetching) }
             { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
+              { this.renderDeleteError() }
               <div className="col-xs-3 select-scroll">
                 <h2>Right</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.filmRight.rightId }>
@@ -162,6 +163,16 @@ var FilmRightDetails = React.createClass({
         </Modal>
       </div>
     );
+  },
+
+  renderDeleteError: function() {
+    if (this.state.errors.indexOf('Right has been sublicensed') > -1) {
+      return (
+        <div className="col-xs-12">
+          <p className="yesFieldError">You cannot delete this right because it has been sublicensed</p>
+        </div>
+      );
+    }
   },
 
   renderButtons: function() {

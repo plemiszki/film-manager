@@ -49,9 +49,11 @@ class Api::FilmRightsController < AdminController
 
   def destroy
     @film_right = FilmRight.find(params[:id])
-    if @film_right.destroy
+    unless SubRight.find_by({ right_id: @film_right.right_id, territory_id: @film_right.territory_id, film_id: @film_right.film_id })
+      @film_right.destroy
       render json: @film_right, status: 200
     else
+      @film_right.errors.add(:base, "Right has been sublicensed")
       render json: @film_right.errors.full_messages, status: 422
     end
   end
