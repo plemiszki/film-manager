@@ -11,6 +11,7 @@ var _revenueStreams = {};
 var _revenuePercentages = {};
 var _reports = [];
 var _rights = {};
+var _subRights = {};
 var _dvds = {};
 var _bookings = [];
 var _dvdTypes = [];
@@ -75,6 +76,12 @@ FilmsStore.setRights = function(rights) {
   });
 };
 
+FilmsStore.setSubRights = function(rights) {
+  rights.forEach(function(right) {
+    _subRights[right.id] = right;
+  });
+};
+
 FilmsStore.find = function(id) {
   return _films[id];
 };
@@ -102,6 +109,13 @@ FilmsStore.rights = function() {
     return(_rights[id]);
   });
   return HandyTools.sortArrayOfObjects(rights, 'order');
+};
+
+FilmsStore.subRights = function() {
+  var subRights = Object.keys(_subRights).map(function(id) {
+    return(_subRights[id]);
+  });
+  return HandyTools.sortArrayOfObjects(subRights, 'order');
 };
 
 FilmsStore.findLicensor = function(id) {
@@ -176,6 +190,7 @@ FilmsStore.__onDispatch = function(payload) {
       if (payload.filmRevenuePercentages) {
         this.setFilmRevenuePercentages(payload.filmRevenuePercentages);
         this.setRights(payload.rights);
+        this.setSubRights(payload.subRights);
       }
       this.setDvds(payload.dvds);
       this.setDvdTypes(payload.dvdTypes);

@@ -44,6 +44,7 @@ class Film < ActiveRecord::Base
   has_many :bookings
   has_many :digital_retailer_films
   has_many :digital_retailers, through: :digital_retailer_films
+  has_many :sub_rights
 
   after_create :create_percentages
 

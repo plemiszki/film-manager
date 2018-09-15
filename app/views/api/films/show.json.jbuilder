@@ -86,6 +86,16 @@ json.rights @rights do |right|
   json.endDate right.end_date ? right.end_date.strftime("%-m/%-d/%y") : ''
   json.exclusive right.exclusive ? 'Yes' : 'No'
 end
+json.subRights @sub_rights do |right|
+  json.id right.id
+  json.rightName right.right.name
+  json.order right.right.order
+  json.territory right.territory.name
+  json.sublicensorName right.sublicensor.name
+  json.startDate right.start_date ? right.start_date.strftime("%-m/%-d/%y") : ''
+  json.endDate right.end_date ? right.end_date.strftime("%-m/%-d/%y") : ''
+  json.exclusive right.exclusive ? 'Yes' : 'No'
+end
 json.dvds @dvds do |dvd|
   json.id dvd.id
   json.type dvd.dvd_type.name

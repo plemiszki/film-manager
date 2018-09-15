@@ -166,6 +166,7 @@ var FilmDetails = React.createClass({
       sortBy: 'startDate',
       newRightsModalOpen: false,
       rightsSortBy: 'name',
+      subRightsSortBy: 'sublicensorName',
       filmFormats: [],
       formats: [],
       digitalRetailerFilms: [],
@@ -691,6 +692,12 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickSubRightsHeader: function(property) {
+    this.setState({
+      subRightsSortBy: property
+    });
+  },
+
   clickArtwork: function() {
     this.setState({
       artworkModalOpen: true
@@ -714,6 +721,19 @@ var FilmDetails = React.createClass({
       return object['territory'].toLowerCase();
     } else {
       return object['name'].toLowerCase();
+    }
+  },
+
+  subRightsSort: function(object) {
+    var property = object[this.state.subRightsSortBy];
+    return property.toLowerCase();
+  },
+
+  subRightsSortSecond: function(object) {
+    if (this.state.subRightsSortBy === 'rightName') {
+      return object['territory'].toLowerCase();
+    } else {
+      return object['rightName'].toLowerCase();
     }
   },
 
@@ -841,10 +861,10 @@ var FilmDetails = React.createClass({
         { this.renderTopTab("Contract") }
         { this.renderTopTab("Synopses") }
         { this.renderTopTab("Marketing") }
-        { this.renderTopTab("Specs") }
         { this.renderTopTab("Bookings") }
         { this.renderTopTab("DVDs") }
         { this.renderTopTab("Statements") }
+        { this.renderTopTab("Sublicensing") }
       </div>
     );
   },
@@ -940,26 +960,52 @@ var FilmDetails = React.createClass({
           </table>
         </div>
       );
-    } else if (this.state.tab === "Specs") {
+    } else if (this.state.tab === "Sublicensing") {
       return(
         <div>
           <hr />
-          <h3>Specifications:</h3>
+          <h3>Sublicensed Rights:</h3>
           <div className="row">
-            <div className="col-xs-2">
-              <h2>Rating</h2>
-              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.rating || "" } data-field="rating" />
-              { Common.renderFieldError(this.state.filmErrors,[]) }
-            </div>
-            <div className="col-xs-2">
-              <h2>Aspect Ratio</h2>
-              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.aspectRatio || "" } data-field="aspectRatio" />
-              { Common.renderFieldError(this.state.filmErrors,[]) }
-            </div>
-            <div className="col-xs-4">
-              <h2>Sound Configuration</h2>
-              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.soundConfig || "" } data-field="soundConfig" />
-              { Common.renderFieldError(this.state.filmErrors,[]) }
+            <div className="col-xs-12">
+              <table className={ "admin-table no-hover" }>
+                <thead>
+                  <tr>
+                    <th><div className={ this.state.subRightsSortBy === 'sublicensor' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'sublicensorName') }>Sublicensor</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'rightName') }>Right</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'territory') }>Territory</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'startDate') }>Start Date</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'endDate') }>End Date</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'exclusive') }>Exclusive</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                  { _.orderBy(FilmsStore.subRights(), [this.subRightsSort, this.subRightsSortSecond]).map(function(subRight, index) {
+                    return(
+                      <tr key={ index }>
+                        <td className="indent">
+                          { subRight.sublicensorName }
+                        </td>
+                        <td>
+                          { subRight.rightName }
+                        </td>
+                        <td>
+                          { subRight.territory }
+                        </td>
+                        <td>
+                          { subRight.startDate }
+                        </td>
+                        <td>
+                          { subRight.endDate }
+                        </td>
+                        <td>
+                          { subRight.exclusive }
+                        </td>
+                      </tr>
+                    );
+                  }.bind(this)) }
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -980,6 +1026,24 @@ var FilmDetails = React.createClass({
                 }.bind(this)) }
               </ul>
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddFormat }>Add Format</a>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-2">
+              <h2>Rating</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.rating || "" } data-field="rating" />
+              { Common.renderFieldError(this.state.filmErrors,[]) }
+            </div>
+            <div className="col-xs-2">
+              <h2>Aspect Ratio</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.aspectRatio || "" } data-field="aspectRatio" />
+              { Common.renderFieldError(this.state.filmErrors,[]) }
+            </div>
+            <div className="col-xs-4">
+              <h2>Sound Configuration</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.soundConfig || "" } data-field="soundConfig" />
+              { Common.renderFieldError(this.state.filmErrors,[]) }
             </div>
           </div>
           <hr />

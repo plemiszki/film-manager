@@ -28,6 +28,7 @@ var ServerActions = {
       filmRevenuePercentages: response.filmRevenuePercentages,
       reports: response.reports,
       rights: response.rights,
+      subRights: response.subRights,
       dvds: response.dvds,
       dvdTypes: response.dvdTypes,
       filmCountries: response.filmCountries,

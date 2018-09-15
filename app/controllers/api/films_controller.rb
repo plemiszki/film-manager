@@ -210,6 +210,7 @@ class Api::FilmsController < AdminController
     @digital_retailer_films = DigitalRetailerFilm.where(film_id: @films.first.id).includes(:digital_retailer)
     @digital_retailers = DigitalRetailer.all
     @schedule = create_schedule
+    @sub_rights = @films.first.sub_rights
   end
 
   def create_schedule
