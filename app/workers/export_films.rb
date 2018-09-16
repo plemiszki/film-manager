@@ -63,8 +63,8 @@ class ExportFilms
       sheet.add_row([
         film.title,
         (film.licensor ? film.licensor.name : ''),
-        film.start_date,
-        film.end_date,
+        film.start_date.strftime("%-m/%-d/%Y"),
+        film.end_date.strftime("%-m/%-d/%Y"),
         film.proper_label_name,
         film.year,
         film.synopsis,
