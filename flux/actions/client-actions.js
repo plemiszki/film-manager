@@ -964,11 +964,12 @@ var ClientActions = {
     });
   },
 
-  exportFilms: function(filmIds, searchCriteria) {
+  exportFilms: function(filmType, filmIds, searchCriteria) {
     $.ajax({
       url: '/api/films/export',
       method: 'POST',
       data: {
+        film_type: filmType,
         film_ids: filmIds,
         search_criteria: {
           selected_rights: searchCriteria.selectedRights,

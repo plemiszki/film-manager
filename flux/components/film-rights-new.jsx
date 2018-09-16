@@ -58,7 +58,7 @@ var FilmRightsNew = React.createClass({
 
   clickSearch: function() {
     if (this.state.fetching === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
-      this.props.availsExport({
+      this.props.availsExport(this.props.filmType, 'custom', {
         selectedRights: this.state.selectedRights,
         selectedTerritories: this.state.selectedTerritories,
         startDate: this.state.filmRight.startDate,

@@ -115,18 +115,18 @@ var FilmsIndex = React.createClass({
     });
   },
 
-  clickExportMetadata: function(type, searchCriteria) {
+  clickExportMetadata: function(filmType, exportType, searchCriteria) {
     if (!this.state.fetching) {
       this.setState({
         fetching: true
       });
-      if (type == 'all') {
+      if (exportType == 'all') {
         var filmIds = this.state.films.map(function(film) {
           return film.id;
         });
         var searchCriteria = {};
       }
-      ClientActions.exportFilms(filmIds, searchCriteria);
+      ClientActions.exportFilms(filmType, filmIds, searchCriteria);
     }
   },
 
@@ -172,7 +172,7 @@ var FilmsIndex = React.createClass({
           <NewThing thing={ "film" } initialObject={ { title: "", filmType: this.props.filmType, labelId: 1 } } />
         </Modal>
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ newRightsModalStyles }>
-          <FilmRightsNew search={ true } availsExport={ this.clickExportMetadata } />
+          <FilmRightsNew search={ true } filmType={ this.props.filmType } availsExport={ this.clickExportMetadata } />
         </Modal>
         { Common.jobModal.call(this, this.state.job) }
       </div>
@@ -195,7 +195,7 @@ var FilmsIndex = React.createClass({
 
   renderExportMetadataButton: function() {
     return(
-      <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata('all') }.bind(this) }>Export All</a>
+      <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata(this.props.filmType, 'all') }.bind(this) }>Export All</a>
     );
   },
 
