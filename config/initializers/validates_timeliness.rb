@@ -20,4 +20,6 @@ ValidatesTimeliness.setup do |config|
   #
   # Shorthand date and time symbols for restrictions
   # config.restriction_shorthand_symbols.update()
+
+  config.parser.ambiguous_year_threshold = 70
 end
