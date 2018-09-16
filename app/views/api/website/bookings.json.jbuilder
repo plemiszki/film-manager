@@ -5,9 +5,9 @@ json.in_theaters(@in_theaters) do |film|
   json.bookings film.film.bookings.where.not(booking_type: ["Non-Theatrical", "Press/WOM"]).includes(:venue) do |booking|
     json.venue booking.venue.label
     json.venue_website booking.venue.website
-    json.city booking.billing_city
-    json.state booking.billing_state
-    json.country booking.billing_country
+    json.city booking.shipping_city
+    json.state booking.shipping_state
+    json.country booking.shipping_country
     json.startDate booking.start_date.strftime("%-m/%-d/%y")
     json.endDate booking.end_date.strftime("%-m/%-d/%y")
   end
@@ -19,9 +19,9 @@ json.coming_soon(@coming_soon) do |film|
   json.bookings film.film.bookings.where.not(booking_type: ["Non-Theatrical", "Press/WOM"]).includes(:venue) do |booking|
     json.venue booking.venue.label
     json.venue_website booking.venue.website
-    json.city booking.billing_city
-    json.state booking.billing_state
-    json.country booking.billing_country
+    json.city booking.shipping_city
+    json.state booking.shipping_state
+    json.country booking.shipping_country
     json.startDate booking.start_date.strftime("%-m/%-d/%y")
     json.endDate booking.end_date.strftime("%-m/%-d/%y")
   end
@@ -33,9 +33,9 @@ json.repertory(@repertory) do |film|
   json.bookings film.film.bookings.where.not(booking_type: ["Non-Theatrical", "Press/WOM"]).includes(:venue) do |booking|
     json.venue booking.venue.label
     json.venue_website booking.venue.website
-    json.city booking.billing_city
-    json.state booking.billing_state
-    json.country booking.billing_country
+    json.city booking.shipping_city
+    json.state booking.shipping_state
+    json.country booking.shipping_country
     json.startDate booking.start_date.strftime("%-m/%-d/%y")
     json.endDate booking.end_date.strftime("%-m/%-d/%y")
   end
