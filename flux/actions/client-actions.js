@@ -964,12 +964,19 @@ var ClientActions = {
     });
   },
 
-  exportFilms: function(filmIds) {
+  exportFilms: function(filmIds, searchCriteria) {
     $.ajax({
       url: '/api/films/export',
       method: 'POST',
       data: {
-        film_ids: filmIds
+        film_ids: filmIds,
+        search_criteria: {
+          selected_rights: searchCriteria.selectedRights,
+          selected_territories: searchCriteria.selectedTerritories,
+          start_date: searchCriteria.startDate,
+          end_date: searchCriteria.endDate,
+          exclusive: searchCriteria.exclusive
+        }
       },
       success: function(response) {
         ServerActions.receiveJob(response);

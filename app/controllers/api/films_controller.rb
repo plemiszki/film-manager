@@ -57,43 +57,48 @@ class Api::FilmsController < AdminController
     end
   end
 
-  def advanced
-    rights_hash = Hash.new { |h, k| h[k] = {} }
-    params[:right_id].each do |right_id|
-      params[:territory_id].each do |territory_id|
-        where_object = { right_id: right_id, territory_id: territory_id }
-        if params[:exclusive] == 'true'
-          where_object[:exclusive] = true
-        end
-        film_rights = FilmRight.where(where_object)
-        if params[:start_date] && params[:end_date]
-          film_rights = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date >= ? OR end_date IS NULL)', params[:start_date], params[:end_date])
-        elsif params[:start_date]
-          film_rights = film_rights.where('start_date <= ? OR start_date IS NULL', params[:start_date])
-        elsif params[:end_date]
-          film_rights = film_rights.where('end_date >= ? OR end_date IS NULL', params[:end_date])
-        end
-        rights_hash[right_id][territory_id] = film_rights.pluck(:film_id).uniq
-      end
-    end
-    film_ids_result = []
-    populated_starting_array = false
-    rights_hash.each do |right_id, territories_hash|
-      territories_hash.each do |territory_id, film_ids|
-        if populated_starting_array
-          film_ids_result = film_ids_result & film_ids
-        else
-          film_ids_result = film_ids
-          populated_starting_array = true
-        end
-      end
-    end
-    @films = Film.where(id: film_ids_result, film_type: params[:film_type])
-    render 'index.json.jbuilder'
-  end
+  # def advanced
+  #   rights_hash = Hash.new { |h, k| h[k] = {} }
+  #   params[:right_id].each do |right_id|
+  #     params[:territory_id].each do |territory_id|
+  #       where_object = { right_id: right_id, territory_id: territory_id }
+  #       if params[:exclusive] == 'true'
+  #         where_object[:exclusive] = true
+  #       end
+  #       film_rights = FilmRight.where(where_object)
+  #       if params[:start_date] && params[:end_date]
+  #         film_rights = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date >= ? OR end_date IS NULL)', params[:start_date], params[:end_date])
+  #       elsif params[:start_date]
+  #         film_rights = film_rights.where('start_date <= ? OR start_date IS NULL', params[:start_date])
+  #       elsif params[:end_date]
+  #         film_rights = film_rights.where('end_date >= ? OR end_date IS NULL', params[:end_date])
+  #       end
+  #       rights_hash[right_id][territory_id] = film_rights.pluck(:film_id).uniq
+  #     end
+  #   end
+  #   film_ids_result = []
+  #   populated_starting_array = false
+  #   rights_hash.each do |right_id, territories_hash|
+  #     territories_hash.each do |territory_id, film_ids|
+  #       if populated_starting_array
+  #         film_ids_result = film_ids_result & film_ids
+  #       else
+  #         film_ids_result = film_ids
+  #         populated_starting_array = true
+  #       end
+  #     end
+  #   end
+  #   @films = Film.where(id: film_ids_result, film_type: params[:film_type])
+  #   render 'index.json.jbuilder'
+  # end
 
   def export
-    film_ids = params[:film_ids].to_a.map(&:to_i)
+    if params[:film_ids]
+      film_ids = params[:film_ids].to_a.map(&:to_i)
+    else
+      p params[:search_criteria]
+      film_ids = params[:film_ids].to_a.map(&:to_i)
+    end
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export films", first_line: "Exporting Metadata", second_line: true, current_value: 0, total_value: film_ids.length)
     ExportFilms.perform_async(film_ids, time_started)

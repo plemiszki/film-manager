@@ -58,28 +58,12 @@ var FilmRightsNew = React.createClass({
 
   clickSearch: function() {
     if (this.state.fetching === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
-      this.setState({
-        fetching: true
-      }, function() {
-        var params = [];
-        for (var i = 0; i < this.state.selectedRights.length; i++) {
-          params.push("right_id[]=" + this.state.selectedRights[i]);
-        }
-        for (var i = 0; i < this.state.selectedTerritories.length; i++) {
-          params.push("territory_id[]=" + this.state.selectedTerritories[i]);
-        }
-        params.push("exclusive=" + (this.state.exclusive == 'Yes' ? 'true' : 'false'));
-        if (this.state.filmRight.startDate) {
-          params.push("start_date=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.filmRight.startDate)));
-        }
-        if (this.state.filmRight.endDate) {
-          params.push("end_date=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.filmRight.endDate)));
-        }
-        var path = "/films/advanced";
-        if (params.length > 0) {
-          path += ("?" + params.join("&"));
-        }
-        window.location.href = path;
+      this.props.availsExport({
+        selectedRights: this.state.selectedRights,
+        selectedTerritories: this.state.selectedTerritories,
+        startDate: this.state.filmRight.startDate,
+        endDate: this.state.filmRight.endDate,
+        exclusive: this.state.filmRight.exclusive
       });
     }
   },

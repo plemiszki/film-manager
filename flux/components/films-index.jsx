@@ -79,6 +79,7 @@ var FilmsIndex = React.createClass({
     if (job.done) {
       this.setState({
         jobModalOpen: false,
+        searchModalOpen: false,
         job: job
       }, function() {
         window.location.href = job.first_line;
@@ -86,6 +87,7 @@ var FilmsIndex = React.createClass({
     } else {
       this.setState({
         jobModalOpen: true,
+        searchModalOpen: false,
         job: job,
         fetching: false
       });
@@ -113,27 +115,18 @@ var FilmsIndex = React.createClass({
     });
   },
 
-  clickExportMetadata: function() {
+  clickExportMetadata: function(type, searchCriteria) {
     if (!this.state.fetching) {
       this.setState({
         fetching: true
       });
-      var filmIds = this.state.films.map(function(film) {
-        return film.id;
-      });
-      ClientActions.exportFilms(filmIds);
-    }
-  },
-
-  clickExportCatalog: function() {
-    if (!this.state.fetching) {
-      this.setState({
-        fetching: true
-      });
-      var filmIds = this.state.films.map(function(film) {
-        return film.id;
-      });
-      ClientActions.exportCatalog(filmIds);
+      if (type == 'all') {
+        var filmIds = this.state.films.map(function(film) {
+          return film.id;
+        });
+        var searchCriteria = {};
+      }
+      ClientActions.exportFilms(filmIds, searchCriteria);
     }
   },
 
@@ -144,9 +137,8 @@ var FilmsIndex = React.createClass({
         <div className="clearfix">
           { this.renderHeader() }
           { this.renderAddNewButton() }
-          { this.renderExportCatalogButton() }
           { this.renderExportMetadataButton() }
-          <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Rights Search</a>
+          <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Export Custom</a>
           <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
@@ -180,7 +172,7 @@ var FilmsIndex = React.createClass({
           <NewThing thing={ "film" } initialObject={ { title: "", filmType: this.props.filmType, labelId: 1 } } />
         </Modal>
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ newRightsModalStyles }>
-          <FilmRightsNew search={ true } />
+          <FilmRightsNew search={ true } availsExport={ this.clickExportMetadata } />
         </Modal>
         { Common.jobModal.call(this, this.state.job) }
       </div>
@@ -203,16 +195,8 @@ var FilmsIndex = React.createClass({
 
   renderExportMetadataButton: function() {
     return(
-      <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExportMetadata }>Export Metadata</a>
+      <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata('all') }.bind(this) }>Export All</a>
     );
-  },
-
-  renderExportCatalogButton: function() {
-    if (this.props.advanced) {
-      return(
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExportCatalog }>Export Catalog</a>
-      );
-    }
   },
 
   componentDidUpdate: function() {
