@@ -3,7 +3,7 @@ class ExportFilms
   include ActionView::Helpers::NumberHelper
   sidekiq_options retry: false
 
-  def perform(film_ids, time_started)
+  def perform(film_ids, time_started, search_criteria = {})
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
@@ -11,7 +11,7 @@ class ExportFilms
     require 'xlsx_writer'
     doc = XlsxWriter.new
     sheet = doc.add_sheet('Films')
-    sheet.add_row([
+    base_array = [
       'Title',
       'Licensor',
       'Date Signed',
@@ -37,30 +37,26 @@ class ExportFilms
       'Blu-ray Price',
       'Blu-ray Street Date',
       'Blu-ray UPC',
-      'Blu-ray Stock',
-      'Theatrical',
-      'Educational',
-      'Festival',
-      'Other NT',
-      'SVOD',
-      'TVOD (Cable)',
-      'EST/DTR',
-      'Pay TV',
-      'Free TV',
-      'FVOD',
-      'AVOD',
-      'DVD/Video',
-      'Hotels',
-      'Airlines',
-      'Ships'
-    ])
+      'Blu-ray Stock'
+    ]
+
+    search_criteria["selected_territories"].each do |territory_id|
+      territory_name = Territory.find(territory_id).name
+      search_criteria["selected_rights"].each do |right_id|
+        right_name = Right.find(right_id).name
+        base_array << "#{territory_name} - #{right_name}"
+      end
+    end
+
+    sheet.add_row(base_array)
 
     films = Film.where(id: film_ids).order(:title).includes(:licensor, :label, :laurels, :film_rights)
     films.each_with_index do |film, film_index|
       film_rights = film.film_rights
       retail_dvd = Dvd.find_by({ feature_film_id: film.id, dvd_type_id: 1 })
       blu_ray = Dvd.find_by({ feature_film_id: film.id, dvd_type_id: 6 })
-      sheet.add_row([
+
+      base_array = [
         film.title,
         (film.licensor ? film.licensor.name : ''),
         film.start_date.strftime("%-m/%-d/%Y"),
@@ -86,23 +82,17 @@ class ExportFilms
         blu_ray ? "$#{number_with_precision(blu_ray.price, precision: 2, delimiter: ',')}" : 'n/a',
         (blu_ray && blu_ray.retail_date) ? blu_ray.retail_date.strftime("%-m/%-d/%Y") : 'n/a',
         blu_ray ? blu_ray.upc : 'n/a',
-        blu_ray ? blu_ray.stock : 'n/a',
-        film_rights.select { |right| right.right_id == 1 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 2 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 3 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 4 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 5 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 6 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 7 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 8 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 9 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 10 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 11 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 12 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 13 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 14 }.length > 0 ? 'Yes' : 'No',
-        film_rights.select { |right| right.right_id == 15 }.length > 0 ? 'Yes' : 'No',
-      ])
+        blu_ray ? blu_ray.stock : 'n/a'
+      ]
+
+      search_criteria["selected_territories"].each do |territory_id|
+        search_criteria["selected_rights"].each do |right_id|
+          value = FilmRight.find_by({ right_id: right_id, territory_id: territory_id, film_id: film.id }).exclusive ? 'Exclusive' : 'Non-Exclusive'
+          base_array << value
+        end
+      end
+
+      sheet.add_row(base_array)
       job.update({ current_value: film_index + 1 })
     end
 
