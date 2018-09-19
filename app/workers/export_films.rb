@@ -88,6 +88,10 @@ class ExportFilms
       search_criteria["selected_territories"].each do |territory_id|
         search_criteria["selected_rights"].each do |right_id|
           value = FilmRight.find_by({ right_id: right_id, territory_id: territory_id, film_id: film.id }).exclusive ? 'Exclusive' : 'Non-Exclusive'
+          sub_rights = SubRight.where(right_id: right_id, territory_id: territory_id, film_id: film.id).where("end_date > ?", search_criteria["start_date"]).where("start_date < ?", search_criteria["end_date"])
+          sub_rights.each do |sub_right|
+            value += "\n#{sub_right.sublicensor.name}: #{sub_right.start_date.strftime("%-m/%-d/%y")} - #{sub_right.end_date.strftime("%-m/%-d/%y")} (#{sub_right.exclusive ? 'E' : 'NE'})"
+          end
           base_array << value
         end
       end
