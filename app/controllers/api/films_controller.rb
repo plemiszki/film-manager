@@ -62,28 +62,37 @@ class Api::FilmsController < AdminController
       film_ids = params[:film_ids].to_a.map(&:to_i)
     else
       search_criteria = params[:search_criteria]
-      rights_hash = Hash.new { |h, k| h[k] = {} }
-      search_criteria[:selected_rights].each do |right_id|
-        search_criteria[:selected_territories].each do |territory_id|
-          where_object = { right_id: right_id, territory_id: territory_id }
-          if search_criteria[:exclusive] == 'true'
-            where_object[:exclusive] = true
-          end
-          film_rights = FilmRight.where(where_object)
-          if !search_criteria[:start_date].empty? && !search_criteria[:end_date].empty?
-            film_rights = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date >= ? OR end_date IS NULL)', search_criteria[:start_date], search_criteria[:end_date])
-          elsif !search_criteria[:start_date].empty?
-            film_rights = film_rights.where('start_date <= ? OR start_date IS NULL', search_criteria[:start_date])
-          elsif !search_criteria[:end_date].empty?
-            film_rights = film_rights.where('end_date >= ? OR end_date IS NULL', search_criteria[:end_date])
-          end
-          rights_hash[right_id][territory_id] = film_rights.pluck(:film_id).uniq
-        end
-      end
       film_ids_result = []
-      populated_starting_array = false
-      rights_hash.each do |right_id, territories_hash|
-        territories_hash.each do |territory_id, film_ids|
+
+      if search_criteria[:rights_operator] == 'AND' && search_criteria[:territories_operator] == 'AND'
+        rights_hash = Hash.new { |h, k| h[k] = {} }
+        search_criteria[:selected_rights].each do |right_id|
+          search_criteria[:selected_territories].each do |territory_id|
+            film_rights = FilmRight.where({ right_id: right_id, territory_id: territory_id })
+            film_rights = filter_by_dates(film_rights, search_criteria, right_id)
+            rights_hash[right_id][territory_id] = film_rights.map(&:film_id).uniq
+          end
+        end
+        populated_starting_array = false
+        rights_hash.each do |right_id, territories_hash|
+          territories_hash.each do |territory_id, film_ids|
+            if populated_starting_array
+              film_ids_result = film_ids_result & film_ids
+            else
+              film_ids_result = film_ids
+              populated_starting_array = true
+            end
+          end
+        end
+      elsif search_criteria[:rights_operator] == 'AND' && search_criteria[:territories_operator] == 'OR'
+        rights_hash = Hash.new { |h, k| h[k] = {} }
+        search_criteria[:selected_rights].each do |right_id|
+          film_rights = FilmRight.where({ right_id: right_id, territory_id: search_criteria[:selected_territories] })
+          film_rights = filter_by_dates(film_rights, search_criteria, right_id)
+          rights_hash[right_id] = film_rights.map(&:film_id).uniq
+        end
+        populated_starting_array = false
+        rights_hash.each do |right_id, film_ids|
           if populated_starting_array
             film_ids_result = film_ids_result & film_ids
           else
@@ -91,7 +100,41 @@ class Api::FilmsController < AdminController
             populated_starting_array = true
           end
         end
+      elsif search_criteria[:rights_operator] == 'OR' && search_criteria[:territories_operator] == 'AND'
+        rights_hash = Hash.new { |h, k| h[k] = {} }
+        search_criteria[:selected_rights].each do |right_id|
+          search_criteria[:selected_territories].each do |territory_id|
+            film_rights = FilmRight.where({ right_id: right_id, territory_id: territory_id })
+            film_rights = filter_by_dates(film_rights, search_criteria, right_id)
+            rights_hash[right_id][territory_id] = film_rights.map(&:film_id).uniq
+          end
+        end
+        film_ids_result = []
+        rights_hash.each do |right_id, territories_hash|
+          right_film_ids = []
+          territories_hash.each do |territory_id, film_ids|
+            right_film_ids = (right_film_ids.empty? ? film_ids : (right_film_ids & film_ids))
+          end
+          film_ids_result = (film_ids_result.empty? ? right_film_ids : (film_ids_result | right_film_ids))
+        end
+      elsif search_criteria[:rights_operator] == 'OR' && search_criteria[:territories_operator] == 'OR'
+        rights_hash = Hash.new { |h, k| h[k] = {} }
+        search_criteria[:selected_rights].each do |right_id|
+          film_rights = FilmRight.where({ right_id: right_id, territory_id: search_criteria[:selected_territories] })
+          film_rights = filter_by_dates(film_rights, search_criteria, right_id)
+          rights_hash[right_id] = film_rights.map(&:film_id).uniq
+        end
+        populated_starting_array = false
+        rights_hash.each do |right_id, film_ids|
+          if populated_starting_array
+            film_ids_result = film_ids_result | film_ids
+          else
+            film_ids_result = film_ids
+            populated_starting_array = true
+          end
+        end
       end
+
       film_ids = Film.where(id: film_ids_result, film_type: params[:film_type]).pluck(:id)
     end
     time_started = Time.now.to_s
@@ -116,6 +159,19 @@ class Api::FilmsController < AdminController
   end
 
   private
+
+  def filter_by_dates(film_rights, search_criteria, right_id)
+    result = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date >= ? OR end_date IS NULL)', search_criteria[:start_date], search_criteria[:end_date])
+    if right_id == "12"
+      films_with_sell_off_period = Film.where.not(sell_off_period: 0)
+      films_with_sell_off_period.each do |film|
+        more_rights = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date >= ? OR end_date IS NULL)', search_criteria[:start_date], (Date.strptime(search_criteria[:end_date], "%m/%d/%y") - film.sell_off_period.months))
+        result = (result | more_rights)
+      end
+    end
+    p result
+    result
+  end
 
   def film_params
     result = params[:film].permit(

@@ -118,7 +118,8 @@ var FilmsIndex = React.createClass({
   clickExportMetadata: function(filmType, exportType, searchCriteria) {
     if (!this.state.fetching) {
       this.setState({
-        fetching: true
+        fetching: true,
+        searchModalOpen: false
       });
       if (exportType == 'all') {
         var filmIds = this.state.films.map(function(film) {

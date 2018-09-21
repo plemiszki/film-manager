@@ -976,7 +976,9 @@ var ClientActions = {
           selected_territories: searchCriteria.selectedTerritories,
           start_date: searchCriteria.startDate,
           end_date: searchCriteria.endDate,
-          exclusive: searchCriteria.exclusive
+          exclusive: searchCriteria.exclusive,
+          rights_operator: searchCriteria.rightsOperator,
+          territories_operator: searchCriteria.territoriesOperator
         }
       },
       success: function(response) {

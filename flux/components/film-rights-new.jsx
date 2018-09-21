@@ -22,7 +22,9 @@ var FilmRightsNew = React.createClass({
       films: [],
       selectedRights: [],
       selectedTerritories: [],
-      errors: []
+      errors: [],
+      rightsOperator: 'AND',
+      territoriesOperator: 'AND'
     });
   },
 
@@ -63,7 +65,9 @@ var FilmRightsNew = React.createClass({
         selectedTerritories: this.state.selectedTerritories,
         startDate: this.state.filmRight.startDate,
         endDate: this.state.filmRight.endDate,
-        exclusive: this.state.filmRight.exclusive
+        exclusive: this.state.filmRight.exclusive,
+        rightsOperator: this.state.rightsOperator,
+        territoriesOperator: this.state.territoriesOperator
       });
     }
   },
@@ -125,6 +129,12 @@ var FilmRightsNew = React.createClass({
     });
   },
 
+  changeOperator: function(which, value) {
+    this.setState({
+      [`${which}Operator`]: (value == 'AND' ? 'OR' : 'AND')
+    });
+  },
+
   render: function() {
     return(
       <div id="film-rights-new" className="component">
@@ -153,18 +163,12 @@ var FilmRightsNew = React.createClass({
               <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
               { Common.renderFieldError(this.state.errors, []) }
             </div>
-            <div className="col-xs-2">
-              <h2>Exclusive</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.filmRight.exclusive }>
-                <option value={ "Yes" }>Yes</option>
-                <option value={ "No" }>No</option>
-              </select>
-              { Common.renderFieldError([], []) }
-            </div>
+            { this.renderExclusiveColumn() }
           </div>
           <div className="row">
-            <div className="col-xs-6">
+            <div className="col-xs-6 relative">
               <div className="rights-list" data-array={ 'selectedRights' }>
+                { this.renderAddOrToggle('rights', this.state.rightsOperator) }
                 { this.state.rights.map(function(right, index) {
                   return(
                     <div key={ index } className="checkbox-container">
@@ -176,8 +180,9 @@ var FilmRightsNew = React.createClass({
               <a className="blue-outline-button small" onClick={ this.clickNoRights }>NONE</a>
               <a className="blue-outline-button small" onClick={ this.clickAllRights }>ALL</a>
             </div>
-            <div className="col-xs-6">
+            <div className="col-xs-6 relative">
               <div className="rights-list" data-array={ 'selectedTerritories' }>
+                { this.renderAddOrToggle('territories', this.state.territoriesOperator) }
                 { this.state.territories.map(function(territory, index) {
                   return(
                     <div key={ index } className="checkbox-container">
@@ -190,12 +195,45 @@ var FilmRightsNew = React.createClass({
               <a className="blue-outline-button small" onClick={ this.clickAllTerritories }>ALL</a>
             </div>
           </div>
-          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0) } onClick={ this.props.search ? this.clickSearch : this.clickAdd }>
+          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.props.search ? this.clickSearch : this.clickAdd }>
             { this.props.search ? 'Search' : 'Add Rights' }
           </a>
         </div>
       </div>
     );
+  },
+
+  renderExclusiveColumn: function() {
+    if (!this.props.search) {
+      return (
+        <div className="col-xs-2">
+          <h2>Exclusive</h2>
+          <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.filmRight.exclusive }>
+            <option value={ "Yes" }>Yes</option>
+            <option value={ "No" }>No</option>
+          </select>
+          { Common.renderFieldError([], []) }
+        </div>
+      );
+    }
+  },
+
+  buttonInactive: function() {
+    if (this.props.search) {
+      return (this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0 || this.state.filmRight.startDate === '' || this.state.filmRight.endDate === '');
+    } else {
+      return (this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0);
+    }
+  },
+
+  renderAddOrToggle: function(which, value) {
+    if (this.props.search) {
+      return (
+        <a className="and-or-button" onClick={ function() { this.changeOperator(which, value) }.bind(this) }>
+          { value }
+        </a>
+      );
+    }
   },
 
   componentDidUpdate: function() {

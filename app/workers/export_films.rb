@@ -59,8 +59,8 @@ class ExportFilms
       base_array = [
         film.title,
         (film.licensor ? film.licensor.name : ''),
-        film.start_date.strftime("%-m/%-d/%Y"),
-        film.end_date.strftime("%-m/%-d/%Y"),
+        film.start_date ? film.start_date.strftime("%-m/%-d/%Y") : '',
+        film.end_date ? film.end_date.strftime("%-m/%-d/%Y") : '',
         film.proper_label_name,
         film.year,
         film.synopsis,
@@ -87,7 +87,8 @@ class ExportFilms
 
       search_criteria["selected_territories"].each do |territory_id|
         search_criteria["selected_rights"].each do |right_id|
-          value = FilmRight.find_by({ right_id: right_id, territory_id: territory_id, film_id: film.id }).exclusive ? 'Exclusive' : 'Non-Exclusive'
+          film_right = FilmRight.find_by({ right_id: right_id, territory_id: territory_id, film_id: film.id })
+          value = film_right ? (film_right.exclusive ? 'Exclusive' : 'Non-Exclusive') : 'NOT LICENSED'
           sub_rights = SubRight.where(right_id: right_id, territory_id: territory_id, film_id: film.id).where("end_date > ?", search_criteria["start_date"]).where("start_date < ?", search_criteria["end_date"])
           sub_rights.each do |sub_right|
             value += "\n#{sub_right.sublicensor.name}: #{sub_right.start_date.strftime("%-m/%-d/%y")} - #{sub_right.end_date.strftime("%-m/%-d/%y")} (#{sub_right.exclusive ? 'E' : 'NE'})"

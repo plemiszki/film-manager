@@ -59,12 +59,29 @@
     border-radius: 3px;
   }
 
+  div.col-xs-6.relative {
+    position: relative;
+  }
+
   div.rights-list {
     border: 1px solid #E4E9ED;
     border-radius: 3px;
     height: 335px;
     margin-bottom: 10px;
     overflow-y: scroll;
+
+    a.and-or-button {
+      position: absolute;
+      color: #5F5F5F;
+      right: 30px;
+      top: 15px;
+      border: 1px solid #E4E9ED;
+      border-radius: 5px;
+      padding: 10px;
+      width: 80px;
+      text-align: center;
+      cursor: pointer;
+    }
   }
 
   .blue-outline-button {
