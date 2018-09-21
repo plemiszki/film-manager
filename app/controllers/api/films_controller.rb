@@ -169,7 +169,6 @@ class Api::FilmsController < AdminController
         result = (result | more_rights)
       end
     end
-    p result
     result
   end
 

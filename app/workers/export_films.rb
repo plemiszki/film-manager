@@ -3,7 +3,7 @@ class ExportFilms
   include ActionView::Helpers::NumberHelper
   sidekiq_options retry: false
 
-  def perform(film_ids, time_started, search_criteria = {})
+  def perform(film_ids, time_started, search_criteria)
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
@@ -40,11 +40,13 @@ class ExportFilms
       'Blu-ray Stock'
     ]
 
-    search_criteria["selected_territories"].each do |territory_id|
-      territory_name = Territory.find(territory_id).name
-      search_criteria["selected_rights"].each do |right_id|
-        right_name = Right.find(right_id).name
-        base_array << "#{territory_name} - #{right_name}"
+    if search_criteria
+      search_criteria["selected_territories"].each do |territory_id|
+        territory_name = Territory.find(territory_id).name
+        search_criteria["selected_rights"].each do |right_id|
+          right_name = Right.find(right_id).name
+          base_array << "#{territory_name} - #{right_name}"
+        end
       end
     end
 
@@ -85,15 +87,17 @@ class ExportFilms
         blu_ray ? blu_ray.stock : 'n/a'
       ]
 
-      search_criteria["selected_territories"].each do |territory_id|
-        search_criteria["selected_rights"].each do |right_id|
-          film_right = FilmRight.find_by({ right_id: right_id, territory_id: territory_id, film_id: film.id })
-          value = film_right ? (film_right.exclusive ? 'Exclusive' : 'Non-Exclusive') : 'NOT LICENSED'
-          sub_rights = SubRight.where(right_id: right_id, territory_id: territory_id, film_id: film.id).where("end_date > ?", search_criteria["start_date"]).where("start_date < ?", search_criteria["end_date"])
-          sub_rights.each do |sub_right|
-            value += "\n#{sub_right.sublicensor.name}: #{sub_right.start_date.strftime("%-m/%-d/%y")} - #{sub_right.end_date.strftime("%-m/%-d/%y")} (#{sub_right.exclusive ? 'E' : 'NE'})"
+      if search_criteria
+        search_criteria["selected_territories"].each do |territory_id|
+          search_criteria["selected_rights"].each do |right_id|
+            film_right = FilmRight.find_by({ right_id: right_id, territory_id: territory_id, film_id: film.id })
+            value = film_right ? (film_right.exclusive ? 'Exclusive' : 'Non-Exclusive') : 'NOT LICENSED'
+            sub_rights = SubRight.where(right_id: right_id, territory_id: territory_id, film_id: film.id).where("end_date > ?", search_criteria["start_date"]).where("start_date < ?", search_criteria["end_date"])
+            sub_rights.each do |sub_right|
+              value += "\n#{sub_right.sublicensor.name}: #{sub_right.start_date.strftime("%-m/%-d/%y")} - #{sub_right.end_date.strftime("%-m/%-d/%y")} (#{sub_right.exclusive ? 'E' : 'NE'})"
+            end
+            base_array << value
           end
-          base_array << value
         end
       end
 
