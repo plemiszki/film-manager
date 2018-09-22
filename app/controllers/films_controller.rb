@@ -17,6 +17,10 @@ class FilmsController < AdminController
     render "import.html.erb"
   end
 
+  def catalog
+    render "catalog.html.erb"
+  end
+
   def upload
     films_io = params[:user][:films_file]
     # theaters_io = params[:user][:theaters_file]

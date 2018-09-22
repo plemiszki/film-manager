@@ -53,6 +53,7 @@ var DigitalRetailersIndex = require('./components/digital-retailers-index.jsx');
 var DigitalRetailerDetails = require('./components/digital-retailer-details.jsx');
 var DigitalRetailerFilmDetails = require('./components/digital-retailer-film-details.jsx');
 var Calendar = require('./components/calendar.jsx');
+var Catalog = require('./components/catalog.jsx');
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -229,5 +230,8 @@ $(document).ready(function() {
   }
   if ($('#sub-right-details')[0]) {
     ReactDOM.render(<SubRightDetails />, document.getElementById("sub-right-details"));
+  }
+  if ($('#catalog')[0]) {
+    ReactDOM.render(<Catalog />, document.getElementById("catalog"));
   }
 });

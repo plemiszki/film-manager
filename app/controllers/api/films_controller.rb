@@ -144,11 +144,23 @@ class Api::FilmsController < AdminController
   end
 
   def catalog
-    film_ids = params[:film_ids].to_a.map(&:to_i)
+    uploaded_io = params[:user][:spreadsheet]
+    original_filename = uploaded_io.original_filename
     time_started = Time.now.to_s
-    job = Job.create!(job_id: time_started, name: "export catalog", first_line: "Exporting Catalog", second_line: true, current_value: 0, total_value: film_ids.length)
-    ExportCatalog.perform_async(film_ids, time_started)
-    render json: job
+    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+    File.open(Rails.root.join('tmp', time_started, original_filename), 'wb') do |file|
+      file.write(uploaded_io.read)
+    end
+    s3 = Aws::S3::Resource.new(
+      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+      region: 'us-east-1'
+    )
+    bucket = s3.bucket(ENV['S3_BUCKET'])
+    obj = bucket.object("#{time_started}/#{original_filename}")
+    obj.upload_file(Rails.root.join('tmp', time_started, original_filename), acl: 'private')
+    job = Job.create!(job_id: time_started, name: "export catalog", first_line: "Reading Spreadsheet", second_line: false, current_value: 0, total_value: 0)
+    ExportCatalog.perform_async(original_filename, time_started)
+    redirect_to "/catalog", flash: { job_id: job.id }
   end
 
   def update_artwork
