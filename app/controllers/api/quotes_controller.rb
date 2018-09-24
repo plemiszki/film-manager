@@ -21,7 +21,7 @@ class Api::QuotesController < AdminController
   def update
     @quote = Quote.find(params[:id])
     if @quote.update(quote_params)
-      @quotes = Quote.where(film_id: quote_params[:film_id]).order(:order)
+      @quotes = Quote.where(id: params[:id]).order(:order)
       render "show.json.jbuilder"
     else
       render json: @quote.errors.full_messages, status: 422
