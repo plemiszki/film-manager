@@ -122,6 +122,16 @@ var DvdDetails = React.createClass({
     });
   },
 
+  getHTML: function() {
+    var textArea = document.createElement('textarea');
+    textArea.value = $.trim($('#email').html().replace(/>\s+</g, "><"));
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('HTML copied to clipboard');
+  },
+
   confirmDelete: function() {
     this.setState({
       fetching: true,
@@ -292,6 +302,9 @@ var DvdDetails = React.createClass({
         </a>
         <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete DVD
+        </a>
+        <a className={ "html orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.getHTML }>
+          Email HTML
         </a>
       </div>
     )

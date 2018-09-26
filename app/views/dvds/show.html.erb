@@ -3,6 +3,42 @@
   <div id="dvd-details">replace me</div>
   <a class="standard-link" href="/films/<%= @dvd.feature_film_id %>?tab=DVDs">Back to Film</a>
 
+  <% film = @dvd.feature %>
+  <section id="email" class="hidden">
+    <table style="width: 487.5pt;" border="0" cellpadding="0" width="650">
+      <tbody>
+        <tr>
+          <td style="padding: 0.75pt; width: 187.5pt;" width="250" valign="top">
+            <img src="<%= film.artwork_url %>" height="352" width="250" />
+          </td>
+          <td style="padding: 0.75pt; width: 300pt;" width="400" valign="top">
+            <table>
+              <tbody>
+                <tr>
+                  <td style="padding: 0.75pt; width: 36.55pt;" width="49">
+                    <p>&nbsp;</p>
+                  </td>
+                  <td style="padding: 0.75pt; width: 249.95pt;" width="333">
+                    <b><span style="font-size: 20pt; color: rgb(47, 118, 138);"><%= film.title %></span></b><br>
+                    <span>A film by <%= film.directors.map { |director| "#{director.first_name} #{director.last_name}" }.join(" and ") %></span><br>
+                    <span><%= film.film_genres.select { |fg| fg.order == 0 }.first.genre.name %> - <%= film.film_countries.select { |fc| fc.order == 0 }.first.country.name %></span><br>
+                    <% language = film.film_languages.select { |fl| fl.order == 0 }.first.language.name %>
+                    <span><%= language %><%= " with English subtitles" unless language == "English" %></span><br>
+                    <span><%= film.length %> minutes</span><br><br><br>
+                    <b><span style="font-size: 16pt;">UPC: <%= @dvd.upc %></span></b><br>
+                    <b><span style="font-size: 16pt;">MSRP: $<%= number_with_precision(@dvd.price, precision: 2, delimiter: ',') %></span></b><br><br>
+                    <b><span style="font-size: 16pt;">Pre-book: <%= @dvd.pre_book_date ? @dvd.pre_book_date.strftime("%B %-d, %Y") : "" %></span></b><br>
+                    <b><span style="font-size: 16pt;">Street Date: <%= @dvd.retail_date ? @dvd.retail_date.strftime("%B %-d, %Y") : "" %></span></b><br><br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
 <% else %>
 
   DVD not found.

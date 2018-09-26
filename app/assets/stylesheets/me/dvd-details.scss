@@ -52,7 +52,11 @@
     margin-bottom: 30px;
   }
 
-  a#delete {
+  a#delete, a.html {
     float: right;
+  }
+
+  a.html {
+    margin-right: 30px;
   }
 }
