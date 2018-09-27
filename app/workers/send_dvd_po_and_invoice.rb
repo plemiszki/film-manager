@@ -5,7 +5,7 @@ class SendDvdPoAndInvoice
   def perform(id, current_user_id, reporting_only)
     purchase_order = PurchaseOrder.find(id)
     current_user = User.find(current_user_id)
-    dvd_customer = DvdCustomer.find(purchase_order.customer_id)
+    dvd_customer = DvdCustomer.find_by_id(purchase_order.customer_id)
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
