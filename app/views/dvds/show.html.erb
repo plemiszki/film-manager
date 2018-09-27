@@ -4,7 +4,9 @@
   <a class="standard-link" href="/films/<%= @dvd.feature_film_id %>?tab=DVDs">Back to Film</a>
 
   <% film = @dvd.feature %>
-  <section id="email" class="hidden">
+  <% quotes = film.quotes.order(:order) %>
+  <% laurels = film.laurels.order(:order) %>
+  <section id="email" class="">
     <table style="width: 487.5pt;" border="0" cellpadding="0" width="650">
       <tbody>
         <tr>
@@ -29,6 +31,9 @@
                     <b><span style="font-size: 16pt;">MSRP: $<%= number_with_precision(@dvd.price, precision: 2, delimiter: ',') %></span></b><br><br>
                     <b><span style="font-size: 16pt;">Pre-book: <%= @dvd.pre_book_date ? @dvd.pre_book_date.strftime("%B %-d, %Y") : "" %></span></b><br>
                     <b><span style="font-size: 16pt;">Street Date: <%= @dvd.retail_date ? @dvd.retail_date.strftime("%B %-d, %Y") : "" %></span></b><br><br>
+                    <% unless film.youtube_trailer.empty? %>
+                      <br><span style="font-size: 16pt;"><a href="<%= film.youtube_trailer %>">Watch the Trailer</a></span>
+                    <% end %>
                   </td>
                 </tr>
               </tbody>
@@ -36,7 +41,21 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table><br><br>
+    <% unless quotes.empty? %>
+      <% quotes.each do |quote| %>
+        <b><span style="color: rgb(47, 118, 138);">&quot;<%= quote.text %>&quot;</span></b>
+        <br>- <%= quote.author %><%= (!quote.author.empty? & !quote.publication.empty?) ? ", " : "" %><i><%= quote.publication %></i><br><br>
+      <% end %>
+    <% end %>
+    <% unless laurels.empty? %>
+      <% laurels.each do |laurel| %>
+        <b><%= laurel.result %><%= !laurel.award_name.empty? ? " - #{laurel.award_name}" : '' %> - <i><%= laurel.festival %></i></b><br>
+      <% end %>
+      <br>
+    <% end %>
+    <b>SYNOPSIS:</b>
+    <br><%= film.synopsis %>
   </section>
 
 <% else %>
