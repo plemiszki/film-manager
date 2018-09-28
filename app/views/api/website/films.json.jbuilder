@@ -27,6 +27,7 @@ json.array!(@films) do |film|
   json.sound_config film.sound_config
   json.certified_fresh film.certified_fresh
   json.critics_pick film.critics_pick
+  json.theatrical_release film.theatrical_release || ""
   json.screening_formats film.formats do |format|
     json.id format.id
     json.name format.name

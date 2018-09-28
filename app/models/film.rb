@@ -73,4 +73,16 @@ class Film < ActiveRecord::Base
     end
   end
 
+  def api_bookings
+    all = bookings.where.not(booking_type: ["Non-Theatrical", "Press/WOM"]).includes(:venue)
+    result = all.select do |booking|
+      if booking.booking_type == 'Festival'
+        booking.start_date <= (Date.today + 3.weeks)
+      else
+        true
+      end
+    end
+    result
+  end
+
 end
