@@ -288,6 +288,7 @@ var NewThing = React.createClass({
                 <option value={ "Theatrical" }>Theatrical</option>
                 <option value={ "Non-Theatrical" }>Non-Theatrical</option>
                 <option value={ "Festival" }>Festival</option>
+                <option value={ "Press/WOM" }>Press/WOM</option>
               </select>
               { Common.renderFieldError(this.state.errors, []) }
             </div>
