@@ -7,55 +7,78 @@
   <% quotes = film.quotes.order(:order) %>
   <% laurels = film.laurels.order(:order) %>
   <section id="email" class="hidden">
-    <table style="width: 487.5pt;" border="0" cellpadding="0" width="650">
+    <table border="0" cellpadding="0" width="650">
       <tbody>
         <tr>
-          <td style="padding: 0.75pt; width: 187.5pt;" width="250" valign="top">
-            <img src="<%= film.artwork_url %>" height="352" width="250" />
+          <td>
+            <img src="https://film-movement.herokuapp.com/email/<%= film.label.name == "Omnibus" ? "header_omni.jpg" : (film.label.name == "Classics" ? "header_classics.jpg" : "header.jpg") %>" /><br>
+            <br>
+            <img src="https://film-movement.herokuapp.com/email/<%= film.label.name == "Omnibus" ? "subheader_omni.jpg" : "subheader.jpg" %>" /><br>
+            <br>
           </td>
-          <td style="padding: 0.75pt; width: 300pt;" width="400" valign="top">
-            <table>
+        </tr>
+        <tr>
+          <td>
+            <table style="width: 487.5pt;" border="0" cellpadding="0" width="650">
               <tbody>
                 <tr>
-                  <td style="padding: 0.75pt; width: 36.55pt;" width="49">
-                    <p>&nbsp;</p>
+                  <td style="padding: 0.75pt; width: 187.5pt;" width="250" valign="top">
+                    <img src="<%= film.artwork_url %>" height="352" width="250" />
                   </td>
-                  <td style="padding: 0.75pt; width: 249.95pt;" width="333">
-                    <b><span style="font-size: 20pt; color: rgb(47, 118, 138);"><%= film.title %></span></b><br>
-                    <span>A film by <%= film.directors.map { |director| "#{director.first_name} #{director.last_name}" }.join(" and ") %></span><br>
-                    <span><%= film.film_genres.select { |fg| fg.order == 0 }.first.genre.name %> - <%= film.film_countries.select { |fc| fc.order == 0 }.first.country.name %></span><br>
-                    <% language = film.film_languages.select { |fl| fl.order == 0 }.first.language.name %>
-                    <span><%= language %><%= " with English subtitles" unless language == "English" %></span><br>
-                    <span><%= film.length %> minutes</span><br><br><br>
-                    <b><span style="font-size: 16pt;">UPC: <%= @dvd.upc %></span></b><br>
-                    <b><span style="font-size: 16pt;">MSRP: $<%= number_with_precision(@dvd.price, precision: 2, delimiter: ',') %></span></b><br><br>
-                    <b><span style="font-size: 16pt;">Pre-book: <%= @dvd.pre_book_date ? @dvd.pre_book_date.strftime("%B %-d, %Y") : "" %></span></b><br>
-                    <b><span style="font-size: 16pt;">Street Date: <%= @dvd.retail_date ? @dvd.retail_date.strftime("%B %-d, %Y") : "" %></span></b><br><br>
-                    <% unless film.youtube_trailer.empty? %>
-                      <br><span style="font-size: 16pt;"><a href="<%= film.youtube_trailer %>">Watch the Trailer</a></span>
-                    <% end %>
+                  <td style="padding: 0.75pt; width: 300pt;" width="400" valign="top">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td style="padding: 0.75pt; width: 36.55pt;" width="49">
+                            <p>&nbsp;</p>
+                          </td>
+                          <td style="padding: 0.75pt; width: 249.95pt;" width="333">
+                            <b><span style="font-size: 20pt; color: rgb(47, 118, 138);"><%= film.title %></span></b><br>
+                            <span>A film by <%= film.directors.map { |director| "#{director.first_name} #{director.last_name}" }.join(" and ") %></span><br>
+                            <span><%= film.film_genres.select { |fg| fg.order == 0 }.first.genre.name %> - <%= film.film_countries.select { |fc| fc.order == 0 }.first.country.name %></span><br>
+                            <% language = film.film_languages.select { |fl| fl.order == 0 }.first.language.name %>
+                            <span><%= language %><%= " with English subtitles" unless language == "English" %></span><br>
+                            <span><%= film.length %> minutes</span><br><br><br>
+                            <b><span style="font-size: 16pt;">UPC: <%= @dvd.upc %></span></b><br>
+                            <b><span style="font-size: 16pt;">MSRP: $<%= number_with_precision(@dvd.price, precision: 2, delimiter: ',') %></span></b><br><br>
+                            <b><span style="font-size: 16pt;">Pre-book: <%= @dvd.pre_book_date ? @dvd.pre_book_date.strftime("%B %-d, %Y") : "" %></span></b><br>
+                            <b><span style="font-size: 16pt;">Street Date: <%= @dvd.retail_date ? @dvd.retail_date.strftime("%B %-d, %Y") : "" %></span></b><br><br>
+                            <% unless film.youtube_trailer.empty? %>
+                              <br><span style="font-size: 16pt;"><a href="<%= film.youtube_trailer %>">Watch the Trailer</a></span>
+                            <% end %>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </td>
                 </tr>
               </tbody>
-            </table>
+            </table><br>
+            <br>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <% unless quotes.empty? %>
+              <% quotes.each do |quote| %>
+                <b><span style="color: rgb(47, 118, 138);">&quot;<%= quote.text %>&quot;</span></b>
+                <br>- <%= quote.author %><%= (!quote.author.empty? & !quote.publication.empty?) ? ", " : "" %><i><%= quote.publication %></i><br><br>
+              <% end %>
+            <% end %>
+            <% unless laurels.empty? %>
+              <% laurels.each do |laurel| %>
+                <b><%= laurel.result %><%= !laurel.award_name.empty? ? " - #{laurel.award_name}" : '' %> - <i><%= laurel.festival %></i></b><br>
+              <% end %>
+              <br>
+            <% end %>
+            <b>SYNOPSIS:</b>
+            <br><%= film.synopsis %><br>
+            <br>
+            <img src="https://film-movement.herokuapp.com/email/<%= film.label.name == "Omnibus" ? "footer_omni.jpg" : "footer.jpg" %>" />
           </td>
         </tr>
       </tbody>
-    </table><br><br>
-    <% unless quotes.empty? %>
-      <% quotes.each do |quote| %>
-        <b><span style="color: rgb(47, 118, 138);">&quot;<%= quote.text %>&quot;</span></b>
-        <br>- <%= quote.author %><%= (!quote.author.empty? & !quote.publication.empty?) ? ", " : "" %><i><%= quote.publication %></i><br><br>
-      <% end %>
-    <% end %>
-    <% unless laurels.empty? %>
-      <% laurels.each do |laurel| %>
-        <b><%= laurel.result %><%= !laurel.award_name.empty? ? " - #{laurel.award_name}" : '' %> - <i><%= laurel.festival %></i></b><br>
-      <% end %>
-      <br>
-    <% end %>
-    <b>SYNOPSIS:</b>
-    <br><%= film.synopsis %>
+    </table>
   </section>
 
 <% else %>
