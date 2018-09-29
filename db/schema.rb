@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180914161828) do
+ActiveRecord::Schema.define(version: 20180929184114) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -316,6 +316,14 @@ ActiveRecord::Schema.define(version: 20180914161828) do
     t.integer "film_id", null: false
     t.integer "order",   null: false
     t.text    "section", null: false
+  end
+
+  create_table "invoice_payments", force: :cascade do |t|
+    t.integer "invoice_id",                                       null: false
+    t.integer "payment_id",                                       null: false
+    t.decimal "amount",     precision: 8, scale: 2, default: 0.0
+    t.string  "notes",                              default: ""
+    t.date    "date",                                             null: false
   end
 
   create_table "invoice_rows", force: :cascade do |t|
