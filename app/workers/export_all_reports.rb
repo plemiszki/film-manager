@@ -17,9 +17,9 @@ class ExportAllReports
     FileUtils.mkdir_p("#{job_folder}/amount due")
     FileUtils.mkdir_p("#{job_folder}/no amount due")
     job = Job.find_by_job_id(time_started)
-    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: {export_reports: true})
+    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: { export_reports: true })
     reports.each do |report|
-      return if Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
+      return if Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
       if days_due == "all" || report.film.days_statement_due == days_due.to_i
         p '---------------------------'
         p "#{report.film.title} (#{jid})"
@@ -27,11 +27,11 @@ class ExportAllReports
         royalty_revenue_streams = report.calculate!
         save_path = report.joined_amount_due > 0 ? "#{job_folder}/amount due" : "#{job_folder}/no amount due"
         report.export!(save_path, royalty_revenue_streams)
-        job.update({current_value: job.current_value + 1})
+        job.update({ current_value: job.current_value + 1 })
       end
     end
 
-    job.update({first_line: "Creating Archive", second_line: false})
+    job.update({ first_line: "Creating Archive", second_line: false })
     files = Dir.glob("#{Rails.root}/tmp/#{time_started}/amount due/*.pdf")
     files2 = Dir.glob("#{Rails.root}/tmp/#{time_started}/no amount due/*.pdf")
     require 'zip'

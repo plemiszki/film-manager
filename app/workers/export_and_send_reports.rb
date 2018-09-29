@@ -65,6 +65,6 @@ class ExportAndSendReports
         job.update({errors_text: job.errors_text += (new_line + "Licensor #{licensor.name} is missing email.")})
       end
     end
-    job.update({first_line: "Done!", second_line: false})
+    job.update({ first_line: "Done!", second_line: false })
   end
 end

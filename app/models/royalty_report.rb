@@ -328,9 +328,13 @@ class RoyaltyReport < ActiveRecord::Base
     self.current_total = 0.00
     royalty_revenue_streams = RoyaltyRevenueStream.where(royalty_report_id: self.id).joins(:revenue_stream).order('revenue_streams.order')
     royalty_revenue_streams.each do |stream|
-      if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue > 0
+      if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue != 0
         unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
-          self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
+          if stream.current_revenue > 0
+            self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
+          else
+            self.current_reserve = 0
+          end
           total_past_reserves = self.get_total_past_reserves
           self.cume_reserve = total_past_reserves.values.sum
           self.liquidated_reserve = total_past_reserves.values[0..(film.reserve_quarters * -1)].sum
