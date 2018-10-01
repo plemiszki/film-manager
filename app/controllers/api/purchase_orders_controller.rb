@@ -115,7 +115,7 @@ class Api::PurchaseOrdersController < AdminController
         sales = units * Invoice.get_item_price(dvd.id, 'dvd', DvdCustomer.find(value), dvd).to_f
         @dvd_sales[dvd.id][key] = sales
       end
-      all_rows = PurchaseOrderItem.where(item_id: dvd.id, item_type: "dvd").includes(purchase_order: :customer).select { |item| item.purchase_order.ship_date }
+      all_rows = PurchaseOrderItem.where(item_id: dvd.id, item_type: "dvd").includes(purchase_order: :customer).select { |item| po = item.purchase_order; po.ship_date && po.customer_id != 0 }
       all_return_rows = ReturnItem.where(item_id: dvd.id, item_type: "dvd").includes(return: :customer)
       @dvd_units[dvd.id][:total_units] = (all_rows.reduce(0) { |total, item| total += item.qty } - all_return_rows.reduce(0) { |total, item| total += item.qty } )
       total_sales = 0.0
