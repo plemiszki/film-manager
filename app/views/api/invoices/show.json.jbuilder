@@ -21,7 +21,7 @@ json.invoices @invoices do |invoice|
   json.shippingZip invoice.shipping_zip
   json.shippingCountry invoice.shipping_country
   json.subTotal dollarify(number_with_precision(invoice.sub_total.to_s, precision: 2, delimiter: ','))
-  json.total dollarify(number_with_precision(invoice.total.to_s, precision: 2, delimiter: ','))
+  json.total dollarify(number_with_precision(invoice.total_minus_payments.to_s, precision: 2, delimiter: ','))
   json.notes invoice.notes
 end
 json.rows @rows do |row|
@@ -29,4 +29,9 @@ json.rows @rows do |row|
   json.price dollarify(number_with_precision(row.unit_price.to_s, precision: 2, delimiter: ','))
   json.qty row.item_qty
   json.totalPrice dollarify(number_with_precision(row.total_price.to_s, precision: 2, delimiter: ','))
+end
+json.payments @payments do |payment|
+  json.date payment.date.strftime("%-m/%-d/%y")
+  json.amount dollarify(number_with_precision((payment.amount * -1).to_s, precision: 2, delimiter: ','))
+  json.notes payment.notes
 end

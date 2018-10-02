@@ -26,7 +26,7 @@ var InvoiceDetails = React.createClass({
   getInvoice: function() {
     this.setState({
       invoice: InvoicesStore.find(window.location.pathname.split("/")[2]),
-      rows: InvoicesStore.rows(),
+      rows: InvoicesStore.rows().concat(InvoicesStore.payments()),
       fetching: false
     });
   },

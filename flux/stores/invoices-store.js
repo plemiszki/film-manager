@@ -6,12 +6,16 @@ var InvoicesStore = new Store(AppDispatcher);
 
 var _invoices = {};
 var _rows = [];
+var _payments = [];
 
 InvoicesStore.setStuff = function(payload) {
   payload.invoices.forEach(function(invoice) {
     _invoices[invoice.id] = invoice;
   });
   _rows = payload.rows;
+  if (payload.payments) {
+    _payments = payload.payments;
+  }
 };
 
 InvoicesStore.find = function(id) {
@@ -27,6 +31,15 @@ InvoicesStore.all = function() {
 
 InvoicesStore.rows = function() {
   return _rows;
+};
+
+InvoicesStore.payments = function() {
+  return _payments.map(function(payment) {
+    return {
+      label: 'Payment' + (payment.notes ? (' - ' + payment.notes) : '') + ' (' + payment.date + ')',
+      totalPrice: payment.amount
+    };
+  });
 };
 
 InvoicesStore.__onDispatch = function(payload) {

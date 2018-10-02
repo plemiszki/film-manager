@@ -197,7 +197,8 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "INVOICES_RECEIVED",
       invoices: response.invoices,
-      rows: response.rows
+      rows: response.rows,
+      payments: response.payments
     });
   },
 

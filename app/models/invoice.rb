@@ -6,8 +6,17 @@ class Invoice < ActiveRecord::Base
   validates :number, uniqueness: true
 
   has_many :invoice_rows, -> { order('invoice_rows.id') }, dependent: :destroy
+  has_many :invoice_payments, -> { order('invoice_payments.id') }, dependent: :destroy
   belongs_to :customer, class_name: 'DvdCustomer'
   belongs_to :booking
+
+  def total_minus_payments
+    if invoice_type == 'booking'
+      total - invoice_payments.reduce(0) { |sum, ip| sum += ip.amount }
+    else
+      total
+    end
+  end
 
   def self.create_invoice(args)
     if args[:from].class.to_s == "PurchaseOrder"
@@ -213,7 +222,14 @@ class Invoice < ActiveRecord::Base
       end
       string += "</tr>"
     end
-    string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td></td><td>#{dollarify(self.total.to_s)}</td></tr>"
+    if self.invoice_type == 'booking'
+      self.invoice_payments.each_with_index do |payment, index|
+        string += "<tr>"
+        string += "<td class=\"big-margin\">Payment#{!payment.notes.empty? ? " - #{payment.notes}" : ''} (#{payment.date.strftime("%-m/%-d/%y")})</td><td></td><td></td><td class=\"big-margin\">#{dollarify((payment.amount * -1).to_s)}</td>"
+        string += "</tr>"
+      end
+    end
+    string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td></td><td>#{dollarify(self.total_minus_payments.to_s)}</td></tr>"
     string += "</table>"
     unless self.notes.empty?
       string += "<div class=\"notes\">"
