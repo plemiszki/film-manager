@@ -1464,7 +1464,19 @@ var ClientActions = {
     });
   },
 
-  sendInvoice: function(booking_id, advance, overage, shipFee) {
+  getInvoicePaymentIds: function(invoicePayments) {
+    var paymentIds = Object.keys(invoicePayments);
+    var result = [];
+    for (var i = 0; i < paymentIds.length; i++) {
+      if (invoicePayments[paymentIds[i]]) {
+        result.push(paymentIds[i]);
+      }
+    }
+    return result;
+  },
+
+  sendInvoice: function(booking_id, advance, overage, shipFee, invoicePayments) {
+    var invoicePaymentIds = ClientActions.getInvoicePaymentIds(invoicePayments);
     $.ajax({
       url: '/api/invoices',
       method: 'POST',
@@ -1472,7 +1484,8 @@ var ClientActions = {
         booking_id: booking_id,
         advance: advance,
         overage: overage,
-        ship_fee: shipFee
+        ship_fee: shipFee,
+        payment_ids: invoicePaymentIds
       },
       success: function(response) {
         ServerActions.receiveInvoices(response);
@@ -1480,7 +1493,8 @@ var ClientActions = {
     });
   },
 
-  resendInvoice: function(invoiceId, bookingId, advance, overage, shipFee) {
+  resendInvoice: function(invoiceId, bookingId, advance, overage, shipFee, invoicePayments) {
+    var invoicePaymentIds = ClientActions.getInvoicePaymentIds(invoicePayments);
     $.ajax({
       url: '/api/invoices/' + invoiceId,
       method: 'PATCH',
@@ -1488,7 +1502,8 @@ var ClientActions = {
         booking_id: bookingId,
         advance: advance,
         overage: overage,
-        ship_fee: shipFee
+        ship_fee: shipFee,
+        payment_ids: invoicePaymentIds
       },
       success: function(response) {
         ServerActions.receiveInvoices(response);
