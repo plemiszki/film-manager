@@ -427,7 +427,8 @@ var BookingDetails = React.createClass({
         newInvoiceAdvance: !!oldAdvance,
         newInvoiceOverage: !!oldOverage,
         newInvoiceShipFee: !!oldShipFee,
-        resendInvoiceId: invoice.number
+        resendInvoiceId: invoice.number,
+        invoicePayments: {}
       });
     } else {
       this.redirect("invoices", id);
