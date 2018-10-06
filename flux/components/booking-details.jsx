@@ -419,6 +419,11 @@ var BookingDetails = React.createClass({
           oldShipFee = row.amount;
         }
       });
+      var payments = invoice.payments;
+      var paymentsObj = {};
+      payments.forEach(function(payment) {
+        paymentsObj[payment.id] = true;
+      });
       this.setState({
         newInvoiceModalOpen: true,
         oldInvoiceAdvance: oldAdvance,
@@ -428,7 +433,7 @@ var BookingDetails = React.createClass({
         newInvoiceOverage: !!oldOverage,
         newInvoiceShipFee: !!oldShipFee,
         resendInvoiceId: invoice.number,
-        invoicePayments: {}
+        invoicePayments: paymentsObj
       });
     } else {
       this.redirect("invoices", id);

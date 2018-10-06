@@ -7,4 +7,7 @@ json.invoices @invoices do |invoice|
     json.label row.item_label
     json.amount dollarify(number_with_precision(row.total_price, precision: 2, delimiter: ','))
   end
+  json.payments invoice.invoice_payments do |payment|
+    json.id payment.payment_id
+  end
 end
