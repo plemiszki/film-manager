@@ -27,7 +27,7 @@ class ExportDvdSales
 
     orders = PurchaseOrder.where(order_date: start_date..end_date).includes(:customer)
     orders.each_with_index do |order, order_index|
-      next if !order.ship_date
+      next if !order.ship_date || order.customer_id == 0
       items = order.purchase_order_items
       items.each_with_index do |item, index|
         customer = order.customer
