@@ -5,7 +5,7 @@ class Laurel < ActiveRecord::Base
   belongs_to :film
 
   def string
-    "#{result} #{award_name ? "- #{award_name} " : '' }- #{festival}"
+    "#{result} #{!award_name.empty? ? "- #{award_name} " : '' }- #{festival}"
   end
 
 end

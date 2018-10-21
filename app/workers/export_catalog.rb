@@ -36,7 +36,10 @@ class ExportCatalog
         film_country = film.film_countries.order(:order).first
         country_name = film_country ? film_country.country.name : ''
         film_language = film.film_languages.order(:order).first
+        film_genre = film.film_genres.order(:order).first
         language_name = film_language ? film_language.language.name : ''
+        genre_name = film_genre ? film_genre.genre.name : ''
+        laurels = film.laurels
 
         c1 = Caracal::Core::Models::TableCellModel.new margins: { top: 0, bottom: 100, left: 0, right: 0 } do
           if film.artwork_url && !film.artwork_url.empty?
@@ -47,8 +50,14 @@ class ExportCatalog
         end
         c2 = Caracal::Core::Models::TableCellModel.new margins: { top: 0, bottom: 100, left: 0, right: 0 } do
           h2 film.title
-          p "#{country_name} | #{language_name} | #{film.length} min"
+          p "#{country_name} | #{language_name} | #{genre_name} | #{film.length} min"
           p
+          unless laurels.empty?
+            laurels.each do |laurel|
+              p laurel.string
+            end
+            p
+          end
           p "#{film.synopsis || ""}"
         end
 
