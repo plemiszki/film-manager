@@ -35,8 +35,8 @@
                           <td style="padding: 0.75pt; width: 249.95pt;" width="333">
                             <b><span style="font-size: 20pt; color: rgb(47, 118, 138);"><%= film.title %></span></b><br>
                             <span>A film by <%= film.directors.map { |director| "#{director.first_name} #{director.last_name}" }.join(" and ") %></span><br>
-                            <span><%= film.film_genres.select { |fg| fg.order == 0 }.first.genre.name %> - <%= film.film_countries.select { |fc| fc.order == 0 }.first.country.name %></span><br>
-                            <% language = film.film_languages.select { |fl| fl.order == 0 }.first.language.name %>
+                            <span><%= film.film_genres.select { |fg| fg.order == 0 }.first.try(:genre).try(:name) %> - <%= film.film_countries.select { |fc| fc.order == 0 }.first.try(:country).try(:name) %></span><br>
+                            <% language = film.film_languages.select { |fl| fl.order == 0 }.first.try(:language).try(:name) %>
                             <span><%= language %><%= " with English subtitles" unless language == "English" %></span><br>
                             <span><%= film.length %> minutes</span><br><br><br>
                             <b><span style="font-size: 16pt;">UPC: <%= @dvd.upc %></span></b><br>
