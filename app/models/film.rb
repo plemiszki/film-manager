@@ -69,7 +69,7 @@ class Film < ActiveRecord::Base
     when 3
       "Film Movement Classics"
     when 4
-      licensor.name
+      licensor ? licensor.name : ''
     end
   end
 
