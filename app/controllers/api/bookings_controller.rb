@@ -132,6 +132,56 @@ class Api::BookingsController < AdminController
     end
   end
 
+  def copy
+    if params[:booking][:film_id]
+      original_booking = Booking.find(params[:booking][:from_id])
+      @booking = Booking.new
+      @booking.film_id = params[:booking][:film_id]
+      @booking.user_id = current_user.id
+      @booking.date_added = Date.today
+      @booking.venue_id = original_booking.venue_id
+      @booking.booking_type = original_booking.booking_type
+      @booking.status = original_booking.status
+      @booking.start_date = original_booking.start_date
+      @booking.end_date = original_booking.end_date
+      @booking.terms = original_booking.terms
+      @booking.terms_change = original_booking.attributes["terms_change"]
+      @booking.advance = original_booking.advance
+      @booking.shipping_fee = original_booking.shipping_fee
+      @booking.screenings = original_booking.screenings
+      @booking.booker_id = original_booking.booker_id
+      @booking.billing_name = original_booking.billing_name
+      @booking.billing_address1 = original_booking.billing_address1
+      @booking.billing_address2 = original_booking.billing_address2
+      @booking.billing_city = original_booking.billing_city
+      @booking.billing_state = original_booking.billing_state
+      @booking.billing_zip = original_booking.billing_zip
+      @booking.billing_country = original_booking.billing_country
+      @booking.shipping_name = original_booking.shipping_name
+      @booking.shipping_address1 = original_booking.shipping_address1
+      @booking.shipping_address2 = original_booking.shipping_address2
+      @booking.shipping_city = original_booking.shipping_city
+      @booking.shipping_state = original_booking.shipping_state
+      @booking.shipping_zip = original_booking.shipping_zip
+      @booking.shipping_country = original_booking.shipping_country
+      @booking.email = original_booking.email
+      @booking.premiere = original_booking.premiere
+      @booking.house_expense = original_booking.house_expense
+      @booking.notes = original_booking.notes
+      @booking.format_id = original_booking.format_id
+      @booking.deduction = original_booking.deduction
+      @booking.save!
+      if @booking.attributes["terms_change"]
+        original_booking.weekly_terms.each do |weekly_term|
+          WeeklyTerm.create!({ booking_id: @booking.id, terms: weekly_term.terms, order: weekly_term.order })
+        end
+      end
+      render "create.json.jbuilder"
+    else
+      render json: ["Film can't be blank"], status: 422
+    end
+  end
+
   def update
     @booking = Booking.find(params[:id])
     if @booking.update(booking_params)

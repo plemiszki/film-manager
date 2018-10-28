@@ -37,6 +37,18 @@ var NewInvoiceStyles = {
   }
 };
 
+var copyModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 700
+  }
+};
+
 var BookingDetails = React.createClass({
 
   getInitialState: function() {
@@ -54,6 +66,7 @@ var BookingDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
+      copyModalOpen: false,
       newWeeklyTermsModalOpen: false,
       newWeeklyBoxOfficeModalOpen: false,
       newPaymentModalOpen: false,
@@ -174,9 +187,15 @@ var BookingDetails = React.createClass({
     }
   },
 
-  clickDelete: function(e) {
+  clickDelete: function() {
     this.setState({
       deleteModalOpen: true
+    });
+  },
+
+  clickCopy: function() {
+    this.setState({
+      copyModalOpen: true
     });
   },
 
@@ -336,6 +355,7 @@ var BookingDetails = React.createClass({
     this.setState({
       errors: errors,
       deleteModalOpen: false,
+      copyModalOpen: false,
       filmsModalOpen: false,
       venuesModalOpen: false,
       newWeeklyTermsModalOpen: false,
@@ -748,6 +768,9 @@ var BookingDetails = React.createClass({
             </a>
           </div>
         </Modal>
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
+          <NewThing thing="booking" copyFrom={ this.state.booking.id } initialObject={ { copyFrom: this.state.booking.id } } />
+        </Modal>
         <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm } />
         </Modal>
@@ -975,6 +998,9 @@ var BookingDetails = React.createClass({
         </a>
         <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete Booking
+        </a>
+        <a className={ "float-button orange-button copy-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy }>
+          Copy Booking
         </a>
       </div>
     )

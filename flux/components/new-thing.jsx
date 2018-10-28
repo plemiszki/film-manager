@@ -100,11 +100,15 @@ var NewThing = React.createClass({
     });
   },
 
-  clickAddButton: function(e) {
+  clickAdd: function() {
     this.setState({
       fetching: true
     });
-    ClientActions["create" + HandyTools.capitalize(this.props.thing)].call(ClientActions, this.state[this.props.thing]);
+    if (this.props.copyFrom) {
+      ClientActions.copyBooking(this.state.booking.copyFrom, this.state.booking.filmId);
+    } else {
+      ClientActions["create" + HandyTools.capitalize(this.props.thing)].call(ClientActions, this.state[this.props.thing]);
+    }
   },
 
   disableIfBlank: function() {
@@ -132,6 +136,7 @@ var NewThing = React.createClass({
           { this.renderLabelField() }
           { this.renderShippingAddress() }
           { this.renderVenueFields() }
+          { this.renderCopyBookingFields() }
           { this.renderBookingFields() }
           { this.renderWeeklyTermsFields() }
           { this.renderWeeklyBoxOfficeFields() }
@@ -142,7 +147,7 @@ var NewThing = React.createClass({
           { this.renderBookerFields() }
           { this.renderDigitalRetailerFilmFields() }
           { this.renderNewFilmFields() }
-          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAddButton }>
+          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAdd }>
             { this.renderAddButton() }
           </a>
         </div>
@@ -250,7 +255,7 @@ var NewThing = React.createClass({
   },
 
   renderBookingFields: function() {
-    if (this.props.thing === "booking") {
+    if (this.props.thing === "booking" && !this.props.copyFrom) {
       return(
         <div>
           <div className="row">
@@ -335,6 +340,28 @@ var NewThing = React.createClass({
           </Modal>
           <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
             <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue } />
+          </Modal>
+        </div>
+      );
+    }
+  },
+
+  renderCopyBookingFields: function() {
+    if (this.props.thing === "booking" && this.props.copyFrom) {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-11">
+              <h2>Film</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.film) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly="true" />
+              { Common.renderFieldError(this.state.errors, Common.errors.film) }
+            </div>
+            <div className="col-xs-1 select-from-modal">
+              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+            </div>
+          </div>
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+            <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm } />
           </Modal>
         </div>
       );

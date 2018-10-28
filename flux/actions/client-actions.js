@@ -1254,6 +1254,26 @@ var ClientActions = {
     });
   },
 
+  copyBooking: function(bookingId, filmId) {
+    var date = new Date;
+    $.ajax({
+      url: '/api/bookings/copy',
+      method: 'POST',
+      data: {
+        booking: {
+          from_id: bookingId,
+          film_id: filmId
+        }
+      },
+      success: function(response) {
+        window.location.pathname = "/bookings/" + response.booking.id;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response)
+      }
+    });
+  },
+
   createBooking: function(booking) {
     var date = new Date;
     $.ajax({

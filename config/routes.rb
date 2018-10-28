@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     get '/bookings/advanced' => '/api/bookings#advanced'
     post '/bookings/export' => '/api/bookings#export'
     resources :bookings, only: [:index, :show, :create, :update, :destroy]
+    post '/bookings/copy' => 'bookings#copy'
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     resources :bookers, only: [:index, :show, :create, :update, :destroy]
     resources :booker_venues, only: [:create, :destroy]
