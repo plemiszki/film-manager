@@ -139,22 +139,30 @@ var PurchaseOrdersIndex = React.createClass({
                 <th><div className={Common.sortClass.call(this, "shipDate")} onClick={Common.clickHeader.bind(this, "shipDate")}>Ship Date</div></th>
                 <th><div className={Common.sortClass.call(this, "number")} onClick={Common.clickHeader.bind(this, "number")}>PO Number</div></th>
                 <th><div className={Common.sortClass.call(this, "customer")} onClick={Common.clickHeader.bind(this, "customer")}>Customer</div></th>
+                <th><div className={Common.sortClass.call(this, "invoice")} onClick={Common.clickHeader.bind(this, "invoice")}>Invoice</div></th>
+                <th><div className={Common.sortClass.call(this, "salesOrder")} onClick={Common.clickHeader.bind(this, "salesOrder")}>Sales Order</div></th>
                 <th><div className={Common.sortClass.call(this, "units")} onClick={Common.clickHeader.bind(this, "units")}>Units</div></th>
               </tr>
             </thead>
             <tbody>
               <tr><td></td></tr>
-              { _.orderBy(filteredOrders, [Common.commonSort.bind(this)], [this.state.sortBy === 'shipDate' ? 'desc' : 'asc']).map(function(purchaseOrder, index) {
+              { _.orderBy(filteredOrders, [Common.commonSort.bind(this)], [['shipDate', 'salesOrder', 'invoice'].indexOf(this.state.sortBy) > -1 ? 'desc' : 'asc']).map(function(purchaseOrder, index) {
                 return(
                   <tr key={ index } onClick={ this.redirect.bind(this, purchaseOrder.id) }>
                     <td className="indent">
                       { purchaseOrder.shipDate }
                     </td>
                     <td>
-                      { purchaseOrder.number }
+                      { purchaseOrder.number }v
                     </td>
                     <td>
                       { purchaseOrder.customer }
+                    </td>
+                    <td>
+                      { purchaseOrder.invoice }
+                    </td>
+                    <td>
+                      { purchaseOrder.salesOrder }
                     </td>
                     <td>
                       { purchaseOrder.units }
