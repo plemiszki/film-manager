@@ -15,6 +15,7 @@ class ImportSageData
       films = Film.where(film_type: 'Feature')
       job.update!(first_line: "Transferring Previous Revenue/Expenses", second_line: true, current_value: 0, total_value: films.length)
       films.each_with_index do |film, index|
+        next if film.ignore_sage_id
         prev_report, prev_streams = get_prev_report(film, quarter.to_i, year.to_i)
         report = RoyaltyReport.new(film_id: film.id, deal_id: film.deal_type_id, quarter: quarter, year: year, mg: film.mg, e_and_o: film.e_and_o)
         if prev_report
@@ -61,16 +62,16 @@ class ImportSageData
         if films.length > 0
           found_film = true
         else
-          films = Film.where("film_type = 'Feature' AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
+          films = Film.where("film_type = 'Feature' AND ignore_sage_id = FALSE AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
           if films.length > 0
             found_film = true
           else
             giftboxes = Giftbox.where("LOWER(giftboxes.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
             if giftboxes.length > 0
-              errors << "not video revenue (#{columns[3]}) (#{index})" unless columns[1] == "30200"
+              errors << "Only video revenue is accepted from box set Sage IDs. (Row #{index})" unless columns[1] == "30200"
               found_box_set = true
             else
-              errors << "Sage ID #{columns[0]} not found."
+              errors << "Sage ID #{columns[0]} not found. (Row #{index})"
             end
           end
         end
@@ -82,8 +83,12 @@ class ImportSageData
           dvds.each do |dvd|
             film = dvd.feature
             report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-            stream.current_revenue += amount
+            if label == "revenue"
+              stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+              stream.current_revenue += amount
+            else
+              # TODO: apply expense!
+            end
             stream.save!
           end
         end
