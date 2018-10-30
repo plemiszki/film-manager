@@ -86,10 +86,10 @@ class ImportSageData
             if label == "revenue"
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
               stream.current_revenue += amount
+              stream.save!
             else
               # TODO: apply expense!
             end
-            stream.save!
           end
         end
 
