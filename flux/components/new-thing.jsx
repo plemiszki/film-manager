@@ -165,7 +165,8 @@ var NewThing = React.createClass({
       weeklyTerm: "Weekly Terms",
       weeklyBoxOffice: "Weekly Box Office",
       digitalRetailer: "Digital Retailer",
-      digitalRetailerFilm: "Digital Retailer"
+      digitalRetailerFilm: "Digital Retailer",
+      crossedFilm: "Crossed Film"
     };
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];

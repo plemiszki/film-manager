@@ -271,13 +271,16 @@ class Api::FilmsController < AdminController
     @laurels = Laurel.where(film_id: @films.first.id).order(:order)
     @quotes = Quote.where(film_id: @films.first.id).order(:order)
     @related_films = RelatedFilm.where(film_id: @films.first.id).includes(:other_film)
-    @other_films = Film.where.not(id: ([@films.first.id] + @related_films.pluck(:other_film_id)))
+    all_films = Film.all
+    @other_films = all_films.reject { |film| ([@films.first.id] + @related_films.pluck(:other_film_id)).include?(film.id) }
     @actors = Actor.where(film_id: @films.first.id)
     @directors = Director.where(film_id: @films.first.id)
     @digital_retailer_films = DigitalRetailerFilm.where(film_id: @films.first.id).includes(:digital_retailer)
     @digital_retailers = DigitalRetailer.all
     @schedule = create_schedule
     @sub_rights = @films.first.sub_rights
+    @crossed_films = @films.first.crossed_films
+    @other_crossed_films = all_films.reject { |film| ([@films.first.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
   end
 
   def create_schedule

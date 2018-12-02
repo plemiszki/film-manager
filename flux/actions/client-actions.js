@@ -1983,6 +1983,22 @@ var ClientActions = {
     });
   },
 
+  createCrossedFilm: function(crossedFilm) {
+    $.ajax({
+      url: '/api/crossed_films',
+      method: 'POST',
+      data: {
+        crossed_film: {
+          film_id: crossedFilm.filmId,
+          crossed_film_id: crossedFilm.crossedFilmId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveCrossedFilms(response);
+      }
+    });
+  },
+
   deleteRelatedFilm: function(id) {
     $.ajax({
       url: '/api/related_films/' + id,
@@ -2019,6 +2035,16 @@ var ClientActions = {
       method: 'DELETE',
       success: function(response) {
         ServerActions.receiveDirectors(response);
+      }
+    });
+  },
+
+  deleteCrossedFilm: function(id) {
+    $.ajax({
+      url: '/api/crossed_films/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        ServerActions.receiveCrossedFilms(response);
       }
     });
   },

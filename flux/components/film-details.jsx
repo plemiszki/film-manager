@@ -12,6 +12,7 @@ var TopicsStore = require('../stores/topics-store.js');
 var QuotesStore = require('../stores/quotes-store.js');
 var LaurelsStore = require('../stores/laurels-store.js');
 var DirectorsStore = require('../stores/directors-store.js');
+var CrossedFilmsStore = require('../stores/crossed-films-store.js');
 var ActorsStore = require('../stores/actors-store.js');
 var RelatedFilmsStore = require('../stores/related-films-store.js');
 var NewThing = require('./new-thing.jsx');
@@ -173,7 +174,9 @@ var FilmDetails = React.createClass({
       schedule: [],
       artworkModalOpen: false,
       jobModalOpen: !!job.id,
-      job: job
+      job: job,
+      crossedFilms: [],
+      otherCrossedFilms: []
     });
   },
 
@@ -192,7 +195,8 @@ var FilmDetails = React.createClass({
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors);
     this.formatsListener = FormatsStore.addListener(this.getFormats);
     this.digitalRetailersListener = DigitalRetailersStore.addListener(this.getDigitalRetailers);
-    ClientActions.fetchFilm(window.location.pathname.split("/")[2]);
+    this.crossedFilmsListener = CrossedFilmsStore.addListener(this.getCrossedFilms);
+    ClientActions.fetchFilm(window.location.pathname.split('/')[2]);
   },
 
   componentWillUnmount: function() {
@@ -210,6 +214,7 @@ var FilmDetails = React.createClass({
     this.formatsListener.remove();
     this.digitalRetailersListener.remove();
     this.jobListener.remove();
+    this.crossedFilmsListener.remove();
   },
 
   getFilm: function() {
@@ -222,6 +227,8 @@ var FilmDetails = React.createClass({
       dvds: FilmsStore.dvds(),
       bookings: FilmsStore.bookings(),
       schedule: FilmsStore.schedule(),
+      crossedFilms: FilmsStore.crossedFilms(),
+      otherCrossedFilms: FilmsStore.otherCrossedFilms(),
       fetching: false
     }, function() {
       this.setState({
@@ -298,6 +305,15 @@ var FilmDetails = React.createClass({
     this.setState({
       directors: DirectorsStore.all(),
       directorModalOpen: false,
+      fetching: false
+    });
+  },
+
+  getCrossedFilms: function() {
+    this.setState({
+      crossedFilms: CrossedFilmsStore.all(),
+      otherCrossedFilms: CrossedFilmsStore.otherCrossedFilms(),
+      crossedFilmModalOpen: false,
       fetching: false
     });
   },
@@ -560,6 +576,12 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickAddCrossedFilm: function() {
+    this.setState({
+      crossedFilmModalOpen: true
+    });
+  },
+
   clickAddActor: function() {
     this.setState({
       actorModalOpen: true
@@ -576,32 +598,43 @@ var FilmDetails = React.createClass({
     this.setState({
       fetching: true
     });
-    ClientActions.deleteLaurel(e.target.dataset.id)
+    ClientActions.deleteLaurel(e.target.dataset.id);
   },
 
   clickDeleteDirector: function(e) {
     this.setState({
       fetching: true
     });
-    ClientActions.deleteDirector(e.target.dataset.id)
+    ClientActions.deleteDirector(e.target.dataset.id);
+  },
+
+  clickDeleteCrossedFilm: function(e) {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.deleteCrossedFilm(e.target.dataset.id);
   },
 
   clickDeleteActor: function(e) {
     this.setState({
       fetching: true
     });
-    ClientActions.deleteActor(e.target.dataset.id)
+    ClientActions.deleteActor(e.target.dataset.id);
   },
 
   clickDeleteRelatedFilm: function(e) {
     this.setState({
       fetching: true
     });
-    ClientActions.deleteRelatedFilm(e.target.dataset.id)
+    ClientActions.deleteRelatedFilm(e.target.dataset.id);
   },
 
   clickRelatedFilm: function(e) {
-    ClientActions.createRelatedFilm({ filmId: this.state.film.id, otherFilmId: e.target.dataset.id })
+    ClientActions.createRelatedFilm({ filmId: this.state.film.id, otherFilmId: e.target.dataset.id });
+  },
+
+  clickCrossedFilm: function(e) {
+    ClientActions.createCrossedFilm({ filmId: this.state.film.id, crossedFilmId: e.target.dataset.id });
   },
 
   clickAddDigitalRetailer: function() {
@@ -641,7 +674,8 @@ var FilmDetails = React.createClass({
       newRightsModalOpen: false,
       formatsModalOpen: false,
       newDigitalRetailerModalOpen: false,
-      artworkModalOpen: false
+      artworkModalOpen: false,
+      crossedFilmModalOpen: false
     });
   },
 
@@ -814,6 +848,9 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={this.state.directorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.directorModalStyles}>
           <NewThing thing="director" initialObject={{ filmId: this.state.film.id, firstName: "", lastName: "" }} />
+        </Modal>
+        <Modal isOpen={this.state.crossedFilmModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
+          <ModalSelect options={ this.state.otherCrossedFilms } property={ "title" } func={ this.clickCrossedFilm } />
         </Modal>
         <Modal isOpen={this.state.actorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.directorModalStyles}>
           <NewThing thing="actor" initialObject={{ filmId: this.state.film.id, firstName: "", lastName: "" }} />
@@ -1096,6 +1133,20 @@ var FilmDetails = React.createClass({
             </div>
             <div className="col-xs-4">
               <input id="ignore-sage-id" type="checkbox" checked={this.state.film.ignoreSageId} onChange={this.changeCheckbox.bind(this, 'ignoreSageId')} /><label htmlFor="ignore-sage-id">Ignore Sage ID on Import</label>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-xs-6">
+              <h3>Crossed Films</h3>
+              <ul className="standard-list">
+                { this.state.crossedFilms.map(function(crossedFilm) {
+                  return(
+                    <li key={ crossedFilm.id }>{ crossedFilm.title }<div className="x-button" onClick={ this.clickDeleteCrossedFilm } data-id={ crossedFilm.id }></div></li>
+                  );
+                }.bind(this)) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddCrossedFilm }>Add Film</a>
             </div>
           </div>
           <hr />

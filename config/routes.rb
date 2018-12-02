@@ -114,6 +114,7 @@ Rails.application.routes.draw do
     resources :film_formats, only: [:index, :create, :destroy]
     resources :film_topics, only: [:index, :create, :destroy]
     resources :related_films, only: [:create, :destroy]
+    resources :crossed_films, only: [:create, :destroy]
 
     resources :formats, only: [:index, :create, :show, :update, :destroy]
     resources :territories, only: [:index, :create, :show, :update, :destroy]

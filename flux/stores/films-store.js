@@ -17,11 +17,21 @@ var _bookings = [];
 var _dvdTypes = [];
 var _labels = [];
 var _schedule = [];
+var _crossedFilms = [];
+var _otherCrossedFilms = [];
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
     _films[film.id] = film;
   });
+};
+
+FilmsStore.setCrossedFilms = function(crossedFilms) {
+  _crossedFilms = crossedFilms;
+};
+
+FilmsStore.setOtherCrossedFilms = function(otherCrossedFilms) {
+  _otherCrossedFilms = otherCrossedFilms;
 };
 
 FilmsStore.setDealTemplates = function(dealTemplates) {
@@ -95,6 +105,14 @@ FilmsStore.all = function() {
 
 FilmsStore.dealTemplates = function() {
   return _dealTemplates;
+};
+
+FilmsStore.crossedFilms = function() {
+  return HandyTools.sortArrayOfObjects(_crossedFilms, 'title');
+};
+
+FilmsStore.otherCrossedFilms = function() {
+  return HandyTools.alphabetizeArrayOfObjects(_otherCrossedFilms, 'title');
 };
 
 FilmsStore.licensors = function() {
@@ -196,6 +214,8 @@ FilmsStore.__onDispatch = function(payload) {
       this.setDvdTypes(payload.dvdTypes);
       this.setLabels(payload.labels);
       this.setBookings(payload.bookings);
+      this.setCrossedFilms(payload.crossedFilms);
+      this.setOtherCrossedFilms(payload.otherCrossedFilms);
       this.__emitChange();
       break;
   }

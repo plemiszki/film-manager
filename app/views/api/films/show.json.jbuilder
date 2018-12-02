@@ -72,6 +72,14 @@ json.filmRevenuePercentages @film_revenue_percentages do |film_revenue_percentag
   json.revenueStreamId film_revenue_percentage.revenue_stream_id
   json.value film_revenue_percentage.value
 end
+json.crossedFilms @crossed_films do |crossed_film|
+  json.id crossed_film.id
+  json.title crossed_film.crossed_film.title
+end
+json.otherCrossedFilms @other_crossed_films do |film|
+  json.id film.id
+  json.title film.title
+end
 json.reports @reports do |report|
   json.id report.id
   json.year report.year

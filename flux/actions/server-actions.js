@@ -51,7 +51,9 @@ var ServerActions = {
       formats: response.formats,
       digitalRetailers: response.digitalRetailers,
       digitalRetailerFilms: response.digitalRetailerFilms,
-      schedule: response.schedule
+      schedule: response.schedule,
+      crossedFilms: response.crossedFilms,
+      otherCrossedFilms: response.otherCrossedFilms
     });
   },
 
@@ -378,6 +380,14 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "DIRECTORS_RECEIVED",
       directors: response.directors
+    });
+  },
+
+  receiveCrossedFilms: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "CROSSED_FILMS_RECEIVED",
+      crossedFilms: response.crossedFilms,
+      otherCrossedFilms: response.otherCrossedFilms
     });
   },
 
