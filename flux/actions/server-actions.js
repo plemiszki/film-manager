@@ -97,7 +97,8 @@ var ServerActions = {
     AppDispatcher.dispatch({
       actionType: "REPORT_RECEIVED",
       reports: response.reports,
-      streams: response.streams
+      streams: response.streams,
+      films: response.films
     });
   },
 

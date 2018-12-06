@@ -48,3 +48,7 @@ json.streams @streams do |stream|
   json.joinedDifference dollarify(number_with_precision(stream.joined_difference, precision: 2, delimiter: ','))
   json.joinedLicensorShare dollarify(number_with_precision(stream.joined_licensor_share, precision: 2, delimiter: ','))
 end
+json.films @films do |film|
+  json.id film.id
+  json.title film.title
+end

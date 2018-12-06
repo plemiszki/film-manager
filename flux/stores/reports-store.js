@@ -7,6 +7,7 @@ var ReportStore = new Store(AppDispatcher);
 var _reports = [];
 var _streams = {};
 var _errors = [];
+var _films = [];
 
 ReportStore.setReports = function(reports) {
   _reports = reports;
@@ -22,6 +23,10 @@ ReportStore.setStreams = function(streams) {
   });
 };
 
+ReportStore.setFilms = function(films) {
+  _films = films;
+};
+
 ReportStore.report = function() {
   return _reports[0];
 };
@@ -32,6 +37,10 @@ ReportStore.all = function() {
 
 ReportStore.errors = function() {
   return _errors;
+};
+
+ReportStore.films = function() {
+  return HandyTools.alphabetizeArrayOfObjects(_films, 'title');
 };
 
 ReportStore.streams = function() {
@@ -52,6 +61,7 @@ ReportStore.__onDispatch = function(payload) {
     case "REPORT_RECEIVED":
       this.setReports(payload.reports);
       this.setStreams(payload.streams);
+      this.setFilms(payload.films);
       this.__emitChange();
       break;
   }

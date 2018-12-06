@@ -17,6 +17,7 @@ var ReportDetails = React.createClass({
       streamsSaved: [],
       streamErrors: {},
       reports: [],
+      films: [],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -41,7 +42,8 @@ var ReportDetails = React.createClass({
       reportSaved: ReportStore.report(),
       streams: Tools.deepCopy(ReportStore.streams()),
       streamsSaved: ReportStore.streams(),
-      fetching: false
+      fetching: false,
+      films: ReportStore.films()
     }, function() {
       this.setState({
         changesToSave: this.checkForChanges()
@@ -68,8 +70,8 @@ var ReportDetails = React.createClass({
     }
   },
 
-  clickTitle: function() {
-    window.location.pathname = "films/" + this.state.report.filmId;
+  clickTitle: function(id) {
+    window.location.pathname = "films/" + id;
   },
 
   clickToggle: function() {
@@ -101,7 +103,11 @@ var ReportDetails = React.createClass({
   render: function() {
     return(
       <div className="component">
-        <h1><span onClick={this.clickTitle}>{this.state.report.film}</span></h1>
+        { this.state.films.map(function(film, index) {
+          return(
+            <h1 key={ index }><span onClick={ this.clickTitle.bind(this, film.id) }>{ film.title }</span></h1>
+          );
+        }.bind(this)) }
         <h3>{this.state.report.year} - Q{this.state.report.quarter}</h3>
         <div className="white-box">
           {HandyTools.renderSpinner(this.state.fetching)}
