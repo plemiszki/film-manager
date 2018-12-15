@@ -89,6 +89,7 @@ class RoyaltyReport < ActiveRecord::Base
 
   def export!(directory, royalty_revenue_streams)
     film = self.film
+    titles = film.crossed_film_titles
     string = "<style>"
     string += "body {"
     string +=   "font-family: Arial;"
@@ -148,7 +149,9 @@ class RoyaltyReport < ActiveRecord::Base
     string += "<div class=\"upper-right\">"
     string +=   "<div class=\"producer-report\">Producer Report</div>"
     string +=   "#{film.licensor ? film.licensor.name : ""}<br>"
-    string +=   "#{film.title}<br>"
+    titles.each do |title|
+      string +=   "#{title}<br>"
+    end
     string +=   "Q#{self.quarter} #{self.year}"
     string += "</div>"
     string += "<div class=\"film-movement\">Film Movement</div>"
@@ -315,7 +318,7 @@ class RoyaltyReport < ActiveRecord::Base
 
     pdf = WickedPdf.new.pdf_from_string(string)
     subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
-    save_path = "#{directory}/#{report_name}"
+    save_path = "#{directory}/#{report_name(titles)}"
     File.open(save_path, 'wb') do |f|
       f << pdf
     end
@@ -458,8 +461,8 @@ class RoyaltyReport < ActiveRecord::Base
     end
   end
 
-  def report_name
-    "#{self.film.title} - Q#{self.quarter} #{self.year}.pdf"
+  def report_name(titles)
+    "#{titles.join(' -- ')} - Q#{self.quarter} #{self.year}.pdf"
   end
 
 end

@@ -111,7 +111,7 @@ class Api::RoyaltyReportsController < AdminController
   private
 
   def report_name(film, report)
-    "#{film.title} - Q#{report.quarter} #{report.year}.pdf"
+    "#{film.crossed_film_titles.join(' -- ')} - Q#{report.quarter} #{report.year}.pdf"
   end
 
   def query_data_for_show_jbuilder

@@ -61,6 +61,10 @@ class Film < ActiveRecord::Base
     sage_id.empty? ? title.upcase : sage_id
   end
 
+  def crossed_film_titles
+    ([self.title] + self.crossed_films.map(&:crossed_film).map(&:title)).sort
+  end
+
   def proper_label_name
     case label_id
     when 1
