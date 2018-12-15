@@ -117,7 +117,7 @@ class Api::RoyaltyReportsController < AdminController
   def query_data_for_show_jbuilder
     @reports = RoyaltyReport.where(id: params[:id])
     @film = Film.find(@reports[0].film_id)
-    crossed_film_ids = @film.crossed_films.pluck(:id)
+    crossed_film_ids = @film.crossed_films.pluck(:crossed_film_id)
     @films = Film.where(id: [@reports[0].film_id] + crossed_film_ids)
     @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id).joins(:revenue_stream).order('revenue_streams.order')
     calculate(@film, @reports[0], @streams)
