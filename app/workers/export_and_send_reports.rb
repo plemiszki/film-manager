@@ -21,9 +21,9 @@ class ExportAndSendReports
           report.export!(licensor_folder, royalty_revenue_streams)
         else
           new_line = (job.errors_text == "" ? "" : "\n")
-          job.update({errors_text: job.errors_text += (new_line + "Film #{film.title} is missing licensor.")})
+          job.update({ errors_text: job.errors_text += (new_line + "Film #{film.title} is missing licensor.") })
         end
-        job.update({current_value: job.current_value + 1})
+        job.update({ current_value: job.current_value + 1 })
       end
     end
     job.update({ first_line: "Adding Emails to Mailgun Queue", current_value: 0, total_value: Dir.entries(Rails.root.join('tmp', "#{time_started}")).length - 2 })
