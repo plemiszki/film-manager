@@ -280,7 +280,7 @@ class Api::FilmsController < AdminController
     @schedule = create_schedule
     @sub_rights = @films.first.sub_rights
     @crossed_films = @films.first.crossed_films
-    @other_crossed_films = Film.where(licensor_id: @films.first.licensor_id, days_statement_due: @films.first.days_statement_due).reject { |film| ([@films.first.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
+    @other_crossed_films = Film.where(licensor_id: @films.first.licensor_id, days_statement_due: @films.first.days_statement_due, deal_type_id: @films.first.deal_type_id).reject { |film| ([@films.first.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
   end
 
   def create_schedule

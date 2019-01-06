@@ -119,8 +119,72 @@ class Api::RoyaltyReportsController < AdminController
     @film = Film.find(@reports[0].film_id)
     crossed_film_ids = @film.crossed_films.pluck(:crossed_film_id)
     @films = Film.where(id: [@reports[0].film_id] + crossed_film_ids)
-    @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id).joins(:revenue_stream).order('revenue_streams.order')
+    @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id).includes(:revenue_stream).order('revenue_streams.order')
     calculate(@film, @reports[0], @streams)
+
+    if crossed_film_ids.length > 0
+      calculate_crossed_films_report(@films, @reports.first)
+    end
+  end
+
+  def calculate_crossed_films_report(films, starting_report)
+    year = starting_report.year
+    quarter = starting_report.quarter
+    result = RoyaltyReport.new({ id: 0, year: year, quarter: quarter, deal_id: films.first.deal_type_id, gr_percentage: films.first.gr_percentage })
+    @streams = []
+    RevenueStream.all.each_with_index do |revenue_stream, index|
+      @streams << RoyaltyRevenueStream.new({
+        id: index,
+        revenue_stream_id: revenue_stream.id
+      })
+    end
+    films.each_with_index do |film, index|
+      report = RoyaltyReport.find_by(year: year, quarter: quarter, film_id: film.id)
+      report_streams = report.calculate!
+      result.update_attributes({
+        current_total: result.current_total + report.current_total,
+        current_total_revenue: result.current_total_revenue + report.current_total_revenue,
+        current_total_expenses: result.current_total_expenses + report.current_total_expenses,
+        current_share_minus_expenses: result.current_share_minus_expenses + report.current_share_minus_expenses,
+        cume_total: result.cume_total + report.cume_total,
+        cume_total_revenue: result.cume_total_revenue + report.cume_total_revenue,
+        cume_total_expenses: result.cume_total_expenses + report.cume_total_expenses,
+        joined_total: result.joined_total + report.joined_total,
+        joined_total_revenue: result.joined_total_revenue + report.joined_total_revenue,
+        joined_total_expenses: result.joined_total_expenses + report.joined_total_expenses,
+        mg: result.mg + report.mg,
+        e_and_o: result.e_and_o + report.e_and_o,
+        amount_paid: result.amount_paid + report.amount_paid,
+        amount_due: result.amount_due + report.amount_due,
+        joined_amount_due: result.joined_amount_due + report.joined_amount_due,
+        current_reserve: result.current_reserve + report.current_reserve,
+        cume_reserve: result.cume_reserve + report.cume_reserve,
+        joined_reserve: result.joined_reserve + report.joined_reserve,
+        liquidated_reserve: result.liquidated_reserve + report.liquidated_reserve
+      })
+      report_streams.each_with_index do |report_stream, index|
+        stream = @streams[index]
+        stream.update_attributes({
+          current_revenue: stream.current_revenue + report_stream.current_revenue,
+          current_gr: stream.current_gr + report_stream.current_gr,
+          current_expense: stream.current_expense + report_stream.current_expense,
+          current_difference: stream.current_difference + report_stream.current_difference,
+          current_licensor_share: stream.current_licensor_share + report_stream.current_licensor_share,
+          cume_revenue: stream.cume_revenue + report_stream.cume_revenue,
+          cume_gr: stream.cume_gr + report_stream.cume_gr,
+          cume_expense: stream.cume_expense + report_stream.cume_expense,
+          cume_difference: stream.cume_difference + report_stream.cume_difference,
+          cume_licensor_share: stream.cume_licensor_share + report_stream.cume_licensor_share,
+          joined_revenue: stream.joined_revenue + report_stream.joined_revenue,
+          joined_gr: stream.joined_gr + report_stream.joined_gr,
+          joined_expense: stream.joined_expense + report_stream.joined_expense,
+          joined_difference: stream.joined_difference + report_stream.joined_difference,
+          joined_licensor_share: stream.joined_licensor_share + report_stream.joined_licensor_share,
+          licensor_percentage: report_stream.licensor_percentage, # <-- for now, i'll assume the percentages will be the same for crossed films and send them down based on the last report
+        })
+      end
+    end
+    @reports = [result]
   end
 
   def dollarify(input)

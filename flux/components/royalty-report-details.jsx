@@ -122,19 +122,19 @@ var ReportDetails = React.createClass({
                   {stream.nickname}
                 </div>
                 <div className="col-xs-2">
-                  <input className={Common.errorClass(properErrorsArray, Common.errors.currentRevenue)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={stream.currentRevenue} data-thing="streams" data-thingid={index} data-field="currentRevenue" />
+                  <input className={Common.errorClass(properErrorsArray, Common.errors.currentRevenue)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} readOnly={ this.state.report.id === 0 } value={stream.currentRevenue} data-thing="streams" data-thingid={index} data-field="currentRevenue" />
                 </div>
                 <div className={"col-xs-2" + this.grClass()}>
                   <input className={Common.errorClass(properErrorsArray, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={stream.currentGr} />
                 </div>
                 <div className={"col-xs-2" + this.expenseClass()}>
-                  <input className={Common.errorClass(properErrorsArray, Common.errors.currentExpense)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={stream.currentExpense} data-thing="streams" data-thingid={index} data-field="currentExpense" />
+                  <input className={Common.errorClass(properErrorsArray, Common.errors.currentExpense)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} readOnly={ this.state.report.id === 0 } value={stream.currentExpense} data-thing="streams" data-thingid={index} data-field="currentExpense" />
                 </div>
                 <div className={"col-xs-2" + this.expenseClass()}>
                   <input className={Common.errorClass(properErrorsArray, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={stream.currentDifference} />
                 </div>
                 <div className="col-xs-1">
-                  <input className={Common.errorClass(properErrorsArray, Common.errors.licensorPercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={stream.licensorPercentage} data-thing="streams" data-thingid={index} data-field="licensorPercentage" />
+                  <input className={Common.errorClass(properErrorsArray, Common.errors.licensorPercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} readOnly={ this.state.report.id === 0 } value={stream.licensorPercentage} data-thing="streams" data-thingid={index} data-field="licensorPercentage" />
                 </div>
                 <div className="col-xs-2">
                   <input className={Common.errorClass(properErrorsArray, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={stream.currentLicensorShare} />
@@ -184,7 +184,7 @@ var ReportDetails = React.createClass({
           <div className={"row" + this.dealType4Only()}>
             <div className="col-xs-2 col-xs-offset-4">
               <div className="label">Current Expenses</div>
-              <input className={Common.errorClass(this.state.reportErrors, Common.errors.currentTotalExpenses)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.report.currentTotalExpenses || ""} data-field="currentTotalExpenses" />
+              <input className={Common.errorClass(this.state.reportErrors, Common.errors.currentTotalExpenses)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={ this.state.report.id === 0 } value={this.state.report.currentTotalExpenses || ""} data-field="currentTotalExpenses" />
             </div>
           </div>
           <div className={"row" + this.dealType4Only()}>
@@ -204,19 +204,19 @@ var ReportDetails = React.createClass({
                   {stream.nickname}
                 </div>
                 <div className="col-xs-2">
-                  <input className={Common.errorClass(properErrorsArray, Common.errors.cumeRevenue)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} readOnly={this.state.showJoined} value={this.state.showJoined ? stream.joinedRevenue : stream.cumeRevenue} data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
+                  <input className={Common.errorClass(properErrorsArray, Common.errors.cumeRevenue)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} readOnly={ this.state.report.id === 0 || this.state.showJoined } value={this.state.showJoined ? stream.joinedRevenue : stream.cumeRevenue} data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
                 </div>
                 <div className={"col-xs-2" + this.grClass()}>
                   <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? stream.joinedGr : stream.cumeGr} />
                 </div>
                 <div className={"col-xs-2" + this.expenseClass()}>
-                  <input className={Common.errorClass(properErrorsArray, Common.errors.cumeExpense)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} readOnly={this.state.showJoined} value={this.state.showJoined ? stream.joinedExpense : stream.cumeExpense} data-thing="streams" data-thingid={index} data-field="cumeExpense" />
+                  <input className={Common.errorClass(properErrorsArray, Common.errors.cumeExpense)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} readOnly={ this.state.report.id === 0 || this.state.showJoined } value={this.state.showJoined ? stream.joinedExpense : stream.cumeExpense} data-thing="streams" data-thingid={index} data-field="cumeExpense" />
                 </div>
                 <div className={"col-xs-2" + this.expenseClass()}>
                   <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? stream.joinedDifference : stream.cumeDifference} />
                 </div>
                 <div className="col-xs-1">
-                  <input className={Common.errorClass(properErrorsArray, Common.errors.licensorPercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={stream.licensorPercentage} data-thing="streams" data-thingid={index} data-field="licensorPercentage" />
+                  <input className={Common.errorClass(properErrorsArray, Common.errors.licensorPercentage)} onChange={Common.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} readOnly={ this.state.report.id === 0 } value={stream.licensorPercentage} data-thing="streams" data-thingid={index} data-field="licensorPercentage" />
                 </div>
                 <div className="col-xs-2">
                   <input className={Common.errorClass(this.state.reportErrors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={true} value={this.state.showJoined ? stream.joinedLicensorShare : stream.cumeLicensorShare} />
@@ -248,7 +248,7 @@ var ReportDetails = React.createClass({
           <div className={"row" + this.dealType4Only()}>
             <div className="col-xs-2 col-xs-offset-4">
               <div className="label">Cumulative Expenses</div>
-              <input className={Common.errorClass(this.state.reportErrors, Common.errors.cumeTotalExpenses)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={this.state.showJoined} value={this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "")} data-field="cumeTotalExpenses" />
+              <input className={Common.errorClass(this.state.reportErrors, Common.errors.cumeTotalExpenses)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={ this.state.report.id === 0 || this.state.showJoined } value={this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "")} data-field="cumeTotalExpenses" />
             </div>
             <div className="col-xs-2 col-xs-offset-2">
               <div className="label">Expense Cap</div>
@@ -272,7 +272,7 @@ var ReportDetails = React.createClass({
             </div>
             <div className="col-xs-2">
               <div className="label">E & O</div>
-              <input className={Common.errorClass(this.state.reportErrors, Common.errors.eAndO)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.report.eAndO || ""} data-field="eAndO" />
+              <input className={Common.errorClass(this.state.reportErrors, Common.errors.eAndO)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={ this.state.report.id === 0 } value={this.state.report.eAndO || ""} data-field="eAndO" />
             </div>
           </div>
           <div className="row">
@@ -290,7 +290,7 @@ var ReportDetails = React.createClass({
             </div>
             <div className="col-xs-2">
               <div className="label">MG</div>
-              <input className={Common.errorClass(this.state.reportErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.report.mg || ""} data-field="mg" />
+              <input className={Common.errorClass(this.state.reportErrors, Common.errors.mg)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={ this.state.report.id === 0 } value={this.state.report.mg || ""} data-field="mg" />
             </div>
           </div>
           <div className={"row" + (this.state.report.joinedReserve === "$0.00" ? " hidden" : "")}>
@@ -326,7 +326,7 @@ var ReportDetails = React.createClass({
             </div>
             <div className="col-xs-2">
               <div className="label">Amount Paid</div>
-              <input className={Common.errorClass(this.state.reportErrors, Common.errors.amountPaid)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.report.amountPaid || ""} data-field="amountPaid" />
+              <input className={Common.errorClass(this.state.reportErrors, Common.errors.amountPaid)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} readOnly={ this.state.report.id === 0 } value={this.state.report.amountPaid || ""} data-field="amountPaid" />
             </div>
           </div>
           <div className="row last-row">
