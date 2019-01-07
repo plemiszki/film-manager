@@ -86,7 +86,7 @@ class Api::RoyaltyReportsController < AdminController
     FileUtils.mkdir_p("#{pathname}")
     query_data_for_show_jbuilder
     report = @reports[0]
-    report.export!(pathname, @streams)
+    report.export!(pathname, @streams, @films)
     File.open("#{pathname}/#{report_name(@film, @reports[0])}", 'r') do |f|
       send_data f.read, filename: report_name(@film, @reports[0])
     end
@@ -111,7 +111,7 @@ class Api::RoyaltyReportsController < AdminController
   private
 
   def report_name(film, report)
-    "#{film.crossed_film_titles.join(' -- ')} - Q#{report.quarter} #{report.year}.pdf"
+    "#{film.crossed_film_titles.sort.join(' -- ')} - Q#{report.quarter} #{report.year}.pdf"
   end
 
   def query_data_for_show_jbuilder

@@ -87,9 +87,9 @@ class RoyaltyReport < ActiveRecord::Base
     result
   end
 
-  def export!(directory, royalty_revenue_streams)
-    film = self.film
-    titles = film.crossed_film_titles
+  def export!(directory, royalty_revenue_streams, films)
+    @film = self.film || films.first
+    titles = films.pluck(:title).sort
     string = "<style>"
     string += "body {"
     string +=   "font-family: Arial;"
@@ -148,7 +148,7 @@ class RoyaltyReport < ActiveRecord::Base
     string += "</style>"
     string += "<div class=\"upper-right\">"
     string +=   "<div class=\"producer-report\">Producer Report</div>"
-    string +=   "#{film.licensor ? film.licensor.name : ""}<br>"
+    string +=   "#{@film.licensor ? @film.licensor.name : ""}<br>"
     titles.each do |title|
       string +=   "#{title}<br>"
     end
@@ -163,7 +163,7 @@ class RoyaltyReport < ActiveRecord::Base
     string += "<table><tr>"
     string +=   "<th>Current Period</th>"
     string +=   "<th>Revenue</th>"
-    string +=   "<th>#{sprintf("%g", film.gr_percentage)}% Fee</th>" if gr_deal
+    string +=   "<th>#{sprintf("%g", @film.gr_percentage)}% Fee</th>" if gr_deal
     string +=   "<th>Expenses</th>" if expense_class
     string +=   "<th>Difference</th>" if expense_class
     string +=   "<th>Licensor %</th>"
@@ -181,7 +181,7 @@ class RoyaltyReport < ActiveRecord::Base
         string += "</tr>"
       end
     end
-    string += "<tr class=\"#{film.deal_type_id == 4 ? "totals-row-2" : "totals-row"}\">"
+    string += "<tr class=\"#{@film.deal_type_id == 4 ? "totals-row-2" : "totals-row"}\">"
     string +=   "<td>Current Total</td>"
     string +=   "<td>#{dollarify(self.current_total_revenue)}</td>"
     string +=   "<td></td>" if gr_deal
@@ -190,7 +190,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "<td></td>"
     string +=   "<td>#{dollarify(self.current_total)}</td>"
     string += "</tr>"
-    if film.deal_type_id == 4
+    if @film.deal_type_id == 4
       string += "<tr>"
       string +=   "<td>Current Expenses</td><td></td><td></td><td>#{negafy(self.current_total_expenses)}</td>"
       string += "</tr>"
@@ -235,7 +235,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=     "<td>Cumulative Licensor Share</td>"
     string +=     "<td>#{dollarify(self.joined_total)}</td>"
     string +=   "</tr>"
-    if film.deal_type_id == 4
+    if @film.deal_type_id == 4
       string +=   "<tr>"
       string +=     "<td>Cumulative Expenses</td>"
       string +=     "<td>#{negafy(self.joined_total_expenses)}</td>"
@@ -275,10 +275,10 @@ class RoyaltyReport < ActiveRecord::Base
     string += "<div class=\"bottom-text\">"
     string += "If there is an amount due to Licensor on this self, please send an invoice for the amount due along with current bank wire information if located outside the U.S., and current mailing address if located inside the U.S.<br>No payments will be made without this invoice and information."
     string += "</div>"
-    if film.reserve
+    if @film.reserve
       string += "<div class=\"page-break\"></div>"
       string += "<h1 style='text-align: center; margin-bottom: 10px;'>Reserves Against Returns</h1>"
-      string += "<h3 style='text-align: center; margin-bottom: 20px;'>#{film.title}</h3>"
+      string += "<h3 style='text-align: center; margin-bottom: 20px;'>#{@film.title}</h3>"
       string += "<table style='padding: 5px; border: 1px solid black;'>"
       string += "<tr><th>Quarter Withheld</th><th>Reserve Amount</th><th>Amount Liquidated</th><th>Total Remaining</th><th>Quarter Liquidated</th></tr>"
       total_reserves = 0
@@ -289,11 +289,11 @@ class RoyaltyReport < ActiveRecord::Base
       total_past_reserves.each_with_index do |(quarter, amount), index|
         if amount > 0
           total_reserves += amount
-          liquidated = (index < (quarters_with_reserves - film.reserve_quarters + 1) ? amount : 0)
+          liquidated = (index < (quarters_with_reserves - @film.reserve_quarters + 1) ? amount : 0)
           total_liquidated += liquidated
           difference = amount - liquidated
           total_remaining += difference
-          new_quarter = quarter.split[0].split('')[1].to_i + film.reserve_quarters
+          new_quarter = quarter.split[0].split('')[1].to_i + @film.reserve_quarters
           new_year = quarter.split[1].to_i
           until new_quarter < 5
             new_year += 1
@@ -302,7 +302,7 @@ class RoyaltyReport < ActiveRecord::Base
           string += "<tr><td>#{quarter}</td><td>#{dollarify(amount)}</td><td>#{dollarify(liquidated)}</td><td>#{dollarify(difference)}</td><td>Q#{new_quarter} #{new_year}</td></tr>"
         end
       end
-      new_quarter = self.quarter + film.reserve_quarters
+      new_quarter = self.quarter + @film.reserve_quarters
       new_year = self.year
       until new_quarter < 5
         new_year += 1
@@ -436,11 +436,11 @@ class RoyaltyReport < ActiveRecord::Base
   private
 
   def expense_class
-    self.film.deal_type_id != 1 && self.film.deal_type_id != 4
+    @film.deal_type_id != 1 && @film.deal_type_id != 4
   end
 
   def gr_deal
-    self.film.deal_type_id == 5 || self.film.deal_type_id == 6
+    @film.deal_type_id == 5 || @film.deal_type_id == 6
   end
 
   def dollarify(input)
