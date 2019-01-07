@@ -454,8 +454,10 @@ class RoyaltyReport < ActiveRecord::Base
 
   def negafy(input)
     string = number_with_precision(input, precision: 2, delimiter: ',').to_s
-    if (input > 0)
+    if input > 0
       '($' + string + ')'
+    elsif input == 0
+      "$#{string}"
     else
       '$' + string[1..-1]
     end
