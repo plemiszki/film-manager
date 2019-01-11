@@ -92,6 +92,10 @@ class Api::RoyaltyReportsController < AdminController
     end
   end
 
+  def codes
+    render 'codes.html.erb'
+  end
+
   def export_all
     time_started = Time.now.to_s
     total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], export_reports: true}, quarter: params[:quarter], year: params[:year])

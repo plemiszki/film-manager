@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :purchase_orders, only: [:index, :show]
   get '/dvd_reports' => 'purchase_orders#reporting'
   resources :giftboxes, only: [:index, :show]
+  get '/royalty_reports/codes' => 'royalty_reports#codes'
   resources :royalty_reports, only: [:index, :show]
   resources :users, only: [:index, :show]
   resources :invoices, only: [:index, :show]

@@ -115,6 +115,18 @@ class ImportSageData
               stream.current_revenue += columns[3]
               stream.save!
               check_for_empty_percentage(stream, errors, film.title, label)
+            when "30350"
+              if FilmRight.find_by(film_id: film.id, right_id: 17)
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
+                stream.current_revenue += columns[3]
+                stream.save!
+                check_for_empty_percentage(stream, errors, film.title, label)
+              else
+                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 6)
+                stream.current_revenue += columns[3]
+                stream.save!
+                check_for_empty_percentage(stream, errors, film.title, label)
+              end
             when "30410"
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
               stream.current_revenue += columns[3]

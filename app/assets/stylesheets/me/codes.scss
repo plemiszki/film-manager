@@ -1,0 +1,19 @@
+section.codes {
+
+  h1 {
+    font-size: 20px;
+    color: #2C2F33;
+    letter-spacing: 1.08px;
+    margin-bottom: 15px;
+  }
+
+  p {
+    margin-left: 20px;
+    font-size: 12px;
+    margin-bottom: 10px;
+
+    &:last-of-type {
+      margin-bottom: 30px;
+    }
+  }
+}
