@@ -98,8 +98,10 @@ var FilmsIndex = React.createClass({
     window.location.pathname = "films/" + id;
   },
 
-  handleAddNewClick: function() {
-    this.setState({ modalOpen: true });
+  clickNew: function() {
+    this.setState({
+      modalOpen: true
+    });
   },
 
   handleModalClose: function() {
@@ -139,7 +141,7 @@ var FilmsIndex = React.createClass({
           { this.renderHeader() }
           { this.renderAddNewButton() }
           { this.renderExportMetadataButton() }
-          <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Export Custom</a>
+          { this.renderCustomButton() }
           <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
@@ -170,7 +172,7 @@ var FilmsIndex = React.createClass({
           </table>
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing={ "film" } initialObject={ { title: "", filmType: this.props.filmType, labelId: 1 } } />
+          <NewThing thing={ 'film' } initialObject={ { title: "", filmType: this.props.filmType, labelId: 1, year: '' } } />
         </Modal>
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ newRightsModalStyles }>
           <FilmRightsNew search={ true } filmType={ this.props.filmType } availsExport={ this.clickExportMetadata } />
@@ -181,23 +183,39 @@ var FilmsIndex = React.createClass({
   },
 
   renderHeader: function() {
+    let header = this.props.filmType == 'TV Series' ? 'TV Series' : `${this.props.filmType}s`;
     return(
-      <h1>{ this.props.filmType }s</h1>
+      <h1>{ header }</h1>
     );
   },
 
   renderAddNewButton: function() {
+    let buttonText = {
+      'Feature': 'Film',
+      'Short': 'Short',
+      'TV Series': 'TV Series'
+    }[this.props.filmType];
     if (!this.props.advanced) {
       return(
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add { this.props.filmType === 'Feature' ? 'Film' : 'Short' }</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew }>Add { buttonText }</a>
       );
     }
   },
 
   renderExportMetadataButton: function() {
-    return(
-      <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata(this.props.filmType, 'all') }.bind(this) }>Export All</a>
-    );
+    if (this.props.filmType != 'TV Series') {
+      return(
+        <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata(this.props.filmType, 'all') }.bind(this) }>Export All</a>
+      );
+    }
+  },
+
+  renderCustomButton: function() {
+    if (this.props.filmType != 'TV Series') {
+      return(
+        <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Export Custom</a>
+      );
+    }
   },
 
   componentDidUpdate: function() {

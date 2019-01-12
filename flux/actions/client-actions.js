@@ -192,24 +192,9 @@ var ClientActions = {
       data: {
         title: film.title,
         film_type: film.filmType,
-        label_id: film.labelId,
         length: film.length,
         year: film.year
       },
-      success: function(response) {
-        ServerActions.receiveFilms(response);
-      },
-      error: function(response) {
-        ServerActions.receiveErrors(response);
-      }
-    });
-  },
-
-  createShort: function(film) {
-    $.ajax({
-      url: '/api/films',
-      method: 'POST',
-      data: {film: film, short: true},
       success: function(response) {
         ServerActions.receiveFilms(response);
       },

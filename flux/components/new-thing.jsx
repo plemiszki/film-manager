@@ -166,7 +166,8 @@ var NewThing = React.createClass({
       weeklyBoxOffice: "Weekly Box Office",
       digitalRetailer: "Digital Retailer",
       digitalRetailerFilm: "Digital Retailer",
-      crossedFilm: "Crossed Film"
+      crossedFilm: "Crossed Film",
+      tvSeries: 'TV Series'
     };
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
@@ -204,7 +205,7 @@ var NewThing = React.createClass({
   },
 
   renderNewFilmFields: function() {
-    if (this.props.thing === "film") {
+    if (this.props.thing === "film" || this.props.thing === 'tvSeries') {
       return(
         <div className="row">
           <div className="col-xs-8">

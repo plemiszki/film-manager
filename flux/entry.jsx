@@ -84,6 +84,9 @@ $(document).ready(function() {
   if ($('#shorts-index')[0]) {
     ReactDOM.render(<FilmsIndex filmType={ 'Short' }/>, document.getElementById("shorts-index"));
   }
+  if ($('#tv-series-index')[0]) {
+    ReactDOM.render(<FilmsIndex filmType={ 'TV Series' }/>, document.getElementById("tv-series-index"));
+  }
   if ($('#shorts-index-advanced')[0]) {
     ReactDOM.render(<FilmsIndex filmType={ 'Short' } advanced={ true } />, document.getElementById("shorts-index-advanced"));
   }

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :bookers, only: [:index, :show]
   resources :dvds, only: [:show]
   resources :shorts, only: [:index]
+  resources :tv_series, only: [:index]
   resources :licensors, only: [:index, :show]
   resources :dvd_customers, only: [:index, :show]
   resources :sublicensors, only: [:index, :show]
