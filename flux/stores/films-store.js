@@ -19,6 +19,7 @@ var _labels = [];
 var _schedule = [];
 var _crossedFilms = [];
 var _otherCrossedFilms = [];
+var _episodes = [];
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -46,6 +47,10 @@ FilmsStore.setLicensors = function(licensors) {
   licensors.forEach(function(licensor) {
     _licensors[licensor.id] = licensor;
   });
+};
+
+FilmsStore.setEpisodes = function(episodes) {
+  _episodes = episodes;
 };
 
 FilmsStore.setRevenueStreams = function(revenueStreams) {
@@ -105,6 +110,10 @@ FilmsStore.all = function() {
 
 FilmsStore.dealTemplates = function() {
   return _dealTemplates;
+};
+
+FilmsStore.episodes = function() {
+  return _episodes;
 };
 
 FilmsStore.crossedFilms = function() {
@@ -216,6 +225,9 @@ FilmsStore.__onDispatch = function(payload) {
       this.setBookings(payload.bookings);
       this.setCrossedFilms(payload.crossedFilms);
       this.setOtherCrossedFilms(payload.otherCrossedFilms);
+      if (payload.episodes) {
+        this.setEpisodes(payload.episodes);
+      }
       this.__emitChange();
       break;
   }

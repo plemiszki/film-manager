@@ -53,7 +53,8 @@ var ServerActions = {
       digitalRetailerFilms: response.digitalRetailerFilms,
       schedule: response.schedule,
       crossedFilms: response.crossedFilms,
-      otherCrossedFilms: response.otherCrossedFilms
+      otherCrossedFilms: response.otherCrossedFilms,
+      episodes: response.episodes
     });
   },
 

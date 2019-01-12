@@ -248,39 +248,43 @@ class Api::FilmsController < AdminController
 
   def gather_data_for_show_view
     @films = Film.where(id: params[:id])
+    film = @films.first
     @film_formats = FilmFormat.where(film_id: params[:id])
     @formats = Format.where.not(id: @film_formats.map { |ff| ff.format_id })
-    @bookings = Booking.where(film_id: @films.first.id).includes(:venue)
+    @bookings = Booking.where(film_id: film.id).includes(:venue)
     @templates = DealTemplate.all
     @licensors = Licensor.all
     @revenue_streams = RevenueStream.all
     @reports = RoyaltyReport.where(film_id: params[:id])
     @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
     @rights = FilmRight.where(film_id: params[:id]).includes(:right, :territory)
-    @dvds = (@films.first.film_type == 'Feature' ? Dvd.where(feature_film_id: params[:id]) : Dvd.where(id: [DvdShort.where(short_id: params[:id]).includes(:dvd).map(&:dvd_id)]))
+    @dvds = (film.film_type == 'Feature' ? Dvd.where(feature_film_id: params[:id]) : Dvd.where(id: [DvdShort.where(short_id: params[:id]).includes(:dvd).map(&:dvd_id)]))
     @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
-    @film_countries = FilmCountry.where(film_id: @films.first.id).includes(:country)
+    @film_countries = FilmCountry.where(film_id: film.id).includes(:country)
     @countries = Country.where.not(id: @film_countries.pluck(:country_id))
-    @film_languages = FilmLanguage.where(film_id: @films.first.id).includes(:language)
+    @film_languages = FilmLanguage.where(film_id: film.id).includes(:language)
     @languages = Language.where.not(id: @film_languages.pluck(:language_id))
-    @film_genres = FilmGenre.where(film_id: @films.first.id).includes(:genre)
+    @film_genres = FilmGenre.where(film_id: film.id).includes(:genre)
     @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
-    @film_topics = FilmTopic.where(film_id: @films.first.id).includes(:topic)
+    @film_topics = FilmTopic.where(film_id: film.id).includes(:topic)
     @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
     @labels = Label.all
-    @laurels = Laurel.where(film_id: @films.first.id).order(:order)
-    @quotes = Quote.where(film_id: @films.first.id).order(:order)
-    @related_films = RelatedFilm.where(film_id: @films.first.id).includes(:other_film)
+    @laurels = Laurel.where(film_id: film.id).order(:order)
+    @quotes = Quote.where(film_id: film.id).order(:order)
+    @related_films = RelatedFilm.where(film_id: film.id).includes(:other_film)
     all_films = Film.all
-    @other_films = all_films.reject { |film| ([@films.first.id] + @related_films.pluck(:other_film_id)).include?(film.id) }
-    @actors = Actor.where(film_id: @films.first.id)
-    @directors = Director.where(film_id: @films.first.id)
-    @digital_retailer_films = DigitalRetailerFilm.where(film_id: @films.first.id).includes(:digital_retailer)
+    @other_films = all_films.reject { |film| ([film.id] + @related_films.pluck(:other_film_id)).include?(film.id) }
+    @actors = Actor.where(film_id: film.id)
+    @directors = Director.where(film_id: film.id)
+    @digital_retailer_films = DigitalRetailerFilm.where(film_id: film.id).includes(:digital_retailer)
     @digital_retailers = DigitalRetailer.all
     @schedule = create_schedule
-    @sub_rights = @films.first.sub_rights
-    @crossed_films = @films.first.crossed_films
-    @other_crossed_films = Film.where(licensor_id: @films.first.licensor_id, days_statement_due: @films.first.days_statement_due, deal_type_id: @films.first.deal_type_id).reject { |film| ([@films.first.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
+    @sub_rights = film.sub_rights
+    @crossed_films = film.crossed_films
+    @other_crossed_films = Film.where(licensor_id: film.licensor_id, days_statement_due: film.days_statement_due, deal_type_id: film.deal_type_id).reject { |film| ([film.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
+    if film.film_type == 'TV Series'
+      @episodes = film.episodes
+    end
   end
 
   def create_schedule

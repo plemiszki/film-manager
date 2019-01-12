@@ -229,6 +229,7 @@ var FilmDetails = React.createClass({
       schedule: FilmsStore.schedule(),
       crossedFilms: FilmsStore.crossedFilms(),
       otherCrossedFilms: FilmsStore.otherCrossedFilms(),
+      episodes: FilmsStore.episodes(),
       fetching: false
     }, function() {
       this.setState({
@@ -790,9 +791,14 @@ var FilmDetails = React.createClass({
   },
 
   render: function() {
+    let title = {
+      'Short': 'Short',
+      'Feature': 'Film',
+      'TV Series': 'TV Series'
+    }[this.state.film.filmType];
     return(
       <div className="film-details component details-component">
-        <h1>{ this.state.film.filmType === 'Short' ? 'Short' : 'Film' } Details</h1>
+        <h1>{ title } Details</h1>
         { this.renderTopTabs() }
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -893,7 +899,7 @@ var FilmDetails = React.createClass({
 
   renderTopTabs: function() {
     return(
-      <div className="tabs-row">
+      <div className={ `tabs-row${this.state.film.filmType == 'TV Series' ? ' tv' : ''}` }>
         { this.renderTopTab("General") }
         { this.renderTopTab("Contract") }
         { this.renderTopTab("Synopses") }
@@ -902,15 +908,21 @@ var FilmDetails = React.createClass({
         { this.renderTopTab("DVDs") }
         { this.renderTopTab("Statements") }
         { this.renderTopTab("Sublicensing") }
+        { this.renderTopTab("Episodes") }
       </div>
     );
   },
 
   renderTopTab: function(label) {
-    if (this.state.film.id && (this.state.film.filmType === "Feature" || ['General', 'Contract', 'Synopses', 'DVDs'].indexOf(label) > -1)) {
-      return(
-        <div className={ "tab" + (this.state.tab === label ? " selected" : "") } onClick={ this.clickTab }>{ label }</div>
-      );
+    if (this.state.film.id) {
+      if (['General', 'Contract', 'Synopses', 'DVDs'].indexOf(label) > -1 ||
+          (['Marketing', 'Bookings', 'Statements', 'Sublicensing'].indexOf(label) > -1 && (this.state.film.filmType == 'Feature' || this.state.film.filmType == 'TV Series')) ||
+          (label == 'Episodes' && this.state.film.filmType == 'TV Series'))
+      {
+        return(
+          <div className={ "tab" + (this.state.tab === label ? " selected" : "") } onClick={ this.clickTab }>{ label }</div>
+        );
+      }
     }
   },
 

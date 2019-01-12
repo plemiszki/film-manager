@@ -212,3 +212,9 @@ json.digitalRetailerFilms @digital_retailer_films do |digital_retailer_film|
   json.url digital_retailer_film.url
 end
 json.schedule @schedule
+json.episodes @episodes do |episode|
+  json.id episode.id
+  json.title episode.title
+  json.seasonNumber episode.season_number
+  json.episodeNumber episode.episode_number
+end
