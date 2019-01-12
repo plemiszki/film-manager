@@ -46,6 +46,7 @@ class Film < ActiveRecord::Base
   has_many :digital_retailers, through: :digital_retailer_films
   has_many :sub_rights
   has_many :crossed_films
+  has_many :episodes
 
   after_create :create_percentages
 

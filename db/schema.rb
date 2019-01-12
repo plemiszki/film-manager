@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181202201042) do
+ActiveRecord::Schema.define(version: 20190112182625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,6 +179,15 @@ ActiveRecord::Schema.define(version: 20181202201042) do
   add_index "dvds", ["dvd_type_id", "feature_film_id"], name: "index_dvds_on_dvd_type_id_and_feature_film_id", unique: true, using: :btree
   add_index "dvds", ["dvd_type_id"], name: "index_dvds_on_dvd_type_id", using: :btree
   add_index "dvds", ["feature_film_id"], name: "index_dvds_on_feature_film_id", using: :btree
+
+  create_table "episodes", force: :cascade do |t|
+    t.string  "title",                       null: false
+    t.integer "episode_number",              null: false
+    t.integer "season_number",               null: false
+    t.integer "length",                      null: false
+    t.string  "synopsis",       default: ""
+    t.integer "film_id",                     null: false
+  end
 
   create_table "film_countries", force: :cascade do |t|
     t.integer "film_id",    null: false
