@@ -176,7 +176,8 @@ var FilmDetails = React.createClass({
       jobModalOpen: !!job.id,
       job: job,
       crossedFilms: [],
-      otherCrossedFilms: []
+      otherCrossedFilms: [],
+      episodes: []
     });
   },
 
@@ -595,6 +596,12 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickAddEpisode: function() {
+    // this.setState({
+    //   dvdModalOpen: true
+    // });
+  },
+
   clickDeleteLaurel: function(e) {
     this.setState({
       fetching: true
@@ -952,9 +959,45 @@ var FilmDetails = React.createClass({
             </div>
           </div>
           { this.renderRoyaltyFields() }
+          <hr />
         </div>
-      )
-    } else if (this.state.tab === "DVDs" && this.state.film.filmType === 'Feature') {
+      );
+    } else if (this.state.tab === "Episodes") {
+      return(
+        <div>
+          <hr />
+          <table className={ "admin-table" }>
+            <thead>
+              <tr>
+                <th>Season</th>
+                <th>Episode</th>
+                <th>Title</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td></tr>
+              { this.state.episodes.map(function(episode, index) {
+                return(
+                  <tr key={ index } onClick={ this.redirect.bind(this, "episodes", episode.id) }>
+                    <td className="name-column">
+                      { episode.seasonNumber }
+                    </td>
+                    <td>
+                      { episode.episodeNumber }
+                    </td>
+                    <td>
+                      { episode.title }
+                    </td>
+                  </tr>
+                );
+              }.bind(this)) }
+            </tbody>
+          </table>
+          <a className="blue-outline-button small" onClick={ this.clickAddEpisode }>Add Episode</a>
+          <hr />
+        </div>
+      );
+    } else if (this.state.tab === "DVDs" && this.state.film.filmType !== 'Short') {
       return(
         <div>
           <hr />
@@ -978,6 +1021,7 @@ var FilmDetails = React.createClass({
             </tbody>
           </table>
           <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ this.clickAddDVDButton }>Add DVD</a>
+          <hr />
         </div>
       );
     } else if (this.state.tab === "DVDs" && this.state.film.filmType === 'Short') {
@@ -1007,6 +1051,7 @@ var FilmDetails = React.createClass({
               }.bind(this)) }
             </tbody>
           </table>
+          <hr />
         </div>
       );
     } else if (this.state.tab === "Sublicensing") {
@@ -1057,6 +1102,7 @@ var FilmDetails = React.createClass({
               </table>
             </div>
           </div>
+          <hr />
         </div>
       );
     } else if (this.state.tab === "Bookings") {
@@ -1130,6 +1176,7 @@ var FilmDetails = React.createClass({
               }.bind(this)) }
             </tbody>
           </table>
+          <hr />
         </div>
       )
     } else if (this.state.tab === "Statements") {
@@ -1185,6 +1232,7 @@ var FilmDetails = React.createClass({
               }.bind(this))}
             </tbody>
           </table>
+          <hr />
         </div>
       );
     } else if (this.state.tab === "General") {

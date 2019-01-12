@@ -166,11 +166,12 @@ var NewThing = React.createClass({
       weeklyBoxOffice: "Weekly Box Office",
       digitalRetailer: "Digital Retailer",
       digitalRetailerFilm: "Digital Retailer",
-      crossedFilm: "Crossed Film",
-      tvSeries: 'TV Series'
+      crossedFilm: "Crossed Film"
     };
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
+    } else if (this.props.thing === 'film' && this.props.initialObject.filmType !== 'Feature') {
+      return `Add ${HandyTools.capitalize(this.props.initialObject.filmType)}`
     } else {
       return "Add " + HandyTools.capitalize(this.props.thing);
     }
