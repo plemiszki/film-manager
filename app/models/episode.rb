@@ -5,5 +5,6 @@ class Episode < ActiveRecord::Base
   validates :episode_number, uniqueness: { scope: [:film_id, :season_number] }
 
   belongs_to :film
+  has_many :actors, as: :actorable, dependent: :destroy
 
 end

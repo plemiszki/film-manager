@@ -30,7 +30,7 @@ class Film < ActiveRecord::Base
   has_many :laurels, dependent: :destroy
   has_many :related_films, dependent: :destroy
   has_many :directors, dependent: :destroy
-  has_many :actors, dependent: :destroy
+  has_many :actors, as: :actorable, dependent: :destroy
   has_many :film_countries, dependent: :destroy
   has_many :film_languages, dependent: :destroy
   has_many :film_genres, dependent: :destroy

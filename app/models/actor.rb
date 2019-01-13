@@ -1,8 +1,8 @@
 class Actor < ActiveRecord::Base
 
-  validates :film_id, :last_name, presence: true
+  validates :actorable_id, :last_name, presence: true
 
-  belongs_to :film
+  belongs_to :actorable, polymorphic: true
 
   def string
     "#{first_name} #{last_name}"
