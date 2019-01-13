@@ -2040,7 +2040,8 @@ var ClientActions = {
       method: 'POST',
       data: {
         actor: {
-          film_id: actor.filmId,
+          actorable_id: actor.actorableId,
+          actorable_type: actor.actorableType,
           first_name: actor.firstName,
           last_name: actor.lastName
         }
@@ -2258,13 +2259,23 @@ var ClientActions = {
   },
 
   rearrangeFilmEntities: function(filmId, directory, newOrder) {
+    let data;
+    if (directory == 'actors') {
+      data = {
+        new_order: newOrder,
+        actorable_id: filmId,
+        actorable_type: 'Film'
+      };
+    } else {
+      data = {
+        new_order: newOrder,
+        film_id: filmId
+      };
+    }
     $.ajax({
       url: `/api/${directory}/rearrange`,
       method: 'PATCH',
-      data: {
-        new_order: newOrder,
-        film_id: filmId
-      },
+      data: data,
       success: function(response) {
         switch (directory) {
           case 'film_countries':

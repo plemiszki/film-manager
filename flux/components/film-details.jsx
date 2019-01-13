@@ -870,7 +870,7 @@ var FilmDetails = React.createClass({
           <ModalSelect options={ this.state.otherCrossedFilms } property={ "title" } func={ this.clickCrossedFilm } />
         </Modal>
         <Modal isOpen={this.state.actorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.directorModalStyles}>
-          <NewThing thing="actor" initialObject={{ filmId: this.state.film.id, firstName: "", lastName: "" }} />
+          <NewThing thing="actor" initialObject={{ actorableId: this.state.film.id, actorableType: 'Film', firstName: "", lastName: "" }} />
         </Modal>
         <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
           <ModalSelect options={ this.state.countries } property={ "name" } func={ this.clickCountry } />
