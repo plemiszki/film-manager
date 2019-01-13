@@ -597,9 +597,9 @@ var FilmDetails = React.createClass({
   },
 
   clickAddEpisode: function() {
-    // this.setState({
-    //   dvdModalOpen: true
-    // });
+    this.setState({
+      episodeModalOpen: true
+    });
   },
 
   clickDeleteLaurel: function(e) {
@@ -670,6 +670,7 @@ var FilmDetails = React.createClass({
       deleteModalOpen: false,
       licensorModalOpen: false,
       dvdModalOpen: false,
+      episodeModalOpen: false,
       countriesModalOpen: false,
       languagesModalOpen: false,
       genresModalOpen: false,
@@ -696,7 +697,7 @@ var FilmDetails = React.createClass({
   },
 
   redirect: function(directory, id) {
-    window.location.pathname = directory + "/" + id;
+    window.location = `/${directory}/${id}`;
   },
 
   changeCheckbox: function(property, e) {
@@ -849,6 +850,9 @@ var FilmDetails = React.createClass({
               );
             }.bind(this)) }
           </ul>
+        </Modal>
+        <Modal isOpen={this.state.episodeModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.directorModalStyles}>
+          <NewThing thing="episode" initialObject={ { filmId: this.state.film.id, title: '', length: '', episodeNumber: '', seasonNumber: '' } } />
         </Modal>
         <Modal isOpen={this.state.dvdModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.dvdModalStyles}>
           <NewThing thing="dvd" initialObject={{featureFilmId: this.state.film.id, dvdTypeId: (this.state.film.id && this.state.dvds.length < 6) ? FilmsStore.dvdTypes()[0].id : 1}} />

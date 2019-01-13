@@ -2698,6 +2698,70 @@ var ClientActions = {
         ServerActions.receiveErrors(response)
       }
     });
+  },
+
+  createEpisode: function(episode) {
+    $.ajax({
+      url: '/api/episodes',
+      method: 'POST',
+      data: {
+        episode: {
+          film_id: episode.filmId,
+          title: episode.title,
+          length: episode.length,
+          season_number: episode.seasonNumber,
+          episode_number: episode.episodeNumber
+        }
+      },
+      success: function(response) {
+        window.location.pathname = `episodes/${response.episode.id}`
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  fetchEpisode: function(id) {
+    $.ajax({
+      url: '/api/episodes/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveEpisode(response);
+      }
+    });
+  },
+
+  updateEpisode: function(episode) {
+    $.ajax({
+      url: '/api/episodes/' + episode.id,
+      method: 'PATCH',
+      data: {
+        episode: {
+          title: episode.title,
+          length: episode.length,
+          episode_number: episode.episodeNumber,
+          season_number: episode.seasonNumber,
+          synopsis: episode.synopsis
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveEpisode(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  deleteEpisode: function(id) {
+    $.ajax({
+      url: '/api/episodes/' + id,
+      method: 'DELETE',
+      success: function(response) {
+        window.location = `/films/${response.film_id}?tab=episodes`;
+      }
+    });
   }
 }
 

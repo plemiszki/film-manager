@@ -54,6 +54,7 @@ var DigitalRetailerDetails = require('./components/digital-retailer-details.jsx'
 var DigitalRetailerFilmDetails = require('./components/digital-retailer-film-details.jsx');
 var Calendar = require('./components/calendar.jsx');
 var Catalog = require('./components/catalog.jsx');
+import EpisodeDetails from './components/episode-details.jsx';
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -236,5 +237,8 @@ $(document).ready(function() {
   }
   if ($('#catalog')[0]) {
     ReactDOM.render(<Catalog />, document.getElementById("catalog"));
+  }
+  if ($('#episode-details')[0]) {
+    ReactDOM.render(<EpisodeDetails />, document.getElementById("episode-details"));
   }
 });

@@ -147,6 +147,7 @@ var NewThing = React.createClass({
           { this.renderBookerFields() }
           { this.renderDigitalRetailerFilmFields() }
           { this.renderNewFilmFields() }
+          { this.renderEpisodeFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAdd }>
             { this.renderAddButton() }
           </a>
@@ -498,6 +499,35 @@ var NewThing = React.createClass({
               <input className={ Common.errorClass(this.state.errors, Common.errors.lastName) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].lastName || "" } data-field="lastName" />
               { Common.renderFieldError(this.state.errors, Common.errors.lastName) }
             </div>
+          </div>
+        </div>
+      );
+    }
+  },
+
+  renderEpisodeFields: function() {
+    if (this.props.thing === "episode") {
+      return(
+        <div className="row">
+          <div className="col-xs-6">
+            <h2>Title</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.title) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.title } data-field="title" />
+            { Common.renderFieldError(this.state.errors, Common.errors.title) }
+          </div>
+          <div className="col-xs-2">
+            <h2>Length</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.length) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.length } data-field="length" />
+            { Common.renderFieldError(this.state.errors, Common.errors.length) }
+          </div>
+          <div className="col-xs-2">
+            <h2>Season Number</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.seasonNumber) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.seasonNumber } data-field="seasonNumber" />
+            { Common.renderFieldError(this.state.errors, Common.errors.seasonNumber) }
+          </div>
+          <div className="col-xs-2">
+            <h2>Episode Number</h2>
+            <input className={ Common.errorClass(this.state.errors, Common.errors.episodeNumber) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.episodeNumber } data-field="episodeNumber" />
+            { Common.renderFieldError(this.state.errors, Common.errors.episodeNumber) }
           </div>
         </div>
       );

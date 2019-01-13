@@ -382,6 +382,13 @@ Common = {
     ],
     filmId: [
       "Sublicensor has already been taken"
+    ],
+    seasonNumber: [
+      'Season number is not a number'
+    ],
+    episodeNumber: [
+      'Episode number is not a number',
+      'Episode number has already been taken'
     ]
   },
 

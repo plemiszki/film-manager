@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   get '/in_theaters' => 'in_theaters_films#index'
   get '/calendar' => 'calendar#show'
   resources :sub_rights, only: [:show]
+  resources :episodes, only: [:show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -98,6 +99,7 @@ Rails.application.routes.draw do
     resources :languages, only: [:index, :create, :show, :update, :destroy]
     resources :genres, only: [:index, :create, :show, :update, :destroy]
     resources :topics, only: [:index, :create, :show, :update, :destroy]
+    resources :episodes, only: [:create, :show, :update, :destroy]
 
     patch '/film_countries/rearrange' => '/api/film_countries#rearrange'
     resources :film_countries, only: [:index, :create, :destroy]
