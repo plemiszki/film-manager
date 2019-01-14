@@ -273,7 +273,7 @@ class Api::FilmsController < AdminController
     @quotes = Quote.where(film_id: film.id).order(:order)
     @related_films = RelatedFilm.where(film_id: film.id).includes(:other_film)
     all_films = Film.all
-    @other_films = all_films.reject { |film| ([film.id] + @related_films.pluck(:other_film_id)).include?(film.id) }
+    @other_films = all_films.reject { |f| ([film.id] + @related_films.pluck(:other_film_id)).include?(f.id) }
     @actors = Actor.where(actorable_id: film.id)
     @directors = Director.where(film_id: film.id)
     @digital_retailer_films = DigitalRetailerFilm.where(film_id: film.id).includes(:digital_retailer)
