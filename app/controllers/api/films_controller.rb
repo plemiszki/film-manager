@@ -281,7 +281,7 @@ class Api::FilmsController < AdminController
     @schedule = create_schedule
     @sub_rights = film.sub_rights
     @crossed_films = film.crossed_films
-    @other_crossed_films = Film.where(licensor_id: film.licensor_id, days_statement_due: film.days_statement_due, deal_type_id: film.deal_type_id).reject { |film| ([film.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
+    @other_crossed_films = Film.where(licensor_id: film.licensor_id, days_statement_due: film.days_statement_due, deal_type_id: film.deal_type_id).reject { |f| ([film.id] + @crossed_films.pluck(:crossed_film_id)).include?(f.id) || f.film_type == 'Short' }
     if film.film_type == 'TV Series'
       @episodes = film.episodes
     end
