@@ -249,7 +249,7 @@ class Api::FilmsController < AdminController
   def gather_data_for_show_view
     @films = Film.where(id: params[:id])
     film = @films.first
-    @film_formats = FilmFormat.where(film_id: params[:id])
+    @film_formats = FilmFormat.where(film_id: params[:id]).includes(:format)
     @formats = Format.where.not(id: @film_formats.map { |ff| ff.format_id })
     @bookings = Booking.where(film_id: film.id).includes(:venue)
     @templates = DealTemplate.all
@@ -271,9 +271,10 @@ class Api::FilmsController < AdminController
     @labels = Label.all
     @laurels = Laurel.where(film_id: film.id).order(:order)
     @quotes = Quote.where(film_id: film.id).order(:order)
-    @related_films = RelatedFilm.where(film_id: film.id).includes(:other_film)
+    @related_films = RelatedFilm.where(film_id: film.id)
+    this_film_and_related_film_ids = ([film.id] + @related_films.pluck(:other_film_id))
     all_films = Film.all
-    @other_films = all_films.reject { |f| ([film.id] + @related_films.pluck(:other_film_id)).include?(f.id) }
+    @other_films = all_films.reject { |f| this_film_and_related_film_ids.include?(f.id) }
     @actors = Actor.where(actorable_id: film.id)
     @directors = Director.where(film_id: film.id)
     @digital_retailer_films = DigitalRetailerFilm.where(film_id: film.id).includes(:digital_retailer)

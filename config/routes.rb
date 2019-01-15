@@ -23,7 +23,6 @@ Rails.application.routes.draw do
   resource :setting, path: "settings"
   get '/import' => 'films#import_data'
   get '/catalog' => 'films#catalog'
-  patch '/users/1' => 'films#upload'
   patch '/users/2' => 'api/royalty_reports#import'
   patch '/users/4' => 'api/dvds#update_stock'
   patch '/users/6' => 'api/films#catalog'

@@ -67,25 +67,23 @@
       </div>
     </body>
   <% end %>
-  <div id="upload-form" class="hidden">
-    <%= form_for User.first do |f| %>
-      <%= f.file_field :file %>
-      <input id="submit-button" type="submit" />
-    <% end %>
-  </div>
-  <div id="upload-form-sage" class="hidden">
-    <%= form_for User.second do |f| %>
-      <%= f.file_field :file %>
-      <input id="quarter" name="quarter" type="hidden" />
-      <input id="year" name="year" type="hidden" />
-      <input id="label" name="label" type="hidden" />
-      <input id="submit-button-sage" type="submit" />
-    <% end %>
-  </div>
-  <div id="upload-form-inventory" class="hidden">
-    <%= form_for User.third do |f| %>
-      <%= f.file_field :file %>
-      <input id="submit-button-inventory" type="submit" />
-    <% end %>
-  </div>
+  <% if current_page?(:controller => 'royalty_reports', :action => 'index') %>
+    <div id="upload-form-sage" class="hidden">
+      <%= form_for User.second do |f| %>
+        <%= f.file_field :file %>
+        <input id="quarter" name="quarter" type="hidden" />
+        <input id="year" name="year" type="hidden" />
+        <input id="label" name="label" type="hidden" />
+        <input id="submit-button-sage" type="submit" />
+      <% end %>
+    </div>
+  <% end %>
+  <% if current_page?(:controller => 'purchase_orders', :action => 'index') %>
+    <div id="upload-form-inventory" class="hidden">
+      <%= form_for User.third do |f| %>
+        <%= f.file_field :file %>
+        <input id="submit-button-inventory" type="submit" />
+      <% end %>
+    </div>
+  <% end %>
 </html>

@@ -813,7 +813,7 @@ var FilmDetails = React.createClass({
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
             <div className="col-xs-1">
-              <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ { 'backgroundImage': `url(${this.state.film.artworkUrl})` } } onClick={ this.clickArtwork }></div>
+              <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ this.state.film.artworkUrl ? { 'backgroundImage': `url(${this.state.film.artworkUrl})` } : {} } onClick={ this.clickArtwork }></div>
             </div>
             <div className="col-xs-9">
               <h2>Title</h2>
