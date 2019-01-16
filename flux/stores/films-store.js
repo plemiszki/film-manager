@@ -113,7 +113,7 @@ FilmsStore.dealTemplates = function() {
 };
 
 FilmsStore.episodes = function() {
-  return HandyTools.sortArrayOfObjects(_episodes, 'seasonNumber');
+  return HandyTools.sortArrayOfObjects(_episodes, ['seasonNumber', 'episodeNumber']);
 };
 
 FilmsStore.crossedFilms = function() {
