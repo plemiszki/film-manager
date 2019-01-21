@@ -180,7 +180,7 @@ var EpisodeDetails = React.createClass({
                   { this.state.actors.map(function(actor, index) {
                     return(
                       <div key={ actor.id }>
-                        <li data-index={ index } data-section={ 'cast' }>{ actor.firstName } { actor.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
+                        <li data-index={ index } data-section={ 'cast' }>{ actor.firstName } { actor.lastName }<div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
                         <li className="drop-zone" data-index={ index } data-section={ 'cast' }></li>
                       </div>
                     );
