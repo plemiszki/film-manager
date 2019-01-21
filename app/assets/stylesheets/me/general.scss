@@ -481,6 +481,27 @@ ul.standard-list {
     }
   }
 
+  &.reorderable {
+    padding: 4px 11px;
+
+    li:not(.drop-zone) {
+      padding: 4px;
+      margin-bottom: 0;
+
+      .x-button {
+        right: 4px;
+      }
+    }
+
+    li.drop-zone {
+      height: 7px;
+
+      &.highlight {
+        border: dashed 1px black;
+      }
+    }
+  }
+
   &.reorderable li .handle {
     display: inline-block;
     position: absolute;

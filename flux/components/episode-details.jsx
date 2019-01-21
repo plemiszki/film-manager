@@ -12,6 +12,7 @@ var EpisodeDetails = React.createClass({
       fetching: true,
       episode: {},
       episodeSaved: {},
+      actors: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -34,6 +35,7 @@ var EpisodeDetails = React.createClass({
     this.setState({
       episode: Tools.deepCopy(EpisodesStore.episode()),
       episodeSaved: EpisodesStore.episode(),
+      actors: EpisodesStore.actors(),
       fetching: false
     }, function() {
       this.setState({
@@ -128,6 +130,25 @@ var EpisodeDetails = React.createClass({
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
             </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-12">
+                <h3>Cast:</h3>
+                <ul className="standard-list reorderable">
+                  <li className="drop-zone" data-index="-1" data-section={ 'cast' }></li>
+                  { this.state.actors.map(function(actor, index) {
+                    return(
+                      <div key={ actor.id }>
+                        <li data-index={ index } data-section={ 'cast' }>{ actor.firstName } { actor.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle } onMouseUp={ this.mouseUpHandle }></div><div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
+                        <li className="drop-zone" data-index={ index } data-section={ 'cast' }></li>
+                      </div>
+                    );
+                  }.bind(this)) }
+                </ul>
+                <a className={ 'blue-outline-button small m-bottom' } onClick={ this.clickAddActor }>Add Actor</a>
+              </div>
+            </div>
+            <hr />
             { this.renderButtons() }
           </div>
         </div>

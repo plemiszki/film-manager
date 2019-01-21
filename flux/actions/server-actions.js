@@ -502,6 +502,7 @@ var ServerActions = {
   receiveEpisode: function(response) {
     AppDispatcher.dispatch({
       actionType: "EPISODE_RECEIVED",
+      actors: response.actors,
       episode: response.episode
     });
   }

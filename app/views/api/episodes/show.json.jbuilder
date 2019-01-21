@@ -6,3 +6,9 @@ json.episode do
   json.synopsis @episode.synopsis
   json.length @episode.length.to_s
 end
+json.actors @actors do |actor|
+  json.id actor.id
+  json.firstName actor.first_name
+  json.lastName actor.last_name
+  json.order actor.order
+end

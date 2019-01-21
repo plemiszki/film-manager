@@ -2,6 +2,7 @@ class Api::EpisodesController < AdminController
 
   def show
     @episode = Episode.find(params[:id])
+    @actors = @episode.actors
     render "show.json.jbuilder"
   end
 

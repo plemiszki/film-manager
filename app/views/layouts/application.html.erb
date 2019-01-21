@@ -67,7 +67,7 @@
       </div>
     </body>
   <% end %>
-  <% if current_page?(:controller => 'royalty_reports', :action => 'index') %>
+  <% if current_page?(:controller => '/royalty_reports', :action => 'index') %>
     <div id="upload-form-sage" class="hidden">
       <%= form_for User.second do |f| %>
         <%= f.file_field :file %>
@@ -78,7 +78,7 @@
       <% end %>
     </div>
   <% end %>
-  <% if current_page?(:controller => 'purchase_orders', :action => 'index') %>
+  <% if current_page?(:controller => '/purchase_orders', :action => 'index') %>
     <div id="upload-form-inventory" class="hidden">
       <%= form_for User.third do |f| %>
         <%= f.file_field :file %>
