@@ -3,9 +3,24 @@ var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var EpisodesStore = require('../stores/episodes-store.js');
+var ActorsStore = require('../stores/actors-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
+var NewThing = require('./new-thing.jsx');
 
 var EpisodeDetails = React.createClass({
+
+  directorModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 250
+    }
+  },
 
   getInitialState: function() {
     return({
@@ -16,12 +31,14 @@ var EpisodeDetails = React.createClass({
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      actorModalOpen: false
     });
   },
 
   componentDidMount: function() {
     this.episodeListener = EpisodesStore.addListener(this.getEpisode);
+    this.actorsListener = ActorsStore.addListener(this.getActors);
     this.errorsListener = ErrorsStore.addListener(this.getErrors);
     ClientActions.fetchEpisode(window.location.pathname.split("/")[2]);
   },
@@ -35,7 +52,7 @@ var EpisodeDetails = React.createClass({
     this.setState({
       episode: Tools.deepCopy(EpisodesStore.episode()),
       episodeSaved: EpisodesStore.episode(),
-      actors: EpisodesStore.actors(),
+      actors: ActorsStore.all(),
       fetching: false
     }, function() {
       this.setState({
@@ -51,6 +68,14 @@ var EpisodeDetails = React.createClass({
     });
   },
 
+  getActors: function() {
+    this.setState({
+      actors: ActorsStore.all(),
+      fetching: false,
+      actorModalOpen: false
+    });
+  },
+
   clickSave: function() {
     if (this.state.changesToSave) {
       this.setState({
@@ -60,6 +85,19 @@ var EpisodeDetails = React.createClass({
         ClientActions.updateEpisode(this.state.episode);
       });
     }
+  },
+
+  clickDeleteActor: function(e) {
+    this.setState({
+      fetching: true
+    });
+    ClientActions.deleteActor(e.target.dataset.id);
+  },
+
+  clickAddActor: function() {
+    this.setState({
+      actorModalOpen: true
+    });
   },
 
   clickDelete: function() {
@@ -78,7 +116,10 @@ var EpisodeDetails = React.createClass({
   },
 
   handleModalClose: function() {
-    this.setState({ deleteModalOpen: false });
+    this.setState({
+      deleteModalOpen: false,
+      actorModalOpen: false
+    });
   },
 
   checkForChanges: function() {
@@ -152,6 +193,9 @@ var EpisodeDetails = React.createClass({
             { this.renderButtons() }
           </div>
         </div>
+        <Modal isOpen={this.state.actorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.directorModalStyles}>
+          <NewThing thing="actor" initialObject={{ actorableId: this.state.episode.id, actorableType: 'Episode', firstName: "", lastName: "" }} />
+        </Modal>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this episode&#63;</h1>

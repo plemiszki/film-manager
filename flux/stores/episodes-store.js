@@ -5,7 +5,6 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var EpisodesStore = new Store(AppDispatcher);
 
 var _episode = {};
-var _actors = [];
 
 EpisodesStore.setStuff = function(episode, actors) {
   _episode = episode;

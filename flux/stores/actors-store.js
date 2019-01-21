@@ -30,6 +30,10 @@ ActorsStore.__onDispatch = function(payload) {
       this.setActors(payload.actors);
       this.__emitChange();
       break;
+    case "EPISODE_RECEIVED":
+      this.setActors(payload.actors);
+      this.__emitChange();
+      break;
     case "FILMS_RECEIVED":
       if (payload.actors) {
         this.setActors(payload.actors);
