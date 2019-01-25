@@ -350,6 +350,18 @@ class ImportSageData
                   stream.save!
                   check_for_empty_percentage(stream, errors, film.title, label)
                 end
+              elsif gl == "50250" || gl == "50260"
+                if FilmRight.find_by(film_id: film.id, right_id: 17)
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, label)
+                else
+                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 6)
+                  stream.current_expense += columns[3]
+                  stream.save!
+                  check_for_empty_percentage(stream, errors, film.title, label)
+                end
               elsif gl == nil
                 errors << "GL Code is empty on line #{index}"
               else
