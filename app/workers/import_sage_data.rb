@@ -12,7 +12,7 @@ class ImportSageData
     reports = RoyaltyReport.where(year: year, quarter: quarter)
     # create royalty_revenue_streams if we haven't seen this quarter before
     if reports.length == 0
-      films = Film.where(film_type: 'Feature')
+      films = Film.where(film_type: ['Feature', 'TV Series'])
       job.update!(first_line: "Transferring Previous Revenue/Expenses", second_line: true, current_value: 0, total_value: films.length)
       films.each_with_index do |film, index|
         next if film.ignore_sage_id
@@ -58,11 +58,11 @@ class ImportSageData
         columns = sheet.row(index)
         found_film = false
         found_box_set = false
-        films = Film.where("film_type = 'Feature' AND ignore_sage_id = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
+        films = Film.where("film_type IN ('Feature', 'TV Series') AND ignore_sage_id = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
         if films.length > 0
           found_film = true
         else
-          films = Film.where("film_type = 'Feature' AND ignore_sage_id = FALSE AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
+          films = Film.where("film_type IN ('Feature', 'TV Series') AND ignore_sage_id = FALSE AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
           if films.length > 0
             found_film = true
           else
@@ -116,7 +116,7 @@ class ImportSageData
               stream.save!
               check_for_empty_percentage(stream, errors, film.title, label)
             when "30350"
-              if FilmRight.find_by(film_id: film.id, right_id: 17)
+              if FilmRight.find_by(film_id: film.id, right_id: 17) && FilmRevenuePercentage.find_by({ film_id: film.id, revenue_stream_id: 13 }).value > 0
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
                 stream.current_revenue += columns[3]
                 stream.save!
@@ -351,7 +351,7 @@ class ImportSageData
                   check_for_empty_percentage(stream, errors, film.title, label)
                 end
               elsif gl == "50250" || gl == "50260"
-                if FilmRight.find_by(film_id: film.id, right_id: 17)
+                if FilmRight.find_by(film_id: film.id, right_id: 17) && FilmRevenuePercentage.find_by({ film_id: film.id, revenue_stream_id: 13 }).value > 0
                   stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
                   stream.current_expense += columns[3]
                   stream.save!
