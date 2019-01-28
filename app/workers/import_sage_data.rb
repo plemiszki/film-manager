@@ -68,8 +68,12 @@ class ImportSageData
           else
             giftboxes = Giftbox.where("LOWER(giftboxes.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
             if giftboxes.length > 0
-              errors << "Only video revenue is accepted from box set Sage IDs. (Row #{index})" unless columns[1] == "30200"
-              found_box_set = true
+              code = columns[1]
+              if code.starts_with?('3') && code != '30200'
+                errors << "Only video revenue is accepted from box set Sage IDs. (Row #{index})"
+              else
+                found_box_set = true
+              end
             else
               errors << "Sage ID #{columns[0]} not found. (Row #{index})"
             end
@@ -79,7 +83,7 @@ class ImportSageData
         if found_box_set
           giftbox = giftboxes[0]
           dvds = giftbox.dvds.includes(:feature)
-          amount = amount = (columns[3].to_d / dvds.length).truncate(2)
+          amount = (columns[3].to_d / dvds.length).truncate(2)
           dvds.each do |dvd|
             film = dvd.feature
             report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
@@ -88,7 +92,8 @@ class ImportSageData
               stream.current_revenue += amount
               stream.save!
             else
-              # TODO: apply expense!
+              gl = columns[1]
+              apply_expense(film, label, gl, report, columns, errors)
             end
           end
         end
@@ -205,172 +210,7 @@ class ImportSageData
               errors << "GL Code #{columns[1]} not found."
             end
           elsif label == "expenses"
-            if film.deal_type_id == 2 || film.deal_type_id == 3 || film.deal_type_id == 5 || film.deal_type_id == 6
-              if (FilmRight.find_by(film_id: film.id, right_id: 13) || FilmRight.find_by(film_id: film.id, right_id: 14) || FilmRight.find_by(film_id: film.id, right_id: 15)) && !FilmRight.find_by(film_id: film.id, right_id: 1) && !FilmRight.find_by(film_id: film.id, right_id: 2) && !FilmRight.find_by(film_id: film.id, right_id: 12) && !FilmRight.find_by(film_id: film.id, right_id: 5) && !FilmRight.find_by(film_id: film.id, right_id: 6) && !FilmRight.find_by(film_id: film.id, right_id: 10) && !FilmRight.find_by(film_id: film.id, right_id: 11) && !FilmRight.find_by(film_id: film.id, right_id: 8) && !FilmRight.find_by(film_id: film.id, right_id: 9)
-                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
-                stream.current_expense += columns[3]
-                stream.save!
-                check_for_empty_percentage(stream, errors, film.title, label)
-              elsif gl == "50400"
-                unless film.deal_type_id == 3
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "50200"
-                unless film.deal_type_id == 3
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "40070" || gl == "50300"
-                unless film.deal_type_id == 3
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "50360" || gl == "48200"
-                unless film.deal_type_id == 3
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "50110" || gl == "40041" || gl == "40064" || gl == "40063" || gl == "40051" || gl == "50111" || gl == "40042" || gl == "50112" || gl == "40061"
-                unless film.deal_type_id == 3
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "40092" || gl == "50105" || gl == "50101" || gl == "40086" || gl == "50102" || gl == "50103" || gl == "40078" || gl == "40080" || gl == "50104"
-                stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
-                stream.current_expense += columns[3]
-                stream.save!
-                check_for_empty_percentage(stream, errors, film.title, label)
-              elsif gl == "47000"
-                unless film.deal_type_id == 3
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 12)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "61110" || gl == "63104" || gl == "64101" || gl == "63114" || gl == "61140" || gl == "63103" || gl == "61120" || gl == "64100" || gl == "64103" || gl == "69111" || gl == "69113" || gl == "60200" || gl == "60400" || gl == "60300" || gl == "63110" || gl == "63120" || gl == "69109" || gl == "63105" || gl == "61100" || gl == "61160" || gl == "63111" || gl == "63106" || gl == "63118" || gl == "63107" || gl == "63112" || gl == "67160" || gl == "63119" || gl == "65101" || gl == "69110" || gl == "60100" || gl == "40071" || gl == "64104" || gl == "61150" || gl == "63116" || gl == "69100" || gl == "69112" || gl == "69101" || gl == "69102"
-                if FilmRight.find_by(film_id: film.id, right_id: 1)
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                else
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "50500" || gl == "40021"
-                unless film.deal_type_id == 3
-                  if FilmRight.find_by(film_id: film.id, right_id: 6)
-                    stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
-                    stream.current_expense += columns[3]
-                    stream.save!
-                    check_for_empty_percentage(stream, errors, film.title, label)
-                  else
-                    stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
-                    stream.current_expense += columns[3]
-                    stream.save!
-                    check_for_empty_percentage(stream, errors, film.title, label)
-                  end
-                end
-              elsif gl == "40031"
-                unless film.deal_type_id == 3
-                  if FilmRight.find_by(film_id: film.id, right_id: 12)
-                    stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-                    stream.current_expense += columns[3]
-                    stream.save!
-                    check_for_empty_percentage(stream, errors, film.title, label)
-                  else
-                    stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
-                    stream.current_expense += columns[3]
-                    stream.save!
-                    check_for_empty_percentage(stream, errors, film.title, label)
-                  end
-                end
-              elsif gl == "40040"
-                if FilmRight.find_by(film_id: film.id, right_id: 1)
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                elsif FilmRight.find_by(film_id: film.id, right_id: 7)
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                else
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "40011" || gl == "48000" || gl == "50350"
-                unless film.deal_type_id == 3
-                  if FilmRight.find_by(film_id: film.id, right_id: 6)
-                    stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
-                    stream.current_expense += columns[3]
-                    stream.save!
-                    check_for_empty_percentage(stream, errors, film.title, label)
-                  else
-                    stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
-                    stream.current_expense += columns[3]
-                    stream.save!
-                    check_for_empty_percentage(stream, errors, film.title, label)
-                  end
-                end
-              elsif gl == "48100"
-                unless film.deal_type_id == 3
-                  if FilmRight.find_by(film_id: film.id, right_id: 7)
-                    stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
-                    stream.current_expense += columns[3]
-                    stream.save!
-                    check_for_empty_percentage(stream, errors, film.title, label)
-                  else
-                    stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
-                    stream.current_expense += columns[3]
-                    stream.save!
-                    check_for_empty_percentage(stream, errors, film.title, label)
-                  end
-                end
-              elsif gl == "40090"
-                unless film.deal_type_id == 3
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == "50250" || gl == "50260"
-                if FilmRight.find_by(film_id: film.id, right_id: 17) && FilmRevenuePercentage.find_by({ film_id: film.id, revenue_stream_id: 13 }).value > 0
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                else
-                  stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 6)
-                  stream.current_expense += columns[3]
-                  stream.save!
-                  check_for_empty_percentage(stream, errors, film.title, label)
-                end
-              elsif gl == nil
-                errors << "GL Code is empty on line #{index}"
-              else
-                errors << "GL Code #{columns[1]} not found."
-              end
-            elsif film.deal_type_id == 4
-              report.current_total_expenses += columns[3]
-              report.save!
-            end
+            apply_expense(film, label, gl, report, columns, errors)
           end
         end
 
@@ -383,6 +223,175 @@ class ImportSageData
       p '---------------------------'
     rescue
       job.update!({ done: true, errors_text: "Unable to import spreadsheet" })
+    end
+  end
+
+  def apply_expense(film, label, gl, report, columns, errors)
+    if film.deal_type_id == 2 || film.deal_type_id == 3 || film.deal_type_id == 5 || film.deal_type_id == 6
+      if (FilmRight.find_by(film_id: film.id, right_id: 13) || FilmRight.find_by(film_id: film.id, right_id: 14) || FilmRight.find_by(film_id: film.id, right_id: 15)) && !FilmRight.find_by(film_id: film.id, right_id: 1) && !FilmRight.find_by(film_id: film.id, right_id: 2) && !FilmRight.find_by(film_id: film.id, right_id: 12) && !FilmRight.find_by(film_id: film.id, right_id: 5) && !FilmRight.find_by(film_id: film.id, right_id: 6) && !FilmRight.find_by(film_id: film.id, right_id: 10) && !FilmRight.find_by(film_id: film.id, right_id: 11) && !FilmRight.find_by(film_id: film.id, right_id: 8) && !FilmRight.find_by(film_id: film.id, right_id: 9)
+        stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
+        stream.current_expense += columns[3]
+        stream.save!
+        check_for_empty_percentage(stream, errors, film.title, label)
+      elsif gl == "50400"
+        unless film.deal_type_id == 3
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 11)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "50200"
+        unless film.deal_type_id == 3
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "40070" || gl == "50300"
+        unless film.deal_type_id == 3
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "50360" || gl == "48200"
+        unless film.deal_type_id == 3
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "50110" || gl == "40041" || gl == "40064" || gl == "40063" || gl == "40051" || gl == "50111" || gl == "40042" || gl == "50112" || gl == "40061"
+        unless film.deal_type_id == 3
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "40092" || gl == "50105" || gl == "50101" || gl == "40086" || gl == "50102" || gl == "50103" || gl == "40078" || gl == "40080" || gl == "50104"
+        stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
+        stream.current_expense += columns[3]
+        stream.save!
+        check_for_empty_percentage(stream, errors, film.title, label)
+      elsif gl == "47000"
+        unless film.deal_type_id == 3
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 12)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "61110" || gl == "63104" || gl == "64101" || gl == "63114" || gl == "61140" || gl == "63103" || gl == "61120" || gl == "64100" || gl == "64103" || gl == "69111" || gl == "69113" || gl == "60200" || gl == "60400" || gl == "60300" || gl == "63110" || gl == "63120" || gl == "69109" || gl == "63105" || gl == "61100" || gl == "61160" || gl == "63111" || gl == "63106" || gl == "63118" || gl == "63107" || gl == "63112" || gl == "67160" || gl == "63119" || gl == "65101" || gl == "69110" || gl == "60100" || gl == "40071" || gl == "64104" || gl == "61150" || gl == "63116" || gl == "69100" || gl == "69112" || gl == "69101" || gl == "69102"
+        if FilmRight.find_by(film_id: film.id, right_id: 1)
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        else
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "50500" || gl == "40021"
+        unless film.deal_type_id == 3
+          if FilmRight.find_by(film_id: film.id, right_id: 6)
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+            stream.current_expense += columns[3]
+            stream.save!
+            check_for_empty_percentage(stream, errors, film.title, label)
+          else
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+            stream.current_expense += columns[3]
+            stream.save!
+            check_for_empty_percentage(stream, errors, film.title, label)
+          end
+        end
+      elsif gl == "40031"
+        unless film.deal_type_id == 3
+          if FilmRight.find_by(film_id: film.id, right_id: 12)
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+            stream.current_expense += columns[3]
+            stream.save!
+            check_for_empty_percentage(stream, errors, film.title, label)
+          else
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+            stream.current_expense += columns[3]
+            stream.save!
+            check_for_empty_percentage(stream, errors, film.title, label)
+          end
+        end
+      elsif gl == "40040"
+        if FilmRight.find_by(film_id: film.id, right_id: 1)
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 1)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        elsif FilmRight.find_by(film_id: film.id, right_id: 7)
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        else
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 3)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "40011" || gl == "48000" || gl == "50350"
+        unless film.deal_type_id == 3
+          if FilmRight.find_by(film_id: film.id, right_id: 6)
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+            stream.current_expense += columns[3]
+            stream.save!
+            check_for_empty_percentage(stream, errors, film.title, label)
+          else
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+            stream.current_expense += columns[3]
+            stream.save!
+            check_for_empty_percentage(stream, errors, film.title, label)
+          end
+        end
+      elsif gl == "48100"
+        unless film.deal_type_id == 3
+          if FilmRight.find_by(film_id: film.id, right_id: 7)
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 10)
+            stream.current_expense += columns[3]
+            stream.save!
+            check_for_empty_percentage(stream, errors, film.title, label)
+          else
+            stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 7)
+            stream.current_expense += columns[3]
+            stream.save!
+            check_for_empty_percentage(stream, errors, film.title, label)
+          end
+        end
+      elsif gl == "40090"
+        unless film.deal_type_id == 3
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 2)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == "50250" || gl == "50260"
+        if FilmRight.find_by(film_id: film.id, right_id: 17) && FilmRevenuePercentage.find_by({ film_id: film.id, revenue_stream_id: 13 }).value > 0
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 13)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        else
+          stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: 6)
+          stream.current_expense += columns[3]
+          stream.save!
+          check_for_empty_percentage(stream, errors, film.title, label)
+        end
+      elsif gl == nil
+        errors << "GL Code is empty on line #{index}"
+      else
+        errors << "GL Code #{columns[1]} not found."
+      end
+    elsif film.deal_type_id == 4
+      report.current_total_expenses += columns[3]
+      report.save!
     end
   end
 
