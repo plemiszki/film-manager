@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190113180414) do
+ActiveRecord::Schema.define(version: 20190128211733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -296,6 +296,7 @@ ActiveRecord::Schema.define(version: 20190113180414) do
     t.text    "sound_config",                                   default: ""
     t.boolean "certified_fresh",                                default: false
     t.boolean "critics_pick",                                   default: false
+    t.string  "imdb_id",                                        default: ""
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree

@@ -240,7 +240,8 @@ class Api::FilmsController < AdminController
       :rating,
       :sound_config,
       :certified_fresh,
-      :critics_pick
+      :critics_pick,
+      :imdb_id
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

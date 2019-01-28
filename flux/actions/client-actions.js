@@ -261,7 +261,8 @@ var ClientActions = {
       rating: film.rating,
       sound_config: film.soundConfig,
       critics_pick: film.criticsPick,
-      certified_fresh: film.certifiedFresh
+      certified_fresh: film.certifiedFresh,
+      imdb_id: film.imdbId
     };
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.avodRelease, 'avod'));
     filmObj = Object.assign(filmObj, Common.removeQuestion(film.svodRelease, 'svod'));

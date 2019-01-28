@@ -1542,6 +1542,13 @@ var FilmDetails = React.createClass({
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
+          <div className="row">
+            <div className="col-xs-3">
+              <h2>IMDB ID</h2>
+              <input className={ Common.errorClass(this.state.filmErrors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.imdbId || "" } data-field="imdbId" />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+          </div>
         </div>
       )
     } else if (this.state.tab === "Synopses") {

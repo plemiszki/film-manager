@@ -55,6 +55,7 @@ json.films @films do |film|
   json.soundConfig film.sound_config
   json.certifiedFresh film.certified_fresh
   json.criticsPick film.critics_pick
+  json.imdbId film.imdb_id
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
