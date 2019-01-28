@@ -87,9 +87,14 @@ class RoyaltyReport < ActiveRecord::Base
     result
   end
 
-  def export!(directory, royalty_revenue_streams, films)
+  def export!(directory, royalty_revenue_streams, films = nil)
     @film = self.film || films.first
-    titles = films.pluck(:title).sort
+    if films
+      titles = films.pluck(:title).sort
+    else
+      crossed_film_ids = @film.crossed_films.pluck(:crossed_film_id)
+      titles = Film.where(id: [@film.id] + crossed_film_ids).pluck(:title)
+    end
     string = "<style>"
     string += "body {"
     string +=   "font-family: Arial;"
