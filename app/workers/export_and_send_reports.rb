@@ -17,7 +17,11 @@ class ExportAndSendReports
           p '---------------------------'
           p "#{film.title} (#{jid})"
           p '---------------------------'
-          royalty_revenue_streams = report.calculate!
+          if film.has_crossed_films?
+            report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
+          else
+            royalty_revenue_streams = report.calculate!
+          end
           report.export!(licensor_folder, royalty_revenue_streams)
         else
           new_line = (job.errors_text == "" ? "" : "\n")

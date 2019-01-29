@@ -58,41 +58,8 @@ class Film < ActiveRecord::Base
     end
   end
 
-  def self.show_end_dates
-    result = []
-    Film.all.each do |film|
-      film.film_rights.each do |film_right|
-        unless film_right.end_date
-          result << "#{film.title} - #{film_right.right.name} / #{film_right.territory.name}"
-        end
-      end
-    end
-    result = result.sort.join("\n")
-    p result
-    IO.popen("pbcopy", "w") { |pipe| pipe.puts result }
-  end
-
-  def self.set_end_dates
-    {
-      "All About Lily Chou-Chou": "10/30/24",
-      "All You Ever Wished For": "6/18/28",
-      "Bent": "6/5/25",
-      "Farinelli": "9/1/28",
-      "Marquise": "9/1/28",
-      "Between Two Worlds": "6/13/26",
-      "Frantz Fanon: Black Skin, White Mask": "6/13/26",
-      "Rafiki": "6/19/33",
-      "Styx": "9/30/30",
-      "The Days of Abandonment": "5/15/25",
-      "The Mad Adventures of 'Rabbi' Jacob": "7/31/26",
-      "Waterboys": "2/1/21",
-      "The Real American: Joe McCarthy": "1/18/21"
-    }.each do |title, end_date|
-      film = Film.find_by_title(title)
-      film.film_rights.each do |film_right|
-        film_right.update!(end_date: end_date)
-      end
-    end
+  def has_crossed_films?
+    crossed_films.pluck(:crossed_film_id).length > 0
   end
 
   def get_sage_id

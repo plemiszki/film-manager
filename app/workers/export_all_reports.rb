@@ -21,12 +21,18 @@ class ExportAllReports
     reports.each do |report|
       return if Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
       if days_due == "all" || report.film.days_statement_due == days_due.to_i
+        film = report.film
+        films = nil
         p '---------------------------'
-        p "#{report.film.title} (#{jid})"
+        p "#{film.title} (#{jid})"
         p '---------------------------'
-        royalty_revenue_streams = report.calculate!
+        if film.has_crossed_films?
+          report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
+        else
+          royalty_revenue_streams = report.calculate!
+        end
         save_path = report.joined_amount_due > 0 ? "#{job_folder}/amount due" : "#{job_folder}/no amount due"
-        report.export!(save_path, royalty_revenue_streams)
+        report.export!(save_path, royalty_revenue_streams, (films || nil))
         job.update({ current_value: job.current_value + 1 })
       end
     end
