@@ -52,9 +52,18 @@ class ExportAndSendReports
           mg_client.send_message 'filmmovement.com', message_params
           film_titles = file_names.map { |file_name| file_name.split('-')[0...-1].join('-').strip }
           film_titles.each do |film_title|
-            film_id = Film.find_by_title(film_title).id
-            report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
-            report.update!(date_sent: Date.today)
+            if film_title.include?(' -- ')
+              crossed_film_titles = film_title.split('--').map(&:strip)
+              crossed_film_titles.each do |film_title|
+                film_id = Film.find_by(title: film_title, film_type: ['Feature', 'TV Series']).id
+                report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
+                report.update!(date_sent: Date.today)
+              end
+            else
+              film_id = Film.find_by(title: film_title, film_type: ['Feature', 'TV Series']).id
+              report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
+              report.update!(date_sent: Date.today)
+            end
           end
         rescue
           p '-------------------------'
