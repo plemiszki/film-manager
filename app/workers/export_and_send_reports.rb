@@ -17,12 +17,13 @@ class ExportAndSendReports
           p '---------------------------'
           p "#{film.title} (#{jid})"
           p '---------------------------'
+          films = nil
           if film.has_crossed_films?
             report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
           else
             royalty_revenue_streams = report.calculate!
           end
-          report.export!(licensor_folder, royalty_revenue_streams)
+          report.export!(licensor_folder, royalty_revenue_streams, (films || nil))
         else
           new_line = (job.errors_text == "" ? "" : "\n")
           job.update({ errors_text: job.errors_text += (new_line + "Film #{film.title} is missing licensor.") })
@@ -60,13 +61,13 @@ class ExportAndSendReports
           p "FAILED TO SEND EMAIL TO #{licensor.name}"
           p '-------------------------'
           new_line = (job.errors_text == "" ? "" : "\n")
-          job.update({errors_text: job.errors_text += (new_line + "Failed to send email to #{licensor.name}")})
+          job.update({ errors_text: job.errors_text += (new_line + "Failed to send email to #{licensor.name}") })
         ensure
-          job.update({current_value: job.current_value + 1})
+          job.update({ current_value: job.current_value + 1})
         end
       else
         new_line = (job.errors_text == "" ? "" : "\n")
-        job.update({errors_text: job.errors_text += (new_line + "Licensor #{licensor.name} is missing email.")})
+        job.update({ errors_text: job.errors_text += (new_line + "Licensor #{licensor.name} is missing email.") })
       end
     end
     job.update({ first_line: "Done!", second_line: false })
