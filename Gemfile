@@ -11,29 +11,30 @@ gem 'jbuilder', '~> 2.0' # Build JSON APIs with ease. Read more: https://github.
 gem 'sdoc', '~> 0.4.0', group: :doc # bundle exec rake doc:rails generates the API under doc/api.
 
 # My Gems ----------------------
+gem 'aws-sdk'
 gem 'bootstrap-sass'
+gem 'caracal'
 gem 'clearance', '~> 1.11'
 gem 'database_cleaner'
+gem 'httparty'
+gem 'mailgun-ruby', '~>1.1.6'
+gem 'roo-xls'
+gem 'roo', '~> 2.7.0'
+gem 'rspec-rails'
+gem 'rubyzip', '~> 1.2.2'
+gem 'sidekiq'
+gem 'timeliness'
+gem 'validates_timeliness', '~> 4.0'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
-gem 'rubyzip', '~> 1.2.2'
-gem 'roo', '~> 2.7.0'
-gem 'roo-xls'
-gem 'sidekiq'
-gem 'aws-sdk'
-gem 'mailgun-ruby', '~>1.1.6'
-gem 'validates_timeliness', '~> 4.0'
-gem 'timeliness'
 gem 'xlsx_writer'
-gem 'httparty'
-gem 'caracal'
 # ------------------------------
 
 group :development, :test do
   gem 'byebug'
   gem 'pry-rails'
   gem 'better_errors'
-  gem 'dotenv-rails' # load environment variables from .env file
+  gem 'dotenv-rails'
 end
 
 group :development do
