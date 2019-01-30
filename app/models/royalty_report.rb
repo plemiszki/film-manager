@@ -90,7 +90,7 @@ class RoyaltyReport < ActiveRecord::Base
   def export!(directory, royalty_revenue_streams, films = nil)
     @film = self.film || films.first
     if films
-      titles = films.pluck(:title).sort
+      titles = films.map { |film| film.title }.sort
     else
       crossed_film_ids = @film.crossed_films.pluck(:crossed_film_id)
       titles = Film.where(id: [@film.id] + crossed_film_ids).pluck(:title)
