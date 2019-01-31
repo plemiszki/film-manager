@@ -98,5 +98,27 @@ end
 def set_up
   create(:user)
   create(:label)
+  create(:licensor)
+  [
+    'Theatrical',
+    'Educational',
+    'Festival',
+    'Other Non-Theatrical',
+    'SVOD',
+    'TVOD (Cable)',
+    'EST/DTR',
+    'Pay TV',
+    'Free TV',
+    'FVOD',
+    'AVOD',
+    'DVD/Video',
+    'Hotels',
+    'Airlines',
+    'Ships',
+    'Film Movement Plus'
+  ].each_with_index do |name, index|
+    create(:right, name: name, order: index)
+  end
   create(:film)
+  create(:royalty_report)
 end

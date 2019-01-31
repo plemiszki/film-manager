@@ -2,7 +2,7 @@ class RoyaltyReport < ActiveRecord::Base
 
   include ActionView::Helpers::NumberHelper
 
-  validates :film_id, :quarter, :year, presence: true
+  validates :film_id, :quarter, :year, :deal_id, presence: true
   validates :film_id, uniqueness: { scope: [:quarter, :year] }
   validates_numericality_of :current_total_expenses
   validates_numericality_of :cume_total_expenses
