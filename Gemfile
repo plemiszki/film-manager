@@ -15,12 +15,10 @@ gem 'aws-sdk'
 gem 'bootstrap-sass'
 gem 'caracal'
 gem 'clearance', '~> 1.11'
-gem 'database_cleaner'
 gem 'httparty'
 gem 'mailgun-ruby', '~>1.1.6'
 gem 'roo-xls'
 gem 'roo', '~> 2.7.0'
-gem 'rspec-rails'
 gem 'rubyzip', '~> 1.2.2'
 gem 'sidekiq'
 gem 'timeliness'
@@ -31,10 +29,13 @@ gem 'xlsx_writer'
 # ------------------------------
 
 group :development, :test do
-  gem 'byebug'
-  gem 'pry-rails'
   gem 'better_errors'
+  gem 'byebug'
+  gem 'database_cleaner'
   gem 'dotenv-rails'
+  gem 'factory_bot'
+  gem 'pry-rails'
+  gem 'rspec-rails'
 end
 
 group :development do
