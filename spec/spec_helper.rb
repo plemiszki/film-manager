@@ -99,4 +99,5 @@ def set_up
   create(:user)
   create(:label)
   create(:film)
+  sign_in_as(User.first)
 end
