@@ -249,8 +249,6 @@ class Api::BookingsController < AdminController
     string += "#{booking.shipping_city}, #{booking.shipping_state} #{booking.shipping_zip}\n"
     string += "#{booking.shipping_country}\n" unless booking.shipping_country == "USA" || booking.shipping_country == "US"
     string += "\n"
-    # string += "You will find the synopsis, photos, poster art and press kit to download on our website:\n"
-    # string += "http://www.filmmovement.com/films/#{booking.film.title.gsub(/[\s'.,?]/, "")}\n\n"
     unless booking.film.standalone_site.empty?
       string += "The film's official website is:\n"
       string += "#{booking.film.standalone_site}\n\n"
