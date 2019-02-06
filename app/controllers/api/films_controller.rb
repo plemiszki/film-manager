@@ -259,7 +259,7 @@ class Api::FilmsController < AdminController
     @reports = RoyaltyReport.where(film_id: params[:id])
     @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
     @rights = FilmRight.where(film_id: params[:id]).includes(:right, :territory)
-    @dvds = (film.film_type == 'Feature' ? Dvd.where(feature_film_id: params[:id]) : Dvd.where(id: [DvdShort.where(short_id: params[:id]).includes(:dvd).map(&:dvd_id)]))
+    @dvds = (film.film_type.in?(['Feature', 'TV Series']) ? Dvd.where(feature_film_id: params[:id]) : Dvd.where(id: [DvdShort.where(short_id: params[:id]).includes(:dvd).map(&:dvd_id)]))
     @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
     @film_countries = FilmCountry.where(film_id: film.id).includes(:country)
     @countries = Country.where.not(id: @film_countries.pluck(:country_id))
