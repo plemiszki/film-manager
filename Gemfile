@@ -13,7 +13,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc # bundle exec rake doc:rails generates the A
 # My Gems ----------------------
 gem 'aws-sdk'
 gem 'bootstrap-sass'
-gem 'caracal'
+gem 'caracal', '1.2.0'
 gem 'clearance', '~> 1.11'
 gem 'httparty'
 gem 'mailgun-ruby', '~>1.1.6'
