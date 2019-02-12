@@ -18,9 +18,12 @@ var RelatedFilmsStore = require('../stores/related-films-store.js');
 var NewThing = require('./new-thing.jsx');
 var ModalSelect = require('./modal-select.jsx');
 var FilmRightsNew = require('./film-rights-new.jsx');
+var FilmRightsChangeDates = require('./film-rights-change-dates.jsx');
 var FormatsStore = require('../stores/formats-store.js');
 var DigitalRetailersStore = require('../stores/digital-retailers-store.js');
 var JobStore = require('../stores/job-store.js');
+var FilmRightsStore = require('../stores/film-rights-store.js');
+var FilmRightsStore2 = require('../stores/film-rights-store-2.js');
 
 var FilmDetails = React.createClass({
 
@@ -105,6 +108,19 @@ var FilmDetails = React.createClass({
     }
   },
 
+  changeDatesModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 240
+    }
+  },
+
   artworkModalStyles: {
     overlay: {
       background: 'rgba(0, 0, 0, 0.50)'
@@ -149,6 +165,7 @@ var FilmDetails = React.createClass({
       relatedFilmsModalOpen: false,
       formatsModalOpen: false,
       tab: (Common.params.tab ? HandyTools.capitalize(Common.params.tab) : 'General'),
+      filmRights: [],
       filmCountries: [],
       filmLanguages: [],
       filmGenres: [],
@@ -197,6 +214,7 @@ var FilmDetails = React.createClass({
     this.formatsListener = FormatsStore.addListener(this.getFormats);
     this.digitalRetailersListener = DigitalRetailersStore.addListener(this.getDigitalRetailers);
     this.crossedFilmsListener = CrossedFilmsStore.addListener(this.getCrossedFilms);
+    this.filmRights2Listener = FilmRightsStore2.addListener(this.getFilmRights2);
     ClientActions.fetchFilm(window.location.pathname.split('/')[2]);
   },
 
@@ -216,12 +234,13 @@ var FilmDetails = React.createClass({
     this.digitalRetailersListener.remove();
     this.jobListener.remove();
     this.crossedFilmsListener.remove();
+    this.filmRights2Listener.remove();
   },
 
   getFilm: function() {
     this.setState({
-      film: Tools.deepCopy(FilmsStore.find(window.location.pathname.split("/")[2])),
-      filmSaved: FilmsStore.find(window.location.pathname.split("/")[2]),
+      film: Tools.deepCopy(FilmsStore.find(window.location.pathname.split('/')[2])),
+      filmSaved: FilmsStore.find(window.location.pathname.split('/')[2]),
       percentages: Tools.deepCopy(FilmsStore.percentages()),
       percentagesSaved: FilmsStore.percentages(),
       reports: FilmsStore.reports(),
@@ -231,11 +250,20 @@ var FilmDetails = React.createClass({
       crossedFilms: FilmsStore.crossedFilms(),
       otherCrossedFilms: FilmsStore.otherCrossedFilms(),
       episodes: FilmsStore.episodes(),
+      filmRights: FilmsStore.rights(),
       fetching: false
     }, function() {
       this.setState({
         changesToSave: this.checkForChanges()
       });
+    });
+  },
+
+  getFilmRights2: function() {
+    this.setState({
+      newRightsModalOpen: false,
+      changeDatesModalOpen: false,
+      filmRights: FilmRightsStore2.filmRights()
     });
   },
 
@@ -665,6 +693,12 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickChangeRightsDates: function() {
+    this.setState({
+      changeDatesModalOpen: true
+    });
+  },
+
   handleModalClose: function() {
     this.setState({
       deleteModalOpen: false,
@@ -684,7 +718,8 @@ var FilmDetails = React.createClass({
       formatsModalOpen: false,
       newDigitalRetailerModalOpen: false,
       artworkModalOpen: false,
-      crossedFilmModalOpen: false
+      crossedFilmModalOpen: false,
+      changeDatesModalOpen: false
     });
   },
 
@@ -798,6 +833,13 @@ var FilmDetails = React.createClass({
     }
   },
 
+  updateChangedDates: function() {
+    this.setState({
+      changeDatesModalOpen: false,
+      fetching: true
+    });
+  },
+
   render: function() {
     let title = {
       'Short': 'Short',
@@ -892,6 +934,9 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.newRightsModalStyles }>
           <FilmRightsNew filmId={ this.state.film.id } />
+        </Modal>
+        <Modal isOpen={ this.state.changeDatesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.changeDatesModalStyles }>
+          <FilmRightsChangeDates filmId={ this.state.film.id } updateChangedDates={ this.updateChangedDates } />
         </Modal>
         <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.directorModalStyles }>
           <NewThing thing="digitalRetailerFilm" initialObject={ { filmId: this.state.film.id, url: "", digitalRetailerId: "1" } } />
@@ -1674,7 +1719,7 @@ var FilmDetails = React.createClass({
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-                { _.orderBy(FilmsStore.rights(), [this.rightsSort, this.rightsSortSecond]).map(function(right, index) {
+                { _.orderBy(this.state.filmRights, [this.rightsSort, this.rightsSortSecond]).map(function(right, index) {
                   return(
                     <tr key={ index } onClick={ this.redirect.bind(this, 'film_rights', right.id) }>
                       <td className="indent">
@@ -1697,7 +1742,8 @@ var FilmDetails = React.createClass({
                 }.bind(this)) }
               </tbody>
             </table>
-            <a className={ 'blue-outline-button small' } onClick={ this.clickAddRight }>Add Rights</a>
+            <a className={ 'blue-outline-button small m-right' } onClick={ this.clickAddRight }>Add Rights</a>
+            <a className={ 'blue-outline-button small float-button' } onClick={ this.clickChangeRightsDates }>Change All Dates</a>
           </div>
         </div>
         <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>

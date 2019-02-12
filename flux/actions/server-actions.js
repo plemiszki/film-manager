@@ -505,6 +505,13 @@ var ServerActions = {
       actors: response.actors,
       episode: response.episode
     });
+  },
+
+  receiveFilmRights2: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "FILM_RIGHTS_RECEIVED",
+      filmRights: response.filmRights
+    });
   }
 }
 

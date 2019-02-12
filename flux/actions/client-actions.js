@@ -2431,10 +2431,10 @@ var ClientActions = {
         territories: territories
       },
       success: function(response) {
-        window.location.href = '/films/' + response.film_id + '?tab=contract';
+        ServerActions.receiveFilmRights2(response);
       },
       error: function(response) {
-        ServerActions.receiveErrors(response)
+        ServerActions.receiveErrors(response);
       }
     });
   },
@@ -2772,6 +2772,24 @@ var ClientActions = {
       method: 'DELETE',
       success: function(response) {
         window.location = `/films/${response.film_id}?tab=episodes`;
+      }
+    });
+  },
+
+  changeFilmRightDates: function(args) {
+    $.ajax({
+      url: '/api/film_rights/change_dates',
+      method: 'PATCH',
+      data: {
+        start_date: args.startDate,
+        end_date: args.endDate,
+        film_id: args.filmId
+      },
+      success: function(response) {
+        ServerActions.receiveFilmRights2(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
       }
     });
   }

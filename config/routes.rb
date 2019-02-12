@@ -121,6 +121,7 @@ Rails.application.routes.draw do
 
     resources :formats, only: [:index, :create, :show, :update, :destroy]
     resources :territories, only: [:index, :create, :show, :update, :destroy]
+    patch '/film_rights/change_dates' => '/api/film_rights#change_dates' 
     resources :film_rights, only: [:create, :show, :update, :destroy]
     resources :digital_retailers, only: [:index, :create, :show, :update, :destroy]
     resources :digital_retailer_films, only: [:create, :show, :update, :destroy]

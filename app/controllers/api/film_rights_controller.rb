@@ -31,7 +31,8 @@ class Api::FilmRightsController < AdminController
     if error
       render json: @film_right.errors.full_messages, status: 422
     else
-      render json: @film_right
+      @film_rights = FilmRight.where(film_id: params[:film_right][:film_id]).includes(:film)
+      render 'create.json.jbuilder'
     end
   end
 
@@ -63,6 +64,38 @@ class Api::FilmRightsController < AdminController
     @territories = Territory.all
     @films = Film.all if params[:films_too]
     render 'new.json.jbuilder'
+  end
+
+  def change_dates
+    errors = []
+    film_id = params[:film_id]
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+    if film_id
+      if start_date || end_date
+        test_film_right = FilmRight.new({ film_id: 1, right_id: 1, territory_id: 1, start_date: start_date, end_date: end_date })
+        if test_film_right.valid?
+          update_object = {}
+          update_object[:start_date] = start_date unless start_date.empty?
+          update_object[:end_date] = end_date unless end_date.empty?
+          FilmRight.where(film_id: film_id).each do |film_right|
+            film_right.update!(update_object)
+          end
+        else
+          errors += test_film_right.errors.full_messages
+        end
+      else
+        errors << 'Start date or end date required'
+      end
+    else
+      errors << 'Film ID required'
+    end
+    if errors.present?
+      render json: errors, status: 422
+    else
+      @film_rights = FilmRight.where(film_id: film_id).includes(:film)
+      render 'create.json.jbuilder', status: 200
+    end
   end
 
   private
