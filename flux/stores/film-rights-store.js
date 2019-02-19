@@ -9,7 +9,7 @@ var _rights = [];
 var _territores = [];
 var _films = [];
 
-FilmRightsStore.setFilmRight = function(filmRights) {
+FilmRightsStore.setFilmRight = function(filmRight) {
   _filmRight = filmRight;
 };
 
