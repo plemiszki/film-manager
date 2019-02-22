@@ -43,7 +43,7 @@ class ExportCatalog
 
         c1 = Caracal::Core::Models::TableCellModel.new margins: { top: 0, bottom: 100, left: 0, right: 0 } do
           if film.artwork_url && !film.artwork_url.empty?
-            img film.artwork_url, width: 200, height: 280
+            img film.artwork_url.gsub(' ', '%20'), width: 200, height: 280
           else
             img 'https://film-movement.herokuapp.com/black.jpg', width: 200, height: 280
           end
