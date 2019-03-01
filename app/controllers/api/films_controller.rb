@@ -59,11 +59,39 @@ class Api::FilmsController < AdminController
 
   def copy
     original_film = Film.find(params[:copy_from_id])
-    film = Film.new(title: params[:title], label_id: 1, days_statement_due: 30, film_type: params[:film_type], year: params[:year], length: params[:length])
+    film = Film.new(
+      title: params[:title],
+      film_type: params[:film_type],
+      year: params[:year],
+      length: params[:length],
+      label_id: original_film.label_id,
+      days_statement_due: original_film.days_statement_due,
+      licensor_id: original_film.licensor_id,
+      deal_type_id: original_film.deal_type_id,
+      gr_percentage: original_film.gr_percentage,
+      mg: original_film.mg,
+      e_and_o: original_film.e_and_o,
+      expense_cap: original_film.expense_cap,
+      reserve: original_film.reserve,
+      reserve_percentage: original_film.reserve_percentage,
+      reserve_quarters: original_film.reserve_quarters,
+      sell_off_period: original_film.sell_off_period,
+      auto_renew: original_film.auto_renew,
+      auto_renew_term: original_film.auto_renew_term,
+      start_date: original_film.start_date,
+      end_date: original_film.end_date
+    )
     if film.save
       original_film_rights = original_film.film_rights
       original_film_rights.each do |film_right|
         FilmRight.create!(film_id: film.id, right_id: film_right.right_id, territory_id: film_right.territory_id, start_date: film_right.start_date, end_date: film_right.end_date, exclusive: film_right.exclusive)
+      end
+      unless film.film_type == 'Short'
+        original_film_percentages = original_film.film_revenue_percentages
+        original_film_percentages.each do |percentage|
+          new_percentage = FilmRevenuePercentage.find_by(film_id: film.id, revenue_stream_id: percentage.revenue_stream_id)
+          new_percentage.update!(value: percentage.value)
+        end
       end
       render json: film.id
     else
