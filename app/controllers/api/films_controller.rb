@@ -57,6 +57,20 @@ class Api::FilmsController < AdminController
     end
   end
 
+  def copy
+    original_film = Film.find(params[:copy_from_id])
+    film = Film.new(title: params[:title], label_id: 1, days_statement_due: 30, film_type: params[:film_type], year: params[:year], length: params[:length])
+    if film.save
+      original_film_rights = original_film.film_rights
+      original_film_rights.each do |film_right|
+        FilmRight.create!(film_id: film.id, right_id: film_right.right_id, territory_id: film_right.territory_id, start_date: film_right.start_date, end_date: film_right.end_date, exclusive: film_right.exclusive)
+      end
+      render json: film.id
+    else
+      render json: film.errors.full_messages, status: 422
+    end
+  end
+
   def export
     if params[:film_ids]
       film_ids = params[:film_ids].to_a.map(&:to_i)

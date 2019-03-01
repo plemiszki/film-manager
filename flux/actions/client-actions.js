@@ -1240,6 +1240,26 @@ var ClientActions = {
     });
   },
 
+  copyFilm: function(film) {
+    $.ajax({
+      url: '/api/films/copy',
+      method: 'POST',
+      data: {
+        copy_from_id: film.copyFrom,
+        title: film.title,
+        year: film.year,
+        film_type: film.filmType,
+        length: film.length
+      },
+      success: function(response) {
+        window.location.pathname = `/films/${response}`;
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
   copyBooking: function(bookingId, filmId) {
     var date = new Date;
     $.ajax({

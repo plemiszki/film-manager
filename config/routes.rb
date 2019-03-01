@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     resources :films, only: [:index, :show, :create, :update, :destroy]
     post '/films/export' => '/api/films#export'
+    post '/films/copy' => '/api/films#copy'
     post '/films/catalog' => '/api/films#catalog'
     post '/films/update_artwork' => '/api/films#update_artwork'
     resources :venues, only: [:index, :show, :create, :update, :destroy]
@@ -121,7 +122,7 @@ Rails.application.routes.draw do
 
     resources :formats, only: [:index, :create, :show, :update, :destroy]
     resources :territories, only: [:index, :create, :show, :update, :destroy]
-    patch '/film_rights/change_dates' => '/api/film_rights#change_dates' 
+    patch '/film_rights/change_dates' => '/api/film_rights#change_dates'
     resources :film_rights, only: [:create, :show, :update, :destroy]
     resources :digital_retailers, only: [:index, :create, :show, :update, :destroy]
     resources :digital_retailer_films, only: [:create, :show, :update, :destroy]

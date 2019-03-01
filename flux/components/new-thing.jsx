@@ -106,6 +106,8 @@ var NewThing = React.createClass({
     });
     if (this.props.copyFrom) {
       ClientActions.copyBooking(this.state.booking.copyFrom, this.state.booking.filmId);
+    } else if (this.props.copy) {
+      ClientActions.copyFilm(this.state.film);
     } else {
       ClientActions["create" + HandyTools.capitalize(this.props.thing)].call(ClientActions, this.state[this.props.thing]);
     }
@@ -169,12 +171,13 @@ var NewThing = React.createClass({
       digitalRetailerFilm: "Digital Retailer",
       crossedFilm: "Crossed Film"
     };
+    let verb = (this.props.copy ? "Copy" : "Add");
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
       return "Add " + map[this.props.thing];
     } else if (this.props.thing === 'film' && this.props.initialObject.filmType !== 'Feature') {
-      return `Add ${HandyTools.capitalize(this.props.initialObject.filmType)}`
+      return `${verb} ${HandyTools.capitalize(this.props.initialObject.filmType)}`;
     } else {
-      return "Add " + HandyTools.capitalize(this.props.thing);
+      return `${verb} ${HandyTools.capitalize(this.props.thing)}`;
     }
   },
 
@@ -212,17 +215,17 @@ var NewThing = React.createClass({
         <div className="row">
           <div className="col-xs-8">
             <h2>Title</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.title)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title} data-field="title" />
+            <input className={ Common.errorClass(this.state.errors, Common.errors.title) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.title } data-field="title" />
             { Common.renderFieldError(this.state.errors, Common.errors.title) }
           </div>
           <div className="col-xs-2">
             <h2>Year</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.year)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.year} data-field="year" />
+            <input className={ Common.errorClass(this.state.errors, Common.errors.year) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.year } data-field="year" />
             { Common.renderFieldError(this.state.errors, Common.errors.year) }
           </div>
           <div className="col-xs-2">
             <h2>Length (minutes)</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.length)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.length} data-field="length" />
+            <input className={ Common.errorClass(this.state.errors, Common.errors.length) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length } data-field="length" />
             { Common.renderFieldError(this.state.errors, Common.errors.length) }
           </div>
         </div>

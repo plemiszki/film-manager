@@ -134,6 +134,19 @@ var FilmDetails = React.createClass({
     }
   },
 
+  copyModalStyles: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.50)'
+    },
+    content: {
+      background: '#F5F6F7',
+      padding: 0,
+      margin: 'auto',
+      maxWidth: 1000,
+      height: 236
+    }
+  },
+
   getInitialState: function() {
     var job = {
       errors_text: ""
@@ -164,6 +177,7 @@ var FilmDetails = React.createClass({
       actorModalOpen: false,
       relatedFilmsModalOpen: false,
       formatsModalOpen: false,
+      copyModalOpen: false,
       tab: (Common.params.tab ? HandyTools.capitalize(Common.params.tab) : 'General'),
       filmRights: [],
       filmCountries: [],
@@ -487,6 +501,12 @@ var FilmDetails = React.createClass({
     });
   },
 
+  clickCopy: function() {
+    this.setState({
+      copyModalOpen: true
+    });
+  },
+
   clickAddFormat: function() {
     this.setState({
       formatsModalOpen: true
@@ -719,7 +739,8 @@ var FilmDetails = React.createClass({
       newDigitalRetailerModalOpen: false,
       artworkModalOpen: false,
       crossedFilmModalOpen: false,
-      changeDatesModalOpen: false
+      changeDatesModalOpen: false,
+      copyModalOpen: false
     });
   },
 
@@ -940,6 +961,9 @@ var FilmDetails = React.createClass({
         </Modal>
         <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.directorModalStyles }>
           <NewThing thing="digitalRetailerFilm" initialObject={ { filmId: this.state.film.id, url: "", digitalRetailerId: "1" } } />
+        </Modal>
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.copyModalStyles }>
+          <NewThing thing="film" copy={ true } initialObject={ { title: "", year: "", length: "", filmType: this.state.film.filmType, copyFrom: this.state.film.id } } />
         </Modal>
         <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.artworkModalStyles }>
           <h1 className="my-modal-header">Update artwork for all films now?</h1>
@@ -1809,6 +1833,9 @@ var FilmDetails = React.createClass({
         { this.renderErrorGuide() }
         <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
           Delete Film
+        </a>
+        <a className={ "float-button orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy }>
+          Copy Film
         </a>
       </div>
     );
