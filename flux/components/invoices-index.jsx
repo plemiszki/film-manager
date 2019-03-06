@@ -36,6 +36,7 @@ var InvoicesIndex = React.createClass({
       filterModalOpen: false,
       filterType: "all",
       filterNumber: 0,
+      filterEndNumber: "",
       jobModalOpen: !!job.id,
       job: job
     });
@@ -96,26 +97,47 @@ var InvoicesIndex = React.createClass({
     }, function() {
       $('.filter-modal select').val(this.state.filterType);
       Common.resetNiceSelect('select');
-      $('.filter-modal input').val(this.state.filterNumber);
+      $('.filter-modal input.starting-number').val(this.state.filterNumber);
+      $('.filter-modal input.end-number').val(this.state.filterEndNumber);
     });
   },
 
   validateFilterInput: function() {
     var type = $('.filter-modal select').val();
-    var number = $('.filter-modal input').val();
+    var number = $('.filter-modal input.starting-number').val();
+    var endNumber = $('.filter-modal input.end-number').val();
     var numberOK = !isNaN(+number);
-    if (numberOK) {
-      this.setState({
-        filterType: type,
-        filterNumber: +number,
-        filterModalOpen: false
-      });
+    var endNumberOK = (endNumber === "" || !isNaN(+endNumber));
+    if (numberOK && endNumberOK) {
+      if (endNumber) {
+        if (+endNumber >= +number) {
+          this.setState({
+            filterType: type,
+            filterNumber: +number,
+            filterEndNumber: +endNumber,
+            filterModalOpen: false
+          });
+        } else {
+          $('.filter-modal input').addClass('error');
+        }
+      } else {
+        this.setState({
+          filterType: type,
+          filterNumber: +number,
+          filterModalOpen: false
+        });
+      }
     } else {
-      $('.filter-modal input').addClass('error');
+      if (!numberOK) {
+        $('.filter-modal input.starting-number').addClass('error');
+      }
+      if (!endNumberOK) {
+        $('.filter-modal input.end-number').addClass('error');
+      }
     }
   },
 
-  clearStartingNumberError: function(e) {
+  clearNumberError: function(e) {
     e.target.classList.remove('error');
   },
 
@@ -132,7 +154,7 @@ var InvoicesIndex = React.createClass({
   },
 
   filterExists: function() {
-    if (this.state.filterType != "all" || this.state.filterNumber != "0") {
+    if (this.state.filterType != "all" || this.state.filterNumber != "0" || this.state.filterEndNumber != "") {
       return " green";
     } else {
       return "";
@@ -144,7 +166,7 @@ var InvoicesIndex = React.createClass({
       this.setState({
         fetching: true
       });
-      var invoiceIds = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber).map(function(invoice) {
+      var invoiceIds = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber, this.state.filterEndNumber).map(function(invoice) {
         return invoice.id;
       });
       ClientActions.exportInvoices(invoiceIds);
@@ -152,7 +174,7 @@ var InvoicesIndex = React.createClass({
   },
 
   render: function() {
-    var filteredOrders = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber).filterSearchText(this.state.searchText, this.state.sortBy);
+    var filteredOrders = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber, this.state.filterEndNumber).filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="invoices-index" className="component">
         <h1>Invoices</h1>
@@ -198,7 +220,7 @@ var InvoicesIndex = React.createClass({
         <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ filterModalStyles }>
           <div className="filter-modal">
             <div className="row">
-              <div className="col-xs-6">
+              <div className="col-xs-4">
                 <h2>Type</h2>
                 <select>
                   <option value="all">All</option>
@@ -206,9 +228,13 @@ var InvoicesIndex = React.createClass({
                   <option value="DVD">DVD</option>
                 </select>
               </div>
-              <div className="col-xs-6">
+              <div className="col-xs-4">
                 <h2>Starting Number</h2>
-                <input onChange={ this.clearStartingNumberError } />
+                <input className="starting-number" onChange={ this.clearNumberError } />
+              </div>
+              <div className="col-xs-4">
+                <h2>Ending Number</h2>
+                <input className="end-number" onChange={ this.clearNumberError } />
               </div>
             </div>
             <div className="row button-row">

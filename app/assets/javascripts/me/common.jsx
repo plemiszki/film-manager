@@ -7,9 +7,14 @@ $(document).ready(function() {
   Common.initialize();
 });
 
-Array.prototype.filterInvoices = function(type, number) {
+Array.prototype.filterInvoices = function(type, number, endNumber) {
   return this.filter(function(invoice) {
-    return ((type == "all" || invoice.type == type) && invoice.number.slice(0, -1) >= number);
+    var slicedNumber = invoice.number.slice(0, -1);
+    if (endNumber) {
+      return ((type == "all" || invoice.type == type) && slicedNumber >= number && slicedNumber <= endNumber);
+    } else {
+      return ((type == "all" || invoice.type == type) && slicedNumber >= number);
+    }
   });
 }
 
