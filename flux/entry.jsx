@@ -55,6 +55,8 @@ var DigitalRetailerFilmDetails = require('./components/digital-retailer-film-det
 var Calendar = require('./components/calendar.jsx');
 var Catalog = require('./components/catalog.jsx');
 import EpisodeDetails from './components/episode-details.jsx';
+import MerchandiseTypesIndex from './components/merchandise-types-index.jsx';
+import MerchandiseTypeDetails from './components/merchandise-type-details.jsx';
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -240,5 +242,11 @@ $(document).ready(function() {
   }
   if ($('#episode-details')[0]) {
     ReactDOM.render(<EpisodeDetails />, document.getElementById("episode-details"));
+  }
+  if ($('#merchandise-types-index')[0]) {
+    ReactDOM.render(<MerchandiseTypesIndex />, document.getElementById("merchandise-types-index"));
+  }
+  if ($('#merchandise-type-details')[0]) {
+    ReactDOM.render(<MerchandiseTypeDetails />, document.getElementById("merchandise-type-details"));
   }
 });

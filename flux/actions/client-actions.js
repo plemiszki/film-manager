@@ -2812,6 +2812,62 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  fetchMerchandiseTypes: function() {
+    $.ajax({
+      url: '/api/merchandise_types',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveMerchandiseTypes(response);
+      }
+    });
+  },
+
+  fetchMerchandiseType: function(id) {
+    $.ajax({
+      url: '/api/merchandise_types/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveMerchandiseTypes(response);
+      }
+    });
+  },
+
+  createMerchandiseType: function(merchandiseType) {
+    $.ajax({
+      url: '/api/merchandise_types',
+      method: 'POST',
+      data: {
+        merchandise_type: {
+          name: merchandiseType.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveMerchandiseTypes(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  updateMerchandiseType: function(merchandiseType) {
+    $.ajax({
+      url: '/api/merchandise_types/' + merchandiseType.id,
+      method: 'PATCH',
+      data: {
+        merchandise_type: {
+          name: merchandiseType.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveMerchandiseTypes(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

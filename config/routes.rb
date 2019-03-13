@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   get '/calendar' => 'calendar#show'
   resources :sub_rights, only: [:show]
   resources :episodes, only: [:show]
+  resources :merchandise_types, only: [:show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -132,6 +133,7 @@ Rails.application.routes.draw do
     post '/in_theaters/rearrange' => '/api/in_theaters_films#rearrange'
     delete '/in_theaters/:id' => '/api/in_theaters_films#destroy'
     resources :sub_rights, only: [:create, :show, :update, :destroy]
+    resources :merchandise_types, only: [:index, :create, :show, :update, :destroy]
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'

@@ -169,7 +169,8 @@ var NewThing = React.createClass({
       weeklyBoxOffice: "Weekly Box Office",
       digitalRetailer: "Digital Retailer",
       digitalRetailerFilm: "Digital Retailer",
-      crossedFilm: "Crossed Film"
+      crossedFilm: "Crossed Film",
+      merchandiseType: "Merchandise Type"
     };
     let verb = (this.props.copy ? "Copy" : "Add");
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
@@ -182,7 +183,7 @@ var NewThing = React.createClass({
   },
 
   renderNameField: function() {
-    if (["user", "licensor", "giftbox", "country", "language", "genre", "topic", "format", "territory", "sublicensor", "digitalRetailer"].indexOf(this.props.thing) > -1) {
+    if (["user", "licensor", "giftbox", "country", "language", "genre", "topic", "format", "territory", "sublicensor", "digitalRetailer", "merchandiseType"].indexOf(this.props.thing) > -1) {
       return(
         <div className="row">
           <div className="col-xs-12">

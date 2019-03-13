@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190128211733) do
+ActiveRecord::Schema.define(version: 20190312235725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -418,6 +418,24 @@ ActiveRecord::Schema.define(version: 20190128211733) do
   end
 
   add_index "licensors", ["name"], name: "index_licensors_on_name", unique: true, using: :btree
+
+  create_table "merchandise_items", force: :cascade do |t|
+    t.integer "merchandise_type_id",                                       null: false
+    t.string  "name",                                                      null: false
+    t.string  "size",                                        default: ""
+    t.decimal "price",               precision: 5, scale: 2, default: 0.0
+    t.integer "inventory",                                   default: 0
+    t.text    "description",                                 default: ""
+    t.integer "film_id"
+  end
+
+  add_index "merchandise_items", ["name", "merchandise_type_id"], name: "index_merchandise_items_on_name_and_merchandise_type_id", unique: true, using: :btree
+
+  create_table "merchandise_types", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  add_index "merchandise_types", ["name"], name: "index_merchandise_types_on_name", unique: true, using: :btree
 
   create_table "past_bookers", force: :cascade do |t|
     t.string "name", null: false

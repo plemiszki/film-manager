@@ -512,6 +512,13 @@ var ServerActions = {
       actionType: "FILM_RIGHTS_RECEIVED",
       filmRights: response.filmRights
     });
+  },
+
+  receiveMerchandiseTypes: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "MERCHANDISE_TYPES_RECEIVED",
+      merchandiseTypes: response
+    });
   }
 }
 
