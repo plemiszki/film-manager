@@ -2868,6 +2868,68 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  fetchMerchandiseItems: function() {
+    $.ajax({
+      url: '/api/merchandise_items',
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveMerchandiseItems(response);
+      }
+    });
+  },
+
+  fetchMerchandiseItem: function(id) {
+    $.ajax({
+      url: '/api/merchandise_items/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveMerchandiseItems(response);
+      }
+    });
+  },
+
+  createMerchandiseItem: function(merchandiseItem) {
+    $.ajax({
+      url: '/api/merchandise_items',
+      method: 'POST',
+      data: {
+        merchandise_item: {
+          name: merchandiseItem.name,
+          merchandise_type_id: merchandiseItem.merchandiseTypeId,
+          description: merchandiseItem.description,
+          size: merchandiseItem.size,
+          price: merchandiseItem.price,
+          inventory: merchandiseItem.inventory,
+          film_id: merchandiseItem.filmId
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveMerchandiseItems(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
+  },
+
+  updateMerchandiseItem: function(merchandiseItem) {
+    $.ajax({
+      url: '/api/merchandise_items/' + merchandiseItem.id,
+      method: 'PATCH',
+      data: {
+        merchandise_item: {
+          name: merchandiseItem.name
+        }
+      },
+      success: function(response) {
+        ServerActions.receiveMerchandiseItems(response);
+      },
+      error: function(response) {
+        ServerActions.receiveErrors(response);
+      }
+    });
   }
 }
 

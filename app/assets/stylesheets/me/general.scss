@@ -70,7 +70,7 @@ body {
       #admin-sidebar {
         background-color: white;
         padding: 0;
-        height: 100%;
+        min-height: 100%;
 
         #admin-sidebar-header {
           background-image: asset-data-url("swirl.jpg");

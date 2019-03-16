@@ -9,6 +9,7 @@ var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
 var ReturnsStore = require('../stores/returns-store.js');
 var BookingsStore = require('../stores/bookings-store.js');
 var DigitalRetailersStore = require('../stores/digital-retailers-store.js');
+var MerchandiseItemsStore = require('../stores/merchandise-items-store.js');
 
 var NewThing = React.createClass({
 
@@ -16,7 +17,8 @@ var NewThing = React.createClass({
     return({
       fetching: false,
       [this.props.thing]: this.props.initialObject,
-      errors: []
+      errors: [],
+      filmsModalOpen: false
     });
   },
 
@@ -81,6 +83,15 @@ var NewThing = React.createClass({
     this.setState({
       booking: booking,
       filmsModalOpen: false,
+    });
+  },
+
+  clickSelectFilmForMerchandise: function(e) {
+    var merchandiseItem = this.state.merchandiseItem;
+    merchandiseItem.filmId = +e.target.dataset.id;
+    this.setState({
+      merchandiseItem: merchandiseItem,
+      filmsModalOpen: false
     });
   },
 
@@ -150,6 +161,7 @@ var NewThing = React.createClass({
           { this.renderDigitalRetailerFilmFields() }
           { this.renderNewFilmFields() }
           { this.renderEpisodeFields() }
+          { this.renderMerchandiseFields() }
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAdd }>
             { this.renderAddButton() }
           </a>
@@ -170,7 +182,8 @@ var NewThing = React.createClass({
       digitalRetailer: "Digital Retailer",
       digitalRetailerFilm: "Digital Retailer",
       crossedFilm: "Crossed Film",
-      merchandiseType: "Merchandise Type"
+      merchandiseType: "Merchandise Type",
+      merchandiseItem: "Merchandise"
     };
     let verb = (this.props.copy ? "Copy" : "Add");
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
@@ -813,6 +826,70 @@ var NewThing = React.createClass({
             <input className={ Common.errorClass(this.state.errors, Common.errors.url) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.digitalRetailerFilm.url || "" } data-field="url" />
             { Common.renderFieldError(this.state.errors, Common.errors.url) }
           </div>
+        </div>
+      );
+    }
+  },
+
+  renderMerchandiseFields: function() {
+    if (this.props.thing === "merchandiseItem") {
+      return(
+        <div>
+          <div className="row">
+            <div className="col-xs-6">
+              <h2>Name</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.name || "" } data-field="name" />
+              { Common.renderFieldError(this.state.errors, Common.errors.name) }
+            </div>
+            <div className="col-xs-6">
+              <h2>Type</h2>
+              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="merchandiseTypeId" value={ this.state.merchandiseItem.merchandiseTypeId }>
+                { MerchandiseItemsStore.types().map(function(type) {
+                  return(
+                    <option key={ type.id } value={ type.id }>{ type.name }</option>
+                  );
+                }) }
+              </select>
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-12">
+              <h2>Description</h2>
+              <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.description || "" } data-field="description" />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-4">
+              <h2>Size</h2>
+              <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.size || "" } data-field="size" />
+              { Common.renderFieldError(this.state.errors, []) }
+            </div>
+            <div className="col-xs-4">
+              <h2>Price</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.price) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.price || "" } data-field="price" />
+              { Common.renderFieldError(this.state.errors, Common.errors.price) }
+            </div>
+            <div className="col-xs-4">
+              <h2>Inventory</h2>
+              <input className={ Common.errorClass(this.state.errors, Common.errors.inventory) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.inventory || "" } data-field="inventory" />
+              { Common.renderFieldError(this.state.errors, Common.errors.inventory) }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-11">
+              <h2>Associated Film</h2>
+              <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.filmId ? MerchandiseItemsStore.findFilm(this.state.merchandiseItem.filmId).title : "(None)" } data-field="filmId" readOnly={ true } />
+              { Common.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className="col-xs-1 icons">
+              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+            </div>
+          </div>
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
+            <ModalSelect options={ MerchandiseItemsStore.films() } property={ "title" } func={ this.clickSelectFilmForMerchandise } />
+          </Modal>
         </div>
       );
     }

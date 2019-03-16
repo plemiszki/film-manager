@@ -394,6 +394,9 @@ Common = {
     episodeNumber: [
       'Episode number is not a number',
       'Episode number has already been taken'
+    ],
+    inventory: [
+      "Inventory is not a number"
     ]
   },
 

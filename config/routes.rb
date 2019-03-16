@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   resources :sub_rights, only: [:show]
   resources :episodes, only: [:show]
   resources :merchandise_types, only: [:show]
+  resources :merchandise_items, only: [:index, :show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -134,6 +135,7 @@ Rails.application.routes.draw do
     delete '/in_theaters/:id' => '/api/in_theaters_films#destroy'
     resources :sub_rights, only: [:create, :show, :update, :destroy]
     resources :merchandise_types, only: [:index, :create, :show, :update, :destroy]
+    resources :merchandise_items, only: [:index, :create, :show, :update, :destroy]
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'

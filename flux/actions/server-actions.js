@@ -519,6 +519,15 @@ var ServerActions = {
       actionType: "MERCHANDISE_TYPES_RECEIVED",
       merchandiseTypes: response
     });
+  },
+
+  receiveMerchandiseItems: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "MERCHANDISE_ITEMS_RECEIVED",
+      merchandiseItems: response.merchandiseItems,
+      merchandiseTypes: response.merchandiseTypes,
+      films: response.films
+    });
   }
 }
 

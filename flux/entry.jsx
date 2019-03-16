@@ -57,6 +57,8 @@ var Catalog = require('./components/catalog.jsx');
 import EpisodeDetails from './components/episode-details.jsx';
 import MerchandiseTypesIndex from './components/merchandise-types-index.jsx';
 import MerchandiseTypeDetails from './components/merchandise-type-details.jsx';
+import MerchandiseItemsIndex from './components/merchandise-items-index.jsx';
+// import MerchandiseItemDetails from './components/merchandise-item-details.jsx';
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -248,5 +250,11 @@ $(document).ready(function() {
   }
   if ($('#merchandise-type-details')[0]) {
     ReactDOM.render(<MerchandiseTypeDetails />, document.getElementById("merchandise-type-details"));
+  }
+  if ($('#merchandise-items-index')[0]) {
+    ReactDOM.render(<MerchandiseItemsIndex />, document.getElementById("merchandise-items-index"));
+  }
+  if ($('#merchandise-item-details')[0]) {
+    ReactDOM.render(<MerchandiseItemDetails />, document.getElementById("merchandise-item-details"));
   }
 });
