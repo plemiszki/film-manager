@@ -2920,7 +2920,13 @@ var ClientActions = {
       method: 'PATCH',
       data: {
         merchandise_item: {
-          name: merchandiseItem.name
+          name: merchandiseItem.name,
+          merchandise_type_id: merchandiseItem.merchandiseTypeId,
+          description: merchandiseItem.description,
+          size: merchandiseItem.size,
+          price: HandyTools.removeFinanceSymbols(merchandiseItem.price),
+          inventory: merchandiseItem.inventory,
+          film_id: merchandiseItem.filmId
         }
       },
       success: function(response) {

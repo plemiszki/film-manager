@@ -219,7 +219,7 @@ var NewThing = React.createClass({
             {Common.renderFieldError(this.state.errors, Common.errors.upc)}
           </div>
         </div>
-      )
+      );
     }
   },
 
@@ -699,7 +699,7 @@ var NewThing = React.createClass({
                   )
                 })}
               </select>
-              {Common.renderFieldError(this.state.errors, [])}
+              { HandyTools.renderDropdownFieldError(this.state.errors, []) }
             </div>
           </div>
           <div className="row">
@@ -883,7 +883,7 @@ var NewThing = React.createClass({
               <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.filmId ? MerchandiseItemsStore.findFilm(this.state.merchandiseItem.filmId).title : "(None)" } data-field="filmId" readOnly={ true } />
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
-            <div className="col-xs-1 icons">
+            <div className="col-xs-1 icons-column">
               <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
             </div>
           </div>

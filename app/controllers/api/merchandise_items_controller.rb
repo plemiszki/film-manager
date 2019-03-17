@@ -8,7 +8,7 @@ class Api::MerchandiseItemsController < AdminController
   def show
     @merchandise_items = MerchandiseItem.where(id: params[:id])
     @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
-    render "index.json.jbuilder"
+    render "show.json.jbuilder"
   end
 
   def create
@@ -25,7 +25,7 @@ class Api::MerchandiseItemsController < AdminController
     @merchandise_item = MerchandiseItem.find(params[:id])
     if @merchandise_item.update(merchandise_item_params)
       @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
-      render "index.json.jbuilder"
+      render "show.json.jbuilder"
     else
       render json: @merchandise_item.errors.full_messages, status: 422
     end

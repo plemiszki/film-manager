@@ -80,17 +80,4 @@
       overflow-y: scroll;
     }
   }
-
-  .icons {
-    padding: 0;
-
-    img {
-      margin-top: 34px;
-      cursor: pointer;
-
-      &:first-of-type {
-        margin-right: 5px;
-      }
-    }
-  }
 }

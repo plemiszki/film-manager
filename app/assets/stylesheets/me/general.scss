@@ -48,6 +48,19 @@ a.standard-link {
   margin-bottom: 20px;
 }
 
+.icons-column {
+  padding: 0;
+
+  img {
+    margin-top: 34px;
+    cursor: pointer;
+
+    &:first-of-type {
+      margin-right: 5px;
+    }
+  }
+}
+
 body {
   background-color: #F5F6F7;
   height: 100%;
