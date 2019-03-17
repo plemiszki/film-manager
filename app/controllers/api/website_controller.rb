@@ -17,4 +17,9 @@ class Api::WebsiteController < CyberController
     render 'bookings.json.jbuilder'
   end
 
+  def merchandise
+    @merchandise_items = MerchandiseItem.all.includes(:merchandise_type)
+    render 'merchandise.json.jbuilder'
+  end
+
 end
