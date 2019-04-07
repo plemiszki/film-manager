@@ -6,7 +6,7 @@ var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
 var PurchaseOrderItemsStore = require('../stores/purchase-order-items-store.js');
 var ShippingAddressesStore = require('../stores/shipping-addresses-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
-var NewThing = require('./new-thing.jsx');
+import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx';
 
 var AddAddressModalStyles = {

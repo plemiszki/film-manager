@@ -1,52 +1,54 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-import ModalSelect from './modal-select.jsx';
-var ErrorsStore = require('../stores/errors-store.js');
-var ClientActions = require('../actions/client-actions.js');
-var FilmsStore = require('../stores/films-store.js');
-var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
-var ReturnsStore = require('../stores/returns-store.js');
-var BookingsStore = require('../stores/bookings-store.js');
-var DigitalRetailersStore = require('../stores/digital-retailers-store.js');
-var MerchandiseItemsStore = require('../stores/merchandise-items-store.js');
+import React, { Component } from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ModalSelect from './modal-select.jsx'
+import ErrorsStore from '../stores/errors-store.js'
+import ClientActions from '../actions/client-actions.js'
+import FilmsStore from '../stores/films-store.js'
+import PurchaseOrdersStore from '../stores/purchase-orders-store.js'
+import ReturnsStore from '../stores/returns-store.js'
+import BookingsStore from '../stores/bookings-store.js'
+import DigitalRetailersStore from '../stores/digital-retailers-store.js'
+import MerchandiseItemsStore from '../stores/merchandise-items-store.js'
 
-var NewThing = React.createClass({
+class NewThing extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+
+    this.state = {
       fetching: false,
       [this.props.thing]: this.props.initialObject,
       errors: [],
       filmsModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.errorsListener.remove();
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       fetching: false,
       errors: ErrorsStore.all()
     });
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: this.props.thing,
       errorsArray: this.state.errors,
       beforeSave: this.properBeforeSave()
     }
-  },
+  }
 
-  properBeforeSave: function() {
+  properBeforeSave() {
     if (this.props.thing === "dvdCustomer") {
       return function(newThing, key, value) {
         if (key === "consignment" && value === false) {
@@ -61,22 +63,22 @@ var NewThing = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
-  handleModalClose: function() {
+  handleModalClose() {
     this.setState({
       filmsModalOpen: false,
       venuesModalOpen: false
     });
-  },
+  }
 
-  clickSelectFilmButton: function() {
+  clickSelectFilmButton() {
     this.setState({
       filmsModalOpen: true
     });
-  },
+  }
 
-  clickSelectFilm: function(event) {
+  clickSelectFilm(event) {
     var booking = this.state.booking;
     booking.filmId = +event.target.dataset.id;
     Common.removeFieldError(this.state.errors, "film");
@@ -84,24 +86,24 @@ var NewThing = React.createClass({
       booking: booking,
       filmsModalOpen: false,
     });
-  },
+  }
 
-  clickSelectFilmForMerchandise: function(e) {
+  clickSelectFilmForMerchandise(e) {
     var merchandiseItem = this.state.merchandiseItem;
     merchandiseItem.filmId = +e.target.dataset.id;
     this.setState({
       merchandiseItem: merchandiseItem,
       filmsModalOpen: false
     });
-  },
+  }
 
-  clickSelectVenueButton: function() {
+  clickSelectVenueButton() {
     this.setState({
       venuesModalOpen: true
     });
-  },
+  }
 
-  clickSelectVenue: function(event) {
+  clickSelectVenue(event) {
     var booking = this.state.booking;
     booking.venueId = +event.target.dataset.id;
     Common.removeFieldError(this.state.errors, "venue");
@@ -109,9 +111,9 @@ var NewThing = React.createClass({
       booking: booking,
       venuesModalOpen: false
     });
-  },
+  }
 
-  clickAdd: function() {
+  clickAdd() {
     this.setState({
       fetching: true
     });
@@ -122,17 +124,17 @@ var NewThing = React.createClass({
     } else {
       ClientActions["create" + HandyTools.capitalize(this.props.thing)].call(ClientActions, this.state[this.props.thing]);
     }
-  },
+  }
 
-  disableIfBlank: function() {
+  disableIfBlank() {
     return ((this.state.page.name === "" || this.state.page.url === "") ? " inactive" : "");
-  },
+  }
 
-  addMargin: function() {
+  addMargin() {
     return this.state.errors.length === 0 ? " extra-margin" : "";
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="new-thing" className="component">
         <div className="white-box">
@@ -162,15 +164,15 @@ var NewThing = React.createClass({
           { this.renderNewFilmFields() }
           { this.renderEpisodeFields() }
           { this.renderMerchandiseFields() }
-          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAdd }>
+          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAdd.bind(this) }>
             { this.renderAddButton() }
           </a>
         </div>
       </div>
     )
-  },
+  }
 
-  renderAddButton: function() {
+  renderAddButton() {
     var map = {
       dvdCustomer: "DVD Customer",
       giftbox: "Gift Box",
@@ -193,9 +195,9 @@ var NewThing = React.createClass({
     } else {
       return `${verb} ${HandyTools.capitalize(this.props.thing)}`;
     }
-  },
+  }
 
-  renderNameField: function() {
+  renderNameField() {
     if (["user", "licensor", "giftbox", "country", "language", "genre", "topic", "format", "territory", "sublicensor", "digitalRetailer", "merchandiseType"].indexOf(this.props.thing) > -1) {
       return(
         <div className="row">
@@ -205,11 +207,11 @@ var NewThing = React.createClass({
             {Common.renderFieldError(this.state.errors, Common.errors.name)}
           </div>
         </div>
-      )
+      );
     }
-  },
+  }
 
-  renderUpcField: function() {
+  renderUpcField() {
     if (this.props.thing === "giftbox") {
       return(
         <div className="row">
@@ -221,9 +223,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderNewFilmFields: function() {
+  renderNewFilmFields() {
     if (this.props.thing === "film" || this.props.thing === 'tvSeries') {
       return(
         <div className="row">
@@ -245,9 +247,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderEmailField: function() {
+  renderEmailField() {
     if (this.props.thing === "user") {
       return(
         <div className="row">
@@ -259,9 +261,9 @@ var NewThing = React.createClass({
         </div>
       )
     }
-  },
+  }
 
-  renderPasswordField: function() {
+  renderPasswordField() {
     if (this.props.thing === "user") {
       return(
         <div className="row">
@@ -273,9 +275,9 @@ var NewThing = React.createClass({
         </div>
       )
     }
-  },
+  }
 
-  renderBookingFields: function() {
+  renderBookingFields() {
     if (this.props.thing === "booking" && !this.props.copyFrom) {
       return(
         <div>
@@ -286,7 +288,7 @@ var NewThing = React.createClass({
               { Common.renderFieldError(this.state.errors, Common.errors.film) }
             </div>
             <div className="col-xs-1 select-from-modal">
-              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
             </div>
             <div className="col-xs-5">
               <h2>Venue</h2>
@@ -294,7 +296,7 @@ var NewThing = React.createClass({
               { Common.renderFieldError(this.state.errors, Common.errors.venue) }
             </div>
             <div className="col-xs-1 select-from-modal">
-              <img src={ Images.openModal } onClick={ this.clickSelectVenueButton } />
+              <img src={ Images.openModal } onClick={ this.clickSelectVenueButton.bind(this) } />
             </div>
           </div>
           <div className="row">
@@ -356,18 +358,18 @@ var NewThing = React.createClass({
               { Common.renderFieldError(this.state.errors, []) }
             </div>
           </div>
-          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
-            <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm } />
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+            <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
           </Modal>
-          <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
-            <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue } />
+          <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+            <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue.bind(this) } />
           </Modal>
         </div>
       );
     }
-  },
+  }
 
-  renderCopyBookingFields: function() {
+  renderCopyBookingFields() {
     if (this.props.thing === "booking" && this.props.copyFrom) {
       return(
         <div>
@@ -378,18 +380,18 @@ var NewThing = React.createClass({
               { Common.renderFieldError(this.state.errors, Common.errors.film) }
             </div>
             <div className="col-xs-1 select-from-modal">
-              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
             </div>
           </div>
-          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
-            <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm } />
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+            <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
           </Modal>
         </div>
       );
     }
-  },
+  }
 
-  renderWeeklyTermsFields: function() {
+  renderWeeklyTermsFields() {
     if (this.props.thing === "weeklyTerm") {
       return(
         <div className="row">
@@ -401,9 +403,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderWeeklyBoxOfficeFields: function() {
+  renderWeeklyBoxOfficeFields() {
     if (this.props.thing === "weeklyBoxOffice") {
       return(
         <div className="row">
@@ -415,9 +417,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderPaymentFields: function() {
+  renderPaymentFields() {
     if (this.props.thing === "payment") {
       return(
         <div className="row">
@@ -439,9 +441,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderQuoteFields: function() {
+  renderQuoteFields() {
     if (this.props.thing === "quote") {
       return(
         <div>
@@ -467,9 +469,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderLaurelFields: function() {
+  renderLaurelFields() {
     if (this.props.thing === "laurel") {
       return(
         <div>
@@ -499,9 +501,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderActorOrDirectorFields: function() {
+  renderActorOrDirectorFields() {
     if (this.props.thing === "director" || this.props.thing === "actor") {
       return(
         <div>
@@ -520,9 +522,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderEpisodeFields: function() {
+  renderEpisodeFields() {
     if (this.props.thing === "episode") {
       return(
         <div className="row">
@@ -549,9 +551,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderDvdCustomerFields: function() {
+  renderDvdCustomerFields() {
     if (this.props.thing === "dvdCustomer") {
       return(
         <div>
@@ -632,9 +634,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderDvdTypeField: function() {
+  renderDvdTypeField() {
     if (this.props.thing === "dvd") {
       return(
         <div className="row">
@@ -651,9 +653,9 @@ var NewThing = React.createClass({
         </div>
       )
     }
-  },
+  }
 
-  renderReturnFields: function() {
+  renderReturnFields() {
     if (this.props.thing === "return") {
       return(
         <div>
@@ -680,11 +682,11 @@ var NewThing = React.createClass({
             </div>
           </div>
         </div>
-      )
+      );
     }
-  },
+  }
 
-  renderPOFields: function() {
+  renderPOFields() {
     if (this.props.thing === "purchaseOrder") {
       return(
         <div>
@@ -696,7 +698,7 @@ var NewThing = React.createClass({
                 {PurchaseOrdersStore.shippingAddresses().map(function(shippingAddress, index) {
                   return(
                     <option key={index + 1} value={shippingAddress.id}>{shippingAddress.label}</option>
-                  )
+                  );
                 })}
               </select>
               { HandyTools.renderDropdownFieldError(this.state.errors, []) }
@@ -715,11 +717,11 @@ var NewThing = React.createClass({
             </div>
           </div>
         </div>
-      )
+      );
     }
-  },
+  }
 
-  renderLabelField: function() {
+  renderLabelField() {
     if (this.props.thing === "shippingAddress") {
       return(
         <div className="row">
@@ -731,9 +733,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderVenueFields: function() {
+  renderVenueFields() {
     if (this.props.thing === "venue") {
       return(
         <div>
@@ -760,9 +762,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderShippingAddress: function() {
+  renderShippingAddress() {
     if (this.props.thing === "shippingAddress") {
       return(
         <div className="row">
@@ -778,9 +780,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderBookerFields: function() {
+  renderBookerFields() {
     if (this.props.thing === "booker") {
       return(
         <div>
@@ -804,9 +806,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderDigitalRetailerFilmFields: function() {
+  renderDigitalRetailerFilmFields() {
     if (this.props.thing === "digitalRetailerFilm") {
       return(
         <div className="row">
@@ -829,9 +831,9 @@ var NewThing = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderMerchandiseFields: function() {
+  renderMerchandiseFields() {
     if (this.props.thing === "merchandiseItem") {
       return(
         <div>
@@ -884,20 +886,20 @@ var NewThing = React.createClass({
               { Common.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-1 icons-column">
-              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
             </div>
           </div>
-          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
-            <ModalSelect options={ MerchandiseItemsStore.films() } property={ "title" } func={ this.clickSelectFilmForMerchandise } />
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+            <ModalSelect options={ MerchandiseItemsStore.films() } property={ "title" } func={ this.clickSelectFilmForMerchandise.bind(this) } />
           </Modal>
         </div>
       );
     }
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
   }
-});
+}
 
-module.exports = NewThing;
+export default NewThing;

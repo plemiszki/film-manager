@@ -3,7 +3,7 @@ var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var FormatsStore = require('../stores/formats-store.js');
-var NewThing = require('./new-thing.jsx');
+import NewThing from './new-thing.jsx'
 
 var ModalStyles = {
   overlay: {

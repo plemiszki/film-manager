@@ -5,7 +5,7 @@ var ClientActions = require('../actions/client-actions.js');
 var EpisodesStore = require('../stores/episodes-store.js');
 var ActorsStore = require('../stores/actors-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
-var NewThing = require('./new-thing.jsx');
+import NewThing from './new-thing.jsx'
 
 var EpisodeDetails = React.createClass({
 

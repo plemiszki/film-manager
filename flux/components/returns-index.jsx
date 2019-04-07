@@ -4,7 +4,7 @@ var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var ServerActions = require('../actions/server-actions.js');
 var ReturnsStore = require('../stores/returns-store.js');
-var NewThing = require('./new-thing.jsx');
+import NewThing from './new-thing.jsx'
 var JobStore = require('../stores/job-store.js');
 
 var ModalStyles = {

@@ -3,7 +3,7 @@ var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var UsersStore = require('../stores/users-store.js');
-var NewThing = require('./new-thing.jsx');
+import NewThing from './new-thing.jsx'
 var Common = require('../../app/assets/javascripts/me/common.jsx');
 
 var ModalStyles = {

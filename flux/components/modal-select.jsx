@@ -1,15 +1,17 @@
-var React = require('react');
+import React, { Component } from 'react'
 
-var ModalSelect = React.createClass({
+class ModalSelect extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+
+    this.state = {
       options: this.props.options,
       searchText: ""
-    });
-  },
+    };
+  }
 
-  render: function() {
+  render() {
     return(
       <div className="modal-select">
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText } data-field="searchText" />
@@ -23,6 +25,6 @@ var ModalSelect = React.createClass({
       </div>
     );
   }
-});
+}
 
-module.exports = ModalSelect;
+export default ModalSelect;

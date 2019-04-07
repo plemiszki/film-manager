@@ -11,6 +11,10 @@
     display: inline-block;
   }
 
+  input[type="checkbox"] {
+    width: auto;
+  }
+
   input:not([type]), .clearfix, .type-checkboxes {
     width: 100%;
     margin-bottom: 15px;

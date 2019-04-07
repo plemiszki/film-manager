@@ -4,7 +4,7 @@ var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var ServerActions = require('../actions/server-actions.js');
 var FilmsStore = require('../stores/films-store.js');
-var NewThing = require('./new-thing.jsx');
+import NewThing from './new-thing.jsx'
 var FilmRightsNew = require('./film-rights-new.jsx');
 var JobStore = require('../stores/job-store.js');
 

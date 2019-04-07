@@ -1,14 +1,16 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var UsersStore = require('../stores/users-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React, { Component } from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import UsersStore from '../stores/users-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var UserDetails = React.createClass({
+class UserDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+
+    this.state = {
       fetching: true,
       user: {},
       userSaved: {},
@@ -16,21 +18,21 @@ var UserDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.userListener = UsersStore.addListener(this.getUser);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.userListener = UsersStore.addListener(this.getUser.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchUser(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.userListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getUser: function() {
+  getUser() {
     this.setState({
       user: Tools.deepCopy(UsersStore.find(window.location.pathname.split("/")[2])),
       userSaved: UsersStore.find(window.location.pathname.split("/")[2]),
@@ -40,16 +42,16 @@ var UserDetails = React.createClass({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
@@ -58,40 +60,40 @@ var UserDetails = React.createClass({
         ClientActions.updateUser(this.state.user);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
     }, function() {
       ClientActions.deleteUser(this.state.user.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  handleModalClose() {
     this.setState({ deleteModalOpen: false });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.user, this.state.userSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "user",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="user-profile" className={this.props.new ? "admin-modal" : ""}>
         <div className="component">
@@ -124,23 +126,12 @@ var UserDetails = React.createClass({
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this user&#63;</h1>
-            Deleting a user will erase ALL of their information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
-              No
-            </a>
-          </div>
-        </Modal>
+        { Common.renderDeleteModal.call(this) }
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -148,23 +139,23 @@ var UserDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
         { this.renderDeleteButton() }
       </div>
     )
-  },
+  }
 
-  renderDeleteButton: function() {
+  renderDeleteButton() {
     if (Common.user.admin && (Common.user.id != window.location.pathname.split("/")[2])) {
       return(
-        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete User
         </a>
       )
     }
   }
-});
+}
 
-module.exports = UserDetails;
+export default UserDetails;

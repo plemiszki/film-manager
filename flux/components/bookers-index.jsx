@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var BookersStore = require('../stores/bookers-store.js');
-var NewThing = require('./new-thing.jsx');
+import React, { Component } from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import BookersStore from '../stores/bookers-store.js'
+import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,26 +18,28 @@ var ModalStyles = {
   }
 };
 
-var BookersIndex = React.createClass({
+class BookersIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+
+    this.state = {
       fetching: true,
       bookers: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.bookersListener = BookersStore.addListener(this.getBookers);
+  componentDidMount() {
+    this.bookersListener = BookersStore.addListener(this.getBookers.bind(this));
     ClientActions.fetchBookers();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.bookersListener.remove();
-  },
+  }
 
-  getBookers: function() {
+  getBookers() {
     this.setState({
       fetching: false,
       sortBy: "name",
@@ -45,29 +47,29 @@ var BookersIndex = React.createClass({
       bookers: BookersStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "bookers/" + id;
-  },
+  }
 
-  handleAddNewClick: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       modalOpen: false,
       searchModalOpen: false
     });
-  },
+  }
 
-  render: function() {
+  render() {
     var filteredBookers = this.state.bookers.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="bookers-index" className="bookers-index component">
         <h1>Bookers</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Booker</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Booker</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -102,16 +104,16 @@ var BookersIndex = React.createClass({
             </table>
           </div>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="booker" initialObject={ { name: "", email: "", phone:"" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = BookersIndex;
+export default BookersIndex;

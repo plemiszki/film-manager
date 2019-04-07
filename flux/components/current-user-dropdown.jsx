@@ -1,12 +1,12 @@
-var React = require('react');
+import React, { Component } from 'react'
 
-var CurrentUserDropDown = React.createClass({
+class CurrentUserDropDown extends React.Component {
 
-  clickMyAccount: function() {
+  clickMyAccount() {
     window.location.pathname = "users/" + Common.user.id;
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="current-user-dropdown">
         <div id="hover-area">
@@ -22,6 +22,6 @@ var CurrentUserDropDown = React.createClass({
       </div>
     );
   }
-});
+}
 
-module.exports = CurrentUserDropDown;
+export default CurrentUserDropDown;

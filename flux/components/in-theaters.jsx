@@ -3,8 +3,8 @@ var Modal = require('react-modal');
 var HandyTools = require('handy-tools');
 var ClientActions = require('../actions/client-actions.js');
 var InTheatersStore = require('../stores/in-theaters-store.js');
-var NewThing = require('./new-thing.jsx');
-var ModalSelect = require('./modal-select.jsx');
+import NewThing from './new-thing.jsx'
+import ModalSelect from './modal-select.jsx'
 var InTheatersIndexItem = require('./in-theaters-index-item.jsx');
 
 var ModalStyles = {

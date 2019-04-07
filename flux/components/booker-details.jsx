@@ -5,7 +5,7 @@ var ClientActions = require('../actions/client-actions.js');
 var BookersStore = require('../stores/bookers-store.js');
 var BookerVenuesStore = require('../stores/booker-venues-store.js');
 var ErrorsStore = require('../stores/errors-store.js');
-var ModalSelect = require('./modal-select.jsx');
+import ModalSelect from './modal-select.jsx'
 
 var BookerDetails = React.createClass({
 

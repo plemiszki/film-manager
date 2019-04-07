@@ -15,8 +15,8 @@ var DirectorsStore = require('../stores/directors-store.js');
 var CrossedFilmsStore = require('../stores/crossed-films-store.js');
 var ActorsStore = require('../stores/actors-store.js');
 var RelatedFilmsStore = require('../stores/related-films-store.js');
-var NewThing = require('./new-thing.jsx');
-var ModalSelect = require('./modal-select.jsx');
+import NewThing from './new-thing.jsx'
+import ModalSelect from './modal-select.jsx'
 var FilmRightsNew = require('./film-rights-new.jsx');
 var FilmRightsChangeDates = require('./film-rights-change-dates.jsx');
 var FormatsStore = require('../stores/formats-store.js');
