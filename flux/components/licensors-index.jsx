@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var LicensorsStore = require('../stores/licensors-store.js');
+import React, { Component } from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import LicensorsStore from '../stores/licensors-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,51 +18,52 @@ var ModalStyles = {
   }
 };
 
-var LicensorsIndex = React.createClass({
+class LicensorsIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       licensors: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.licensorsListener = LicensorsStore.addListener(this.getLicensors);
+  componentDidMount() {
+    this.licensorsListener = LicensorsStore.addListener(this.getLicensors.bind(this));
     ClientActions.fetchLicensors();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.licensorsListener.remove();
-  },
+  }
 
-  getLicensors: function() {
+  getLicensors() {
     this.setState({
       fetching: false,
       searchText: "",
       licensors: LicensorsStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "licensors/" + id;
-  },
+  }
 
-  handleAddNewClick: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="licensors-index" className="component">
         <h1>Licensors</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Licensor</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Licensor</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -75,28 +76,28 @@ var LicensorsIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.licensors.filterSearchText(this.state.searchText).map(function(licensor, index) {
+              { this.state.licensors.filterSearchText(this.state.searchText).map((licensor, index) => {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, licensor.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, licensor.id) }>
                     <td className="name-column">
-                      {licensor.name}
+                      { licensor.name }
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="licensor" initialObject={{name: ""}} />
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
+          <NewThing thing="licensor" initialObject={ { name: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = LicensorsIndex;
+export default LicensorsIndex;

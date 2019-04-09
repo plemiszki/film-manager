@@ -1,14 +1,14 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var ServerActions = require('../actions/server-actions.js');
-var FilmsStore = require('../stores/films-store.js');
+import React, { Component } from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import ServerActions from '../actions/server-actions.js'
+import FilmsStore from '../stores/films-store.js'
 import NewThing from './new-thing.jsx'
-var FilmRightsNew = require('./film-rights-new.jsx');
-var JobStore = require('../stores/job-store.js');
+import FilmRightsNew from './film-rights-new.jsx'
+import JobStore from '../stores/job-store.js'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -21,7 +21,7 @@ var ModalStyles = {
   }
 };
 
-var newRightsModalStyles = {
+const newRightsModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -34,13 +34,15 @@ var newRightsModalStyles = {
   }
 };
 
-var FilmsIndex = React.createClass({
+class FilmsIndex extends React.Component {
 
-  getInitialState: function() {
-    var job = {
+  constructor(props) {
+    super(props)
+
+    let job = {
       errors_text: ""
     };
-    return({
+    this.state = {
       fetching: true,
       searchText: '',
       sortBy: 'title',
@@ -48,33 +50,33 @@ var FilmsIndex = React.createClass({
       modalOpen: false,
       jobModalOpen: !!job.id,
       job: job
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.filmsListener = FilmsStore.addListener(this.getFilms);
-    this.jobListener = JobStore.addListener(this.getJob);
+  componentDidMount() {
+    this.filmsListener = FilmsStore.addListener(this.getFilms.bind(this));
+    this.jobListener = JobStore.addListener(this.getJob.bind(this));
     if (this.props.advanced) {
       ClientActions.fetchFilmsAdvanced(this.props.filmType);
     } else {
       ClientActions.fetchFilms(this.props.filmType);
     }
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.filmsListener.remove();
     this.jobListener.remove();
-  },
+  }
 
-  getFilms: function() {
+  getFilms() {
     this.setState({
       fetching: false,
       films: FilmsStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  getJob: function() {
+  getJob() {
     var job = JobStore.job();
     if (job.done) {
       this.setState({
@@ -92,32 +94,32 @@ var FilmsIndex = React.createClass({
         fetching: false
       });
     }
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "films/" + id;
-  },
+  }
 
-  clickNew: function() {
+  clickNew() {
     this.setState({
       modalOpen: true
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       modalOpen: false,
       searchModalOpen: false
     });
-  },
+  }
 
-  clickAdvanced: function() {
+  clickAdvanced() {
     this.setState({
       searchModalOpen: true
     });
-  },
+  }
 
-  clickExportMetadata: function(filmType, exportType, searchCriteria) {
+  clickExportMetadata(filmType, exportType, searchCriteria) {
     if (!this.state.fetching) {
       this.setState({
         fetching: true,
@@ -131,9 +133,9 @@ var FilmsIndex = React.createClass({
       }
       ClientActions.exportFilms(filmType, filmIds, searchCriteria);
     }
-  },
+  }
 
-  render: function() {
+  render() {
     var filteredFilms = this.state.films.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="films-index" className="component">
@@ -171,25 +173,25 @@ var FilmsIndex = React.createClass({
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing={ 'film' } initialObject={ { title: "", filmType: this.props.filmType, labelId: 1, year: '' } } />
         </Modal>
-        <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ newRightsModalStyles }>
+        <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ newRightsModalStyles }>
           <FilmRightsNew search={ true } filmType={ this.props.filmType } availsExport={ this.clickExportMetadata } />
         </Modal>
         { Common.jobModal.call(this, this.state.job) }
       </div>
     );
-  },
+  }
 
-  renderHeader: function() {
+  renderHeader() {
     let header = this.props.filmType == 'TV Series' ? 'TV Series' : `${this.props.filmType}s`;
     return(
       <h1>{ header }</h1>
     );
-  },
+  }
 
-  renderAddNewButton: function() {
+  renderAddNewButton() {
     let buttonText = {
       'Feature': 'Film',
       'Short': 'Short',
@@ -197,28 +199,28 @@ var FilmsIndex = React.createClass({
     }[this.props.filmType];
     if (!this.props.advanced) {
       return(
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew }>Add { buttonText }</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add { buttonText }</a>
       );
     }
-  },
+  }
 
-  renderExportMetadataButton: function() {
+  renderExportMetadataButton() {
     if (this.props.filmType != 'TV Series') {
       return(
         <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata(this.props.filmType, 'all') }.bind(this) }>Export All</a>
       );
     }
-  },
+  }
 
-  renderCustomButton: function() {
+  renderCustomButton() {
     if (this.props.filmType != 'TV Series') {
       return(
-        <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced }>Export Custom</a>
+        <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced.bind(this) }>Export Custom</a>
       );
     }
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {
       window.setTimeout(function() {
@@ -236,6 +238,6 @@ var FilmsIndex = React.createClass({
       }.bind(this), 1500)
     }
   }
-});
+}
 
-module.exports = FilmsIndex;
+export default FilmsIndex;

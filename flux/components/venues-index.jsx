@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var VenuesStore = require('../stores/venues-store.js');
+import React, { Component } from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import VenuesStore from '../stores/venues-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,56 +18,57 @@ var ModalStyles = {
   }
 };
 
-var VenuesIndex = React.createClass({
+class VenuesIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       searchText: "",
       sortBy: "label",
       venues: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.venuesListener = VenuesStore.addListener(this.getVenues);
+  componentDidMount() {
+    this.venuesListener = VenuesStore.addListener(this.getVenues.bind(this));
     ClientActions.fetchVenues();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.venuesListener.remove();
-  },
+  }
 
-  getVenues: function() {
+  getVenues() {
     this.setState({
       fetching: false,
       venues: VenuesStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "venues/" + id;
-  },
+  }
 
-  handleAddNewClick: function() {
+  clickNew() {
     if (!this.state.fetching) {
       this.setState({ modalOpen: true });
     }
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
-    var filteredVenues = this.state.venues.filterSearchText(this.state.searchText, this.state.sortBy);
+  render() {
+    let filteredVenues = this.state.venues.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="venues-index" className="component">
         <div className="clearfix">
           <h1>Venues</h1>
-          <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Venue</a>
+          <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Venue</a>
           <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
@@ -84,7 +85,7 @@ var VenuesIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td><td></td></tr>
-              { _.orderBy(filteredVenues, [Common.commonSort.bind(this)]).map(function(venue, index) {
+              { _.orderBy(filteredVenues, [Common.commonSort.bind(this)]).map((venue, index) => {
                 return(
                   <tr key={index} onClick={this.redirect.bind(this, venue.id)}>
                     <td className="name-column">
@@ -101,20 +102,20 @@ var VenuesIndex = React.createClass({
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="venue" initialObject={ { label: "", sageId: "", venueType: "Theater" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = VenuesIndex;
+export default VenuesIndex;

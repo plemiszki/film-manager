@@ -1,12 +1,12 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var ReactModal = require('react-modal');
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import ReactModal from 'react-modal'
 import CurrentUserDropDown from './components/current-user-dropdown.jsx'
 var UsersIndex = require('./components/users-index.jsx');
 import UserDetails from './components/user-details.jsx'
-var LicensorsIndex = require('./components/licensors-index.jsx');
+import LicensorsIndex from './components/licensors-index.jsx'
 var LicensorDetails = require('./components/licensor-details.jsx');
-var FilmsIndex = require('./components/films-index.jsx');
+import FilmsIndex from './components/films-index.jsx'
 var FilmDetails = require('./components/film-details.jsx');
 var RoyaltyReportDetails = require('./components/royalty-report-details.jsx');
 var RoyaltyReportsIndex = require('./components/reports-index.jsx');
@@ -24,7 +24,7 @@ var InvoiceDetails = require('./components/invoice-details.jsx');
 var DvdReports = require('./components/dvd-reports.jsx');
 var ReturnsIndex = require('./components/returns-index.jsx');
 var ReturnDetails = require('./components/return-details.jsx');
-var VenuesIndex = require('./components/venues-index.jsx');
+import VenuesIndex from './components/venues-index.jsx'
 var VenueDetails = require('./components/venue-details.jsx');
 import BookingsIndex from './components/bookings-index.jsx'
 var BookingDetails = require('./components/booking-details.jsx');
