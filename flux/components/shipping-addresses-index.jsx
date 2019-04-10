@@ -1,42 +1,43 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var ShippingAddressesStore = require('../stores/shipping-addresses-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import ShippingAddressesStore from '../stores/shipping-addresses-store.js'
 
-var ShippingAddressesIndex = React.createClass({
+class ShippingAddressesIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       shippingAddresses: [],
       searchText: "",
       sortBy: "label"
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.shippingAddressesListener = ShippingAddressesStore.addListener(this.getShippingAddresses);
+  componentDidMount() {
+    this.shippingAddressesListener = ShippingAddressesStore.addListener(this.getShippingAddresses.bind(this));
     ClientActions.fetchShippingAddresses();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.shippingAddressesListener.remove();
-  },
+  }
 
-  getShippingAddresses: function() {
+  getShippingAddresses() {
     this.setState({
       fetching: false,
       searchText: "",
       shippingAddresses: ShippingAddressesStore.all()
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "shipping_addresses/" + id;
-  },
+  }
 
-  render: function() {
+  render() {
     var filteredAddresses = this.state.shippingAddresses.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="shipping-addresses-index" className="component">
@@ -71,11 +72,11 @@ var ShippingAddressesIndex = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = ShippingAddressesIndex;
+export default ShippingAddressesIndex;

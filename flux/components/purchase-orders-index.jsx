@@ -1,13 +1,13 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import PurchaseOrdersStore from '../stores/purchase-orders-store.js'
 import NewThing from './new-thing.jsx'
-var JobStore = require('../stores/job-store.js');
-var ServerActions = require('../actions/server-actions.js');
+import JobStore from '../stores/job-store.js'
+import ServerActions from '../actions/server-actions.js'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -20,11 +20,12 @@ var ModalStyles = {
   }
 };
 
-var PurchaseOrdersIndex = React.createClass({
+class PurchaseOrdersIndex extends React.Component {
 
-  getInitialState: function() {
-    var date = new Date;
-    var job = {
+  constructor(props) {
+    super(props)
+    let date = new Date;
+    let job = {
       errors_text: ""
     };
     if ($('#inventory-import-id').length == 1) {
@@ -32,7 +33,7 @@ var PurchaseOrdersIndex = React.createClass({
       job.second_line = false;
       job.first_line = "Updating Stock";
     }
-    return({
+    this.state = {
       fetching: true,
       searchText: "",
       sortBy: "shipDate",
@@ -42,29 +43,29 @@ var PurchaseOrdersIndex = React.createClass({
       noErrorsModalOpen: false,
       jobModalOpen: !!job.id,
       job: job
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.purchaseOrdersListener = PurchaseOrdersStore.addListener(this.getPurchaseOrders);
-    this.jobListener = JobStore.addListener(this.getJob);
+  componentDidMount() {
+    this.purchaseOrdersListener = PurchaseOrdersStore.addListener(this.getPurchaseOrders.bind(this));
+    this.jobListener = JobStore.addListener(this.getJob.bind(this));
     $('#upload-form-inventory #user_file').on('change', this.pickFile);
     ClientActions.fetchPurchaseOrders();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.purchaseOrdersListener.remove();
-  },
+  }
 
-  getPurchaseOrders: function() {
+  getPurchaseOrders() {
     this.setState({
       fetching: false,
       purchaseOrders: PurchaseOrdersStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  getJob: function() {
+  getJob() {
     var job = JobStore.job();
     if (job.done) {
       this.setState({
@@ -80,9 +81,9 @@ var PurchaseOrdersIndex = React.createClass({
         fetching: false
       });
     }
-  },
+  }
 
-  modalCloseAndRefresh: function() {
+  modalCloseAndRefresh() {
     this.setState({
       errorsModalOpen: false,
       noErrorsModalOpen: false,
@@ -90,42 +91,42 @@ var PurchaseOrdersIndex = React.createClass({
     }, function() {
       ClientActions.fetchPurchaseOrders();
     });
-  },
+  }
 
-  clickUpdateStock: function() {
+  clickUpdateStock() {
     $('#upload-form-inventory #user_file').click();
-  },
+  }
 
-  pickFile: function() {
+  pickFile() {
     $('#upload-form-inventory #submit-button-inventory').click();
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "purchase_orders/" + id;
-  },
+  }
 
-  clickSeeAll: function() {
+  clickSeeAll() {
     this.setState({
       fetching: true
     });
     ClientActions.fetchPurchaseOrders('all');
-  },
+  }
 
-  handleAddNewClick: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     var filteredOrders = this.state.purchaseOrders.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="purchase-orders-index" className="component">
         <h1>DVD Purchase Orders</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add New</a>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickUpdateStock }>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add New</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickUpdateStock.bind(this) }>
           <img className={ PurchaseOrdersStore.needToUpdate() ? "" : "hidden" } src={ Images.attention } />
           Update Stock
         </a>
@@ -174,7 +175,7 @@ var PurchaseOrdersIndex = React.createClass({
           </table>
         </div>
         { this.renderSeeAllButton() }
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="purchaseOrder" initialObject={ { number: "", orderDate: "" } } />
         </Modal>
         { Common.jobModal.call(this, this.state.job) }
@@ -182,22 +183,22 @@ var PurchaseOrdersIndex = React.createClass({
         { Common.jobNoErrorsModal.call(this) }
       </div>
     );
-  },
+  }
 
-  renderSeeAllButton: function() {
+  renderSeeAllButton() {
     if (this.state.purchaseOrders.length === 25) {
       return(
         <div className="text-center">
-          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>
+          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll.bind(this) }>See All</a>
         </div>
       )
     }
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         $.ajax({
           url: '/api/jobs/status',
           method: 'GET',
@@ -205,13 +206,13 @@ var PurchaseOrdersIndex = React.createClass({
             id: this.state.job.id,
             time: this.state.job.job_id
           },
-          success: function(response) {
+          success: (response) => {
             ServerActions.receiveJob(response);
-          }.bind(this)
-        })
-      }.bind(this), 1500)
+          }
+        });
+      }, 1500)
     }
   }
-});
+}
 
-module.exports = PurchaseOrdersIndex;
+export default PurchaseOrdersIndex;

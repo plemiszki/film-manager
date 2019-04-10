@@ -1,13 +1,13 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var ServerActions = require('../actions/server-actions.js');
-var ReturnsStore = require('../stores/returns-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import ServerActions from '../actions/server-actions.js'
+import ReturnsStore from '../stores/returns-store.js'
 import NewThing from './new-thing.jsx'
-var JobStore = require('../stores/job-store.js');
+import JobStore from '../stores/job-store.js'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -20,7 +20,7 @@ var ModalStyles = {
   }
 };
 
-var exportModalStyles = {
+const exportModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -36,13 +36,14 @@ var exportModalStyles = {
   }
 };
 
-var ReturnsIndex = React.createClass({
+class ReturnsIndex extends React.Component {
 
-  getInitialState: function() {
-    var job = {
+  constructor(props) {
+    super(props)
+    let job = {
       errors_text: ""
     };
-    return({
+    this.state = {
       fetching: true,
       searchText: "",
       sortBy: "date",
@@ -56,29 +57,29 @@ var ReturnsIndex = React.createClass({
       errors: [],
       jobModalOpen: !!job.id,
       job: job
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.returnsListener = ReturnsStore.addListener(this.getReturns);
-    this.jobListener = JobStore.addListener(this.getJob);
+  componentDidMount() {
+    this.returnsListener = ReturnsStore.addListener(this.getReturns.bind(this));
+    this.jobListener = JobStore.addListener(this.getJob.bind(this));
     ClientActions.fetchReturns();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.returnsListener.remove();
     this.jobListener.remove();
-  },
+  }
 
-  getReturns: function() {
+  getReturns() {
     this.setState({
       fetching: false,
       returns: ReturnsStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  getJob: function() {
+  getJob() {
     var job = JobStore.job();
     if (job.done) {
       this.setState({
@@ -97,9 +98,9 @@ var ReturnsIndex = React.createClass({
         fetching: false
       });
     }
-  },
+  }
 
-  modalCloseAndRefresh: function() {
+  modalCloseAndRefresh() {
     this.setState({
       errorsModalOpen: false,
       noErrorsModalOpen: false,
@@ -107,60 +108,60 @@ var ReturnsIndex = React.createClass({
     }, function() {
       ClientActions.fetchPurchaseOrders();
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "returns/" + id;
-  },
+  }
 
-  handleAddNewClick: function() {
+  clickNew() {
     if (!this.state.fetching) {
       this.setState({ modalOpen: true });
     }
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       modalOpen: false,
       exportModalOpen: false
     });
-  },
+  }
 
-  openExportModal: function() {
+  openExportModal() {
     if (!this.state.fetching) {
       this.setState({
         exportModalOpen: true
       });
     }
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return true;
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "export",
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges
     }
-  },
+  }
 
-  clickExport: function() {
+  clickExport() {
     this.setState({
       exportModalOpen: false,
       fetching: true
     });
     ClientActions.exportReturns(this.state.export.startDate, this.state.export.endDate);
-  },
+  }
 
-  render: function() {
-    var filteredReturns = this.state.returns.filterSearchText(this.state.searchText, this.state.sortBy);
+  render() {
+    let filteredReturns = this.state.returns.filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="returns-index" className="component">
         <h1>DVD Returns</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal }>Export</a>
-        <a className={ "orange-button float-button margin" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add New</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
+        <a className={ "orange-button float-button margin" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add New</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -178,7 +179,7 @@ var ReturnsIndex = React.createClass({
               <tr><td></td></tr>
               { _.orderBy(filteredReturns, [Common.commonSort.bind(this)], [this.state.sortBy === 'date' ? 'desc' : 'asc']).map(function(r, index) {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, r.id)}>
+                  <tr key={index} onClick={ this.redirect.bind(this, r.id) }>
                     <td className="indent">
                       { r.date }
                     </td>
@@ -197,10 +198,10 @@ var ReturnsIndex = React.createClass({
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="return" initialObject={ { number: "", date: "", customerId: ReturnsStore.customers()[0] ? ReturnsStore.customers()[0].id : "" } } />
         </Modal>
-        <Modal isOpen={ this.state.exportModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ exportModalStyles }>
+        <Modal isOpen={ this.state.exportModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ exportModalStyles }>
           <div className="export-modal">
             <div className="row">
               <div className="col-xs-6">
@@ -214,7 +215,7 @@ var ReturnsIndex = React.createClass({
             </div>
             <div className="row button-row">
               <div className="col-xs-12">
-                <a className="orange-button" onClick={ this.clickExport }>Export Returns</a>
+                <a className="orange-button" onClick={ this.clickExport.bind(this) }>Export Returns</a>
               </div>
             </div>
           </div>
@@ -222,12 +223,12 @@ var ReturnsIndex = React.createClass({
         { Common.jobModal.call(this, this.state.job) }
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         $.ajax({
           url: '/api/jobs/status',
           method: 'GET',
@@ -235,13 +236,13 @@ var ReturnsIndex = React.createClass({
             id: this.state.job.id,
             time: this.state.job.job_id
           },
-          success: function(response) {
+          success: (response) => {
             ServerActions.receiveJob(response);
-          }.bind(this)
+          }
         })
-      }.bind(this), 1500)
+      }, 1500)
     }
   }
-});
+}
 
-module.exports = ReturnsIndex;
+export default ReturnsIndex;
