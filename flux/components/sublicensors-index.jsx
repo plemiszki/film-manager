@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var SublicensorsStore = require('../stores/sublicensors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import SublicensorsStore from '../stores/sublicensors-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,51 +18,52 @@ var ModalStyles = {
   }
 };
 
-var SublicensorsIndex = React.createClass({
+class SublicensorsIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       sublicensors: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.sublicensorsListener = SublicensorsStore.addListener(this.getSublicensors);
+  componentDidMount() {
+    this.sublicensorsListener = SublicensorsStore.addListener(this.getSublicensors.bind(this));
     ClientActions.fetchSublicensors();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.sublicensorsListener.remove();
-  },
+  }
 
-  getSublicensors: function() {
+  getSublicensors() {
     this.setState({
       fetching: false,
       searchText: "",
       sublicensors: SublicensorsStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "sublicensors/" + id;
-  },
+  }
 
-  handleAddNewClick: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="sublicensors-index" className="component">
         <h1>Sublicensors</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Sublicensor</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Sublicensor</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -87,16 +88,16 @@ var SublicensorsIndex = React.createClass({
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="sublicensor" initialObject={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = SublicensorsIndex;
+export default SublicensorsIndex;

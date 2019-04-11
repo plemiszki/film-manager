@@ -585,22 +585,22 @@ Common = {
 
   jobErrorsModal: function() {
     return(
-      <Modal isOpen={this.state.errorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={Common.errorsModalStyles}>
+      <Modal isOpen={ this.state.errorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ Common.errorsModalStyles }>
         <div className="errors-modal">
-          <h1>{this.state.job.first_line}</h1>
-          {this.state.job.errors_text.split("\n").map(function(error, index) {
+          <h1>{ this.state.job.first_line }</h1>
+          { this.state.job.errors_text.split("\n").map(function(error, index) {
             var greenClass = "";
             if (error.substr(error.length - 3) === " :)") {
               greenClass = " green";
               error = error.substr(0, error.length - 3);
             }
             return(
-              <div key={index} className={`import-error${greenClass}`}>{error}</div>
+              <div key={ index } className={ `import-error${greenClass}` }>{ error }</div>
             );
-          }.bind(this))}
+          }.bind(this)) }
         </div>
       </Modal>
-    )
+    );
   },
 
   jobNoErrorsModal: function() {

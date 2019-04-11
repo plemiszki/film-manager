@@ -1,12 +1,12 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var UsersStore = require('../stores/users-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import UsersStore from '../stores/users-store.js'
 import NewThing from './new-thing.jsx'
-var Common = require('../../app/assets/javascripts/me/common.jsx');
+import Common from '../../app/assets/javascripts/me/common.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -19,46 +19,47 @@ var ModalStyles = {
   }
 };
 
-var UsersIndex = React.createClass({
+class UsersIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       users: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.usersListener = UsersStore.addListener(this.getUsers);
+  componentDidMount() {
+    this.usersListener = UsersStore.addListener(this.getUsers.bind(this));
     ClientActions.fetchUsers();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.usersListener.remove();
-  },
+  }
 
-  getUsers: function() {
+  getUsers() {
     this.setState({
       fetching: false,
       users: UsersStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "users/" + id;
-  },
+  }
 
-  handleAddNewClick: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="users-index" className="component">
         <div className="clearfix">
@@ -92,20 +93,20 @@ var UsersIndex = React.createClass({
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="user" initialObject={ { name: "", email: "", password: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButton: function() {
+  renderButton() {
     if (Common.user.admin) {
       return(
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add User</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add User</a>
       )
     }
   }
-});
+}
 
-module.exports = UsersIndex;
+export default UsersIndex;

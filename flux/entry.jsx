@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import ReactModal from 'react-modal'
 import CurrentUserDropDown from './components/current-user-dropdown.jsx'
-var UsersIndex = require('./components/users-index.jsx');
+import UsersIndex from './components/users-index.jsx'
 import UserDetails from './components/user-details.jsx'
 import LicensorsIndex from './components/licensors-index.jsx'
 var LicensorDetails = require('./components/licensor-details.jsx');
@@ -10,7 +10,7 @@ import FilmsIndex from './components/films-index.jsx'
 var FilmDetails = require('./components/film-details.jsx');
 var RoyaltyReportDetails = require('./components/royalty-report-details.jsx');
 var RoyaltyReportsIndex = require('./components/reports-index.jsx');
-var GiftBoxesIndex = require('./components/giftboxes-index.jsx');
+import GiftBoxesIndex from './components/giftboxes-index.jsx'
 var GiftBoxDetails = require('./components/giftbox-details.jsx');
 import DvdCustomersIndex from './components/dvd-customers-index.jsx'
 var DvdCustomerDetails = require('./components/dvd-customer-details.jsx');
@@ -19,7 +19,7 @@ import PurchaseOrdersIndex from './components/purchase-orders-index.jsx'
 var PurchaseOrderDetails = require('./components/purchase-order-details.jsx');
 import ShippingAddressesIndex from './components/shipping-addresses-index.jsx'
 var ShippingAddressDetails = require('./components/shipping-address-details.jsx');
-var InvoicesIndex = require('./components/invoices-index.jsx');
+import InvoicesIndex from './components/invoices-index.jsx'
 var InvoiceDetails = require('./components/invoice-details.jsx');
 var DvdReports = require('./components/dvd-reports.jsx');
 import ReturnsIndex from './components/returns-index.jsx'
@@ -47,18 +47,18 @@ var TerritoriesIndex = require('./components/territories-index.jsx');
 var TerritoryDetails = require('./components/territory-details.jsx');
 var FilmRightDetails = require('./components/film-right-details.jsx');
 var SubRightDetails = require('./components/sub-right-details.jsx');
-var SublicensorsIndex = require('./components/sublicensors-index.jsx');
+import SublicensorsIndex from './components/sublicensors-index.jsx'
 var SublicensorDetails = require('./components/sublicensor-details.jsx');
 var DigitalRetailersIndex = require('./components/digital-retailers-index.jsx');
 var DigitalRetailerDetails = require('./components/digital-retailer-details.jsx');
 var DigitalRetailerFilmDetails = require('./components/digital-retailer-film-details.jsx');
 var Calendar = require('./components/calendar.jsx');
 var Catalog = require('./components/catalog.jsx');
-import EpisodeDetails from './components/episode-details.jsx';
-import MerchandiseTypesIndex from './components/merchandise-types-index.jsx';
-import MerchandiseTypeDetails from './components/merchandise-type-details.jsx';
-import MerchandiseItemsIndex from './components/merchandise-items-index.jsx';
-import MerchandiseItemDetails from './components/merchandise-item-details.jsx';
+import EpisodeDetails from './components/episode-details.jsx'
+import MerchandiseTypesIndex from './components/merchandise-types-index.jsx'
+import MerchandiseTypeDetails from './components/merchandise-type-details.jsx'
+import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
+import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);

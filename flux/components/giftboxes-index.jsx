@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var GiftboxesStore = require('../stores/giftboxes-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import GiftboxesStore from '../stores/giftboxes-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,51 +18,52 @@ var ModalStyles = {
   }
 };
 
-var GiftboxesIndex = React.createClass({
+class GiftboxesIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       giftboxes: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.giftboxesListener = GiftboxesStore.addListener(this.getGiftboxes);
+  componentDidMount() {
+    this.giftboxesListener = GiftboxesStore.addListener(this.getGiftboxes.bind(this));
     ClientActions.fetchGiftboxes();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.giftboxesListener.remove();
-  },
+  }
 
-  getGiftboxes: function() {
+  getGiftboxes() {
     this.setState({
       fetching: false,
       searchText: "",
       giftboxes: GiftboxesStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "giftboxes/" + id;
-  },
+  }
 
-  handleAddNewClick: function() {
-    this.setState({modalOpen: true});
-  },
+  clickNew() {
+    this.setState({ modalOpen: true });
+  }
 
-  handleModalClose: function() {
-    this.setState({modalOpen: false});
-  },
+  closeModal() {
+    this.setState({ modalOpen: false });
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="giftboxes-index" className="component">
         <h1>Gift Boxes</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Gift Box</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Gift Box</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -77,9 +78,9 @@ var GiftboxesIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td><td></td><td></td></tr>
-              {this.state.giftboxes.filterSearchText(this.state.searchText).map(function(giftbox, index) {
+              { this.state.giftboxes.filterSearchText(this.state.searchText).map((giftbox, index) => {
                 return(
-                  <tr key={index} onClick={this.redirect.bind(this, giftbox.id)}>
+                  <tr key={ index } onClick={ this.redirect.bind(this, giftbox.id) }>
                     <td className="name-column">
                       { giftbox.name }
                     </td>
@@ -91,20 +92,20 @@ var GiftboxesIndex = React.createClass({
                     </td>
                   </tr>
                 );
-              }.bind(this))}
+              }) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={this.state.modalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={ModalStyles}>
-          <NewThing thing="giftbox" initialObject={{name: "", upc: ""}} />
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
+          <NewThing thing="giftbox" initialObject={ { name: "", upc: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = GiftboxesIndex;
+export default GiftboxesIndex;

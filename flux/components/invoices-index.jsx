@@ -1,12 +1,12 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var ServerActions = require('../actions/server-actions.js');
-var InvoicesStore = require('../stores/invoices-store.js');
-var JobStore = require('../stores/job-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import ServerActions from '../actions/server-actions.js'
+import InvoicesStore from '../stores/invoices-store.js'
+import JobStore from '../stores/job-store.js'
 
-var filterModalStyles = {
+const filterModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -22,13 +22,14 @@ var filterModalStyles = {
   }
 };
 
-var InvoicesIndex = React.createClass({
+class InvoicesIndex extends React.Component {
 
-  getInitialState: function() {
-    var job = {
+  constructor(props) {
+    super(props)
+    let job = {
       errors_text: ""
     };
-    return({
+    this.state = {
       fetching: true,
       searchText: "",
       sortBy: "sentDate",
@@ -39,27 +40,27 @@ var InvoicesIndex = React.createClass({
       filterEndNumber: "",
       jobModalOpen: !!job.id,
       job: job
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.invoicesListener = InvoicesStore.addListener(this.getInvoices);
-    this.jobListener = JobStore.addListener(this.getJob);
+  componentDidMount() {
+    this.invoicesListener = InvoicesStore.addListener(this.getInvoices.bind(this));
+    this.jobListener = JobStore.addListener(this.getJob.bind(this));
     ClientActions.fetchInvoices();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.invoicesListener.remove();
-  },
+  }
 
-  getInvoices: function() {
+  getInvoices() {
     this.setState({
       fetching: false,
       invoices: InvoicesStore.all()
     });
-  },
+  }
 
-  getJob: function() {
+  getJob() {
     var job = JobStore.job();
     if (job.done) {
       this.setState({
@@ -78,20 +79,20 @@ var InvoicesIndex = React.createClass({
         fetching: false
       });
     }
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "invoices/" + id;
-  },
+  }
 
-  clickSeeAll: function() {
+  clickSeeAll() {
     this.setState({
       fetching: true
     });
     ClientActions.fetchInvoices('all');
-  },
+  }
 
-  openFilterModal: function() {
+  openFilterModal() {
     this.setState({
       filterModalOpen: true
     }, function() {
@@ -100,9 +101,9 @@ var InvoicesIndex = React.createClass({
       $('.filter-modal input.starting-number').val(this.state.filterNumber);
       $('.filter-modal input.end-number').val(this.state.filterEndNumber);
     });
-  },
+  }
 
-  validateFilterInput: function() {
+  validateFilterInput() {
     var type = $('.filter-modal select').val();
     var number = $('.filter-modal input.starting-number').val();
     var endNumber = $('.filter-modal input.end-number').val();
@@ -135,56 +136,56 @@ var InvoicesIndex = React.createClass({
         $('.filter-modal input.end-number').addClass('error');
       }
     }
-  },
+  }
 
-  clearNumberError: function(e) {
+  clearNumberError(e) {
     e.target.classList.remove('error');
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       filterModalOpen: false,
     });
-  },
+  }
 
-  modalCloseAndRefresh: function() {
+  modalCloseAndRefresh() {
     this.setState({
       errorsModalOpen: false
     });
-  },
+  }
 
-  filterExists: function() {
+  filterExists() {
     if (this.state.filterType != "all" || this.state.filterNumber != "0" || this.state.filterEndNumber != "") {
       return " green";
     } else {
       return "";
     }
-  },
+  }
 
-  ClickExport: function() {
+  clickExport() {
     if (!this.state.fetching) {
       this.setState({
         fetching: true
       });
-      var invoiceIds = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber, this.state.filterEndNumber).map(function(invoice) {
+      let invoiceIds = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber, this.state.filterEndNumber).map((invoice) => {
         return invoice.id;
       });
       ClientActions.exportInvoices(invoiceIds);
     }
-  },
+  }
 
-  render: function() {
-    var filteredOrders = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber, this.state.filterEndNumber).filterSearchText(this.state.searchText, this.state.sortBy);
+  render() {
+    let filteredOrders = this.state.invoices.filterInvoices(this.state.filterType, this.state.filterNumber, this.state.filterEndNumber).filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="invoices-index" className="component">
         <h1>Invoices</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.ClickExport }>Export</a>
-        <a className={ "orange-button float-button" + this.filterExists() + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal }>Filter</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
+        <a className={ "orange-button float-button" + this.filterExists() + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal.bind(this) }>Filter</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={"admin-table"}>
+          <table className={ "admin-table" }>
             <thead>
               <tr>
                 <th><div className={ Common.sortClass.call(this, "sentDate") } onClick={ Common.clickHeader.bind(this, "sentDate") }>Sent Date</div></th>
@@ -217,7 +218,7 @@ var InvoicesIndex = React.createClass({
           </table>
         </div>
         { this.renderSeeAllButton() }
-        <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ filterModalStyles }>
+        <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ filterModalStyles }>
           <div className="filter-modal">
             <div className="row">
               <div className="col-xs-4">
@@ -230,16 +231,16 @@ var InvoicesIndex = React.createClass({
               </div>
               <div className="col-xs-4">
                 <h2>Starting Number</h2>
-                <input className="starting-number" onChange={ this.clearNumberError } />
+                <input className="starting-number" onChange={ this.clearNumberError.bind(this) } />
               </div>
               <div className="col-xs-4">
                 <h2>Ending Number</h2>
-                <input className="end-number" onChange={ this.clearNumberError } />
+                <input className="end-number" onChange={ this.clearNumberError.bind(this) } />
               </div>
             </div>
             <div className="row button-row">
               <div className="col-xs-12">
-                <a className="orange-button" onClick={ this.validateFilterInput }>Update Filter</a>
+                <a className="orange-button" onClick={ this.validateFilterInput.bind(this) }>Update Filter</a>
               </div>
             </div>
           </div>
@@ -248,22 +249,22 @@ var InvoicesIndex = React.createClass({
         { Common.jobErrorsModal.call(this) }
       </div>
     );
-  },
+  }
 
-  renderSeeAllButton: function() {
+  renderSeeAllButton() {
     if (this.state.invoices.length === 100) {
       return(
         <div className="text-center">
-          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>
+          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll.bind(this) }>See All</a>
         </div>
-      )
+      );
     }
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         $.ajax({
           url: '/api/jobs/status',
           method: 'GET',
@@ -271,13 +272,13 @@ var InvoicesIndex = React.createClass({
             id: this.state.job.id,
             time: this.state.job.job_id
           },
-          success: function(response) {
+          success: (response) => {
             ServerActions.receiveJob(response);
-          }.bind(this)
-        })
-      }.bind(this), 1500)
+          }
+        });
+      }, 1500)
     }
   }
-});
+}
 
-module.exports = InvoicesIndex;
+export default InvoicesIndex;
