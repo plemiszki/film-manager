@@ -573,14 +573,14 @@ Common = {
 
   jobModal: function(job) {
     return(
-      <Modal isOpen={this.state.jobModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.jobModalStyles}>
+      <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.jobModalStyles }>
         <div className="jobs-modal">
           { HandyTools.renderSpinner(true) }
-          <div className="first-line">{this.state.job.first_line}</div>
-          <div className={"second-line" + (this.state.job.second_line ? "" : " hidden")}>({this.state.job.current_value} of {this.state.job.total_value})</div>
+          <div className="first-line">{ this.state.job.first_line }</div>
+          <div className={ "second-line" + (this.state.job.second_line ? "" : " hidden") }>({ this.state.job.current_value } of { this.state.job.total_value })</div>
         </div>
       </Modal>
-    )
+    );
   },
 
   jobErrorsModal: function() {
@@ -588,7 +588,7 @@ Common = {
       <Modal isOpen={ this.state.errorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ Common.errorsModalStyles }>
         <div className="errors-modal">
           <h1>{ this.state.job.first_line }</h1>
-          { this.state.job.errors_text.split("\n").map(function(error, index) {
+          { this.state.job.errors_text.split("\n").map((error, index) => {
             var greenClass = "";
             if (error.substr(error.length - 3) === " :)") {
               greenClass = " green";
@@ -597,7 +597,7 @@ Common = {
             return(
               <div key={ index } className={ `import-error${greenClass}` }>{ error }</div>
             );
-          }.bind(this)) }
+          }) }
         </div>
       </Modal>
     );
@@ -605,13 +605,13 @@ Common = {
 
   jobNoErrorsModal: function() {
     return(
-      <Modal isOpen={this.state.noErrorsModalOpen} onRequestClose={this.modalCloseAndRefresh} contentLabel="Modal" style={Common.noErrorsModalStyles}>
+      <Modal isOpen={ this.state.noErrorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ Common.noErrorsModalStyles }>
         <div className="send-modal">
-          <h1>{this.state.job.first_line}</h1>
-          <a className="orange-button" onClick={this.modalCloseAndRefresh}>OK</a>
+          <h1>{ this.state.job.first_line }</h1>
+          <a className="orange-button" onClick={ this.modalCloseAndRefresh.bind(this) }>OK</a>
         </div>
       </Modal>
-    )
+    );
   },
 
   redirect: function(directory, id) {

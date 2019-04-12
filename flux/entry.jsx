@@ -9,7 +9,7 @@ var LicensorDetails = require('./components/licensor-details.jsx');
 import FilmsIndex from './components/films-index.jsx'
 var FilmDetails = require('./components/film-details.jsx');
 var RoyaltyReportDetails = require('./components/royalty-report-details.jsx');
-var RoyaltyReportsIndex = require('./components/reports-index.jsx');
+import RoyaltyReportsIndex from './components/reports-index.jsx'
 import GiftBoxesIndex from './components/giftboxes-index.jsx'
 var GiftBoxDetails = require('./components/giftbox-details.jsx');
 import DvdCustomersIndex from './components/dvd-customers-index.jsx'
@@ -21,7 +21,7 @@ import ShippingAddressesIndex from './components/shipping-addresses-index.jsx'
 var ShippingAddressDetails = require('./components/shipping-address-details.jsx');
 import InvoicesIndex from './components/invoices-index.jsx'
 var InvoiceDetails = require('./components/invoice-details.jsx');
-var DvdReports = require('./components/dvd-reports.jsx');
+import DvdReports from './components/dvd-reports.jsx'
 import ReturnsIndex from './components/returns-index.jsx'
 var ReturnDetails = require('./components/return-details.jsx');
 import VenuesIndex from './components/venues-index.jsx'
