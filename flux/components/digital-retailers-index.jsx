@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var DigitalRetailersStore = require('../stores/digital-retailers-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import DigitalRetailersStore from '../stores/digital-retailers-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,51 +18,52 @@ var ModalStyles = {
   }
 };
 
-var DigitalRetailersIndex = React.createClass({
+class DigitalRetailersIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       digitalRetailers: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.digitalRetailersListener = DigitalRetailersStore.addListener(this.getDigitalRetailers);
+  componentDidMount() {
+    this.digitalRetailersListener = DigitalRetailersStore.addListener(this.getDigitalRetailers.bind(this));
     ClientActions.fetchDigitalRetailers();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.digitalRetailersListener.remove();
-  },
+  }
 
-  getDigitalRetailers: function() {
+  getDigitalRetailers() {
     this.setState({
       fetching: false,
       searchText: "",
       digitalRetailers: DigitalRetailersStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "digital_retailers/" + id;
-  },
+  }
 
-  handleAddNewClick: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="digital-retailers-index" className="component">
         <h1>Digital Retailers</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.handleAddNewClick }>Add Digital Retailer</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Digital Retailer</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -87,16 +88,16 @@ var DigitalRetailersIndex = React.createClass({
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="digitalRetailer" initialObject={ { name: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = DigitalRetailersIndex;
+export default DigitalRetailersIndex;

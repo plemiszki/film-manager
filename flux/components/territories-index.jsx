@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var TerritoriesStore = require('../stores/territories-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import TerritoriesStore from '../stores/territories-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,51 +18,52 @@ var ModalStyles = {
   }
 };
 
-var TerritoriesIndex = React.createClass({
+class TerritoriesIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       territories: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.territoriesListener = TerritoriesStore.addListener(this.getTerritories);
+  componentDidMount() {
+    this.territoriesListener = TerritoriesStore.addListener(this.getTerritories.bind(this));
     ClientActions.fetchTerritories();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.territoriesListener.remove();
-  },
+  }
 
-  getTerritories: function() {
+  getTerritories() {
     this.setState({
       fetching: false,
       searchText: "",
       territories: TerritoriesStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "territories/" + id;
-  },
+  }
 
-  clickNew: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  closeModal: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="territories-index" className="component">
         <h1>Territories</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew }>Add Territory</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Territory</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -87,16 +88,16 @@ var TerritoriesIndex = React.createClass({
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="territory" initialObject={ { name: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = TerritoriesIndex;
+export default TerritoriesIndex;

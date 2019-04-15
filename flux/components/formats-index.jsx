@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var FormatsStore = require('../stores/formats-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import FormatsStore from '../stores/formats-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,52 +18,53 @@ var ModalStyles = {
   }
 };
 
-var FormatsIndex = React.createClass({
+class FormatsIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       formats: [],
       modalOpen: false,
       searchText: ""
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.formatsListener = FormatsStore.addListener(this.getFormats);
+  componentDidMount() {
+    this.formatsListener = FormatsStore.addListener(this.getFormats.bind(this));
     ClientActions.fetchFormats();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.formatsListener.remove();
-  },
+  }
 
-  getFormats: function() {
+  getFormats() {
     this.setState({
       fetching: false,
       searchText: "",
       formats: FormatsStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "formats/" + id;
-  },
+  }
 
-  clickNew: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  closeModal: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="formats-index" className="component">
         <h1>Formats</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew }>Add Format</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Format</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -88,16 +89,16 @@ var FormatsIndex = React.createClass({
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="format" initialObject={ { name: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = FormatsIndex;
+export default FormatsIndex;
