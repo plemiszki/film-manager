@@ -177,7 +177,7 @@ class FilmsIndex extends React.Component {
           <NewThing thing={ 'film' } initialObject={ { title: "", filmType: this.props.filmType, labelId: 1, year: '' } } />
         </Modal>
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ newRightsModalStyles }>
-          <FilmRightsNew search={ true } filmType={ this.props.filmType } availsExport={ this.clickExportMetadata } />
+          <FilmRightsNew search={ true } filmType={ this.props.filmType } availsExport={ this.clickExportMetadata.bind(this) } />
         </Modal>
         { Common.jobModal.call(this, this.state.job) }
       </div>
