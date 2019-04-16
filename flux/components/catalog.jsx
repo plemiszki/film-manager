@@ -1,12 +1,13 @@
-var React = require('react');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var ServerActions = require('../actions/server-actions.js');
-var JobStore = require('../stores/job-store.js');
+import React from 'react'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import ServerActions from '../actions/server-actions.js'
+import JobStore from '../stores/job-store.js'
 
-var Catalog = React.createClass({
+class Catalog extends React.Component {
 
-  getInitialState: function() {
+  constructor(props) {
+    super(props)
     var job = {
       errors_text: ""
     };
@@ -15,16 +16,16 @@ var Catalog = React.createClass({
       job.second_line = false;
       job.first_line = "Reading Spreadsheet";
     }
-    return({
+    this.state = {
       jobModalOpen: !!job.id,
       job: job
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.jobListener = JobStore.addListener(this.getJob);
+  componentDidMount() {
+    this.jobListener = JobStore.addListener(this.getJob.bind(this));
     if (this.state.jobModalOpen) {
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         $.ajax({
           url: '/api/jobs/status',
           method: 'GET',
@@ -32,25 +33,25 @@ var Catalog = React.createClass({
             id: this.state.job.id,
             time: this.state.job.job_id
           },
-          success: function(response) {
+          success(response) {
             ServerActions.receiveJob(response);
-          }.bind(this)
+          }
         })
-      }.bind(this), 750)
+      }, 750)
     }
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.jobListener.remove();
-  },
+  }
 
-  getJob: function() {
+  getJob() {
     var job = JobStore.job();
     if (job.done) {
       this.setState({
         jobModalOpen: false,
         job: job
-      }, function() {
+      }, () => {
         window.location.href = job.first_line;
       });
     } else {
@@ -59,19 +60,19 @@ var Catalog = React.createClass({
         job: job
       });
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div>
         { Common.jobModal.call(this, this.state.job) }
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     if (this.state.jobModalOpen) {
-      window.setTimeout(function() {
+      window.setTimeout(() => {
         $.ajax({
           url: '/api/jobs/status',
           method: 'GET',
@@ -79,13 +80,13 @@ var Catalog = React.createClass({
             id: this.state.job.id,
             time: this.state.job.job_id
           },
-          success: function(response) {
+          success: (response) => {
             ServerActions.receiveJob(response);
-          }.bind(this)
+          }
         })
-      }.bind(this), 750)
+      }, 750)
     }
   }
-});
+}
 
-module.exports = Catalog;
+export default Catalog;

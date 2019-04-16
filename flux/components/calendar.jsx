@@ -1,61 +1,62 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var CalendarStore = require('../stores/calendar-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import CalendarStore from '../stores/calendar-store.js'
 
-var Calendar = React.createClass({
+class Calendar extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: false,
       year: (new Date).getFullYear(),
       months: []
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.calendarListener = CalendarStore.addListener(this.getCalendar);
+  componentDidMount() {
+    this.calendarListener = CalendarStore.addListener(this.getCalendar.bind(this));
     ClientActions.fetchCalendar(this.state.year);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.calendarListener.remove();
-  },
+  }
 
-  getCalendar: function() {
+  getCalendar() {
     this.setState({
       months: CalendarStore.months(),
       fetching: false
     });
-  },
+  }
 
-  clickNext: function() {
+  clickNext() {
     this.setState({
       year: this.state.year + 1,
       fetching: true,
     }, function() {
       ClientActions.fetchCalendar(this.state.year);
     });
-  },
+  }
 
-  clickPrev: function() {
+  clickPrev() {
     this.setState({
       year: this.state.year - 1,
       fetching: true,
     }, function() {
       ClientActions.fetchCalendar(this.state.year);
     });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div className="calendar">
         <div className="component">
           <div className="clearfix">
             <h1>Calendar - { this.state.year }</h1>
-            <a className={ "orange-button float-button small margin" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext }>&#62;&#62;</a>
-            <a className={ "orange-button float-button small" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev }>&#60;&#60;</a>
+            <a className={ "orange-button float-button small margin" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
+            <a className={ "orange-button float-button small" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           </div>
           <div className="white-box">
             { HandyTools.renderSpinner(this.state.fetching) }
@@ -72,14 +73,14 @@ var Calendar = React.createClass({
                 </tr>
               </thead>
               <tbody>
-                { this.state.months.map(function(month, index) {
+                { this.state.months.map((month, index) => {
                     return(
                       <tr key={ index }>
                         <td className="monthCell">
                           { this.monthName(index) }
                         </td>
                         <td>
-                          { this.state.months[index].theatricalReleases.map(function(theatricalRelease, index) {
+                          { this.state.months[index].theatricalReleases.map((theatricalRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" + (theatricalRelease.tentative ? ' tentative' : '') }>
                                   { theatricalRelease.title }<br />
@@ -90,7 +91,7 @@ var Calendar = React.createClass({
                           }
                         </td>
                         <td>
-                          { this.state.months[index].dvdReleases.map(function(dvdRelease, index) {
+                          { this.state.months[index].dvdReleases.map((dvdRelease, index) => {
                               return(
                                 <div key={ index } className="film">
                                   { dvdRelease.title }<br />
@@ -101,7 +102,7 @@ var Calendar = React.createClass({
                           }
                         </td>
                         <td>
-                          { this.state.months[index].tvodReleases.map(function(tvodRelease, index) {
+                          { this.state.months[index].tvodReleases.map((tvodRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" + (tvodRelease.tentative ? ' tentative' : '') }>
                                   { tvodRelease.title }<br />
@@ -112,7 +113,7 @@ var Calendar = React.createClass({
                           }
                         </td>
                         <td>
-                          { this.state.months[index].svodReleases.map(function(svodRelease, index) {
+                          { this.state.months[index].svodReleases.map((svodRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" + (svodRelease.tentative ? ' tentative' : '') }>
                                   { svodRelease.title }<br />
@@ -123,7 +124,7 @@ var Calendar = React.createClass({
                           }
                         </td>
                         <td>
-                          { this.state.months[index].clubReleases.map(function(clubRelease, index) {
+                          { this.state.months[index].clubReleases.map((clubRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" }>
                                   { clubRelease }
@@ -134,7 +135,7 @@ var Calendar = React.createClass({
                         </td>
                       </tr>
                     );
-                  }.bind(this))
+                  })
                 }
               </tbody>
             </table>
@@ -142,15 +143,15 @@ var Calendar = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  monthName: function(i) {
+  monthName(i) {
     return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][i];
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = Calendar;
+export default Calendar;

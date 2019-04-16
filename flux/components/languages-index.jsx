@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var LanguagesStore = require('../stores/languages-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import LanguagesStore from '../stores/languages-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,51 +18,52 @@ var ModalStyles = {
   }
 };
 
-var LanguagesIndex = React.createClass({
+class LanguagesIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       languages: [],
       modalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.languagesListener = LanguagesStore.addListener(this.getLanguages);
+  componentDidMount() {
+    this.languagesListener = LanguagesStore.addListener(this.getLanguages.bind(this));
     ClientActions.fetchLanguages();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.languagesListener.remove();
-  },
+  }
 
-  getLanguages: function() {
+  getLanguages() {
     this.setState({
       fetching: false,
       searchText: "",
       languages: LanguagesStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "languages/" + id;
-  },
+  }
 
-  clickNew: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  closeModal: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="languages-index" className="component">
         <h1>Languages</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew }>Add Language</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Language</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -75,7 +76,7 @@ var LanguagesIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              { this.state.languages.filterSearchText(this.state.searchText).map(function(language, index) {
+              { this.state.languages.filterSearchText(this.state.searchText).map((language, index) => {
                 return(
                   <tr key={ index } onClick={ this.redirect.bind(this, language.id) }>
                     <td className="name-column">
@@ -83,20 +84,20 @@ var LanguagesIndex = React.createClass({
                     </td>
                   </tr>
                 );
-              }.bind(this)) }
+              }) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="language" initialObject={ { name: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = LanguagesIndex;
+export default LanguagesIndex;

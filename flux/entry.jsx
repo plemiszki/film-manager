@@ -31,7 +31,7 @@ var BookingDetails = require('./components/booking-details.jsx');
 var SettingDetails = require('./components/setting-details.jsx');
 import CountriesIndex from './components/countries-index.jsx'
 var CountryDetails = require('./components/country-details.jsx');
-var LanguagesIndex = require('./components/languages-index.jsx');
+import LanguagesIndex from './components/languages-index.jsx'
 var LanguageDetails = require('./components/language-details.jsx');
 import GenresIndex from './components/genres-index.jsx'
 var GenreDetails = require('./components/genre-details.jsx');
@@ -52,8 +52,8 @@ var SublicensorDetails = require('./components/sublicensor-details.jsx');
 import DigitalRetailersIndex from './components/digital-retailers-index.jsx'
 var DigitalRetailerDetails = require('./components/digital-retailer-details.jsx');
 var DigitalRetailerFilmDetails = require('./components/digital-retailer-film-details.jsx');
-var Calendar = require('./components/calendar.jsx');
-var Catalog = require('./components/catalog.jsx');
+import Calendar from './components/calendar.jsx'
+import Catalog from './components/catalog.jsx'
 import EpisodeDetails from './components/episode-details.jsx'
 import MerchandiseTypesIndex from './components/merchandise-types-index.jsx'
 import MerchandiseTypeDetails from './components/merchandise-type-details.jsx'

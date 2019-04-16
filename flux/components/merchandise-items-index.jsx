@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var MerchandiseItemsStore = require('../stores/merchandise-items-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import MerchandiseItemsStore from '../stores/merchandise-items-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,27 +18,28 @@ var ModalStyles = {
   }
 };
 
-var MerchandiseItemsIndex = React.createClass({
+class MerchandiseItemsIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       merchandiseItems: [],
       modalOpen: false,
       searchText: ""
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.merchandiseItemsListener = MerchandiseItemsStore.addListener(this.getMerchandiseItems);
+  componentDidMount() {
+    this.merchandiseItemsListener = MerchandiseItemsStore.addListener(this.getMerchandiseItems.bind(this));
     ClientActions.fetchMerchandiseItems();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.merchandiseItemsListener.remove();
-  },
+  }
 
-  getMerchandiseItems: function() {
+  getMerchandiseItems() {
     this.setState({
       fetching: false,
       searchText: "",
@@ -46,26 +47,26 @@ var MerchandiseItemsIndex = React.createClass({
       merchandiseItems: MerchandiseItemsStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "merchandise_items/" + id;
-  },
+  }
 
-  clickNew: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  closeModal: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     var newEntityTypeId = MerchandiseItemsStore.types()[0] ? MerchandiseItemsStore.types()[0].id : "";
     return(
       <div id="merchandiseItems-index" className="component">
         <h1>Merchandise</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew }>Add Merchandise</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Merchandise</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -80,7 +81,7 @@ var MerchandiseItemsIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              { this.state.merchandiseItems.filterSearchText(this.state.searchText, this.state.sortBy).map(function(merchandiseItem, index) {
+              { this.state.merchandiseItems.filterSearchText(this.state.searchText, this.state.sortBy).map((merchandiseItem, index) => {
                 return(
                   <tr key={ index } onClick={ this.redirect.bind(this, merchandiseItem.id) }>
                     <td className="name-column">
@@ -94,20 +95,20 @@ var MerchandiseItemsIndex = React.createClass({
                     </td>
                   </tr>
                 );
-              }.bind(this)) }
+              }) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="merchandiseItem" initialObject={ { name: "", merchandiseTypeId: newEntityTypeId.toString(), description: "", size: "", inventory: "", price: "", filmId: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = MerchandiseItemsIndex;
+export default MerchandiseItemsIndex;

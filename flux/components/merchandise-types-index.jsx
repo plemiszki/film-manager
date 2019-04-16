@@ -1,11 +1,11 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var MerchandiseTypesStore = require('../stores/merchandise-types-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import MerchandiseTypesStore from '../stores/merchandise-types-store.js'
 import NewThing from './new-thing.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -18,52 +18,53 @@ var ModalStyles = {
   }
 };
 
-var MerchandiseTypesIndex = React.createClass({
+class MerchandiseTypesIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       merchandiseTypes: [],
       modalOpen: false,
       searchText: ""
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.merchandiseTypesListener = MerchandiseTypesStore.addListener(this.getMerchandiseTypes);
+  componentDidMount() {
+    this.merchandiseTypesListener = MerchandiseTypesStore.addListener(this.getMerchandiseTypes.bind(this));
     ClientActions.fetchMerchandiseTypes();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.merchandiseTypesListener.remove();
-  },
+  }
 
-  getMerchandiseTypes: function() {
+  getMerchandiseTypes() {
     this.setState({
       fetching: false,
       searchText: "",
       merchandiseTypes: MerchandiseTypesStore.all(),
       modalOpen: false
     });
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "merchandise_types/" + id;
-  },
+  }
 
-  clickNew: function() {
+  clickNew() {
     this.setState({ modalOpen: true });
-  },
+  }
 
-  closeModal: function() {
+  closeModal() {
     this.setState({ modalOpen: false });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="merchandiseTypes-index" className="component">
         <h1>Merchandise Types</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew }>Add Merchandise Type</a>
+        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Merchandise Type</a>
         <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -76,7 +77,7 @@ var MerchandiseTypesIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              { this.state.merchandiseTypes.filterSearchText(this.state.searchText).map(function(merchandiseType, index) {
+              { this.state.merchandiseTypes.filterSearchText(this.state.searchText).map((merchandiseType, index) => {
                 return(
                   <tr key={ index } onClick={ this.redirect.bind(this, merchandiseType.id) }>
                     <td className="name-column">
@@ -84,20 +85,20 @@ var MerchandiseTypesIndex = React.createClass({
                     </td>
                   </tr>
                 );
-              }.bind(this)) }
+              }) }
             </tbody>
           </table>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal } contentLabel="Modal" style={ ModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="merchandiseType" initialObject={ { name: "" } } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = MerchandiseTypesIndex;
+export default MerchandiseTypesIndex;
