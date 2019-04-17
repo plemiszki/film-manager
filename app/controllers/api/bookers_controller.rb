@@ -25,8 +25,10 @@ class Api::BookersController < AdminController
   def update
     @booker = Booker.find(params[:id])
     if @booker.update(booker_params)
-      @bookers = Booker.all
-      render 'index.json.jbuilder'
+      @bookers = Booker.where(id: params[:id])
+      @booker_venues = BookerVenue.where(booker_id: params[:id])
+      @venues = Venue.where.not(id: @booker_venues.pluck(:venue_id))
+      render 'show.json.jbuilder'
     else
       render json: @booker.errors.full_messages, status: 422
     end

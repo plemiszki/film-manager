@@ -1,14 +1,15 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var LicensorsStore = require('../stores/licensors-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import LicensorsStore from '../stores/licensors-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var LicensorDetails = React.createClass({
+class LicensorDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       licensor: {},
       licensorSaved: {},
@@ -16,113 +17,114 @@ var LicensorDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.licensorListener = LicensorsStore.addListener(this.getLicensor);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.licensorListener = LicensorsStore.addListener(this.getLicensor.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchLicensor(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.licensorListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getLicensor: function() {
+  getLicensor() {
     this.setState({
       licensor: Tools.deepCopy(LicensorsStore.find(window.location.pathname.split("/")[2])),
       licensorSaved: LicensorsStore.find(window.location.pathname.split("/")[2]),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateLicensor(this.state.licensor);
       });
     }
-  },
+  }
 
-  redirect: function(id) {
+  redirect(id) {
     window.location.pathname = "films/" + id;
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
-      fetching: true
-    }, function() {
+      fetching: true,
+      deleteModalOpen: false
+    }, () => {
       ClientActions.deleteLicensor(this.state.licensor.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
-    this.setState({deleteModalOpen: false});
-  },
+  closeModal() {
+    this.setState({ deleteModalOpen: false });
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.licensor, this.state.licensorSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "licensor",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
-      <div id="licensor-profile" className={this.props.new ? "admin-modal" : ""}>
+      <div id="licensor-profile">
         <div className="component">
           <h1>Licensor Details</h1>
           <div id="licensor-profile-box" className="white-box">
-            {HandyTools.renderSpinner(this.state.fetching)}
-            {HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5)}
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-12 col-sm-6">
                 <h2>Name</h2>
-                <input className={Common.errorClass(this.state.errors, ["Name can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.licensor.name || ""} data-field="name" />
-                {Common.renderFieldError(this.state.errors, ["Name can't be blank"])}
+                <input className={ Common.errorClass(this.state.errors, ["Name can't be blank"]) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.name || "" } data-field="name" />
+                { Common.renderFieldError(this.state.errors, ["Name can't be blank"]) }
               </div>
               <div className="col-xs-12 col-sm-6">
                 <h2>Royalty Emails</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.licensor.email || ""} data-field="email" />
-                {Common.renderFieldError(this.state.errors, Common.errors.email)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.email) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.email || "" } data-field="email" />
+                { Common.renderFieldError(this.state.errors, Common.errors.email) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-12 col-sm-12">
                 <h2>Address</h2>
-                <textarea rows="5" cols="20" onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.licensor.address || ""} data-field="address" />
+                <textarea rows="5" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.address || "" } data-field="address" />
               </div>
             </div>
             <div className="row">
               <div className="col-xs-12 col-sm-12">
-                <table className={"admin-table"}>
+                <table className={ "admin-table" }>
                   <thead>
                     <tr>
                       <th>Title</th>
@@ -130,39 +132,39 @@ var LicensorDetails = React.createClass({
                   </thead>
                   <tbody>
                     <tr><td></td></tr>
-                    {LicensorsStore.films().map(function(film, index) {
+                    { LicensorsStore.films().map((film, index) => {
                       return(
-                        <tr key={index} onClick={this.redirect.bind(this, film.id)}>
+                        <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
                           <td className="name-column">
-                            {film.title}
+                            { film.title }
                           </td>
                         </tr>
                       );
-                    }.bind(this))}
+                    }) }
                   </tbody>
                 </table>
               </div>
             </div>
-            {this.renderButtons()}
+            { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this licensor&#63;</h1>
             Deleting a licensor will erase ALL of its information and data<br />
-            <a className={"red-button"} onClick={this.confirmDelete}>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={"orange-button"} onClick={this.handleModalClose}>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -170,19 +172,19 @@ var LicensorDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Licensor
         </a>
       </div>
     )
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = LicensorDetails;
+export default LicensorDetails;

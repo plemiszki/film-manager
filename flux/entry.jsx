@@ -5,13 +5,13 @@ import CurrentUserDropDown from './components/current-user-dropdown.jsx'
 import UsersIndex from './components/users-index.jsx'
 import UserDetails from './components/user-details.jsx'
 import LicensorsIndex from './components/licensors-index.jsx'
-var LicensorDetails = require('./components/licensor-details.jsx');
+import LicensorDetails from './components/licensor-details.jsx'
 import FilmsIndex from './components/films-index.jsx'
 var FilmDetails = require('./components/film-details.jsx');
 var RoyaltyReportDetails = require('./components/royalty-report-details.jsx');
 import RoyaltyReportsIndex from './components/reports-index.jsx'
 import GiftBoxesIndex from './components/giftboxes-index.jsx'
-var GiftBoxDetails = require('./components/giftbox-details.jsx');
+import GiftBoxDetails from './components/giftbox-details.jsx'
 import DvdCustomersIndex from './components/dvd-customers-index.jsx'
 var DvdCustomerDetails = require('./components/dvd-customer-details.jsx');
 var DvdDetails = require('./components/dvd-details.jsx');
@@ -39,9 +39,9 @@ import TopicsIndex from './components/topics-index.jsx'
 var TopicDetails = require('./components/topic-details.jsx');
 var QuoteDetails = require('./components/quote-details.jsx');
 import FormatsIndex from './components/formats-index.jsx'
-var FormatDetails = require('./components/format-details.jsx');
+import FormatDetails from './components/format-details.jsx'
 import BookersIndex from './components/bookers-index.jsx'
-var BookerDetails = require('./components/booker-details.jsx');
+import BookerDetails from './components/booker-details.jsx'
 var InTheatersIndex = require('./components/in-theaters.jsx');
 import TerritoriesIndex from './components/territories-index.jsx'
 var TerritoryDetails = require('./components/territory-details.jsx');

@@ -1,16 +1,17 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var BookersStore = require('../stores/bookers-store.js');
-var BookerVenuesStore = require('../stores/booker-venues-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import BookersStore from '../stores/bookers-store.js'
+import BookerVenuesStore from '../stores/booker-venues-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
 
-var BookerDetails = React.createClass({
+class BookerDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       booker: {},
       bookerSaved: {},
@@ -21,123 +22,123 @@ var BookerDetails = React.createClass({
       justSaved: false,
       deleteModalOpen: false,
       venuesModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.bookerListener = BookersStore.addListener(this.getBooker);
-    this.bookerVenuesListener = BookerVenuesStore.addListener(this.getBookerVenues);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.bookerListener = BookersStore.addListener(this.getBooker.bind(this));
+    this.bookerVenuesListener = BookerVenuesStore.addListener(this.getBookerVenues.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchBooker(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.bookersListener.remove();
     this.bookerVenuesListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getBooker: function() {
+  getBooker() {
     this.setState({
       booker: Tools.deepCopy(BookersStore.find(window.location.pathname.split("/")[2])),
       bookerSaved: BookersStore.find(window.location.pathname.split("/")[2]),
       bookerVenues: BookersStore.bookerVenues(),
       venues: BookersStore.venues(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getBookerVenues: function() {
+  getBookerVenues() {
     this.setState({
       bookerVenues: BookerVenuesStore.all(),
       venues: BookerVenuesStore.venues(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickAddVenue: function() {
+  clickAddVenue() {
     this.setState({
       venuesModalOpen: true
     });
-  },
+  }
 
-  clickVenue: function(e) {
+  selectVenue(e) {
     this.setState({
       venuesModalOpen: false,
       fetching: true
     });
     ClientActions.createBookerVenue({ booker_id: this.state.booker.id, venue_id: e.target.dataset.id });
-  },
+  }
 
-  clickDeleteVenue: function(e) {
+  clickDeleteVenue(e) {
     this.setState({
       venuesModalOpen: false,
       fetching: true
     });
     ClientActions.deleteBookerVenue(e.target.dataset.id);
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateBooker(this.state.booker);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteAndGoToIndex('bookers', this.state.booker.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false,
       venuesModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.booker, this.state.bookerSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "booker",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="booker-details">
         <div className="component details-component">
@@ -166,38 +167,38 @@ var BookerDetails = React.createClass({
               <div className="col-xs-12">
                 <h2>Venues:</h2>
                 <ul className="standard-list">
-                  { this.state.bookerVenues.map(function(venue) {
+                  { this.state.bookerVenues.map((venue) => {
                     return(
-                      <li key={ venue.id }>{ venue.venue }<div className="x-button" onClick={ this.clickDeleteVenue } data-id={ venue.id }></div></li>
+                      <li key={ venue.id }>{ venue.venue }<div className="x-button" onClick={ this.clickDeleteVenue.bind(this) } data-id={ venue.id }></div></li>
                     );
-                  }.bind(this)) }
+                  }) }
                 </ul>
-                <a className={ 'blue-outline-button small margin-bottom' } onClick={ this.clickAddVenue }>Add Venue</a>
+                <a className={ 'blue-outline-button small margin-bottom' } onClick={ this.clickAddVenue.bind(this) }>Add Venue</a>
               </div>
             </div>
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
-          <ModalSelect options={ this.state.venues } property={ "name" } func={ this.clickVenue } />
+        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.venues } property={ "name" } func={ this.selectVenue.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this booker&#63;</h1>
             Deleting a booker will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -205,20 +206,20 @@ var BookerDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Booker
         </a>
       </div>
     )
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = BookerDetails;
+export default BookerDetails;
