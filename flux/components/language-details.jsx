@@ -1,14 +1,15 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var LanguagesStore = require('../stores/languages-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import LanguagesStore from '../stores/languages-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var LanguageDetails = React.createClass({
+class LanguageDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       language: {},
       languageSaved: {},
@@ -16,84 +17,84 @@ var LanguageDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.languageListener = LanguagesStore.addListener(this.getLanguage);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.languageListener = LanguagesStore.addListener(this.getLanguage.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchLanguage(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.countriesListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getLanguage: function() {
+  getLanguage() {
     this.setState({
       language: Tools.deepCopy(LanguagesStore.find(window.location.pathname.split("/")[2])),
       languageSaved: LanguagesStore.find(window.location.pathname.split("/")[2]),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateLanguage(this.state.language);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteAndGoToSettings('languages', this.state.language.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.language, this.state.languageSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "language",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="language-details">
         <div className="component details-component">
@@ -111,23 +112,23 @@ var LanguageDetails = React.createClass({
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this language&#63;</h1>
             Deleting a language will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -135,20 +136,20 @@ var LanguageDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Language
         </a>
       </div>
-    )
-  },
+    );
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = LanguageDetails;
+export default LanguageDetails;

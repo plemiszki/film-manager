@@ -1,14 +1,15 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var DvdCustomersStore = require('../stores/dvd-customers-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import DvdCustomersStore from '../stores/dvd-customers-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var DvdCustomerDetails = React.createClass({
+class DvdCustomerDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       dvdCustomer: {},
       dvdCustomerSaved: {},
@@ -17,40 +18,40 @@ var DvdCustomerDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.dvdCustomerListener = DvdCustomersStore.addListener(this.getDvdCustomers);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.dvdCustomerListener = DvdCustomersStore.addListener(this.getDvdCustomers.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchDvdCustomer(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.dvdCustomerListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getDvdCustomers: function() {
+  getDvdCustomers() {
     this.setState({
       dvdCustomer: Tools.deepCopy(DvdCustomersStore.find(window.location.pathname.split("/")[2])),
       dvdCustomerSaved: DvdCustomersStore.find(window.location.pathname.split("/")[2]),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
@@ -59,41 +60,41 @@ var DvdCustomerDetails = React.createClass({
         ClientActions.updateDvdCustomer(this.state.dvdCustomer);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteDvdCustomer(this.state.dvdCustomer.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
-    this.setState({deleteModalOpen: false});
-  },
+  closeModal() {
+    this.setState({ deleteModalOpen: false });
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.dvdCustomer, this.state.dvdCustomerSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "dvdCustomer",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges,
-      beforeSave: this.beforeSave
+      changesFunction: this.checkForChanges.bind(this),
+      beforeSave: this.beforeSave.bind(this)
     }
-  },
+  }
 
-  beforeSave: function(newThing, key, value) {
+  beforeSave(newThing, key, value) {
     if (key === "consignment" && value === false) {
       newThing.invoicesEmail = "";
       newThing.sageId = "";
@@ -102,9 +103,9 @@ var DvdCustomerDetails = React.createClass({
       Common.removeFieldError(this.state.errors, "sageId");
       Common.removeFieldError(this.state.errors, "paymentTerms");
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="dvd-customer-details">
         <div className="component">
@@ -115,33 +116,33 @@ var DvdCustomerDetails = React.createClass({
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.name || ""} data-field="name" />
-                {Common.renderFieldError(this.state.errors, Common.errors.name)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.name || "" } data-field="name" />
+                { Common.renderFieldError(this.state.errors, Common.errors.name) }
               </div>
               <div className="col-xs-3">
                 <h2>Discount or Price/Unit</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.discount)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.discount || ""} data-field="discount" />
-                {Common.renderFieldError(this.state.errors, Common.errors.discount)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.discount) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.discount || "" } data-field="discount" />
+                { Common.renderFieldError(this.state.errors, Common.errors.discount) }
               </div>
               <div className="col-xs-2 consignment-column">
-                <input id="consignment" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.dvdCustomer.consignment || false} data-field="consignment" /><label className="checkbox">Consignment</label>
+                <input id="consignment" className="checkbox" type="checkbox" onChange={ Common.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.dvdCustomer.consignment || false } data-field="consignment" /><label className="checkbox">Consignment</label>
               </div>
             </div>
-            <div className={"row" + (this.state.dvdCustomer.consignment ? " hidden" : "")}>
+            <div className={ "row" + (this.state.dvdCustomer.consignment ? " hidden" : "") }>
               <div className="col-xs-6">
                 <h2>Invoices Email</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.invoicesEmail)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.invoicesEmail || ""} data-field="invoicesEmail" />
-                {Common.renderFieldError(this.state.errors, Common.errors.invoicesEmail)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.invoicesEmail) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.invoicesEmail || "" } data-field="invoicesEmail" />
+                { Common.renderFieldError(this.state.errors, Common.errors.invoicesEmail) }
               </div>
               <div className="col-xs-3">
                 <h2>Sage ID</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.sageId)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.sageId || ""} data-field="sageId" />
-                {Common.renderFieldError(this.state.errors, Common.errors.sageId)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.sageId) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.sageId || "" } data-field="sageId" />
+                { Common.renderFieldError(this.state.errors, Common.errors.sageId) }
               </div>
               <div className="col-xs-3">
                 <h2>Payment Terms (in days)</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.paymentTerms)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.paymentTerms || ""} data-field="paymentTerms" />
-                {Common.renderFieldError(this.state.errors, Common.errors.paymentTerms)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.paymentTerms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.paymentTerms || "" } data-field="paymentTerms" />
+                { Common.renderFieldError(this.state.errors, Common.errors.paymentTerms) }
               </div>
             </div>
             <hr />
@@ -149,70 +150,70 @@ var DvdCustomerDetails = React.createClass({
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.billingName)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.billingName || ""} data-field="billingName" />
-                {Common.renderFieldError(this.state.errors, Common.errors.billingName)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.billingName) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.billingName || "" } data-field="billingName" />
+                { Common.renderFieldError(this.state.errors, Common.errors.billingName) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 1</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.address1)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address1 || ""} data-field="address1" />
-                {Common.renderFieldError(this.state.errors, Common.errors.address1)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.address1) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.address1 || "" } data-field="address1" />
+                { Common.renderFieldError(this.state.errors, Common.errors.address1) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 2</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address2 || ""} data-field="address2" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.address2 || "" } data-field="address2" />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.city)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.city || ""} data-field="city" />
-                {Common.renderFieldError(this.state.errors, Common.errors.city)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.city) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.city || "" } data-field="city" />
+                { Common.renderFieldError(this.state.errors, Common.errors.city) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.state)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.state || ""} data-field="state" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.state) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.state || "" } data-field="state" />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.zip)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.zip || ""} data-field="zip" />
-                {Common.renderFieldError(this.state.errors, Common.errors.zip)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.zip) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.zip || "" } data-field="zip" />
+                { Common.renderFieldError(this.state.errors, Common.errors.zip) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.country)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.country || ""} data-field="country" />
-                {Common.renderFieldError(this.state.errors, Common.errors.country)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.country) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.country || "" } data-field="country" />
+                { Common.renderFieldError(this.state.errors, Common.errors.country) }
               </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-xs-12">
                 <h2>Notes</h2>
-                <textarea rows="5" className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.notes || ""} data-field="notes" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <textarea rows="5" className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.notes || "" } data-field="notes" />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
             </div>
-            {this.renderButtons()}
+            { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to delete this DVD customer&#63;</h1>
             Deleting a DVD customer will erase ALL of its information and data<br />
-            <a className={"red-button"} onClick={this.confirmDelete}>
+            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={"orange-button"} onClick={this.handleModalClose}>
+            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -220,20 +221,20 @@ var DvdCustomerDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "hidden orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "hidden orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete DVD Customer
         </a>
       </div>
-    )
-  },
+    );
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = DvdCustomerDetails;
+export default DvdCustomerDetails;

@@ -1,14 +1,15 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var CountriesStore = require('../stores/countries-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import CountriesStore from '../stores/countries-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var CountryDetails = React.createClass({
+class CountryDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       country: {},
       countrySaved: {},
@@ -16,86 +17,86 @@ var CountryDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.countryListener = CountriesStore.addListener(this.getCountry);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.countryListener = CountriesStore.addListener(this.getCountry.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchCountry(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.countriesListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getCountry: function() {
+  getCountry() {
     this.setState({
       country: Tools.deepCopy(CountriesStore.find(window.location.pathname.split("/")[2])),
       countrySaved: CountriesStore.find(window.location.pathname.split("/")[2]),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateCountry(this.state.country);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteAndGoToSettings('countries', this.state.country.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false,
       dvdsModalOpen: false,
       shredderModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.country, this.state.countrySaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "country",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="country-details">
         <div className="component details-component">
@@ -113,23 +114,23 @@ var CountryDetails = React.createClass({
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this country&#63;</h1>
             Deleting a country will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -137,20 +138,20 @@ var CountryDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Country
         </a>
       </div>
     )
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = CountryDetails;
+export default CountryDetails;
