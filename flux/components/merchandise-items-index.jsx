@@ -76,6 +76,7 @@ class MerchandiseItemsIndex extends React.Component {
               <tr>
                 <th><div className={ Common.sortClass.call(this, "name") } onClick={ Common.clickHeader.bind(this, "name") }>Name</div></th>
                 <th><div className={ Common.sortClass.call(this, "type") } onClick={ Common.clickHeader.bind(this, "type") }>Type</div></th>
+                <th><div className={ Common.sortClass.call(this, "size") } onClick={ Common.clickHeader.bind(this, "size") }>Size</div></th>
                 <th><div className={ Common.sortClass.call(this, "price") } onClick={ Common.clickHeader.bind(this, "price") }>Price</div></th>
               </tr>
             </thead>
@@ -89,6 +90,9 @@ class MerchandiseItemsIndex extends React.Component {
                     </td>
                     <td>
                       { merchandiseItem.type }
+                    </td>
+                    <td>
+                      { merchandiseItem.size }
                     </td>
                     <td>
                       { merchandiseItem.price }
