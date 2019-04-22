@@ -200,4 +200,4 @@ class FilmRightDetails extends React.Component {
   }
 }
 
-module.exports = FilmRightDetails;
+export default FilmRightDetails;

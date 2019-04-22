@@ -259,4 +259,4 @@ class SublicensorDetails extends React.Component {
   }
 }
 
-module.exports = SublicensorDetails;
+export default SublicensorDetails;

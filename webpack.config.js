@@ -1,28 +1,26 @@
-var path = require("path");
-
 module.exports = {
+  mode: 'development',
   context: __dirname,
-  entry: "./flux/entry.jsx",
+  entry: './flux/entry.jsx',
   output: {
-    path: path.join(__dirname, 'app', 'assets', 'javascripts', 'me'),
-    filename: "bundle.js",
+    path: __dirname + '/app/assets/javascripts/me',
+    filename: 'bundle.js',
     devtoolModuleFilenameTemplate: '[resourcePath]',
     devtoolFallbackModuleFilenameTemplate: '[resourcePath]?[hash]'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          presets: ['react', 'es2015-without-strict']
-        }
+        use: [
+          { loader: 'babel-loader' }
+        ]
       }
     ]
   },
   devtool: 'source-maps',
   resolve: {
-    extensions: ["", ".js", ".jsx"]
+    extensions: ['.js', '.jsx']
   }
 };

@@ -51,4 +51,4 @@ InvoicesStore.__onDispatch = function(payload) {
   }
 };
 
-module.exports = InvoicesStore;
+export default InvoicesStore;
