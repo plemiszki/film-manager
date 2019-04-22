@@ -1,30 +1,31 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var VenuesStore = require('../stores/venues-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import VenuesStore from '../stores/venues-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var VenueDetails = React.createClass({
-
-  shredderModalStyles: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.50)'
-    },
-    content: {
-      background: '#FFFFFF',
-      margin: 'auto',
-      maxWidth: 570,
-      height: '273px',
-      border: 'solid 1px #5F5F5F',
-      borderRadius: '6px',
-      textAlign: 'center',
-      color: '#5F5F5F'
-    }
+const ShredderModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
   },
+  content: {
+    background: '#FFFFFF',
+    margin: 'auto',
+    maxWidth: 570,
+    height: '273px',
+    border: 'solid 1px #5F5F5F',
+    borderRadius: '6px',
+    textAlign: 'center',
+    color: '#5F5F5F'
+  }
+};
 
-  getInitialState: function() {
-    return({
+class VenueDetails extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       venue: {},
       venueSaved: {},
@@ -33,42 +34,42 @@ var VenueDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    Common.setUpNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
-    this.venueListener = VenuesStore.addListener(this.getVenue);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    Common.setUpNiceSelect('select',  Common.changeField.bind(this, this.changeFieldArgs()) );
+    this.venueListener = VenuesStore.addListener(this.getVenue.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchVenue(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.venueListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getVenue: function() {
+  getVenue() {
     this.setState({
       venue: Tools.deepCopy(VenuesStore.find(window.location.pathname.split("/")[2])),
       venueSaved: VenuesStore.find(window.location.pathname.split("/")[2]),
       bookings: VenuesStore.bookings(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickCopyAddress: function() {
+  clickCopyAddress() {
     var venue = this.state.venue;
     venue["shippingName"] = this.state.venue.billingName;
     venue["shippingAddress1"] = this.state.venue.billingAddress1;
@@ -79,60 +80,60 @@ var VenueDetails = React.createClass({
     venue["shippingCountry"] = this.state.venue.billingCountry;
     this.setState({
       venue: venue
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateVenue(this.state.venue);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteAndGoToIndex('venues', this.state.venue.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false,
       dvdsModalOpen: false,
       shredderModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.venue, this.state.venueSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "venue",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  clickSplitAddress: function() {
+  clickSplitAddress() {
     try {
       var result = Common.splitAddress($('.shredder-modal textarea')[0].value);
       var venue = this.state.venue;
@@ -146,7 +147,7 @@ var VenueDetails = React.createClass({
       this.setState({
         shredderModalOpen: false,
         venue: venue
-      }, function() {
+      }, () => {
         this.setState({
           changesToSave: this.checkForChanges()
         });
@@ -155,18 +156,18 @@ var VenueDetails = React.createClass({
       $('.shredder-modal textarea').addClass('error');
       $('.shredder-modal .errorMessage').text(e);
     }
-  },
+  }
 
-  clearShredderError: function() {
+  clearShredderError() {
     $('.shredder-modal textarea').removeClass('error');
     $('.shredder-modal .errorMessage').text('');
-  },
+  }
 
-  redirect: function(directory, id) {
+  redirect(directory, id) {
     window.location.pathname = directory + "/" + id;
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="venue-details">
         <div className="component details-component">
@@ -182,7 +183,7 @@ var VenueDetails = React.createClass({
               </div>
               <div className="col-xs-3">
                 <h2>Type</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs())} data-field="venueType" value={ this.state.venue.venueType }>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="venueType" value={ this.state.venue.venueType }>
                   <option value={ "Theater" }>{ "Theater" }</option>
                   <option value={ "Non-Theatrical" }>{ "Non-Theatrical" }</option>
                   <option value={ "Festival" }>{ "Festival" }</option>
@@ -213,40 +214,40 @@ var VenueDetails = React.createClass({
             </div>
             <hr />
             <div className="address-block">
-              <img src={ Images.shredder } onClick={ function() { this.setState({ shredderModalOpen: true, shredderModalAddress: 'billing' }) }.bind(this) } />
+              <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'billing' }) } } />
               <h3>Billing Address:</h3>
               <div className="row">
                 <div className="col-xs-4">
                   <h2>Name</h2>
-                  <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.billingName || ""} data-field="billingName" />
-                  {Common.renderFieldError(this.state.errors, [])}
+                  <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingName || ""} data-field="billingName" />
+                  { Common.renderFieldError(this.state.errors, []) }
                 </div>
                 <div className="col-xs-4">
                   <h2>Address 1</h2>
-                  <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.billingAddress1 || ""} data-field="billingAddress1" />
-                  {Common.renderFieldError(this.state.errors, [])}
+                  <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingAddress1 || ""} data-field="billingAddress1" />
+                  { Common.renderFieldError(this.state.errors, []) }
                 </div>
                 <div className="col-xs-4">
                   <h2>Address 2</h2>
-                  <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.billingAddress2 || ""} data-field="billingAddress2" />
-                  {Common.renderFieldError(this.state.errors, [])}
+                  <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingAddress2 || ""} data-field="billingAddress2" />
+                  { Common.renderFieldError(this.state.errors, []) }
                 </div>
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.billingCity || ""} data-field="billingCity" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingCity || ""} data-field="billingCity" />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.billingState || ""} data-field="billingState" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingState || ""} data-field="billingState" />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.billingZip || ""} data-field="billingZip" />
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingZip || ""} data-field="billingZip" />
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
@@ -255,42 +256,42 @@ var VenueDetails = React.createClass({
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
-                <a className={ "orange-button copy-address-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress }>
+                <a className={ "orange-button copy-address-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress.bind(this) }>
                   Copy to Shipping Address
                 </a>
               </div>
             </div>
             <hr />
             <div className="address-block">
-              <img src={ Images.shredder } onClick={ function() { this.setState({ shredderModalOpen: true, shredderModalAddress: 'shipping' }) }.bind(this) } />
+              <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'shipping' }) } } />
               <h3>Shipping Address:</h3>
               <div className="row">
                 <div className="col-xs-4">
                   <h2>Name</h2>
-                  <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.shippingName || ""} data-field="shippingName" />
-                  {Common.renderFieldError(this.state.errors, [])}
+                  <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingName || "" } data-field="shippingName" />
+                  { Common.renderFieldError(this.state.errors, []) }
                 </div>
                 <div className="col-xs-4">
                   <h2>Address 1</h2>
-                  <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.shippingAddress1 || ""} data-field="shippingAddress1" />
-                  {Common.renderFieldError(this.state.errors, [])}
+                  <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingAddress1 || ""} data-field="shippingAddress1" />
+                  { Common.renderFieldError(this.state.errors, []) }
                 </div>
                 <div className="col-xs-4">
                   <h2>Address 2</h2>
-                  <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.shippingAddress2 || ""} data-field="shippingAddress2" />
-                  {Common.renderFieldError(this.state.errors, [])}
+                  <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingAddress2 || ""} data-field="shippingAddress2" />
+                  { Common.renderFieldError(this.state.errors, []) }
                 </div>
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.shippingCity || ""} data-field="shippingCity" />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingCity || ""} data-field="shippingCity" />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.venue.shippingState || ""} data-field="shippingState" />
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingState || ""} data-field="shippingState" />
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
@@ -337,9 +338,9 @@ var VenueDetails = React.createClass({
                 </thead>
                 <tbody>
                   <tr><td></td><td></td></tr>
-                  { this.state.bookings.map(function(booking, index) {
+                  { this.state.bookings.map((booking, index) => {
                     return(
-                      <tr key={index} onClick={ this.redirect.bind(this, "bookings", booking.id) }>
+                      <tr key={ index } onClick={ this.redirect.bind(this, "bookings", booking.id) }>
                         <td className="indent">
                           { booking.startDate }
                         </td>
@@ -348,36 +349,36 @@ var VenueDetails = React.createClass({
                         </td>
                       </tr>
                     );
-                  }.bind(this)) }
+                  }) }
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this venue&#63;</h1>
             Deleting a venue will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
-        <Modal isOpen={ this.state.shredderModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.shredderModalStyles }>
+        <Modal isOpen={ this.state.shredderModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ShredderModalStyles }>
           <div className="shredder-modal">
-            <textarea onChange={ this.clearShredderError }></textarea>
+            <textarea onChange={ this.clearShredderError.bind(this) }></textarea>
             <div className="errorMessage"></div>
-            <a className={ "orange-button" } onClick={ this.clickSplitAddress }>Split Address</a>
+            <a className="orange-button" onClick={ this.clickSplitAddress.bind(this) }>Split Address</a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -385,20 +386,20 @@ var VenueDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Venue
         </a>
       </div>
     )
-  },
+  }
 
-  componentDidUpdate: function() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+  componentDidUpdate() {
+    Common.resetNiceSelect('select',  Common.changeField.bind(this, this.changeFieldArgs()) );
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = VenueDetails;
+export default VenueDetails;

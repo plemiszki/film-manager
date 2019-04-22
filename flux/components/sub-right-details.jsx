@@ -1,14 +1,15 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var SubRightsStore = require('../stores/sub-rights-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import SubRightsStore from '../stores/sub-rights-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var SubRightDetails = React.createClass({
+class SubRightDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       subRight: {},
       subRightSaved: {},
@@ -16,86 +17,86 @@ var SubRightDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.subRightListener = SubRightsStore.addListener(this.getSubRight);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.subRightListener = SubRightsStore.addListener(this.getSubRight.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchSubRight(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.subRightsListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getSubRight: function() {
+  getSubRight() {
     this.setState({
       subRight: Tools.deepCopy(SubRightsStore.subRight()),
       subRightSaved: SubRightsStore.subRight(),
       territories: SubRightsStore.territories(),
       rights: SubRightsStore.rights(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateSubRight(this.state.subRight);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteSubRight(this.state.subRight.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.subRight, this.state.subRightSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "subRight",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="subRight-details">
         <div className="component details-component">
@@ -107,7 +108,7 @@ var SubRightDetails = React.createClass({
               <div className="col-xs-6 select-scroll">
                 <h2>Film</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.subRight.filmId }>
-                  { SubRightsStore.films().map(function(film, index) {
+                  { SubRightsStore.films().map((film, index) => {
                     return(
                       <option key={ index } value={ film.id }>{ film.title }</option>
                     );
@@ -118,7 +119,7 @@ var SubRightDetails = React.createClass({
               <div className="col-xs-3 select-scroll">
                 <h2>Right</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.subRight.rightId }>
-                  { SubRightsStore.rights().map(function(right, index) {
+                  { SubRightsStore.rights().map((right, index) => {
                     return(
                       <option key={ index } value={ right.id }>{ right.name }</option>
                     );
@@ -129,7 +130,7 @@ var SubRightDetails = React.createClass({
               <div className="col-xs-3 select-scroll">
                 <h2>Territory</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="territoryId" value={ this.state.subRight.territoryId }>
-                  { SubRightsStore.territories().map(function(territory, index) {
+                  { SubRightsStore.territories().map((territory, index) => {
                     return(
                       <option key={ index } value={ territory.id }>{ territory.name }</option>
                     );
@@ -161,23 +162,23 @@ var SubRightDetails = React.createClass({
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this right&#63;</h1>
             Deleting a right will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -185,20 +186,20 @@ var SubRightDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Right
         </a>
       </div>
-    )
-  },
+    );
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = SubRightDetails;
+export default SubRightDetails;

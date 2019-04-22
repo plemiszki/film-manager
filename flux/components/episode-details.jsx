@@ -1,29 +1,30 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var EpisodesStore = require('../stores/episodes-store.js');
-var ActorsStore = require('../stores/actors-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import EpisodesStore from '../stores/episodes-store.js'
+import ActorsStore from '../stores/actors-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 import NewThing from './new-thing.jsx'
 
-var EpisodeDetails = React.createClass({
-
-  directorModalStyles: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.50)'
-    },
-    content: {
-      background: '#F5F6F7',
-      padding: 0,
-      margin: 'auto',
-      maxWidth: 1000,
-      height: 250
-    }
+const DirectorModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
   },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 1000,
+    height: 250
+  }
+};
 
-  getInitialState: function() {
-    return({
+class EpisodeDetails extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       episode: {},
       episodeSaved: {},
@@ -33,108 +34,108 @@ var EpisodeDetails = React.createClass({
       justSaved: false,
       deleteModalOpen: false,
       actorModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.episodeListener = EpisodesStore.addListener(this.getEpisode);
-    this.actorsListener = ActorsStore.addListener(this.getActors);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.episodeListener = EpisodesStore.addListener(this.getEpisode.bind(this));
+    this.actorsListener = ActorsStore.addListener(this.getActors.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchEpisode(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.episodeListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getEpisode: function() {
+  getEpisode() {
     this.setState({
       episode: Tools.deepCopy(EpisodesStore.episode()),
       episodeSaved: EpisodesStore.episode(),
       actors: ActorsStore.all(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  getActors: function() {
+  getActors() {
     this.setState({
       actors: ActorsStore.all(),
       fetching: false,
       actorModalOpen: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateEpisode(this.state.episode);
       });
     }
-  },
+  }
 
-  clickDeleteActor: function(e) {
+  clickDeleteActor(e) {
     this.setState({
       fetching: true
     });
     ClientActions.deleteActor(e.target.dataset.id);
-  },
+  }
 
-  clickAddActor: function() {
+  clickAddActor() {
     this.setState({
       actorModalOpen: true
     });
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteEpisode(this.state.episode.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false,
       actorModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.episode, this.state.episodeSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "episode",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="episode-profile">
         <div className="component details-component">
@@ -177,42 +178,42 @@ var EpisodeDetails = React.createClass({
                 <h3>Cast:</h3>
                 <ul className="standard-list reorderable">
                   <li className="drop-zone" data-index="-1" data-section={ 'cast' }></li>
-                  { this.state.actors.map(function(actor, index) {
+                  { this.state.actors.map((actor, index) => {
                     return(
                       <div key={ actor.id }>
-                        <li data-index={ index } data-section={ 'cast' }>{ actor.firstName } { actor.lastName }<div className="x-button" onClick={ this.clickDeleteActor } data-id={ actor.id }></div></li>
+                        <li data-index={ index } data-section={ 'cast' }>{ actor.firstName } { actor.lastName }<div className="x-button" onClick={ this.clickDeleteActor.bind(this) } data-id={ actor.id }></div></li>
                         <li className="drop-zone" data-index={ index } data-section={ 'cast' }></li>
                       </div>
                     );
-                  }.bind(this)) }
+                  }) }
                 </ul>
-                <a className={ 'blue-outline-button small m-bottom' } onClick={ this.clickAddActor }>Add Actor</a>
+                <a className={ 'blue-outline-button small m-bottom' } onClick={ this.clickAddActor.bind(this) }>Add Actor</a>
               </div>
             </div>
             <hr />
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={this.state.actorModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={this.directorModalStyles}>
+        <Modal isOpen={ this.state.actorModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ DirectorModalStyles }>
           <NewThing thing="actor" initialObject={{ actorableId: this.state.episode.id, actorableType: 'Episode', firstName: "", lastName: "" }} />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this episode&#63;</h1>
             Deleting a episode will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -220,21 +221,21 @@ var EpisodeDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
         { this.renderDeleteButton() }
       </div>
-    )
-  },
+    );
+  }
 
-  renderDeleteButton: function() {
+  renderDeleteButton() {
     return(
-      <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+      <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
         Delete Episode
       </a>
     );
   }
-});
+}
 
-module.exports = EpisodeDetails;
+export default EpisodeDetails;

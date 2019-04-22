@@ -1,15 +1,15 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var PurchaseOrdersStore = require('../stores/purchase-orders-store.js');
-var PurchaseOrderItemsStore = require('../stores/purchase-order-items-store.js');
-var ShippingAddressesStore = require('../stores/shipping-addresses-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import PurchaseOrdersStore from '../stores/purchase-orders-store.js'
+import PurchaseOrderItemsStore from '../stores/purchase-order-items-store.js'
+import ShippingAddressesStore from '../stores/shipping-addresses-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 import NewThing from './new-thing.jsx'
-import ModalSelect from './modal-select.jsx';
+import ModalSelect from './modal-select.jsx'
 
-var AddAddressModalStyles = {
+const AddAddressModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -22,7 +22,7 @@ var AddAddressModalStyles = {
   }
 };
 
-var qtyModalStyles = {
+const qtyModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -35,10 +35,11 @@ var qtyModalStyles = {
   }
 };
 
-var PurchaseOrderDetails = React.createClass({
+class PurchaseOrderDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       purchaseOrder: {
         customerId: 0,
@@ -56,25 +57,25 @@ var PurchaseOrderDetails = React.createClass({
       deleteModalOpen: false,
       addAddressModalOpen: false,
       selectAddressModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.purchaseOrderListener = PurchaseOrdersStore.addListener(this.getPurchaseOrders);
-    this.purchaseOrderItemsListener = PurchaseOrderItemsStore.addListener(this.getPurchaseOrderItems);
-    this.shippingAddressListener = ShippingAddressesStore.addListener(this.getShippingAddresses);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.purchaseOrderListener = PurchaseOrdersStore.addListener(this.getPurchaseOrders.bind(this));
+    this.purchaseOrderItemsListener = PurchaseOrderItemsStore.addListener(this.getPurchaseOrderItems.bind(this));
+    this.shippingAddressListener = ShippingAddressesStore.addListener(this.getShippingAddresses.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchPurchaseOrder(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.purchaseOrderListener.remove();
     this.purchaseOrderItemsListener.remove();
     this.shippingAddressListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getPurchaseOrders: function() {
+  getPurchaseOrders() {
     this.setState({
       purchaseOrder: Tools.deepCopy(PurchaseOrdersStore.find(window.location.pathname.split("/")[2])),
       purchaseOrderSaved: PurchaseOrdersStore.find(window.location.pathname.split("/")[2]),
@@ -82,28 +83,28 @@ var PurchaseOrderDetails = React.createClass({
       items: PurchaseOrdersStore.items(),
       otherItems: PurchaseOrdersStore.otherItems(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getShippingAddresses: function() {
+  getShippingAddresses() {
     this.setState({
       shippingAddresses: ShippingAddressesStore.all(),
       addAddressModalOpen: false
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  getPurchaseOrderItems: function() {
+  getPurchaseOrderItems() {
     this.setState({
       items: PurchaseOrderItemsStore.items(),
       otherItems: PurchaseOrderItemsStore.otherItems(),
@@ -111,47 +112,47 @@ var PurchaseOrderDetails = React.createClass({
       selectedItemId: null,
       selectedItemQty: null
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updatePurchaseOrder(this.state.purchaseOrder);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deletePurchaseOrder(this.state.purchaseOrder.id);
     });
-  },
+  }
 
-  clickSaveShippingAddress: function() {
+  clickSaveShippingAddress() {
     this.setState({
       addAddressModalOpen: true
     });
-  },
+  }
 
-  clickUseSavedShippingAddressButton: function() {
+  clickUseSavedShippingAddressButton() {
     this.setState({
       selectAddressModalOpen: true
     });
-  },
+  }
 
-  clickSelectShippingAddress: function(event) {
+  clickSelectShippingAddress(event) {
     for (var i = 0; i < this.state.shippingAddresses.length; i++) {
       if (this.state.shippingAddresses[i].id === +event.target.dataset.id) {
         var address = this.state.shippingAddresses[i];
@@ -172,22 +173,22 @@ var PurchaseOrderDetails = React.createClass({
         this.setState({
           purchaseOrder: purchaseOrder,
           selectAddressModalOpen: false
-        }, function() {
+        }, () => {
           this.setState({
             changesToSave: this.checkForChanges()
           });
         });
       }
     }
-  },
+  }
 
-  clickAddItemButton: function() {
+  clickAddItemButton() {
     this.setState({
-        selectItemModalOpen: true
+      selectItemModalOpen: true
     });
-  },
+  }
 
-  clickSelectItem: function(event) {
+  clickSelectItem(event) {
     this.setState({
       selectedItemId: event.target.dataset.id,
       selectedItemType: event.target.dataset.type,
@@ -195,55 +196,55 @@ var PurchaseOrderDetails = React.createClass({
       qtyModalOpen: true,
       selectedItemQty: 1
     });
-  },
+  }
 
-  updateQty: function(e) {
+  updateQty(e) {
     if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
       this.setState({
         selectedItemQty: e.target.value
       });
     }
-  },
+  }
 
-  clickQtyOk: function() {
+  clickQtyOk() {
     this.setState({
       fetching: true,
       qtyModalOpen: false
     });
     ClientActions.addPurchaseOrderItem(this.state.purchaseOrder.id, this.state.selectedItemId, this.state.selectedItemType, this.state.selectedItemQty);
-  },
+  }
 
-  clickXButton: function(e) {
+  clickXButton(e) {
     this.setState({
       fetching: true
     });
     ClientActions.deletePurchaseOrderItem(e.target.dataset.id);
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
-        addAddressModalOpen: false,
-        selectAddressModalOpen: false,
-        selectItemModalOpen: false,
-        qtyModalOpen: false,
-        deleteModalOpen: false
+      addAddressModalOpen: false,
+      selectAddressModalOpen: false,
+      selectItemModalOpen: false,
+      qtyModalOpen: false,
+      deleteModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.purchaseOrder, this.state.purchaseOrderSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "purchaseOrder",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges,
+      changesFunction: this.checkForChanges.bind(this),
       beforeSave: this.beforeSave
     }
-  },
+  }
 
-  beforeSave: function(newThing, key, value) {
+  beforeSave(newThing, key, value) {
     if (key === "customerId") {
       if (value == 0) {
         newThing.sendInvoice = false;
@@ -251,57 +252,57 @@ var PurchaseOrderDetails = React.createClass({
         newThing.sendInvoice = !PurchaseOrdersStore.findDvdCustomer(value).consignment;
       }
     }
-  },
+  }
 
-  findOtherItem: function(type, id) {
+  findOtherItem(type, id) {
     var result;
-    this.state.otherItems.forEach(function(otherItem, index) {
+    this.state.otherItems.forEach((otherItem, index) => {
       if (otherItem.itemType == type && otherItem.id == id) {
         result = otherItem;
       }
     });
     return result;
-  },
+  }
 
-  clickShip: function() {
+  clickShip() {
     if (!this.state.purchaseOrder.shipDate && this.state.changesToSave === false) {
       this.setState({
         fetching: true
-      }, function() {
+      }, () => {
         ClientActions.shipPO(this.state.purchaseOrder, false)
       });
     }
-  },
+  }
 
-  clickReportingOnly: function() {
+  clickReportingOnly() {
     if (!this.state.purchaseOrder.shipDate && this.state.changesToSave === false) {
       this.setState({
         fetching: true
-      }, function() {
+      }, () => {
         ClientActions.shipPO(this.state.purchaseOrder, true)
       });
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="purchase-order-details">
         <div className="component">
           <h1>Purchase Order Details</h1>
           <div className="white-box">
-            {HandyTools.renderSpinner(this.state.fetching)}
-            {HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5)}
+            { HandyTools.renderSpinner(this.state.fetching) }
+            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Number</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.number || ""} data-field="number" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, Common.errors.number)}
-                <p className={(this.state.purchaseOrder.duplicate && !this.state.purchaseOrder.shipDate) ? "" : "hidden"}>A PO with this number already exists</p>
+                <input className={ Common.errorClass(this.state.errors, Common.errors.number) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.number || "" } data-field="number" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, Common.errors.number) }
+                <p className={ (this.state.purchaseOrder.duplicate && !this.state.purchaseOrder.shipDate) ? "" : "hidden"}>A PO with this number already exists</p>
               </div>
               <div className="col-xs-6">
                 <h2>Order Date</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.orderDate || ""} data-field="orderDate" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, Common.errors.orderDate)}
+                <input className={ Common.errorClass(this.state.errors, Common.errors.orderDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.orderDate || "" } data-field="orderDate" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, Common.errors.orderDate) }
               </div>
             </div>
             <hr />
@@ -309,52 +310,52 @@ var PurchaseOrderDetails = React.createClass({
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.name || ""} data-field="name" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.name || "" } data-field="name" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 1</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.address1 || ""} data-field="address1" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address1 || "" } data-field="address1" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 2</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.address2 || ""} data-field="address2" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address2 || "" } data-field="address2" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.city || ""} data-field="city" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.city || "" } data-field="city" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.state || ""} data-field="state" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.state || "" } data-field="state" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.zip || ""} data-field="zip" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.zip || "" } data-field="zip" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.purchaseOrder.country || ""} data-field="country" readOnly={this.state.purchaseOrder.shipDate ? "readOnly" : ""} />
-                {Common.renderFieldError(this.state.errors, [])}
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.country || "" } data-field="country" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Customer</h2>
                 <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state.purchaseOrder.customerId} disabled={this.state.purchaseOrder.shipDate}>
                   <option key={0} value={'0'}>(None)</option>
-                  {PurchaseOrdersStore.dvdCustomers().map(function(dvdCustomer, index) {
+                  { PurchaseOrdersStore.dvdCustomers().map((dvdCustomer, index) => {
                     return(
-                      <option key={index + 1} value={dvdCustomer.id}>{dvdCustomer.name}</option>
-                    )
-                  })}
+                      <option key={ index + 1 } value={ dvdCustomer.id }>{ dvdCustomer.name }</option>
+                    );
+                  }) }
                 </select>
-                {Common.renderFieldError(this.state.errors, [])}
+                { Common.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             { this.renderSaveShippingAddressButton() }
@@ -364,18 +365,18 @@ var PurchaseOrderDetails = React.createClass({
                 <tr>
                   <th>Items</th>
                   <th>Qty</th>
-                  { function() {
+                  { (() => {
                     if (!this.state.purchaseOrder.shipDate) {
                       return(<th>Stock</th>)
                     }
-                  }.bind(this)() }
+                  })() }
                   <th>{this.state.purchaseOrderSaved.sendInvoice ? 'Unit Price' : ''}</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr><td></td></tr>
-                {this.state.items.map(function(item, index) {
+                {this.state.items.map((item, index) => {
                   return(
                     <tr key={index}>
                       <td className="name-column">
@@ -386,7 +387,7 @@ var PurchaseOrderDetails = React.createClass({
                       <td className={ !this.state.purchaseOrder.shipDate && item.qty > item.stock ? "warning" : "" } >
                           { item.qty }
                       </td>
-                      { function() {
+                      { (() => {
                         if (!this.state.purchaseOrder.shipDate) {
                           return(
                             <td className={ item.qty > item.stock ? "warning" : "" } >
@@ -394,14 +395,14 @@ var PurchaseOrderDetails = React.createClass({
                             </td>
                           )
                         }
-                      }.bind(this)() }
+                      })() }
                       <td>
                           { this.state.purchaseOrderSaved.sendInvoice ? item.price : '' }
                       </td>
                       { this.renderXButton(item) }
                     </tr>
                   );
-                }.bind(this))}
+                })}
               </tbody>
             </table>
             { this.renderAddItemButton() }
@@ -418,7 +419,7 @@ var PurchaseOrderDetails = React.createClass({
                 <input id="send-invoice" className="checkbox" type="checkbox" onChange={ Common.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.purchaseOrder.sendInvoice } data-field="sendInvoice" disabled={ this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment } /><label className="checkbox">Send Invoice</label>
                 { this.renderDisabledNotification() }
                 <div>
-                  <a id="ship" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "") } onClick={ this.clickShip }>
+                  <a id="ship" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "") } onClick={ this.clickShip.bind(this) }>
                     { this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now") }
                   </a>
                   { this.renderReportingOnlyButton() }
@@ -428,20 +429,20 @@ var PurchaseOrderDetails = React.createClass({
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to delete this PO&#63;</h1>
             This action cannot be undone<br />
-            <a className={"red-button"} onClick={this.confirmDelete}>
+            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={"orange-button"} onClick={this.handleModalClose}>
+            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
-        <Modal isOpen={this.state.addAddressModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={AddAddressModalStyles}>
-          <NewThing thing="shippingAddress" initialObject={{
+        <Modal isOpen={ this.state.addAddressModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ AddAddressModalStyles }>
+          <NewThing thing="shippingAddress" initialObject={ {
               label: "",
               name: this.state.purchaseOrder.name,
               address1: this.state.purchaseOrder.address1,
@@ -451,63 +452,63 @@ var PurchaseOrderDetails = React.createClass({
               zip: this.state.purchaseOrder.zip,
               country: this.state.purchaseOrder.country,
               customerId: this.state.purchaseOrder.customerId
-          }} />
+          } } />
         </Modal>
-        <Modal isOpen={this.state.selectAddressModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
-          <ModalSelect options={this.state.shippingAddresses} property={"label"} func={this.clickSelectShippingAddress} />
+        <Modal isOpen={ this.state.selectAddressModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.shippingAddresses } property="label" func={ this.clickSelectShippingAddress.bind(this) } />
         </Modal>
-        <Modal isOpen={this.state.selectItemModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
-          <ModalSelect options={this.state.otherItems} property={"label"} func={this.clickSelectItem} />
+        <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />
         </Modal>
-        <Modal isOpen={this.state.qtyModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={qtyModalStyles}>
+        <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
           <div className="qty-modal">
             <h1>Enter Quantity:</h1>
             <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-            <input onChange={ this.updateQty } value={ this.state.selectedItemQty || "" } /><br />
-            <div className="orange-button" onClick={ this.clickQtyOk }>
+            <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
+            <div className="orange-button" onClick={ this.clickQtyOk.bind(this) }>
               OK
             </div>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderSavedShippingAddressButton: function() {
+  renderSavedShippingAddressButton() {
     if (!this.state.purchaseOrder.shipDate) {
       return(
-        <a className={'blue-outline-button small'} onClick={this.clickUseSavedShippingAddressButton}>Use Saved Shipping Address</a>
-      )
+        <a className="blue-outline-button small" onClick={ this.clickUseSavedShippingAddressButton.bind(this) }>Use Saved Shipping Address</a>
+      );
     }
-  },
+  }
 
-  renderSaveShippingAddressButton: function() {
+  renderSaveShippingAddressButton() {
     if (!this.state.purchaseOrder.shipDate) {
       return(
-        <a id="save-address" className={'blue-outline-button small'} onClick={this.clickSaveShippingAddress}>Save Shipping Address</a>
-      )
+        <a id="save-address" className="blue-outline-button small" onClick={ this.clickSaveShippingAddress.bind(this ) }>Save Shipping Address</a>
+      );
     }
-  },
+  }
 
-  renderXButton: function(item) {
+  renderXButton(item) {
     if (!this.state.purchaseOrder.shipDate) {
       return(
         <td>
-          <div className="x-button" onClick={this.clickXButton} data-id={item.id}></div>
+          <div className="x-button" onClick={ this.clickXButton.bind(this) } data-id={ item.id }></div>
         </td>
-      )
+      );
     }
-  },
+  }
 
-  renderAddItemButton: function() {
+  renderAddItemButton() {
     if (!this.state.purchaseOrder.shipDate) {
       return(
-        <a className={'blue-outline-button small'} onClick={this.clickAddItemButton}>Add Item</a>
+        <a className="blue-outline-button small" onClick={ this.clickAddItemButton.bind(this) }>Add Item</a>
       )
     }
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (!this.state.purchaseOrder.shipDate) {
       if (this.state.changesToSave) {
         var buttonText = "Save";
@@ -517,18 +518,18 @@ var PurchaseOrderDetails = React.createClass({
       return(
         <div>
           <hr />
-          <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+          <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
             { buttonText }
           </a>
-          <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+          <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
             Delete Purchase Order
           </a>
         </div>
-      )
+      );
     }
-  },
+  }
 
-  renderDisabledNotification: function() {
+  renderDisabledNotification() {
     var customer = PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId);
     if (this.state.purchaseOrder.customerId == 0) {
       return(
@@ -539,22 +540,22 @@ var PurchaseOrderDetails = React.createClass({
         <div className="notification">Invoice cannot be sent because { customer.name } sells on consignment.</div>
       );
     }
-  },
+  }
 
-  renderReportingOnlyButton: function() {
+  renderReportingOnlyButton() {
     if (!this.state.purchaseOrder.shipDate) {
       return(
-        <a id="reporting-only" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickReportingOnly }>
+        <a id="reporting-only" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickReportingOnly.bind(this) }>
           { this.state.changesToSave ? "Save to Ship" : "Reporting Only" }
         </a>
-      )
+      );
     }
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = PurchaseOrderDetails;
+export default PurchaseOrderDetails;

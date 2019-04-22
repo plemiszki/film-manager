@@ -1,14 +1,15 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var ErrorsStore = require('../stores/errors-store.js');
-var FilmRightsStore = require('../stores/film-rights-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import ErrorsStore from '../stores/errors-store.js'
+import FilmRightsStore from '../stores/film-rights-store.js'
 
-var FilmRightsNew = React.createClass({
+class FilmRightsNew extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       filmRight: {
         startDate: "",
@@ -25,40 +26,40 @@ var FilmRightsNew = React.createClass({
       errors: [],
       rightsOperator: 'AND',
       territoriesOperator: 'AND'
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     Common.setUpNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
-    this.rightsAndTerritoriesListener = FilmRightsStore.addListener(this.getRightsAndTerritories);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+    this.rightsAndTerritoriesListener = FilmRightsStore.addListener(this.getRightsAndTerritories.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchRightsAndTerritories(this.props.sublicensorId);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.rightsAndTerritoriesListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getRightsAndTerritories: function() {
+  getRightsAndTerritories() {
     this.setState({
       territories: FilmRightsStore.territories(),
       rights: FilmRightsStore.rights(),
       films: (this.props.sublicensorId ? FilmRightsStore.films() : []),
       fetching: false
-    }, function() {
+    }, () => {
       Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSearch: function() {
+  clickSearch() {
     if (this.state.fetching === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
       this.props.availsExport(this.props.filmType, 'custom', {
         selectedRights: this.state.selectedRights,
@@ -70,13 +71,13 @@ var FilmRightsNew = React.createClass({
         territoriesOperator: this.state.territoriesOperator
       });
     }
-  },
+  }
 
-  clickAdd: function() {
+  clickAdd() {
     if (this.state.fetching === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
       this.setState({
         fetching: true
-      }, function() {
+      }, () => {
         if (this.props.filmId) {
           ClientActions.createFilmRights(this.state.filmRight, this.state.selectedRights, this.state.selectedTerritories);
         } else {
@@ -84,16 +85,16 @@ var FilmRightsNew = React.createClass({
         }
       });
     }
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
-      thing: "filmRight",
+      thing: 'filmRight',
       errorsArray: this.state.errors
     }
-  },
+  }
 
-  changeArrayCheckbox: function(e) {
+  changeArrayCheckbox(e) {
     var array = this.state[e.target.parentElement.parentElement.dataset.array];
     if (e.target.checked) {
       array.push(e.target.dataset.thing);
@@ -103,39 +104,39 @@ var FilmRightsNew = React.createClass({
     this.setState({
       [e.target.parentElement.dataset.array]: array
     });
-  },
+  }
 
-  clickAllRights: function() {
+  clickAllRights() {
     this.setState({
-      selectedRights: this.state.rights.map(function(right) { return right.id })
+      selectedRights: this.state.rights.map((right) => right.id)
     });
-  },
+  }
 
-  clickNoRights: function() {
+  clickNoRights() {
     this.setState({
       selectedRights: []
     });
-  },
+  }
 
-  clickAllTerritories: function() {
+  clickAllTerritories() {
     this.setState({
-      selectedTerritories: this.state.territories.map(function(territory) { return territory.id })
+      selectedTerritories: this.state.territories.map((territory) => territory.id)
     });
-  },
+  }
 
-  clickNoTerritories: function() {
+  clickNoTerritories() {
     this.setState({
       selectedTerritories: []
     });
-  },
+  }
 
-  changeOperator: function(which, value) {
+  changeOperator(which, value) {
     this.setState({
       [`${which}Operator`]: (value == 'AND' ? 'OR' : 'AND')
     });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="film-rights-new" className="component">
         <div className="white-box">
@@ -145,7 +146,7 @@ var FilmRightsNew = React.createClass({
             <div className={ this.props.sublicensorId ? "col-xs-6 select-scroll" : "hidden" }>
               <h2>Film</h2>
               <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.filmRight.filmId }>
-                { this.state.films.map(function(film, index) {
+                { this.state.films.map((film, index) => {
                   return(
                     <option key={ index } value={ film.id }>{ film.title }</option>
                   );
@@ -169,76 +170,76 @@ var FilmRightsNew = React.createClass({
             <div className="col-xs-6 relative">
               <div className="rights-list" data-array={ 'selectedRights' }>
                 { this.renderAddOrToggle('rights', this.state.rightsOperator) }
-                { this.state.rights.map(function(right, index) {
+                { this.state.rights.map((right, index) => {
                   return(
                     <div key={ index } className="checkbox-container">
-                      <input id={ right.name } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox } checked={ this.state.selectedRights.indexOf(right.id) > -1 } data-thing={ right.id } /><label className={ "checkbox" } htmlFor={ right.name }>{ right.name }</label>
+                      <input id={ right.name } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox.bind(this) } checked={ this.state.selectedRights.indexOf(right.id) > -1 } data-thing={ right.id } /><label className={ "checkbox" } htmlFor={ right.name }>{ right.name }</label>
                     </div>
                   );
-                }.bind(this)) }
+                }) }
               </div>
-              <a className="blue-outline-button small" onClick={ this.clickNoRights }>NONE</a>
-              <a className="blue-outline-button small" onClick={ this.clickAllRights }>ALL</a>
+              <a className="blue-outline-button small" onClick={ this.clickNoRights.bind(this) }>NONE</a>
+              <a className="blue-outline-button small" onClick={ this.clickAllRights.bind(this) }>ALL</a>
             </div>
             <div className="col-xs-6 relative">
               <div className="rights-list" data-array={ 'selectedTerritories' }>
                 { this.renderAddOrToggle('territories', this.state.territoriesOperator) }
-                { this.state.territories.map(function(territory, index) {
+                { this.state.territories.map((territory, index) => {
                   return(
                     <div key={ index } className="checkbox-container">
-                      <input id={ territory.name } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox } checked={ this.state.selectedTerritories.indexOf(territory.id) > -1 } data-thing={ territory.id } /><label className={ "checkbox" } htmlFor={ territory.name }>{ territory.name }</label>
+                      <input id={ territory.name } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox.bind(this) } checked={ this.state.selectedTerritories.indexOf(territory.id) > -1 } data-thing={ territory.id } /><label className={ "checkbox" } htmlFor={ territory.name }>{ territory.name }</label>
                     </div>
                   );
-                }.bind(this)) }
+                }) }
               </div>
-              <a className="blue-outline-button small" onClick={ this.clickNoTerritories }>NONE</a>
-              <a className="blue-outline-button small" onClick={ this.clickAllTerritories }>ALL</a>
+              <a className="blue-outline-button small" onClick={ this.clickNoTerritories.bind(this) }>NONE</a>
+              <a className="blue-outline-button small" onClick={ this.clickAllTerritories.bind(this) }>ALL</a>
             </div>
           </div>
-          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.props.search ? this.clickSearch : this.clickAdd }>
+          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.props.search ? this.clickSearch.bind(this) : this.clickAdd.bind(this) }>
             { this.props.search ? 'Search' : 'Add Rights' }
           </a>
         </div>
       </div>
     );
-  },
+  }
 
-  renderExclusiveColumn: function() {
+  renderExclusiveColumn() {
     if (!this.props.search) {
       return (
         <div className="col-xs-2">
           <h2>Exclusive</h2>
           <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.filmRight.exclusive }>
-            <option value={ "Yes" }>Yes</option>
-            <option value={ "No" }>No</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
           { Common.renderFieldError([], []) }
         </div>
       );
     }
-  },
+  }
 
-  buttonInactive: function() {
+  buttonInactive() {
     if (this.props.search) {
       return (this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0 || this.state.filmRight.startDate === '' || this.state.filmRight.endDate === '');
     } else {
       return (this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0);
     }
-  },
+  }
 
-  renderAddOrToggle: function(which, value) {
+  renderAddOrToggle(which, value) {
     if (this.props.search) {
       return (
-        <a className="and-or-button" onClick={ function() { this.changeOperator(which, value) }.bind(this) }>
+        <a className="and-or-button" onClick={ () => { this.changeOperator(which, value) } }>
           { value }
         </a>
       );
     }
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = FilmRightsNew;
+export default FilmRightsNew;

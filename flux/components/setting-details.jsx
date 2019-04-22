@@ -1,76 +1,77 @@
-var React = require('react');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var SettingsStore = require('../stores/settings-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import SettingsStore from '../stores/settings-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var SettingsDetails = React.createClass({
+class SettingsDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       settings: {},
       settingsSaved: {},
       errors: [],
       changesToSave: false,
       justSaved: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.settingsListener = SettingsStore.addListener(this.getSettings);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.settingsListener = SettingsStore.addListener(this.getSettings.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchSettings(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.settingsListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getSettings: function() {
+  getSettings() {
     this.setState({
       settings: Tools.deepCopy(SettingsStore.settings()),
       settingsSaved: SettingsStore.settings(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateSettings(this.state.settings);
       });
     }
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.settings, this.state.settingsSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "settings",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div className="settings-details">
         <div className="component">
@@ -81,7 +82,7 @@ var SettingsDetails = React.createClass({
             <div className="row">
               <div className="col-xs-12">
                 <h2>Booking Confirmation Email Text</h2>
-                <textarea rows="15" cols="20" onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.settings.bookingConfirmationText || ""} data-field="bookingConfirmationText" />
+                <textarea rows="15" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.settings.bookingConfirmationText || "" } data-field="bookingConfirmationText" />
                 { Common.renderFieldError(this.state.errors, Common.errors.bookingConfirmationText) }
               </div>
             </div>
@@ -90,9 +91,9 @@ var SettingsDetails = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -100,16 +101,16 @@ var SettingsDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
       </div>
-    )
-  },
+    );
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = SettingsDetails;
+export default SettingsDetails;

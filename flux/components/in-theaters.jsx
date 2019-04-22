@@ -1,13 +1,13 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var InTheatersStore = require('../stores/in-theaters-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import InTheatersStore from '../stores/in-theaters-store.js'
 import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx'
-var InTheatersIndexItem = require('./in-theaters-index-item.jsx');
+import InTheatersIndexItem from './in-theaters-index-item.jsx'
 
-var ModalStyles = {
+const ModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -20,29 +20,30 @@ var ModalStyles = {
   }
 };
 
-var InTheatersIndex = React.createClass({
+class InTheatersIndex extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       inTheaters: [],
       comingSoon: [],
       repertory: [],
       modalOpen: false,
       films: []
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.Listener = InTheatersStore.addListener(this.getFilms);
+  componentDidMount() {
+    this.Listener = InTheatersStore.addListener(this.getFilms.bind(this));
     ClientActions.fetchInTheatersFilms();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.Listener.remove();
-  },
+  }
 
-  getFilms: function() {
+  getFilms() {
     this.setState({
       fetching: false,
       inTheaters: InTheatersStore.inTheaters(),
@@ -50,55 +51,55 @@ var InTheatersIndex = React.createClass({
       repertory: InTheatersStore.repertory(),
       films: InTheatersStore.films()
     });
-  },
+  }
 
-  clickXButton: function(e) {
+  clickXButton(e) {
     var id = e.target.dataset.id;
     this.setState({
       fetching: true
-    }, function() {
+    }, () => {
       ClientActions.deleteInTheatersFilm(id);
     });
-  },
+  }
 
-  handleAddNewClick: function() {
-    this.setState({modalOpen: true});
-  },
+  clickNew() {
+    this.setState({ modalOpen: true });
+  }
 
-  handleModalClose: function() {
-    this.setState({modalOpen: false});
-  },
+  closeModal() {
+    this.setState({ modalOpen: false });
+  }
 
-  clickAddComingSoonFilm: function() {
+  clickAddComingSoonFilm() {
     this.setState({
       modalOpen: true,
       addSection: 'Coming Soon'
     });
-  },
+  }
 
-  clickAddInTheatersFilm: function() {
+  clickAddInTheatersFilm() {
     this.setState({
       modalOpen: true,
       addSection: 'In Theaters'
     });
-  },
+  }
 
-  clickAddRepertoryFilm: function() {
+  clickAddRepertoryFilm() {
     this.setState({
       modalOpen: true,
       addSection: 'Repertory'
     });
-  },
+  }
 
-  selectFilm: function(e) {
+  selectFilm(e) {
     this.setState({
       modalOpen: false,
       fetching: true
     });
     ClientActions.createInTheatersFilm({ filmId: e.target.dataset.id, section: this.state.addSection });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="in-theaters-index" className="component">
         <h1>In Theaters</h1>
@@ -113,14 +114,14 @@ var InTheatersIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.inTheaters.map(function(film, index) {
+              { this.state.inTheaters.map((film, index) => {
                 return(
-                  <InTheatersIndexItem key={film.id} index={index} film={film} section={'in theaters'} clickXButton={this.clickXButton} renderHandle={this.state.inTheaters.length > 1} films={this.state.inTheaters} />
+                  <InTheatersIndexItem key={ film.id } index={ index } film={ film } section={ 'in theaters' } clickXButton={ this.clickXButton.bind(this) } renderHandle={ this.state.inTheaters.length > 1 } films={ this.state.inTheaters } />
                 );
-              }.bind(this))}
+              }) }
             </tbody>
           </table>
-          <a className={ 'blue-outline-button small' } onClick={ this.clickAddInTheatersFilm }>Add Film</a>
+          <a className={ 'blue-outline-button small' } onClick={ this.clickAddInTheatersFilm.bind(this) }>Add Film</a>
           <hr />
           <table className="admin-table no-hover no-highlight coming-soon">
             <thead>
@@ -130,14 +131,14 @@ var InTheatersIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.comingSoon.map(function(film, index) {
+              { this.state.comingSoon.map((film, index) => {
                 return(
-                  <InTheatersIndexItem key={film.id} index={index} film={film} section={'coming soon'} clickXButton={this.clickXButton} renderHandle={this.state.comingSoon.length > 1} films={this.state.comingSoon} />
+                  <InTheatersIndexItem key={ film.id } index={ index } film={ film } section={ 'coming soon' } clickXButton={ this.clickXButton.bind(this) } renderHandle={ this.state.comingSoon.length > 1 } films={ this.state.comingSoon } />
                 );
-              }.bind(this))}
+              }) }
             </tbody>
           </table>
-          <a className={ 'blue-outline-button small' } onClick={ this.clickAddComingSoonFilm }>Add Film</a>
+          <a className={ 'blue-outline-button small' } onClick={ this.clickAddComingSoonFilm.bind(this) }>Add Film</a>
           <hr />
           <table className="admin-table no-hover no-highlight repertory">
             <thead>
@@ -147,25 +148,25 @@ var InTheatersIndex = React.createClass({
             </thead>
             <tbody>
               <tr><td></td></tr>
-              {this.state.repertory.map(function(film, index) {
+              { this.state.repertory.map((film, index) => {
                 return(
-                  <InTheatersIndexItem key={film.id} index={index} film={film} section={'repertory'} clickXButton={this.clickXButton} renderHandle={this.state.repertory.length > 1} films={this.state.repertory} />
+                  <InTheatersIndexItem key={ film.id } index={ index } film={ film } section={ 'repertory' } clickXButton={ this.clickXButton.bind(this) } renderHandle={ this.state.repertory.length > 1 } films={ this.state.repertory } />
                 );
-              }.bind(this))}
+              }) }
             </tbody>
           </table>
-          <a className={ 'blue-outline-button small' } onClick={ this.clickAddRepertoryFilm }>Add Film</a>
+          <a className="blue-outline-button small" onClick={ this.clickAddRepertoryFilm.bind(this) }>Add Film</a>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
-          <ModalSelect options={ this.state.films } property={ "title" } func={ this.selectFilm } />
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.films } property={ "title" } func={ this.selectFilm.bind(this) } />
         </Modal>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = InTheatersIndex;
+export default InTheatersIndex;

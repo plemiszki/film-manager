@@ -1,36 +1,37 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var FilmRightsChangeDates = React.createClass({
+class FilmRightsChangeDates extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: false,
       startDate: "",
       endDate: "",
       errors: []
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
-  },
+  componentDidMount() {
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.errorsListener.remove();
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickChange: function() {
+  clickChange() {
     this.setState({
       fetching: true
     });
@@ -40,16 +41,16 @@ var FilmRightsChangeDates = React.createClass({
       startDate: this.state.startDate,
       endDate: this.state.endDate
     });
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       allErrors: Common.errors,
       errorsArray: this.state.errors
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="film-rights-change-dates" className="component admin-modal">
         <div className="white-box">
@@ -67,15 +68,15 @@ var FilmRightsChangeDates = React.createClass({
               { HandyTools.renderFieldError(this.state.errors, Common.errors.endDate) }
             </div>
           </div>
-          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.clickChange }>Change All Dates</a>
+          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.clickChange.bind(this) }>Change All Dates</a>
         </div>
       </div>
     );
-  },
+  }
 
-  buttonInactive: function() {
+  buttonInactive() {
     return (this.state.fetching || (this.state.startDate === '' && this.state.endDate === ''));
   }
-});
+}
 
-module.exports = FilmRightsChangeDates;
+export default FilmRightsChangeDates;

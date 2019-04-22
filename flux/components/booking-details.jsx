@@ -1,18 +1,18 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var BookingsStore = require('../stores/bookings-store.js');
-var WeeklyTermsStore = require('../stores/weekly-terms-store.js');
-var WeeklyBoxOfficesStore = require('../stores/weekly-box-offices-store.js');
-var PaymentsStore = require('../stores/payments-store.js');
-var CalculationsStore = require('../stores/calculations-store.js');
-var InvoicesStore = require('../stores/invoices-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
-import ModalSelect from './modal-select.jsx';
-import NewThing from './new-thing.jsx';
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import BookingsStore from '../stores/bookings-store.js'
+import WeeklyTermsStore from '../stores/weekly-terms-store.js'
+import WeeklyBoxOfficesStore from '../stores/weekly-box-offices-store.js'
+import PaymentsStore from '../stores/payments-store.js'
+import CalculationsStore from '../stores/calculations-store.js'
+import InvoicesStore from '../stores/invoices-store.js'
+import ErrorsStore from '../stores/errors-store.js'
+import ModalSelect from './modal-select.jsx'
+import NewThing from './new-thing.jsx'
 
-var WeeklyTermStyles = {
+const WeeklyTermStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -25,7 +25,7 @@ var WeeklyTermStyles = {
   }
 };
 
-var NewInvoiceStyles = {
+const NewInvoiceStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -37,7 +37,7 @@ var NewInvoiceStyles = {
   }
 };
 
-var copyModalStyles = {
+const copyModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -49,10 +49,11 @@ var copyModalStyles = {
   }
 };
 
-var BookingDetails = React.createClass({
+class BookingDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       booking: {},
       bookingSaved: {},
@@ -86,22 +87,22 @@ var BookingDetails = React.createClass({
       oldInvoiceOverage: null,
       oldInvoiceShipFee: null,
       invoicePayments: {}
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     Common.setUpNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
-    this.bookingListener = BookingsStore.addListener(this.getBooking);
-    this.weeklyTermsListener = WeeklyTermsStore.addListener(this.getWeeklyTerms);
-    this.weeklyBoxOfficesListener = WeeklyBoxOfficesStore.addListener(this.getWeeklyBoxOffices);
-    this.paymentsListener = PaymentsStore.addListener(this.getPayments);
-    this.calculationsListener = CalculationsStore.addListener(this.getCalculations);
-    this.invoicesListener = InvoicesStore.addListener(this.getInvoices);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+    this.bookingListener = BookingsStore.addListener(this.getBooking.bind(this));
+    this.weeklyTermsListener = WeeklyTermsStore.addListener(this.getWeeklyTerms.bind(this));
+    this.weeklyBoxOfficesListener = WeeklyBoxOfficesStore.addListener(this.getWeeklyBoxOffices.bind(this));
+    this.paymentsListener = PaymentsStore.addListener(this.getPayments.bind(this));
+    this.calculationsListener = CalculationsStore.addListener(this.getCalculations.bind(this));
+    this.invoicesListener = InvoicesStore.addListener(this.getInvoices.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchBooking(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.bookingListener.remove();
     this.weeklyTermsListener.remove();
     this.weeklyBoxOfficesListener.remove();
@@ -109,9 +110,9 @@ var BookingDetails = React.createClass({
     this.calculationsListener.remove();
     this.invoicesListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getBooking: function() {
+  getBooking() {
     this.setState({
       booking: Tools.deepCopy(BookingsStore.find(window.location.pathname.split("/")[2])),
       bookingSaved: BookingsStore.find(window.location.pathname.split("/")[2]),
@@ -122,44 +123,44 @@ var BookingDetails = React.createClass({
       weeklyBoxOffices: BookingsStore.weeklyBoxOffice(),
       payments: BookingsStore.payments(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getWeeklyTerms: function() {
+  getWeeklyTerms() {
     this.setState({
       weeklyTerms: WeeklyTermsStore.all(),
       fetching: false,
       newWeeklyTermsModalOpen: false
     });
-  },
+  }
 
-  getWeeklyBoxOffices: function() {
+  getWeeklyBoxOffices() {
     this.setState({
       weeklyBoxOffices: WeeklyBoxOfficesStore.all(),
       fetching: false,
       newWeeklyBoxOfficeModalOpen: false
     });
-  },
+  }
 
-  getPayments: function() {
+  getPayments() {
     this.setState({
       payments: PaymentsStore.all(),
       fetching: false,
       newPaymentModalOpen: false
     });
-  },
+  }
 
-  getCalculations: function() {
+  getCalculations() {
     this.setState({
       calculations: CalculationsStore.object()
     });
-  },
+  }
 
-  getInvoices: function() {
+  getInvoices() {
     this.setState({
       fetching: false,
       invoices: InvoicesStore.all(),
@@ -167,143 +168,143 @@ var BookingDetails = React.createClass({
       newInvoiceOverage: false,
       newInvoiceShipFee: false
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateBooking(this.state.booking);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  clickCopy: function() {
+  clickCopy() {
     this.setState({
       copyModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteAndGoToIndex('bookings', this.state.booking.id);
     });
-  },
+  }
 
-  clickSelectFilmButton: function() {
+  clickSelectFilmButton() {
     this.setState({
       filmsModalOpen: true
     });
-  },
+  }
 
-  clickSelectFilm: function(event) {
+  clickSelectFilm(event) {
     var booking = this.state.booking;
     booking.filmId = +event.target.dataset.id;
     this.setState({
       booking: booking,
       filmsModalOpen: false,
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       })
     });
-  },
+  }
 
-  clickSelectVenueButton: function() {
+  clickSelectVenueButton() {
     this.setState({
       venuesModalOpen: true
     });
-  },
+  }
 
-  clickSelectVenue: function(event) {
+  clickSelectVenue(event) {
     var booking = this.state.booking;
     booking.venueId = +event.target.dataset.id;
     this.setState({
       booking: booking,
       venuesModalOpen: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       })
     });
-  },
+  }
 
-  clickAddWeek: function() {
+  clickAddWeek() {
     this.setState({
       newWeeklyTermsModalOpen: true
     });
-  },
+  }
 
-  clickDeleteWeek: function(e) {
+  clickDeleteWeek(e) {
     this.setState({
       fetching: true
     });
     var id = e.target.dataset.id;
     ClientActions.deleteWeeklyTerm(id);
-  },
+  }
 
-  clickAddWeeklyBoxOffice: function() {
+  clickAddWeeklyBoxOffice() {
     this.setState({
       newWeeklyBoxOfficeModalOpen: true
     });
-  },
+  }
 
-  clickDeleteWeeklyBoxOffice: function(e) {
+  clickDeleteWeeklyBoxOffice(e) {
     this.setState({
       fetching: true
     });
     var id = e.target.dataset.id;
     ClientActions.deleteWeeklyBoxOffice(id);
-  },
+  }
 
-  clickAddPayment: function() {
+  clickAddPayment() {
     this.setState({
       newPaymentModalOpen: true
     });
-  },
+  }
 
-  clickDeletePayment: function(e) {
+  clickDeletePayment(e) {
     this.setState({
       fetching: false
     });
     var id = e.target.dataset.id;
     ClientActions.deletePayment(id);
-  },
+  }
 
-  clickAddInvoice: function() {
+  clickAddInvoice() {
     this.setState({
       newInvoiceModalOpen: true
     });
-  },
+  }
 
-  clickSendConfirmation: function() {
+  clickSendConfirmation() {
     if (this.state.changesToSave === false) {
       this.setState({
         fetching: true
       });
       ClientActions.sendConfirmation(this.state.booking);
     }
-  },
+  }
 
-  clickSendInvoice: function() {
+  clickSendInvoice() {
     if (this.state.newInvoiceAdvance || this.state.newInvoiceOverage || this.state.newInvoiceShipFee) {
       if (this.state.resendInvoiceId) {
         ClientActions.resendInvoice(this.state.resendInvoiceId, this.state.booking.id, this.state.newInvoiceAdvance, this.state.newInvoiceOverage, this.state.newInvoiceShipFee, this.state.invoicePayments);
@@ -323,33 +324,33 @@ var BookingDetails = React.createClass({
         ClientActions.sendInvoice(this.state.booking.id, this.state.newInvoiceAdvance, this.state.newInvoiceOverage, this.state.newInvoiceShipFee, this.state.invoicePayments);
       }
     }
-  },
+  }
 
-  newInvoiceAdvanceEnabled: function() {
+  newInvoiceAdvanceEnabled() {
     if (this.state.booking.advance === "$0.00") {
       return false;
     } else {
       return true;
     }
-  },
+  }
 
-  newInvoiceOverageEnabled: function() {
+  newInvoiceOverageEnabled() {
     if (this.state.calculations.overage === "$0.00") {
       return false;
     } else {
       return true;
     }
-  },
+  }
 
-  newInvoiceShipFeeEnabled: function() {
+  newInvoiceShipFeeEnabled() {
     if (this.state.booking.shippingFee === "$0.00") {
       return false;
     } else {
       return true;
     }
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     var errors = this.state.errors;
     HandyTools.removeFromArray(errors, "Terms can't be blank");
     this.setState({
@@ -370,17 +371,17 @@ var BookingDetails = React.createClass({
       oldInvoiceOverage: null,
       oldInvoiceShipFee: null
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.booking, this.state.bookingSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "booking",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges,
+      changesFunction: this.checkForChanges.bind(this),
       beforeSave: function(newThing, key, value) {
         if (key == "terms") {
           if (value !== "90/10") {
@@ -390,27 +391,27 @@ var BookingDetails = React.createClass({
         }
       }
     }
-  },
+  }
 
-  changeAdvanceCheckbox: function() {
+  changeAdvanceCheckbox() {
     this.setState({
       newInvoiceAdvance: !this.state.newInvoiceAdvance
     });
-  },
+  }
 
-  changeOverageCheckbox: function() {
+  changeOverageCheckbox() {
     this.setState({
       newInvoiceOverage: !this.state.newInvoiceOverage
     });
-  },
+  }
 
-  changeShipFeeCheckbox: function() {
+  changeShipFeeCheckbox() {
     this.setState({
       newInvoiceShipFee: !this.state.newInvoiceShipFee
     });
-  },
+  }
 
-  changePaymentCheckbox: function(e) {
+  changePaymentCheckbox(e) {
     var id = e.target.dataset.id;
     var obj = this.state.invoicePayments;
     if (obj[id]) {
@@ -421,9 +422,9 @@ var BookingDetails = React.createClass({
     this.setState({
       invoicePayments: obj
     });
-  },
+  }
 
-  clickInvoice: function(id, e) {
+  clickInvoice(id, e) {
     if (e.target.tagName === 'IMG') {
       var invoice = InvoicesStore.find(id) || BookingsStore.findInvoice(id);
       var rows = invoice.rows;
@@ -441,7 +442,7 @@ var BookingDetails = React.createClass({
       });
       var payments = invoice.payments;
       var paymentsObj = {};
-      payments.forEach(function(payment) {
+      payments.forEach((payment) => {
         paymentsObj[payment.id] = true;
       });
       this.setState({
@@ -458,13 +459,13 @@ var BookingDetails = React.createClass({
     } else {
       this.redirect("invoices", id);
     }
-  },
+  }
 
-  redirect: function(directory, id) {
+  redirect(directory, id) {
     window.location.pathname = directory + "/" + id;
-  },
+  }
 
-  render: function() {
+  render() {
     NewInvoiceStyles.content.height = (238 + (34 * this.state.payments.length));
     return(
       <div className="booking-details">
@@ -480,7 +481,7 @@ var BookingDetails = React.createClass({
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1 select-from-modal">
-                <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+                <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
               </div>
               <div className="col-xs-5">
                 <h2>Venue</h2>
@@ -488,7 +489,7 @@ var BookingDetails = React.createClass({
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1 select-from-modal">
-                <img src={ Images.openModal } onClick={ this.clickSelectVenueButton } />
+                <img src={ Images.openModal } onClick={ this.clickSelectVenueButton.bind(this) } />
               </div>
             </div>
             <div className="row">
@@ -538,7 +539,7 @@ var BookingDetails = React.createClass({
               <div className="col-xs-2">
                 <h2>Format</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="formatId" value={ this.state.booking.formatId }>
-                  { this.state.formats.map(function(format) {
+                  { this.state.formats.map((format) => {
                     return(
                       <option key={ format.id } value={ format.id }>{ format.name }</option>
                     );
@@ -711,7 +712,7 @@ var BookingDetails = React.createClass({
                   </thead>
                   <tbody>
                     <tr><td></td><td></td><td></td><td></td></tr>
-                    { this.state.invoices.map(function(invoice, index) {
+                    { this.state.invoices.map((invoice, index) => {
                       return(
                         <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id) }>
                           <td className="indent">
@@ -728,10 +729,10 @@ var BookingDetails = React.createClass({
                           </td>
                         </tr>
                       );
-                    }.bind(this)) }
+                    }) }
                   </tbody>
                 </table>
-                <a className='blue-outline-button small' onClick={ this.clickAddInvoice }>Add Invoice</a>
+                <a className='blue-outline-button small' onClick={ this.clickAddInvoice.bind(this) }>Add Invoice</a>
               </div>
             </div>
             <hr />
@@ -739,13 +740,13 @@ var BookingDetails = React.createClass({
               <div className="col-xs-6">
                 <h3>Payments:</h3>
                 <ul>
-                  { this.state.payments.map(function(payment) {
+                  { this.state.payments.map((payment) => {
                     return(
-                      <li key={ payment.id }>{ payment.date } - { payment.amount }{ payment.notes && " (" + payment.notes + ")" }<div className="x-button" onClick={ this.clickDeletePayment } data-id={ payment.id }></div></li>
+                      <li key={ payment.id }>{ payment.date } - { payment.amount }{ payment.notes && " (" + payment.notes + ")" }<div className="x-button" onClick={ this.clickDeletePayment.bind(this) } data-id={ payment.id }></div></li>
                     );
-                  }.bind(this)) }
+                  }) }
                 </ul>
-                <a className={ 'blue-outline-button small' } onClick={ this.clickAddPayment }>Add Payment</a>
+                <a className={ 'blue-outline-button small' } onClick={ this.clickAddPayment.bind(this) }>Add Payment</a>
               </div>
               <div className="col-xs-6">
                 <h3>Calculations:</h3>
@@ -756,48 +757,48 @@ var BookingDetails = React.createClass({
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this booking&#63;</h1>
             Deleting a booking will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
-        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="booking" copyFrom={ this.state.booking.id } initialObject={ { copyFrom: this.state.booking.id } } />
         </Modal>
-        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
-          <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm } />
+        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.selectModalStyles }>
-          <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue } />
+        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.newWeeklyTermsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
+        <Modal isOpen={ this.state.newWeeklyTermsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="weeklyTerm" initialObject={ { bookingId: this.state.booking.id } } />
         </Modal>
-        <Modal isOpen={ this.state.newWeeklyBoxOfficeModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
+        <Modal isOpen={ this.state.newWeeklyBoxOfficeModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="weeklyBoxOffice" initialObject={ { bookingId: this.state.booking.id } } />
         </Modal>
-        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ WeeklyTermStyles }>
+        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="payment" initialObject={ { bookingId: this.state.booking.id, date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } } />
         </Modal>
-        <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ NewInvoiceStyles }>
+        <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewInvoiceStyles }>
           <div className="new-invoice-modal">
-            <div><input id="advance-checkbox" className="checkbox" type="checkbox" onChange={ this.changeAdvanceCheckbox } checked={ this.state.newInvoiceAdvance } disabled={ !this.newInvoiceAdvanceEnabled() } /><label className={ "checkbox" + (this.newInvoiceAdvanceEnabled() ? "" : " disabled") } htmlFor="advance-checkbox">Advance - { (this.state.resendInvoiceId && this.state.oldInvoiceAdvance) ? (this.state.oldInvoiceAdvance + ' →') : '' } { this.state.bookingSaved.advance }</label></div>
-            <div><input id="overage-checkbox" className="checkbox" type="checkbox" onChange={ this.changeOverageCheckbox } checked={ this.state.newInvoiceOverage } disabled={ !this.newInvoiceOverageEnabled() } /><label className={ "checkbox" + (this.newInvoiceOverageEnabled() ? "" : " disabled") } htmlFor="overage-checkbox">Overage - { (this.state.resendInvoiceId && this.state.oldInvoiceOverage) ? (this.state.oldInvoiceOverage + ' →') : '' } { this.state.calculations.overage }</label></div>
-            <div><input id="shipfee-checkbox" className="checkbox" type="checkbox" onChange={ this.changeShipFeeCheckbox } checked={ this.state.newInvoiceShipFee } disabled={ !this.newInvoiceShipFeeEnabled() } /><label className={ "checkbox" + (this.newInvoiceShipFeeEnabled() ? "" : " disabled") } htmlFor="shipfee-checkbox">Shipping Fee - { (this.state.resendInvoiceId && this.state.oldInvoiceShipFee) ? (this.state.oldInvoiceShipFee + ' →') : '' } { this.state.bookingSaved.shippingFee }</label></div>
-            { this.state.payments.map(function(payment, index) {
+            <div><input id="advance-checkbox" className="checkbox" type="checkbox" onChange={ this.changeAdvanceCheckbox.bind(this) } checked={ this.state.newInvoiceAdvance } disabled={ !this.newInvoiceAdvanceEnabled() } /><label className={ "checkbox" + (this.newInvoiceAdvanceEnabled() ? "" : " disabled") } htmlFor="advance-checkbox">Advance - { (this.state.resendInvoiceId && this.state.oldInvoiceAdvance) ? (this.state.oldInvoiceAdvance + ' →') : '' } { this.state.bookingSaved.advance }</label></div>
+            <div><input id="overage-checkbox" className="checkbox" type="checkbox" onChange={ this.changeOverageCheckbox.bind(this) } checked={ this.state.newInvoiceOverage } disabled={ !this.newInvoiceOverageEnabled() } /><label className={ "checkbox" + (this.newInvoiceOverageEnabled() ? "" : " disabled") } htmlFor="overage-checkbox">Overage - { (this.state.resendInvoiceId && this.state.oldInvoiceOverage) ? (this.state.oldInvoiceOverage + ' →') : '' } { this.state.calculations.overage }</label></div>
+            <div><input id="shipfee-checkbox" className="checkbox" type="checkbox" onChange={ this.changeShipFeeCheckbox.bind(this) } checked={ this.state.newInvoiceShipFee } disabled={ !this.newInvoiceShipFeeEnabled() } /><label className={ "checkbox" + (this.newInvoiceShipFeeEnabled() ? "" : " disabled") } htmlFor="shipfee-checkbox">Shipping Fee - { (this.state.resendInvoiceId && this.state.oldInvoiceShipFee) ? (this.state.oldInvoiceShipFee + ' →') : '' } { this.state.bookingSaved.shippingFee }</label></div>
+            { this.state.payments.map((payment, index) => {
               return(
-                <div key={ index }><input id={ `payment-${payment.id}` } className="checkbox" type="checkbox" onChange={ this.changePaymentCheckbox } checked={ this.state.invoicePayments[payment.id] || false } data-id={ payment.id } /><label className={ "checkbox" } htmlFor={ `payment-${payment.id}` }>Payment ({ payment.date }) - ({ payment.amount })</label></div>
+                <div key={ index }><input id={ `payment-${payment.id}` } className="checkbox" type="checkbox" onChange={ this.changePaymentCheckbox.bind(this) } checked={ this.state.invoicePayments[payment.id] || false } data-id={ payment.id } /><label className="checkbox" htmlFor={ `payment-${payment.id}` }>Payment ({ payment.date }) - ({ payment.amount })</label></div>
               );
-            }.bind(this))}
+            }) }
             <div className="text-center">
-              <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(!this.state.newInvoiceAdvance && !this.state.newInvoiceOverage && !this.state.newInvoiceShipFee) } onClick={ this.clickSendInvoice }>
+              <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(!this.state.newInvoiceAdvance && !this.state.newInvoiceOverage && !this.state.newInvoiceShipFee) } onClick={ this.clickSendInvoice.bind(this) }>
                 { this.state.resendInvoiceId ? ('Resend Invoice ' + this.state.resendInvoiceId) : 'Send Invoice' }
               </a>
             </div>
@@ -805,9 +806,9 @@ var BookingDetails = React.createClass({
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderCalculations: function() {
+  renderCalculations() {
     if (this.state.bookingSaved.termsValid) {
       return(
         <div>
@@ -830,21 +831,21 @@ var BookingDetails = React.createClass({
         <div style={ { color: 'red' } }>Terms are not valid.</div>
       );
     }
-  },
+  }
 
-  renderTermsColumn: function() {
+  renderTermsColumn() {
     if (this.state.booking.termsChange) {
       return(
         <div className="col-xs-6">
           <h2>Terms by Week</h2>
           <ul>
-            { this.state.weeklyTerms.map(function(weeklyTerms) {
+            { this.state.weeklyTerms.map((weeklyTerms) => {
               return(
-                <li key={ weeklyTerms.id }>Week { +weeklyTerms.order + 1 } - { weeklyTerms.terms }<div className="x-button" onClick={ this.clickDeleteWeek } data-id={ weeklyTerms.id }></div></li>
+                <li key={ weeklyTerms.id }>Week { +weeklyTerms.order + 1 } - { weeklyTerms.terms }<div className="x-button" onClick={ this.clickDeleteWeek.bind(this) } data-id={ weeklyTerms.id }></div></li>
               );
-            }.bind(this)) }
+            }) }
           </ul>
-          <a className={ 'blue-outline-button small' } onClick={ this.clickAddWeek }>Add Week</a>
+          <a className="blue-outline-button small" onClick={ this.clickAddWeek.bind(this) }>Add Week</a>
         </div>
       );
     } else {
@@ -856,9 +857,9 @@ var BookingDetails = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderHouseExpense: function() {
+  renderHouseExpense() {
     if (!this.state.booking.termsChange && this.state.booking.terms === "90/10") {
       return(
         <div className="col-xs-2">
@@ -868,9 +869,9 @@ var BookingDetails = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderConfirmationSection: function() {
+  renderConfirmationSection() {
     if (this.state.booking.bookingConfirmationSent) {
       return(
         <div>
@@ -884,7 +885,7 @@ var BookingDetails = React.createClass({
           </div>
           <hr />
         </div>
-      )
+      );
     } else {
       if (this.state.bookingSaved.email) {
         return(
@@ -892,7 +893,7 @@ var BookingDetails = React.createClass({
             <h3>Booking Confirmation:</h3>
             <div className="row">
               <div className="col-xs-12">
-                <a className={ "orange-button confirmation-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSendConfirmation }>
+                <a className={ "orange-button confirmation-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSendConfirmation.bind(this) }>
                   { this.state.changesToSave ? "Save to Send" : "Send Booking Confirmation" }
                 </a>
               </div>
@@ -902,9 +903,9 @@ var BookingDetails = React.createClass({
         );
       }
     }
-  },
+  }
 
-  renderBookedByField: function() {
+  renderBookedByField() {
     if (JSON.stringify(this.state.booking) == "{}" || this.state.booking.pastBooker) {
       return(
         <div className="col-xs-3">
@@ -928,9 +929,9 @@ var BookingDetails = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderBoxOfficeSection: function() {
+  renderBoxOfficeSection() {
     if (this.state.booking.termsChange) {
       return(
         <div className="col-xs-6">
@@ -938,11 +939,11 @@ var BookingDetails = React.createClass({
           <ul>
             { this.state.weeklyBoxOffices.map(function(weeklyBoxOffice) {
               return(
-                <li key={ weeklyBoxOffice.id }>Week { +weeklyBoxOffice.order + 1 } - { weeklyBoxOffice.amount }<div className="x-button" onClick={ this.clickDeleteWeeklyBoxOffice } data-id={ weeklyBoxOffice.id }></div></li>
+                <li key={ weeklyBoxOffice.id }>Week { +weeklyBoxOffice.order + 1 } - { weeklyBoxOffice.amount }<div className="x-button" onClick={ this.clickDeleteWeeklyBoxOffice.bind(this) } data-id={ weeklyBoxOffice.id }></div></li>
               );
             }.bind(this)) }
           </ul>
-          <a className={ 'blue-outline-button small' } onClick={ this.clickAddWeeklyBoxOffice }>Add Weekly Box Office</a>
+          <a className={ 'blue-outline-button small' } onClick={ this.clickAddWeeklyBoxOffice.bind(this) }>Add Weekly Box Office</a>
         </div>
       );
     } else {
@@ -954,9 +955,9 @@ var BookingDetails = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderImportedInvoicesSection: function() {
+  renderImportedInvoicesSection() {
     if (this.state.booking.importedAdvanceInvoiceSent || this.state.booking.importedAdvanceInvoiceNumber || this.state.booking.importedOverageInvoiceSent || this.state.booking.importedOverageInvoiceNumber) {
       return(
         <div className="row">
@@ -981,11 +982,11 @@ var BookingDetails = React.createClass({
             { Common.renderFieldError(this.state.errors, []) }
           </div>
         </div>
-      )
+      );
     }
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -993,23 +994,23 @@ var BookingDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Booking
         </a>
-        <a className={ "float-button orange-button copy-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy }>
+        <a className={ "float-button orange-button copy-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
           Copy Booking
         </a>
       </div>
-    )
-  },
+    );
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = BookingDetails;
+export default BookingDetails;

@@ -1,28 +1,29 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var SublicensorsStore = require('../stores/sublicensors-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
-var FilmRightsNew = require('./film-rights-new.jsx');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import SublicensorsStore from '../stores/sublicensors-store.js'
+import ErrorsStore from '../stores/errors-store.js'
+import FilmRightsNew from './film-rights-new.jsx'
 
-var SublicensorDetails = React.createClass({
-
-  newRightsModalStyles: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.50)'
-    },
-    content: {
-      background: '#F5F6F7',
-      padding: 0,
-      margin: 'auto',
-      maxWidth: 1000,
-      height: 575
-    }
+const NewRightsModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
   },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 1000,
+    height: 575
+  }
+}
 
-  getInitialState: function() {
-    return({
+class SublicensorDetails extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       sublicensor: {},
       sublicensorSaved: {},
@@ -33,101 +34,101 @@ var SublicensorDetails = React.createClass({
       deleteModalOpen: false,
       newRightsModalOpen: false,
       rightsSortBy: 'film'
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.sublicensorListener = SublicensorsStore.addListener(this.getSublicensors);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
-    ClientActions.fetchSublicensor(window.location.pathname.split("/")[2]);
-  },
+  componentDidMount() {
+    this.sublicensorListener = SublicensorsStore.addListener(this.getSublicensors.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
+    ClientActions.fetchSublicensor(window.location.pathname.split('/')[2]);
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.sublicensorListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getSublicensors: function() {
+  getSublicensors() {
     this.setState({
       sublicensor: Tools.deepCopy(SublicensorsStore.find(window.location.pathname.split("/")[2])),
       sublicensorSaved: SublicensorsStore.find(window.location.pathname.split("/")[2]),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateSublicensor(this.state.sublicensor);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteSublicensor(this.state.sublicensor.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false,
       newRightsModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.sublicensor, this.state.sublicensorSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "sublicensor",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  clickRightsHeader: function(property) {
+  clickRightsHeader(property) {
     this.setState({
       rightsSortBy: property
     });
-  },
+  }
 
-  clickAddRight: function() {
+  clickAddRight() {
     this.setState({
       newRightsModalOpen: true
     });
-  },
+  }
 
-  redirect: function(directory, id) {
+  redirect(directory, id) {
     window.location.pathname = directory + "/" + id;
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div className="sublicensor-details">
         <div className="component details-component">
@@ -138,31 +139,31 @@ var SublicensorDetails = React.createClass({
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.sublicensor.name || ""} data-field="name" />
+                <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.name || "" } data-field="name" />
                 { Common.renderFieldError(this.state.errors, Common.errors.name) }
               </div>
               <div className="col-xs-4">
                 <h2>Contact Name</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.sublicensor.contactName || ""} data-field="contactName" />
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.contactName || "" } data-field="contactName" />
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Email</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.sublicensor.email || ""} data-field="email" />
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.email || "" } data-field="email" />
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Phone</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.sublicensor.phone || ""} data-field="phone" />
+                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.phone || "" } data-field="phone" />
                 { Common.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>W-8 on File</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="w8" value={this.state.sublicensor.w8} >
-                  <option value={ "no" }>No</option>
-                  <option value={ "yes" }>Yes</option>
+                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="w8" value={ this.state.sublicensor.w8 } >
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
                 </select>
               </div>
             </div>
@@ -171,7 +172,7 @@ var SublicensorDetails = React.createClass({
             <h3>Sublicensed Rights:</h3>
             <div className="row">
               <div className="col-xs-12">
-                <table className={ "admin-table" }>
+                <table className="admin-table">
                   <thead>
                     <tr>
                       <th><div className={ this.state.rightsSortBy === 'film' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'film') }>Film</div></th>
@@ -184,7 +185,7 @@ var SublicensorDetails = React.createClass({
                   </thead>
                   <tbody>
                     <tr><td></td><td></td><td></td><td></td><td></td></tr>
-                    { _.orderBy(SublicensorsStore.rights(), this.state.rightsSortBy).map(function(right, index) {
+                    { _.orderBy(SublicensorsStore.rights(), this.state.rightsSortBy).map((right, index) => {
                       return(
                         <tr key={ index } onClick={ this.redirect.bind(this, 'sub_rights', right.id) }>
                           <td className="indent">
@@ -207,34 +208,34 @@ var SublicensorDetails = React.createClass({
                           </td>
                         </tr>
                       );
-                    }.bind(this)) }
+                    }) }
                   </tbody>
                 </table>
-                <a className={ 'blue-outline-button small' } onClick={ this.clickAddRight }>Add Rights</a>
+                <a className="blue-outline-button small" onClick={ this.clickAddRight.bind(this) }>Add Rights</a>
               </div>
             </div>
           </div>
         </div>
-        <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ this.newRightsModalStyles }>
+        <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
           <FilmRightsNew sublicensorId={ this.state.sublicensor.id } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to delete this sublicensor&#63;</h1>
             Deleting a sublicensor will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -242,20 +243,20 @@ var SublicensorDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Sublicensor
         </a>
       </div>
-    )
-  },
+    );
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
 module.exports = SublicensorDetails;

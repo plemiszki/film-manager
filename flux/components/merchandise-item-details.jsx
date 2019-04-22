@@ -1,15 +1,16 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var MerchandiseItemsStore = require('../stores/merchandise-items-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
-import ModalSelect from './modal-select.jsx';
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import MerchandiseItemsStore from '../stores/merchandise-items-store.js'
+import ErrorsStore from '../stores/errors-store.js'
+import ModalSelect from './modal-select.jsx'
 
-var MerchandiseItemDetails = React.createClass({
+class MerchandiseItemDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       merchandiseItem: {},
       merchandiseItemSaved: {},
@@ -17,109 +18,109 @@ var MerchandiseItemDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.merchandiseItemListener = MerchandiseItemsStore.addListener(this.getMerchandiseItem);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.merchandiseItemListener = MerchandiseItemsStore.addListener(this.getMerchandiseItem.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchMerchandiseItem(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.merchandiseItemsListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getMerchandiseItem: function() {
+  getMerchandiseItem() {
     this.setState({
       merchandiseItem: Tools.deepCopy(MerchandiseItemsStore.find(window.location.pathname.split("/")[2])),
       merchandiseItemSaved: MerchandiseItemsStore.find(window.location.pathname.split("/")[2]),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateMerchandiseItem(this.state.merchandiseItem);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteAndGoToIndex('merchandise_items', this.state.merchandiseItem.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.merchandiseItem, this.state.merchandiseItemSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "merchandiseItem",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  clickSelectFilmButton: function() {
+  clickSelectFilmButton() {
     this.setState({
       filmsModalOpen: true
     });
-  },
+  }
 
-  closeModal: function() {
+  closeModal() {
     this.setState({
       filmsModalOpen: false
     });
-  },
+  }
 
-  selectFilm: function(e) {
+  selectFilm(e) {
     var merchandiseItem = this.state.merchandiseItem;
     merchandiseItem.filmId = +e.target.dataset.id;
     this.setState({
       merchandiseItem: merchandiseItem,
       filmsModalOpen: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="merchandiseItem-details">
         <div className="component details-component">
@@ -136,7 +137,7 @@ var MerchandiseItemDetails = React.createClass({
               <div className="col-xs-6">
                 <h2>Type</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="merchandiseTypeId" value={ this.state.merchandiseItem.merchandiseTypeId }>
-                  { MerchandiseItemsStore.types().map(function(type) {
+                  { MerchandiseItemsStore.types().map((type) => {
                     return(
                       <option key={ type.id } value={ type.id }>{ type.name }</option>
                     );
@@ -176,32 +177,32 @@ var MerchandiseItemDetails = React.createClass({
                 { Common.renderFieldError(this.state.filmErrors, []) }
               </div>
               <div className="col-xs-1 icons-column">
-                <img src={ Images.openModal } onClick={ this.clickSelectFilmButton } />
+                <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
               </div>
             </div>
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal } contentLabel="Modal" style={ Common.selectModalStyles }>
-          <ModalSelect options={ MerchandiseItemsStore.films() } property={ "title" } func={ this.selectFilm } />
+        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ MerchandiseItemsStore.films() } property={ "title" } func={ this.selectFilm.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this merchandise&#63;</h1>
             Deleting merchandise will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -209,20 +210,20 @@ var MerchandiseItemDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Merchandise
         </a>
       </div>
     );
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = MerchandiseItemDetails;
+export default MerchandiseItemDetails;

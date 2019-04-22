@@ -1,41 +1,42 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var InvoicesStore = require('../stores/invoices-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import InvoicesStore from '../stores/invoices-store.js'
 
-var InvoiceDetails = React.createClass({
+class InvoiceDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       invoice: {},
       rows: []
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.invoiceListener = InvoicesStore.addListener(this.getInvoice);
+  componentDidMount() {
+    this.invoiceListener = InvoicesStore.addListener(this.getInvoice.bind(this));
     ClientActions.fetchInvoice(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.invoiceListener.remove();
-  },
+  }
 
-  getInvoice: function() {
+  getInvoice() {
     this.setState({
       invoice: InvoicesStore.find(window.location.pathname.split("/")[2]),
       rows: InvoicesStore.rows().concat(InvoicesStore.payments()),
       fetching: false
     });
-  },
+  }
 
-  clickExport: function() {
+  clickExport() {
     window.location.pathname = 'api/invoices/' + this.state.invoice.id + '/export';
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="invoice-details">
         <div className="component">
@@ -80,7 +81,7 @@ var InvoiceDetails = React.createClass({
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td><td></td></tr>
-                { this.state.rows.map(this.renderTableColumns) }
+                { this.state.rows.map(this.renderTableColumns.bind(this)) }
               </tbody>
             </table>
             <hr />
@@ -91,16 +92,16 @@ var InvoiceDetails = React.createClass({
               </div>
             </div>
             { this.renderNotes() }
-            <a id="export" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport }>
+            <a id="export" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
               Export
             </a>
           </div>
         </div>
       </div>
     );
-  },
+  }
 
-  renderTableHeaders: function() {
+  renderTableHeaders() {
     if (this.state.invoice.invoiceType == "dvd") {
       return(
         <tr>
@@ -118,9 +119,9 @@ var InvoiceDetails = React.createClass({
         </tr>
       );
     }
-  },
+  }
 
-  renderTableColumns: function(row, index) {
+  renderTableColumns(row, index) {
     if (this.state.invoice.invoiceType == "dvd") {
       return(
         <tr key={ index }>
@@ -150,9 +151,9 @@ var InvoiceDetails = React.createClass({
         </tr>
       );
     }
-  },
+  }
 
-  renderPOSection: function() {
+  renderPOSection() {
     if (this.state.invoice.invoiceType == "dvd") {
       return(
         <div className="col-xs-4">
@@ -161,9 +162,9 @@ var InvoiceDetails = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderFilmAndVenueSection: function() {
+  renderFilmAndVenueSection() {
     if (this.state.invoice.invoiceType == "booking") {
       return(
         <div>
@@ -178,9 +179,9 @@ var InvoiceDetails = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderNotes: function() {
+  renderNotes() {
     if (this.state.invoice.notes) {
       return(
         <div className="row">
@@ -197,11 +198,11 @@ var InvoiceDetails = React.createClass({
         </div>
       )
     }
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = InvoiceDetails;
+export default InvoiceDetails;

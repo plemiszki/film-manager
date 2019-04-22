@@ -1,14 +1,15 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var FilmRightsStore = require('../stores/film-rights-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import FilmRightsStore from '../stores/film-rights-store.js'
+import ErrorsStore from '../stores/errors-store.js'
 
-var FilmRightDetails = React.createClass({
+class FilmRightDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       filmRight: {},
       filmRightSaved: {},
@@ -16,86 +17,86 @@ var FilmRightDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.filmRightListener = FilmRightsStore.addListener(this.getFilmRight);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.filmRightListener = FilmRightsStore.addListener(this.getFilmRight.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchFilmRight(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.filmRightsListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getFilmRight: function() {
+  getFilmRight() {
     this.setState({
       filmRight: Tools.deepCopy(FilmRightsStore.filmRight()),
       filmRightSaved: FilmRightsStore.filmRight(),
       territories: FilmRightsStore.territories(),
       rights: FilmRightsStore.rights(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateFilmRight(this.state.filmRight);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteFilmRight(this.state.filmRight.id);
     });
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
       deleteModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.filmRight, this.state.filmRightSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
-      thing: "filmRight",
+      thing: 'filmRight',
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="filmRight-details">
         <div className="component details-component">
@@ -108,7 +109,7 @@ var FilmRightDetails = React.createClass({
               <div className="col-xs-3 select-scroll">
                 <h2>Right</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.filmRight.rightId }>
-                  { FilmRightsStore.rights().map(function(right, index) {
+                  { FilmRightsStore.rights().map((right, index) => {
                     return(
                       <option key={ index } value={ right.id }>{ right.name }</option>
                     );
@@ -119,7 +120,7 @@ var FilmRightDetails = React.createClass({
               <div className="col-xs-3 select-scroll">
                 <h2>Territory</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="territoryId" value={ this.state.filmRight.territoryId }>
-                  { FilmRightsStore.territories().map(function(territory, index) {
+                  { FilmRightsStore.territories().map((territory, index) => {
                     return(
                       <option key={ index } value={ territory.id }>{ territory.name }</option>
                     );
@@ -149,23 +150,23 @@ var FilmRightDetails = React.createClass({
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this right&#63;</h1>
             Deleting a right will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete }>
+            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={ "orange-button" } onClick={ this.handleModalClose }>
+            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderDeleteError: function() {
+  renderDeleteError() {
     if (this.state.errors.indexOf('Right has been sublicensed') > -1) {
       return (
         <div className="col-xs-12">
@@ -173,9 +174,9 @@ var FilmRightDetails = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -183,20 +184,20 @@ var FilmRightDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Right
         </a>
       </div>
     )
-  },
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
 module.exports = FilmRightDetails;

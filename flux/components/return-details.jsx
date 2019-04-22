@@ -1,13 +1,13 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var ClientActions = require('../actions/client-actions.js');
-var ReturnsStore = require('../stores/returns-store.js');
-var ReturnItemsStore = require('../stores/return-items-store.js');
-var ErrorsStore = require('../stores/errors-store.js');
-import ModalSelect from './modal-select.jsx';
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import ClientActions from '../actions/client-actions.js'
+import ReturnsStore from '../stores/returns-store.js'
+import ReturnItemsStore from '../stores/return-items-store.js'
+import ErrorsStore from '../stores/errors-store.js'
+import ModalSelect from './modal-select.jsx'
 
-var qtyModalStyles = {
+const qtyModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -20,10 +20,11 @@ var qtyModalStyles = {
   }
 };
 
-var ReturnDetails = React.createClass({
+class ReturnDetails extends React.Component {
 
-  getInitialState: function() {
-    return({
+  constructor(props) {
+    super(props)
+    this.state = {
       fetching: true,
       return: {
         customerId: 0,
@@ -34,46 +35,46 @@ var ReturnDetails = React.createClass({
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
-    });
-  },
+    };
+  }
 
-  componentDidMount: function() {
-    this.returnListener = ReturnsStore.addListener(this.getReturns);
-    this.returnItemsListener = ReturnItemsStore.addListener(this.getReturnItems);
-    this.errorsListener = ErrorsStore.addListener(this.getErrors);
+  componentDidMount() {
+    this.returnListener = ReturnsStore.addListener(this.getReturns.bind(this));
+    this.returnItemsListener = ReturnItemsStore.addListener(this.getReturnItems.bind(this));
+    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     ClientActions.fetchReturn(window.location.pathname.split("/")[2]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.returnListener.remove();
     this.returnItemsListener.remove();
     this.shippingAddressListener.remove();
     this.errorsListener.remove();
-  },
+  }
 
-  getReturns: function() {
+  getReturns() {
     this.setState({
       return: Tools.deepCopy(ReturnsStore.find(window.location.pathname.split("/")[2])),
       returnSaved: ReturnsStore.find(window.location.pathname.split("/")[2]),
       items: ReturnsStore.items(),
       otherItems: ReturnsStore.otherItems(),
       fetching: false
-    }, function() {
+    }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
       });
     });
-  },
+  }
 
-  getErrors: function() {
+  getErrors() {
     this.setState({
       errors: ErrorsStore.all(),
       fetching: false
     });
-  },
+  }
 
-  getReturnItems: function() {
+  getReturnItems() {
     this.setState({
       items: ReturnItemsStore.items(),
       otherItems: ReturnItemsStore.otherItems(),
@@ -81,41 +82,41 @@ var ReturnDetails = React.createClass({
       selectedItemId: null,
       selectedItemQty: null
     });
-  },
+  }
 
-  clickSave: function() {
+  clickSave() {
     if (this.state.changesToSave) {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateReturn(this.state.return);
       });
     }
-  },
+  }
 
-  clickDelete: function() {
+  clickDelete() {
     this.setState({
       deleteModalOpen: true
     });
-  },
+  }
 
-  confirmDelete: function() {
+  confirmDelete() {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, function() {
+    }, () => {
       ClientActions.deleteAndGoToIndex('returns', this.state.return.id);
     });
-  },
+  }
 
-  clickAddItemButton: function() {
+  clickAddItemButton() {
     this.setState({
-        selectItemModalOpen: true
+      selectItemModalOpen: true
     });
-  },
+  }
 
-  clickSelectItem: function(event) {
+  clickSelectItem(event) {
     this.setState({
       selectedItemId: event.target.dataset.id,
       selectedItemType: event.target.dataset.type,
@@ -123,64 +124,62 @@ var ReturnDetails = React.createClass({
       qtyModalOpen: true,
       selectedItemQty: 1
     });
-  },
+  }
 
-  updateQty: function(e) {
+  updateQty(e) {
     if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
       this.setState({
         selectedItemQty: e.target.value
       });
     }
-  },
+  }
 
-  clickQtyOk: function() {
+  clickQtyOk() {
     this.setState({
       fetching: true,
       qtyModalOpen: false
     });
     ClientActions.addReturnItem(this.state.return.id, this.state.selectedItemId, this.state.selectedItemType, this.state.selectedItemQty);
-  },
+  }
 
-  clickXButton: function(e) {
+  clickXButton(e) {
     this.setState({
       fetching: true
     });
     ClientActions.deleteReturnItem(e.target.dataset.id);
-  },
+  }
 
-  handleModalClose: function() {
+  closeModal() {
     this.setState({
-      addAddressModalOpen: false,
-      selectAddressModalOpen: false,
       selectItemModalOpen: false,
       qtyModalOpen: false,
       deleteModalOpen: false
     });
-  },
+  }
 
-  checkForChanges: function() {
+  checkForChanges() {
     return !Tools.objectsAreEqual(this.state.return, this.state.returnSaved);
-  },
+  }
 
-  changeFieldArgs: function() {
+  changeFieldArgs() {
     return {
       thing: "return",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges.bind(this)
     }
-  },
+  }
 
-  findOtherItem: function(type, id) {
+  findOtherItem(type, id) {
     var result;
-    this.state.otherItems.forEach(function(otherItem, index) {
+    this.state.otherItems.forEach((otherItem, index) => {
       if (otherItem.itemType == type && otherItem.id == id) {
         result = otherItem;
       }
     });
     return result;
-  },
+  }
 
-  render: function() {
+  render() {
     return(
       <div id="return-details">
         <div className="component">
@@ -192,10 +191,10 @@ var ReturnDetails = React.createClass({
               <div className="col-xs-4">
                 <h2>Customer</h2>
                 <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="customerId" value={ this.state.return.customerId } disabled={ this.state.return.shipDate }>
-                  { ReturnsStore.customers().map(function(dvdCustomer, index) {
+                  { ReturnsStore.customers().map((dvdCustomer, index) => {
                     return(
                       <option key={ index + 1 } value={ dvdCustomer.id }>{ dvdCustomer.name }</option>
-                    )
+                    );
                   }) }
                 </select>
                 { Common.renderFieldError(this.state.errors, []) }
@@ -222,7 +221,7 @@ var ReturnDetails = React.createClass({
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td></tr>
-                {this.state.items.map(function(item, index) {
+                { this.state.items.map((item, index) => {
                   return(
                     <tr key={index}>
                       <td className="name-column">
@@ -239,57 +238,54 @@ var ReturnDetails = React.createClass({
                       { this.renderXButton(item) }
                     </tr>
                   );
-                }.bind(this))}
+                }) }
               </tbody>
             </table>
-            <a className={'blue-outline-button small'} onClick={this.clickAddItemButton}>Add Item</a>
+            <a className="blue-outline-button small" onClick={ this.clickAddItemButton.bind(this) }>Add Item</a>
             <hr />
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.deleteModalStyles}>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to delete this return&#63;</h1>
             This action cannot be undone<br />
-            <a className={"red-button"} onClick={this.confirmDelete}>
+            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
               Yes
             </a>
-            <a className={"orange-button"} onClick={this.handleModalClose}>
+            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
               No
             </a>
           </div>
         </Modal>
-        <Modal isOpen={this.state.selectAddressModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
-          <ModalSelect options={this.state.shippingAddresses} property={"label"} func={this.clickSelectShippingAddress} />
+        <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />
         </Modal>
-        <Modal isOpen={this.state.selectItemModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={Common.selectModalStyles}>
-          <ModalSelect options={this.state.otherItems} property={"label"} func={this.clickSelectItem} />
-        </Modal>
-        <Modal isOpen={this.state.qtyModalOpen} onRequestClose={this.handleModalClose} contentLabel="Modal" style={qtyModalStyles}>
+        <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
           <div className="qty-modal">
             <h1>Enter Quantity:</h1>
             <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-            <input onChange={ this.updateQty } value={ this.state.selectedItemQty || "" } /><br />
-            <div className="orange-button" onClick={ this.clickQtyOk }>
+            <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
+            <div className="orange-button" onClick={ this.clickQtyOk.bind(this) }>
               OK
             </div>
           </div>
         </Modal>
       </div>
     );
-  },
+  }
 
-  renderXButton: function(item) {
+  renderXButton(item) {
     if (!this.state.return.shipDate) {
       return(
         <td>
-          <div className="x-button" onClick={this.clickXButton} data-id={item.id}></div>
+          <div className="x-button" onClick={ this.clickXButton.bind(this) } data-id={ item.id }></div>
         </td>
-      )
+      );
     }
-  },
+  }
 
-  renderButtons: function() {
+  renderButtons() {
     if (this.state.changesToSave) {
       var buttonText = "Save";
     } else {
@@ -297,20 +293,20 @@ var ReturnDetails = React.createClass({
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave }>
+        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete }>
+        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Return
         </a>
       </div>
-    )
-  },
+    );
+  }
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
-});
+}
 
-module.exports = ReturnDetails;
+export default ReturnDetails;
