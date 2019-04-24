@@ -45,7 +45,7 @@ class FilmRightsChangeDates extends React.Component {
 
   changeFieldArgs() {
     return {
-      allErrors: Common.errors,
+      allErrors: FM.errors,
       errorsArray: this.state.errors
     }
   }
@@ -59,13 +59,13 @@ class FilmRightsChangeDates extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Start Date</h2>
-              <input className={ HandyTools.errorClass(this.state.errors, Common.errors.startDate) } onChange={ HandyTools.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.startDate || "" } data-field="startDate" />
-              { HandyTools.renderFieldError(this.state.errors, Common.errors.startDate) }
+              <input className={ HandyTools.errorClass(this.state.errors, FM.errors.startDate) } onChange={ HandyTools.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.startDate || "" } data-field="startDate" />
+              { HandyTools.renderFieldError(this.state.errors, FM.errors.startDate) }
             </div>
             <div className="col-xs-6">
               <h2>End Date</h2>
-              <input className={ HandyTools.errorClass(this.state.errors, Common.errors.endDate) } onChange={ HandyTools.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.endDate || "" } data-field="endDate" />
-              { HandyTools.renderFieldError(this.state.errors, Common.errors.endDate) }
+              <input className={ HandyTools.errorClass(this.state.errors, FM.errors.endDate) } onChange={ HandyTools.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.endDate || "" } data-field="endDate" />
+              { HandyTools.renderFieldError(this.state.errors, FM.errors.endDate) }
             </div>
           </div>
           <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.clickChange.bind(this) }>Change All Dates</a>

@@ -105,26 +105,26 @@ class QuoteDetails extends React.Component {
             <div className="row">
               <div className="col-xs-12">
                 <h2>Text</h2>
-                <textarea rows="5" cols="20" className={ Common.errorClass(this.state.errors, Common.errors.text) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.text || "" } data-field="text" />
-                { Common.renderFieldError(this.state.errors, Common.errors.text) }
+                <textarea rows="5" cols="20" className={ FM.errorClass(this.state.errors, FM.errors.text) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.text || "" } data-field="text" />
+                { FM.renderFieldError(this.state.errors, FM.errors.text) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-6">
                 <h2>Author</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.author || "" } data-field="author" />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.author || "" } data-field="author" />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-6">
                 <h2>Publication</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.publication || "" } data-field="publication" />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.publication || "" } data-field="publication" />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this quote&#63;</h1>
             Deleting a quote will erase ALL of its information and data<br />
@@ -159,7 +159,7 @@ class QuoteDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 }

@@ -65,7 +65,7 @@ class Catalog extends React.Component {
   render() {
     return(
       <div>
-        { Common.jobModal.call(this, this.state.job) }
+        { FM.jobModal.call(this, this.state.job) }
       </div>
     );
   }

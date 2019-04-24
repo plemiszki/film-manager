@@ -97,7 +97,7 @@ class InvoicesIndex extends React.Component {
       filterModalOpen: true
     }, function() {
       $('.filter-modal select').val(this.state.filterType);
-      Common.resetNiceSelect('select');
+      FM.resetNiceSelect('select');
       $('.filter-modal input.starting-number').val(this.state.filterNumber);
       $('.filter-modal input.end-number').val(this.state.filterEndNumber);
     });
@@ -181,22 +181,22 @@ class InvoicesIndex extends React.Component {
         <h1>Invoices</h1>
         <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
         <a className={ "orange-button float-button" + this.filterExists() + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal.bind(this) }>Filter</a>
-        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={ "admin-table" }>
             <thead>
               <tr>
-                <th><div className={ Common.sortClass.call(this, "sentDate") } onClick={ Common.clickHeader.bind(this, "sentDate") }>Sent Date</div></th>
-                <th><div className={ Common.sortClass.call(this, "number") } onClick={ Common.clickHeader.bind(this, "number") }>Invoice Number</div></th>
-                <th><div className={ Common.sortClass.call(this, "type") } onClick={ Common.clickHeader.bind(this, "type") }>Type</div></th>
-                <th><div className={ Common.sortClass.call(this, "poNumber") } onClick={ Common.clickHeader.bind(this, "poNumber") }>PO Number</div></th>
+                <th><div className={ FM.sortClass.call(this, "sentDate") } onClick={ FM.clickHeader.bind(this, "sentDate") }>Sent Date</div></th>
+                <th><div className={ FM.sortClass.call(this, "number") } onClick={ FM.clickHeader.bind(this, "number") }>Invoice Number</div></th>
+                <th><div className={ FM.sortClass.call(this, "type") } onClick={ FM.clickHeader.bind(this, "type") }>Type</div></th>
+                <th><div className={ FM.sortClass.call(this, "poNumber") } onClick={ FM.clickHeader.bind(this, "poNumber") }>PO Number</div></th>
               </tr>
             </thead>
             <tbody>
               <tr><td></td></tr>
-              { _.orderBy(filteredOrders, [Common.commonSort.bind(this)], [['sentDate', 'number'].indexOf(this.state.sortBy) > -1 ? 'desc' : 'asc']).map(function(invoice, index) {
+              { _.orderBy(filteredOrders, [FM.commonSort.bind(this)], [['sentDate', 'number'].indexOf(this.state.sortBy) > -1 ? 'desc' : 'asc']).map(function(invoice, index) {
                 return(
                   <tr key={ index } onClick={ this.redirect.bind(this, invoice.id) }>
                     <td className="indent">
@@ -245,8 +245,8 @@ class InvoicesIndex extends React.Component {
             </div>
           </div>
         </Modal>
-        { Common.jobModal.call(this, this.state.job) }
-        { Common.jobErrorsModal.call(this) }
+        { FM.jobModal.call(this, this.state.job) }
+        { FM.jobErrorsModal.call(this) }
       </div>
     );
   }

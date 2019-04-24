@@ -72,8 +72,8 @@ class ReportsIndex extends React.Component {
       fetching: true,
       sortBy: "title",
       searchText: "",
-      quarter: Common.properStatementQuarter(date).quarter,
-      year: Common.properStatementQuarter(date).year,
+      quarter: FM.properStatementQuarter(date).quarter,
+      year: FM.properStatementQuarter(date).year,
       reports: [],
       daysDue: 'all',
       importModalOpen: false,
@@ -89,7 +89,7 @@ class ReportsIndex extends React.Component {
     this.reportsListener = ReportsStore.addListener(this.getReports.bind(this));
     this.fileListener = FileStore.addListener(this.fileDone);
     this.jobListener = JobStore.addListener(this.getJob.bind(this));
-    Common.resetNiceSelect('select', (e) => { this.setState({daysDue: e.target.value}); });
+    FM.resetNiceSelect('select', (e) => { this.setState({daysDue: e.target.value}); });
     $('#upload-form-sage #user_file').on('change', this.pickFile.bind(this));
     ClientActions.fetchReports(this.state.quarter, this.state.year);
   }
@@ -325,7 +325,7 @@ class ReportsIndex extends React.Component {
           <div className="white-box">
             { HandyTools.renderSpinner(this.state.fetching) }
             { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-            <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+            <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
             <select onChange={ (e) => { this.setState({ daysDue: e.target.value }); } } value={ this.state.daysDue }>
               <option value={ "all" }>All</option>
               <option value={ "30" }>30 days</option>
@@ -335,8 +335,8 @@ class ReportsIndex extends React.Component {
             <table className={"admin-table"}>
               <thead>
                 <tr>
-                  <th><div className={ Common.sortClass.call(this, "title") } onClick={ this.clickTitle.bind(this) }>Title</div></th>
-                  <th><div className={ Common.sortClass.call(this, "licensor") } onClick={ this.clickLicensor.bind(this) }>Licensor</div></th>
+                  <th><div className={ FM.sortClass.call(this, "title") } onClick={ this.clickTitle.bind(this) }>Title</div></th>
+                  <th><div className={ FM.sortClass.call(this, "licensor") } onClick={ this.clickLicensor.bind(this) }>Licensor</div></th>
                   <th></th>
                   <th></th>
                 </tr>
@@ -375,9 +375,9 @@ class ReportsIndex extends React.Component {
         <Modal isOpen={this.state.sendModalOpen} onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ sendModalStyles }>
           { this.renderSendModalHeader() }
         </Modal>
-        { Common.jobModal.call(this, this.state.job) }
-        { Common.jobErrorsModal.call(this) }
-        { Common.jobNoErrorsModal.call(this) }
+        { FM.jobModal.call(this, this.state.job) }
+        { FM.jobErrorsModal.call(this) }
+        { FM.jobNoErrorsModal.call(this) }
       </div>
     );
   }
@@ -416,7 +416,7 @@ class ReportsIndex extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', (e) => { this.setState({ daysDue: e.target.value }); });
+    FM.resetNiceSelect('select', (e) => { this.setState({ daysDue: e.target.value }); });
     $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {
       window.setTimeout(() => {

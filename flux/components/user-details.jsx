@@ -104,29 +104,29 @@ class UserDetails extends React.Component {
             <div className="row">
               <div className="col-xs-12 col-sm-4">
                 <h2>Name</h2>
-                <input className={Common.errorClass(this.state.errors, ["Name can't be blank"])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.name || ""} data-field="name" />
-                {Common.renderFieldError(this.state.errors, ["Name can't be blank"])}
+                <input className={FM.errorClass(this.state.errors, ["Name can't be blank"])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.name || ""} data-field="name" />
+                {FM.renderFieldError(this.state.errors, ["Name can't be blank"])}
               </div>
               <div className="col-xs-12 col-sm-4">
                 <h2>Email</h2>
-                <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.email || ""} data-field="email" />
-                {Common.renderFieldError(this.state.errors, Common.errors.email)}
+                <input className={FM.errorClass(this.state.errors, FM.errors.email)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.email || ""} data-field="email" />
+                {FM.renderFieldError(this.state.errors, FM.errors.email)}
               </div>
               <div className="col-xs-12 col-sm-4">
                 <h2>Title</h2>
-                <input onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.title || ""} data-field="title" />
+                <input onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.title || ""} data-field="title" />
               </div>
             </div>
             <div className="row">
               <div className="col-xs-12 col-sm-12">
                 <h2>Email Signature</h2>
-                <textarea rows="5" cols="20" onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.emailSignature || ""} data-field="emailSignature" />
+                <textarea rows="5" cols="20" onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.emailSignature || ""} data-field="emailSignature" />
               </div>
             </div>
             { this.renderButtons() }
           </div>
         </div>
-        { Common.renderDeleteModal.call(this) }
+        { FM.renderDeleteModal.call(this) }
       </div>
     );
   }
@@ -148,7 +148,7 @@ class UserDetails extends React.Component {
   }
 
   renderDeleteButton() {
-    if (Common.user.admin && (Common.user.id != window.location.pathname.split("/")[2])) {
+    if (FM.user.admin && (FM.user.id != window.location.pathname.split("/")[2])) {
       return(
         <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete User

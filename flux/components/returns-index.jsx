@@ -162,22 +162,22 @@ class ReturnsIndex extends React.Component {
         <h1>DVD Returns</h1>
         <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
         <a className={ "orange-button float-button margin" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add New</a>
-        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={ "admin-table" }>
             <thead>
               <tr>
-                <th><div className={ Common.sortClass.call(this, "date") } onClick={ Common.clickHeader.bind(this, "date") }>Date</div></th>
-                <th><div className={ Common.sortClass.call(this, "number") } onClick={ Common.clickHeader.bind(this, "number") }>Number</div></th>
-                <th><div className={ Common.sortClass.call(this, "customer") } onClick={ Common.clickHeader.bind(this, "customer") }>Customer</div></th>
-                <th><div className={ Common.sortClass.call(this, "units") } onClick={ Common.clickHeader.bind(this, "units") }>Units</div></th>
+                <th><div className={ FM.sortClass.call(this, "date") } onClick={ FM.clickHeader.bind(this, "date") }>Date</div></th>
+                <th><div className={ FM.sortClass.call(this, "number") } onClick={ FM.clickHeader.bind(this, "number") }>Number</div></th>
+                <th><div className={ FM.sortClass.call(this, "customer") } onClick={ FM.clickHeader.bind(this, "customer") }>Customer</div></th>
+                <th><div className={ FM.sortClass.call(this, "units") } onClick={ FM.clickHeader.bind(this, "units") }>Units</div></th>
               </tr>
             </thead>
             <tbody>
               <tr><td></td></tr>
-              { _.orderBy(filteredReturns, [Common.commonSort.bind(this)], [this.state.sortBy === 'date' ? 'desc' : 'asc']).map(function(r, index) {
+              { _.orderBy(filteredReturns, [FM.commonSort.bind(this)], [this.state.sortBy === 'date' ? 'desc' : 'asc']).map(function(r, index) {
                 return(
                   <tr key={index} onClick={ this.redirect.bind(this, r.id) }>
                     <td className="indent">
@@ -206,11 +206,11 @@ class ReturnsIndex extends React.Component {
             <div className="row">
               <div className="col-xs-6">
                 <h2>Start Date</h2>
-                <input value={ this.state.export.startDate } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="startDate" />
+                <input value={ this.state.export.startDate } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="startDate" />
               </div>
               <div className="col-xs-6">
                 <h2>End Date</h2>
-                <input value={ this.state.export.endDate } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="endDate" />
+                <input value={ this.state.export.endDate } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="endDate" />
               </div>
             </div>
             <div className="row button-row">
@@ -220,7 +220,7 @@ class ReturnsIndex extends React.Component {
             </div>
           </div>
         </Modal>
-        { Common.jobModal.call(this, this.state.job) }
+        { FM.jobModal.call(this, this.state.job) }
       </div>
     );
   }

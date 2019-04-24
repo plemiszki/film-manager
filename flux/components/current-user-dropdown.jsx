@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 class CurrentUserDropDown extends React.Component {
 
   clickMyAccount() {
-    window.location.pathname = "users/" + Common.user.id;
+    window.location.pathname = "users/" + FM.user.id;
   }
 
   render() {

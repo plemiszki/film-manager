@@ -42,7 +42,7 @@ class ReturnDetails extends React.Component {
     this.returnListener = ReturnsStore.addListener(this.getReturns.bind(this));
     this.returnItemsListener = ReturnItemsStore.addListener(this.getReturnItems.bind(this));
     this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     ClientActions.fetchReturn(window.location.pathname.split("/")[2]);
   }
 
@@ -190,24 +190,24 @@ class ReturnDetails extends React.Component {
             <div className="row">
               <div className="col-xs-4">
                 <h2>Customer</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="customerId" value={ this.state.return.customerId } disabled={ this.state.return.shipDate }>
+                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="customerId" value={ this.state.return.customerId } disabled={ this.state.return.shipDate }>
                   { ReturnsStore.customers().map((dvdCustomer, index) => {
                     return(
                       <option key={ index + 1 } value={ dvdCustomer.id }>{ dvdCustomer.name }</option>
                     );
                   }) }
                 </select>
-                { Common.renderFieldError(this.state.errors, []) }
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Number</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.number) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.number || "" } data-field="number" />
-                { Common.renderFieldError(this.state.errors, Common.errors.number) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.number || "" } data-field="number" />
+                { FM.renderFieldError(this.state.errors, FM.errors.number) }
               </div>
               <div className="col-xs-4">
                 <h2>Date</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.date) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.date || "" } data-field="date" />
-                { Common.renderFieldError(this.state.errors, Common.errors.date) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.date) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.date || "" } data-field="date" />
+                { FM.renderFieldError(this.state.errors, FM.errors.date) }
               </div>
             </div>
             <hr />
@@ -246,7 +246,7 @@ class ReturnDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to delete this return&#63;</h1>
             This action cannot be undone<br />
@@ -258,7 +258,7 @@ class ReturnDetails extends React.Component {
             </a>
           </div>
         </Modal>
-        <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+        <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
@@ -304,7 +304,7 @@ class ReturnDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 }

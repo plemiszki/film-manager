@@ -107,7 +107,7 @@ class DigitalRetailerFilmDetails extends React.Component {
               <div className="col-xs-4">
                 <h2>Company</h2>
                 <div className="clearfix">
-                  <select className={ Common.errorClass(this.state.errors, Common.errors.digitalRetailerId) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="digitalRetailerId" value={ this.state.digitalRetailerFilm.digitalRetailerId }>
+                  <select className={ FM.errorClass(this.state.errors, FM.errors.digitalRetailerId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="digitalRetailerId" value={ this.state.digitalRetailerFilm.digitalRetailerId }>
                     { DigitalRetailersStore.all().map((digitalRetailer) => {
                       return(
                         <option key={ digitalRetailer.id } value={ digitalRetailer.id }>{ digitalRetailer.name }</option>
@@ -115,18 +115,18 @@ class DigitalRetailerFilmDetails extends React.Component {
                     }) }
                   </select>
                 </div>
-                { Common.renderFieldError(this.state.errors, Common.errors.digitalRetailerId) }
+                { FM.renderFieldError(this.state.errors, FM.errors.digitalRetailerId) }
               </div>
               <div className="col-xs-8">
                 <h2>Url</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.url) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.digitalRetailerFilm.url || "" } data-field="url" />
-                { Common.renderFieldError(this.state.errors, Common.errors.url) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.url) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.digitalRetailerFilm.url || "" } data-field="url" />
+                { FM.renderFieldError(this.state.errors, FM.errors.url) }
               </div>
             </div>
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this digital retailer film&#63;</h1>
             Deleting a digital retailer film will erase ALL of its information and data<br />
@@ -161,7 +161,7 @@ class DigitalRetailerFilmDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 }

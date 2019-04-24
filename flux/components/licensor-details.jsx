@@ -107,19 +107,19 @@ class LicensorDetails extends React.Component {
             <div className="row">
               <div className="col-xs-12 col-sm-6">
                 <h2>Name</h2>
-                <input className={ Common.errorClass(this.state.errors, ["Name can't be blank"]) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.name || "" } data-field="name" />
-                { Common.renderFieldError(this.state.errors, ["Name can't be blank"]) }
+                <input className={ FM.errorClass(this.state.errors, ["Name can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.name || "" } data-field="name" />
+                { FM.renderFieldError(this.state.errors, ["Name can't be blank"]) }
               </div>
               <div className="col-xs-12 col-sm-6">
                 <h2>Royalty Emails</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.email) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.email || "" } data-field="email" />
-                { Common.renderFieldError(this.state.errors, Common.errors.email) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.email) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.email || "" } data-field="email" />
+                { FM.renderFieldError(this.state.errors, FM.errors.email) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-12 col-sm-12">
                 <h2>Address</h2>
-                <textarea rows="5" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.address || "" } data-field="address" />
+                <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.address || "" } data-field="address" />
               </div>
             </div>
             <div className="row">
@@ -148,7 +148,7 @@ class LicensorDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this licensor&#63;</h1>
             Deleting a licensor will erase ALL of its information and data<br />

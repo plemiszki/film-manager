@@ -70,7 +70,7 @@ class BookersIndex extends React.Component {
       <div id="bookers-index" className="bookers-index component">
         <h1>Bookers</h1>
         <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Booker</a>
-        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -78,14 +78,14 @@ class BookersIndex extends React.Component {
             <table className={ "admin-table" }>
               <thead>
                 <tr>
-                  <th><div className={ Common.sortClass.call(this, "name") } onClick={ Common.clickHeader.bind(this, "name") }>Name</div></th>
-                  <th><div className={ Common.sortClass.call(this, "email") } onClick={ Common.clickHeader.bind(this, "email") }>Email</div></th>
-                  <th><div className={ Common.sortClass.call(this, "phone") } onClick={ Common.clickHeader.bind(this, "phone") }>Phone</div></th>
+                  <th><div className={ FM.sortClass.call(this, "name") } onClick={ FM.clickHeader.bind(this, "name") }>Name</div></th>
+                  <th><div className={ FM.sortClass.call(this, "email") } onClick={ FM.clickHeader.bind(this, "email") }>Email</div></th>
+                  <th><div className={ FM.sortClass.call(this, "phone") } onClick={ FM.clickHeader.bind(this, "phone") }>Phone</div></th>
                 </tr>
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td></tr>
-                { _.orderBy(filteredBookers, [Common.commonSort.bind(this)]).map(function(booker, index) {
+                { _.orderBy(filteredBookers, [FM.commonSort.bind(this)]).map(function(booker, index) {
                   return(
                     <tr key={ index } onClick={ this.redirect.bind(this, booker.id) }>
                       <td className="indent">

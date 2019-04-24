@@ -82,8 +82,8 @@ class SettingsDetails extends React.Component {
             <div className="row">
               <div className="col-xs-12">
                 <h2>Booking Confirmation Email Text</h2>
-                <textarea rows="15" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.settings.bookingConfirmationText || "" } data-field="bookingConfirmationText" />
-                { Common.renderFieldError(this.state.errors, Common.errors.bookingConfirmationText) }
+                <textarea rows="15" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.settings.bookingConfirmationText || "" } data-field="bookingConfirmationText" />
+                { FM.renderFieldError(this.state.errors, FM.errors.bookingConfirmationText) }
               </div>
             </div>
             { this.renderButtons() }

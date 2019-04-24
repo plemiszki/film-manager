@@ -67,17 +67,17 @@ class MerchandiseItemsIndex extends React.Component {
       <div id="merchandiseItems-index" className="component">
         <h1>Merchandise</h1>
         <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Merchandise</a>
-        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={ "admin-table" }>
             <thead>
               <tr>
-                <th><div className={ Common.sortClass.call(this, "name") } onClick={ Common.clickHeader.bind(this, "name") }>Name</div></th>
-                <th><div className={ Common.sortClass.call(this, "type") } onClick={ Common.clickHeader.bind(this, "type") }>Type</div></th>
-                <th><div className={ Common.sortClass.call(this, "size") } onClick={ Common.clickHeader.bind(this, "size") }>Size</div></th>
-                <th><div className={ Common.sortClass.call(this, "price") } onClick={ Common.clickHeader.bind(this, "price") }>Price</div></th>
+                <th><div className={ FM.sortClass.call(this, "name") } onClick={ FM.clickHeader.bind(this, "name") }>Name</div></th>
+                <th><div className={ FM.sortClass.call(this, "type") } onClick={ FM.clickHeader.bind(this, "type") }>Type</div></th>
+                <th><div className={ FM.sortClass.call(this, "size") } onClick={ FM.clickHeader.bind(this, "size") }>Size</div></th>
+                <th><div className={ FM.sortClass.call(this, "price") } onClick={ FM.clickHeader.bind(this, "price") }>Price</div></th>
               </tr>
             </thead>
             <tbody>

@@ -152,24 +152,24 @@ class GiftboxDetails extends React.Component {
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.name || "" } data-field="name" />
-                { Common.renderFieldError(this.state.errors, Common.errors.name) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.name || "" } data-field="name" />
+                { FM.renderFieldError(this.state.errors, FM.errors.name) }
               </div>
               <div className="col-xs-4">
                 <h2>UPC</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.upc) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.upc || "" } data-field="upc" />
-                { Common.renderFieldError(this.state.errors, Common.errors.upc) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.upc) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.upc || "" } data-field="upc" />
+                { FM.renderFieldError(this.state.errors, FM.errors.upc) }
               </div>
               <div className="col-xs-2">
                 <h2>MSRP</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.msrp) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.msrp || "" } data-field="msrp" />
-                { Common.renderFieldError(this.state.errors, Common.errors.msrp) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.msrp) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.msrp || "" } data-field="msrp" />
+                { FM.renderFieldError(this.state.errors, FM.errors.msrp) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-6">
                 <h2>Type</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="onDemand" value={ this.state.giftbox.onDemand } >
+                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="onDemand" value={ this.state.giftbox.onDemand } >
                   <option value={ "no" }>Prepackaged</option>
                   <option value={ "yes" }>Assemble on Demand</option>
                 </select>
@@ -177,12 +177,12 @@ class GiftboxDetails extends React.Component {
               <div className={ "col-xs-3" + (this.state.giftbox.onDemand === "yes" ? " hidden" : "") } >
                 <h2>Quantity</h2>
                 <input value={ this.state.giftbox.quantity === undefined ? "" : this.state.giftbox.quantity } readOnly={ true } />
-                { Common.renderFieldError([], []) }
+                { FM.renderFieldError([], []) }
               </div>
               <div className="col-xs-3">
                 <h2>Sage ID</h2>
-                <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.sageId || "" } data-field="sageId" />
-                { Common.renderFieldError([], []) }
+                <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.sageId || "" } data-field="sageId" />
+                { FM.renderFieldError([], []) }
               </div>
             </div>
             { this.renderButtons() }
@@ -199,7 +199,7 @@ class GiftboxDetails extends React.Component {
                   return(
                     <tr key={ index }>
                       <td className="name-column">
-                        <div onClick={ Common.redirect.bind(this, "dvds", dvd.id) }>
+                        <div onClick={ FM.redirect.bind(this, "dvds", dvd.id) }>
                           { dvd.title }
                         </div>
                         <div className="x-button" onClick={ this.clickXButton.bind(this) } data-id={ dvd.id }></div>
@@ -212,7 +212,7 @@ class GiftboxDetails extends React.Component {
             <a className={ 'blue-outline-button small' } onClick={ this.clickAddDvdButton.bind(this) }>Add DVD</a>
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this Gift Box&#63;</h1>
             Deleting a gift box will erase ALL of its information and data<br />
@@ -224,7 +224,7 @@ class GiftboxDetails extends React.Component {
             </a>
           </div>
         </Modal>
-        <Modal isOpen={ this.state.dvdsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+        <Modal isOpen={ this.state.dvdsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherDvds } property={ "title" } func={ this.selectDvd.bind(this) } />
         </Modal>
       </div>
@@ -250,7 +250,7 @@ class GiftboxDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 }

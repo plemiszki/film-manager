@@ -43,7 +43,7 @@ class AdvancedSearch extends React.Component {
   }
 
   componentDidMount() {
-    Common.setUpNiceSelect('select', this.changeField.bind(this));
+    FM.setUpNiceSelect('select', this.changeField.bind(this));
   }
 
   changeCheckbox(e) {
@@ -234,10 +234,10 @@ class AdvancedSearch extends React.Component {
             </div>
           </div>
         </div>
-        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue.bind(this) } />
         </Modal>
       </div>

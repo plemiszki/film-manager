@@ -17,7 +17,7 @@ class InTheatersIndexItem extends React.Component {
       stop: this.dragEndHandler.bind(this)
     });
     $(`.${hyphenatedSection} .top-drop-zone, .${hyphenatedSection} .drop-zone`).droppable({
-      accept: Common.canIDrop, // note that top-drop-zone and bottom-drop-zone within this component will automatically not be droppable (since they're within the draggable td element), this function is just for the bottom-drop-zone in the component directly above
+      accept: FM.canIDrop, // note that top-drop-zone and bottom-drop-zone within this component will automatically not be droppable (since they're within the draggable td element), this function is just for the bottom-drop-zone in the component directly above
       tolerance: 'pointer',
       over: this.dragOverHandler.bind(this),
       out: this.dragOutHandler.bind(this),

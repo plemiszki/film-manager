@@ -4,7 +4,7 @@ var HandyTools = require('handy-tools');
 var _ = require('lodash');
 
 $(document).ready(function() {
-  Common.initialize();
+  FM.initialize();
 });
 
 Array.prototype.filterInvoices = function(type, number, endNumber) {
@@ -43,7 +43,7 @@ Array.prototype.filterDaysDue = function(daysDue) {
   }
 }
 
-Common = {
+FM = {
 
   params: {},
 
@@ -433,7 +433,7 @@ Common = {
       thingToUpdate = newThing;
     }
 
-    Common.removeFieldError(changeFieldArgs.errorsArray, key);
+    FM.removeFieldError(changeFieldArgs.errorsArray, key);
 
     if ($(event.target).is('select')) {
       thingToUpdate[key] = Tools.convertTrueFalseFromStringToBoolean(event.target.value);
@@ -525,7 +525,7 @@ Common = {
       month += 12;
     }
     return {
-      quarter: Common.getQuarterFromMonth(month),
+      quarter: FM.getQuarterFromMonth(month),
       year: year
     }
   },
@@ -565,15 +565,15 @@ Common = {
 
   initialize: function() {
     $.fn.matchHeight._maintainScroll = true;
-    Common.highlightCurrentPageInMenu();
-    Common.storeURLParams();
-    Common.user.id = +$('#current-user #id').html();
-    Common.user.admin = ($('#current-user #admin').html() == "true");
+    FM.highlightCurrentPageInMenu();
+    FM.storeURLParams();
+    FM.user.id = +$('#current-user #id').html();
+    FM.user.admin = ($('#current-user #admin').html() == "true");
   },
 
   jobModal: function(job) {
     return(
-      <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ Common.jobModalStyles }>
+      <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ FM.jobModalStyles }>
         <div className="jobs-modal">
           { HandyTools.renderSpinner(true) }
           <div className="first-line">{ this.state.job.first_line }</div>
@@ -585,7 +585,7 @@ Common = {
 
   jobErrorsModal: function() {
     return(
-      <Modal isOpen={ this.state.errorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ Common.errorsModalStyles }>
+      <Modal isOpen={ this.state.errorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ FM.errorsModalStyles }>
         <div className="errors-modal">
           <h1>{ this.state.job.first_line }</h1>
           { this.state.job.errors_text.split("\n").map((error, index) => {
@@ -605,7 +605,7 @@ Common = {
 
   jobNoErrorsModal: function() {
     return(
-      <Modal isOpen={ this.state.noErrorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ Common.noErrorsModalStyles }>
+      <Modal isOpen={ this.state.noErrorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ FM.noErrorsModalStyles }>
         <div className="send-modal">
           <h1>{ this.state.job.first_line }</h1>
           <a className="orange-button" onClick={ this.modalCloseAndRefresh.bind(this) }>OK</a>
@@ -619,11 +619,11 @@ Common = {
   },
 
   removeFieldError: function(errorsArray, fieldName) {
-    if (Common.errors[fieldName]) { // some fields may have multiple errors, make sure all are removed
+    if (FM.errors[fieldName]) { // some fields may have multiple errors, make sure all are removed
       if (!errorsArray) {
         console.log("no errors array!!!");
       }
-      Common.errors[fieldName].forEach(function(message) {
+      FM.errors[fieldName].forEach(function(message) {
         HandyTools.removeFromArray(errorsArray, message);
       });
     } else if (+fieldName >= 1) { // if the field name is a number, assume all errors for this model can be removed
@@ -659,7 +659,7 @@ Common = {
 
   renderDeleteModal: function() {
     return(
-      <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+      <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
         <div className="confirm-delete">
           <h1>Are you sure you want to delete this&#63;</h1>
           Deleting a record will erase ALL of its information and data<br />
@@ -757,7 +757,7 @@ Common = {
         var paramKeyValuePair = param.split('=');
 
         // store all params in a nonpersistent Javascript object
-        Common.params[paramKeyValuePair[0]] = paramKeyValuePair[1];
+        FM.params[paramKeyValuePair[0]] = paramKeyValuePair[1];
       });
     }
   },
@@ -765,4 +765,4 @@ Common = {
   user: {}
 }
 
-module.exports = Common;
+module.exports = FM;

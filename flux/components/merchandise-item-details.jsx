@@ -131,50 +131,50 @@ class MerchandiseItemDetails extends React.Component {
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.name || "" } data-field="name" />
-                { Common.renderFieldError(this.state.errors, Common.errors.name) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.name || "" } data-field="name" />
+                { FM.renderFieldError(this.state.errors, FM.errors.name) }
               </div>
               <div className="col-xs-6">
                 <h2>Type</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="merchandiseTypeId" value={ this.state.merchandiseItem.merchandiseTypeId }>
+                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="merchandiseTypeId" value={ this.state.merchandiseItem.merchandiseTypeId }>
                   { MerchandiseItemsStore.types().map((type) => {
                     return(
                       <option key={ type.id } value={ type.id }>{ type.name }</option>
                     );
                   }) }
                 </select>
-                { Common.renderFieldError(this.state.errors, []) }
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-12">
                 <h2>Description</h2>
-                <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.description || "" } data-field="description" />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.description || "" } data-field="description" />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Size</h2>
-                <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.size || "" } data-field="size" />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.size || "" } data-field="size" />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Price</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.price) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.price || "" } data-field="price" />
-                { Common.renderFieldError(this.state.errors, Common.errors.price) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.price) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.price || "" } data-field="price" />
+                { FM.renderFieldError(this.state.errors, FM.errors.price) }
               </div>
               <div className="col-xs-4">
                 <h2>Inventory</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.inventory) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.inventory || "" } data-field="inventory" />
-                { Common.renderFieldError(this.state.errors, Common.errors.inventory) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.inventory) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.inventory || "" } data-field="inventory" />
+                { FM.renderFieldError(this.state.errors, FM.errors.inventory) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-11">
                 <h2>Associated Film</h2>
-                <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.filmId ? MerchandiseItemsStore.findFilm(this.state.merchandiseItem.filmId).title : "(None)" } data-field="filmId" readOnly={ true } />
-                { Common.renderFieldError(this.state.filmErrors, []) }
+                <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.filmId ? MerchandiseItemsStore.findFilm(this.state.merchandiseItem.filmId).title : "(None)" } data-field="filmId" readOnly={ true } />
+                { FM.renderFieldError(this.state.filmErrors, []) }
               </div>
               <div className="col-xs-1 icons-column">
                 <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
@@ -183,10 +183,10 @@ class MerchandiseItemDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ MerchandiseItemsStore.films() } property={ "title" } func={ this.selectFilm.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this merchandise&#63;</h1>
             Deleting merchandise will erase ALL of its information and data<br />
@@ -221,7 +221,7 @@ class MerchandiseItemDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 }

@@ -107,62 +107,62 @@ class SubRightDetails extends React.Component {
             <div className="row">
               <div className="col-xs-6 select-scroll">
                 <h2>Film</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.subRight.filmId }>
+                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.subRight.filmId }>
                   { SubRightsStore.films().map((film, index) => {
                     return(
                       <option key={ index } value={ film.id }>{ film.title }</option>
                     );
                   }) }
                 </select>
-                { Common.renderDropdownFieldError(this.state.errors, Common.errors.filmId) }
+                { FM.renderDropdownFieldError(this.state.errors, FM.errors.filmId) }
               </div>
               <div className="col-xs-3 select-scroll">
                 <h2>Right</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.subRight.rightId }>
+                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="rightId" value={ this.state.subRight.rightId }>
                   { SubRightsStore.rights().map((right, index) => {
                     return(
                       <option key={ index } value={ right.id }>{ right.name }</option>
                     );
                   }) }
                 </select>
-                { Common.renderDropdownFieldError(this.state.errors, Common.errors.rightId) }
+                { FM.renderDropdownFieldError(this.state.errors, FM.errors.rightId) }
               </div>
               <div className="col-xs-3 select-scroll">
                 <h2>Territory</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="territoryId" value={ this.state.subRight.territoryId }>
+                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="territoryId" value={ this.state.subRight.territoryId }>
                   { SubRightsStore.territories().map((territory, index) => {
                     return(
                       <option key={ index } value={ territory.id }>{ territory.name }</option>
                     );
                   }) }
                 </select>
-                { Common.renderDropdownFieldError(this.state.errors, Common.errors.territoryId) }
+                { FM.renderDropdownFieldError(this.state.errors, FM.errors.territoryId) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-2">
                 <h2>Start Date</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.startDate || "" } data-field="startDate" />
-                { Common.renderFieldError(this.state.errors, Common.errors.startDate) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.startDate || "" } data-field="startDate" />
+                { FM.renderFieldError(this.state.errors, FM.errors.startDate) }
               </div>
               <div className="col-xs-2">
                 <h2>End Date</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.endDate || "" } data-field="endDate" />
-                { Common.renderFieldError(this.state.errors, Common.errors.endDate) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.endDate || "" } data-field="endDate" />
+                { FM.renderFieldError(this.state.errors, FM.errors.endDate) }
               </div>
               <div className="col-xs-2">
                 <h2>Exclusive</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.subRight.exclusive }>
+                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.subRight.exclusive }>
                   <option value={ "Yes" }>Yes</option>
                   <option value={ "No" }>No</option>
                 </select>
-                { Common.renderFieldError([], []) }
+                { FM.renderFieldError([], []) }
               </div>
             </div>
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to permanently delete this right&#63;</h1>
             Deleting a right will erase ALL of its information and data<br />
@@ -197,7 +197,7 @@ class SubRightDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 }

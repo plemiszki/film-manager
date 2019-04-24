@@ -144,7 +144,7 @@ class FilmsIndex extends React.Component {
           { this.renderAddNewButton() }
           { this.renderExportMetadataButton() }
           { this.renderCustomButton() }
-          <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+          <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -152,13 +152,13 @@ class FilmsIndex extends React.Component {
           <table className={ "admin-table" }>
             <thead>
               <tr>
-                <th><div className={ Common.sortClass.call(this, "title") } onClick={ Common.clickHeader.bind(this, "title") }>Title</div></th>
-                <th><div className={ Common.sortClass.call(this, "endDate") } onClick={ Common.clickHeader.bind(this, "endDate") }>Expiration Date</div></th>
+                <th><div className={ FM.sortClass.call(this, "title") } onClick={ FM.clickHeader.bind(this, "title") }>Title</div></th>
+                <th><div className={ FM.sortClass.call(this, "endDate") } onClick={ FM.clickHeader.bind(this, "endDate") }>Expiration Date</div></th>
               </tr>
             </thead>
             <tbody>
               <tr><td></td><td></td></tr>
-              { _.orderBy(filteredFilms, [Common.commonSort.bind(this)]).map(function(film, index) {
+              { _.orderBy(filteredFilms, [FM.commonSort.bind(this)]).map(function(film, index) {
                 return(
                   <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
                     <td className="name-column">
@@ -179,7 +179,7 @@ class FilmsIndex extends React.Component {
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ newRightsModalStyles }>
           <FilmRightsNew search={ true } filmType={ this.props.filmType } availsExport={ this.clickExportMetadata.bind(this) } />
         </Modal>
-        { Common.jobModal.call(this, this.state.job) }
+        { FM.jobModal.call(this, this.state.job) }
       </div>
     );
   }

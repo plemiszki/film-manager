@@ -163,7 +163,7 @@ class BookingsIndex extends React.Component {
         { this.renderAddButton() }
         { this.renderExportButton() }
         { this.renderAdvancedSearchButton() }
-        <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? '' : ' no-margin') } onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? '' : ' no-margin') } onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
           { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -171,23 +171,23 @@ class BookingsIndex extends React.Component {
             <table className={"admin-table"}>
               <thead>
                 <tr>
-                  <th className="small-column"><div className={ Common.sortClass.call(this, "startDate") } onClick={ Common.clickHeader.bind(this, "startDate") }>Start Date</div></th>
-                  <th className="small-column"><div className={ Common.sortClass.call(this, "endDate") } onClick={ Common.clickHeader.bind(this, "endDate") }>End Date</div></th>
-                  <th className="large-column"><div className={ Common.sortClass.call(this, "film") } onClick={ Common.clickHeader.bind(this, "film") }>Film</div></th>
-                  <th className="large-column"><div className={ Common.sortClass.call(this, "venue") } onClick={ Common.clickHeader.bind(this, "venue") }>Venue</div></th>
-                  <th className="small-column"><div className={ Common.sortClass.call(this, "shippingCity") } onClick={ Common.clickHeader.bind(this, "shippingCity") }>City</div></th>
-                  <th className="small-column"><div className={ Common.sortClass.call(this, "shippingState") } onClick={ Common.clickHeader.bind(this, "shippingState") }>State</div></th>
-                  <th className="small-column"><div className={ Common.sortClass.call(this, "dateAdded") } onClick={ Common.clickHeader.bind(this, "dateAdded") }>Date Added</div></th>
-                  <th className="med-column"><div className={ Common.sortClass.call(this, "terms") } onClick={ Common.clickHeader.bind(this, "terms") }>Terms</div></th>
-                  <th className="med-column"><div className={ Common.sortClass.call(this, "bookingType") } onClick={ Common.clickHeader.bind(this, "bookingType") }>Type</div></th>
-                  <th className="small-column"><div className={ Common.sortClass.call(this, "format") } onClick={ Common.clickHeader.bind(this, "format") }>Format</div></th>
-                  <th className="small-column"><div className={ Common.sortClass.call(this, "materialsSent") } onClick={ Common.clickHeader.bind(this, "materialsSent") }>Materials Sent</div></th>
-                  <th className="small-column"><div className={ Common.sortClass.call(this, "boxOfficeReceived") } onClick={ Common.clickHeader.bind(this, "boxOfficeReceived") }>BO Received</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "startDate") } onClick={ FM.clickHeader.bind(this, "startDate") }>Start Date</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "endDate") } onClick={ FM.clickHeader.bind(this, "endDate") }>End Date</div></th>
+                  <th className="large-column"><div className={ FM.sortClass.call(this, "film") } onClick={ FM.clickHeader.bind(this, "film") }>Film</div></th>
+                  <th className="large-column"><div className={ FM.sortClass.call(this, "venue") } onClick={ FM.clickHeader.bind(this, "venue") }>Venue</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "shippingCity") } onClick={ FM.clickHeader.bind(this, "shippingCity") }>City</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "shippingState") } onClick={ FM.clickHeader.bind(this, "shippingState") }>State</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "dateAdded") } onClick={ FM.clickHeader.bind(this, "dateAdded") }>Date Added</div></th>
+                  <th className="med-column"><div className={ FM.sortClass.call(this, "terms") } onClick={ FM.clickHeader.bind(this, "terms") }>Terms</div></th>
+                  <th className="med-column"><div className={ FM.sortClass.call(this, "bookingType") } onClick={ FM.clickHeader.bind(this, "bookingType") }>Type</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "format") } onClick={ FM.clickHeader.bind(this, "format") }>Format</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "materialsSent") } onClick={ FM.clickHeader.bind(this, "materialsSent") }>Materials Sent</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "boxOfficeReceived") } onClick={ FM.clickHeader.bind(this, "boxOfficeReceived") }>BO Received</div></th>
                 </tr>
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                { _.orderBy(filteredBookings, [Common.commonSort.bind(this)], [this.state.sortBy == 'startDate' && this.props.timeframe !== 'upcoming' && !this.props.advanced ? 'desc' : 'asc']).map(function(booking, index) {
+                { _.orderBy(filteredBookings, [FM.commonSort.bind(this)], [this.state.sortBy == 'startDate' && this.props.timeframe !== 'upcoming' && !this.props.advanced ? 'desc' : 'asc']).map(function(booking, index) {
                   return(
                     <tr key={ index } onClick={ this.redirect.bind(this, booking.id) }>
                       <td className="indent">
@@ -235,12 +235,12 @@ class BookingsIndex extends React.Component {
         </div>
         { this.renderSeeAllButton() }
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.bookers()[0] && BookingsStore.bookers()[0].id, userId: Common.user.id } } />
+          <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.bookers()[0] && BookingsStore.bookers()[0].id, userId: FM.user.id } } />
         </Modal>
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ AdvancedSearchModalStyles }>
           <AdvancedSearch />
         </Modal>
-        { Common.jobModal.call(this, this.state.job) }
+        { FM.jobModal.call(this, this.state.job) }
       </div>
     );
   }

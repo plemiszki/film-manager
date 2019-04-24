@@ -4,7 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import UsersStore from '../stores/users-store.js'
 import NewThing from './new-thing.jsx'
-import Common from '../../app/assets/javascripts/me/common.jsx'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {
@@ -101,7 +101,7 @@ class UsersIndex extends React.Component {
   }
 
   renderButton() {
-    if (Common.user.admin) {
+    if (FM.user.admin) {
       return(
         <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add User</a>
       )

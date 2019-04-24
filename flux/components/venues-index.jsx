@@ -69,7 +69,7 @@ class VenuesIndex extends React.Component {
         <div className="clearfix">
           <h1>Venues</h1>
           <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Venue</a>
-          <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+          <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
           { HandyTools.renderSpinner(this.state.fetching) }
@@ -77,15 +77,15 @@ class VenuesIndex extends React.Component {
           <table className={ "admin-table" }>
             <thead>
               <tr>
-                <th><div className={ Common.sortClass.call(this, "label") } onClick={ Common.clickHeader.bind(this, "label") }>Label</div></th>
-                <th><div className={ Common.sortClass.call(this, "venueType") } onClick={ Common.clickHeader.bind(this, "venueType") }>Type</div></th>
-                <th><div className={ Common.sortClass.call(this, "city") } onClick={ Common.clickHeader.bind(this, "city") }>City</div></th>
-                <th><div className={ Common.sortClass.call(this, "state") } onClick={ Common.clickHeader.bind(this, "state") }>State</div></th>
+                <th><div className={ FM.sortClass.call(this, "label") } onClick={ FM.clickHeader.bind(this, "label") }>Label</div></th>
+                <th><div className={ FM.sortClass.call(this, "venueType") } onClick={ FM.clickHeader.bind(this, "venueType") }>Type</div></th>
+                <th><div className={ FM.sortClass.call(this, "city") } onClick={ FM.clickHeader.bind(this, "city") }>City</div></th>
+                <th><div className={ FM.sortClass.call(this, "state") } onClick={ FM.clickHeader.bind(this, "state") }>State</div></th>
               </tr>
             </thead>
             <tbody>
               <tr><td></td><td></td></tr>
-              { _.orderBy(filteredVenues, [Common.commonSort.bind(this)]).map((venue, index) => {
+              { _.orderBy(filteredVenues, [FM.commonSort.bind(this)]).map((venue, index) => {
                 return(
                   <tr key={index} onClick={this.redirect.bind(this, venue.id)}>
                     <td className="name-column">

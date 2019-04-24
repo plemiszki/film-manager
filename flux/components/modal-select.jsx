@@ -14,7 +14,7 @@ class ModalSelect extends React.Component {
   render() {
     return(
       <div className="modal-select">
-        <input className="search-box" onChange={ Common.changeSearchText.bind(this) } value={ this.state.searchText } data-field="searchText" />
+        <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText } data-field="searchText" />
         <ul className="licensor-modal-list">
           { this.state.options.filterSearchText(this.state.searchText, this.props.property).map(function(option, index) {
             return(

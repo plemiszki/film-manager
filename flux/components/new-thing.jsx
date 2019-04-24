@@ -26,7 +26,7 @@ class NewThing extends React.Component {
 
   componentDidMount() {
     this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
   }
 
   componentWillUnmount() {
@@ -55,9 +55,9 @@ class NewThing extends React.Component {
           newThing.invoicesEmail = "";
           newThing.sageId = "";
           newThing.paymentTerms = "";
-          Common.removeFieldError(this.state.errors, "invoicesEmail");
-          Common.removeFieldError(this.state.errors, "sageId");
-          Common.removeFieldError(this.state.errors, "paymentTerms");
+          FM.removeFieldError(this.state.errors, "invoicesEmail");
+          FM.removeFieldError(this.state.errors, "sageId");
+          FM.removeFieldError(this.state.errors, "paymentTerms");
         }
       }
     } else {
@@ -81,7 +81,7 @@ class NewThing extends React.Component {
   clickSelectFilm(event) {
     var booking = this.state.booking;
     booking.filmId = +event.target.dataset.id;
-    Common.removeFieldError(this.state.errors, "film");
+    FM.removeFieldError(this.state.errors, "film");
     this.setState({
       booking: booking,
       filmsModalOpen: false,
@@ -106,7 +106,7 @@ class NewThing extends React.Component {
   clickSelectVenue(event) {
     var booking = this.state.booking;
     booking.venueId = +event.target.dataset.id;
-    Common.removeFieldError(this.state.errors, "venue");
+    FM.removeFieldError(this.state.errors, "venue");
     this.setState({
       booking: booking,
       venuesModalOpen: false
@@ -203,8 +203,8 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <h2>Name</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].name} data-field="name" />
-            {Common.renderFieldError(this.state.errors, Common.errors.name)}
+            <input className={FM.errorClass(this.state.errors, FM.errors.name)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].name} data-field="name" />
+            {FM.renderFieldError(this.state.errors, FM.errors.name)}
           </div>
         </div>
       );
@@ -217,8 +217,8 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <h2>UPC</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.upc)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].upc} data-field="upc" />
-            {Common.renderFieldError(this.state.errors, Common.errors.upc)}
+            <input className={FM.errorClass(this.state.errors, FM.errors.upc)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].upc} data-field="upc" />
+            {FM.renderFieldError(this.state.errors, FM.errors.upc)}
           </div>
         </div>
       );
@@ -231,18 +231,18 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-8">
             <h2>Title</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.title) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.title } data-field="title" />
-            { Common.renderFieldError(this.state.errors, Common.errors.title) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.title) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.title } data-field="title" />
+            { FM.renderFieldError(this.state.errors, FM.errors.title) }
           </div>
           <div className="col-xs-2">
             <h2>Year</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.year) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.year } data-field="year" />
-            { Common.renderFieldError(this.state.errors, Common.errors.year) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.year) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.year } data-field="year" />
+            { FM.renderFieldError(this.state.errors, FM.errors.year) }
           </div>
           <div className="col-xs-2">
             <h2>Length (minutes)</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.length) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length } data-field="length" />
-            { Common.renderFieldError(this.state.errors, Common.errors.length) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length } data-field="length" />
+            { FM.renderFieldError(this.state.errors, FM.errors.length) }
           </div>
         </div>
       );
@@ -255,8 +255,8 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <h2>Email</h2>
-            <input className={Common.errorClass(this.state.errors, Common.errors.email)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].email} data-field="email" />
-            {Common.renderFieldError(this.state.errors, Common.errors.email)}
+            <input className={FM.errorClass(this.state.errors, FM.errors.email)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].email} data-field="email" />
+            {FM.renderFieldError(this.state.errors, FM.errors.email)}
           </div>
         </div>
       )
@@ -269,8 +269,8 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <h2>Password</h2>
-            <input type="password" className={ Common.errorClass(this.state.errors, Common.errors.password) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].password } data-field="password" />
-            { Common.renderFieldError(this.state.errors, Common.errors.password) }
+            <input type="password" className={ FM.errorClass(this.state.errors, FM.errors.password) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].password } data-field="password" />
+            { FM.renderFieldError(this.state.errors, FM.errors.password) }
           </div>
         </div>
       )
@@ -284,16 +284,16 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-5">
               <h2>Film</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.film) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly="true" />
-              { Common.renderFieldError(this.state.errors, Common.errors.film) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.film) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly="true" />
+              { FM.renderFieldError(this.state.errors, FM.errors.film) }
             </div>
             <div className="col-xs-1 select-from-modal">
               <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
             </div>
             <div className="col-xs-5">
               <h2>Venue</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.venue) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly="true" />
-              { Common.renderFieldError(this.state.errors, Common.errors.venue) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.venue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly="true" />
+              { FM.renderFieldError(this.state.errors, FM.errors.venue) }
             </div>
             <div className="col-xs-1 select-from-modal">
               <img src={ Images.openModal } onClick={ this.clickSelectVenueButton.bind(this) } />
@@ -302,66 +302,66 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-2">
               <h2>Start Date</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.startDate || "" } data-field="startDate" />
-              { Common.renderFieldError(this.state.errors, Common.errors.startDate) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.startDate || "" } data-field="startDate" />
+              { FM.renderFieldError(this.state.errors, FM.errors.startDate) }
             </div>
             <div className="col-xs-2">
               <h2>End Date</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.endDate || "" } data-field="endDate" />
-              { Common.renderFieldError(this.state.errors, Common.errors.endDate) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.endDate || "" } data-field="endDate" />
+              { FM.renderFieldError(this.state.errors, FM.errors.endDate) }
             </div>
             <div className="col-xs-3">
               <h2>Type</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookingType" value={ this.state.booking.bookingType }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="bookingType" value={ this.state.booking.bookingType }>
                 <option value={ "Theatrical" }>Theatrical</option>
                 <option value={ "Non-Theatrical" }>Non-Theatrical</option>
                 <option value={ "Festival" }>Festival</option>
                 <option value={ "Press/WOM" }>Press/WOM</option>
               </select>
-              { Common.renderFieldError(this.state.errors, []) }
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className="col-xs-3">
               <h2>Status</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="status" value={ this.state.booking.status }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="status" value={ this.state.booking.status }>
                 <option value={ "Tentative" }>Tentative</option>
                 <option value={ "Confirmed" }>Confirmed</option>
               </select>
-              { Common.renderFieldError(this.state.errors, []) }
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className="col-xs-2">
               <h2>Format</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="formatId" value={ this.state.booking.formatId }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="formatId" value={ this.state.booking.formatId }>
                 { BookingsStore.formats().map(function(format) {
                   return(
                     <option key={ format.id } value={ format.id }>{ format.name }</option>
                   );
                 }) }
               </select>
-              { Common.renderFieldError(this.state.errors, []) }
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-4">
               <h2>Terms</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
-              { Common.renderFieldError(this.state.errors, Common.errors.terms) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.terms) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
+              { FM.renderFieldError(this.state.errors, FM.errors.terms) }
             </div>
             <div className="col-xs-3 select-scroll-3">
               <h2>Booked By</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
                 { BookingsStore.bookers().map(function(user) {
                   return(
                     <option key={ user.id } value={ user.id }>{ user.name }</option>
                   );
                 }) }
               </select>
-              { Common.renderFieldError(this.state.errors, []) }
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
           </div>
-          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
             <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
           </Modal>
-          <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
             <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue.bind(this) } />
           </Modal>
         </div>
@@ -376,14 +376,14 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-11">
               <h2>Film</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.film) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly="true" />
-              { Common.renderFieldError(this.state.errors, Common.errors.film) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.film) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly="true" />
+              { FM.renderFieldError(this.state.errors, FM.errors.film) }
             </div>
             <div className="col-xs-1 select-from-modal">
               <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
             </div>
           </div>
-          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
             <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
           </Modal>
         </div>
@@ -397,8 +397,8 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <h2>Weekly Terms</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.terms) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.weeklyTerm.terms || "" } data-field="terms" />
-            { Common.renderFieldError(this.state.errors, Common.errors.terms) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.terms) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.weeklyTerm.terms || "" } data-field="terms" />
+            { FM.renderFieldError(this.state.errors, FM.errors.terms) }
           </div>
         </div>
       );
@@ -411,8 +411,8 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <h2>Weekly Box Office</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.amount) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.weeklyBoxOffice.amount || "" } data-field="amount" />
-            { Common.renderFieldError(this.state.errors, Common.errors.amount) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.amount) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.weeklyBoxOffice.amount || "" } data-field="amount" />
+            { FM.renderFieldError(this.state.errors, FM.errors.amount) }
           </div>
         </div>
       );
@@ -425,18 +425,18 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-3">
             <h2>Date</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.date) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.date || "" } data-field="date" />
-            { Common.renderFieldError(this.state.errors, Common.errors.date) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.date) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.date || "" } data-field="date" />
+            { FM.renderFieldError(this.state.errors, FM.errors.date) }
           </div>
           <div className="col-xs-3">
             <h2>Amount</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.amount) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.amount || "" } data-field="amount" />
-            { Common.renderFieldError(this.state.errors, Common.errors.amount) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.amount) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.amount || "" } data-field="amount" />
+            { FM.renderFieldError(this.state.errors, FM.errors.amount) }
           </div>
           <div className="col-xs-6">
             <h2>Note</h2>
-            <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.notes || "" } data-field="notes" />
-            { Common.renderFieldError(this.state.errors, []) }
+            <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.payment.notes || "" } data-field="notes" />
+            { FM.renderFieldError(this.state.errors, []) }
           </div>
         </div>
       );
@@ -450,20 +450,20 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-12">
               <h2>Text</h2>
-              <textarea rows="5" cols="20" className={ Common.errorClass(this.state.errors, Common.errors.text) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.text || "" } data-field="text" />
-              { Common.renderFieldError(this.state.errors, Common.errors.text) }
+              <textarea rows="5" cols="20" className={ FM.errorClass(this.state.errors, FM.errors.text) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.text || "" } data-field="text" />
+              { FM.renderFieldError(this.state.errors, FM.errors.text) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-6">
               <h2>Author</h2>
-              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.author || "" } data-field="author" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.author || "" } data-field="author" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className="col-xs-6">
               <h2>Publication</h2>
-              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.publication || "" } data-field="publication" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.quote.publication || "" } data-field="publication" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
           </div>
         </div>
@@ -478,24 +478,24 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-4">
               <h2>Result</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs())} data-field="result" value={ this.state.laurel.result }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs())} data-field="result" value={ this.state.laurel.result }>
                 <option value={ "Official Selection" }>{ "Official Selection" }</option>
                 <option value={ "Nominated" }>{ "Nominated" }</option>
                 <option value={ "Winner" }>{ "Winner" }</option>
               </select>
-              { Common.renderFieldError(this.state.errors, []) }
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className="col-xs-8">
               <h2>Award Name (Optional)</h2>
-              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.laurel.awardName || "" } data-field="awardName" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.laurel.awardName || "" } data-field="awardName" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-12">
               <h2>Festival</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.festival) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.laurel.festival || "" } data-field="festival" />
-              { Common.renderFieldError(this.state.errors, Common.errors.festival) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.festival) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.laurel.festival || "" } data-field="festival" />
+              { FM.renderFieldError(this.state.errors, FM.errors.festival) }
             </div>
           </div>
         </div>
@@ -510,13 +510,13 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>First Name</h2>
-              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].firstName || "" } data-field="firstName" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].firstName || "" } data-field="firstName" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className="col-xs-6">
               <h2>Last Name</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.lastName) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].lastName || "" } data-field="lastName" />
-              { Common.renderFieldError(this.state.errors, Common.errors.lastName) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.lastName) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].lastName || "" } data-field="lastName" />
+              { FM.renderFieldError(this.state.errors, FM.errors.lastName) }
             </div>
           </div>
         </div>
@@ -530,23 +530,23 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-6">
             <h2>Title</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.title) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.title } data-field="title" />
-            { Common.renderFieldError(this.state.errors, Common.errors.title) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.title) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.title } data-field="title" />
+            { FM.renderFieldError(this.state.errors, FM.errors.title) }
           </div>
           <div className="col-xs-2">
             <h2>Length</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.length) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.length } data-field="length" />
-            { Common.renderFieldError(this.state.errors, Common.errors.length) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.length } data-field="length" />
+            { FM.renderFieldError(this.state.errors, FM.errors.length) }
           </div>
           <div className="col-xs-2">
             <h2>Season Number</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.seasonNumber) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.seasonNumber } data-field="seasonNumber" />
-            { Common.renderFieldError(this.state.errors, Common.errors.seasonNumber) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.seasonNumber) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.seasonNumber } data-field="seasonNumber" />
+            { FM.renderFieldError(this.state.errors, FM.errors.seasonNumber) }
           </div>
           <div className="col-xs-2">
             <h2>Episode Number</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.episodeNumber) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.episodeNumber } data-field="episodeNumber" />
-            { Common.renderFieldError(this.state.errors, Common.errors.episodeNumber) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.episodeNumber) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.episodeNumber } data-field="episodeNumber" />
+            { FM.renderFieldError(this.state.errors, FM.errors.episodeNumber) }
           </div>
         </div>
       );
@@ -560,34 +560,34 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Name</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.name)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.name} data-field="name" />
-              {Common.renderFieldError(this.state.errors, Common.errors.name)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.name)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.name} data-field="name" />
+              {FM.renderFieldError(this.state.errors, FM.errors.name)}
             </div>
             <div className="col-xs-3">
               <h2>Discount or Price/Unit </h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.discount)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.discount} data-field="discount" />
-              {Common.renderFieldError(this.state.errors, Common.errors.discount)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.discount)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.discount} data-field="discount" />
+              {FM.renderFieldError(this.state.errors, FM.errors.discount)}
             </div>
             <div className="col-xs-3 consignment-column">
-              <input id="consignment" className="checkbox" type="checkbox" onChange={Common.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.dvdCustomer.consignment} data-field="consignment" /><label className="checkbox">Consignment</label>
+              <input id="consignment" className="checkbox" type="checkbox" onChange={FM.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.dvdCustomer.consignment} data-field="consignment" /><label className="checkbox">Consignment</label>
             </div>
           </div>
           <div className={this.state.dvdCustomer.consignment ? "dvd-customer-placeholder" : ""}></div>
           <div className={"row" + (this.state.dvdCustomer.consignment ? " hidden" : "")}>
             <div className="col-xs-6">
               <h2>Invoices Email</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.invoicesEmail)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.invoicesEmail} data-field="invoicesEmail" />
-              {Common.renderFieldError(this.state.errors, Common.errors.invoicesEmail)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.invoicesEmail)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.invoicesEmail} data-field="invoicesEmail" />
+              {FM.renderFieldError(this.state.errors, FM.errors.invoicesEmail)}
             </div>
             <div className="col-xs-3">
               <h2>Sage ID</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.sageId)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.sageId} data-field="sageId" />
-              {Common.renderFieldError(this.state.errors, Common.errors.sageId)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.sageId)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.sageId} data-field="sageId" />
+              {FM.renderFieldError(this.state.errors, FM.errors.sageId)}
             </div>
             <div className="col-xs-3">
               <h2>Payment Terms (in days)</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.paymentTerms)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.paymentTerms} data-field="paymentTerms" />
-              {Common.renderFieldError(this.state.errors, Common.errors.paymentTerms)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.paymentTerms)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.paymentTerms} data-field="paymentTerms" />
+              {FM.renderFieldError(this.state.errors, FM.errors.paymentTerms)}
             </div>
           </div>
           <hr />
@@ -595,40 +595,40 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-4">
               <h2>Name</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.billingName)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.billingName || ""} data-field="billingName" />
-              {Common.renderFieldError(this.state.errors, Common.errors.billingName)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.billingName)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.billingName || ""} data-field="billingName" />
+              {FM.renderFieldError(this.state.errors, FM.errors.billingName)}
             </div>
             <div className="col-xs-4">
               <h2>Address 1</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.address1)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address1 || ""} data-field="address1" />
-              {Common.renderFieldError(this.state.errors, Common.errors.address1)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.address1)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address1 || ""} data-field="address1" />
+              {FM.renderFieldError(this.state.errors, FM.errors.address1)}
             </div>
             <div className="col-xs-4">
               <h2>Address 2</h2>
-              <input className={Common.errorClass(this.state.errors, [])} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address2 || ""} data-field="address2" />
-              {Common.renderFieldError(this.state.errors, [])}
+              <input className={FM.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address2 || ""} data-field="address2" />
+              {FM.renderFieldError(this.state.errors, [])}
             </div>
           </div>
           <div className="row">
             <div className="col-xs-3">
               <h2>City</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.city)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.city || ""} data-field="city" />
-              {Common.renderFieldError(this.state.errors, Common.errors.city)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.city)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.city || ""} data-field="city" />
+              {FM.renderFieldError(this.state.errors, FM.errors.city)}
             </div>
             <div className="col-xs-1">
               <h2>State</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.state)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.state || ""} data-field="state" />
-              {Common.renderFieldError(this.state.errors, [])}
+              <input className={FM.errorClass(this.state.errors, FM.errors.state)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.state || ""} data-field="state" />
+              {FM.renderFieldError(this.state.errors, [])}
             </div>
             <div className="col-xs-2">
               <h2>Zip</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.zip)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.zip || ""} data-field="zip" />
-              {Common.renderFieldError(this.state.errors, Common.errors.zip)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.zip)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.zip || ""} data-field="zip" />
+              {FM.renderFieldError(this.state.errors, FM.errors.zip)}
             </div>
             <div className="col-xs-2">
               <h2>Country</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.country)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.country || ""} data-field="country" />
-              {Common.renderFieldError(this.state.errors, Common.errors.country)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.country)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.country || ""} data-field="country" />
+              {FM.renderFieldError(this.state.errors, FM.errors.country)}
             </div>
           </div>
         </div>
@@ -642,7 +642,7 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-12 dvd-type-column">
             <h2>DVD Type</h2>
-            <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="dvdTypeId" value={this.state[this.props.thing].dvdTypeId}>
+            <select onChange={FM.changeField.bind(this, this.changeFieldArgs())} data-field="dvdTypeId" value={this.state[this.props.thing].dvdTypeId}>
               {FilmsStore.dvdTypes().map(function(dvdType, index) {
                 return(
                   <option key={index} value={dvdType.id}>{dvdType.name}</option>
@@ -662,7 +662,7 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-4 return-customer">
               <h2>Customer</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state[this.props.thing].customerId }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state[this.props.thing].customerId }>
                 {ReturnsStore.customers().map(function(customer, index) {
                   return(
                     <option key={index} value={ customer.id }>{ customer.name }</option>
@@ -672,13 +672,13 @@ class NewThing extends React.Component {
             </div>
             <div className="col-xs-4">
               <h2>Date</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.date) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].date } data-field="date" />
-              {Common.renderFieldError(this.state.errors, Common.errors.date)}
+              <input className={ FM.errorClass(this.state.errors, FM.errors.date) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].date } data-field="date" />
+              {FM.renderFieldError(this.state.errors, FM.errors.date)}
             </div>
             <div className="col-xs-4">
               <h2>Number</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.number) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].number } data-field="number" />
-              {Common.renderFieldError(this.state.errors, Common.errors.number)}
+              <input className={ FM.errorClass(this.state.errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].number } data-field="number" />
+              {FM.renderFieldError(this.state.errors, FM.errors.number)}
             </div>
           </div>
         </div>
@@ -693,7 +693,7 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-12">
               <h2>Shipping Address</h2>
-              <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="shippingAddressId" value={this.state.purchaseOrder.shippingAddressId}>
+              <select onChange={FM.changeField.bind(this, this.changeFieldArgs())} data-field="shippingAddressId" value={this.state.purchaseOrder.shippingAddressId}>
                 <option key={0} value={''}>(Do Not Use a Saved Shipping Address)</option>
                 {PurchaseOrdersStore.shippingAddresses().map(function(shippingAddress, index) {
                   return(
@@ -707,13 +707,13 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>PO Number</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.number)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].number} data-field="number" />
-              {Common.renderFieldError(this.state.errors, Common.errors.number)}
+              <input className={FM.errorClass(this.state.errors, FM.errors.number)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].number} data-field="number" />
+              {FM.renderFieldError(this.state.errors, FM.errors.number)}
             </div>
             <div className="col-xs-6">
               <h2>Order Date</h2>
-              <input className={Common.errorClass(this.state.errors, Common.errors.orderDate)} onChange={Common.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].orderDate} data-field="orderDate" />
-              { Common.renderFieldError(this.state.errors, Common.errors.orderDate) }
+              <input className={FM.errorClass(this.state.errors, FM.errors.orderDate)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].orderDate} data-field="orderDate" />
+              { FM.renderFieldError(this.state.errors, FM.errors.orderDate) }
             </div>
           </div>
         </div>
@@ -727,8 +727,8 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <h2>Label</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.label) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].label } data-field="label" />
-            { Common.renderFieldError(this.state.errors, Common.errors.label) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.label) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state[this.props.thing].label } data-field="label" />
+            { FM.renderFieldError(this.state.errors, FM.errors.label) }
           </div>
         </div>
       );
@@ -742,17 +742,17 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Label</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.label) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.label || "" } data-field="label" />
-              { Common.renderFieldError(this.state.errors, Common.errors.label) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.label) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.label || "" } data-field="label" />
+              { FM.renderFieldError(this.state.errors, FM.errors.label) }
             </div>
             <div className="col-xs-3">
               <h2>Sage ID</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.sageId) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.sageId || "" } data-field="sageId" />
-              { Common.renderFieldError(this.state.errors, Common.errors.sageId) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.sageId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.sageId || "" } data-field="sageId" />
+              { FM.renderFieldError(this.state.errors, FM.errors.sageId) }
             </div>
             <div className="col-xs-3">
               <h2>Type</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs())} data-field="venueType" value={ this.state[this.props.thing].venueType }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs())} data-field="venueType" value={ this.state[this.props.thing].venueType }>
                 <option value={ "Theater" }>{ "Theater" }</option>
                 <option value={ "Non-Theatrical" }>{ "Non-Theatrical" }</option>
                 <option value={ "Festival" }>{ "Festival" }</option>
@@ -789,18 +789,18 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-4">
               <h2>Name</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.name || "" } data-field="name" />
-              { Common.renderFieldError(this.state.errors, Common.errors.name) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.name || "" } data-field="name" />
+              { FM.renderFieldError(this.state.errors, FM.errors.name) }
             </div>
             <div className="col-xs-4">
               <h2>Email</h2>
-              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.email || "" } data-field="email" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.email || "" } data-field="email" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className="col-xs-4">
               <h2>Phone</h2>
-              <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.phone || "" } data-field="phone" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.phone || "" } data-field="phone" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
           </div>
         </div>
@@ -814,19 +814,19 @@ class NewThing extends React.Component {
         <div className="row">
           <div className="col-xs-4">
             <h2>Company</h2>
-            <select className={ Common.errorClass(this.state.errors, Common.errors.digitalRetailerId) + " three-options" } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="digitalRetailerId" value={ this.state.digitalRetailerFilm.digitalRetailerId }>
+            <select className={ FM.errorClass(this.state.errors, FM.errors.digitalRetailerId) + " three-options" } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="digitalRetailerId" value={ this.state.digitalRetailerFilm.digitalRetailerId }>
               { DigitalRetailersStore.all().map(function(digitalRetailer) {
                 return(
                   <option key={ digitalRetailer.id } value={ digitalRetailer.id }>{ digitalRetailer.name }</option>
                 );
               }) }
             </select>
-            { Common.renderFieldError(this.state.errors, Common.errors.digitalRetailerId) }
+            { FM.renderFieldError(this.state.errors, FM.errors.digitalRetailerId) }
           </div>
           <div className="col-xs-8">
             <h2>URL</h2>
-            <input className={ Common.errorClass(this.state.errors, Common.errors.url) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.digitalRetailerFilm.url || "" } data-field="url" />
-            { Common.renderFieldError(this.state.errors, Common.errors.url) }
+            <input className={ FM.errorClass(this.state.errors, FM.errors.url) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.digitalRetailerFilm.url || "" } data-field="url" />
+            { FM.renderFieldError(this.state.errors, FM.errors.url) }
           </div>
         </div>
       );
@@ -840,56 +840,56 @@ class NewThing extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Name</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.name || "" } data-field="name" />
-              { Common.renderFieldError(this.state.errors, Common.errors.name) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.name || "" } data-field="name" />
+              { FM.renderFieldError(this.state.errors, FM.errors.name) }
             </div>
             <div className="col-xs-6">
               <h2>Type</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="merchandiseTypeId" value={ this.state.merchandiseItem.merchandiseTypeId }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="merchandiseTypeId" value={ this.state.merchandiseItem.merchandiseTypeId }>
                 { MerchandiseItemsStore.types().map(function(type) {
                   return(
                     <option key={ type.id } value={ type.id }>{ type.name }</option>
                   );
                 }) }
               </select>
-              { Common.renderFieldError(this.state.errors, []) }
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-12">
               <h2>Description</h2>
-              <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.description || "" } data-field="description" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.description || "" } data-field="description" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-4">
               <h2>Size</h2>
-              <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.size || "" } data-field="size" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.size || "" } data-field="size" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className="col-xs-4">
               <h2>Price</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.price) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.price || "" } data-field="price" />
-              { Common.renderFieldError(this.state.errors, Common.errors.price) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.price) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.price || "" } data-field="price" />
+              { FM.renderFieldError(this.state.errors, FM.errors.price) }
             </div>
             <div className="col-xs-4">
               <h2>Inventory</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.inventory) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.inventory || "" } data-field="inventory" />
-              { Common.renderFieldError(this.state.errors, Common.errors.inventory) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.inventory) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.inventory || "" } data-field="inventory" />
+              { FM.renderFieldError(this.state.errors, FM.errors.inventory) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-11">
               <h2>Associated Film</h2>
-              <input onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.filmId ? MerchandiseItemsStore.findFilm(this.state.merchandiseItem.filmId).title : "(None)" } data-field="filmId" readOnly={ true } />
-              { Common.renderFieldError(this.state.filmErrors, []) }
+              <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.merchandiseItem.filmId ? MerchandiseItemsStore.findFilm(this.state.merchandiseItem.filmId).title : "(None)" } data-field="filmId" readOnly={ true } />
+              { FM.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-1 icons-column">
               <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
             </div>
           </div>
-          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
             <ModalSelect options={ MerchandiseItemsStore.films() } property={ "title" } func={ this.clickSelectFilmForMerchandise.bind(this) } />
           </Modal>
         </div>
@@ -898,7 +898,7 @@ class NewThing extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
   }
 }
 

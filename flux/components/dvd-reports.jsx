@@ -311,11 +311,11 @@ class DvdReports extends React.Component {
             <div className="row">
               <div className="col-xs-6">
                 <h2>Start Date</h2>
-                <input value={ this.state.export.startDate } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="startDate" />
+                <input value={ this.state.export.startDate } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="startDate" />
               </div>
               <div className="col-xs-6">
                 <h2>End Date</h2>
-                <input value={ this.state.export.endDate } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="endDate" />
+                <input value={ this.state.export.endDate } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="endDate" />
               </div>
             </div>
             <div className="row button-row">
@@ -325,8 +325,8 @@ class DvdReports extends React.Component {
             </div>
           </div>
         </Modal>
-        { Common.jobModal.call(this, this.state.job) }
-        { Common.jobErrorsModal.call(this) }
+        { FM.jobModal.call(this, this.state.job) }
+        { FM.jobErrorsModal.call(this) }
       </div>
     );
   }

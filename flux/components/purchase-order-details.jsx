@@ -295,14 +295,14 @@ class PurchaseOrderDetails extends React.Component {
             <div className="row">
               <div className="col-xs-6">
                 <h2>Number</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.number) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.number || "" } data-field="number" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, Common.errors.number) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.number || "" } data-field="number" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, FM.errors.number) }
                 <p className={ (this.state.purchaseOrder.duplicate && !this.state.purchaseOrder.shipDate) ? "" : "hidden"}>A PO with this number already exists</p>
               </div>
               <div className="col-xs-6">
                 <h2>Order Date</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.orderDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.orderDate || "" } data-field="orderDate" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, Common.errors.orderDate) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.orderDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.orderDate || "" } data-field="orderDate" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, FM.errors.orderDate) }
               </div>
             </div>
             <hr />
@@ -310,44 +310,44 @@ class PurchaseOrderDetails extends React.Component {
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.name || "" } data-field="name" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.name || "" } data-field="name" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 1</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address1 || "" } data-field="address1" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address1 || "" } data-field="address1" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 2</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address2 || "" } data-field="address2" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address2 || "" } data-field="address2" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.city || "" } data-field="city" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.city || "" } data-field="city" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.state || "" } data-field="state" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.state || "" } data-field="state" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.zip || "" } data-field="zip" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.zip || "" } data-field="zip" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.country || "" } data-field="country" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.country || "" } data-field="country" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Customer</h2>
-                <select onChange={Common.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state.purchaseOrder.customerId} disabled={this.state.purchaseOrder.shipDate}>
+                <select onChange={FM.changeField.bind(this, this.changeFieldArgs())} data-field="customerId" value={this.state.purchaseOrder.customerId} disabled={this.state.purchaseOrder.shipDate}>
                   <option key={0} value={'0'}>(None)</option>
                   { PurchaseOrdersStore.dvdCustomers().map((dvdCustomer, index) => {
                     return(
@@ -355,7 +355,7 @@ class PurchaseOrderDetails extends React.Component {
                     );
                   }) }
                 </select>
-                { Common.renderFieldError(this.state.errors, []) }
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             { this.renderSaveShippingAddressButton() }
@@ -410,13 +410,13 @@ class PurchaseOrderDetails extends React.Component {
             <div className="row">
               <div className="col-xs-12">
                 <h2>Notes</h2>
-                <textarea rows="5" cols="20" onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.notes } data-field="notes" />
+                <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.notes } data-field="notes" />
               </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-xs-12 text-center">
-                <input id="send-invoice" className="checkbox" type="checkbox" onChange={ Common.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.purchaseOrder.sendInvoice } data-field="sendInvoice" disabled={ this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment } /><label className="checkbox">Send Invoice</label>
+                <input id="send-invoice" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.purchaseOrder.sendInvoice } data-field="sendInvoice" disabled={ this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment } /><label className="checkbox">Send Invoice</label>
                 { this.renderDisabledNotification() }
                 <div>
                   <a id="ship" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "") } onClick={ this.clickShip.bind(this) }>
@@ -429,7 +429,7 @@ class PurchaseOrderDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to delete this PO&#63;</h1>
             This action cannot be undone<br />
@@ -454,10 +454,10 @@ class PurchaseOrderDetails extends React.Component {
               customerId: this.state.purchaseOrder.customerId
           } } />
         </Modal>
-        <Modal isOpen={ this.state.selectAddressModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+        <Modal isOpen={ this.state.selectAddressModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.shippingAddresses } property="label" func={ this.clickSelectShippingAddress.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+        <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
@@ -553,7 +553,7 @@ class PurchaseOrderDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 }

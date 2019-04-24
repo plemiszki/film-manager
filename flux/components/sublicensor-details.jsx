@@ -139,29 +139,29 @@ class SublicensorDetails extends React.Component {
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={ Common.errorClass(this.state.errors, Common.errors.name) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.name || "" } data-field="name" />
-                { Common.renderFieldError(this.state.errors, Common.errors.name) }
+                <input className={ FM.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.name || "" } data-field="name" />
+                { FM.renderFieldError(this.state.errors, FM.errors.name) }
               </div>
               <div className="col-xs-4">
                 <h2>Contact Name</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.contactName || "" } data-field="contactName" />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.contactName || "" } data-field="contactName" />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Email</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.email || "" } data-field="email" />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.email || "" } data-field="email" />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Phone</h2>
-                <input className={ Common.errorClass(this.state.errors, []) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.phone || "" } data-field="phone" />
-                { Common.renderFieldError(this.state.errors, []) }
+                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.sublicensor.phone || "" } data-field="phone" />
+                { FM.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>W-8 on File</h2>
-                <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="w8" value={ this.state.sublicensor.w8 } >
+                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="w8" value={ this.state.sublicensor.w8 } >
                   <option value="no">No</option>
                   <option value="yes">Yes</option>
                 </select>
@@ -219,7 +219,7 @@ class SublicensorDetails extends React.Component {
         <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
           <FilmRightsNew sublicensorId={ this.state.sublicensor.id } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles }>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
           <div className="confirm-delete">
             <h1>Are you sure you want to delete this sublicensor&#63;</h1>
             Deleting a sublicensor will erase ALL of its information and data<br />
@@ -254,7 +254,7 @@ class SublicensorDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $('.match-height-layout').matchHeight();
   }
 }

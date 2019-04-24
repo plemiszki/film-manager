@@ -157,7 +157,7 @@ class InTheatersIndex extends React.Component {
           </table>
           <a className="blue-outline-button small" onClick={ this.clickAddRepertoryFilm.bind(this) }>Add Film</a>
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles }>
+        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.films } property={ "title" } func={ this.selectFilm.bind(this) } />
         </Modal>
       </div>

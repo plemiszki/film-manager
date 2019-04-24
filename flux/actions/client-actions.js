@@ -264,10 +264,10 @@ var ClientActions = {
       certified_fresh: film.certifiedFresh,
       imdb_id: film.imdbId
     };
-    filmObj = Object.assign(filmObj, Common.removeQuestion(film.avodRelease, 'avod'));
-    filmObj = Object.assign(filmObj, Common.removeQuestion(film.svodRelease, 'svod'));
-    filmObj = Object.assign(filmObj, Common.removeQuestion(film.tvodRelease, 'tvod'));
-    filmObj = Object.assign(filmObj, Common.removeQuestion(film.theatricalRelease, 'theatrical'));
+    filmObj = Object.assign(filmObj, FM.removeQuestion(film.avodRelease, 'avod'));
+    filmObj = Object.assign(filmObj, FM.removeQuestion(film.svodRelease, 'svod'));
+    filmObj = Object.assign(filmObj, FM.removeQuestion(film.tvodRelease, 'tvod'));
+    filmObj = Object.assign(filmObj, FM.removeQuestion(film.theatricalRelease, 'theatrical'));
     $.ajax({
       url: '/api/films/' + film.id,
       method: 'PATCH',

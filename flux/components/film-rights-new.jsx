@@ -30,7 +30,7 @@ class FilmRightsNew extends React.Component {
   }
 
   componentDidMount() {
-    Common.setUpNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+    FM.setUpNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     this.rightsAndTerritoriesListener = FilmRightsStore.addListener(this.getRightsAndTerritories.bind(this));
     this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchRightsAndTerritories(this.props.sublicensorId);
@@ -48,7 +48,7 @@ class FilmRightsNew extends React.Component {
       films: (this.props.sublicensorId ? FilmRightsStore.films() : []),
       fetching: false
     }, () => {
-      Common.resetNiceSelect('select', Common.changeField.bind(this, this.changeFieldArgs()));
+      FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     });
   }
 
@@ -145,24 +145,24 @@ class FilmRightsNew extends React.Component {
           <div className="row">
             <div className={ this.props.sublicensorId ? "col-xs-6 select-scroll" : "hidden" }>
               <h2>Film</h2>
-              <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.filmRight.filmId }>
+              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.filmRight.filmId }>
                 { this.state.films.map((film, index) => {
                   return(
                     <option key={ index } value={ film.id }>{ film.title }</option>
                   );
                 }) }
               </select>
-              { Common.renderFieldError(this.state.errors, []) }
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>Start Date</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.startDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>End Date</h2>
-              <input className={ Common.errorClass(this.state.errors, Common.errors.endDate) } onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
-              { Common.renderFieldError(this.state.errors, []) }
+              <input className={ FM.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
+              { FM.renderFieldError(this.state.errors, []) }
             </div>
             { this.renderExclusiveColumn() }
           </div>
@@ -209,11 +209,11 @@ class FilmRightsNew extends React.Component {
       return (
         <div className="col-xs-2">
           <h2>Exclusive</h2>
-          <select onChange={ Common.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.filmRight.exclusive }>
+          <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.filmRight.exclusive }>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
-          { Common.renderFieldError([], []) }
+          { FM.renderFieldError([], []) }
         </div>
       );
     }
