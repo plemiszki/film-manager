@@ -4,7 +4,7 @@ for filename in ./flux/components/*; do
     if [ "$line" = "" ]; then
       echo $filename
       echo $count
-      newcontents=$(gsed '1 a test' $filename)
+      newcontents=$(gsed "$count a import { Common, Details, Index } from 'handy-components'" $filename)
       > $filename
       echo "$newcontents" > $filename
       break
