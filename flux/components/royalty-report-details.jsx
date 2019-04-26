@@ -5,6 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import ReportStore from '../stores/reports-store.js'
 import ReportErrorsStore from '../stores/report-errors-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class ReportDetails extends React.Component {
 

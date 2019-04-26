@@ -5,6 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import ShippingAddressesStore from '../stores/shipping-addresses-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class ShippingAddressDetails extends React.Component {
 

@@ -9,6 +9,7 @@ import ErrorsStore from '../stores/errors-store.js'
 import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
   overlay: {

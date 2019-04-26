@@ -6,6 +6,7 @@ import SublicensorsStore from '../stores/sublicensors-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import FilmRightsNew from './film-rights-new.jsx'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const NewRightsModalStyles = {
   overlay: {

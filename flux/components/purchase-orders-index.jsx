@@ -7,6 +7,7 @@ import NewThing from './new-thing.jsx'
 import JobStore from '../stores/job-store.js'
 import ServerActions from '../actions/server-actions.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {

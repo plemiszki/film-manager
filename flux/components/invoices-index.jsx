@@ -6,6 +6,7 @@ import ServerActions from '../actions/server-actions.js'
 import InvoicesStore from '../stores/invoices-store.js'
 import JobStore from '../stores/job-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const filterModalStyles = {
   overlay: {

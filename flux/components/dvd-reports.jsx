@@ -6,6 +6,7 @@ import ServerActions from '../actions/server-actions.js'
 import DvdCustomersStore from '../stores/dvd-customers-store.js'
 import JobStore from '../stores/job-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const exportModalStyles = {
   overlay: {

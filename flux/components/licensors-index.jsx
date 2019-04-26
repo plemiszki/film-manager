@@ -5,6 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import LicensorsStore from '../stores/licensors-store.js'
 import NewThing from './new-thing.jsx'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {

@@ -5,6 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import TopicsStore from '../stores/topics-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class TopicDetails extends React.Component {
 

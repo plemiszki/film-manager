@@ -9,6 +9,7 @@ import NewThing from './new-thing.jsx'
 import JobStore from '../stores/job-store.js'
 import AdvancedSearch from './advanced-search.jsx'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {

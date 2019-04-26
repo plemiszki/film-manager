@@ -7,6 +7,7 @@ import ReturnItemsStore from '../stores/return-items-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
   overlay: {

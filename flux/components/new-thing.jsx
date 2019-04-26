@@ -11,6 +11,7 @@ import BookingsStore from '../stores/bookings-store.js'
 import DigitalRetailersStore from '../stores/digital-retailers-store.js'
 import MerchandiseItemsStore from '../stores/merchandise-items-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class NewThing extends React.Component {
 

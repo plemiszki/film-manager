@@ -4,6 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import InvoicesStore from '../stores/invoices-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class InvoiceDetails extends React.Component {
 

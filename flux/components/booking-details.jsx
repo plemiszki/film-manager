@@ -12,6 +12,7 @@ import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
 import NewThing from './new-thing.jsx'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const WeeklyTermStyles = {
   overlay: {

@@ -5,6 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import DvdCustomersStore from '../stores/dvd-customers-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class DvdCustomerDetails extends React.Component {
 

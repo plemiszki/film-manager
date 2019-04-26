@@ -5,6 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import VenuesStore from '../stores/venues-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ShredderModalStyles = {
   overlay: {

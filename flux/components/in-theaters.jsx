@@ -7,6 +7,7 @@ import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx'
 import InTheatersIndexItem from './in-theaters-index-item.jsx'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {

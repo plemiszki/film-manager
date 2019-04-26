@@ -7,6 +7,7 @@ import ReportsStore from '../stores/reports-store.js'
 import FileStore from '../stores/file-store.js'
 import JobStore from '../stores/job-store.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const importModalStyles = {
   overlay: {

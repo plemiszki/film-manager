@@ -25,6 +25,7 @@ import JobStore from '../stores/job-store.js'
 import FilmRightsStore from '../stores/film-rights-store.js'
 import FilmRightsStore2 from '../stores/film-rights-store-2.js'
 import { Common, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const LicensorModalStyles = {
   overlay: {
