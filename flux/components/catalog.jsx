@@ -3,6 +3,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
 import JobStore from '../stores/job-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 class Catalog extends React.Component {
 

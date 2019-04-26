@@ -3,6 +3,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ShippingAddressesStore from '../stores/shipping-addresses-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 class ShippingAddressesIndex extends React.Component {
 
@@ -44,8 +45,8 @@ class ShippingAddressesIndex extends React.Component {
         <h1>DVD Customer Shipping Addresses</h1>
         <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={ "admin-table" }>
             <thead>
               <tr>

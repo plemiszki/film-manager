@@ -4,6 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ErrorsStore from '../stores/errors-store.js'
 import FilmRightsStore from '../stores/film-rights-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 class FilmRightsNew extends React.Component {
 
@@ -140,8 +141,8 @@ class FilmRightsNew extends React.Component {
     return(
       <div id="film-rights-new" className="component">
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
             <div className={ this.props.sublicensorId ? "col-xs-6 select-scroll" : "hidden" }>
               <h2>Film</h2>
@@ -152,17 +153,17 @@ class FilmRightsNew extends React.Component {
                   );
                 }) }
               </select>
-              { FM.renderFieldError(this.state.errors, []) }
+              { Details.renderFieldError(this.state.errors, []) }
             </div>
             <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>Start Date</h2>
-              <input className={ FM.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
-              { FM.renderFieldError(this.state.errors, []) }
+              <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
+              { Details.renderFieldError(this.state.errors, []) }
             </div>
             <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>End Date</h2>
-              <input className={ FM.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
-              { FM.renderFieldError(this.state.errors, []) }
+              <input className={ Details.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
+              { Details.renderFieldError(this.state.errors, []) }
             </div>
             { this.renderExclusiveColumn() }
           </div>
@@ -196,7 +197,7 @@ class FilmRightsNew extends React.Component {
               <a className="blue-outline-button small" onClick={ this.clickAllTerritories.bind(this) }>ALL</a>
             </div>
           </div>
-          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.props.search ? this.clickSearch.bind(this) : this.clickAdd.bind(this) }>
+          <a className={ "orange-button" + Common.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.props.search ? this.clickSearch.bind(this) : this.clickAdd.bind(this) }>
             { this.props.search ? 'Search' : 'Add Rights' }
           </a>
         </div>
@@ -213,7 +214,7 @@ class FilmRightsNew extends React.Component {
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
-          { FM.renderFieldError([], []) }
+          { Details.renderFieldError([], []) }
         </div>
       );
     }

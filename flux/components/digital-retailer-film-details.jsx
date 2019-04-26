@@ -4,6 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import DigitalRetailersStore from '../stores/digital-retailers-store.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 class DigitalRetailerFilmDetails extends React.Component {
 
@@ -101,13 +102,13 @@ class DigitalRetailerFilmDetails extends React.Component {
         <div className="component details-component">
           <h1>Digital Retailer Film Details</h1>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Company</h2>
                 <div className="clearfix">
-                  <select className={ FM.errorClass(this.state.errors, FM.errors.digitalRetailerId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="digitalRetailerId" value={ this.state.digitalRetailerFilm.digitalRetailerId }>
+                  <select className={ Details.errorClass(this.state.errors, FM.errors.digitalRetailerId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="digitalRetailerId" value={ this.state.digitalRetailerFilm.digitalRetailerId }>
                     { DigitalRetailersStore.all().map((digitalRetailer) => {
                       return(
                         <option key={ digitalRetailer.id } value={ digitalRetailer.id }>{ digitalRetailer.name }</option>
@@ -115,12 +116,12 @@ class DigitalRetailerFilmDetails extends React.Component {
                     }) }
                   </select>
                 </div>
-                { FM.renderFieldError(this.state.errors, FM.errors.digitalRetailerId) }
+                { Details.renderFieldError(this.state.errors, FM.errors.digitalRetailerId) }
               </div>
               <div className="col-xs-8">
                 <h2>Url</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.url) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.digitalRetailerFilm.url || "" } data-field="url" />
-                { FM.renderFieldError(this.state.errors, FM.errors.url) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.url) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.digitalRetailerFilm.url || "" } data-field="url" />
+                { Details.renderFieldError(this.state.errors, FM.errors.url) }
               </div>
             </div>
             { this.renderButtons() }
@@ -150,10 +151,10 @@ class DigitalRetailerFilmDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Digital Retailer Film
         </a>
       </div>

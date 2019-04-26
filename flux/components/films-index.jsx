@@ -7,6 +7,7 @@ import FilmsStore from '../stores/films-store.js'
 import NewThing from './new-thing.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
 import JobStore from '../stores/job-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 const ModalStyles = {
   overlay: {
@@ -147,8 +148,8 @@ class FilmsIndex extends React.Component {
           <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={ "admin-table" }>
             <thead>
               <tr>
@@ -199,7 +200,7 @@ class FilmsIndex extends React.Component {
     }[this.props.filmType];
     if (!this.props.advanced) {
       return(
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add { buttonText }</a>
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add { buttonText }</a>
       );
     }
   }
@@ -207,7 +208,7 @@ class FilmsIndex extends React.Component {
   renderExportMetadataButton() {
     if (this.props.filmType != 'TV Series') {
       return(
-        <a className={ "orange-button float-button metadata-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata(this.props.filmType, 'all') }.bind(this) }>Export All</a>
+        <a className={ "orange-button float-button metadata-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata(this.props.filmType, 'all') }.bind(this) }>Export All</a>
       );
     }
   }
@@ -215,7 +216,7 @@ class FilmsIndex extends React.Component {
   renderCustomButton() {
     if (this.props.filmType != 'TV Series') {
       return(
-        <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced.bind(this) }>Export Custom</a>
+        <a className={ "orange-button float-button advanced-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced.bind(this) }>Export Custom</a>
       );
     }
   }

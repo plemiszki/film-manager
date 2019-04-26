@@ -4,6 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import SubRightsStore from '../stores/sub-rights-store.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 class SubRightDetails extends React.Component {
 
@@ -102,8 +103,8 @@ class SubRightDetails extends React.Component {
         <div className="component details-component">
           <h1>Sublicensed Right Details</h1>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6 select-scroll">
                 <h2>Film</h2>
@@ -142,13 +143,13 @@ class SubRightDetails extends React.Component {
             <div className="row">
               <div className="col-xs-2">
                 <h2>Start Date</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.startDate || "" } data-field="startDate" />
-                { FM.renderFieldError(this.state.errors, FM.errors.startDate) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.startDate || "" } data-field="startDate" />
+                { Details.renderFieldError(this.state.errors, FM.errors.startDate) }
               </div>
               <div className="col-xs-2">
                 <h2>End Date</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.endDate || "" } data-field="endDate" />
-                { FM.renderFieldError(this.state.errors, FM.errors.endDate) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.subRight.endDate || "" } data-field="endDate" />
+                { Details.renderFieldError(this.state.errors, FM.errors.endDate) }
               </div>
               <div className="col-xs-2">
                 <h2>Exclusive</h2>
@@ -156,7 +157,7 @@ class SubRightDetails extends React.Component {
                   <option value={ "Yes" }>Yes</option>
                   <option value={ "No" }>No</option>
                 </select>
-                { FM.renderFieldError([], []) }
+                { Details.renderFieldError([], []) }
               </div>
             </div>
             { this.renderButtons() }
@@ -186,10 +187,10 @@ class SubRightDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Right
         </a>
       </div>

@@ -4,6 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import MerchandiseTypesStore from '../stores/merchandise-types-store.js'
 import NewThing from './new-thing.jsx'
+import { Common, Details, Index } from 'handy-components'
 
 const ModalStyles = {
   overlay: {
@@ -64,11 +65,11 @@ class MerchandiseTypesIndex extends React.Component {
     return(
       <div id="merchandiseTypes-index" className="component">
         <h1>Merchandise Types</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Merchandise Type</a>
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Merchandise Type</a>
         <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className={ "admin-table" }>
             <thead>
               <tr>

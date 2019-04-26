@@ -4,6 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import VenuesStore from '../stores/venues-store.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 const ShredderModalStyles = {
   overlay: {
@@ -173,13 +174,13 @@ class VenueDetails extends React.Component {
         <div className="component details-component">
           <h1>Venue Details</h1>
           <div id="venue-profile-box" className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Label</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.label) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.label || "" } data-field="label" />
-                { FM.renderFieldError(this.state.errors, FM.errors.label) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.label) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.label || "" } data-field="label" />
+                { Details.renderFieldError(this.state.errors, FM.errors.label) }
               </div>
               <div className="col-xs-3">
                 <h2>Type</h2>
@@ -191,25 +192,25 @@ class VenueDetails extends React.Component {
               </div>
               <div className="col-xs-3">
                 <h2>Sage ID</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.sageId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.sageId || "" } data-field="sageId" />
-                { FM.renderFieldError(this.state.errors, FM.errors.sageId) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.sageId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.sageId || "" } data-field="sageId" />
+                { Details.renderFieldError(this.state.errors, FM.errors.sageId) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>Contact Name</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.contactName || "" } data-field="contactName" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.contactName || "" } data-field="contactName" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-3">
                 <h2>Email</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.email || "" } data-field="email" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.email || "" } data-field="email" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-3">
                 <h2>Phone</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.phone || "" } data-field="phone" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.phone || "" } data-field="phone" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <hr />
@@ -219,44 +220,44 @@ class VenueDetails extends React.Component {
               <div className="row">
                 <div className="col-xs-4">
                   <h2>Name</h2>
-                  <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingName || ""} data-field="billingName" />
-                  { FM.renderFieldError(this.state.errors, []) }
+                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingName || ""} data-field="billingName" />
+                  { Details.renderFieldError(this.state.errors, []) }
                 </div>
                 <div className="col-xs-4">
                   <h2>Address 1</h2>
-                  <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingAddress1 || ""} data-field="billingAddress1" />
-                  { FM.renderFieldError(this.state.errors, []) }
+                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingAddress1 || ""} data-field="billingAddress1" />
+                  { Details.renderFieldError(this.state.errors, []) }
                 </div>
                 <div className="col-xs-4">
                   <h2>Address 2</h2>
-                  <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingAddress2 || ""} data-field="billingAddress2" />
-                  { FM.renderFieldError(this.state.errors, []) }
+                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingAddress2 || ""} data-field="billingAddress2" />
+                  { Details.renderFieldError(this.state.errors, []) }
                 </div>
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingCity || ""} data-field="billingCity" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingCity || ""} data-field="billingCity" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingState || ""} data-field="billingState" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingState || ""} data-field="billingState" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingZip || ""} data-field="billingZip" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingZip || ""} data-field="billingZip" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.billingCountry || "" } data-field="billingCountry" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.billingCountry || "" } data-field="billingCountry" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
-                <a className={ "orange-button copy-address-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress.bind(this) }>
+                <a className={ "orange-button copy-address-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress.bind(this) }>
                   Copy to Shipping Address
                 </a>
               </div>
@@ -268,56 +269,56 @@ class VenueDetails extends React.Component {
               <div className="row">
                 <div className="col-xs-4">
                   <h2>Name</h2>
-                  <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingName || "" } data-field="shippingName" />
-                  { FM.renderFieldError(this.state.errors, []) }
+                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingName || "" } data-field="shippingName" />
+                  { Details.renderFieldError(this.state.errors, []) }
                 </div>
                 <div className="col-xs-4">
                   <h2>Address 1</h2>
-                  <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingAddress1 || ""} data-field="shippingAddress1" />
-                  { FM.renderFieldError(this.state.errors, []) }
+                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingAddress1 || ""} data-field="shippingAddress1" />
+                  { Details.renderFieldError(this.state.errors, []) }
                 </div>
                 <div className="col-xs-4">
                   <h2>Address 2</h2>
-                  <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingAddress2 || ""} data-field="shippingAddress2" />
-                  { FM.renderFieldError(this.state.errors, []) }
+                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingAddress2 || ""} data-field="shippingAddress2" />
+                  { Details.renderFieldError(this.state.errors, []) }
                 </div>
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingCity || ""} data-field="shippingCity" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingCity || ""} data-field="shippingCity" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingState || ""} data-field="shippingState" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingState || ""} data-field="shippingState" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingZip || "" } data-field="shippingZip" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingZip || "" } data-field="shippingZip" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingCountry || "" } data-field="shippingCountry" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingCountry || "" } data-field="shippingCountry" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-xs-12">
                 <h2>Website</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.website || "" } data-field="website" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.website || "" } data-field="website" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-12">
                 <h2>Notes</h2>
-                <textarea rows="5" className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.notes || "" } data-field="notes" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <textarea rows="5" className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.notes || "" } data-field="notes" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             { this.renderButtons() }
@@ -326,8 +327,8 @@ class VenueDetails extends React.Component {
         <div className="venue-bookings-index component">
           <h1>Venue Bookings</h1>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <table className={"admin-table"}>
                 <thead>
@@ -386,10 +387,10 @@ class VenueDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Venue
         </a>
       </div>

@@ -24,6 +24,7 @@ import DigitalRetailersStore from '../stores/digital-retailers-store.js'
 import JobStore from '../stores/job-store.js'
 import FilmRightsStore from '../stores/film-rights-store.js'
 import FilmRightsStore2 from '../stores/film-rights-store-2.js'
+import { Common, Details, Index } from 'handy-components'
 
 const LicensorModalStyles = {
   overlay: {
@@ -873,21 +874,21 @@ class FilmDetails extends React.Component {
         <h1>{ title } Details</h1>
         { this.renderTopTabs() }
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
             <div className="col-xs-1">
               <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ this.state.film.artworkUrl ? { 'backgroundImage': `url(${this.state.film.artworkUrl})` } : {} } onClick={ this.clickArtwork.bind(this) }></div>
             </div>
             <div className="col-xs-9">
               <h2>Title</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, ["Title can't be blank"]) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
-              { FM.renderFieldError(this.state.filmErrors, ["Title can't be blank"]) }
+              <input className={ Details.errorClass(this.state.filmErrors, ["Title can't be blank"]) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
+              { Details.renderFieldError(this.state.filmErrors, ["Title can't be blank"]) }
             </div>
             <div className="col-xs-2">
               <h2>Type</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.filmType || ""} readOnly={ true } />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.filmType || ""} readOnly={ true } />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
           { this.renderTab(this.state.tab) }
@@ -1015,21 +1016,21 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-12 col-sm-5">
               <h2>Licensor</h2>
-              <input className={FM.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-sm-1 icons">
               <img src={ Images.openModal } onClick={ this.clickSelectLicensorButton.bind(this) } />
             </div>
             <div className="col-xs-3">
               <h2>Start Date</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.startDate || "" } data-field="startDate" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.startDate) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.startDate || "" } data-field="startDate" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.startDate) }
             </div>
             <div className="col-xs-3">
               <h2>End Date</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.endDate || "" } data-field="endDate" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.endDate) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.endDate || "" } data-field="endDate" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.endDate) }
             </div>
           </div>
           { this.renderRoyaltyFields() }
@@ -1201,18 +1202,18 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-2">
               <h2>Rating</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.rating || "" } data-field="rating" />
-              { FM.renderFieldError(this.state.filmErrors,[]) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.rating || "" } data-field="rating" />
+              { Details.renderFieldError(this.state.filmErrors,[]) }
             </div>
             <div className="col-xs-2">
               <h2>Aspect Ratio</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.aspectRatio || "" } data-field="aspectRatio" />
-              { FM.renderFieldError(this.state.filmErrors,[]) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.aspectRatio || "" } data-field="aspectRatio" />
+              { Details.renderFieldError(this.state.filmErrors,[]) }
             </div>
             <div className="col-xs-4">
               <h2>Sound Configuration</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.soundConfig || "" } data-field="soundConfig" />
-              { FM.renderFieldError(this.state.filmErrors,[]) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.soundConfig || "" } data-field="soundConfig" />
+              { Details.renderFieldError(this.state.filmErrors,[]) }
             </div>
           </div>
           <hr />
@@ -1334,17 +1335,17 @@ class FilmDetails extends React.Component {
                   );
                 }) }
               </select>
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-2">
               <h2>Year</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.year) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.year || "" } data-field="year" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.year) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.year) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.year || "" } data-field="year" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.year) }
             </div>
             <div className="col-xs-2">
               <h2>Length (minutes)</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length || "" } data-field="length" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.length) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length || "" } data-field="length" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.length) }
             </div>
           </div>
           <hr />
@@ -1400,23 +1401,23 @@ class FilmDetails extends React.Component {
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <h3>Release Dates:</h3>
               <h2>Theatrical Release</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.theatricalRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.theatricalRelease || "" } data-field="theatricalRelease" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.theatricalRelease) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.theatricalRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.theatricalRelease || "" } data-field="theatricalRelease" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.theatricalRelease) }
               <h2>SVOD Release</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.svodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.svodRelease) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.svodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.svodRelease) }
               <h2>TVOD/EST Release</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.tvodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.tvodRelease || "" } data-field="tvodRelease" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.tvodRelease) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.tvodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.tvodRelease || "" } data-field="tvodRelease" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.tvodRelease) }
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <div style={ { width: '100%', height: '47px' } }></div>
               <h2>AVOD Release</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.avodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.avodRelease || "" } data-field="avodRelease" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.avodRelease) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.avodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.avodRelease || "" } data-field="avodRelease" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.avodRelease) }
               <h2>Club Release</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, FM.errors.clubDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" />
-              { FM.renderFieldError(this.state.filmErrors, FM.errors.clubDate) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.clubDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.clubDate) }
             </div>
           </div>
           <hr />
@@ -1567,56 +1568,56 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Film Movement Plus Link</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.fmPlusUrl || "" } data-field="fmPlusUrl" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.fmPlusUrl || "" } data-field="fmPlusUrl" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-6">
               <h2>Standalone Site</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.standaloneSite || "" } data-field="standaloneSite" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.standaloneSite || "" } data-field="standaloneSite" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-6">
               <h2>Vimeo Trailer Link</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vimeoTrailer || "" } data-field="vimeoTrailer" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vimeoTrailer || "" } data-field="vimeoTrailer" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-6">
               <h2>YouTube Trailer Link</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.youtubeTrailer || "" } data-field="youtubeTrailer" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.youtubeTrailer || "" } data-field="youtubeTrailer" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-6">
               <h2>ProRes Trailer Link</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.proresTrailer || "" } data-field="proresTrailer" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.proresTrailer || "" } data-field="proresTrailer" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-6">
               <h2>Facebook Link</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.facebookLink || "" } data-field="facebookLink" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.facebookLink || "" } data-field="facebookLink" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-6">
               <h2>Twitter Link</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.twitterLink || "" } data-field="twitterLink" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.twitterLink || "" } data-field="twitterLink" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-6">
               <h2>Instagram Link</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
           <div className="row">
             <div className="col-xs-3">
               <h2>IMDB ID</h2>
-              <input className={ FM.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.imdbId || "" } data-field="imdbId" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.imdbId || "" } data-field="imdbId" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
         </div>
@@ -1679,12 +1680,12 @@ class FilmDetails extends React.Component {
                     );
                   }) }
                 </select>
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className={"col-xs-12 col-sm-1" + ((this.state.film.dealTypeId != "5" && this.state.film.dealTypeId != "6") ? " hidden" : "")}>
               <h2>GR %</h2>
-              <input className={FM.errorClass(this.state.filmErrors, FM.errors.grPercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.grPercentage || ""} data-field="grPercentage" />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.grPercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.grPercentage || ""} data-field="grPercentage" />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className={"col-xs-12 col-sm-3" + ((this.state.film.dealTypeId === "5" || this.state.film.dealTypeId === "6") ? "" : " col-sm-offset-1")}>
               <h2>Statements Due</h2>
@@ -1693,38 +1694,38 @@ class FilmDetails extends React.Component {
                   <option value={"45"}>45 Days</option>
                   <option value={"60"}>60 Days</option>
                 </select>
-              { FM.renderFieldError([], []) }
+              { Details.renderFieldError([], []) }
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>MG</h2>
-              <input className={FM.errorClass(this.state.filmErrors, FM.errors.mg)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
-              {FM.renderFieldError(this.state.filmErrors, FM.errors.mg)}
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.mg)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
+              {Details.renderFieldError(this.state.filmErrors, FM.errors.mg)}
             </div>
             <div className={"col-xs-12 col-sm-3" + (this.state.film.filmType === "Short" ? " hidden" : "")}>
               <h2>E & O</h2>
-              <input className={FM.errorClass(this.state.filmErrors, FM.errors.eAndO)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
-              {FM.renderFieldError(this.state.filmErrors, FM.errors.eAndO)}
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.eAndO)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
+              {Details.renderFieldError(this.state.filmErrors, FM.errors.eAndO)}
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>Expense Cap</h2>
-              <input className={FM.errorClass(this.state.filmErrors, FM.errors.expenseCap)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.expenseCap || ""} data-field="expenseCap" />
-              {FM.renderFieldError(this.state.filmErrors, FM.errors.expenseCap)}
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.expenseCap)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.expenseCap || ""} data-field="expenseCap" />
+              {Details.renderFieldError(this.state.filmErrors, FM.errors.expenseCap)}
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>Sage ID</h2>
-              <input className={ FM.errorClass([], []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" />
-              { FM.renderFieldError([], []) }
+              <input className={ Details.errorClass([], []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" />
+              { Details.renderFieldError([], []) }
             </div>
             <div className="col-xs-12 col-sm-3">
               <h2>DVD Sell Off Period (Months)</h2>
-              <input className={FM.errorClass(this.state.filmErrors, FM.errors.sellOffPeriod)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sellOffPeriod} data-field="sellOffPeriod" />
-              {FM.renderFieldError(this.state.filmErrors, FM.errors.sellOffPeriod)}
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.sellOffPeriod)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sellOffPeriod} data-field="sellOffPeriod" />
+              {Details.renderFieldError(this.state.filmErrors, FM.errors.sellOffPeriod)}
             </div>
           </div>
           <div className="row">
             <div className="col-xs-12">
               <h2>Royalty Notes</h2>
-              <textarea rows="3" className={FM.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" />
+              <textarea rows="3" className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" />
             </div>
           </div>
         </div>
@@ -1781,8 +1782,8 @@ class FilmDetails extends React.Component {
                 return(
                   <div className="revenue-percentage" key={ index }>
                     <h2>{FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).nickname || FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).name} %</h2>
-                    <input className={FM.errorClass(properErrorsArray, FM.errors.value)} onChange={FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={this.state.percentages[revenuePercentage.id] || ""} data-thing="percentages" data-field={revenuePercentage.id} />
-                    { FM.renderFieldError([], []) }
+                    <input className={Details.errorClass(properErrorsArray, FM.errors.value)} onChange={FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={this.state.percentages[revenuePercentage.id] || ""} data-thing="percentages" data-field={revenuePercentage.id} />
+                    { Details.renderFieldError([], []) }
                   </div>
                 )
               }) }
@@ -1795,13 +1796,13 @@ class FilmDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <h2>Reserve %</h2>
-              <input className={FM.errorClass(this.state.filmErrors, FM.errors.reservePercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reservePercentage} data-field="reservePercentage" disabled={!this.state.film.reserve} />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.reservePercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reservePercentage} data-field="reservePercentage" disabled={!this.state.film.reserve} />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-2">
               <h2># of Quarters</h2>
-              <input className={FM.errorClass(this.state.filmErrors, FM.errors.reserveQuarters)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveQuarters} data-field="reserveQuarters" disabled={!this.state.film.reserve} />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.reserveQuarters)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveQuarters} data-field="reserveQuarters" disabled={!this.state.film.reserve} />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
           <hr />
@@ -1811,8 +1812,8 @@ class FilmDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <h2>Term (Months)</h2>
-              <input className={FM.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.autoRenewTerm} data-field="autoRenewTerm" disabled={!this.state.film.autoRenew} />
-              { FM.renderFieldError(this.state.filmErrors, []) }
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.autoRenewTerm} data-field="autoRenewTerm" disabled={!this.state.film.autoRenew} />
+              { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
         </div>
@@ -1828,14 +1829,14 @@ class FilmDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
         { this.renderErrorGuide() }
-        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Film
         </a>
-        <a className={ "float-button orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
+        <a className={ "float-button orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
           Copy Film
         </a>
       </div>

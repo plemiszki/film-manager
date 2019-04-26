@@ -6,6 +6,7 @@ import InTheatersStore from '../stores/in-theaters-store.js'
 import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx'
 import InTheatersIndexItem from './in-theaters-index-item.jsx'
+import { Common, Details, Index } from 'handy-components'
 
 const ModalStyles = {
   overlay: {
@@ -104,8 +105,8 @@ class InTheatersIndex extends React.Component {
       <div id="in-theaters-index" className="component">
         <h1>In Theaters</h1>
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className="admin-table no-hover no-highlight in-theaters">
             <thead>
               <tr>

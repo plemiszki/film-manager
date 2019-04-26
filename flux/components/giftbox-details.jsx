@@ -5,6 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import GiftboxesStore from '../stores/giftboxes-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
+import { Common, Details, Index } from 'handy-components'
 
 const dvdsModalStyles = {
   overlay: {
@@ -147,23 +148,23 @@ class GiftboxDetails extends React.Component {
         <div className="component details-component">
           <h1>Gift Box Details</h1>
           <div id="giftbox-profile-box" className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.name || "" } data-field="name" />
-                { FM.renderFieldError(this.state.errors, FM.errors.name) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.name || "" } data-field="name" />
+                { Details.renderFieldError(this.state.errors, FM.errors.name) }
               </div>
               <div className="col-xs-4">
                 <h2>UPC</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.upc) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.upc || "" } data-field="upc" />
-                { FM.renderFieldError(this.state.errors, FM.errors.upc) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.upc) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.upc || "" } data-field="upc" />
+                { Details.renderFieldError(this.state.errors, FM.errors.upc) }
               </div>
               <div className="col-xs-2">
                 <h2>MSRP</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.msrp) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.msrp || "" } data-field="msrp" />
-                { FM.renderFieldError(this.state.errors, FM.errors.msrp) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.msrp) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.msrp || "" } data-field="msrp" />
+                { Details.renderFieldError(this.state.errors, FM.errors.msrp) }
               </div>
             </div>
             <div className="row">
@@ -177,12 +178,12 @@ class GiftboxDetails extends React.Component {
               <div className={ "col-xs-3" + (this.state.giftbox.onDemand === "yes" ? " hidden" : "") } >
                 <h2>Quantity</h2>
                 <input value={ this.state.giftbox.quantity === undefined ? "" : this.state.giftbox.quantity } readOnly={ true } />
-                { FM.renderFieldError([], []) }
+                { Details.renderFieldError([], []) }
               </div>
               <div className="col-xs-3">
                 <h2>Sage ID</h2>
                 <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.sageId || "" } data-field="sageId" />
-                { FM.renderFieldError([], []) }
+                { Details.renderFieldError([], []) }
               </div>
             </div>
             { this.renderButtons() }
@@ -239,10 +240,10 @@ class GiftboxDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave == false) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave == false) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Gift Box
         </a>
       </div>

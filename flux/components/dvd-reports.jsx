@@ -5,6 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
 import DvdCustomersStore from '../stores/dvd-customers-store.js'
 import JobStore from '../stores/job-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 const exportModalStyles = {
   overlay: {
@@ -145,16 +146,16 @@ class DvdReports extends React.Component {
       <div id="dvd-reports">
         <div className="component">
           <div className="text-center">
-            <a className={"orange-button export-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
+            <a className={"orange-button export-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
             <div className="clearfix">
-              <a className={ "orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
+              <a className={ "orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
               <h1>DVD Reports - { this.state.year }</h1>
-              <a className={"orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
+              <a className={"orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
             </div>
           </div>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -30, -20, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
                 <table className="admin-table no-hover no-highlight">
@@ -236,8 +237,8 @@ class DvdReports extends React.Component {
         </div>
         <div className="component">
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -30, -20, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
                 <table className="admin-table no-hover no-highlight">

@@ -3,6 +3,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import InvoicesStore from '../stores/invoices-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 class InvoiceDetails extends React.Component {
 
@@ -42,8 +43,8 @@ class InvoiceDetails extends React.Component {
         <div className="component">
           <h1>Invoice Details</h1>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className={ this.state.invoice.invoiceType == "booking" ? "col-xs-2" : "col-xs-4" }>
                 <h2>Number</h2>
@@ -92,7 +93,7 @@ class InvoiceDetails extends React.Component {
               </div>
             </div>
             { this.renderNotes() }
-            <a id="export" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
+            <a id="export" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
               Export
             </a>
           </div>

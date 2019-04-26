@@ -6,6 +6,7 @@ import ServerActions from '../actions/server-actions.js'
 import ReportsStore from '../stores/reports-store.js'
 import FileStore from '../stores/file-store.js'
 import JobStore from '../stores/job-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 const importModalStyles = {
   overlay: {
@@ -314,17 +315,17 @@ class ReportsIndex extends React.Component {
         <div id="reports-index" className="component">
           <div className="clearfix">
             <h1>Statements - Q{ this.state.quarter }, { this.state.year }</h1>
-            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickSend.bind(this) }>Send All</a>
-            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickExport.bind(this) }>Export All</a>
-            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickTotals.bind(this) }>Totals</a>
-            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickErrorCheck.bind(this) }>Error Check</a>
-            <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickImport.bind(this) }>Import</a>
-            <a className={ "orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
-            <a className={ "orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
+            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickSend.bind(this) }>Send All</a>
+            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickExport.bind(this) }>Export All</a>
+            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickTotals.bind(this) }>Totals</a>
+            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickErrorCheck.bind(this) }>Error Check</a>
+            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickImport.bind(this) }>Import</a>
+            <a className={ "orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
+            <a className={ "orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           </div>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
             <select onChange={ (e) => { this.setState({ daysDue: e.target.value }); } } value={ this.state.daysDue }>
               <option value={ "all" }>All</option>

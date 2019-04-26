@@ -1,7 +1,8 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var _ = require('lodash');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import _ from 'lodash'
+import { Common } from 'handy-components'
 
 $(document).ready(function() {
   FM.initialize();
@@ -43,7 +44,7 @@ Array.prototype.filterDaysDue = function(daysDue) {
   }
 }
 
-FM = {
+var FM = {
 
   params: {},
 
@@ -575,7 +576,7 @@ FM = {
     return(
       <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ FM.jobModalStyles }>
         <div className="jobs-modal">
-          { HandyTools.renderSpinner(true) }
+          { Common.renderSpinner(true) }
           <div className="first-line">{ this.state.job.first_line }</div>
           <div className={ "second-line" + (this.state.job.second_line ? "" : " hidden") }>({ this.state.job.current_value } of { this.state.job.total_value })</div>
         </div>
@@ -765,4 +766,4 @@ FM = {
   user: {}
 }
 
-module.exports = FM;
+export default FM;

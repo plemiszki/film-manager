@@ -3,6 +3,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import SettingsStore from '../stores/settings-store.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 class SettingsDetails extends React.Component {
 
@@ -77,13 +78,13 @@ class SettingsDetails extends React.Component {
         <div className="component">
           <h1>Settings</h1>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-12">
                 <h2>Booking Confirmation Email Text</h2>
                 <textarea rows="15" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.settings.bookingConfirmationText || "" } data-field="bookingConfirmationText" />
-                { FM.renderFieldError(this.state.errors, FM.errors.bookingConfirmationText) }
+                { Details.renderFieldError(this.state.errors, FM.errors.bookingConfirmationText) }
               </div>
             </div>
             { this.renderButtons() }
@@ -101,7 +102,7 @@ class SettingsDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
       </div>

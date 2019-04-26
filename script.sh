@@ -4,11 +4,10 @@ for filename in ./flux/components/*; do
     if [ "$line" = "" ]; then
       echo $filename
       echo $count
-      newcontents=$(gsed "$count a import { Common, Details, Index } from 'handy-components'" $filename)
+      newcontents=$(gsed "$count a import FM from '../../app/assets/javascripts/me/common.jsx'" $filename)
       echo "$newcontents" > $filename
       break
     fi
-    prevline=$line
     count=$(($count + 1))
   done < $filename
 done

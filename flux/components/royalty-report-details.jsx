@@ -4,6 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ReportStore from '../stores/reports-store.js'
 import ReportErrorsStore from '../stores/report-errors-store.js'
+import { Common, Details, Index } from 'handy-components'
 
 class ReportDetails extends React.Component {
 
@@ -110,8 +111,8 @@ class ReportDetails extends React.Component {
         }) }
         <h3>{this.state.report.year} - Q{this.state.report.quarter}</h3>
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <h4>Current Period</h4>
           { this.renderRowHeaders() }
           { this.state.streams.map((stream, index) => {
@@ -122,22 +123,22 @@ class ReportDetails extends React.Component {
                   { stream.nickname }
                 </div>
                 <div className="col-xs-2">
-                  <input className={ FM.errorClass(properErrorsArray, FM.errors.currentRevenue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.currentRevenue } data-thing="streams" data-thingid={ index } data-field="currentRevenue" />
+                  <input className={ Details.errorClass(properErrorsArray, FM.errors.currentRevenue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.currentRevenue } data-thing="streams" data-thingid={ index } data-field="currentRevenue" />
                 </div>
                 <div className={ "col-xs-2" + this.grClass() }>
-                  <input className={ FM.errorClass(properErrorsArray, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentGr } />
+                  <input className={ Details.errorClass(properErrorsArray, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentGr } />
                 </div>
                 <div className={ "col-xs-2" + this.expenseClass() }>
-                  <input className={ FM.errorClass(properErrorsArray, FM.errors.currentExpense) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.currentExpense } data-thing="streams" data-thingid={ index } data-field="currentExpense" />
+                  <input className={ Details.errorClass(properErrorsArray, FM.errors.currentExpense) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.currentExpense } data-thing="streams" data-thingid={ index } data-field="currentExpense" />
                 </div>
                 <div className={ "col-xs-2" + this.expenseClass() }>
-                  <input className={ FM.errorClass(properErrorsArray, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentDifference } />
+                  <input className={ Details.errorClass(properErrorsArray, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentDifference } />
                 </div>
                 <div className="col-xs-1">
-                  <input className={ FM.errorClass(properErrorsArray, FM.errors.licensorPercentage) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.licensorPercentage } data-thing="streams" data-thingid={ index } data-field="licensorPercentage" />
+                  <input className={ Details.errorClass(properErrorsArray, FM.errors.licensorPercentage) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.licensorPercentage } data-thing="streams" data-thingid={ index } data-field="licensorPercentage" />
                 </div>
                 <div className="col-xs-2">
-                  <input className={ FM.errorClass(properErrorsArray, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentLicensorShare } />
+                  <input className={ Details.errorClass(properErrorsArray, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentLicensorShare } />
                 </div>
               </div>
             )
@@ -147,12 +148,12 @@ class ReportDetails extends React.Component {
               Total
             </div>
             <div className="col-xs-2">
-              <input className={ FM.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotalRevenue || "" } />
+              <input className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotalRevenue || "" } />
             </div>
             <div className={ "col-xs-2" + this.grClass() }>
             </div>
             <div className={ "col-xs-2" + this.expenseClass() }>
-              <input className={ FM.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotalExpenses || "" } />
+              <input className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotalExpenses || "" } />
             </div>
             <div className={ "col-xs-2" + this.expenseClass() }>
             </div>
@@ -160,7 +161,7 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">Total</div>
-              <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotal || "" } />
+              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotal || "" } />
             </div>
           </div>
           <div className={ "row" + (this.state.report.currentReserve === "$0.00" ? " hidden" : "") }>
@@ -178,13 +179,13 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">Reserve Against Returns</div>
-              <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentReserve || "" } />
+              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentReserve || "" } />
             </div>
           </div>
           <div className={ "row" + this.dealType4Only() }>
             <div className="col-xs-2 col-xs-offset-4">
               <div className="label">Current Expenses</div>
-              <input className={ FM.errorClass(this.state.reportErrors, FM.errors.currentTotalExpenses) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.currentTotalExpenses || "" } data-field="currentTotalExpenses" />
+              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.currentTotalExpenses) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.currentTotalExpenses || "" } data-field="currentTotalExpenses" />
             </div>
           </div>
           <div className={ "row" + this.dealType4Only() }>
@@ -204,22 +205,22 @@ class ReportDetails extends React.Component {
                   { stream.nickname }
                 </div>
                 <div className="col-xs-2">
-                  <input className={ FM.errorClass(properErrorsArray, FM.errors.cumeRevenue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? stream.joinedRevenue : stream.cumeRevenue } data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
+                  <input className={ Details.errorClass(properErrorsArray, FM.errors.cumeRevenue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? stream.joinedRevenue : stream.cumeRevenue } data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
                 </div>
                 <div className={ "col-xs-2" + this.grClass() }>
-                  <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedGr : stream.cumeGr } />
+                  <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedGr : stream.cumeGr } />
                 </div>
                 <div className={ "col-xs-2" + this.expenseClass() }>
-                  <input className={ FM.errorClass(properErrorsArray, FM.errors.cumeExpense) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? stream.joinedExpense : stream.cumeExpense } data-thing="streams" data-thingid={index} data-field="cumeExpense" />
+                  <input className={ Details.errorClass(properErrorsArray, FM.errors.cumeExpense) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? stream.joinedExpense : stream.cumeExpense } data-thing="streams" data-thingid={index} data-field="cumeExpense" />
                 </div>
                 <div className={ "col-xs-2" + this.expenseClass() }>
-                  <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedDifference : stream.cumeDifference } />
+                  <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedDifference : stream.cumeDifference } />
                 </div>
                 <div className="col-xs-1">
-                  <input className={ FM.errorClass(properErrorsArray, FM.errors.licensorPercentage) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.licensorPercentage } data-thing="streams" data-thingid={ index } data-field="licensorPercentage" />
+                  <input className={ Details.errorClass(properErrorsArray, FM.errors.licensorPercentage) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.licensorPercentage } data-thing="streams" data-thingid={ index } data-field="licensorPercentage" />
                 </div>
                 <div className="col-xs-2">
-                  <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedLicensorShare : stream.cumeLicensorShare } />
+                  <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedLicensorShare : stream.cumeLicensorShare } />
                 </div>
               </div>
             )
@@ -229,12 +230,12 @@ class ReportDetails extends React.Component {
               Total
             </div>
             <div className="col-xs-2">
-              <input className={ FM.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotalRevenue || "") : (this.state.report.cumeTotalRevenue || "") } />
+              <input className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotalRevenue || "") : (this.state.report.cumeTotalRevenue || "") } />
             </div>
             <div className={ "col-xs-2" + this.grClass() }>
             </div>
             <div className={ "col-xs-2" + this.expenseClass() }>
-              <input className={ FM.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "") } />
+              <input className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "") } />
             </div>
             <div className={ "col-xs-2" + this.expenseClass() }>
             </div>
@@ -242,17 +243,17 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">Total</div>
-              <input className={ FM.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotal || "") : (this.state.report.cumeTotal || "") } />
+              <input className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotal || "") : (this.state.report.cumeTotal || "") } />
             </div>
           </div>
           <div className={ "row" + this.dealType4Only() }>
             <div className="col-xs-2 col-xs-offset-4">
               <div className="label">Cumulative Expenses</div>
-              <input className={ FM.errorClass(this.state.reportErrors, FM.errors.cumeTotalExpenses) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "") } data-field="cumeTotalExpenses" />
+              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.cumeTotalExpenses) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "") } data-field="cumeTotalExpenses" />
             </div>
             <div className="col-xs-2 col-xs-offset-2">
               <div className="label">Expense Cap</div>
-                <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.expenseCap || "" } />
+                <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.expenseCap || "" } />
               </div>
           </div>
           <div className="row">
@@ -264,7 +265,7 @@ class ReportDetails extends React.Component {
             </div>
             <div className={ "col-xs-2" + this.expenseClass() }>
               <div className="label">Expense Cap</div>
-              <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.expenseCap || "" } />
+              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.expenseCap || "" } />
             </div>
             <div className={ "col-xs-2" + this.expenseClass() }>
             </div>
@@ -272,7 +273,7 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">E & O</div>
-              <input className={ FM.errorClass(this.state.reportErrors, FM.errors.eAndO) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.eAndO || "" } data-field="eAndO" />
+              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.eAndO) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.eAndO || "" } data-field="eAndO" />
             </div>
           </div>
           <div className="row">
@@ -290,7 +291,7 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">MG</div>
-              <input className={ FM.errorClass(this.state.reportErrors, FM.errors.mg) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.mg || "" } data-field="mg" />
+              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.mg) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.mg || "" } data-field="mg" />
             </div>
           </div>
           <div className={ "row" + (this.state.report.joinedReserve === "$0.00" ? " hidden" : "") }>
@@ -308,7 +309,7 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">Reserve Against Returns</div>
-              <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedReserve || "") : (this.state.report.cumeReserve || "") } />
+              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedReserve || "") : (this.state.report.cumeReserve || "") } />
             </div>
           </div>
           <div className="row">
@@ -326,7 +327,7 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">Amount Paid</div>
-              <input className={ FM.errorClass(this.state.reportErrors, FM.errors.amountPaid) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.amountPaid || "" } data-field="amountPaid" />
+              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.amountPaid) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.amountPaid || "" } data-field="amountPaid" />
             </div>
           </div>
           <div className="row last-row">
@@ -344,7 +345,7 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">Amount Due</div>
-              <input className={ FM.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedAmountDue || "") : (this.state.report.amountDue || "") } />
+              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedAmountDue || "") : (this.state.report.amountDue || "") } />
             </div>
           </div>
           { this.renderButtons() }
@@ -388,13 +389,13 @@ class ReportDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="export" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
+        <a id="export" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
           Export PDF
         </a>
-        <a id="toggle" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickToggle.bind(this) }>
+        <a id="toggle" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickToggle.bind(this) }>
           { this.state.showJoined ? "Including Current Period" : "Not Including Current Period" }
         </a>
       </div>

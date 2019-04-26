@@ -1,5 +1,6 @@
 import React from 'react'
 import ClientActions from '../actions/client-actions.js'
+import { Common, Details, Index } from 'handy-components'
 
 class InTheatersIndexItem extends React.Component {
 

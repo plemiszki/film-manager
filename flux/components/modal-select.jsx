@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Common, Details, Index } from 'handy-components'
 
 class ModalSelect extends React.Component {
 
