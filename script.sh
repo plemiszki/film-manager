@@ -4,7 +4,7 @@ for filename in ./flux/components/*; do
     if [ "$line" = "" ]; then
       echo $filename
       echo $count
-      sed '$count a <LINE-TO-BE-ADDED>' $filename
+      gsed '1 a test' $filename
       break
     fi
     prevline=$line
