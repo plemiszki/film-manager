@@ -6,7 +6,7 @@ for filename in ./flux/components/*; do
       echo $count
       newcontents=$(gsed '1 a test' $filename)
       > $filename
-      $newcontents > $filename
+      cp $newcontents $filename
       break
     fi
     prevline=$line
