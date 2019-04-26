@@ -4,7 +4,8 @@ for filename in ./flux/components/*; do
     if [ "$line" = "" ]; then
       echo $filename
       echo $count
-      gsed '1 a test' $filename
+      > $filename
+      gsed '1 a test' $filename > $filename
       break
     fi
     prevline=$line
