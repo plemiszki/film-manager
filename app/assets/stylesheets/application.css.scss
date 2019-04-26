@@ -13,6 +13,7 @@
  *= require_self
  */
 
+$highlight-color: #01647C;
 $button-color: #01647C;
 
 @import 'bootstrap-sprockets';
@@ -24,9 +25,15 @@ $button-color: #01647C;
 @import 'me/mix-ins';
 @import 'me/general';
 
+@import 'handy-tools/styles/reset';
+@import 'handy-tools/styles/fonts';
 @import 'handy-tools/styles/general';
-@import 'handy-tools/styles/admin-layout';
-@import 'handy-tools/styles/admin-table';
+@import 'handy-tools/styles/buttons';
+@import 'handy-tools/styles/sign-in';
+
+@import 'handy-components/styles/admin-layout';
+@import 'handy-components/styles/admin-table';
+@import 'handy-components/styles/modal-select';
 
 @import 'me/current-user-dropdown';
 @import 'me/confirm-delete';
