@@ -6,7 +6,7 @@ class Api::UsersController < Clearance::UsersController
   end
 
   def show
-    @users = User.where(id: params[:id])
+    @user = User.find(params[:id])
     render "show.json.jbuilder"
   end
 
@@ -23,7 +23,6 @@ class Api::UsersController < Clearance::UsersController
   def api_update
     @user = User.find(params[:id])
     if @user.update(user_params)
-      @users = User.where(id: params[:id])
       render "show.json.jbuilder"
     else
       render json: @user.errors.full_messages, status: 422

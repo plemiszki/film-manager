@@ -1,4 +1,4 @@
-json.array! @licensors do |licensor|
+json.licensors @licensors do |licensor|
   json.id licensor.id
   json.name licensor.name
   json.email licensor.email

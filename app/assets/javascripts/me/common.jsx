@@ -426,6 +426,7 @@ var FM = {
     var key = event.target.dataset.field;
     var thing = event.target.dataset.thing || changeFieldArgs.thing;
     var newThing = this.state[thing];
+    var thingToUpdate;
 
     var thingId = event.target.dataset.thingid;
     if (thingId) {
@@ -765,5 +766,7 @@ var FM = {
 
   user: {}
 }
+
+global.Errors = FM.errors;
 
 export default FM;
