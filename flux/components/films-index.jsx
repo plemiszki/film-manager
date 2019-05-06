@@ -32,7 +32,7 @@ const newRightsModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 575
+    height: 613
   }
 };
 
