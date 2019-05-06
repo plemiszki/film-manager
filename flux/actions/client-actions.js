@@ -1,6 +1,7 @@
 var HandyTools = require('handy-tools');
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 var ServerActions = require('../actions/server-actions.js');
+var FM = require('../../app/assets/javascripts/me/common.jsx').default;
 
 var ClientActions = {
 

@@ -1,6 +1,5 @@
 import React from 'react'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ErrorsStore from '../stores/errors-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
@@ -61,13 +60,13 @@ class FilmRightsChangeDates extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Start Date</h2>
-              <input className={ HandyTools.errorClass(this.state.errors, FM.errors.startDate) } onChange={ HandyTools.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.startDate || "" } data-field="startDate" />
-              { HandyTools.renderFieldError(this.state.errors, FM.errors.startDate) }
+              <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.startDate || "" } data-field="startDate" />
+              { Details.renderFieldError(this.state.errors, FM.errors.startDate) }
             </div>
             <div className="col-xs-6">
               <h2>End Date</h2>
-              <input className={ HandyTools.errorClass(this.state.errors, FM.errors.endDate) } onChange={ HandyTools.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.endDate || "" } data-field="endDate" />
-              { HandyTools.renderFieldError(this.state.errors, FM.errors.endDate) }
+              <input className={ Details.errorClass(this.state.errors, FM.errors.endDate) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.endDate || "" } data-field="endDate" />
+              { Details.renderFieldError(this.state.errors, FM.errors.endDate) }
             </div>
           </div>
           <a className={ "orange-button" + Common.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.clickChange.bind(this) }>Change All Dates</a>
