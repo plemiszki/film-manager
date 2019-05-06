@@ -1,14 +1,13 @@
 #film-rights-new {
   margin-bottom: 0;
 
-  .white-box {
-    height: 573px;
-    position: relative;
-  }
-
   label, .checkbox {
     display: inline-block;
-    width: auto;  
+    width: auto;
+  }
+
+  .checkbox {
+    margin-top: 0;
   }
 
   input:not([type]), .clearfix, .type-checkboxes {
@@ -92,9 +91,5 @@
     &:last-of-type {
       margin-right: 10px;
     }
-  }
-
-  .orange-button {
-    margin-top: -9px;
   }
 }

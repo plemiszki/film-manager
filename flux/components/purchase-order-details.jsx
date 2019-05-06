@@ -8,6 +8,8 @@ import ShippingAddressesStore from '../stores/shipping-addresses-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
   overlay: {
@@ -290,19 +292,19 @@ class PurchaseOrderDetails extends React.Component {
         <div className="component">
           <h1>Purchase Order Details</h1>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Number</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.number || "" } data-field="number" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, FM.errors.number) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.number || "" } data-field="number" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, FM.errors.number) }
                 <p className={ (this.state.purchaseOrder.duplicate && !this.state.purchaseOrder.shipDate) ? "" : "hidden"}>A PO with this number already exists</p>
               </div>
               <div className="col-xs-6">
                 <h2>Order Date</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.orderDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.orderDate || "" } data-field="orderDate" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, FM.errors.orderDate) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.orderDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.orderDate || "" } data-field="orderDate" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, FM.errors.orderDate) }
               </div>
             </div>
             <hr />
@@ -310,40 +312,40 @@ class PurchaseOrderDetails extends React.Component {
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.name || "" } data-field="name" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.name || "" } data-field="name" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 1</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address1 || "" } data-field="address1" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address1 || "" } data-field="address1" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 2</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address2 || "" } data-field="address2" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.address2 || "" } data-field="address2" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.city || "" } data-field="city" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.city || "" } data-field="city" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.state || "" } data-field="state" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.state || "" } data-field="state" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.zip || "" } data-field="zip" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.zip || "" } data-field="zip" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.country || "" } data-field="country" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.country || "" } data-field="country" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Customer</h2>
@@ -355,12 +357,12 @@ class PurchaseOrderDetails extends React.Component {
                     );
                   }) }
                 </select>
-                { FM.renderFieldError(this.state.errors, []) }
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             { this.renderSaveShippingAddressButton() }
             <hr />
-            <table className={"admin-table"}>
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th>Items</th>
@@ -419,7 +421,7 @@ class PurchaseOrderDetails extends React.Component {
                 <input id="send-invoice" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.purchaseOrder.sendInvoice } data-field="sendInvoice" disabled={ this.state.purchaseOrder.shipDate || this.state.purchaseOrder.customerId == 0 || PurchaseOrdersStore.findDvdCustomer(this.state.purchaseOrder.customerId).consignment } /><label className="checkbox">Send Invoice</label>
                 { this.renderDisabledNotification() }
                 <div>
-                  <a id="ship" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "") } onClick={ this.clickShip.bind(this) }>
+                  <a id="ship" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "") } onClick={ this.clickShip.bind(this) }>
                     { this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now") }
                   </a>
                   { this.renderReportingOnlyButton() }
@@ -429,17 +431,8 @@ class PurchaseOrderDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to delete this PO&#63;</h1>
-            This action cannot be undone<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="purchaseOrder" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.addAddressModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ AddAddressModalStyles }>
           <NewThing thing="shippingAddress" initialObject={ {
@@ -518,10 +511,10 @@ class PurchaseOrderDetails extends React.Component {
       return(
         <div>
           <hr />
-          <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+          <a className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
             { buttonText }
           </a>
-          <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+          <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
             Delete Purchase Order
           </a>
         </div>
@@ -545,7 +538,7 @@ class PurchaseOrderDetails extends React.Component {
   renderReportingOnlyButton() {
     if (!this.state.purchaseOrder.shipDate) {
       return(
-        <a id="reporting-only" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickReportingOnly.bind(this) }>
+        <a id="reporting-only" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickReportingOnly.bind(this) }>
           { this.state.changesToSave ? "Save to Ship" : "Reporting Only" }
         </a>
       );

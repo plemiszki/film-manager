@@ -73,64 +73,37 @@ body {
     display: none;
   }
 
-  #admin-framework {
-    min-height: 100%;
+  #admin-framework #admin-row {
 
-    #admin-row {
-      margin: 0;
-      height: 100%;
+    #admin-sidebar {
+      background-image: asset-data-url("swirl.jpg");
+      background-repeat: no-repeat;
+      background-position: 50% 15px;
 
-      #admin-sidebar {
+      #admin-sidebar-header {
+        height: 100px;
+      }
+    }
+
+    #admin-right-column {
+      padding: 0;
+
+      #admin-navbar {
         background-color: white;
-        padding: 0;
-        min-height: 100%;
+        height: 100px;
+        padding-top: 35px;
 
-        #admin-sidebar-header {
-          background-image: asset-data-url("swirl.jpg");
-          background-repeat: no-repeat;
-          background-position: 50%;
-          width: 100%;
-          height: 100px;
-          text-align: center;
-          padding-top: 39px;
+        #current-user, #permissions {
+          display: none;
         }
 
-        #admin-sidebar-body {
-          padding: 36px 32px;
-          font-family: 'TeachableSans-SemiBold';
-          font-size: 13px;
-          color: #B0B0B0;
-
-          li {
-
-            .highlight {
-              color: $button-color;
-              cursor: default;
-              font-family: 'TeachableSans-ExtraBold';
-            }
-          }
+        #admin-navbar-menu {
+          margin-left: 90%;
         }
       }
 
-      #admin-right-column {
-        padding: 0;
-
-        #admin-navbar {
-          background-color: white;
-          height: 100px;
-          padding-top: 35px;
-
-          #current-user, #permissions {
-            display: none;
-          }
-
-          #admin-navbar-menu {
-            margin-left: 90%;
-          }
-        }
-        #admin-right-column-content {
-          padding: 40px;
-        }
+      #admin-right-column-content {
+        padding: 40px;
       }
     }
   }
@@ -164,25 +137,6 @@ body {
     .float-button {
       float: right;
       user-select: none;
-    }
-
-    .search-box {
-      float: right;
-      margin-right: 30px;
-      border-radius: 100px;
-      padding: 15px 15px 15px 50px;
-      width: 250px;
-      background-image: asset-data-url("magnifying-glass.png");
-      background-repeat: no-repeat;
-      background-position: 15px 11px;
-
-      &:focus {
-        outline: none;
-      }
-
-      &.no-margin {
-        margin-right: 0;
-      }
     }
 
     .white-box {
@@ -323,7 +277,7 @@ body {
     cursor: -moz-grabbing !important;
   }
 
-  table.admin-table {
+  table.fm-admin-table {
     width: 100%;
 
     thead {

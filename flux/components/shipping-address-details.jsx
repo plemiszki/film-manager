@@ -4,6 +4,8 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ShippingAddressesStore from '../stores/shipping-addresses-store.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class ShippingAddressDetails extends React.Component {
 
@@ -100,52 +102,52 @@ class ShippingAddressDetails extends React.Component {
         <div className="component">
           <h1>Shipping Address Details</h1>
           <div id="shippingAddress-profile-box" className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Label</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.label) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.label || "" } data-field="label" />
-                { FM.renderFieldError(this.state.errors, FM.errors.label) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.label) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.label || "" } data-field="label" />
+                { Details.renderFieldError(this.state.errors, FM.errors.label) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.name || "" } data-field="name" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.name || "" } data-field="name" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 1</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.address1 || "" } data-field="address1" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.address1 || "" } data-field="address1" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 2</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.address2 || "" } data-field="address2" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.address2 || "" } data-field="address2" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.city || "" } data-field="city" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.city || "" } data-field="city" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.state || "" } data-field="state" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.state || "" } data-field="state" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.zip || "" } data-field="zip" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.zip || "" } data-field="zip" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.country || "" } data-field="country" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.shippingAddress.country || "" } data-field="country" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Customer</h2>
@@ -157,23 +159,14 @@ class ShippingAddressDetails extends React.Component {
                     );
                   }) }
                 </select>
-                { FM.renderFieldError(this.state.errors, []) }
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this Shipping Address&#63;</h1>
-            Deleting an address will erase ALL of its information and data<br />
-            <a className={"red-button"} onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={"orange-button"} onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="shippingAddress" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );
@@ -187,10 +180,10 @@ class ShippingAddressDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Shipping Address
         </a>
       </div>

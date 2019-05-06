@@ -4,6 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import UsersStore from '../stores/users-store.js'
 import NewThing from './new-thing.jsx'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
@@ -67,9 +68,9 @@ class UsersIndex extends React.Component {
           { this.renderButton() }
         </div>
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={ "admin-table" }>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -103,7 +104,7 @@ class UsersIndex extends React.Component {
   renderButton() {
     if (FM.user.admin) {
       return(
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add User</a>
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add User</a>
       )
     }
   }

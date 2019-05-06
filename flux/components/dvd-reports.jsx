@@ -5,6 +5,8 @@ import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
 import DvdCustomersStore from '../stores/dvd-customers-store.js'
 import JobStore from '../stores/job-store.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const exportModalStyles = {
   overlay: {
@@ -145,19 +147,19 @@ class DvdReports extends React.Component {
       <div id="dvd-reports">
         <div className="component">
           <div className="text-center">
-            <a className={"orange-button export-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
+            <a className={"orange-button export-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
             <div className="clearfix">
-              <a className={ "orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
+              <a className={ "orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
               <h1>DVD Reports - { this.state.year }</h1>
-              <a className={"orange-button float-button arrow-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
+              <a className={"orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
             </div>
           </div>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -30, -20, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
-                <table className="admin-table no-hover no-highlight">
+                <table className="fm-admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th className="name-column"></th>
@@ -181,7 +183,7 @@ class DvdReports extends React.Component {
                 </table>
               </div>
               <div className="col-xs-9">
-                <table className="month admin-table no-hover no-highlight">
+                <table className="month fm-admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th>TOTAL</th>
@@ -236,11 +238,11 @@ class DvdReports extends React.Component {
         </div>
         <div className="component">
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -30, -20, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
-                <table className="admin-table no-hover no-highlight">
+                <table className="fm-admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th className="name-column"></th>
@@ -261,7 +263,7 @@ class DvdReports extends React.Component {
                 </table>
               </div>
               <div className="col-xs-9">
-                <table className="title admin-table no-hover no-highlight">
+                <table className="title fm-admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th className="date">Date</th>

@@ -6,6 +6,8 @@ import ReturnsStore from '../stores/returns-store.js'
 import ReturnItemsStore from '../stores/return-items-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
   overlay: {
@@ -185,8 +187,8 @@ class ReturnDetails extends React.Component {
         <div className="component">
           <h1>Return Details</h1>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Customer</h2>
@@ -197,21 +199,21 @@ class ReturnDetails extends React.Component {
                     );
                   }) }
                 </select>
-                { FM.renderFieldError(this.state.errors, []) }
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-4">
                 <h2>Number</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.number || "" } data-field="number" />
-                { FM.renderFieldError(this.state.errors, FM.errors.number) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.number || "" } data-field="number" />
+                { Details.renderFieldError(this.state.errors, FM.errors.number) }
               </div>
               <div className="col-xs-4">
                 <h2>Date</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.date) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.date || "" } data-field="date" />
-                { FM.renderFieldError(this.state.errors, FM.errors.date) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.date) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.return.date || "" } data-field="date" />
+                { Details.renderFieldError(this.state.errors, FM.errors.date) }
               </div>
             </div>
             <hr />
-            <table className={"admin-table"}>
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th>Item</th>
@@ -246,17 +248,8 @@ class ReturnDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to delete this return&#63;</h1>
-            This action cannot be undone<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="return" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />
@@ -293,10 +286,10 @@ class ReturnDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Return
         </a>
       </div>

@@ -6,6 +6,8 @@ import EpisodesStore from '../stores/episodes-store.js'
 import ActorsStore from '../stores/actors-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import NewThing from './new-thing.jsx'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const DirectorModalStyles = {
   overlay: {
@@ -141,35 +143,35 @@ class EpisodeDetails extends React.Component {
         <div className="component details-component">
           <h1>Episode Details</h1>
           <div id="episode-profile-box" className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Title</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.title) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.title || "" } data-field="title" />
-                { FM.renderFieldError(this.state.errors, FM.errors.title) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.title) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.title || "" } data-field="title" />
+                { Details.renderFieldError(this.state.errors, FM.errors.title) }
               </div>
               <div className="col-xs-2">
                 <h2>Length</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.length || "" } data-field="length" />
-                { FM.renderFieldError(this.state.errors, FM.errors.length) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.length || "" } data-field="length" />
+                { Details.renderFieldError(this.state.errors, FM.errors.length) }
               </div>
               <div className="col-xs-2">
                 <h2>Season #</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.seasonNumber) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.seasonNumber || "" } data-field="seasonNumber" />
-                { FM.renderFieldError(this.state.errors, FM.errors.seasonNumber) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.seasonNumber) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.seasonNumber || "" } data-field="seasonNumber" />
+                { Details.renderFieldError(this.state.errors, FM.errors.seasonNumber) }
               </div>
               <div className="col-xs-2">
                 <h2>Episode #</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.episodeNumber) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.episodeNumber || "" } data-field="episodeNumber" />
-                { FM.renderFieldError(this.state.errors, FM.errors.episodeNumber) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.episodeNumber) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.episodeNumber || "" } data-field="episodeNumber" />
+                { Details.renderFieldError(this.state.errors, FM.errors.episodeNumber) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-12">
                 <h2>Synopsis</h2>
                 <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.synopsis || "" } data-field="synopsis" />
-                { FM.renderFieldError(this.state.errors, []) }
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <hr />
@@ -197,17 +199,8 @@ class EpisodeDetails extends React.Component {
         <Modal isOpen={ this.state.actorModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ DirectorModalStyles }>
           <NewThing thing="actor" initialObject={{ actorableId: this.state.episode.id, actorableType: 'Episode', firstName: "", lastName: "" }} />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this episode&#63;</h1>
-            Deleting a episode will erase ALL of its information and data<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="episode" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );
@@ -221,7 +214,7 @@ class EpisodeDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
         { this.renderDeleteButton() }
@@ -231,7 +224,7 @@ class EpisodeDetails extends React.Component {
 
   renderDeleteButton() {
     return(
-      <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+      <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
         Delete Episode
       </a>
     );

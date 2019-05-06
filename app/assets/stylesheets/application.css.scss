@@ -13,6 +13,7 @@
  *= require_self
  */
 
+$highlight-color: #01647C;
 $button-color: #01647C;
 
 @import 'bootstrap-sprockets';
@@ -24,12 +25,17 @@ $button-color: #01647C;
 @import 'me/mix-ins';
 @import 'me/general';
 
+@import 'handy-tools/styles/reset';
+@import 'handy-tools/styles/fonts';
 @import 'handy-tools/styles/general';
-@import 'handy-tools/styles/admin-layout';
-@import 'handy-tools/styles/admin-table';
+@import 'handy-tools/styles/buttons';
+@import 'handy-tools/styles/sign-in';
+
+@import 'handy-components/styles/admin-layout';
+@import 'handy-components/styles/admin-table';
+@import 'handy-components/styles/modal-select';
 
 @import 'me/current-user-dropdown';
-@import 'me/confirm-delete';
 @import 'me/dvd-customer-details';
 @import 'me/dvd-details';
 @import 'me/films-index';
@@ -42,7 +48,6 @@ $button-color: #01647C;
 @import 'me/reports-index';
 @import 'me/report-details';
 @import 'me/sign-in';
-@import 'me/user-details';
 @import 'me/purchase-orders-index';
 @import 'me/purchase-order-details';
 @import 'me/shipping-address-details';
@@ -61,8 +66,3 @@ $button-color: #01647C;
 @import 'me/calendar';
 @import 'me/sublicensor-details';
 @import 'me/codes';
-
-#admin-sidebar {
-  height: auto !important;
-  min-height: 100% !important;
-}

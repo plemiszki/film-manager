@@ -555,7 +555,7 @@ var ClientActions = {
       url: '/api/dvd_customers/' + id,
       method: 'GET',
       success: function(response) {
-        ServerActions.receiveDvdCustomers(response);
+        ServerActions.receiveDvdCustomer(response);
       }
     })
   },
@@ -583,7 +583,7 @@ var ClientActions = {
         }
       },
       success: function(response) {
-        ServerActions.receiveDvdCustomers(response);
+        ServerActions.receiveDvdCustomer(response);
       },
       error: function(response) {
         ServerActions.receiveErrors(response);

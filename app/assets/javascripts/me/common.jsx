@@ -1,7 +1,8 @@
-var React = require('react');
-var Modal = require('react-modal');
-var HandyTools = require('handy-tools');
-var _ = require('lodash');
+import React from 'react'
+import Modal from 'react-modal'
+import HandyTools from 'handy-tools'
+import _ from 'lodash'
+import { Common } from 'handy-components'
 
 $(document).ready(function() {
   FM.initialize();
@@ -43,7 +44,7 @@ Array.prototype.filterDaysDue = function(daysDue) {
   }
 }
 
-FM = {
+var FM = {
 
   params: {},
 
@@ -425,6 +426,7 @@ FM = {
     var key = event.target.dataset.field;
     var thing = event.target.dataset.thing || changeFieldArgs.thing;
     var newThing = this.state[thing];
+    var thingToUpdate;
 
     var thingId = event.target.dataset.thingid;
     if (thingId) {
@@ -463,6 +465,7 @@ FM = {
     var key = event.target.dataset.field;
     var thing = event.target.dataset.thing || changeFieldArgs.thing;
     var newThing = this.state[thing];
+    var thingToUpdate;
 
     var thingId = event.target.dataset.thingid;
     if (thingId) {
@@ -575,7 +578,7 @@ FM = {
     return(
       <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ FM.jobModalStyles }>
         <div className="jobs-modal">
-          { HandyTools.renderSpinner(true) }
+          { Common.renderSpinner(true) }
           <div className="first-line">{ this.state.job.first_line }</div>
           <div className={ "second-line" + (this.state.job.second_line ? "" : " hidden") }>({ this.state.job.current_value } of { this.state.job.total_value })</div>
         </div>
@@ -654,23 +657,6 @@ FM = {
     }
     return(
       <div className="noDropdownFieldError"></div>
-    );
-  },
-
-  renderDeleteModal: function() {
-    return(
-      <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-        <div className="confirm-delete">
-          <h1>Are you sure you want to delete this&#63;</h1>
-          Deleting a record will erase ALL of its information and data<br />
-        <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-            Yes
-          </a>
-          <a className={ "orange-button" } onClick={ this.handleModalClose.bind(this) }>
-            No
-          </a>
-        </div>
-      </Modal>
     );
   },
 
@@ -765,4 +751,6 @@ FM = {
   user: {}
 }
 
-module.exports = FM;
+global.Errors = FM.errors;
+
+export default FM;

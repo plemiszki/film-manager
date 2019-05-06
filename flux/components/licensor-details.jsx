@@ -4,6 +4,8 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import LicensorsStore from '../stores/licensors-store.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class LicensorDetails extends React.Component {
 
@@ -102,18 +104,18 @@ class LicensorDetails extends React.Component {
         <div className="component">
           <h1>Licensor Details</h1>
           <div id="licensor-profile-box" className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-12 col-sm-6">
                 <h2>Name</h2>
-                <input className={ FM.errorClass(this.state.errors, ["Name can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.name || "" } data-field="name" />
-                { FM.renderFieldError(this.state.errors, ["Name can't be blank"]) }
+                <input className={ Details.errorClass(this.state.errors, ["Name can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.name || "" } data-field="name" />
+                { Details.renderFieldError(this.state.errors, ["Name can't be blank"]) }
               </div>
               <div className="col-xs-12 col-sm-6">
                 <h2>Royalty Emails</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.email) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.email || "" } data-field="email" />
-                { FM.renderFieldError(this.state.errors, FM.errors.email) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.email) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.email || "" } data-field="email" />
+                { Details.renderFieldError(this.state.errors, FM.errors.email) }
               </div>
             </div>
             <div className="row">
@@ -124,7 +126,7 @@ class LicensorDetails extends React.Component {
             </div>
             <div className="row">
               <div className="col-xs-12 col-sm-12">
-                <table className={ "admin-table" }>
+                <table className="fm-admin-table">
                   <thead>
                     <tr>
                       <th>Title</th>
@@ -148,17 +150,8 @@ class LicensorDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this licensor&#63;</h1>
-            Deleting a licensor will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="licensor" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );
@@ -172,10 +165,10 @@ class LicensorDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Licensor
         </a>
       </div>

@@ -1,5 +1,7 @@
 import React from 'react'
 import ClientActions from '../actions/client-actions.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class InTheatersIndexItem extends React.Component {
 
@@ -10,7 +12,7 @@ class InTheatersIndexItem extends React.Component {
 
   componentDidMount() {
     var hyphenatedSection = this.props.section.replace(' ', '-');
-    $(`.admin-table.${hyphenatedSection} td`).draggable({
+    $(`.fm-admin-table.${hyphenatedSection} td`).draggable({
       cursor: '-webkit-grabbing',
       handle: '.handle',
       helper() { return '<div></div>'; },

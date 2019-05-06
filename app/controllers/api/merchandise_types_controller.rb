@@ -6,8 +6,8 @@ class Api::MerchandiseTypesController < AdminController
   end
 
   def show
-    @merchandise_types = MerchandiseType.where(id: params[:id])
-    render "index.json.jbuilder"
+    @merchandise_type = MerchandiseType.find(params[:id])
+    render "show.json.jbuilder"
   end
 
   def create
@@ -23,8 +23,7 @@ class Api::MerchandiseTypesController < AdminController
   def update
     @merchandise_type = MerchandiseType.find(params[:id])
     if @merchandise_type.update(merchandise_type_params)
-      @merchandise_types = MerchandiseType.all
-      render "index.json.jbuilder"
+      render "show.json.jbuilder"
     else
       render json: @merchandise_type.errors.full_messages, status: 422
     end

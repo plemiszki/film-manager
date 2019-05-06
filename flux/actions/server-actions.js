@@ -149,7 +149,14 @@ var ServerActions = {
   receiveDvdCustomers: function(response) {
     AppDispatcher.dispatch({
       actionType: "DVD_CUSTOMERS_RECEIVED",
-      dvdCustomers: response
+      dvdCustomers: response.dvdCustomers
+    });
+  },
+
+  receiveDvdCustomer: function(response) {
+    AppDispatcher.dispatch({
+      actionType: "DVD_CUSTOMER_RECEIVED",
+      dvdCustomer: response.dvdCustomer
     });
   },
 

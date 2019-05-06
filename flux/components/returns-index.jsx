@@ -6,6 +6,8 @@ import ServerActions from '../actions/server-actions.js'
 import ReturnsStore from '../stores/returns-store.js'
 import NewThing from './new-thing.jsx'
 import JobStore from '../stores/job-store.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {
@@ -160,13 +162,13 @@ class ReturnsIndex extends React.Component {
     return(
       <div id="returns-index" className="component">
         <h1>DVD Returns</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
-        <a className={ "orange-button float-button margin" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add New</a>
-        <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
+        <a className={ "orange-button float-button margin" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add New</a>
+        <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={ "admin-table" }>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th><div className={ FM.sortClass.call(this, "date") } onClick={ FM.clickHeader.bind(this, "date") }>Date</div></th>

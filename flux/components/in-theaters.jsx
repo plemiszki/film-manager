@@ -6,6 +6,8 @@ import InTheatersStore from '../stores/in-theaters-store.js'
 import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx'
 import InTheatersIndexItem from './in-theaters-index-item.jsx'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {
@@ -104,9 +106,9 @@ class InTheatersIndex extends React.Component {
       <div id="in-theaters-index" className="component">
         <h1>In Theaters</h1>
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className="admin-table no-hover no-highlight in-theaters">
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <table className="fm-admin-table no-hover no-highlight in-theaters">
             <thead>
               <tr>
                 <th>In Theaters</th>
@@ -123,7 +125,7 @@ class InTheatersIndex extends React.Component {
           </table>
           <a className={ 'blue-outline-button small' } onClick={ this.clickAddInTheatersFilm.bind(this) }>Add Film</a>
           <hr />
-          <table className="admin-table no-hover no-highlight coming-soon">
+          <table className="fm-admin-table no-hover no-highlight coming-soon">
             <thead>
               <tr>
                 <th>Coming Soon</th>
@@ -140,7 +142,7 @@ class InTheatersIndex extends React.Component {
           </table>
           <a className={ 'blue-outline-button small' } onClick={ this.clickAddComingSoonFilm.bind(this) }>Add Film</a>
           <hr />
-          <table className="admin-table no-hover no-highlight repertory">
+          <table className="fm-admin-table no-hover no-highlight repertory">
             <thead>
               <tr>
                 <th>Repertory</th>

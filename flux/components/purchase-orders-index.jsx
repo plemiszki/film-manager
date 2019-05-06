@@ -6,6 +6,8 @@ import PurchaseOrdersStore from '../stores/purchase-orders-store.js'
 import NewThing from './new-thing.jsx'
 import JobStore from '../stores/job-store.js'
 import ServerActions from '../actions/server-actions.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {
@@ -125,16 +127,16 @@ class PurchaseOrdersIndex extends React.Component {
     return(
       <div id="purchase-orders-index" className="component">
         <h1>DVD Purchase Orders</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add New</a>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickUpdateStock.bind(this) }>
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add New</a>
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickUpdateStock.bind(this) }>
           <img className={ PurchaseOrdersStore.needToUpdate() ? "" : "hidden" } src={ Images.attention } />
           Update Stock
         </a>
-        <input className="search-box" onChange={FM.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
+        <input className="search-box margin" onChange={FM.changeSearchText.bind(this)} value={this.state.searchText || ""} data-field="searchText" />
         <div className="white-box">
-          {HandyTools.renderSpinner(this.state.fetching)}
-          {HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5)}
-          <table className={"admin-table"}>
+          {Common.renderSpinner(this.state.fetching)}
+          {Common.renderGrayedOut(this.state.fetching, -36, -32, 5)}
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th><div className={FM.sortClass.call(this, "shipDate")} onClick={FM.clickHeader.bind(this, "shipDate")}>Ship Date</div></th>
@@ -189,7 +191,7 @@ class PurchaseOrdersIndex extends React.Component {
     if (this.state.purchaseOrders.length === 25) {
       return(
         <div className="text-center">
-          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll.bind(this) }>See All</a>
+          <a className={ "orange-button see-all" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll.bind(this) }>See All</a>
         </div>
       )
     }

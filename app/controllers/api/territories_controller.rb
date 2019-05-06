@@ -6,8 +6,8 @@ class Api::TerritoriesController < AdminController
   end
 
   def show
-    @territories = Territory.where(id: params[:id])
-    render 'index.json.jbuilder'
+    @territory = Territory.find(params[:id])
+    render 'show.json.jbuilder'
   end
 
   def create
@@ -27,8 +27,7 @@ class Api::TerritoriesController < AdminController
   def update
     @territory = Territory.find(params[:id])
     if @territory.update(territory_params)
-      @territories = Territory.all
-      render 'index.json.jbuilder'
+      render 'show.json.jbuilder'
     else
       render json: @territory.errors.full_messages, status: 422
     end

@@ -4,6 +4,8 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import UsersStore from '../stores/users-store.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class UserDetails extends React.Component {
 
@@ -99,18 +101,18 @@ class UserDetails extends React.Component {
         <div className="component">
           <h1>User Details</h1>
           <div id="user-profile-box" className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-12 col-sm-4">
                 <h2>Name</h2>
-                <input className={FM.errorClass(this.state.errors, ["Name can't be blank"])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.name || ""} data-field="name" />
-                {FM.renderFieldError(this.state.errors, ["Name can't be blank"])}
+                <input className={Details.errorClass(this.state.errors, ["Name can't be blank"])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.name || ""} data-field="name" />
+                {Details.renderFieldError(this.state.errors, ["Name can't be blank"])}
               </div>
               <div className="col-xs-12 col-sm-4">
                 <h2>Email</h2>
-                <input className={FM.errorClass(this.state.errors, FM.errors.email)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.email || ""} data-field="email" />
-                {FM.renderFieldError(this.state.errors, FM.errors.email)}
+                <input className={Details.errorClass(this.state.errors, FM.errors.email)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.user.email || ""} data-field="email" />
+                {Details.renderFieldError(this.state.errors, FM.errors.email)}
               </div>
               <div className="col-xs-12 col-sm-4">
                 <h2>Title</h2>
@@ -126,7 +128,9 @@ class UserDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        { FM.renderDeleteModal.call(this) }
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="user" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        </Modal>
       </div>
     );
   }
@@ -139,7 +143,7 @@ class UserDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
         { this.renderDeleteButton() }
@@ -150,7 +154,7 @@ class UserDetails extends React.Component {
   renderDeleteButton() {
     if (FM.user.admin && (FM.user.id != window.location.pathname.split("/")[2])) {
       return(
-        <a id="delete" className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete User
         </a>
       )

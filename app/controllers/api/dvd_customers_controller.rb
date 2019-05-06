@@ -6,7 +6,7 @@ class Api::DvdCustomersController < AdminController
   end
 
   def show
-    @dvd_customers = DvdCustomer.where(id: params[:id])
+    @dvd_customer = DvdCustomer.find(params[:id])
     render "show.json.jbuilder"
   end
 
@@ -23,7 +23,6 @@ class Api::DvdCustomersController < AdminController
   def update
     @dvd_customer = DvdCustomer.find(params[:id])
     if @dvd_customer.update(dvd_customer_params)
-      @dvd_customers = DvdCustomer.where(id: params[:id])
       render "show.json.jbuilder"
     else
       render json: @dvd_customer.errors.full_messages, status: 422

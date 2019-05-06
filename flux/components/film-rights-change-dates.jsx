@@ -3,6 +3,8 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class FilmRightsChangeDates extends React.Component {
 
@@ -54,8 +56,8 @@ class FilmRightsChangeDates extends React.Component {
     return(
       <div id="film-rights-change-dates" className="component admin-modal">
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
             <div className="col-xs-6">
               <h2>Start Date</h2>
@@ -68,7 +70,7 @@ class FilmRightsChangeDates extends React.Component {
               { HandyTools.renderFieldError(this.state.errors, FM.errors.endDate) }
             </div>
           </div>
-          <a className={ "orange-button" + HandyTools.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.clickChange.bind(this) }>Change All Dates</a>
+          <a className={ "orange-button" + Common.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.clickChange.bind(this) }>Change All Dates</a>
         </div>
       </div>
     );

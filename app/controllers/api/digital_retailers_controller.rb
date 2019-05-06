@@ -6,8 +6,8 @@ class Api::DigitalRetailersController < AdminController
   end
 
   def show
-    @digital_retailers = DigitalRetailer.where(id: params[:id])
-    render 'index.json.jbuilder'
+    @digital_retailer = DigitalRetailer.find(params[:id])
+    render 'show.json.jbuilder'
   end
 
   def create
@@ -23,8 +23,7 @@ class Api::DigitalRetailersController < AdminController
   def update
     @digital_retailer = DigitalRetailer.find(params[:id])
     if @digital_retailer.update(digital_retailer_params)
-      @digital_retailers = DigitalRetailer.all
-      render 'index.json.jbuilder'
+      render 'show.json.jbuilder'
     else
       render json: @digital_retailer.errors.full_messages, status: 422
     end

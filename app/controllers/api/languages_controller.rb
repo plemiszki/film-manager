@@ -6,8 +6,8 @@ class Api::LanguagesController < AdminController
   end
 
   def show
-    @languages = Language.where(id: params[:id])
-    render "index.json.jbuilder"
+    @language = Language.find(params[:id])
+    render "show.json.jbuilder"
   end
 
   def create
@@ -23,8 +23,7 @@ class Api::LanguagesController < AdminController
   def update
     @language = Language.find(params[:id])
     if @language.update(language_params)
-      @languages = Language.all
-      render "index.json.jbuilder"
+      render "show.json.jbuilder"
     else
       render json: @language.errors.full_messages, status: 422
     end

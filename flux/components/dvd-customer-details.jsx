@@ -4,6 +4,8 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import DvdCustomersStore from '../stores/dvd-customers-store.js'
 import ErrorsStore from '../stores/errors-store.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class DvdCustomerDetails extends React.Component {
 
@@ -22,7 +24,7 @@ class DvdCustomerDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.dvdCustomerListener = DvdCustomersStore.addListener(this.getDvdCustomers.bind(this));
+    this.dvdCustomerListener = DvdCustomersStore.addListener(this.getDvdCustomer.bind(this));
     this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchDvdCustomer(window.location.pathname.split("/")[2]);
   }
@@ -32,10 +34,10 @@ class DvdCustomerDetails extends React.Component {
     this.errorsListener.remove();
   }
 
-  getDvdCustomers() {
+  getDvdCustomer() {
     this.setState({
-      dvdCustomer: Tools.deepCopy(DvdCustomersStore.find(window.location.pathname.split("/")[2])),
-      dvdCustomerSaved: DvdCustomersStore.find(window.location.pathname.split("/")[2]),
+      dvdCustomer: Tools.deepCopy(DvdCustomersStore.dvdCustomer()),
+      dvdCustomerSaved: DvdCustomersStore.dvdCustomer(),
       fetching: false
     }, () => {
       this.setState({
@@ -111,18 +113,18 @@ class DvdCustomerDetails extends React.Component {
         <div className="component">
           <h1>DVD Customer Details</h1>
           <div className="white-box">
-            { HandyTools.renderSpinner(this.state.fetching) }
-            { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.name || "" } data-field="name" />
-                { FM.renderFieldError(this.state.errors, FM.errors.name) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.name || "" } data-field="name" />
+                { Details.renderFieldError(this.state.errors, FM.errors.name) }
               </div>
               <div className="col-xs-3">
                 <h2>Discount or Price/Unit</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.discount) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.discount || "" } data-field="discount" />
-                { FM.renderFieldError(this.state.errors, FM.errors.discount) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.discount) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.discount || "" } data-field="discount" />
+                { Details.renderFieldError(this.state.errors, FM.errors.discount) }
               </div>
               <div className="col-xs-2 consignment-column">
                 <input id="consignment" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.dvdCustomer.consignment || false } data-field="consignment" /><label className="checkbox">Consignment</label>
@@ -131,18 +133,18 @@ class DvdCustomerDetails extends React.Component {
             <div className={ "row" + (this.state.dvdCustomer.consignment ? " hidden" : "") }>
               <div className="col-xs-6">
                 <h2>Invoices Email</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.invoicesEmail) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.invoicesEmail || "" } data-field="invoicesEmail" />
-                { FM.renderFieldError(this.state.errors, FM.errors.invoicesEmail) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.invoicesEmail) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.invoicesEmail || "" } data-field="invoicesEmail" />
+                { Details.renderFieldError(this.state.errors, FM.errors.invoicesEmail) }
               </div>
               <div className="col-xs-3">
                 <h2>Sage ID</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.sageId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.sageId || "" } data-field="sageId" />
-                { FM.renderFieldError(this.state.errors, FM.errors.sageId) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.sageId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.sageId || "" } data-field="sageId" />
+                { Details.renderFieldError(this.state.errors, FM.errors.sageId) }
               </div>
               <div className="col-xs-3">
                 <h2>Payment Terms (in days)</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.paymentTerms) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.paymentTerms || "" } data-field="paymentTerms" />
-                { FM.renderFieldError(this.state.errors, FM.errors.paymentTerms) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.paymentTerms) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.paymentTerms || "" } data-field="paymentTerms" />
+                { Details.renderFieldError(this.state.errors, FM.errors.paymentTerms) }
               </div>
             </div>
             <hr />
@@ -150,64 +152,55 @@ class DvdCustomerDetails extends React.Component {
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.billingName) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.billingName || "" } data-field="billingName" />
-                { FM.renderFieldError(this.state.errors, FM.errors.billingName) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.billingName) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.billingName || "" } data-field="billingName" />
+                { Details.renderFieldError(this.state.errors, FM.errors.billingName) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 1</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.address1) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.address1 || "" } data-field="address1" />
-                { FM.renderFieldError(this.state.errors, FM.errors.address1) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.address1) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.address1 || "" } data-field="address1" />
+                { Details.renderFieldError(this.state.errors, FM.errors.address1) }
               </div>
               <div className="col-xs-4">
                 <h2>Address 2</h2>
-                <input className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.address2 || "" } data-field="address2" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.address2 || "" } data-field="address2" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-3">
                 <h2>City</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.city) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.city || "" } data-field="city" />
-                { FM.renderFieldError(this.state.errors, FM.errors.city) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.city) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.city || "" } data-field="city" />
+                { Details.renderFieldError(this.state.errors, FM.errors.city) }
               </div>
               <div className="col-xs-1">
                 <h2>State</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.state) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.state || "" } data-field="state" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.state) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.state || "" } data-field="state" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
               <div className="col-xs-2">
                 <h2>Zip</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.zip) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.zip || "" } data-field="zip" />
-                { FM.renderFieldError(this.state.errors, FM.errors.zip) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.zip) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.zip || "" } data-field="zip" />
+                { Details.renderFieldError(this.state.errors, FM.errors.zip) }
               </div>
               <div className="col-xs-2">
                 <h2>Country</h2>
-                <input className={ FM.errorClass(this.state.errors, FM.errors.country) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.country || "" } data-field="country" />
-                { FM.renderFieldError(this.state.errors, FM.errors.country) }
+                <input className={ Details.errorClass(this.state.errors, FM.errors.country) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.country || "" } data-field="country" />
+                { Details.renderFieldError(this.state.errors, FM.errors.country) }
               </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-xs-12">
                 <h2>Notes</h2>
-                <textarea rows="5" className={ FM.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.notes || "" } data-field="notes" />
-                { FM.renderFieldError(this.state.errors, []) }
+                <textarea rows="5" className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.notes || "" } data-field="notes" />
+                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to delete this DVD customer&#63;</h1>
-            Deleting a DVD customer will erase ALL of its information and data<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="dvdCustomer" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );
@@ -221,10 +214,10 @@ class DvdCustomerDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "hidden orange-button " + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+        <a id="delete" className={ "hidden orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete DVD Customer
         </a>
       </div>

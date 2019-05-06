@@ -8,6 +8,8 @@ import UpcomingBookingsStore from '../stores/upcoming-bookings-store.js'
 import NewThing from './new-thing.jsx'
 import JobStore from '../stores/job-store.js'
 import AdvancedSearch from './advanced-search.jsx'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
   overlay: {
@@ -163,12 +165,12 @@ class BookingsIndex extends React.Component {
         { this.renderAddButton() }
         { this.renderExportButton() }
         { this.renderAdvancedSearchButton() }
-        <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? '' : ' no-margin') } onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? ' margin' : '') } onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="horizontal-scroll">
-            <table className={"admin-table"}>
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th className="small-column"><div className={ FM.sortClass.call(this, "startDate") } onClick={ FM.clickHeader.bind(this, "startDate") }>Start Date</div></th>
@@ -258,7 +260,7 @@ class BookingsIndex extends React.Component {
   renderAddButton() {
     if (this.props.timeframe == 'upcoming') {
       return(
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Booking</a>
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Booking</a>
       );
     }
   }
@@ -266,7 +268,7 @@ class BookingsIndex extends React.Component {
   renderAdvancedSearchButton() {
     if (this.props.advanced || this.props.timeframe == 'upcoming') {
       return(
-        <a className={ "orange-button float-button advanced-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced.bind(this) }>Advanced Search</a>
+        <a className={ "orange-button float-button advanced-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickAdvanced.bind(this) }>Advanced Search</a>
       );
     }
   }
@@ -274,7 +276,7 @@ class BookingsIndex extends React.Component {
   renderExportButton() {
     if (this.props.advanced) {
       return(
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
       );
     }
   }
@@ -283,7 +285,7 @@ class BookingsIndex extends React.Component {
     if (!this.props.advanced && this.state.bookings.length === 25) {
       return(
         <div className="text-center">
-          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>
+          <a className={ "orange-button see-all" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>
         </div>
       )
     }

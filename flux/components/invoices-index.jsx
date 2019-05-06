@@ -5,6 +5,8 @@ import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
 import InvoicesStore from '../stores/invoices-store.js'
 import JobStore from '../stores/job-store.js'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const filterModalStyles = {
   overlay: {
@@ -179,13 +181,13 @@ class InvoicesIndex extends React.Component {
     return(
       <div id="invoices-index" className="component">
         <h1>Invoices</h1>
-        <a className={ "orange-button float-button" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
-        <a className={ "orange-button float-button" + this.filterExists() + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal.bind(this) }>Filter</a>
-        <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
+        <a className={ "orange-button float-button" + this.filterExists() + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal.bind(this) }>Filter</a>
+        <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          { HandyTools.renderSpinner(this.state.fetching) }
-          { HandyTools.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={ "admin-table" }>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th><div className={ FM.sortClass.call(this, "sentDate") } onClick={ FM.clickHeader.bind(this, "sentDate") }>Sent Date</div></th>
@@ -255,7 +257,7 @@ class InvoicesIndex extends React.Component {
     if (this.state.invoices.length === 100) {
       return(
         <div className="text-center">
-          <a className={ "orange-button see-all" + HandyTools.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll.bind(this) }>See All</a>
+          <a className={ "orange-button see-all" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll.bind(this) }>See All</a>
         </div>
       );
     }

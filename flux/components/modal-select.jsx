@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class ModalSelect extends React.Component {
 
