@@ -5,7 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import GiftboxesStore from '../stores/giftboxes-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const dvdsModalStyles = {
@@ -189,7 +189,7 @@ class GiftboxDetails extends React.Component {
             </div>
             { this.renderButtons() }
             <hr />
-            <table className="admin-table">
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th>DVDs</th>
@@ -214,17 +214,8 @@ class GiftboxDetails extends React.Component {
             <a className={ 'blue-outline-button small' } onClick={ this.clickAddDvdButton.bind(this) }>Add DVD</a>
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this Gift Box&#63;</h1>
-            Deleting a gift box will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="giftBox" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.dvdsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherDvds } property={ "title" } func={ this.selectDvd.bind(this) } />

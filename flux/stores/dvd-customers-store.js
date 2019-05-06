@@ -5,6 +5,7 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 var DvdCustomersStore = new Store(AppDispatcher);
 
 var _dvdCustomers = {};
+var _dvdCustomer = {};
 var _monthTotals = [];
 var _yearTotal = null;
 var _dvds = [];
@@ -15,10 +16,18 @@ DvdCustomersStore.setDvdCustomers = function (dvdCustomers) {
   });
 };
 
+DvdCustomersStore.setDvdCustomer = function (dvdCustomer) {
+  _dvdCustomer = dvdCustomer;
+};
+
 DvdCustomersStore.setReportStuff = function (payload) {
   _monthTotals = payload.monthTotals;
   _yearTotal = payload.yearTotal;
   _dvds = payload.dvds;
+};
+
+DvdCustomersStore.dvdCustomer = function (id) {
+  return _dvdCustomer;
 };
 
 DvdCustomersStore.find = function (id) {
@@ -48,6 +57,10 @@ DvdCustomersStore.__onDispatch = function(payload) {
   switch(payload.actionType){
     case "DVD_CUSTOMERS_RECEIVED":
       this.setDvdCustomers(payload.dvdCustomers);
+      this.__emitChange();
+      break;
+    case "DVD_CUSTOMER_RECEIVED":
+      this.setDvdCustomer(payload.dvdCustomer);
       this.__emitChange();
       break;
     case "DVD_REPORTS_RECEIVED":

@@ -4,7 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import LicensorsStore from '../stores/licensors-store.js'
 import ErrorsStore from '../stores/errors-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class LicensorDetails extends React.Component {
@@ -126,7 +126,7 @@ class LicensorDetails extends React.Component {
             </div>
             <div className="row">
               <div className="col-xs-12 col-sm-12">
-                <table className={ "admin-table" }>
+                <table className="fm-admin-table">
                   <thead>
                     <tr>
                       <th>Title</th>
@@ -150,17 +150,8 @@ class LicensorDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this licensor&#63;</h1>
-            Deleting a licensor will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="licensor" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );

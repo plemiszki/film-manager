@@ -7,7 +7,7 @@ import FilmsStore from '../stores/films-store.js'
 import NewThing from './new-thing.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
 import JobStore from '../stores/job-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
@@ -146,12 +146,12 @@ class FilmsIndex extends React.Component {
           { this.renderAddNewButton() }
           { this.renderExportMetadataButton() }
           { this.renderCustomButton() }
-          <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+          <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={ "admin-table" }>
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th><div className={ FM.sortClass.call(this, "title") } onClick={ FM.clickHeader.bind(this, "title") }>Title</div></th>

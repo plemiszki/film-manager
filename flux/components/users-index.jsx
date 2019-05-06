@@ -4,7 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import UsersStore from '../stores/users-store.js'
 import NewThing from './new-thing.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
@@ -70,7 +70,7 @@ class UsersIndex extends React.Component {
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={ "admin-table" }>
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th>Name</th>

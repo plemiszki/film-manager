@@ -10,7 +10,7 @@ import ReturnsStore from '../stores/returns-store.js'
 import BookingsStore from '../stores/bookings-store.js'
 import DigitalRetailersStore from '../stores/digital-retailers-store.js'
 import MerchandiseItemsStore from '../stores/merchandise-items-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class NewThing extends React.Component {
@@ -138,7 +138,7 @@ class NewThing extends React.Component {
 
   render() {
     return(
-      <div id="new-thing" className="component">
+      <div id="new-thing" className="component admin-modal">
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -146,7 +146,6 @@ class NewThing extends React.Component {
           { this.renderEmailField() }
           { this.renderPasswordField() }
           { this.renderUpcField() }
-          { this.renderDvdCustomerFields() }
           { this.renderDvdTypeField() }
           { this.renderPOFields() }
           { this.renderReturnFields() }
@@ -555,89 +554,6 @@ class NewThing extends React.Component {
     }
   }
 
-  renderDvdCustomerFields() {
-    if (this.props.thing === "dvdCustomer") {
-      return(
-        <div>
-          <div className="row">
-            <div className="col-xs-6">
-              <h2>Name</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.name)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.name} data-field="name" />
-              {Details.renderFieldError(this.state.errors, FM.errors.name)}
-            </div>
-            <div className="col-xs-3">
-              <h2>Discount or Price/Unit </h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.discount)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.discount} data-field="discount" />
-              {Details.renderFieldError(this.state.errors, FM.errors.discount)}
-            </div>
-            <div className="col-xs-3 consignment-column">
-              <input id="consignment" className="checkbox" type="checkbox" onChange={FM.changeCheckBox.bind(this, this.changeFieldArgs())} checked={this.state.dvdCustomer.consignment} data-field="consignment" /><label className="checkbox">Consignment</label>
-            </div>
-          </div>
-          <div className={this.state.dvdCustomer.consignment ? "dvd-customer-placeholder" : ""}></div>
-          <div className={"row" + (this.state.dvdCustomer.consignment ? " hidden" : "")}>
-            <div className="col-xs-6">
-              <h2>Invoices Email</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.invoicesEmail)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.invoicesEmail} data-field="invoicesEmail" />
-              {Details.renderFieldError(this.state.errors, FM.errors.invoicesEmail)}
-            </div>
-            <div className="col-xs-3">
-              <h2>Sage ID</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.sageId)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.sageId} data-field="sageId" />
-              {Details.renderFieldError(this.state.errors, FM.errors.sageId)}
-            </div>
-            <div className="col-xs-3">
-              <h2>Payment Terms (in days)</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.paymentTerms)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.paymentTerms} data-field="paymentTerms" />
-              {Details.renderFieldError(this.state.errors, FM.errors.paymentTerms)}
-            </div>
-          </div>
-          <hr />
-          <h1 className="text-left">Billing Address:</h1>
-          <div className="row">
-            <div className="col-xs-4">
-              <h2>Name</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.billingName)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.billingName || ""} data-field="billingName" />
-              {Details.renderFieldError(this.state.errors, FM.errors.billingName)}
-            </div>
-            <div className="col-xs-4">
-              <h2>Address 1</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.address1)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address1 || ""} data-field="address1" />
-              {Details.renderFieldError(this.state.errors, FM.errors.address1)}
-            </div>
-            <div className="col-xs-4">
-              <h2>Address 2</h2>
-              <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.address2 || ""} data-field="address2" />
-              {Details.renderFieldError(this.state.errors, [])}
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-xs-3">
-              <h2>City</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.city)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.city || ""} data-field="city" />
-              {Details.renderFieldError(this.state.errors, FM.errors.city)}
-            </div>
-            <div className="col-xs-1">
-              <h2>State</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.state)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.state || ""} data-field="state" />
-              {Details.renderFieldError(this.state.errors, [])}
-            </div>
-            <div className="col-xs-2">
-              <h2>Zip</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.zip)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.zip || ""} data-field="zip" />
-              {Details.renderFieldError(this.state.errors, FM.errors.zip)}
-            </div>
-            <div className="col-xs-2">
-              <h2>Country</h2>
-              <input className={Details.errorClass(this.state.errors, FM.errors.country)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.dvdCustomer.country || ""} data-field="country" />
-              {Details.renderFieldError(this.state.errors, FM.errors.country)}
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
   renderDvdTypeField() {
     if (this.props.thing === "dvd") {
       return(
@@ -703,7 +619,7 @@ class NewThing extends React.Component {
                   );
                 })}
               </select>
-              { HandyTools.renderDropdownFieldError(this.state.errors, []) }
+              { Details.renderDropdownFieldError(this.state.errors, []) }
             </div>
           </div>
           <div className="row">

@@ -8,7 +8,7 @@ import ShippingAddressesStore from '../stores/shipping-addresses-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
@@ -362,7 +362,7 @@ class PurchaseOrderDetails extends React.Component {
             </div>
             { this.renderSaveShippingAddressButton() }
             <hr />
-            <table className={"admin-table"}>
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th>Items</th>
@@ -431,17 +431,8 @@ class PurchaseOrderDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to delete this PO&#63;</h1>
-            This action cannot be undone<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="purchaseOrder" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.addAddressModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ AddAddressModalStyles }>
           <NewThing thing="shippingAddress" initialObject={ {

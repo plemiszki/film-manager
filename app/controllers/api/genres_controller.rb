@@ -6,8 +6,8 @@ class Api::GenresController < AdminController
   end
 
   def show
-    @genres = Genre.where(id: params[:id])
-    render "index.json.jbuilder"
+    @genre = Genre.find(params[:id])
+    render "show.json.jbuilder"
   end
 
   def create
@@ -23,8 +23,7 @@ class Api::GenresController < AdminController
   def update
     @genre = Genre.find(params[:id])
     if @genre.update(genre_params)
-      @genres = Genre.all
-      render "index.json.jbuilder"
+      render "show.json.jbuilder"
     else
       render json: @genre.errors.full_messages, status: 422
     end

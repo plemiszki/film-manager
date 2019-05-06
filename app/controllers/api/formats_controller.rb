@@ -6,8 +6,8 @@ class Api::FormatsController < AdminController
   end
 
   def show
-    @formats = Format.where(id: params[:id])
-    render "index.json.jbuilder"
+    @format = Format.find(params[:id])
+    render "show.json.jbuilder"
   end
 
   def create
@@ -23,8 +23,7 @@ class Api::FormatsController < AdminController
   def update
     @format = Format.find(params[:id])
     if @format.update(format_params)
-      @formats = Format.all
-      render "index.json.jbuilder"
+      render "show.json.jbuilder"
     else
       render json: @format.errors.full_messages, status: 422
     end

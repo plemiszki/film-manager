@@ -6,7 +6,7 @@ import ServerActions from '../actions/server-actions.js'
 import ReportsStore from '../stores/reports-store.js'
 import FileStore from '../stores/file-store.js'
 import JobStore from '../stores/job-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const importModalStyles = {
@@ -334,7 +334,7 @@ class ReportsIndex extends React.Component {
               <option value={ "45" }>45 days</option>
               <option value={ "60" }>60 days</option>
             </select>
-            <table className={"admin-table"}>
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th><div className={ FM.sortClass.call(this, "title") } onClick={ this.clickTitle.bind(this) }>Title</div></th>

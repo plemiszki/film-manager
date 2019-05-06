@@ -6,7 +6,7 @@ import ReturnsStore from '../stores/returns-store.js'
 import ReturnItemsStore from '../stores/return-items-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -213,7 +213,7 @@ class ReturnDetails extends React.Component {
               </div>
             </div>
             <hr />
-            <table className={"admin-table"}>
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th>Item</th>
@@ -248,17 +248,8 @@ class ReturnDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to delete this return&#63;</h1>
-            This action cannot be undone<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="return" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />

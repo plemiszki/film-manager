@@ -4,7 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import DvdsStore from '../stores/dvds-store.js'
 import ErrorsStore from '../stores/errors-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class DvdDetails extends React.Component {
@@ -225,7 +225,7 @@ class DvdDetails extends React.Component {
                 { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
-            <table className="admin-table">
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th>Short Films</th>
@@ -251,17 +251,8 @@ class DvdDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to delete this DVD&#63;</h1>
-            Deleting a DVD will erase ALL of its information and data<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="dvd" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.shortsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.SelectModalStyles }>
           <ul className="licensor-modal-list">

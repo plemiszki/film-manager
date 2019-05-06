@@ -6,7 +6,7 @@ import BookersStore from '../stores/bookers-store.js'
 import BookerVenuesStore from '../stores/booker-venues-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class BookerDetails extends React.Component {
@@ -184,17 +184,8 @@ class BookerDetails extends React.Component {
         <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.venues } property={ "name" } func={ this.selectVenue.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this booker&#63;</h1>
-            Deleting a booker will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="booker" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );

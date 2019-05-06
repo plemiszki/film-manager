@@ -5,7 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import SublicensorsStore from '../stores/sublicensors-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import FilmRightsNew from './film-rights-new.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const NewRightsModalStyles = {
@@ -17,7 +17,7 @@ const NewRightsModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 575
+    height: 613
   }
 }
 
@@ -174,7 +174,7 @@ class SublicensorDetails extends React.Component {
             <h3>Sublicensed Rights:</h3>
             <div className="row">
               <div className="col-xs-12">
-                <table className="admin-table">
+                <table className="fm-admin-table">
                   <thead>
                     <tr>
                       <th><div className={ this.state.rightsSortBy === 'film' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'film') }>Film</div></th>
@@ -221,17 +221,8 @@ class SublicensorDetails extends React.Component {
         <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
           <FilmRightsNew sublicensorId={ this.state.sublicensor.id } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to delete this sublicensor&#63;</h1>
-            Deleting a sublicensor will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="sublicensor" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );

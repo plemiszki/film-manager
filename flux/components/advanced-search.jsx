@@ -4,7 +4,7 @@ import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
 import ClientActions from '../actions/client-actions.js'
 import BookingsStore from '../stores/bookings-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class AdvancedSearch extends React.Component {

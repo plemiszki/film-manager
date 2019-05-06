@@ -3,7 +3,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import InvoicesStore from '../stores/invoices-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class InvoiceDetails extends React.Component {
@@ -77,7 +77,7 @@ class InvoiceDetails extends React.Component {
               </div>
             </div>
             <hr />
-            <table className={"admin-table"}>
+            <table className="fm-admin-table">
               <thead>
                 { this.renderTableHeaders() }
               </thead>

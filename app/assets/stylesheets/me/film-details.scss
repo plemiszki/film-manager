@@ -61,7 +61,7 @@
     margin-bottom: 60px;
   }
 
-  input {
+  input:not(.search-box) {
     width: 100%;
   }
 

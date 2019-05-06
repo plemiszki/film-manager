@@ -6,8 +6,8 @@ class Api::CountriesController < AdminController
   end
 
   def show
-    @countries = Country.where(id: params[:id])
-    render "index.json.jbuilder"
+    @country = Country.find(params[:id])
+    render "show.json.jbuilder"
   end
 
   def create
@@ -23,8 +23,7 @@ class Api::CountriesController < AdminController
   def update
     @country = Country.find(params[:id])
     if @country.update(country_params)
-      @countries = Country.all
-      render "index.json.jbuilder"
+      render "show.json.jbuilder"
     else
       render json: @country.errors.full_messages, status: 422
     end

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class CurrentUserDropDown extends React.Component {

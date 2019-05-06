@@ -14,7 +14,6 @@ import FilmsIndex from './components/films-index.jsx'
 import FilmDetails from './components/film-details.jsx'
 import RoyaltyReportDetails from './components/royalty-report-details.jsx'
 import RoyaltyReportsIndex from './components/reports-index.jsx'
-import GiftBoxesIndex from './components/giftboxes-index.jsx'
 import GiftBoxDetails from './components/giftbox-details.jsx'
 import DvdCustomerDetails from './components/dvd-customer-details.jsx'
 import DvdDetails from './components/dvd-details.jsx'
@@ -30,31 +29,16 @@ import VenueDetails from './components/venue-details.jsx'
 import BookingsIndex from './components/bookings-index.jsx'
 import BookingDetails from './components/booking-details.jsx'
 import SettingDetails from './components/setting-details.jsx'
-import CountriesIndex from './components/countries-index.jsx'
-import CountryDetails from './components/country-details.jsx'
-import LanguagesIndex from './components/languages-index.jsx'
-import LanguageDetails from './components/language-details.jsx'
-import GenresIndex from './components/genres-index.jsx'
-import GenreDetails from './components/genre-details.jsx'
-import TopicsIndex from './components/topics-index.jsx'
-import TopicDetails from './components/topic-details.jsx'
 import QuoteDetails from './components/quote-details.jsx'
-import FormatsIndex from './components/formats-index.jsx'
-import FormatDetails from './components/format-details.jsx'
 import BookerDetails from './components/booker-details.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
-import TerritoriesIndex from './components/territories-index.jsx'
-import TerritoryDetails from './components/territory-details.jsx'
 import FilmRightDetails from './components/film-right-details.jsx'
 import SubRightDetails from './components/sub-right-details.jsx'
-import SublicensorsIndex from './components/sublicensors-index.jsx'
 import SublicensorDetails from './components/sublicensor-details.jsx'
 import DigitalRetailerFilmDetails from './components/digital-retailer-film-details.jsx'
 import Calendar from './components/calendar.jsx'
 import Catalog from './components/catalog.jsx'
 import EpisodeDetails from './components/episode-details.jsx'
-import MerchandiseTypesIndex from './components/merchandise-types-index.jsx'
-import MerchandiseTypeDetails from './components/merchandise-type-details.jsx'
 import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
 import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
 import NewThing from './components/new-thing.jsx'
@@ -148,50 +132,14 @@ $(document).ready(function() {
   if ($('#setting-details')[0]) {
     ReactDOM.render(<SettingDetails />, document.getElementById("setting-details"));
   }
-  if ($('#countries-index')[0]) {
-    ReactDOM.render(<CountriesIndex />, document.getElementById("countries-index"));
-  }
-  if ($('#country-details')[0]) {
-    ReactDOM.render(<CountryDetails />, document.getElementById("country-details"));
-  }
-  if ($('#languages-index')[0]) {
-    ReactDOM.render(<LanguagesIndex />, document.getElementById("languages-index"));
-  }
-  if ($('#language-details')[0]) {
-    ReactDOM.render(<LanguageDetails />, document.getElementById("language-details"));
-  }
-  if ($('#genres-index')[0]) {
-    ReactDOM.render(<GenresIndex />, document.getElementById("genres-index"));
-  }
-  if ($('#genre-details')[0]) {
-    ReactDOM.render(<GenreDetails />, document.getElementById("genre-details"));
-  }
-  if ($('#topics-index')[0]) {
-    ReactDOM.render(<TopicsIndex />, document.getElementById("topics-index"));
-  }
-  if ($('#topic-details')[0]) {
-    ReactDOM.render(<TopicDetails />, document.getElementById("topic-details"));
-  }
   if ($('#quote-details')[0]) {
     ReactDOM.render(<QuoteDetails />, document.getElementById("quote-details"));
-  }
-  if ($('#formats-index')[0]) {
-    ReactDOM.render(<FormatsIndex />, document.getElementById("formats-index"));
-  }
-  if ($('#format-details')[0]) {
-    ReactDOM.render(<FormatDetails />, document.getElementById("format-details"));
   }
   if ($('#booker-details')[0]) {
     ReactDOM.render(<BookerDetails />, document.getElementById("booker-details"));
   }
   if ($('#in-theaters-index')[0]) {
     ReactDOM.render(<InTheatersIndex />, document.getElementById("in-theaters-index"));
-  }
-  if ($('#territories-index')[0]) {
-    ReactDOM.render(<TerritoriesIndex />, document.getElementById("territories-index"));
-  }
-  if ($('#territory-details')[0]) {
-    ReactDOM.render(<TerritoryDetails />, document.getElementById("territory-details"));
   }
   if ($('#film-right-details')[0]) {
     ReactDOM.render(<FilmRightDetails />, document.getElementById("film-right-details"));
@@ -214,15 +162,6 @@ $(document).ready(function() {
   if ($('#episode-details')[0]) {
     ReactDOM.render(<EpisodeDetails />, document.getElementById("episode-details"));
   }
-  if ($('#merchandise-types-index')[0]) {
-    ReactDOM.render(<MerchandiseTypesIndex />, document.getElementById("merchandise-types-index"));
-  }
-  if ($('#merchandise-type-details')[0]) {
-    ReactDOM.render(<MerchandiseTypeDetails />, document.getElementById("merchandise-type-details"));
-  }
-  if ($('#merchandise-items-index')[0]) {
-    ReactDOM.render(<MerchandiseItemsIndex />, document.getElementById("merchandise-items-index"));
-  }
   if ($('#merchandise-item-details')[0]) {
     ReactDOM.render(<MerchandiseItemDetails />, document.getElementById("merchandise-item-details"));
   }
@@ -241,6 +180,39 @@ $(document).ready(function() {
         </StandardIndex>
       </Provider>,
       document.querySelector('#bookers-index')
+    );
+  }
+  if (document.querySelector('#countries-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='country'
+          entityNamePlural='countries'
+          columns={ ['name'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 900 } }
+        >
+          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#countries-index')
+    );
+  }
+  if (document.querySelector('#country-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='country'
+          initialEntity={ { name: '' } }
+          fields={ [[
+            { columnWidth: 12, entity: 'country', property: 'name' }
+          ]] }
+          customDeletePath='/settings'
+        />
+      </Provider>,
+      document.querySelector('#country-details')
     );
   }
   if (document.querySelector('#digital-retailers-index')) {
@@ -281,13 +253,77 @@ $(document).ready(function() {
           context={ MyContext }
           entityName='dvdCustomer'
           columns={ ['name'] }
-          modalDimensions={ { width: 1000, height: 702 } }
+          modalDimensions={ { width: 1000, height: 680 } }
           header="DVD Customers"
         >
-          <NewThing thing="dvdCustomer" initialObject={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
+          <NewEntity context={ MyContext } initialEntity={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
         </StandardIndex>
       </Provider>,
       document.querySelector('#dvd-customers-index')
+    );
+  }
+  if (document.querySelector('#formats-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='format'
+          columns={ ['name'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 900 } }
+        >
+          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#formats-index')
+    );
+  }
+  if (document.querySelector('#format-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='format'
+          initialEntity={ { name: '' } }
+          fields={ [[
+            { columnWidth: 12, entity: 'format', property: 'name' }
+          ]] }
+          customDeletePath='/settings'
+        />
+      </Provider>,
+      document.querySelector('#format-details')
+    );
+  }
+  if (document.querySelector('#genres-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='genre'
+          columns={ ['name'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 900 } }
+        >
+          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#genres-index')
+    );
+  }
+  if (document.querySelector('#genre-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='genre'
+          initialEntity={ { name: '' } }
+          fields={ [[
+            { columnWidth: 12, entity: 'genre', property: 'name' }
+          ]] }
+          customDeletePath='/settings'
+        />
+      </Provider>,
+      document.querySelector('#genre-details')
     );
   }
   if (document.querySelector('#giftboxes-index')) {
@@ -307,6 +343,38 @@ $(document).ready(function() {
       document.querySelector('#giftboxes-index')
     );
   }
+  if (document.querySelector('#languages-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='language'
+          columns={ ['name'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 900 } }
+        >
+          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#languages-index')
+    );
+  }
+  if (document.querySelector('#language-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='language'
+          initialEntity={ { name: '' } }
+          fields={ [[
+            { columnWidth: 12, entity: 'language', property: 'name' }
+          ]] }
+          customDeletePath='/settings'
+        />
+      </Provider>,
+      document.querySelector('#language-details')
+    );
+  }
   if (document.querySelector('#licensors-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
@@ -323,6 +391,44 @@ $(document).ready(function() {
       document.querySelector('#licensors-index')
     );
   }
+  if (document.querySelector('#merchandise-items-index')) {
+    ReactDOM.render(
+      <MerchandiseItemsIndex />,
+      document.querySelector('#merchandise-items-index')
+    );
+  }
+  if (document.querySelector('#merchandise-types-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='merchandiseType'
+          columns={ ['name'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 900 } }
+        >
+          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#merchandise-types-index')
+    );
+  }
+  if (document.querySelector('#merchandise-type-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='merchandiseType'
+          initialEntity={ { name: '' } }
+          fields={ [[
+            { columnWidth: 12, entity: 'merchandiseType', property: 'name' }
+          ]] }
+          customDeletePath='/settings'
+        />
+      </Provider>,
+      document.querySelector('#merchandise-type-details')
+    );
+  }
   if (document.querySelector('#shipping-addresses-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
@@ -335,6 +441,71 @@ $(document).ready(function() {
         />
       </Provider>,
       document.querySelector('#shipping-addresses-index')
+    );
+  }
+  if (document.querySelector('#territories-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='territory'
+          entityNamePlural='territories'
+          columns={ ['name'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 900 } }
+        >
+          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#territories-index')
+    );
+  }
+  if (document.querySelector('#territory-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='territory'
+          initialEntity={ { name: '' } }
+          fields={ [[
+            { columnWidth: 12, entity: 'territory', property: 'name' }
+          ]] }
+          customDeletePath='/settings'
+        />
+      </Provider>,
+      document.querySelector('#territory-details')
+    );
+  }
+  if (document.querySelector('#topics-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='topic'
+          columns={ ['name'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 900 } }
+        >
+          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#topics-index')
+    );
+  }
+  if (document.querySelector('#topic-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='topic'
+          initialEntity={ { name: '' } }
+          fields={ [[
+            { columnWidth: 12, entity: 'topic', property: 'name' }
+          ]] }
+          customDeletePath='/settings'
+        />
+      </Provider>,
+      document.querySelector('#topic-details')
     );
   }
   if (document.querySelector('#users-index')) {

@@ -6,7 +6,7 @@ import EpisodesStore from '../stores/episodes-store.js'
 import ActorsStore from '../stores/actors-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import NewThing from './new-thing.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const DirectorModalStyles = {
@@ -199,17 +199,8 @@ class EpisodeDetails extends React.Component {
         <Modal isOpen={ this.state.actorModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ DirectorModalStyles }>
           <NewThing thing="actor" initialObject={{ actorableId: this.state.episode.id, actorableType: 'Episode', firstName: "", lastName: "" }} />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this episode&#63;</h1>
-            Deleting a episode will erase ALL of its information and data<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="episode" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );

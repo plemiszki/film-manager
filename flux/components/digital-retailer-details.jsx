@@ -4,7 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import DigitalRetailerStore from '../stores/digital-retailers-store.js'
 import ErrorsStore from '../stores/errors-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class DigitalRetailerDetails extends React.Component {
@@ -114,17 +114,8 @@ class DigitalRetailerDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this digital retailer&#63;</h1>
-            Deleting a digital retailer will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="digitalRetailer" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );

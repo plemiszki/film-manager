@@ -24,7 +24,7 @@ import DigitalRetailersStore from '../stores/digital-retailers-store.js'
 import JobStore from '../stores/job-store.js'
 import FilmRightsStore from '../stores/film-rights-store.js'
 import FilmRightsStore2 from '../stores/film-rights-store-2.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, Details, Index, ConfirmDelete } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const LicensorModalStyles = {
@@ -895,17 +895,8 @@ class FilmDetails extends React.Component {
           { this.renderTab(this.state.tab) }
           { this.renderButtons() }
         </div>
-        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={FM.deleteModalStyles}>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this film&#63;</h1>
-            Deleting a film will erase ALL of its information and data<br />
-          <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="film" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={this.state.licensorModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ LicensorModalStyles }>
           <ul className="licensor-modal-list">
@@ -1042,7 +1033,7 @@ class FilmDetails extends React.Component {
       return(
         <div>
           <hr />
-          <table className={ "admin-table" }>
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th>Season</th>
@@ -1077,7 +1068,7 @@ class FilmDetails extends React.Component {
       return(
         <div>
           <hr />
-          <table className={ "admin-table" }>
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th>Type</th>
@@ -1104,7 +1095,7 @@ class FilmDetails extends React.Component {
       return(
         <div>
           <hr />
-          <table className="admin-table">
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th>Feature Title</th>
@@ -1137,7 +1128,7 @@ class FilmDetails extends React.Component {
           <h3>Sublicensed Rights:</h3>
           <div className="row">
             <div className="col-xs-12">
-              <table className="admin-table no-hover">
+              <table className="fm-admin-table no-hover">
                 <thead>
                   <tr>
                     <th><div className={ this.state.subRightsSortBy === 'sublicensor' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'sublicensorName') }>Sublicensor</div></th>
@@ -1224,8 +1215,8 @@ class FilmDetails extends React.Component {
             <li>Festival: { this.state.film.festivalCount }</li>
             <li>Non-Theatrical: { this.state.film.nonTheatricalCount }</li>
           </ul>
-          <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
-          <table className="admin-table bookings-table">
+          <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+          <table className="fm-admin-table bookings-table">
             <thead>
               <tr>
                 <th><div className={ FM.sortClass.call(this, "startDate") } onClick={ FM.clickHeader.bind(this, "startDate") }>Start Date</div></th>
@@ -1285,7 +1276,7 @@ class FilmDetails extends React.Component {
             </div>
           </div>
           <hr />
-          <table className="admin-table">
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th>Year</th>
@@ -1539,7 +1530,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-12">
               <h3>Digital Retailers:</h3>
-              <table className="admin-table digital-retailers-table">
+              <table className="fm-admin-table digital-retailers-table">
                 <thead>
                   <tr>
                     <th>Name</th>
@@ -1734,7 +1725,7 @@ class FilmDetails extends React.Component {
         <h3>Licensed Rights:</h3>
         <div className="row">
           <div className="col-xs-12">
-            <table className="admin-table">
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'name') }>Right</div></th>

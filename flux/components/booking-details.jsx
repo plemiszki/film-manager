@@ -11,7 +11,7 @@ import InvoicesStore from '../stores/invoices-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
 import NewThing from './new-thing.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const WeeklyTermStyles = {
@@ -703,7 +703,7 @@ class BookingDetails extends React.Component {
             { this.renderImportedInvoicesSection() }
             <div className="row">
               <div className="col-xs-12">
-                <table className={ "admin-table invoices-table" }>
+                <table className="fm-admin-table invoices-table">
                   <thead>
                     <tr>
                       <th>Sent</th>
@@ -759,17 +759,8 @@ class BookingDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to permanently delete this booking&#63;</h1>
-            Deleting a booking will erase ALL of its information and data<br />
-            <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className={ "orange-button" } onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="booking" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="booking" copyFrom={ this.state.booking.id } initialObject={ { copyFrom: this.state.booking.id } } />

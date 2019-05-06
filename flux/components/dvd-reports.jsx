@@ -5,7 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
 import DvdCustomersStore from '../stores/dvd-customers-store.js'
 import JobStore from '../stores/job-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const exportModalStyles = {
@@ -159,7 +159,7 @@ class DvdReports extends React.Component {
             { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
-                <table className="admin-table no-hover no-highlight">
+                <table className="fm-admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th className="name-column"></th>
@@ -183,7 +183,7 @@ class DvdReports extends React.Component {
                 </table>
               </div>
               <div className="col-xs-9">
-                <table className="month admin-table no-hover no-highlight">
+                <table className="month fm-admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th>TOTAL</th>
@@ -242,7 +242,7 @@ class DvdReports extends React.Component {
             { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
-                <table className="admin-table no-hover no-highlight">
+                <table className="fm-admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th className="name-column"></th>
@@ -263,7 +263,7 @@ class DvdReports extends React.Component {
                 </table>
               </div>
               <div className="col-xs-9">
-                <table className="title admin-table no-hover no-highlight">
+                <table className="title fm-admin-table no-hover no-highlight">
                   <thead>
                     <tr>
                       <th className="date">Date</th>

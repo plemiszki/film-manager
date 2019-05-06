@@ -4,7 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import DvdCustomersStore from '../stores/dvd-customers-store.js'
 import ErrorsStore from '../stores/errors-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class DvdCustomerDetails extends React.Component {
@@ -24,7 +24,7 @@ class DvdCustomerDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.dvdCustomerListener = DvdCustomersStore.addListener(this.getDvdCustomers.bind(this));
+    this.dvdCustomerListener = DvdCustomersStore.addListener(this.getDvdCustomer.bind(this));
     this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
     ClientActions.fetchDvdCustomer(window.location.pathname.split("/")[2]);
   }
@@ -34,10 +34,10 @@ class DvdCustomerDetails extends React.Component {
     this.errorsListener.remove();
   }
 
-  getDvdCustomers() {
+  getDvdCustomer() {
     this.setState({
-      dvdCustomer: Tools.deepCopy(DvdCustomersStore.find(window.location.pathname.split("/")[2])),
-      dvdCustomerSaved: DvdCustomersStore.find(window.location.pathname.split("/")[2]),
+      dvdCustomer: Tools.deepCopy(DvdCustomersStore.dvdCustomer()),
+      dvdCustomerSaved: DvdCustomersStore.dvdCustomer(),
       fetching: false
     }, () => {
       this.setState({
@@ -199,17 +199,8 @@ class DvdCustomerDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-          <div className="confirm-delete">
-            <h1>Are you sure you want to delete this DVD customer&#63;</h1>
-            Deleting a DVD customer will erase ALL of its information and data<br />
-            <a className="red-button" onClick={ this.confirmDelete.bind(this) }>
-              Yes
-            </a>
-            <a className="orange-button" onClick={ this.closeModal.bind(this) }>
-              No
-            </a>
-          </div>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="dvdCustomer" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
       </div>
     );

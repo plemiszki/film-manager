@@ -8,7 +8,7 @@ import UpcomingBookingsStore from '../stores/upcoming-bookings-store.js'
 import NewThing from './new-thing.jsx'
 import JobStore from '../stores/job-store.js'
 import AdvancedSearch from './advanced-search.jsx'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ModalStyles = {
@@ -165,12 +165,12 @@ class BookingsIndex extends React.Component {
         { this.renderAddButton() }
         { this.renderExportButton() }
         { this.renderAdvancedSearchButton() }
-        <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? '' : ' no-margin') } onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <input className={ "search-box" + ((this.props.advanced || this.props.timeframe == 'upcoming') ? ' margin' : '') } onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="horizontal-scroll">
-            <table className={"admin-table"}>
+            <table className="fm-admin-table">
               <thead>
                 <tr>
                   <th className="small-column"><div className={ FM.sortClass.call(this, "startDate") } onClick={ FM.clickHeader.bind(this, "startDate") }>Start Date</div></th>

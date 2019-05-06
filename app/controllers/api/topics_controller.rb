@@ -6,8 +6,8 @@ class Api::TopicsController < AdminController
   end
 
   def show
-    @topics = Topic.where(id: params[:id])
-    render "index.json.jbuilder"
+    @topic = Topic.find(params[:id])
+    render "show.json.jbuilder"
   end
 
   def create
@@ -23,8 +23,7 @@ class Api::TopicsController < AdminController
   def update
     @topic = Topic.find(params[:id])
     if @topic.update(topic_params)
-      @topics = Topic.all
-      render "index.json.jbuilder"
+      render "show.json.jbuilder"
     else
       render json: @topic.errors.full_messages, status: 422
     end

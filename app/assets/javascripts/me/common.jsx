@@ -465,6 +465,7 @@ var FM = {
     var key = event.target.dataset.field;
     var thing = event.target.dataset.thing || changeFieldArgs.thing;
     var newThing = this.state[thing];
+    var thingToUpdate;
 
     var thingId = event.target.dataset.thingid;
     if (thingId) {
@@ -656,23 +657,6 @@ var FM = {
     }
     return(
       <div className="noDropdownFieldError"></div>
-    );
-  },
-
-  renderDeleteModal: function() {
-    return(
-      <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ FM.deleteModalStyles }>
-        <div className="confirm-delete">
-          <h1>Are you sure you want to delete this&#63;</h1>
-          Deleting a record will erase ALL of its information and data<br />
-        <a className={ "red-button" } onClick={ this.confirmDelete.bind(this) }>
-            Yes
-          </a>
-          <a className={ "orange-button" } onClick={ this.handleModalClose.bind(this) }>
-            No
-          </a>
-        </div>
-      </Modal>
     );
   },
 

@@ -4,7 +4,7 @@ import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import UsersStore from '../stores/users-store.js'
 import ErrorsStore from '../stores/errors-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class UserDetails extends React.Component {
@@ -128,7 +128,9 @@ class UserDetails extends React.Component {
             { this.renderButtons() }
           </div>
         </div>
-        { FM.renderDeleteModal.call(this) }
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="user" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        </Modal>
       </div>
     );
   }

@@ -5,7 +5,7 @@ import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
 import InvoicesStore from '../stores/invoices-store.js'
 import JobStore from '../stores/job-store.js'
-import { Common, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const filterModalStyles = {
@@ -183,11 +183,11 @@ class InvoicesIndex extends React.Component {
         <h1>Invoices</h1>
         <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>Export</a>
         <a className={ "orange-button float-button" + this.filterExists() + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal.bind(this) }>Filter</a>
-        <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+        <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          <table className={ "admin-table" }>
+          <table className="fm-admin-table">
             <thead>
               <tr>
                 <th><div className={ FM.sortClass.call(this, "sentDate") } onClick={ FM.clickHeader.bind(this, "sentDate") }>Sent Date</div></th>
