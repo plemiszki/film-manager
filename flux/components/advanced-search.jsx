@@ -162,12 +162,12 @@ class AdvancedSearch extends React.Component {
             <div className="col-xs-4">
               <input id="film-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox.bind(this) } checked={ this.state.searchByFilm } data-thing={ "Film" } /><label className={ "checkbox" } htmlFor="film-checkbox">Search by Film</label><br />
               <div className={ this.state.searchByFilm ? '' : 'hidden' }>
-                <input className="select" value={ BookingsStore.findFilm(this.state.filmId).title } data-field="filmId" readOnly="true" />
+                <input className="select" value={ BookingsStore.findFilm(this.state.filmId).title } data-field="filmId" readOnly={ true } />
                 <img src={ Images.openModal } onClick={ this.openFilmsModal.bind(this) } />
               </div>
               <input id="venue-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox.bind(this) } checked={ this.state.searchByVenue } data-thing={ "Venue" } /><label className={ "checkbox" } htmlFor="venue-checkbox">Search by Venue</label><br />
               <div className={ this.state.searchByVenue ? '' : 'hidden' }>
-                <input className="select" value={ BookingsStore.findVenue(this.state.venueId).label } data-field="venueId" readOnly="true" />
+                <input className="select" value={ BookingsStore.findVenue(this.state.venueId).label } data-field="venueId" readOnly={ true } />
                 <img src={ Images.openModal } onClick={ this.openVenuesModal.bind(this) } />
               </div>
               <input id="city-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox.bind(this) } checked={ this.state.searchByCity } data-thing={ "City" } /><label className={ "checkbox" } htmlFor="city-checkbox">Search by City</label><br />
