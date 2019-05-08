@@ -1,5 +1,15 @@
 .booking-details {
 
+  a.jump-link {
+    margin-top: 10px;
+    margin-left: 6px;
+    display: inline-block;
+    font-size: 10px;
+    cursor: pointer;
+    color: #95949B;
+    text-decoration: underline;
+  }
+
   table {
     margin-bottom: 20px;
   }
