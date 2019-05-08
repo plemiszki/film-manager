@@ -97,11 +97,13 @@ class InvoicesIndex extends React.Component {
   openFilterModal() {
     this.setState({
       filterModalOpen: true
-    }, function() {
-      $('.filter-modal select').val(this.state.filterType);
-      FM.resetNiceSelect('select');
-      $('.filter-modal input.starting-number').val(this.state.filterNumber);
-      $('.filter-modal input.end-number').val(this.state.filterEndNumber);
+    }, () => {
+      window.setTimeout(() => {
+        $('.filter-modal select').val(this.state.filterType);
+        $('.filter-modal select').niceSelect();
+        $('.filter-modal input.starting-number').val(this.state.filterNumber);
+        $('.filter-modal input.end-number').val(this.state.filterEndNumber);
+      }, 10);
     });
   }
 

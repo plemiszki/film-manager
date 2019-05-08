@@ -19,7 +19,7 @@
   }
 
   .nice-select, input {
-    width: 100%;
+    @extend .admin-input;
     margin-bottom: 50px;
   }
 

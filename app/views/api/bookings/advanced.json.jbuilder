@@ -12,6 +12,10 @@ json.bookings @bookings do |booking|
   json.boxOfficeReceived booking.box_office_received ? 'Yes' : 'No'
   json.materialsSent booking.materials_sent ? 'Yes' : 'No'
   json.bookingType booking.booking_type
+  json.totalGross dollarify(number_with_precision(@calculations[booking.id][:total_gross], precision: 2, delimiter: ','))
+  json.ourShare dollarify(number_with_precision(@calculations[booking.id][:our_share], precision: 2, delimiter: ','))
+  json.received dollarify(number_with_precision(@calculations[booking.id][:received], precision: 2, delimiter: ','))
+  json.owed dollarify(number_with_precision(@calculations[booking.id][:owed], precision: 2, delimiter: ','))
 end
 json.films @films do |film|
   json.id film.id

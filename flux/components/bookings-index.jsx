@@ -185,6 +185,10 @@ class BookingsIndex extends React.Component {
                   <th className="small-column"><div className={ FM.sortClass.call(this, "format") } onClick={ FM.clickHeader.bind(this, "format") }>Format</div></th>
                   <th className="small-column"><div className={ FM.sortClass.call(this, "materialsSent") } onClick={ FM.clickHeader.bind(this, "materialsSent") }>Materials Sent</div></th>
                   <th className="small-column"><div className={ FM.sortClass.call(this, "boxOfficeReceived") } onClick={ FM.clickHeader.bind(this, "boxOfficeReceived") }>BO Received</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "totalGross") } onClick={ FM.clickHeader.bind(this, "totalGross") }>Total Gross</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "ourShare") } onClick={ FM.clickHeader.bind(this, "ourShare") }>Our Share</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "received") } onClick={ FM.clickHeader.bind(this, "received") }>Received</div></th>
+                  <th className="small-column"><div className={ FM.sortClass.call(this, "owed") } onClick={ FM.clickHeader.bind(this, "owed") }>Owed</div></th>
                 </tr>
               </thead>
               <tbody>
@@ -227,6 +231,18 @@ class BookingsIndex extends React.Component {
                       </td>
                       <td>
                         { booking.boxOfficeReceived }
+                      </td>
+                      <td>
+                        { booking.totalGross }
+                      </td>
+                      <td>
+                        { booking.ourShare }
+                      </td>
+                      <td>
+                        { booking.received }
+                      </td>
+                      <td>
+                        { booking.owed }
                       </td>
                     </tr>
                   );
@@ -285,7 +301,7 @@ class BookingsIndex extends React.Component {
     if (!this.props.advanced && this.state.bookings.length === 25) {
       return(
         <div className="text-center">
-          <a className={ "orange-button see-all" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll }>See All</a>
+          <a className={ "orange-button see-all" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickSeeAll.bind(this) }>See All</a>
         </div>
       )
     }

@@ -8,6 +8,10 @@ class Api::BookingsController < AdminController
     else
       @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue, :format).order('start_date DESC').limit(25)
     end
+    @calculations = {}
+    @bookings.each do |booking|
+      @calculations[booking.id] = booking_calculations(booking)
+    end
     @films = Film.where(film_type: 'Feature')
     @venues = Venue.all
     @users = User.all
@@ -20,6 +24,10 @@ class Api::BookingsController < AdminController
       @bookings = Booking.where("start_date >= ?", Date.today).includes(:film, :venue)
     else
       @bookings = Booking.where("start_date >= ?", Date.today).includes(:film, :venue).order('start_date ASC').limit(25)
+    end
+    @calculations = {}
+    @bookings.each do |booking|
+      @calculations[booking.id] = booking_calculations(booking)
     end
     render 'upcoming.json.jbuilder'
   end
@@ -83,6 +91,10 @@ class Api::BookingsController < AdminController
         ids = Booking.joins(:weekly_box_offices).group('bookings.id')
         @bookings.delete(ids)
       end
+    end
+    @calculations = {}
+    @bookings.each do |booking|
+      @calculations[booking.id] = booking_calculations(booking)
     end
     @films = Film.where(film_type: 'Feature')
     @venues = Venue.all
