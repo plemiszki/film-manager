@@ -1222,6 +1222,7 @@ class FilmDetails extends React.Component {
                 <th><div className={ FM.sortClass.call(this, "startDate") } onClick={ FM.clickHeader.bind(this, "startDate") }>Start Date</div></th>
                 <th><div className={ FM.sortClass.call(this, "venue") } onClick={ FM.clickHeader.bind(this, "venue") }>Venue</div></th>
                 <th><div className={ FM.sortClass.call(this, "type") } onClick={ FM.clickHeader.bind(this, "type") }>Type</div></th>
+                <th><div className={ FM.sortClass.call(this, "owed") } onClick={ FM.clickHeader.bind(this, "owed") }>Owed</div></th>
               </tr>
             </thead>
             <tbody>
@@ -1237,6 +1238,9 @@ class FilmDetails extends React.Component {
                     </td>
                     <td>
                       { booking.type }
+                    </td>
+                    <td>
+                      { booking.valid ? booking.owed : 'Invalid' }
                     </td>
                   </tr>
                 );

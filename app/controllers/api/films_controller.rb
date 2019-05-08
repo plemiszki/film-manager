@@ -1,5 +1,7 @@
 class Api::FilmsController < AdminController
 
+  include BookingCalculations
+
   def index
     @films = Film.where(film_type: (params[:film_type]))
     render 'index.json.jbuilder'
@@ -295,6 +297,10 @@ class Api::FilmsController < AdminController
     @film_formats = FilmFormat.where(film_id: params[:id]).includes(:format)
     @formats = Format.where.not(id: @film_formats.map { |ff| ff.format_id })
     @bookings = Booking.where(film_id: film.id).includes(:venue)
+    @calculations = {}
+    @bookings.each do |booking|
+      @calculations[booking.id] = booking_calculations(booking)
+    end
     @templates = DealTemplate.all
     @licensors = Licensor.all
     @revenue_streams = RevenueStream.all
