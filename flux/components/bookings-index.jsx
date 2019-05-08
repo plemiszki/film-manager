@@ -233,16 +233,16 @@ class BookingsIndex extends React.Component {
                         { booking.boxOfficeReceived }
                       </td>
                       <td>
-                        { booking.totalGross }
+                        { booking.valid ? booking.totalGross : 'Invalid' }
                       </td>
                       <td>
-                        { booking.ourShare }
+                        { booking.valid ? booking.ourShare : 'Invalid' }
                       </td>
                       <td>
-                        { booking.received }
+                        { booking.valid ? booking.received : 'Invalid' }
                       </td>
                       <td>
-                        { booking.owed }
+                        { booking.valid ? booking.owed : 'Invalid' }
                       </td>
                     </tr>
                   );

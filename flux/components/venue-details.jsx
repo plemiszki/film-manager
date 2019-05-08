@@ -337,6 +337,10 @@ class VenueDetails extends React.Component {
                     <tr>
                       <th>Start Date</th>
                       <th>Film</th>
+                      <th>Total Gross</th>
+                      <th>Our Share</th>
+                      <th>Received</th>
+                      <th>Owed</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -349,6 +353,18 @@ class VenueDetails extends React.Component {
                           </td>
                           <td>
                             { booking.film }
+                          </td>
+                          <td>
+                            { booking.valid ? booking.totalGross : 'Invalid' }
+                          </td>
+                          <td>
+                            { booking.valid ? booking.ourShare : 'Invalid' }
+                          </td>
+                          <td>
+                            { booking.valid ? booking.received : 'Invalid' }
+                          </td>
+                          <td>
+                            { booking.valid ? booking.owed : 'Invalid' }
                           </td>
                         </tr>
                       );
