@@ -989,8 +989,8 @@ class FilmDetails extends React.Component {
 
   renderTopTab(label) {
     if (this.state.film.id) {
-      if (['General', 'Contract', 'Synopses', 'DVDs'].indexOf(label) > -1 ||
-          (['Marketing', 'Bookings', 'Statements', 'Sublicensing'].indexOf(label) > -1 && (this.state.film.filmType == 'Feature' || this.state.film.filmType == 'TV Series')) ||
+      if (['General', 'Contract', 'Synopses', 'DVDs', 'Bookings'].indexOf(label) > -1 ||
+          (['Marketing', 'Statements', 'Sublicensing'].indexOf(label) > -1 && (this.state.film.filmType == 'Feature' || this.state.film.filmType == 'TV Series')) ||
           (label == 'Episodes' && this.state.film.filmType == 'TV Series'))
       {
         return(

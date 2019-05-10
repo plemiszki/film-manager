@@ -12,7 +12,7 @@ class Api::BookingsController < AdminController
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
     end
-    @films = Film.where(film_type: 'Feature')
+    @films = Film.all
     @venues = Venue.all
     @users = User.all
     @formats = Format.all
@@ -96,7 +96,7 @@ class Api::BookingsController < AdminController
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
     end
-    @films = Film.where(film_type: 'Feature')
+    @films = Film.all
     @venues = Venue.all
     @users = User.all
     @formats = Format.all
@@ -109,7 +109,7 @@ class Api::BookingsController < AdminController
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
     @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])
     @payments = Payment.where(booking_id: params[:id])
-    @films = Film.where(film_type: 'Feature')
+    @films = Film.all
     @venues = Venue.all
     @users = User.all
     @formats = Format.all
@@ -199,7 +199,7 @@ class Api::BookingsController < AdminController
     if @booking.update(booking_params)
       @bookings = Booking.where(id: params[:id]).includes(:invoices)
       @invoices = @bookings.first.invoices
-      @films = Film.where(film_type: 'Feature')
+      @films = Film.all
       @venues = Venue.all
       @users = User.all
       @formats = Format.all
