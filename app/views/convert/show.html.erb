@@ -1,0 +1,9 @@
+<%= form_for User.first do |f| %>
+  Digital Sales Spreadsheet:
+  <%= f.file_field :spreadsheet %>
+  <input type="submit" />
+<% end %>
+<% if flash[:job_id] %>
+  <div id="job-id" class="hidden"><%= flash[:job_id] %></div>
+<% end %>
+<div id="catalog">replace me</div>

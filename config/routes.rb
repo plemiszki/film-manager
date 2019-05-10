@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   resources :digital_retailer_films, only: [:show]
   get '/in_theaters' => 'in_theaters_films#index'
   get '/calendar' => 'calendar#show'
+  get '/convert' => 'convert#show'
   resources :sub_rights, only: [:show]
   resources :episodes, only: [:show]
   resources :merchandise_types, only: [:show]
