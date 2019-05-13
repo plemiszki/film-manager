@@ -20,3 +20,17 @@ export function createEntity(args, arrayName) {
     );
   }
 }
+
+export function fetchDataForNew(args) {
+  return (dispatch) => {
+    return $.ajax({
+      method: 'GET',
+      url: `/api/${args.directory}/new`
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'NEW_ENTITY_DATA' });
+        dispatch(obj);
+      }
+    );
+  }
+}

@@ -166,6 +166,44 @@ $(document).ready(function() {
     ReactDOM.render(<MerchandiseItemDetails />, document.getElementById("merchandise-item-details"));
   }
 
+  if (document.querySelector('#aliases-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='alias'
+          entityNamePlural='aliases'
+          columns={ ['text', 'film'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 1000 } }
+        >
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['films'] }
+            initialEntity={ { text: '', filmId: '' } }
+          />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#aliases-index')
+    );
+  }
+  if (document.querySelector('#alias-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='alias'
+          fetchData={ ['films'] }
+          initialEntity={ { text: '', filmId: '' } }
+          fields={ [[
+            { columnWidth: 6, entity: 'alias', property: 'text' },
+            { columnWidth: 6, entity: 'alias', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' }
+          ]] }
+        />
+      </Provider>,
+      document.querySelector('#alias-details')
+    );
+  }
   if (document.querySelector('#bookers-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>

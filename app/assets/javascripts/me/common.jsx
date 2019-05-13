@@ -348,7 +348,8 @@ var FM = {
       "Length is not a number"
     ],
     text: [
-      "Text can't be blank"
+      "Text can't be blank",
+      "Text has already been taken"
     ],
     festival: [
       "Festival can't be blank"
