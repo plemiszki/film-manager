@@ -117,7 +117,7 @@ class FilmRightDetails extends React.Component {
                     );
                   }) }
                 </select>
-                { FM.renderDropdownFieldError(this.state.errors, FM.errors.rightId) }
+                { Details.renderDropdownFieldError(this.state.errors, FM.errors.rightId) }
               </div>
               <div className="col-xs-3 select-scroll">
                 <h2>Territory</h2>
@@ -128,7 +128,7 @@ class FilmRightDetails extends React.Component {
                     );
                   }) }
                 </select>
-                { FM.renderDropdownFieldError(this.state.errors, FM.errors.territoryId) }
+                { Details.renderDropdownFieldError(this.state.errors, FM.errors.territoryId) }
               </div>
               <div className="col-xs-2">
                 <h2>Start Date</h2>
