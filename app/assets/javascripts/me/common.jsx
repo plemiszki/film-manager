@@ -113,7 +113,8 @@ var FM = {
       border: 'solid 1px #5F5F5F',
       borderRadius: '6px',
       textAlign: 'center',
-      color: '#5F5F5F'
+      color: '#5F5F5F',
+      padding: 20
     }
   },
 

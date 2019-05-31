@@ -25,6 +25,7 @@ class ConvertDigitalSales extends React.Component {
     }
     this.state = {
       jobModalOpen: !!job.id,
+      errorsModalOpen: false,
       job: job,
       errors: [],
       films: [],
@@ -62,15 +63,18 @@ class ConvertDigitalSales extends React.Component {
     if (job.done) {
       this.setState({
         jobModalOpen: false,
-        job: job
+        job: job,
+        errorsModalOpen: job.errors_text == "Unable to import spreadsheet"
       }, () => {
         if (job.errors_text) {
-          this.setState({
-            errors: JSON.parse(job.errors_text),
-            fetching: true
-          }, () => {
-            ClientActions.fetchFilms('all');
-          });
+          if (!this.state.errorsModalOpen) {
+            this.setState({
+              errors: JSON.parse(job.errors_text),
+              fetching: true
+            }, () => {
+              ClientActions.fetchFilms('all');
+            });
+          }
         } else {
           window.location.href = job.first_line;
         }
@@ -83,6 +87,12 @@ class ConvertDigitalSales extends React.Component {
     }
   }
 
+  modalCloseAndRefresh() {
+    this.setState({
+      errorsModalOpen: false
+    });
+  }
+
   getFilms() {
     this.setState({
       fetching: false,
@@ -92,7 +102,7 @@ class ConvertDigitalSales extends React.Component {
 
   addAlias(e) {
     this.setState({
-      currentTitle: e.target.parentElement.parentElement.children[0].innerHTML,
+      currentTitle: e.target.parentElement.parentElement.children[0].innerText,
       filmsModalOpen: true
     });
   }
@@ -127,7 +137,14 @@ class ConvertDigitalSales extends React.Component {
   }
 
   render() {
-    if (this.state.errors.length === 0) {
+    console.log(this.state);
+    if (this.state.job.errors_text == "Unable to import spreadsheet") {
+      return(
+        <div>
+          { FM.jobErrorsModal.call(this) }
+        </div>
+      );
+    } else if (this.state.errors.length === 0) {
       return(
         <div>
           { FM.jobModal.call(this, this.state.job) }
