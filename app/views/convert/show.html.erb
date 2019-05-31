@@ -1,0 +1,14 @@
+<div id="convert-digital-sales"></div>
+<% if flash[:job_id] %>
+  <div id="job-id" class="hidden"><%= flash[:job_id] %></div>
+<% end %>
+<%= form_for User.first do |f| %>
+  <div class="text-center" style="background-color: #F7F8E0;padding: 10px;border: solid 1px gray;">
+    <p style="margin-bottom: 10px;font-family:'TeachableSans-Bold'">Please upload a spreadsheet with columns in the following order:</p>
+    <p style="margin-bottom: 10px;font-family:'TeachableSans-SemiBold'">Film Title | GL Code | Amount<p>
+    <p>(The first row will not be imported)</p>
+  </div>
+  <strong>
+  <%= f.file_field :spreadsheet %>
+  <input type="submit" />
+<% end %>

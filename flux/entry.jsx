@@ -3,46 +3,47 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import ReactModal from 'react-modal'
 import { StandardIndex, SimpleDetails } from 'handy-components'
-import NewEntity from './components/new-entity.jsx'
+import FM from '../app/assets/javascripts/me/common.jsx'
 
 import configureStore from './store/store';
 let store = configureStore();
 
-import CurrentUserDropDown from './components/current-user-dropdown.jsx'
-import LicensorDetails from './components/licensor-details.jsx'
-import FilmsIndex from './components/films-index.jsx'
-import FilmDetails from './components/film-details.jsx'
-import RoyaltyReportDetails from './components/royalty-report-details.jsx'
-import RoyaltyReportsIndex from './components/reports-index.jsx'
-import GiftBoxDetails from './components/giftbox-details.jsx'
-import DvdCustomerDetails from './components/dvd-customer-details.jsx'
-import DvdDetails from './components/dvd-details.jsx'
-import PurchaseOrdersIndex from './components/purchase-orders-index.jsx'
-import PurchaseOrderDetails from './components/purchase-order-details.jsx'
-import ShippingAddressDetails from './components/shipping-address-details.jsx'
-import InvoicesIndex from './components/invoices-index.jsx'
-import InvoiceDetails from './components/invoice-details.jsx'
-import DvdReports from './components/dvd-reports.jsx'
-import ReturnsIndex from './components/returns-index.jsx'
-import ReturnDetails from './components/return-details.jsx'
-import VenueDetails from './components/venue-details.jsx'
-import BookingsIndex from './components/bookings-index.jsx'
-import BookingDetails from './components/booking-details.jsx'
-import SettingDetails from './components/setting-details.jsx'
-import QuoteDetails from './components/quote-details.jsx'
 import BookerDetails from './components/booker-details.jsx'
-import InTheatersIndex from './components/in-theaters.jsx'
-import FilmRightDetails from './components/film-right-details.jsx'
-import SubRightDetails from './components/sub-right-details.jsx'
-import SublicensorDetails from './components/sublicensor-details.jsx'
-import DigitalRetailerFilmDetails from './components/digital-retailer-film-details.jsx'
+import BookingDetails from './components/booking-details.jsx'
+import BookingsIndex from './components/bookings-index.jsx'
 import Calendar from './components/calendar.jsx'
 import Catalog from './components/catalog.jsx'
+import ConvertDigitalSales from './components/convert-digital-sales.jsx'
+import CurrentUserDropDown from './components/current-user-dropdown.jsx'
+import DigitalRetailerFilmDetails from './components/digital-retailer-film-details.jsx'
+import DvdCustomerDetails from './components/dvd-customer-details.jsx'
+import DvdDetails from './components/dvd-details.jsx'
+import DvdReports from './components/dvd-reports.jsx'
 import EpisodeDetails from './components/episode-details.jsx'
-import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
+import FilmDetails from './components/film-details.jsx'
+import FilmRightDetails from './components/film-right-details.jsx'
+import FilmsIndex from './components/films-index.jsx'
+import GiftBoxDetails from './components/giftbox-details.jsx'
+import InTheatersIndex from './components/in-theaters.jsx'
+import InvoiceDetails from './components/invoice-details.jsx'
+import InvoicesIndex from './components/invoices-index.jsx'
+import LicensorDetails from './components/licensor-details.jsx'
 import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
+import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
+import NewEntity from './components/new-entity.jsx'
 import NewThing from './components/new-thing.jsx'
-import FM from '../app/assets/javascripts/me/common.jsx'
+import PurchaseOrderDetails from './components/purchase-order-details.jsx'
+import PurchaseOrdersIndex from './components/purchase-orders-index.jsx'
+import QuoteDetails from './components/quote-details.jsx'
+import ReturnDetails from './components/return-details.jsx'
+import ReturnsIndex from './components/returns-index.jsx'
+import RoyaltyReportDetails from './components/royalty-report-details.jsx'
+import RoyaltyReportsIndex from './components/reports-index.jsx'
+import SettingDetails from './components/setting-details.jsx'
+import ShippingAddressDetails from './components/shipping-address-details.jsx'
+import SublicensorDetails from './components/sublicensor-details.jsx'
+import SubRightDetails from './components/sub-right-details.jsx'
+import VenueDetails from './components/venue-details.jsx'
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -159,6 +160,14 @@ $(document).ready(function() {
   if ($('#catalog')[0]) {
     ReactDOM.render(<Catalog />, document.getElementById("catalog"));
   }
+  if ($('#convert-digital-sales')[0]) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <ConvertDigitalSales context={ MyContext } />
+      </Provider>,
+      document.getElementById("convert-digital-sales")
+    );
+  }
   if ($('#episode-details')[0]) {
     ReactDOM.render(<EpisodeDetails />, document.getElementById("episode-details"));
   }
@@ -166,6 +175,44 @@ $(document).ready(function() {
     ReactDOM.render(<MerchandiseItemDetails />, document.getElementById("merchandise-item-details"));
   }
 
+  if (document.querySelector('#aliases-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='alias'
+          entityNamePlural='aliases'
+          columns={ ['text', 'film'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 1000 } }
+        >
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['films'] }
+            initialEntity={ { text: '', filmId: '' } }
+          />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#aliases-index')
+    );
+  }
+  if (document.querySelector('#alias-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          context={ MyContext }
+          entityName='alias'
+          fetchData={ ['films'] }
+          initialEntity={ { text: '', filmId: '' } }
+          fields={ [[
+            { columnWidth: 6, entity: 'alias', property: 'text' },
+            { columnWidth: 6, entity: 'alias', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' }
+          ]] }
+        />
+      </Provider>,
+      document.querySelector('#alias-details')
+    );
+  }
   if (document.querySelector('#bookers-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>

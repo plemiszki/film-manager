@@ -3,6 +3,9 @@ export default function(state = {}, action) {
   case 'FETCH_ENTITIES':
     delete action["type"]
     return Object.assign({}, state, action);
+  case 'NEW_ENTITY_DATA':
+    delete action["type"]
+    return Object.assign({}, state, action);
   case 'CREATE_ENTITY':
     delete action["type"]
     return Object.assign({}, state, action);

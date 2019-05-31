@@ -21,8 +21,8 @@ Rails.application.routes.draw do
   resources :invoices, only: [:index, :show]
   resources :returns, only: [:index, :show]
   resource :setting, path: "settings"
-  get '/import' => 'films#import_data'
   get '/catalog' => 'films#catalog'
+  patch '/users/1' => 'api/convert#import'
   patch '/users/2' => 'api/royalty_reports#import'
   patch '/users/4' => 'api/dvds#update_stock'
   patch '/users/6' => 'api/films#catalog'
@@ -38,10 +38,12 @@ Rails.application.routes.draw do
   resources :digital_retailer_films, only: [:show]
   get '/in_theaters' => 'in_theaters_films#index'
   get '/calendar' => 'calendar#show'
+  get '/convert' => 'convert#show'
   resources :sub_rights, only: [:show]
   resources :episodes, only: [:show]
   resources :merchandise_types, only: [:show]
   resources :merchandise_items, only: [:index, :show]
+  resources :aliases, only: [:index, :show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -102,6 +104,7 @@ Rails.application.routes.draw do
     resources :genres, only: [:index, :create, :show, :update, :destroy]
     resources :topics, only: [:index, :create, :show, :update, :destroy]
     resources :episodes, only: [:create, :show, :update, :destroy]
+    resources :aliases, only: [:index, :new, :create, :show, :update, :destroy]
 
     patch '/film_countries/rearrange' => '/api/film_countries#rearrange'
     resources :film_countries, only: [:index, :create, :destroy]

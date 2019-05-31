@@ -1,24 +1,47 @@
-import React, { Component } from 'react'
+import React from 'react'
+import Modal from 'react-modal'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ChangeCase from 'change-case'
 import { Common, Details } from 'handy-components'
 import HandyTools from 'handy-tools'
-import { createEntity } from '../actions/index'
+import { createEntity, fetchDataForNew } from '../actions/index'
+import FM from '../../app/assets/javascripts/me/common.jsx'
+
+let entityNamePlural;
+let directory;
 
 class NewEntity extends React.Component {
   constructor(props) {
     super(props);
 
+    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
+    directory = ChangeCase.snakeCase(entityNamePlural);
+
     this.state = {
-      fetching: false,
+      fetching: !!this.props.fetchData,
       [this.props.entityName]: HandyTools.deepCopy(this.props.initialEntity),
-      errors: []
+      errors: [],
+      films: []
     };
   }
 
   componentDidMount() {
-    HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+    if (this.props.fetchData) {
+      this.props.fetchDataForNew({ directory }).then(() => {
+        let entity = HandyTools.deepCopy(this.state[this.props.entityName]);
+        let obj = { fetching: false };
+        this.props.fetchData.forEach((arrayName) => {
+          obj[arrayName] = this.props[arrayName];
+        })
+        obj[this.props.entityName] = entity;
+        this.setState(obj, () => {
+          HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        });
+      });
+    } else {
+      HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+    }
   }
 
   clickAdd(e) {
@@ -62,6 +85,13 @@ class NewEntity extends React.Component {
 
   renderFields() {
     switch (this.props.entityName) {
+      case 'alias':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'alias', property: 'text' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'alias', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' }) }
+          </div>
+        ]);
       case 'booker':
         return([
           <div key="1" className="row">
@@ -201,7 +231,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ createEntity }, dispatch);
+  return bindActionCreators({ createEntity, fetchDataForNew }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewEntity);
