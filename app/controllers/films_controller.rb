@@ -13,10 +13,6 @@ class FilmsController < AdminController
     render 'advanced.html.erb'
   end
 
-  def import_data
-    render 'import.html.erb'
-  end
-
   def catalog
     render 'catalog.html.erb'
   end

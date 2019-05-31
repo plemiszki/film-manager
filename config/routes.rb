@@ -21,8 +21,8 @@ Rails.application.routes.draw do
   resources :invoices, only: [:index, :show]
   resources :returns, only: [:index, :show]
   resource :setting, path: "settings"
-  get '/import' => 'films#import_data'
   get '/catalog' => 'films#catalog'
+  patch '/users/1' => 'api/convert#import'
   patch '/users/2' => 'api/royalty_reports#import'
   patch '/users/4' => 'api/dvds#update_stock'
   patch '/users/6' => 'api/films#catalog'

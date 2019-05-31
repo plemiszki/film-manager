@@ -3,7 +3,11 @@ class Api::FilmsController < AdminController
   include BookingCalculations
 
   def index
-    @films = Film.where(film_type: (params[:film_type]))
+    if params[:film_type] == 'all'
+      @films = Film.all
+    else
+      @films = Film.where(film_type: params[:film_type])
+    end
     render 'index.json.jbuilder'
   end
 
