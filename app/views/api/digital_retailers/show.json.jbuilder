@@ -8,4 +8,5 @@ json.digitalRetailer do
   json.billingState @digital_retailer.billing_state
   json.billingZip @digital_retailer.billing_zip
   json.billingCountry @digital_retailer.billing_country
+  json.sageId @digital_retailer.sage_id
 end

@@ -287,7 +287,8 @@ $(document).ready(function() {
           initialEntity={ { name: '' } }
           fields={ [
             [
-              { columnWidth: 12, entity: 'digitalRetailer', property: 'name' }
+              { columnWidth: 9, entity: 'digitalRetailer', property: 'name', columnHeader: 'Name (Internal)' },
+              { columnWidth: 3, entity: 'digitalRetailer', property: 'sageId', columnHeader: 'Sage ID' }
             ],
             [
               { columnWidth: 4, entity: 'digitalRetailer', property: 'billingName', columnHeader: 'Billing Name' },
