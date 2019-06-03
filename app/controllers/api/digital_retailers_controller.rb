@@ -41,7 +41,7 @@ class Api::DigitalRetailersController < AdminController
   private
 
   def digital_retailer_params
-    params[:digital_retailer].permit(:name)
+    params[:digital_retailer].permit(:name, :billing_name, :billing_address1, :billing_address2, :billing_city, :billing_state, :billing_zip, :billing_country)
   end
 
 end

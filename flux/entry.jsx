@@ -285,9 +285,20 @@ $(document).ready(function() {
           context={ MyContext }
           entityName='digitalRetailer'
           initialEntity={ { name: '' } }
-          fields={ [[
-            { columnWidth: 12, entity: 'digitalRetailer', property: 'name' }
-          ]] }
+          fields={ [
+            [
+              { columnWidth: 12, entity: 'digitalRetailer', property: 'name' }
+            ],
+            [
+              { columnWidth: 4, entity: 'digitalRetailer', property: 'billingName', columnHeader: 'Billing Name' },
+              { columnWidth: 4, entity: 'digitalRetailer', property: 'billingAddress1', columnHeader: 'Address 1' },
+              { columnWidth: 4, entity: 'digitalRetailer', property: 'billingAddress2', columnHeader: 'Address 2' },
+              { columnWidth: 3, entity: 'digitalRetailer', property: 'billingCity', columnHeader: 'City' },
+              { columnWidth: 1, entity: 'digitalRetailer', property: 'billingState', columnHeader: 'State' },
+              { columnWidth: 2, entity: 'digitalRetailer', property: 'billingZip', columnHeader: 'Zip' },
+              { columnWidth: 2, entity: 'digitalRetailer', property: 'billingCountry', columnHeader: 'Country' }
+            ]
+          ] }
         />
       </Provider>,
       document.querySelector('#digital-retailer-details')

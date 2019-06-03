@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190512190415) do
+ActiveRecord::Schema.define(version: 20190603183553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,7 +128,14 @@ ActiveRecord::Schema.define(version: 20190512190415) do
   end
 
   create_table "digital_retailers", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "name",                          null: false
+    t.string "billing_name",     default: ""
+    t.string "billing_address1", default: ""
+    t.string "billing_address2", default: ""
+    t.string "billing_city",     default: ""
+    t.string "billing_state",    default: ""
+    t.string "billing_zip",      default: ""
+    t.string "billing_country",  default: ""
   end
 
   create_table "directors", force: :cascade do |t|
