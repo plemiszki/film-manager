@@ -2,6 +2,8 @@ class Api::ConvertController < AdminController
 
   def import
     uploaded_io = params[:user][:spreadsheet]
+    digital_retailer_id = params[:user][:digital_retailer_id]
+    date = params[:user][:date]
     original_filename = uploaded_io.original_filename
     time_started = Time.now.to_s
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
@@ -16,7 +18,7 @@ class Api::ConvertController < AdminController
     obj = bucket.object("#{time_started}/#{original_filename}")
     obj.upload_file(Rails.root.join('tmp', time_started, original_filename), acl:'private')
     job = Job.create!(job_id: time_started, first_line: "Importing Sales Report", second_line: false)
-    ConvertSalesData.perform_async(time_started, original_filename)
+    ConvertSalesData.perform_async(time_started, original_filename, digital_retailer_id, date)
     redirect_to "/convert", flash: { job_id: job.id }
   end
 

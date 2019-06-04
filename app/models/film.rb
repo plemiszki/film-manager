@@ -66,6 +66,12 @@ class Film < ActiveRecord::Base
     sage_id.empty? ? title.upcase : sage_id
   end
 
+  def self.find_from_sage_id(sage_id)
+    film = Film.find_by_sage_id(sage_id)
+    film = Film.where('upper(title) = ?', sage_id).first unless film
+    film
+  end
+
   def crossed_film_titles
     ([self.title] + self.crossed_films.map(&:crossed_film).map(&:title)).sort
   end

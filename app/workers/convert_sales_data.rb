@@ -4,7 +4,7 @@ class ConvertSalesData
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  def perform(time_started, original_filename)
+  def perform(time_started, original_filename, digital_retailer_id, date)
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p(job_folder)
@@ -130,35 +130,37 @@ class ConvertSalesData
       ])
 
       job.update!(first_line: "Exporting Combined Sales", second_line: true, current_value: 0, total_value: totals.keys.length)
+      digital_retailer = DigitalRetailer.find(digital_retailer_id)
       totals.each do |sage_id, value|
-        value.each do |gl_code, amount|
+        film = Film.find_from_sage_id(sage_id)
+        value.each do |gl_code, amount, gl_index|
           sheet.add_row([
-            sage_id,
+            digital_retailer.sage_id,
             '',
-            '(invoice number)',
-            '',
-            'FALSE',
-            '',
-            '(invoice sent date)',
-            '',
-            '',
-            '',
+            '(Add Invoice Number Here)',
             '',
             'FALSE',
-            '(shipping name)',
-            '(shipping address 1)',
-            '(shipping address 2)',
-            '(shipping city)',
-            '(shipping state)',
-            '(shipping zip)',
-            '(shipping country)',
+            '',
+            Date.parse(date),
             '',
             '',
             '',
-            '(due date)',
+            '',
+            'FALSE',
+            digital_retailer.billing_name,
+            digital_retailer.billing_address1,
+            digital_retailer.billing_address2,
+            digital_retailer.billing_city,
+            digital_retailer.billing_state,
+            digital_retailer.billing_zip,
+            digital_retailer.billing_country,
             '',
             '',
-            '(net 30)',
+            '',
+            (Date.parse(date) + 30),
+            '',
+            '',
+            'Net 30',
             '',
             '10200',
             '',
@@ -170,8 +172,8 @@ class ConvertSalesData
             '',
             'FALSE',
             '',
-            '(number of rows)',
-            '(row number)',
+            value.length,
+            gl_index,
             '',
             'FALSE',
             'FALSE',
@@ -180,7 +182,7 @@ class ConvertSalesData
             '',
             '',
             '',
-            '(description)',
+            "#{film.title} - #{gl_code}",
             gl_code,
             '',
             (amount.fdiv(100) * -1),
