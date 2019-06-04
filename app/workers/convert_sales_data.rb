@@ -4,7 +4,7 @@ class ConvertSalesData
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  def perform(time_started, original_filename, digital_retailer_id, date)
+  def perform(time_started, original_filename, digital_retailer_id, date, invoice_number)
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p(job_folder)
@@ -137,7 +137,7 @@ class ConvertSalesData
           sheet.add_row([
             digital_retailer.sage_id,
             '',
-            '(Add Invoice Number Here)',
+            invoice_number,
             '',
             'FALSE',
             '',
