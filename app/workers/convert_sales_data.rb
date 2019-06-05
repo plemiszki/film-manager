@@ -31,14 +31,14 @@ class ConvertSalesData
         film = Film.where('lower(title) = ?', title.to_s.downcase).first
         if film
           code = columns[1]
-          amount = (columns[2].to_f.round(2) * 100).to_i
+          amount = (columns[2].to_d * 100).to_i
           totals[film.get_sage_id][code] += amount
         else
           a = Alias.where('lower(text) = ?', title.to_s.downcase).first
           if a
             film = a.film
             code = columns[1]
-            amount = (columns[2].to_f.round(2) * 100).to_i
+            amount = (columns[2].to_d.round(2) * 100).to_i
             totals[film.get_sage_id][code] += amount
           else
             unknown_films << title
@@ -131,6 +131,13 @@ class ConvertSalesData
 
       job.update!(first_line: "Exporting Combined Sales", second_line: true, current_value: 0, total_value: totals.keys.length)
       digital_retailer = DigitalRetailer.find(digital_retailer_id)
+      total_invoice_rows = 0
+      totals.each do |_, value|
+        value.each do |k, v|
+          total_invoice_rows += 1
+        end
+      end
+      invoice_row_index = 0
       totals.each do |sage_id, value|
         film = Film.find_from_sage_id(sage_id)
         value.each do |gl_code, amount, gl_index|
@@ -172,8 +179,8 @@ class ConvertSalesData
             '',
             'FALSE',
             '',
-            value.length,
-            gl_index,
+            total_invoice_rows,
+            invoice_row_index,
             '',
             'FALSE',
             'FALSE',
@@ -182,7 +189,7 @@ class ConvertSalesData
             '',
             '',
             '',
-            "#{film.title} - #{gl_code}",
+            film.title,
             gl_code,
             '',
             (amount.fdiv(100) * -1),
@@ -197,6 +204,7 @@ class ConvertSalesData
           ])
           job.update!(current_value: index)
         end
+        invoice_row_index += 1
       end
 
       file_path = "#{job_folder}/sales.xlsx"
