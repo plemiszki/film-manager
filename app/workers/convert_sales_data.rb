@@ -31,14 +31,14 @@ class ConvertSalesData
         film = Film.where('lower(title) = ?', title.to_s.downcase).first
         if film
           code = columns[1]
-          amount = (columns[2].to_d * 100).to_i
+          amount = convert_amount(columns[2])
           totals[film.get_sage_id][code] += amount
         else
           a = Alias.where('lower(text) = ?', title.to_s.downcase).first
           if a
             film = a.film
             code = columns[1]
-            amount = (columns[2].to_d.round(2) * 100).to_i
+            amount = convert_amount(columns[2])
             totals[film.get_sage_id][code] += amount
           else
             unknown_films << title
@@ -229,4 +229,11 @@ class ConvertSalesData
       job.update!({ done: true, errors_text: "Unable to import spreadsheet" })
     end
   end
+
+  private
+
+  def convert_amount(input)
+    (("%.2f" % input).to_d * 100).to_i
+  end
+  
 end
