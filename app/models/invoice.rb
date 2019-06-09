@@ -98,6 +98,7 @@ class Invoice < ActiveRecord::Base
     string += ".upper-right-bold {"
     string +=   "margin-top: 10px;"
     string +=   "font-weight: bold;"
+    string +=   "font-size: 18px;"
     string += "}"
     string += ".invoice-header {"
     string +=   "font-family: Times;"
@@ -153,14 +154,15 @@ class Invoice < ActiveRecord::Base
       string += "Due Date: #{(self.sent_date + 30).strftime("%-m/%-d/%y")}<br />"
     end
     string += "<div class=\"upper-right-bold\">"
-    string += "Please write invoice # on check<br />"
-    string += "Federal Tax IDN: 46-4076413"
+    string += "Please write the invoice number on your check"
     string += "</div></div>"
     string += "<div class=\"film-movement\">Film Movement</div>"
     string += "237 West 35th Street<br>"
     string += "Suite 604<br>"
     string += "New York, NY 10001<br>"
-    string += "212.941.7744<br><br><br>"
+    string += "212.941.7744<br>"
+    string += "Federal Tax IDN: 46-4076413<br>"
+    string += "<br><br>"
 
     string += '<div class="address-block first">'
     string += "<p>Bill To:</p>"
