@@ -573,7 +573,9 @@ var FM = {
     FM.highlightCurrentPageInMenu();
     FM.storeURLParams();
     FM.user.id = +$('#current-user #id').html();
-    FM.user.admin = ($('#current-user #admin').html() == "true");
+    FM.user.access = $('#current-user #access').html();
+    FM.user.has_admin_level_access = ["admin", "super_admin"].indexOf(FM.user.access) > -1;
+    FM.user.has_super_admin_level_access = (FM.user.access === "super_admin");
   },
 
   jobModal: function(job) {

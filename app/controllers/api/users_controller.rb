@@ -49,7 +49,7 @@ class Api::UsersController < Clearance::UsersController
   private
 
   def user_params
-    params[:user].permit(:name, :email, :password, :title, :email_signature)
+    params[:user].permit(:name, :email, :password, :title, :email_signature, :access)
   end
 
 end

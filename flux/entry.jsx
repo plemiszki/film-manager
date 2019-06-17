@@ -595,9 +595,10 @@ $(document).ready(function() {
             { columnWidth: 4, entity: 'user', property: 'email' },
             { columnWidth: 4, entity: 'user', property: 'title' }
           ],[
-            { columnWidth: 12, entity: 'user', property: 'emailSignature', type: 'textbox', rows: 8 }
+            { columnWidth: 10, entity: 'user', property: 'emailSignature', type: 'textbox', rows: 8 },
+            { columnWidth: 2, entity: 'user', property: 'access', readOnly: true }
           ]] }
-          hideDeleteButton={ !FM.user.admin || (FM.user.id == window.location.pathname.split('/')[2]) }
+          hideDeleteButton={ !FM.user.has_super_admin_level_access }
         />
       </Provider>,
       document.querySelector('#user-details')
