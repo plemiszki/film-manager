@@ -2,6 +2,8 @@ class Api::RoyaltyReportsController < AdminController
 
   include ActionView::Helpers::NumberHelper
 
+  before_action :redirect_unless_super_admin
+
   def index
     @reports = RoyaltyReport.includes(film: [:licensor]).where(quarter: params[:quarter], year: params[:year])
     @errors = flash[:errors] || []
@@ -113,6 +115,10 @@ class Api::RoyaltyReportsController < AdminController
   end
 
   private
+
+  def redirect_unless_super_admin
+    redirect_to "/" unless current_user.access == "super_admin"
+  end
 
   def report_name(film, report)
     "#{film.crossed_film_titles.sort.join(' -- ')} - Q#{report.quarter} #{report.year}.pdf"
