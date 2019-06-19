@@ -1829,14 +1829,22 @@ class FilmDetails extends React.Component {
           { buttonText }
         </a>
         { this.renderErrorGuide() }
-        <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete Film
-        </a>
-        <a className={ "float-button orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
-          Copy Film
-        </a>
+        { this.renderCopyAndDeleteButtons() }
       </div>
     );
+  }
+
+  renderCopyAndDeleteButtons() {
+    if (FM.user.hasAdminAccess) {
+      return([
+        <a key={ 2 } id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+          Delete Film
+        </a>,
+        <a key={ 1 } className={ "float-button orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
+          Copy Film
+        </a>
+      ]);
+    }
   }
 
   percentageErrorsExist() {

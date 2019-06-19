@@ -598,7 +598,7 @@ $(document).ready(function() {
             { columnWidth: 10, entity: 'user', property: 'emailSignature', type: 'textbox', rows: 8 },
             { columnWidth: 2, entity: 'user', property: 'access', readOnly: true }
           ]] }
-          hideDeleteButton={ !FM.user.has_super_admin_level_access }
+          hideDeleteButton={ !FM.user.hasSuperAdminAccess }
         />
       </Provider>,
       document.querySelector('#user-details')

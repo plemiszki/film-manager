@@ -146,7 +146,7 @@ class FilmsIndex extends React.Component {
           { this.renderAddNewButton() }
           { this.renderExportMetadataButton() }
           { this.renderCustomButton() }
-          <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+          <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         </div>
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
@@ -199,7 +199,7 @@ class FilmsIndex extends React.Component {
       'Short': 'Short',
       'TV Series': 'TV Series'
     }[this.props.filmType];
-    if (!this.props.advanced) {
+    if (FM.user.hasAdminAccess & !this.props.advanced) {
       return(
         <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add { buttonText }</a>
       );
