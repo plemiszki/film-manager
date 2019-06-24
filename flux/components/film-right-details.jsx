@@ -132,12 +132,12 @@ class FilmRightDetails extends React.Component {
               </div>
               <div className="col-xs-2">
                 <h2>Start Date</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
+                <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" readOnly={ !FM.user.hasAdminAccess } />
                 { Details.renderFieldError(this.state.errors, FM.errors.startDate) }
               </div>
               <div className="col-xs-2">
                 <h2>End Date</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
+                <input className={ Details.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" readOnly={ !FM.user.hasAdminAccess } />
                 { Details.renderFieldError(this.state.errors, FM.errors.endDate) }
               </div>
               <div className="col-xs-2">
@@ -170,21 +170,23 @@ class FilmRightDetails extends React.Component {
   }
 
   renderButtons() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
+    if (FM.user.hasAdminAccess) {
+      if (this.state.changesToSave) {
+        var buttonText = "Save";
+      } else {
+        var buttonText = this.state.justSaved ? "Saved" : "No Changes";
+      }
+      return(
+        <div>
+          <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+            { buttonText }
+          </a>
+          <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+            Delete Right
+          </a>
+        </div>
+      );
     }
-    return(
-      <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
-          { buttonText }
-        </a>
-        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete Right
-        </a>
-      </div>
-    )
   }
 
   componentDidUpdate() {

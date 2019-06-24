@@ -1011,17 +1011,17 @@ class FilmDetails extends React.Component {
               <input className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
-            <div className="col-sm-1 icons">
+            <div className={ `col-sm-1 icons${FM.user.hasAdminAccess ? '' : ' hidden'}` }>
               <img src={ Images.openModal } onClick={ this.clickSelectLicensorButton.bind(this) } />
             </div>
             <div className="col-xs-3">
               <h2>Start Date</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.startDate || "" } data-field="startDate" />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.startDate || "" } data-field="startDate" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.startDate) }
             </div>
             <div className="col-xs-3">
               <h2>End Date</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.endDate || "" } data-field="endDate" />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.endDate || "" } data-field="endDate" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.endDate) }
             </div>
           </div>
@@ -1667,61 +1667,43 @@ class FilmDetails extends React.Component {
       <div>
         <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
           <div className="row">
-            <div className="col-xs-12 col-sm-5">
-              <h2>Deal Type</h2>
-                <select onChange={FM.changeField.bind(this, this.changeFieldArgs())} data-field="dealTypeId" value={this.state.film.dealTypeId}>
-                  { FilmsStore.dealTemplates().map((dealTemplate, index) => {
-                    return(
-                      <option key={ index } value={ dealTemplate.id }>{ dealTemplate.name }</option>
-                    );
-                  }) }
-                </select>
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className={"col-xs-12 col-sm-1" + ((this.state.film.dealTypeId != "5" && this.state.film.dealTypeId != "6") ? " hidden" : "")}>
+            { this.renderDealTypeMenu() }
+            <div className={ "col-xs-1" + ((this.state.film.dealTypeId != "5" && this.state.film.dealTypeId != "6") ? " hidden" : "") }>
               <h2>GR %</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.grPercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.grPercentage || ""} data-field="grPercentage" />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.grPercentage) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.grPercentage || "" } data-field="grPercentage" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
-            <div className={"col-xs-12 col-sm-3" + ((this.state.film.dealTypeId === "5" || this.state.film.dealTypeId === "6") ? "" : " col-sm-offset-1")}>
-              <h2>Statements Due</h2>
-                <select onChange={FM.changeField.bind(this, this.changeFieldArgs())} data-field="daysStatementDue" value={this.state.film.daysStatementDue}>
-                  <option value={"30"}>30 Days</option>
-                  <option value={"45"}>45 Days</option>
-                  <option value={"60"}>60 Days</option>
-                </select>
-              { Details.renderFieldError([], []) }
-            </div>
-            <div className="col-xs-12 col-sm-3">
+            { this.renderStatementsDueMenu() }
+            <div className="col-xs-3">
               <h2>MG</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.mg)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" />
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.mg)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" readOnly={ !FM.user.hasAdminAccess } />
               {Details.renderFieldError(this.state.filmErrors, FM.errors.mg)}
             </div>
-            <div className={"col-xs-12 col-sm-3" + (this.state.film.filmType === "Short" ? " hidden" : "")}>
+            <div className={ "col-xs-3" + (this.state.film.filmType === "Short" ? " hidden" : "") }>
               <h2>E & O</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.eAndO)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" />
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.eAndO)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" readOnly={ !FM.user.hasAdminAccess } />
               {Details.renderFieldError(this.state.filmErrors, FM.errors.eAndO)}
             </div>
-            <div className="col-xs-12 col-sm-3">
+            <div className="col-xs-3">
               <h2>Expense Cap</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.expenseCap)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.expenseCap || ""} data-field="expenseCap" />
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.expenseCap)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.expenseCap || ""} data-field="expenseCap" readOnly={ !FM.user.hasAdminAccess } />
               {Details.renderFieldError(this.state.filmErrors, FM.errors.expenseCap)}
             </div>
-            <div className="col-xs-12 col-sm-3">
+            <div className="col-xs-3">
               <h2>Sage ID</h2>
-              <input className={ Details.errorClass([], []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" />
+              <input className={ Details.errorClass([], []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError([], []) }
             </div>
-            <div className="col-xs-12 col-sm-3">
+            <div className="col-xs-3">
               <h2>DVD Sell Off Period (Months)</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.sellOffPeriod)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sellOffPeriod} data-field="sellOffPeriod" />
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.sellOffPeriod)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sellOffPeriod} data-field="sellOffPeriod" readOnly={ !FM.user.hasAdminAccess } />
               {Details.renderFieldError(this.state.filmErrors, FM.errors.sellOffPeriod)}
             </div>
           </div>
           <div className="row">
             <div className="col-xs-12">
               <h2>Royalty Notes</h2>
-              <textarea rows="3" className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" />
+              <textarea rows="3" className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" readOnly={ !FM.user.hasAdminAccess } />
             </div>
           </div>
         </div>
@@ -1734,7 +1716,7 @@ class FilmDetails extends React.Component {
                 <tr>
                   <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'name') }>Right</div></th>
                   <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'territory') }>Territory</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'startDate') }>Start Date</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'startDate') } >Start Date</div></th>
                   <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'endDate') }>End Date</div></th>
                   <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'exclusive') }>Exclusive</div></th>
                 </tr>
@@ -1764,8 +1746,7 @@ class FilmDetails extends React.Component {
                 }) }
               </tbody>
             </table>
-            <a className="blue-outline-button small m-right" onClick={ this.clickAddRight.bind(this) }>Add Rights</a>
-            <a className="blue-outline-button small float-button" onClick={ this.clickChangeRightsDates.bind(this) }>Change All Dates</a>
+            { this.renderRightsButtons.call(this) }
           </div>
         </div>
         <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
@@ -1778,7 +1759,7 @@ class FilmDetails extends React.Component {
                 return(
                   <div className="revenue-percentage" key={ index }>
                     <h2>{FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).nickname || FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).name} %</h2>
-                    <input className={Details.errorClass(properErrorsArray, FM.errors.value)} onChange={FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={this.state.percentages[revenuePercentage.id] || ""} data-thing="percentages" data-field={revenuePercentage.id} />
+                    <input className={Details.errorClass(properErrorsArray, FM.errors.value)} onChange={FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={this.state.percentages[revenuePercentage.id] || ""} data-thing="percentages" data-field={revenuePercentage.id} readOnly={ !FM.user.hasAdminAccess } />
                     { Details.renderFieldError([], []) }
                   </div>
                 )
@@ -1788,33 +1769,92 @@ class FilmDetails extends React.Component {
           <hr />
           <div className={ "row reserve-section" + (this.state.film.reserve ? "" : " no-reserve") }>
             <div className="col-xs-3">
-              <input id="returns-reserve" className="checkbox" type="checkbox" checked={this.state.film.reserve} onChange={this.changeCheckbox.bind(this, 'reserve')} /><label className="checkbox" htmlFor="reserve-returns">Reserve Against Returns</label>
+              <input id="returns-reserve" className="checkbox" type="checkbox" checked={ this.state.film.reserve } onChange={ this.changeCheckbox.bind(this, 'reserve') } disabled={ !FM.user.hasAdminAccess } /><label className="checkbox" htmlFor="reserve-returns">Reserve Against Returns</label>
             </div>
             <div className="col-xs-2">
               <h2>Reserve %</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.reservePercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reservePercentage} data-field="reservePercentage" disabled={!this.state.film.reserve} />
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.reservePercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reservePercentage} data-field="reservePercentage" disabled={ !this.state.film.reserve } readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
             <div className="col-xs-2">
               <h2># of Quarters</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.reserveQuarters)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveQuarters} data-field="reserveQuarters" disabled={!this.state.film.reserve} />
+              <input className={Details.errorClass(this.state.filmErrors, FM.errors.reserveQuarters)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveQuarters} data-field="reserveQuarters" disabled={ !this.state.film.reserve } readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
           <hr />
-          <div className={"row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew")}>
+          <div className={ "row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew") }>
             <div className="col-xs-3">
-              <input id="auto-renew" className="checkbox" type="checkbox" checked={this.state.film.autoRenew} onChange={this.changeCheckbox.bind(this, 'autoRenew')} /><label className="checkbox">Auto-Renew</label>
+              <input id="auto-renew" className="checkbox" type="checkbox" checked={ this.state.film.autoRenew } onChange={ this.changeCheckbox.bind(this, 'autoRenew') } disabled={ !FM.user.hasAdminAccess } /><label className="checkbox">Auto-Renew</label>
             </div>
             <div className="col-xs-2">
               <h2>Term (Months)</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.autoRenewTerm} data-field="autoRenewTerm" disabled={!this.state.film.autoRenew} />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.autoRenewTerm } data-field="autoRenewTerm" disabled={ !this.state.film.autoRenew } readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
           </div>
         </div>
       </div>
     );
+  }
+
+  renderDealTypeMenu() {
+    if (FM.user.hasAdminAccess) {
+      return(
+        <div className="col-xs-5">
+          <h2>Deal Type</h2>
+            <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="dealTypeId" value={ this.state.film.dealTypeId }>
+              { FilmsStore.dealTemplates().map((dealTemplate, index) => {
+                return(
+                  <option key={ index } value={ dealTemplate.id }>{ dealTemplate.name }</option>
+                );
+              }) }
+            </select>
+          { Details.renderFieldError(this.state.filmErrors, []) }
+        </div>
+      );
+    } else {
+      return(
+        <div className="col-xs-5">
+          <h2>Deal Type</h2>
+          <input className={ Details.errorClass(this.state.filmErrors, []) } value={ this.state.film.dealTypeId ? HandyTools.findObjectInArrayById(FilmsStore.dealTemplates(), this.state.film.dealTypeId).name : '' } readOnly={ true } />
+          { Details.renderFieldError(this.state.filmErrors, []) }
+        </div>
+      );
+    }
+  }
+
+  renderStatementsDueMenu() {
+    if (FM.user.hasAdminAccess) {
+      return(
+        <div className={"col-xs-3" + ((this.state.film.dealTypeId === "5" || this.state.film.dealTypeId === "6") ? "" : " col-xs-offset-1")}>
+          <h2>Statements Due</h2>
+          <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="daysStatementDue" value={ this.state.film.daysStatementDue }>
+            <option value="30">30 Days</option>
+            <option value="45">45 Days</option>
+            <option value="60">60 Days</option>
+          </select>
+          { Details.renderFieldError([], []) }
+        </div>
+      );
+    } else {
+      return(
+        <div className={"col-xs-3" + ((this.state.film.dealTypeId === "5" || this.state.film.dealTypeId === "6") ? "" : " col-xs-offset-1")}>
+          <h2>Statements Due</h2>
+          <input className={ Details.errorClass(this.state.filmErrors, []) } value={ this.state.film.dealTypeId ? `${this.state.film.daysStatementDue} Days` : '' } readOnly={ true } />
+          { Details.renderFieldError([], []) }
+        </div>
+      );
+    }
+  }
+
+  renderRightsButtons() {
+    if (FM.user.hasAdminAccess) {
+      return([
+        <a key={ 1 } className="blue-outline-button small m-right" onClick={ this.clickAddRight.bind(this) }>Add Rights</a>,
+        <a key={ 2 } className="blue-outline-button small float-button" onClick={ this.clickChangeRightsDates.bind(this) }>Change All Dates</a>
+      ]);
+    }
   }
 
   renderButtons() {
