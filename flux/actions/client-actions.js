@@ -1352,7 +1352,8 @@ var ClientActions = {
           box_office: HandyTools.removeFinanceSymbols(booking.boxOffice),
           box_office_received: booking.boxOfficeReceived,
           format_id: booking.formatId,
-          notes: booking.notes
+          notes: booking.notes,
+          exclude_from_bo_requests: booking.excludeFromBoRequests
         }
       },
       success: function(response) {

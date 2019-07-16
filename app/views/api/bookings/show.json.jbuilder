@@ -50,6 +50,7 @@ json.bookings @bookings do |booking|
   json.boxOffice dollarify(number_with_precision(booking.box_office, precision: 2, delimiter: ','))
   json.boxOfficeReceived booking.box_office_received
   json.termsValid @calculations[:valid]
+  json.excludeFromBoRequests booking.exclude_from_bo_requests
 end
 json.weeklyTerms @weekly_terms do |weekly_term|
   json.id weekly_term.id
