@@ -27,7 +27,7 @@ class ConvertSalesData
       unknown_films = []
       while index <= xlsx.last_row
         columns = sheet.row(index)
-        title = columns[0].to_s.gsub('(English Subtitled)', '').strip
+        title = columns[0].to_s.gsub("\n", '').gsub('(English Subtitled)', '').strip
         film = Film.where('lower(title) = ?', title.to_s.downcase).first
         if film
           code = columns[1]
@@ -235,5 +235,5 @@ class ConvertSalesData
   def convert_amount(input)
     (("%.2f" % input).to_d * 100).to_i
   end
-  
+
 end
