@@ -36,6 +36,7 @@ class Booking < ActiveRecord::Base
   end
 
   def self.send_box_office_reminders(name:, email:)
+    return unless Time.now.in_time_zone("America/New_York").strftime("%A") == "Friday"
 
 email_body = <<-COPY
 Hello,
