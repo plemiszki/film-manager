@@ -76,8 +76,9 @@ COPY
       venue_name = (venue.billing_name.present? ? venue.billing_name : venue.label)
       message_params = {
         from: email,
-        to: 'plemiszki@gmail.com',
-        # bcc: 'plemiszki@gmail.com',
+        to: booking.email,
+        bcc: email,
+        bcc: 'plemiszki@gmail.com',
         subject: "Box Office Reminder: #{booking.film.title} at #{venue_name} (#{booking.start_date.strftime("%-m/%-d/%y")})",
         text: email_body
       }
