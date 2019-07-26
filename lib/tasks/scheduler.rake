@@ -3,5 +3,5 @@ task :clear_s3 => :environment do
 end
 
 task :box_office_reminders => :environment do
-  Booking.send_box_office_reminders
+  Booking.send_box_office_reminders(name: "Jimmy Weaver", email: "jimmy@filmmovement.com")
 end
