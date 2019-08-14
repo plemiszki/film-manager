@@ -78,6 +78,12 @@ class RoyaltyReport < ActiveRecord::Base
     result.map { |key, value| [key, value.to_f] }.to_h
   end
 
+  def create_empty_streams
+    FilmRevenuePercentage.where(film_id: self.film_id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
+      RoyaltyRevenueStream.create(royalty_report_id: self.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+    end
+  end
+
   def get_total_past_reserves(films = nil)
     if self.id.zero?
       result = Hash.new(0)
