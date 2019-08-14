@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190716193652) do
+ActiveRecord::Schema.define(version: 20190814121549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -255,64 +255,66 @@ ActiveRecord::Schema.define(version: 20190716193652) do
   end
 
   create_table "films", force: :cascade do |t|
-    t.string  "title",                                                          null: false
-    t.integer "feature_id"
-    t.integer "label_id",                                                       null: false
-    t.integer "licensor_id"
-    t.integer "deal_type_id",                                   default: 1
-    t.integer "days_statement_due"
-    t.decimal "gr_percentage",          precision: 5, scale: 2
-    t.decimal "mg",                     precision: 8, scale: 2, default: 0.0
-    t.decimal "e_and_o",                precision: 8, scale: 2, default: 0.0
-    t.decimal "expense_cap",            precision: 8, scale: 2, default: 0.0
-    t.string  "sage_id",                                        default: ""
-    t.string  "royalty_notes",                                  default: ""
-    t.boolean "export_reports",                                 default: true
-    t.boolean "send_reports",                                   default: true
-    t.boolean "reserve",                                        default: false
-    t.decimal "reserve_percentage",     precision: 5, scale: 2, default: 0.0
-    t.integer "reserve_quarters",                               default: 0
-    t.integer "sell_off_period",                                default: 0
-    t.boolean "auto_renew",                                     default: false
-    t.integer "auto_renew_term",                                default: 0
-    t.integer "year"
-    t.integer "length"
-    t.string  "synopsis",                                       default: ""
-    t.string  "short_synopsis",                                 default: ""
-    t.string  "logline",                                        default: ""
-    t.string  "vod_synopsis",                                   default: ""
-    t.string  "institutional_synopsis",                         default: ""
-    t.string  "vimeo_trailer",                                  default: ""
-    t.string  "youtube_trailer",                                default: ""
-    t.string  "prores_trailer",                                 default: ""
-    t.string  "standalone_site",                                default: ""
-    t.string  "facebook_link",                                  default: ""
-    t.string  "twitter_link",                                   default: ""
-    t.string  "instagram_link",                                 default: ""
-    t.boolean "active",                                         default: true
-    t.date    "club_date"
-    t.boolean "ignore_sage_id",                                 default: false
-    t.date    "start_date"
-    t.date    "end_date"
-    t.string  "film_type"
-    t.date    "avod_release"
-    t.date    "svod_release"
-    t.date    "tvod_release"
-    t.boolean "svod_tentative",                                 default: false
-    t.boolean "avod_tentative",                                 default: false
-    t.boolean "tvod_tentative",                                 default: false
-    t.boolean "edu_page",                                       default: false
-    t.boolean "video_page",                                     default: false
-    t.string  "artwork_url",                                    default: ""
-    t.date    "theatrical_release"
-    t.boolean "theatrical_tentative",                           default: false
-    t.string  "fm_plus_url",                                    default: ""
-    t.text    "aspect_ratio",                                   default: ""
-    t.text    "rating",                                         default: ""
-    t.text    "sound_config",                                   default: ""
-    t.boolean "certified_fresh",                                default: false
-    t.boolean "critics_pick",                                   default: false
-    t.string  "imdb_id",                                        default: ""
+    t.string   "title",                                                          null: false
+    t.integer  "feature_id"
+    t.integer  "label_id",                                                       null: false
+    t.integer  "licensor_id"
+    t.integer  "deal_type_id",                                   default: 1
+    t.integer  "days_statement_due"
+    t.decimal  "gr_percentage",          precision: 5, scale: 2
+    t.decimal  "mg",                     precision: 8, scale: 2, default: 0.0
+    t.decimal  "e_and_o",                precision: 8, scale: 2, default: 0.0
+    t.decimal  "expense_cap",            precision: 8, scale: 2, default: 0.0
+    t.string   "sage_id",                                        default: ""
+    t.string   "royalty_notes",                                  default: ""
+    t.boolean  "export_reports",                                 default: true
+    t.boolean  "send_reports",                                   default: true
+    t.boolean  "reserve",                                        default: false
+    t.decimal  "reserve_percentage",     precision: 5, scale: 2, default: 0.0
+    t.integer  "reserve_quarters",                               default: 0
+    t.integer  "sell_off_period",                                default: 0
+    t.boolean  "auto_renew",                                     default: false
+    t.integer  "auto_renew_term",                                default: 0
+    t.integer  "year"
+    t.integer  "length"
+    t.string   "synopsis",                                       default: ""
+    t.string   "short_synopsis",                                 default: ""
+    t.string   "logline",                                        default: ""
+    t.string   "vod_synopsis",                                   default: ""
+    t.string   "institutional_synopsis",                         default: ""
+    t.string   "vimeo_trailer",                                  default: ""
+    t.string   "youtube_trailer",                                default: ""
+    t.string   "prores_trailer",                                 default: ""
+    t.string   "standalone_site",                                default: ""
+    t.string   "facebook_link",                                  default: ""
+    t.string   "twitter_link",                                   default: ""
+    t.string   "instagram_link",                                 default: ""
+    t.boolean  "active",                                         default: true
+    t.date     "club_date"
+    t.boolean  "ignore_sage_id",                                 default: false
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "film_type"
+    t.date     "avod_release"
+    t.date     "svod_release"
+    t.date     "tvod_release"
+    t.boolean  "svod_tentative",                                 default: false
+    t.boolean  "avod_tentative",                                 default: false
+    t.boolean  "tvod_tentative",                                 default: false
+    t.boolean  "edu_page",                                       default: false
+    t.boolean  "video_page",                                     default: false
+    t.string   "artwork_url",                                    default: ""
+    t.date     "theatrical_release"
+    t.boolean  "theatrical_tentative",                           default: false
+    t.string   "fm_plus_url",                                    default: ""
+    t.text     "aspect_ratio",                                   default: ""
+    t.text     "rating",                                         default: ""
+    t.text     "sound_config",                                   default: ""
+    t.boolean  "certified_fresh",                                default: false
+    t.boolean  "critics_pick",                                   default: false
+    t.string   "imdb_id",                                        default: ""
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "films", ["deal_type_id"], name: "index_films_on_deal_type_id", using: :btree
@@ -538,31 +540,33 @@ ActiveRecord::Schema.define(version: 20190716193652) do
   end
 
   create_table "royalty_reports", force: :cascade do |t|
-    t.integer "film_id",                                                            null: false
-    t.integer "year",                                                               null: false
-    t.integer "quarter",                                                            null: false
-    t.decimal "cume_total",                   precision: 8, scale: 2, default: 0.0
-    t.decimal "mg",                           precision: 8, scale: 2, default: 0.0
-    t.decimal "e_and_o",                      precision: 8, scale: 2, default: 0.0
-    t.decimal "amount_paid",                  precision: 8, scale: 2, default: 0.0
-    t.decimal "amount_due",                   precision: 8, scale: 2, default: 0.0
-    t.integer "deal_id",                                                            null: false
-    t.decimal "gr_percentage",                precision: 5, scale: 2, default: 0.0
-    t.decimal "current_total_expenses",       precision: 8, scale: 2, default: 0.0
-    t.decimal "cume_total_expenses",          precision: 8, scale: 2, default: 0.0
-    t.decimal "current_total",                precision: 8, scale: 2, default: 0.0
-    t.decimal "current_total_revenue",        precision: 8, scale: 2, default: 0.0
-    t.decimal "cume_total_revenue",           precision: 8, scale: 2, default: 0.0
-    t.decimal "joined_total_revenue",         precision: 8, scale: 2, default: 0.0
-    t.decimal "joined_total_expenses",        precision: 8, scale: 2, default: 0.0
-    t.decimal "joined_total",                 precision: 8, scale: 2, default: 0.0
-    t.decimal "joined_amount_due",            precision: 8, scale: 2, default: 0.0
-    t.decimal "current_share_minus_expenses", precision: 8, scale: 2, default: 0.0
-    t.date    "date_sent"
-    t.decimal "current_reserve",              precision: 8, scale: 2, default: 0.0
-    t.decimal "cume_reserve",                 precision: 8, scale: 2, default: 0.0
-    t.decimal "liquidated_reserve",           precision: 8, scale: 2, default: 0.0
-    t.decimal "joined_reserve",               precision: 8, scale: 2, default: 0.0
+    t.integer  "film_id",                                                            null: false
+    t.integer  "year",                                                               null: false
+    t.integer  "quarter",                                                            null: false
+    t.decimal  "cume_total",                   precision: 8, scale: 2, default: 0.0
+    t.decimal  "mg",                           precision: 8, scale: 2, default: 0.0
+    t.decimal  "e_and_o",                      precision: 8, scale: 2, default: 0.0
+    t.decimal  "amount_paid",                  precision: 8, scale: 2, default: 0.0
+    t.decimal  "amount_due",                   precision: 8, scale: 2, default: 0.0
+    t.integer  "deal_id",                                                            null: false
+    t.decimal  "gr_percentage",                precision: 5, scale: 2, default: 0.0
+    t.decimal  "current_total_expenses",       precision: 8, scale: 2, default: 0.0
+    t.decimal  "cume_total_expenses",          precision: 8, scale: 2, default: 0.0
+    t.decimal  "current_total",                precision: 8, scale: 2, default: 0.0
+    t.decimal  "current_total_revenue",        precision: 8, scale: 2, default: 0.0
+    t.decimal  "cume_total_revenue",           precision: 8, scale: 2, default: 0.0
+    t.decimal  "joined_total_revenue",         precision: 8, scale: 2, default: 0.0
+    t.decimal  "joined_total_expenses",        precision: 8, scale: 2, default: 0.0
+    t.decimal  "joined_total",                 precision: 8, scale: 2, default: 0.0
+    t.decimal  "joined_amount_due",            precision: 8, scale: 2, default: 0.0
+    t.decimal  "current_share_minus_expenses", precision: 8, scale: 2, default: 0.0
+    t.date     "date_sent"
+    t.decimal  "current_reserve",              precision: 8, scale: 2, default: 0.0
+    t.decimal  "cume_reserve",                 precision: 8, scale: 2, default: 0.0
+    t.decimal  "liquidated_reserve",           precision: 8, scale: 2, default: 0.0
+    t.decimal  "joined_reserve",               precision: 8, scale: 2, default: 0.0
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "royalty_revenue_streams", force: :cascade do |t|
