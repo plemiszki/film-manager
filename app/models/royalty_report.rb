@@ -546,7 +546,9 @@ class RoyaltyReport < ActiveRecord::Base
   end
 
   def report_name(titles)
-    "#{titles.join(' -- ')} - Q#{self.quarter} #{self.year}.pdf"
+    filename = "#{titles.join(' -- ')} - Q#{self.quarter} #{self.year}"
+    filename = filename[0..249] if filename.length > 250
+    "#{filename}.pdf"
   end
 
 end
