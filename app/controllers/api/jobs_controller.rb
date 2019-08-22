@@ -5,4 +5,9 @@ class Api::JobsController < AdminController
     render json: job
   end
 
+  def index
+    @jobs = Job.where(name: 'export all', done: false)
+    render 'index.json.jbuilder'
+  end
+
 end

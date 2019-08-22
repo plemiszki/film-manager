@@ -1,4 +1,19 @@
-import HandyTools from 'handy-tools';
+import HandyTools from 'handy-tools'
+
+export function fetchEntities(input) {
+  let url = input.url || `/api/${input.directory}`;
+  return (dispatch) => {
+    return $.ajax({
+      method: 'GET',
+      url
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'FETCH_ENTITIES' });
+        dispatch(obj);
+      }
+    );
+  }
+}
 
 export function createEntity(args, arrayName) {
   return (dispatch) => {

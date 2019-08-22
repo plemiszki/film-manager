@@ -27,6 +27,7 @@ import GiftBoxDetails from './components/giftbox-details.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
 import InvoiceDetails from './components/invoice-details.jsx'
 import InvoicesIndex from './components/invoices-index.jsx'
+import JobsIndex from './components/jobs-index.jsx'
 import LicensorDetails from './components/licensor-details.jsx'
 import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
 import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
@@ -635,6 +636,14 @@ $(document).ready(function() {
         </StandardIndex>
       </Provider>,
       document.querySelector('#sublicensors-index')
+    );
+  }
+  if (document.querySelector('#jobs-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <JobsIndex context={ MyContext } />
+      </Provider>,
+      document.querySelector('#jobs-index')
     );
   }
 });
