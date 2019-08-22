@@ -78,7 +78,6 @@ COPY
         from: email,
         to: booking.email,
         bcc: email,
-        bcc: 'plemiszki@gmail.com',
         subject: "Box Office Reminder: #{booking.film.title} at #{venue_name} (#{booking.start_date.strftime("%-m/%-d/%y")})",
         text: email_body
       }
