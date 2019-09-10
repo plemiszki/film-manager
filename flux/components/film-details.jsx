@@ -1006,23 +1006,28 @@ class FilmDetails extends React.Component {
         <div>
           <hr />
           <div className="row">
-            <div className="col-xs-12 col-sm-5">
+            <div className="col-xs-4">
               <h2>Licensor</h2>
               <input className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
-            <div className={ `col-sm-1 icons${FM.user.hasAdminAccess ? '' : ' hidden'}` }>
+            <div className={ `col-xs-1 icons${FM.user.hasAdminAccess ? '' : ' hidden'}` }>
               <img src={ Images.openModal } onClick={ this.clickSelectLicensorButton.bind(this) } />
             </div>
-            <div className="col-xs-3">
+            <div className="col-xs-2">
               <h2>Start Date</h2>
               <input className={ Details.errorClass(this.state.filmErrors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.startDate || "" } data-field="startDate" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.startDate) }
             </div>
-            <div className="col-xs-3">
+            <div className="col-xs-2">
               <h2>End Date</h2>
               <input className={ Details.errorClass(this.state.filmErrors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.endDate || "" } data-field="endDate" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.endDate) }
+            </div>
+            <div className="col-xs-3">
+              <h2>Sage ID</h2>
+              <input className={ Details.errorClass([], []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" readOnly={ !FM.user.hasAdminAccess } />
+              { Details.renderFieldError([], []) }
             </div>
           </div>
           { this.renderRoyaltyFields() }
@@ -1688,11 +1693,6 @@ class FilmDetails extends React.Component {
               <h2>Expense Cap</h2>
               <input className={Details.errorClass(this.state.filmErrors, FM.errors.expenseCap)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.expenseCap || ""} data-field="expenseCap" readOnly={ !FM.user.hasAdminAccess } />
               {Details.renderFieldError(this.state.filmErrors, FM.errors.expenseCap)}
-            </div>
-            <div className="col-xs-3">
-              <h2>Sage ID</h2>
-              <input className={ Details.errorClass([], []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError([], []) }
             </div>
             <div className="col-xs-3">
               <h2>DVD Sell Off Period (Months)</h2>

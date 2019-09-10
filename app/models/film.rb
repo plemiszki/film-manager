@@ -63,7 +63,7 @@ class Film < ActiveRecord::Base
   end
 
   def get_sage_id
-    sage_id.empty? ? title.upcase : sage_id
+    sage_id.empty? ? (film.film_type == 'Short' ? 'SHORTS' : title.upcase) : sage_id
   end
 
   def self.find_from_sage_id(sage_id)
