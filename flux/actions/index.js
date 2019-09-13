@@ -1,4 +1,5 @@
 import HandyTools from 'handy-tools'
+import ChangeCase from 'change-case'
 
 export function fetchEntities(input) {
   let url = input.url || `/api/${input.directory}`;
@@ -45,6 +46,37 @@ export function fetchDataForNew(args) {
       (response) => {
         let obj = Object.assign(response, { type: 'NEW_ENTITY_DATA' });
         dispatch(obj);
+      }
+    );
+  }
+}
+
+export function updateEntity(args) {
+  let data = { [ChangeCase.snakeCase(args.entityName)]: HandyTools.convertObjectKeysToUnderscore(args.entity) };
+  if (args.additionalData) {
+    data = Object.assign(data, HandyTools.convertObjectKeysToUnderscore(args.additionalData));
+  }
+  return (dispatch) => {
+    return $.ajax({
+      method: 'PATCH',
+      url: `/api/${args.directory}/${args.id}`,
+      data
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'UPDATE_ENTITY' });
+        dispatch(obj);
+      },
+      (response) => {
+        let responseJSON = response.responseJSON;
+        if (Array.isArray(responseJSON)) {
+          dispatch({
+            type: 'ERRORS',
+            errors: response.responseJSON
+          });
+        } else {
+          let obj = Object.assign(responseJSON, { type: 'ERRORS' });
+          dispatch(obj);
+        }
       }
     );
   }

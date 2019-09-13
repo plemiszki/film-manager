@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190814121549) do
+ActiveRecord::Schema.define(version: 20190913160039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -411,6 +411,7 @@ ActiveRecord::Schema.define(version: 20190814121549) do
     t.string  "errors_text",   default: ""
     t.string  "name"
     t.boolean "done",          default: false
+    t.boolean "killed",        default: false
   end
 
   create_table "labels", force: :cascade do |t|
