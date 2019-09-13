@@ -8,6 +8,7 @@ class ExportAndSendReports
     reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: {export_reports: true, send_reports: true}, date_sent: nil)
     reports.each do |report|
       return if Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
+      return if job.reload.killed
       film = report.film
       if (days_due == "all" || film.days_statement_due == days_due.to_i)
         licensor = film.licensor

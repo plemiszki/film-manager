@@ -77,6 +77,7 @@ Rails.application.routes.draw do
     post '/royalty_reports/error_check' => '/api/royalty_reports#error_check'
     post '/royalty_reports/totals' => '/api/royalty_reports#totals'
     get '/jobs/status' => '/api/jobs#status'
+    resources :jobs, only: [:index, :update]
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]
     resources :sublicensors, only: [:index, :show, :create, :update, :destroy]
     resources :dvds, only: [:show, :create, :update, :destroy]
