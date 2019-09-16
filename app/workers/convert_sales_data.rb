@@ -189,7 +189,7 @@ class ConvertSalesData
             '',
             '',
             '',
-            film.title,
+            sage_id == 'SHORTS' ? 'Shorts' : film.title,
             gl_code,
             '',
             (amount.fdiv(100) * -1),
