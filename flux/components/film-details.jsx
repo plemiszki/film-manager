@@ -1631,30 +1631,35 @@ class FilmDetails extends React.Component {
             <div className="col-xs-12">
               <h2>Synopsis</h2>
               <textarea rows="8" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.synopsis || "" } data-field="synopsis" />
+              { this.wordcount.call(this, 'synopsis') }
             </div>
           </div>
           <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
             <div className="col-xs-12">
-              <h2>Short Synopsis</h2>
-              <textarea rows="4" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.shortSynopsis || "" } data-field="shortSynopsis" />
-            </div>
-          </div>
-          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
-            <div className="col-xs-12">
-              <h2>Logline</h2>
-              <textarea rows="2" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.logline || "" } data-field="logline" />
-            </div>
-          </div>
-          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
-            <div className="col-xs-12">
-              <h2>VOD Synopsis</h2>
+              <h2>Synopsis - 500 words</h2>
               <textarea rows="8" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vodSynopsis || "" } data-field="vodSynopsis" />
+              { this.wordcount.call(this, 'vodSynopsis') }
             </div>
           </div>
           <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
             <div className="col-xs-12">
-              <h2>institutional Synopsis</h2>
+              <h2>Synopsis - 240 words</h2>
+              <textarea rows="4" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.shortSynopsis || "" } data-field="shortSynopsis" />
+              { this.wordcount.call(this, 'shortSynopsis') }
+            </div>
+          </div>
+          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
+            <div className="col-xs-12">
+              <h2>Synopsis - 150 words</h2>
+              <textarea rows="2" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.logline || "" } data-field="logline" />
+              { this.wordcount.call(this, 'logline') }
+            </div>
+          </div>
+          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
+            <div className="col-xs-12">
+              <h2>Institutional Synopsis</h2>
               <textarea rows="8" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.institutionalSynopsis || "" } data-field="institutionalSynopsis" />
+              { this.wordcount.call(this, 'institutionalSynopsis') }
             </div>
           </div>
         </div>
@@ -1665,6 +1670,13 @@ class FilmDetails extends React.Component {
         </div>
       );
     }
+  }
+
+  wordcount(field) {
+    let count = this.state.film[field] ? this.state.film[field].trim().split(' ').length : 0;
+    return(
+      <div className="wordcount">({ count } words)</div>
+    );
   }
 
   renderRoyaltyFields() {
