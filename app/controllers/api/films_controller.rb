@@ -57,6 +57,7 @@ class Api::FilmsController < AdminController
   def destroy
     @film = Film.find(params[:id])
     if @film.destroy
+      RelatedFilm.where(other_film_id: @film.id).destroy_all
       render json: @film, status: 200
     else
       render json: @film.errors.full_messages, status: 422

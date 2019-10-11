@@ -17,6 +17,7 @@ gem 'caracal', '1.2.0'
 gem 'clearance', '~> 1.11'
 gem 'httparty'
 gem 'mailgun-ruby', '~>1.1.6'
+gem 'pry-rails'
 gem 'roo-xls'
 gem 'roo', '~> 2.7.0'
 gem 'rubyzip', '~> 1.3.0'
@@ -34,7 +35,6 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'dotenv-rails'
   gem 'factory_bot'
-  gem 'pry-rails'
   gem 'rspec-rails'
 end
 
