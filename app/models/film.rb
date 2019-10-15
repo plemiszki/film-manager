@@ -47,6 +47,7 @@ class Film < ActiveRecord::Base
   has_many :sub_rights
   has_many :crossed_films
   has_many :episodes
+  has_many :in_theaters_films, dependent: :destroy
 
   after_create :create_percentages
 
