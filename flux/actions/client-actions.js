@@ -2938,6 +2938,16 @@ var ClientActions = {
         ServerActions.receiveErrors(response);
       }
     });
+  },
+
+  fetchJob: function(id) {
+    $.ajax({
+      url: '/api/jobs/' + id,
+      method: 'GET',
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
   }
 }
 

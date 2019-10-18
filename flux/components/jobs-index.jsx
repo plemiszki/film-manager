@@ -29,6 +29,12 @@ class JobsIndex extends React.Component {
     });
   }
 
+  goToJob(e) {
+    let id = e.target.dataset.id;
+    let job = HandyTools.deepCopy(HandyTools.findObjectInArrayById(this.state.jobs, id));
+    window.location = `/royalty_reports?job_id=${id}`;
+  }
+
   killJob(e) {
     let id = e.target.dataset.id;
     let job = HandyTools.deepCopy(HandyTools.findObjectInArrayById(this.state.jobs, id));
@@ -62,6 +68,7 @@ class JobsIndex extends React.Component {
                   <th>Currently Running Export Statement Jobs</th>
                   <th>Status</th>
                   <th style={ { width: 120 } }></th>
+                  <th style={ { width: 120 } }></th>
                 </tr>
               </thead>
               <tbody>
@@ -74,6 +81,9 @@ class JobsIndex extends React.Component {
                       </td>
                       <td>
                         { `${job.currentValue} / ${job.totalValue}` }
+                      </td>
+                      <td>
+                        <a className="blue-outline-button small margin" onClick={ this.goToJob.bind(this) } data-id={ job.id }>Go to Job</a>
                       </td>
                       <td>
                         <a className="blue-outline-button small" onClick={ this.killJob.bind(this) } data-id={ job.id }>Kill Job</a>

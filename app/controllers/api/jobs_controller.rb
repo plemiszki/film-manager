@@ -10,6 +10,11 @@ class Api::JobsController < AdminController
     render 'index.json.jbuilder'
   end
 
+  def show
+    job = Job.find(params[:id])
+    render json: job
+  end
+
   def update
     job = Job.find(params[:id])
     job.update(job_params)

@@ -94,6 +94,9 @@ class ReportsIndex extends React.Component {
     FM.resetNiceSelect('select', (e) => { this.setState({daysDue: e.target.value}); });
     $('#upload-form-sage #user_file').on('change', this.pickFile.bind(this));
     ClientActions.fetchReports(this.state.quarter, this.state.year);
+    if (FM.params.job_id) {
+      ClientActions.fetchJob(FM.params.job_id);
+    }
   }
 
   componentWillUnmount() {
