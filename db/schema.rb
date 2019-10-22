@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190913160039) do
+ActiveRecord::Schema.define(version: 20191022174820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -570,6 +570,8 @@ ActiveRecord::Schema.define(version: 20190913160039) do
     t.datetime "updated_at"
   end
 
+  add_index "royalty_reports", ["film_id"], name: "index_royalty_reports_on_film_id", using: :btree
+
   create_table "royalty_revenue_streams", force: :cascade do |t|
     t.integer "royalty_report_id",                                            null: false
     t.integer "revenue_stream_id",                                            null: false
@@ -590,6 +592,9 @@ ActiveRecord::Schema.define(version: 20190913160039) do
     t.decimal "joined_difference",      precision: 8, scale: 2, default: 0.0
     t.decimal "joined_licensor_share",  precision: 8, scale: 2, default: 0.0
   end
+
+  add_index "royalty_revenue_streams", ["revenue_stream_id"], name: "index_royalty_revenue_streams_on_revenue_stream_id", using: :btree
+  add_index "royalty_revenue_streams", ["royalty_report_id"], name: "index_royalty_revenue_streams_on_royalty_report_id", using: :btree
 
   create_table "settings", force: :cascade do |t|
     t.string  "booking_confirmation_text"
