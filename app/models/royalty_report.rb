@@ -89,6 +89,7 @@ class RoyaltyReport < ActiveRecord::Base
       result = Hash.new(0)
       films.each do |film|
         report = film.royalty_reports.order(:id).last
+        next unless report
         report.past_reports.each do |report|
           report.calculate!
           result["Q#{report.quarter} #{report.year}"] += report.current_reserve.to_f
@@ -340,7 +341,8 @@ class RoyaltyReport < ActiveRecord::Base
 
     pdf = WickedPdf.new.pdf_from_string(string)
     subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
-    save_path = "#{directory}/#{report_name(titles)}"
+    licensor_name = @film.licensor.name if titles.length > 1
+    save_path = "#{directory}/#{report_name(titles, licensor_name)}"
     File.open(save_path, 'wb') do |f|
       f << pdf
     end
@@ -464,6 +466,7 @@ class RoyaltyReport < ActiveRecord::Base
     end
     films.each_with_index do |film, index|
       report = RoyaltyReport.find_by(year: year, quarter: quarter, film_id: film.id)
+      next unless report
       report_streams = report.calculate!
       result.update_attributes({
         current_total: result.current_total + report.current_total,
@@ -545,8 +548,13 @@ class RoyaltyReport < ActiveRecord::Base
     end
   end
 
-  def report_name(titles)
-    filename = "#{titles.join(' -- ')} - Q#{self.quarter} #{self.year}"
+  def report_name(titles, licensor_name = nil)
+    if titles.length > 1
+      current_packages = Dir.entries
+      filename = "#{licensor_name} package #{Time.now.to_i} - Q#{self.quarter} #{self.year}"
+    else
+      filename = "#{titles.first} - Q#{self.quarter} #{self.year}"
+    end
     filename = filename[0..249] if filename.length > 250
     "#{filename}.pdf"
   end
