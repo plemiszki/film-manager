@@ -550,7 +550,6 @@ class RoyaltyReport < ActiveRecord::Base
 
   def report_name(titles, licensor_name = nil)
     if titles.length > 1
-      current_packages = Dir.entries
       filename = "#{licensor_name} package #{Time.now.to_i} - Q#{self.quarter} #{self.year}"
     else
       filename = "#{titles.first} - Q#{self.quarter} #{self.year}"
