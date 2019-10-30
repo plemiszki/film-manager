@@ -18,6 +18,7 @@ class ExportAllReports
     FileUtils.mkdir_p("#{job_folder}/no amount due")
     job = Job.find_by_job_id(time_started)
     reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: { export_reports: true })
+    crossed_films_done = []
     reports.each do |report|
       return if Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
       return if job.reload.killed
@@ -28,7 +29,9 @@ class ExportAllReports
         p "#{film.title} (#{jid})"
         p '---------------------------'
         if film.has_crossed_films?
+          next if crossed_films_done.include?(film.id)
           report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
+          crossed_films_done += films.pluck(:id)
         else
           royalty_revenue_streams = report.calculate!
         end
