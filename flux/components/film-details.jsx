@@ -1711,6 +1711,11 @@ class FilmDetails extends React.Component {
               <input className={Details.errorClass(this.state.filmErrors, FM.errors.sellOffPeriod)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sellOffPeriod} data-field="sellOffPeriod" readOnly={ !FM.user.hasAdminAccess } />
               {Details.renderFieldError(this.state.filmErrors, FM.errors.sellOffPeriod)}
             </div>
+            <div className="col-xs-3">
+              <h2>Delivery Acceptance Date</h2>
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.acceptDelivery) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.acceptDelivery } data-field="acceptDelivery" readOnly={ !FM.user.hasAdminAccess } />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.acceptDelivery) }
+            </div>
           </div>
           <div className="row">
             <div className="col-xs-12">

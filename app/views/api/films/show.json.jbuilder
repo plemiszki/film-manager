@@ -56,6 +56,7 @@ json.films @films do |film|
   json.certifiedFresh film.certified_fresh
   json.criticsPick film.critics_pick
   json.imdbId film.imdb_id
+  json.acceptDelivery film.accept_delivery ? film.accept_delivery.strftime("%-m/%-d/%y") : ""
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

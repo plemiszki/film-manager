@@ -400,6 +400,9 @@ var FM = {
     ],
     inventory: [
       "Inventory is not a number"
+    ],
+    acceptDelivery: [
+      "Accept delivery is not a valid date"
     ]
   },
 
