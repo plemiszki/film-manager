@@ -11,31 +11,42 @@ class Api::RoyaltyReportsController < AdminController
   end
 
   def show
-    query_data_for_show_jbuilder
+    @report = RoyaltyReport.find(params[:id])
+    @streams = @report.royalty_revenue_streams
+    @film = Film.find(@report.film_id)
+    @films = [@film]
+
+    # if @film.has_crossed_films?
+    #   report, @streams, @films = RoyaltyReport.calculate_crossed_films_report(@film, report.year, report.quarter)
+    # else
+    # end
     render "show.json.jbuilder"
   end
 
   def update
     error_present = false
     errors = {
-      report: [],
-      streams: {}
+      reportErrors: [],
+      streamErrors: {}
     }
     begin
       ActiveRecord::Base.transaction do
         @report = RoyaltyReport.find(params[:id])
         unless @report.update(report_params)
-          error_present = true
-          errors[:report] = @report.errors.full_messages
+          @error_present = true
+          errors[:reportErrors] = @report.errors.full_messages
         end
         RoyaltyRevenueStream.where(royalty_report_id: params[:id]).each do |royalty_revenue_stream|
           unless royalty_revenue_stream.update(revenue_stream_params(royalty_revenue_stream.id))
-            error_present = true
-            errors[:streams][royalty_revenue_stream.id] = royalty_revenue_stream.errors.full_messages
+            @error_present = true
+            errors[:streamErrors][royalty_revenue_stream.id] = royalty_revenue_stream.errors.full_messages
           end
         end
-        fail if error_present
-        query_data_for_show_jbuilder
+        fail if @error_present
+        @report.calculate!
+        @streams = @report.royalty_revenue_streams
+        @film = Film.find(@report.film_id)
+        @films = [@film]
         render "show.json.jbuilder"
       end
     rescue
@@ -130,7 +141,7 @@ class Api::RoyaltyReportsController < AdminController
     if @film.has_crossed_films?
       report, @streams, @films = RoyaltyReport.calculate_crossed_films_report(@film, report.year, report.quarter)
     else
-      @streams = report.calculate!
+      @streams = report.royalty_revenue_streams
       @films = [@film]
     end
     @reports = [report]

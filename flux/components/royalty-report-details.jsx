@@ -1,10 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
 import ReportStore from '../stores/reports-store.js'
 import ReportErrorsStore from '../stores/report-errors-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { fetchEntity, updateEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class ReportDetails extends React.Component {
@@ -28,27 +30,21 @@ class ReportDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.reportListener = ReportStore.addListener(this.getReport.bind(this));
-    this.errorsListener = ReportErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchReport(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.reportListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getReport() {
-    this.setState({
-      report: Tools.deepCopy(ReportStore.report()),
-      reportSaved: ReportStore.report(),
-      streams: Tools.deepCopy(ReportStore.streams()),
-      streamsSaved: ReportStore.streams(),
-      fetching: false,
-      films: ReportStore.films()
-    }, () => {
+    this.props.fetchEntity({
+      directory: 'royalty_reports',
+      id: window.location.pathname.split("/")[2]
+    }).then(() => {
       this.setState({
-        changesToSave: this.checkForChanges()
+        report: this.props.report,
+        reportSaved: Tools.deepCopy(this.props.report),
+        streams: this.props.streams,
+        streamsSaved: Tools.deepCopy(this.props.streams),
+        fetching: false,
+        films: this.props.films
+      }, () => {
+        this.setState({
+          changesToSave: this.checkForChanges()
+        });
       });
     });
   }
@@ -62,14 +58,52 @@ class ReportDetails extends React.Component {
   }
 
   clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
+    let newStreams = {}
+    this.state.streams.forEach((stream) => {
+      newStreams[stream.id] = {
+        licensor_percentage: stream.licensorPercentage,
+        current_revenue: HandyTools.removeFinanceSymbols(stream.currentRevenue),
+        current_expense: HandyTools.removeFinanceSymbols(stream.currentExpense),
+        cume_revenue: HandyTools.removeFinanceSymbols(stream.cumeRevenue),
+        cume_expense: HandyTools.removeFinanceSymbols(stream.cumeExpense)
+      }
+    });
+    this.setState({
+      fetching: true,
+      justSaved: true
+    }, () => {
+      this.props.updateEntity({
+        id: window.location.pathname.split('/')[2],
+        directory: 'royalty_reports',
+        entityName: 'report',
+        entity: {
+          mg: HandyTools.removeFinanceSymbols(this.state.report.mg),
+          e_and_o: HandyTools.removeFinanceSymbols(this.state.report.eAndO),
+          amount_paid: HandyTools.removeFinanceSymbols(this.state.report.amountPaid),
+          current_total_expenses: HandyTools.removeFinanceSymbols(this.state.report.currentTotalExpenses),
+          cume_total_expenses: HandyTools.removeFinanceSymbols(this.state.report.cumeTotalExpenses)
+        },
+        additionalData: {
+          streams: newStreams
+        }
+      }).then(() => {
+        this.setState({
+          fetching: false,
+          changesToSave: false,
+          report: this.props.report,
+          reportSaved: Tools.deepCopy(this.props.report),
+          streams: this.props.streams,
+          streamsSaved: Tools.deepCopy(this.props.streams),
+          films: this.props.films
+        });
       }, () => {
-        ClientActions.updateReport(this.state.report, this.state.streams);
+        this.setState({
+          fetching: false,
+          reportErrors: this.props.reportErrors,
+          streamErrors: this.props.streamErrors
+        });
       });
-    }
+    });
   }
 
   clickTitle(id) {
@@ -390,13 +424,13 @@ class ReportDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "btn orange-button " + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="export" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
+        <a id="export" className={ "btn orange-button " + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
           Export PDF
         </a>
-        <a id="toggle" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickToggle.bind(this) }>
+        <a id="toggle" className={ "btn orange-button " + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickToggle.bind(this) }>
           { this.state.showJoined ? "Including Current Period" : "Not Including Current Period" }
         </a>
       </div>
@@ -433,4 +467,12 @@ class ReportDetails extends React.Component {
   }
 }
 
-export default ReportDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchEntity, updateEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportDetails);
