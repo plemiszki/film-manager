@@ -140,12 +140,17 @@ class RoyaltyReport < ActiveRecord::Base
           joined_licensor_share: (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         })
       elsif film.deal_type_id == 2 # Expenses Recouped From Top
-        stream.current_difference = stream.current_revenue - stream.current_expense
-        stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_difference = stream.cume_revenue - stream.cume_expense
-        stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_difference = stream.joined_revenue - stream.joined_expense
-        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        current_difference = stream.current_revenue - stream.current_expense
+        cume_difference = stream.cume_revenue - stream.cume_expense
+        joined_difference = stream.joined_revenue - stream.joined_expense
+        stream.update({
+          current_difference: current_difference,
+          current_licensor_share: (current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_difference: cume_difference,
+          cume_licensor_share: (cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_difference: joined_difference,
+          joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
       elsif film.deal_type_id == 3 # Theatrical Expenses Recouped From Top
         if ["Theatrical", "Non-Theatrical", "Commercial Video"].include?(stream.revenue_stream.name)
           stream.current_difference = stream.current_revenue - stream.current_expense
