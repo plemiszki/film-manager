@@ -153,17 +153,22 @@ class RoyaltyReport < ActiveRecord::Base
         })
       elsif film.deal_type_id == 3 # Theatrical Expenses Recouped From Top
         if ["Theatrical", "Non-Theatrical", "Commercial Video"].include?(stream.revenue_stream.name)
-          stream.current_difference = stream.current_revenue - stream.current_expense
-          stream.cume_difference = stream.cume_revenue - stream.cume_expense
-          stream.joined_difference = stream.joined_revenue - stream.joined_expense
+          current_difference = stream.current_revenue - stream.current_expense
+          cume_difference = stream.cume_revenue - stream.cume_expense
+          joined_difference = stream.joined_revenue - stream.joined_expense
         else
-          stream.current_difference = stream.current_revenue
-          stream.cume_difference = stream.cume_revenue
-          stream.joined_difference = stream.joined_revenue
+          current_difference = stream.current_revenue
+          cume_difference = stream.cume_revenue
+          joined_difference = stream.joined_revenue
         end
-        stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        stream.update({
+          current_difference: current_difference,
+          current_licensor_share: (current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_difference: cume_difference,
+          cume_licensor_share: (cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_difference: joined_difference,
+          joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
       elsif film.deal_type_id == 4 # Expenses Recouped From Licensor Share
         stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
