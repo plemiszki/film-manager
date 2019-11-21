@@ -18,5 +18,10 @@ FactoryBot.define do
       title { 'Theatrical Expenses Recouped From Top' }
       deal_type_id { 3 }
     end
+
+    factory :expenses_recouped_from_licensor_share_film do
+      title { 'Expenses Recouped From Licensor Share' }
+      deal_type_id { 4 }
+    end
   end
 end

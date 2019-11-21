@@ -19,6 +19,11 @@ RSpec.describe Api::RoyaltyReportsController do
     FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
       RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
     end
+    create(:expenses_recouped_from_licensor_share_film)
+    create(:expenses_recouped_from_licensor_share_royalty_report)
+    FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
+      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+    end
     sign_in_as(User.first)
   end
 
@@ -312,6 +317,68 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.cume_total).to eq(5360)
       expect(report.joined_total).to eq(5890)
       expect(report.joined_amount_due).to eq(2990)
+      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response.status).to eq(200)
+    end
+
+    it 'updates report streams (Expenses Recouped From Licensor Share)' do
+      report = Film.where(deal_type_id: 4).first.royalty_reports.first
+      streams = {}
+      report.royalty_revenue_streams.each do |stream|
+        streams[stream.id.to_s] = { licensor_percentage: 50, current_revenue: 100, cume_revenue: 1000 }
+      end
+      post :update, id: report.id, report: {}, streams: streams
+      stream = report.reload.royalty_revenue_streams.first
+      expect(stream.current_revenue).to eq(100)
+      expect(stream.current_licensor_share).to eq(50)
+      expect(stream.cume_revenue).to eq(1000)
+      expect(stream.cume_licensor_share).to eq(500)
+      expect(stream.joined_licensor_share).to eq(550)
+      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response.status).to eq(200)
+    end
+
+    it 'calculates the current total properly when updated (Expenses Recouped From Licensor Share)' do
+      report = Film.where(deal_type_id: 4).first.royalty_reports.first
+      streams = {}
+      report.royalty_revenue_streams.each do |stream|
+        streams[stream.id.to_s] = { current_revenue: 100, licensor_percentage: 50 }
+      end
+      post :update, id: report.id, report: { current_total_expenses: 250, cume_total_expenses: 350 }, streams: streams
+      report.reload
+      expect(report.current_total).to eq(700)
+      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response.status).to eq(200)
+    end
+
+    it 'calculates the cume total properly when updated (Expenses Recouped From Licensor Share)' do
+      report = Film.where(deal_type_id: 4).first.royalty_reports.first
+      streams = {}
+      report.royalty_revenue_streams.each do |stream|
+        streams[stream.id.to_s] = { cume_revenue: 1000, licensor_percentage: 40 }
+      end
+      post :update, id: report.id, report: {}, streams: streams
+      report.reload
+      expect(report.cume_total).to eq(5600)
+      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response.status).to eq(200)
+    end
+
+    it 'calculates the amount due properly when updated (Expenses Recouped From Licensor Share)' do
+      report = Film.where(deal_type_id: 4).first.royalty_reports.first
+      streams = {}
+      report.royalty_revenue_streams.each do |stream|
+        streams[stream.id.to_s] = { current_revenue: 100, cume_revenue: 1000, licensor_percentage: 40 }
+      end
+      post :update, id: report.id, report: { current_total_expenses: 300, cume_total_expenses: 800, amount_paid: 400, mg: 500, e_and_o: 2000 }, streams: streams
+      report.reload
+      expect(report.current_total).to eq(560)
+      expect(report.current_share_minus_expenses).to eq(260)
+      expect(report.cume_total).to eq(5600)
+      expect(report.joined_total).to eq(6160)
+      expect(report.joined_total_expenses).to eq(1100)
+      expect(report.amount_due).to eq(1900)
+      expect(report.joined_amount_due).to eq(2160)
       expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
       expect(response.status).to eq(200)
     end

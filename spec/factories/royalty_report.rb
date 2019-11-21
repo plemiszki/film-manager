@@ -17,5 +17,10 @@ FactoryBot.define do
       deal_id { 3 }
       film_id { Film.where(deal_type_id: 3).first.id }
     end
+
+    factory :expenses_recouped_from_licensor_share_royalty_report do
+      deal_id { 4 }
+      film_id { Film.where(deal_type_id: 4).first.id }
+    end
   end
 end

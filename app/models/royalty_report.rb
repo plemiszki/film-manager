@@ -170,9 +170,11 @@ class RoyaltyReport < ActiveRecord::Base
           joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
         })
       elsif film.deal_type_id == 4 # Expenses Recouped From Licensor Share
-        stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_licensor_share = (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        stream.update({
+          current_licensor_share: (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_licensor_share: (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_licensor_share: (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
       elsif film.deal_type_id == 5 # GR Percentage
         stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
         stream.current_difference = stream.current_revenue - stream.current_gr - stream.current_expense
