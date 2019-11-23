@@ -22,5 +22,15 @@ FactoryBot.define do
       deal_id { 4 }
       film_id { Film.where(deal_type_id: 4).first.id }
     end
+
+    factory :gr_percentage_royalty_report do
+      deal_id { 5 }
+      film_id { Film.where(deal_type_id: 5).first.id }
+    end
+
+    factory :gr_percentage_theatrical_royalty_report do
+      deal_id { 6 }
+      film_id { Film.where(deal_type_id: 6).first.id }
+    end
   end
 end

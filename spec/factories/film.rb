@@ -23,5 +23,17 @@ FactoryBot.define do
       title { 'Expenses Recouped From Licensor Share' }
       deal_type_id { 4 }
     end
+
+    factory :gr_percentage_film do
+      title { 'GR Percentage' }
+      deal_type_id { 5 }
+      gr_percentage { 20 }
+    end
+
+    factory :gr_percentage_theatrical_film do
+      title { 'GR Percentage Theatrical/Non-Theatrical' }
+      deal_type_id { 6 }
+      gr_percentage { 20 }
+    end
   end
 end

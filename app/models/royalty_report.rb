@@ -131,6 +131,7 @@ class RoyaltyReport < ActiveRecord::Base
           self.liquidated_reserve = total_past_reserves.values[0..(film.reserve_quarters * -1)].sum
         end
       end
+      # joined revenue and joined expenses will get updated when stream.update is called:
       stream.joined_revenue = stream.current_revenue + stream.cume_revenue
       stream.joined_expense = stream.current_expense + stream.cume_expense
       if film.deal_type_id == 1 # No Expenses Recouped
@@ -176,15 +177,23 @@ class RoyaltyReport < ActiveRecord::Base
           joined_licensor_share: (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
         })
       elsif film.deal_type_id == 5 # GR Percentage
-        stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-        stream.current_difference = stream.current_revenue - stream.current_gr - stream.current_expense
-        stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-        stream.cume_difference = stream.cume_revenue - stream.cume_gr - stream.cume_expense
-        stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-        stream.joined_difference = stream.joined_revenue - stream.joined_gr - stream.joined_expense
-        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+        current_difference = stream.current_revenue - current_gr - stream.current_expense
+        cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+        cume_difference = stream.cume_revenue - cume_gr - stream.cume_expense
+        joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+        joined_difference = stream.joined_revenue - joined_gr - stream.joined_expense
+        stream.update({
+          current_gr: current_gr,
+          current_difference: current_difference,
+          current_licensor_share: (current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_gr: cume_gr,
+          cume_difference: cume_difference,
+          cume_licensor_share: (cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_gr: joined_gr,
+          joined_difference: joined_difference,
+          joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
       elsif film.deal_type_id == 6 # GR Percentage Theatrical/Non-Theatrical
         if ["Theatrical", "Non-Theatrical"].include?(stream.revenue_stream.name)
           stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)

@@ -24,6 +24,16 @@ RSpec.describe Api::RoyaltyReportsController do
     FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
       RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
     end
+    create(:gr_percentage_film)
+    create(:gr_percentage_royalty_report)
+    FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
+      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+    end
+    # create(:gr_percentage_theatrical_film)
+    # create(:gr_percentage_theatrical_royalty_report)
+    # FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
+    #   RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+    # end
     sign_in_as(User.first)
   end
 
@@ -75,6 +85,8 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(stream.cume_revenue).to eq(1000)
       expect(stream.cume_expense).to eq(500)
       expect(stream.cume_licensor_share).to eq(500)
+      expect(stream.joined_revenue).to eq(1100)
+      expect(stream.joined_expense).to eq(550)
       expect(stream.joined_licensor_share).to eq(550)
       expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
       expect(response.status).to eq(200)
@@ -379,6 +391,42 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.joined_total_expenses).to eq(1100)
       expect(report.amount_due).to eq(1900)
       expect(report.joined_amount_due).to eq(2160)
+      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response.status).to eq(200)
+    end
+
+    it 'updates report streams (GR Percentage)' do
+      report = Film.where(deal_type_id: 5).first.royalty_reports.first
+      streams = {}
+      report.royalty_revenue_streams.each do |stream|
+        streams[stream.id.to_s] = { licensor_percentage: 50, current_revenue: 100, cume_revenue: 1000 }
+      end
+      post :update, id: report.id, report: {}, streams: streams
+      stream = report.reload.royalty_revenue_streams.first
+      expect(stream.current_revenue).to eq(100)
+      expect(stream.current_gr).to eq(20)
+      expect(stream.current_licensor_share).to eq(40)
+      expect(stream.cume_revenue).to eq(1000)
+      expect(stream.cume_gr).to eq(200)
+      expect(stream.cume_licensor_share).to eq(400)
+      expect(stream.joined_licensor_share).to eq(440)
+      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response.status).to eq(200)
+    end
+
+    it 'calculates the report properly when updated (GR Percentage)' do
+      report = Film.where(deal_type_id: 5).first.royalty_reports.first
+      streams = {}
+      report.royalty_revenue_streams.each do |stream|
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500, licensor_percentage: 50 }
+      end
+      post :update, id: report.id, report: { amount_paid: 400, mg: 500, e_and_o: 2000 }, streams: streams
+      report.reload
+      expect(report.current_total).to eq(210)
+      expect(report.cume_total).to eq(2100)
+      expect(report.joined_total).to eq(2310)
+      expect(report.amount_due).to eq(-800)
+      expect(report.joined_amount_due).to eq(-590)
       expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
       expect(response.status).to eq(200)
     end
