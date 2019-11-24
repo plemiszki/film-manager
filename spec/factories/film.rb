@@ -31,7 +31,7 @@ FactoryBot.define do
     end
 
     factory :gr_percentage_theatrical_film do
-      title { 'GR Percentage Theatrical/Non-Theatrical' }
+      title { 'GR Percentage Theatrical & Non-Theatrical' }
       deal_type_id { 6 }
       gr_percentage { 20 }
     end

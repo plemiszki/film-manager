@@ -2,6 +2,7 @@ class Film < ActiveRecord::Base
 
   validates :title, :label_id, :film_type, presence: true
   validates :title, uniqueness: { scope: :film_type }
+  validate :title_valid
   validate :gr_percentage_tenth_decimal
   validates_numericality_of :year, :length
   validates_numericality_of :mg, :greater_than_or_equal_to => 0
@@ -18,6 +19,10 @@ class Film < ActiveRecord::Base
     if [5, 6].include?(deal_type_id)
       validates_numericality_of :gr_percentage, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 100
     end
+  end
+
+  def title_valid
+    errors.add(:title, 'cannot contain /') if title.include?('/')
   end
 
   belongs_to :licensor

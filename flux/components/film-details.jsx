@@ -883,8 +883,8 @@ class FilmDetails extends React.Component {
             </div>
             <div className="col-xs-9">
               <h2>Title</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, ["Title can't be blank"]) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
-              { Details.renderFieldError(this.state.filmErrors, ["Title can't be blank"]) }
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.title) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
+              { Details.renderFieldError(this.state.filmErrors, FM.errors.title) }
             </div>
             <div className="col-xs-2">
               <h2>Type</h2>
