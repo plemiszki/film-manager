@@ -24,9 +24,9 @@ class ImportSageData
           report.cume_total_expenses = prev_report.joined_total_expenses
         end
         report.save!
-        calculated_streams = prev_report.calculate! if prev_report
+        prev_report_streams = prev_report.royalty_revenue_streams if prev_report
         FilmRevenuePercentage.where(film_id: film.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-          RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: prev_report ? calculated_streams[index].joined_revenue : 0, cume_expense: prev_report ? calculated_streams[index].joined_expense : 0)
+          RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: prev_report ? prev_report_streams[index].joined_revenue : 0, cume_expense: prev_report ? prev_report_streams[index].joined_expense : 0)
         end
         job.update!(current_value: index, total_value: films.length)
       end

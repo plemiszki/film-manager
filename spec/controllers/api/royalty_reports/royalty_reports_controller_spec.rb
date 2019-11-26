@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'sidekiq/testing'
 
 RSpec.describe Api::RoyaltyReportsController do
 
@@ -482,6 +483,17 @@ RSpec.describe Api::RoyaltyReportsController do
     it 'returns an OK status code' do
       get :export, id: RoyaltyReport.last.id
       expect(response.status).to eq(200)
+    end
+
+  end
+
+  context '#import' do
+
+    it 'imports data properly' do
+      time_started = Time.now.to_s
+      job = Job.create!(job_id: time_started)
+      ImportSageData.perform_async(2019, 2, time_started, 'revenue', 'file.txt')
+      ImportSageData.drain
     end
 
   end

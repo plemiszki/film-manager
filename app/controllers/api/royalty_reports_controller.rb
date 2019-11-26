@@ -71,7 +71,7 @@ class Api::RoyaltyReportsController < AdminController
     obj.upload_file(Rails.root.join('tmp', time_started, original_filename), acl:'private')
     job = Job.create!(job_id: time_started, first_line: "Importing Q#{params[:quarter]} #{params[:label].capitalize}", second_line: false)
     ImportSageData.perform_async(params[:year], params[:quarter], time_started, params[:label], original_filename)
-    redirect_to "/royalty_reports", flash: {sage_import_id: job.id, quarter: params[:quarter], label: params[:label]}
+    redirect_to "/royalty_reports", flash: { sage_import_id: job.id, quarter: params[:quarter], label: params[:label] }
   end
 
   def error_check
