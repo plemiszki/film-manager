@@ -1402,22 +1402,22 @@ class FilmDetails extends React.Component {
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <h3>Release Dates:</h3>
               <h2>Theatrical Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.theatricalRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.theatricalRelease || "" } data-field="theatricalRelease" />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.theatricalRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.theatricalRelease || "" } data-field="theatricalRelease" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.theatricalRelease) }
               <h2>SVOD Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.svodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.svodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.svodRelease) }
               <h2>TVOD/EST Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.tvodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.tvodRelease || "" } data-field="tvodRelease" />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.tvodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.tvodRelease || "" } data-field="tvodRelease" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.tvodRelease) }
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <div style={ { width: '100%', height: '47px' } }></div>
               <h2>AVOD Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.avodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.avodRelease || "" } data-field="avodRelease" />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.avodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.avodRelease || "" } data-field="avodRelease" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.avodRelease) }
               <h2>Club Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.clubDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.clubDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.clubDate) }
             </div>
           </div>
