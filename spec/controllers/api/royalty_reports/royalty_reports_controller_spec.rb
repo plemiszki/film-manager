@@ -8,32 +8,32 @@ RSpec.describe Api::RoyaltyReportsController do
     create(:no_expenses_recouped_film)
     create(:no_expenses_recouped_royalty_report)
     FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
     end
     create(:expenses_recouped_from_top_film)
     create(:expenses_recouped_from_top_royalty_report)
     FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
     end
     create(:theatrical_expenses_recouped_from_top_film)
     create(:theatrical_expenses_recouped_from_top_royalty_report)
     FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
     end
     create(:expenses_recouped_from_licensor_share_film)
     create(:expenses_recouped_from_licensor_share_royalty_report)
     FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
     end
     create(:gr_percentage_film)
     create(:gr_percentage_royalty_report)
     FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
     end
     create(:gr_percentage_theatrical_film)
     create(:gr_percentage_theatrical_royalty_report)
     FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
     end
     sign_in_as(User.first)
   end
@@ -490,10 +490,46 @@ RSpec.describe Api::RoyaltyReportsController do
   context '#import' do
 
     it 'imports data properly' do
+
       time_started = Time.now.to_s
       job = Job.create!(job_id: time_started)
-      ImportSageData.perform_async(2019, 2, time_started, 'revenue', 'file.txt')
+      film = Film.find_by_title('Expenses Recouped From Top')
+      film.film_revenue_percentages.update_all({ value: 50 })
+      q1_report = film.royalty_reports.last
+      q1_report.royalty_revenue_streams.each_with_index do |stream, index|
+        stream.update(licensor_percentage: 50, current_revenue: 100 + index, joined_revenue: 100 + index)
+      end
+      q1_report.calculate!
+
+      ImportSageData.perform_async(2019, 2, time_started, 'revenue', '/spec/support/revenue.xlsx')
+      ImportSageData.perform_async(2019, 2, time_started, 'expenses', '/spec/support/expenses.xlsx')
       ImportSageData.drain
+
+      # new reports are created
+
+      expect(RoyaltyReport.where({ year: 2019, quarter: 2 }).count).to eq(6)
+
+      q2_report = RoyaltyReport.find_by({ film_id: film.id, year: 2019, quarter: 2 })
+      expect(q2_report.current_total_revenue).to eq(40_666.33)
+      expect(q2_report.current_total).to eq(20_283)
+      expect(q2_report.cume_total_revenue).to eq(1491)
+      expect(q2_report.cume_total).to eq(745.50)
+      expect(q2_report.joined_total_revenue).to eq(40_666.33 + 1491)
+      expect(q2_report.joined_total).to eq(21_028.50)
+      expect(q2_report.amount_paid).to eq(745.50)
+      expect(q2_report.amount_due).to eq(0)
+      expect(q2_report.joined_amount_due).to eq(20_283)
+
+      q2_report_streams = q2_report.royalty_revenue_streams
+      q2_report_streams.each_with_index do |stream, index|
+        expect(stream.current_revenue).to eq([0, 0, 35_393.95, 0, 0, 0, 708.10, 143.81, 0, 4167.93, 252.54, 0, 0, 0][index])
+        expect(stream.current_expense).to eq([0, 9, 16.31, 0, 0, 0, 0, 0, 0, 75, 0, 0, 0, 0][index])
+        expect(stream.current_difference).to eq([0, -9, 35_377.64, 0, 0, 0, 708.10, 143.81, 0, 4092.93, 252.54, 0, 0, 0][index])
+        expect(stream.current_licensor_share).to eq([0, -4.5, 17688.82, 0, 0, 0, 354.05, 71.9, 0, 2046.46, 126.27, 0, 0, 0].map(&:to_d)[index])
+        expect(stream.cume_revenue).to eq(100 + index)
+        expect(stream.joined_revenue).to eq(stream.current_revenue + stream.cume_revenue)
+      end
+
     end
 
   end

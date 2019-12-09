@@ -10,7 +10,9 @@ class ImportSageData
     p '---------------------------'
     job = Job.find_by_job_id(time_started)
     reports = RoyaltyReport.where(year: year, quarter: quarter)
+
     # create royalty_revenue_streams if we haven't seen this quarter before
+
     if reports.length == 0
       films = Film.where(film_type: ['Feature', 'TV Series'])
       job.update!(first_line: "Transferring Previous Revenue/Expenses", second_line: true, current_value: 0, total_value: films.length)
@@ -28,6 +30,7 @@ class ImportSageData
         FilmRevenuePercentage.where(film_id: film.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
           RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: prev_report ? prev_report_streams[index].joined_revenue : 0, cume_expense: prev_report ? prev_report_streams[index].joined_expense : 0)
         end
+        report.calculate!
         job.update!(current_value: index, total_value: films.length)
       end
     else
@@ -38,18 +41,23 @@ class ImportSageData
         ActiveRecord::Base.connection.execute("UPDATE royalty_reports SET current_total_expenses = 0 WHERE royalty_reports.year = #{year} AND royalty_reports.quarter = #{quarter}")
       end
     end
+
     # now start importing from the file
-    FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
-    s3 = Aws::S3::Resource.new(
-      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
-      region: 'us-east-1'
-    )
-    object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/#{original_filename}")
-    object.get(response_target: Rails.root.join("tmp/#{time_started}/#{original_filename}"))
+
+    unless Rails.env == 'test'
+      FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
+      s3 = Aws::S3::Resource.new(
+        credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+        region: 'us-east-1'
+      )
+      object = s3.bucket(ENV['S3_BUCKET']).object("#{time_started}/#{original_filename}")
+      object.get(response_target: Rails.root.join("tmp/#{time_started}/#{original_filename}"))
+    end
 
     require 'roo'
+    file_path = Rails.env == 'test' ? Rails.root.join("./#{original_filename}").to_s : Rails.root.join("tmp/#{time_started}/#{original_filename}").to_s
     begin
-      xlsx = Roo::Spreadsheet.open(Rails.root.join("tmp/#{time_started}/#{original_filename}").to_s)
+      xlsx = Roo::Spreadsheet.open(file_path)
       sheet = xlsx.sheet(0)
       index = 2
       errors = []
@@ -217,6 +225,11 @@ class ImportSageData
         index += 1
         job.update!(current_value: index)
       end
+
+      RoyaltyReport.where(year: year, quarter: quarter).each do |report|
+        report.calculate!
+      end
+
       job.update!({ done: true, first_line: "Import Complete", errors_text: errors.join("\n") })
       p '---------------------------'
       p 'FINISHED SAGE IMPORT'
@@ -405,9 +418,8 @@ class ImportSageData
     @reports = RoyaltyReport.where(film_id: film.id, year: prev_year, quarter: prev_quarter)
     return nil if @reports.empty?
     @film = film
-    @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports[0].id).joins(:revenue_stream).order('revenue_streams.order')
-    @reports[0].calculate!
-    return [@reports[0], @streams]
+    @streams = RoyaltyRevenueStream.where(royalty_report_id: @reports.first.id).joins(:revenue_stream).order('revenue_streams.order')
+    return [@reports.first, @streams]
   end
 
   def check_for_empty_percentage(stream, errors, title, label)
