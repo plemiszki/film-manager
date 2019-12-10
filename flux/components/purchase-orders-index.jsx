@@ -156,7 +156,7 @@ class PurchaseOrdersIndex extends React.Component {
                       { purchaseOrder.shipDate }
                     </td>
                     <td>
-                      { purchaseOrder.number }v
+                      { purchaseOrder.number }
                     </td>
                     <td>
                       { purchaseOrder.customer }
