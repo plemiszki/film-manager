@@ -30,6 +30,7 @@ json.array!(@films) do |film|
   json.theatrical_release film.theatrical_release || ""
   json.imdb_id film.imdb_id
   json.artwork_url film.artwork_url || ""
+  json.day_and_date film.day_and_date
   json.screening_formats film.formats do |format|
     json.id format.id
     json.name format.name

@@ -19,6 +19,7 @@ json.films @films do |film|
   json.exportReports film.export_reports
   json.sendReports film.send_reports
   json.active film.active
+  json.dayAndDate film.day_and_date
   json.sellOffPeriod film.sell_off_period
   json.autoRenew film.auto_renew
   json.autoRenewTerm film.auto_renew_term

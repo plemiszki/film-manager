@@ -252,6 +252,7 @@ var ClientActions = {
       twitter_link: film.twitterLink,
       instagram_link: film.instagramLink,
       active: film.active,
+      day_and_date: film.dayAndDate,
       edu_page: film.eduPage,
       video_page: film.videoPage,
       label_id: film.labelId,
