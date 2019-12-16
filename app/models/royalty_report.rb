@@ -569,6 +569,16 @@ class RoyaltyReport < ActiveRecord::Base
     end
   end
 
+  def next_report
+    quarter = self.quarter + 1
+    year = self.year
+    if quarter == 5
+      quarter = 1
+      year += 1
+    end
+    RoyaltyReport.find_by({ year: year, quarter: quarter, film_id: self.film_id })
+  end
+
   def prev_report
     quarter = self.quarter - 1
     year = self.year

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Api::FilmsController do
 
   before(:each) do
-    set_up
+    set_up_user_and_label_and_licensor_and_rights_and_revenue_streams
     create(:no_expenses_recouped_film)
     sign_in_as(User.first)
   end

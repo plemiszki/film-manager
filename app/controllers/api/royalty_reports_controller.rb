@@ -44,6 +44,7 @@ class Api::RoyaltyReportsController < AdminController
         end
         fail if @error_present
         @report.calculate!
+        recalculate_any_future_reports
         @streams = @report.royalty_revenue_streams
         @film = Film.find(@report.film_id)
         @films = [@film]
@@ -133,6 +134,23 @@ class Api::RoyaltyReportsController < AdminController
 
   def report_name(film, report)
     "#{film.crossed_film_titles.sort.join(' -- ')} - Q#{report.quarter} #{report.year}.pdf"
+  end
+
+  def recalculate_any_future_reports
+    prev_report = @report
+    next_report = @report.next_report
+    until next_report.nil?
+      prev_report_streams = prev_report.royalty_revenue_streams
+      next_report.royalty_revenue_streams.each_with_index do |stream, index|
+        new_revenue = prev_report_streams[index].current_revenue + prev_report_streams[index].cume_revenue
+        new_expense = prev_report_streams[index].current_expense + prev_report_streams[index].cume_expense
+        stream.update!(cume_revenue: new_revenue, cume_expense: new_expense)
+      end
+      next_report.update!({ cume_total_expenses: prev_report.joined_total_expenses })
+      next_report.calculate!
+      prev_report = next_report
+      next_report = next_report.next_report
+    end
   end
 
   def query_data_for_show_jbuilder

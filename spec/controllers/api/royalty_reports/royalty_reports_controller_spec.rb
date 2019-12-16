@@ -4,51 +4,17 @@ require 'sidekiq/testing'
 RSpec.describe Api::RoyaltyReportsController do
 
   before(:each) do
-    set_up
-    # no expenses recouped
-    film = create(:no_expenses_recouped_film)
-    film.film_revenue_percentages.update_all({ value: 50 })
-    report = create(:no_expenses_recouped_royalty_report)
-    FilmRevenuePercentage.where(film_id: film.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
-    end
-    # expenses recouped from top
-    create(:expenses_recouped_from_top_film)
-    create(:expenses_recouped_from_top_royalty_report)
-    FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
-    end
-    # theatrical expenses recouped from top
-    create(:theatrical_expenses_recouped_from_top_film)
-    create(:theatrical_expenses_recouped_from_top_royalty_report)
-    FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
-    end
-    # expenses recouped from licensor share
-    create(:expenses_recouped_from_licensor_share_film)
-    create(:expenses_recouped_from_licensor_share_royalty_report)
-    FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
-    end
-    # gr percentage film
-    create(:gr_percentage_film)
-    create(:gr_percentage_royalty_report)
-    FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
-    end
-    # gr percentage theatrical film
-    create(:gr_percentage_theatrical_film)
-    create(:gr_percentage_theatrical_royalty_report)
-    FilmRevenuePercentage.where(film_id: Film.last.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: RoyaltyReport.last.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
-    end
+    set_up_user_and_label_and_licensor_and_rights_and_revenue_streams
     sign_in_as(User.first)
   end
 
   context '#show' do
 
     it 'returns an OK status code' do
-      get :show, id: RoyaltyReport.last.id
+      film = create(:no_expenses_recouped_film)
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
+      get :show, id: report.id
       expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
       expect(response.status).to eq(200)
     end
@@ -58,7 +24,9 @@ RSpec.describe Api::RoyaltyReportsController do
   context '#update' do
 
     it 'updates the report' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
         streams[stream.id.to_s] = { current_revenue: 0, current_expense: 0 }
@@ -73,17 +41,22 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'catches invalid report properties' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       post :update, id: report.id, report: { mg: 'barf' }
-      expect(JSON.parse(response.body)["reportErrors"]).to include("Mg is not a number")
+      expect(JSON.parse(response.body)['reportErrors']).to include('Mg is not a number')
       expect(response.status).to eq(422)
     end
 
     it 'updates report streams (No Expenses Recouped)' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { licensor_percentage: 50, current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500 }
       end
       post :update, id: report.id, report: {}, streams: streams
       stream = report.reload.royalty_revenue_streams.first
@@ -101,7 +74,10 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'catches invalid report streams' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
         streams[stream.id.to_s] = { current_revenue: 'poop' }
@@ -112,7 +88,10 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the current total revenue properly when updated' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
         streams[stream.id.to_s] = { current_revenue: 100 }
@@ -125,10 +104,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the current total properly when updated (No Expenses Recouped)' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, licensor_percentage: 50 }
+        streams[stream.id.to_s] = { current_revenue: 100 }
       end
       post :update, id: report.id, report: {}, streams: streams
       report.reload
@@ -138,7 +120,10 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the cume total revenue properly when updated' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
         streams[stream.id.to_s] = { cume_revenue: 1000 }
@@ -151,10 +136,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the cume total properly when updated (No Expenses Recouped)' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 25 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { cume_revenue: 1000, licensor_percentage: 25 }
+        streams[stream.id.to_s] = { cume_revenue: 1000 }
       end
       post :update, id: report.id, report: {}, streams: streams
       report.reload
@@ -164,10 +152,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the amount due properly when updated (No Expenses Recouped)' do
-      report = Film.where(deal_type_id: 1).first.royalty_reports.first
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, cume_revenue: 1000, licensor_percentage: 50 }
+        streams[stream.id.to_s] = { current_revenue: 100, cume_revenue: 1000 }
       end
       post :update, id: report.id, report: { amount_paid: 1000, mg: 2000, e_and_o: 2000 }, streams: streams
       report.reload
@@ -180,10 +171,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'updates report streams (Expenses Recouped From Top)' do
-      report = Film.find_by_title('Expenses Recouped From Top').royalty_reports.first
+      film = create(:expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { licensor_percentage: 50, current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500 }
       end
       post :update, id: report.id, report: {}, streams: streams
       stream = report.reload.royalty_revenue_streams.first
@@ -201,7 +195,10 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the current total expenses properly when updated' do
-      report = Film.find_by_title('Expenses Recouped From Top').royalty_reports.first
+      film = create(:expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
         streams[stream.id.to_s] = { current_expense: 70 }
@@ -214,10 +211,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the current total properly when updated (Expenses Recouped From Top)' do
-      report = Film.find_by_title('Expenses Recouped From Top').royalty_reports.first
+      film = create(:expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, licensor_percentage: 50 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50 }
       end
       post :update, id: report.id, report: {}, streams: streams
       report.reload
@@ -227,7 +227,9 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the cume total expenses properly when updated' do
-      report = Film.find_by_title('Expenses Recouped From Top').royalty_reports.first
+      film = create(:expenses_recouped_from_top_film)
+      report = create(:expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
         streams[stream.id.to_s] = { cume_expense: 800 }
@@ -240,10 +242,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the cume total properly when updated (Expenses Recouped From Top)' do
-      report = Film.find_by_title('Expenses Recouped From Top').royalty_reports.first
+      film = create(:expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 40 })
+      report = create(:expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { cume_revenue: 1000, cume_expense: 250, licensor_percentage: 40 }
+        streams[stream.id.to_s] = { cume_revenue: 1000, cume_expense: 250 }
       end
       post :update, id: report.id, report: {}, streams: streams
       report.reload
@@ -253,12 +258,15 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the amount due properly when updated (Expenses Recouped From Top)' do
-      report = Film.find_by_title('Expenses Recouped From Top').royalty_reports.first
+      film = create(:expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 40 })
+      report = create(:expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 25, cume_revenue: 1000, cume_expense: 200, licensor_percentage: 40 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 25, cume_revenue: 1000, cume_expense: 200 }
       end
-      post :update, id: report.id, report: { amount_paid: 400, mg: 500, e_and_o: 2000 }, streams: streams
+      post :update, id: report.id, report: { amount_paid: 400 }, streams: streams
       report.reload
       expect(report.current_total).to eq(420)
       expect(report.cume_total).to eq(4480)
@@ -269,10 +277,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'updates report streams (Theatrical Expenses Recouped From Top)' do
-      report = Film.where(deal_type_id: 3).first.royalty_reports.first
+      film = create(:theatrical_expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:theatrical_expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { licensor_percentage: 50, current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500 }
       end
       post :update, id: report.id, report: {}, streams: streams
       theatrical_stream = report.reload.royalty_revenue_streams.first
@@ -300,10 +311,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the current total properly when updated (Theatrical Expenses Recouped From Top)' do
-      report = Film.where(deal_type_id: 3).first.royalty_reports.first
+      film = create(:theatrical_expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:theatrical_expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, licensor_percentage: 50 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50 }
       end
       post :update, id: report.id, report: {}, streams: streams
       report.reload
@@ -313,10 +327,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the cume total properly when updated (Theatrical Expenses Recouped From Top)' do
-      report = Film.where(deal_type_id: 3).first.royalty_reports.first
+      film = create(:theatrical_expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 40 })
+      report = create(:theatrical_expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { cume_revenue: 1000, cume_expense: 250, licensor_percentage: 40 }
+        streams[stream.id.to_s] = { cume_revenue: 1000, cume_expense: 250 }
       end
       post :update, id: report.id, report: {}, streams: streams
       report.reload
@@ -326,12 +343,15 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the amount due properly when updated (Theatrical Expenses Recouped From Top)' do
-      report = Film.where(deal_type_id: 3).first.royalty_reports.first
+      film = create(:theatrical_expenses_recouped_from_top_film)
+      film.film_revenue_percentages.update_all({ value: 40 })
+      report = create(:theatrical_expenses_recouped_from_top_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 25, cume_revenue: 1000, cume_expense: 200, licensor_percentage: 40 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 25, cume_revenue: 1000, cume_expense: 200 }
       end
-      post :update, id: report.id, report: { amount_paid: 400, mg: 500, e_and_o: 2000 }, streams: streams
+      post :update, id: report.id, report: { amount_paid: 400 }, streams: streams
       report.reload
       expect(report.current_total).to eq(530)
       expect(report.cume_total).to eq(5360)
@@ -342,10 +362,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'updates report streams (Expenses Recouped From Licensor Share)' do
-      report = Film.where(deal_type_id: 4).first.royalty_reports.first
+      film = create(:expenses_recouped_from_licensor_share_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:expenses_recouped_from_licensor_share_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { licensor_percentage: 50, current_revenue: 100, cume_revenue: 1000 }
+        streams[stream.id.to_s] = { current_revenue: 100, cume_revenue: 1000 }
       end
       post :update, id: report.id, report: {}, streams: streams
       stream = report.reload.royalty_revenue_streams.first
@@ -359,10 +382,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the current total properly when updated (Expenses Recouped From Licensor Share)' do
-      report = Film.where(deal_type_id: 4).first.royalty_reports.first
+      film = create(:expenses_recouped_from_licensor_share_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:expenses_recouped_from_licensor_share_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, licensor_percentage: 50 }
+        streams[stream.id.to_s] = { current_revenue: 100 }
       end
       post :update, id: report.id, report: { current_total_expenses: 250, cume_total_expenses: 350 }, streams: streams
       report.reload
@@ -372,10 +398,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the cume total properly when updated (Expenses Recouped From Licensor Share)' do
-      report = Film.where(deal_type_id: 4).first.royalty_reports.first
+      film = create(:expenses_recouped_from_licensor_share_film)
+      film.film_revenue_percentages.update_all({ value: 40 })
+      report = create(:expenses_recouped_from_licensor_share_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { cume_revenue: 1000, licensor_percentage: 40 }
+        streams[stream.id.to_s] = { cume_revenue: 1000 }
       end
       post :update, id: report.id, report: {}, streams: streams
       report.reload
@@ -385,12 +414,15 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the amount due properly when updated (Expenses Recouped From Licensor Share)' do
-      report = Film.where(deal_type_id: 4).first.royalty_reports.first
+      film = create(:expenses_recouped_from_licensor_share_film)
+      film.film_revenue_percentages.update_all({ value: 40 })
+      report = create(:expenses_recouped_from_licensor_share_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, cume_revenue: 1000, licensor_percentage: 40 }
+        streams[stream.id.to_s] = { current_revenue: 100, cume_revenue: 1000 }
       end
-      post :update, id: report.id, report: { current_total_expenses: 300, cume_total_expenses: 800, amount_paid: 400, mg: 500, e_and_o: 2000 }, streams: streams
+      post :update, id: report.id, report: { current_total_expenses: 300, cume_total_expenses: 800, amount_paid: 400 }, streams: streams
       report.reload
       expect(report.current_total).to eq(560)
       expect(report.current_share_minus_expenses).to eq(260)
@@ -404,10 +436,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'updates report streams (GR Percentage)' do
-      report = Film.where(deal_type_id: 5).first.royalty_reports.first
+      film = create(:gr_percentage_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:gr_percentage_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { licensor_percentage: 50, current_revenue: 100, cume_revenue: 1000 }
+        streams[stream.id.to_s] = { current_revenue: 100, cume_revenue: 1000 }
       end
       post :update, id: report.id, report: {}, streams: streams
       stream = report.reload.royalty_revenue_streams.first
@@ -423,12 +458,15 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the report properly when updated (GR Percentage)' do
-      report = Film.where(deal_type_id: 5).first.royalty_reports.first
+      film = create(:gr_percentage_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:gr_percentage_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500, licensor_percentage: 50 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500 }
       end
-      post :update, id: report.id, report: { amount_paid: 400, mg: 500, e_and_o: 2000 }, streams: streams
+      post :update, id: report.id, report: { amount_paid: 400 }, streams: streams
       report.reload
       expect(report.current_total).to eq(210)
       expect(report.cume_total).to eq(2100)
@@ -440,10 +478,13 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'updates report streams (GR Percentage Theatrical/Non-Theatrical)' do
-      report = Film.where(deal_type_id: 6).first.royalty_reports.first
+      film = create(:gr_percentage_theatrical_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:gr_percentage_theatrical_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { licensor_percentage: 50, current_revenue: 100, cume_revenue: 1000 }
+        streams[stream.id.to_s] = { current_revenue: 100, cume_revenue: 1000 }
       end
       post :update, id: report.id, report: {}, streams: streams
       theatrical_stream = report.reload.royalty_revenue_streams.first
@@ -467,12 +508,15 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'calculates the report properly when updated (GR Percentage Theatrical/Non-Theatrical)' do
-      report = Film.where(deal_type_id: 6).first.royalty_reports.first
+      film = create(:gr_percentage_theatrical_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:gr_percentage_theatrical_royalty_report)
+      report.create_empty_streams!
       streams = {}
       report.royalty_revenue_streams.each do |stream|
-        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500, licensor_percentage: 50 }
+        streams[stream.id.to_s] = { current_revenue: 100, current_expense: 50, cume_revenue: 1000, cume_expense: 500 }
       end
-      post :update, id: report.id, report: { amount_paid: 400, mg: 500, e_and_o: 2000 }, streams: streams
+      post :update, id: report.id, report: { amount_paid: 400 }, streams: streams
       report.reload
       expect(report.current_total).to eq(330)
       expect(report.cume_total).to eq(3300)
@@ -484,9 +528,11 @@ RSpec.describe Api::RoyaltyReportsController do
     end
 
     it 'updates future reports properly' do
-      film = Film.find_by_title('No Expenses Recouped')
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
       # first quarter
-      q1_report = RoyaltyReport.find_by(film_id: film.id)
+      q1_report = create(:no_expenses_recouped_royalty_report)
+      q1_report.create_empty_streams!
       streams = {}
       q1_report.royalty_revenue_streams.each do |stream|
         streams[stream.id.to_s] = { current_revenue: 100 }
@@ -508,6 +554,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, id: q2_report.id, report: {}, streams: streams
       q2_report.reload
       expect(q2_report.current_total).to eq(1400)
+      expect(q2_report.cume_total).to eq(700)
       expect(q2_report.joined_amount_due).to eq(-400)
       # update first quarter
       streams = {}
@@ -519,9 +566,12 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(q1_report.current_total).to eq(1050)
       expect(q1_report.joined_amount_due).to eq(-1450)
       q2_report.reload
-      # q2_report.royalty_revenue_streams.each do |stream|
-      #   expect(stream.cume_revenue).to eq(150)
-      # end
+      q2_report.royalty_revenue_streams.each do |stream|
+        expect(stream.cume_revenue).to eq(150)
+      end
+      expect(q2_report.current_total).to eq(1400)
+      expect(q2_report.cume_total).to eq(1050)
+      expect(q2_report.joined_amount_due).to eq(-50)
     end
 
     it 'calculates dvd reserves properly' do
@@ -592,7 +642,9 @@ RSpec.describe Api::RoyaltyReportsController do
   context '#export' do
 
     it 'returns an OK status code' do
-      get :export, id: RoyaltyReport.last.id
+      create(:no_expenses_recouped_film)
+      report = create(:no_expenses_recouped_royalty_report)
+      get :export, id: report.id
       expect(response.status).to eq(200)
     end
 
@@ -602,16 +654,28 @@ RSpec.describe Api::RoyaltyReportsController do
 
     it 'imports data properly' do
 
+      create(:no_expenses_recouped_film)
+      create(:no_expenses_recouped_royalty_report).create_empty_streams!
+      create(:theatrical_expenses_recouped_from_top_film)
+      create(:theatrical_expenses_recouped_from_top_royalty_report).create_empty_streams!
+      create(:expenses_recouped_from_licensor_share_film)
+      create(:expenses_recouped_from_licensor_share_royalty_report).create_empty_streams!
+      create(:gr_percentage_film)
+      create(:gr_percentage_royalty_report).create_empty_streams!
+      create(:gr_percentage_theatrical_film)
+      create(:gr_percentage_theatrical_royalty_report).create_empty_streams!
+
+      film = create(:expenses_recouped_from_top_film, mg: 0, e_and_o: 0)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      q1_report = create(:expenses_recouped_from_top_royalty_report, mg: 0, e_and_o: 0)
+      q1_report.create_empty_streams!
+
       time_started = Time.now.to_s
       job = Job.create!(job_id: time_started)
-      film = Film.find_by_title('Expenses Recouped From Top')
-      film.film_revenue_percentages.update_all({ value: 50 })
-      q1_report = film.royalty_reports.last
       q1_report.royalty_revenue_streams.each_with_index do |stream, index|
-        stream.update!(licensor_percentage: 50, current_revenue: 100 + index, joined_revenue: 100 + index)
+        stream.update!(current_revenue: 100 + index, joined_revenue: 100 + index)
       end
       q1_report.calculate!
-      binding.pry
 
       ImportSageData.perform_async(2019, 2, time_started, 'revenue', '/spec/support/revenue.xlsx')
       ImportSageData.perform_async(2019, 2, time_started, 'expenses', '/spec/support/expenses.xlsx')

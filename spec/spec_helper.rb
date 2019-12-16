@@ -95,7 +95,7 @@ RSpec.configure do |config|
 =end
 end
 
-def set_up
+def set_up_user_and_label_and_licensor_and_rights_and_revenue_streams
   create(:user)
   create(:label)
   create(:licensor)
