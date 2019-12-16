@@ -4,10 +4,12 @@ FactoryBot.define do
 
     year { 2019 }
     quarter { 1 }
+    mg { 500 }
+    e_and_o { 2000 }
 
     factory :no_expenses_recouped_royalty_report do
       deal_id { 1 }
-      film_id { Film.where(deal_type_id: 1).first.id }
+      film_id { Film.find_by_title('No Expenses Recouped').id }
     end
 
     factory :expenses_recouped_from_top_royalty_report do
@@ -38,8 +40,6 @@ FactoryBot.define do
     factory :dvd_reserve_royalty_report do
       deal_id { 2 }
       film_id { Film.find_by_title('DVD Reserve').id }
-      mg { 500 }
-      e_and_o { 2000 }
     end
 
   end

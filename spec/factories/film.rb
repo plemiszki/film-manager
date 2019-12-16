@@ -6,6 +6,8 @@ FactoryBot.define do
     length { 90 }
     year { 2002 }
     label_id { Label.last.id }
+    mg { 500 }
+    e_and_o { 2000 }
 
     factory :no_expenses_recouped_film do
       title { 'No Expenses Recouped' }
@@ -44,8 +46,6 @@ FactoryBot.define do
       reserve { true }
       reserve_percentage { 25 }
       reserve_quarters { 2 }
-      mg { 500 }
-      e_and_o { 2000 }
     end
 
   end
