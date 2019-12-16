@@ -25,12 +25,11 @@ class ErrorCheck
           errors << message unless errors.include?(message)
         end
       end
-      report.calculate!
       if film.expense_cap > 0 && report.joined_total_expenses > film.expense_cap
         errors << "Expense cap exceeded on #{film.title}."
       end
-      job.update({current_value: job.current_value + 1})
+      job.update({ current_value: job.current_value + 1 })
     end
-    job.update!({done: true, first_line: errors.empty? ? "No Errors Found" : "Errors Found", errors_text: errors.empty? ? "" : errors.join("\n")})
+    job.update!({ done: true, first_line: errors.empty? ? "No Errors Found" : "Errors Found", errors_text: errors.empty? ? "" : errors.join("\n") })
   end
 end

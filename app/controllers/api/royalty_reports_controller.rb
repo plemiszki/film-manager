@@ -99,7 +99,7 @@ class Api::RoyaltyReportsController < AdminController
     FileUtils.mkdir_p("#{pathname}")
     query_data_for_show_jbuilder
     report = @reports[0]
-    report.export!(pathname, @streams, @films)
+    report.export(pathname, @streams, @films)
     File.open("#{pathname}/#{report_name(@film, @reports[0])}", 'r') do |f|
       send_data f.read, filename: report_name(@film, @reports[0])
     end

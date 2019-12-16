@@ -20,19 +20,9 @@ class ImportSageData
       job.update!(first_line: "Transferring Previous Revenue/Expenses", second_line: true, current_value: 0, total_value: films.length)
       films.each_with_index do |film, index|
         next if film.ignore_sage_id
-        prev_report, prev_streams = get_prev_report(film, quarter.to_i, year.to_i)
-        report = RoyaltyReport.new(film_id: film.id, deal_id: film.deal_type_id, quarter: quarter, year: year, mg: film.mg, e_and_o: film.e_and_o)
-        if prev_report
-          prev_amount_due = (prev_report.joined_amount_due < 0 ? 0 : prev_report.joined_amount_due)
-          report.amount_paid = (prev_report.amount_paid + prev_amount_due)
-          report.cume_total_expenses = prev_report.joined_total_expenses
-        end
-        report.save!
-        prev_report_streams = prev_report.royalty_revenue_streams if prev_report
-        FilmRevenuePercentage.where(film_id: film.id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-          RoyaltyRevenueStream.create!(royalty_report_id: report.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: prev_report ? prev_report_streams[index].joined_revenue : 0, cume_expense: prev_report ? prev_report_streams[index].joined_expense : 0)
-        end
-        report.calculate!
+        report = RoyaltyReport.create!(film_id: film.id, deal_id: film.deal_type_id, quarter: quarter, year: year, mg: film.mg, e_and_o: film.e_and_o)
+        report.create_empty_streams!
+        report.transfer_and_calculate_from_previous_report!
         job.update!(current_value: index, total_value: films.length)
       end
     else

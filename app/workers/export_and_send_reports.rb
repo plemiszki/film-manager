@@ -25,9 +25,9 @@ class ExportAndSendReports
             report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
             crossed_films_done += films.pluck(:id)
           else
-            royalty_revenue_streams = report.calculate!
+            royalty_revenue_streams = report.royalty_revenue_streams
           end
-          report.export!(licensor_folder, royalty_revenue_streams, (films || nil))
+          report.export(licensor_folder, royalty_revenue_streams, (films || nil))
         else
           new_line = (job.errors_text == "" ? "" : "\n")
           job.update({ errors_text: job.errors_text += (new_line + "Film #{film.title} is missing licensor.") })

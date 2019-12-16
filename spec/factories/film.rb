@@ -1,5 +1,7 @@
 FactoryBot.define do
+
   factory :film do
+
     film_type { 'Feature' }
     length { 90 }
     year { 2002 }
@@ -35,5 +37,17 @@ FactoryBot.define do
       deal_type_id { 6 }
       gr_percentage { 20 }
     end
+
+    factory :dvd_reserve_film do
+      title { 'DVD Reserve' }
+      deal_type_id { 2 }
+      reserve { true }
+      reserve_percentage { 25 }
+      reserve_quarters { 2 }
+      mg { 500 }
+      e_and_o { 2000 }
+    end
+
   end
+
 end

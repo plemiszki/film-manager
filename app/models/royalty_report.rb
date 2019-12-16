@@ -21,7 +21,6 @@ class RoyaltyReport < ActiveRecord::Base
     end
     sum = 0
     reports.each do |report|
-      report.calculate!
       sum += report.joined_amount_due unless report.joined_amount_due < 0
     end
     sum.to_f
@@ -35,7 +34,6 @@ class RoyaltyReport < ActiveRecord::Base
     end
     sum = 0
     reports.each do |report|
-      report.calculate!
       sum += report.joined_amount_due unless report.joined_amount_due < 0
     end
     sum.to_f
@@ -46,19 +44,17 @@ class RoyaltyReport < ActiveRecord::Base
     sum = 0
     result = {}
     reports.each do |report|
-      report.calculate!
       sum += report.current_reserve
     end
     sum.to_f
   end
 
   def self.get_films_with_amount_due_not_being_sent(quarter, year)
-    reports1 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {export_reports: false}).to_a
-    reports2 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {send_reports: false}).to_a
+    reports1 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { export_reports: false }).to_a
+    reports2 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { send_reports: false }).to_a
     reports = reports1 | reports2
     titles = {}
     reports.each do |report|
-      report.calculate!
       if report.joined_amount_due > 0
         titles[report.film.title] = report.joined_amount_due.to_f
       end
@@ -68,19 +64,18 @@ class RoyaltyReport < ActiveRecord::Base
 
   def self.get_reserve_numbers(quarter, year)
     reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { reserve: true })
-    result = Hash.new { |h,k| h[k] = 0}
+    result = Hash.new { |h,k| h[k] = 0 }
     reports.each do |report|
       film = report.film
-      report.calculate!
       result[:total] += report.current_reserve
       result[film.reserve_quarters] += report.current_reserve
     end
     result.map { |key, value| [key, value.to_f] }.to_h
   end
 
-  def create_empty_streams
+  def create_empty_streams!
     FilmRevenuePercentage.where(film_id: self.film_id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: self.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+      RoyaltyRevenueStream.create!(royalty_report_id: self.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
     end
   end
 
@@ -91,21 +86,38 @@ class RoyaltyReport < ActiveRecord::Base
         report = film.royalty_reports.order(:id).last
         next unless report
         report.past_reports.each do |report|
-          report.calculate!
           result["Q#{report.quarter} #{report.year}"] += report.current_reserve.to_f
         end
       end
     else
       result = {}
       self.past_reports.each do |report|
-        report.calculate!
         result["Q#{report.quarter} #{report.year}"] = report.current_reserve.to_f
       end
     end
     result
   end
 
+  def transfer_and_calculate_from_previous_report!
+    prev_report = self.prev_report
+    if prev_report
+      prev_report_streams = prev_report.royalty_revenue_streams
+      royalty_revenue_streams.each_with_index do |stream, index|
+        new_revenue = prev_report_streams[index].current_revenue + prev_report_streams[index].cume_revenue
+        new_expense = prev_report_streams[index].current_expense + prev_report_streams[index].cume_expense
+        stream.update!(cume_revenue: new_revenue, cume_expense: new_expense)
+      end
+      amount_due = prev_report.joined_amount_due < 0 ? 0 : prev_report.joined_amount_due
+      update!({
+        amount_paid: prev_report.amount_paid + amount_due,
+        cume_total_expenses: prev_report.joined_total_expenses
+      })
+    end
+    self.calculate!
+  end
+
   def calculate!
+    revenue_stream_ids = Hash[*RevenueStream.all.map { |stream| [stream.name, stream.id] }.flatten]
     film = self.film
     self.current_total_revenue = 0.00
     self.current_total_expenses = 0.00 unless film.deal_type_id == 4
@@ -119,7 +131,7 @@ class RoyaltyReport < ActiveRecord::Base
 
     royalty_revenue_streams = RoyaltyRevenueStream.where(royalty_report_id: self.id).joins(:revenue_stream).order('revenue_streams.order')
     royalty_revenue_streams.each do |stream|
-      if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue != 0
+      if stream.revenue_stream_id == revenue_stream_ids['Video'] && film.reserve && stream.current_revenue != 0
         unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
           if stream.current_revenue > 0
             self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
@@ -314,7 +326,7 @@ class RoyaltyReport < ActiveRecord::Base
     [result, streams, films]
   end
 
-  def export!(directory, royalty_revenue_streams, films = nil)
+  def export(directory, royalty_revenue_streams, films = nil)
     @film = self.film || films.first
     if films
       titles = films.map { |film| film.title }.sort
@@ -555,6 +567,16 @@ class RoyaltyReport < ActiveRecord::Base
     File.open(save_path, 'wb') do |f|
       f << pdf
     end
+  end
+
+  def prev_report
+    quarter = self.quarter - 1
+    year = self.year
+    if quarter == 0
+      quarter = 4
+      year -= 1
+    end
+    RoyaltyReport.find_by({ year: year, quarter: quarter, film_id: self.film_id })
   end
 
   def past_reports
