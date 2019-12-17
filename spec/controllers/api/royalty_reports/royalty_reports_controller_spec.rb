@@ -9,12 +9,45 @@ RSpec.describe Api::RoyaltyReportsController do
   end
 
   context '#show' do
+    render_views
 
-    it 'returns an OK status code' do
+    it 'shows the proper amount due for an uncrossed film' do
       film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
       report = create(:no_expenses_recouped_royalty_report)
       report.create_empty_streams!
+      report.royalty_revenue_streams.each do |stream|
+        stream.update!(current_revenue: 100)
+      end
+      report.calculate!
       get :show, id: report.id
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response["report"]["joinedAmountDue"]).to eq("-$1,800.00")
+      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response.status).to eq(200)
+    end
+
+    it 'shows the proper amount due for two crossed films' do
+      film = create(:no_expenses_recouped_film)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
+      report.royalty_revenue_streams.each do |stream|
+        stream.update!(current_revenue: 100)
+      end
+      report.calculate!
+      second_film = create(:no_expenses_recouped_film, title: 'Film 2')
+      second_film.film_revenue_percentages.update_all({ value: 50 })
+      second_report = create(:no_expenses_recouped_royalty_report, film_id: second_film.id)
+      second_report.create_empty_streams!
+      second_report.royalty_revenue_streams.each do |stream|
+        stream.update!(current_revenue: 100)
+      end
+      second_report.calculate!
+      CrossedFilm.create!(film_id: film.id, crossed_film_id: second_film.id)
+      get :show, id: report.id
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response["report"]["joinedAmountDue"]).to eq("-$3,600.00")
       expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
       expect(response.status).to eq(200)
     end
@@ -645,6 +678,42 @@ RSpec.describe Api::RoyaltyReportsController do
       create(:no_expenses_recouped_film)
       report = create(:no_expenses_recouped_royalty_report)
       get :export, id: report.id
+      expect(response.status).to eq(200)
+    end
+
+  end
+
+  context '#export_all' do
+
+    it 'returns an OK status code' do
+      get :export_all
+      expect(response.status).to eq(200)
+    end
+
+  end
+
+  context '#send_all' do
+
+    it 'returns an OK status code' do
+      get :send_all
+      expect(response.status).to eq(200)
+    end
+
+  end
+
+  context '#totals' do
+
+    it 'returns an OK status code' do
+      get :totals
+      expect(response.status).to eq(200)
+    end
+
+  end
+
+  context '#error_check' do
+
+    it 'returns an OK status code' do
+      get :error_check
       expect(response.status).to eq(200)
     end
 

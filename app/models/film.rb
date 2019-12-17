@@ -65,7 +65,7 @@ class Film < ActiveRecord::Base
   end
 
   def has_crossed_films?
-    crossed_films.pluck(:crossed_film_id).length > 0
+    crossed_films.length > 0
   end
 
   def get_sage_id

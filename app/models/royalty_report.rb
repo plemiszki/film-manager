@@ -279,7 +279,7 @@ class RoyaltyReport < ActiveRecord::Base
     films.each_with_index do |film, index|
       report = RoyaltyReport.find_by(year: year, quarter: quarter, film_id: film.id)
       next unless report
-      report_streams = report.calculate!
+      report_streams = report.royalty_revenue_streams
       result.update_attributes({
         current_total: result.current_total + report.current_total,
         current_total_revenue: result.current_total_revenue + report.current_total_revenue,

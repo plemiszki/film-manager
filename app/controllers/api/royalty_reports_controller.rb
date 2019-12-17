@@ -12,14 +12,13 @@ class Api::RoyaltyReportsController < AdminController
 
   def show
     @report = RoyaltyReport.find(params[:id])
-    @streams = @report.royalty_revenue_streams
-    @film = Film.find(@report.film_id)
-    @films = [@film]
-
-    # if @film.has_crossed_films?
-    #   report, @streams, @films = RoyaltyReport.calculate_crossed_films_report(@film, report.year, report.quarter)
-    # else
-    # end
+    @film = @report.film
+    if @film.has_crossed_films?
+      @report, @streams, @films = RoyaltyReport.calculate_crossed_films_report(@film, @report.year, @report.quarter)
+    else
+      @streams = @report.royalty_revenue_streams
+      @films = [@film]
+    end
     render "show.json.jbuilder"
   end
 
@@ -78,7 +77,7 @@ class Api::RoyaltyReportsController < AdminController
   def error_check
     time_started = Time.now.to_s
     total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter])
-    job = Job.create!(job_id: time_started, first_line: "Checking For Errors", second_line: true, current_value: 0, total_value: total_reports.length)
+    job = Job.create!(job_id: time_started, first_line: 'Checking For Errors', second_line: true, current_value: 0, total_value: total_reports.length)
     ErrorCheck.perform_async(params[:quarter], params[:year], time_started)
     render json: job
   end
@@ -90,7 +89,7 @@ class Api::RoyaltyReportsController < AdminController
     else
       total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter], films: { days_statement_due: params[:days_due] }).includes(:film)
     end
-    job = Job.create!(job_id: time_started, first_line: "Calculating Totals", second_line: true, current_value: 0, total_value: total_reports.length)
+    job = Job.create!(job_id: time_started, first_line: 'Calculating Totals', second_line: true, current_value: 0, total_value: total_reports.length)
     CalculateTotals.perform_async(params[:quarter], params[:year], params[:days_due], time_started)
     render json: job
   end
@@ -98,11 +97,17 @@ class Api::RoyaltyReportsController < AdminController
   def export
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")
-    query_data_for_show_jbuilder
-    report = @reports[0]
-    report.export(pathname, @streams, @films)
-    File.open("#{pathname}/#{report_name(@film, @reports[0])}", 'r') do |f|
-      send_data f.read, filename: report_name(@film, @reports[0])
+    report = RoyaltyReport.find(params[:id])
+    film = report.film
+    if film.has_crossed_films?
+      report, streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
+    else
+      streams = report.royalty_revenue_streams
+      films = [film]
+    end
+    report.export(pathname, streams, films)
+    File.open("#{pathname}/#{report_name(film, report)}", 'r') do |f|
+      send_data f.read, filename: report_name(film, report)
     end
   end
 
@@ -112,7 +117,7 @@ class Api::RoyaltyReportsController < AdminController
 
   def export_all
     time_started = Time.now.to_s
-    total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], export_reports: true}, quarter: params[:quarter], year: params[:year])
+    total_reports = RoyaltyReport.joins(:film).where(films: { days_statement_due: params[:days_due], export_reports: true }, quarter: params[:quarter], year: params[:year])
     job = Job.create!(job_id: time_started, name: "export all", first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
     ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
     render json: job
@@ -120,7 +125,7 @@ class Api::RoyaltyReportsController < AdminController
 
   def send_all
     time_started = Time.now.to_s
-    total_reports = RoyaltyReport.joins(:film).where(films: {days_statement_due: params[:days_due], export_reports: true, send_reports: true}, quarter: params[:quarter], year: params[:year], date_sent: nil)
+    total_reports = RoyaltyReport.joins(:film).where(films: { days_statement_due: params[:days_due], export_reports: true, send_reports: true }, quarter: params[:quarter], year: params[:year], date_sent: nil)
     job = Job.create!(job_id: time_started, first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
     ExportAndSendReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
     render json: job
@@ -151,18 +156,6 @@ class Api::RoyaltyReportsController < AdminController
       prev_report = next_report
       next_report = next_report.next_report
     end
-  end
-
-  def query_data_for_show_jbuilder
-    report = RoyaltyReport.find(params[:id])
-    @film = Film.find(report.film_id)
-    if @film.has_crossed_films?
-      report, @streams, @films = RoyaltyReport.calculate_crossed_films_report(@film, report.year, report.quarter)
-    else
-      @streams = report.royalty_revenue_streams
-      @films = [@film]
-    end
-    @reports = [report]
   end
 
   def report_params
