@@ -13,6 +13,12 @@ class RoyaltyReport < ActiveRecord::Base
   belongs_to :film
   has_many :royalty_revenue_streams, -> { joins(:revenue_stream).order('revenue_streams.order') }, dependent: :destroy
 
+  def self.calculate_all!
+    RoyaltyReport.all.order(:year, :quarter, :id).each do |report|
+      report.calculate!
+    end
+  end
+
   def self.get_total_due(quarter, year, days_statement_due = nil)
     if days_statement_due
       reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { days_statement_due: days_statement_due })
