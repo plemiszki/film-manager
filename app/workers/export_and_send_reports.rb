@@ -7,6 +7,7 @@ class ExportAndSendReports
     job = Job.find_by_job_id(time_started)
     reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: {export_reports: true, send_reports: true}, date_sent: nil)
     crossed_films_done = []
+    crossed_films_hash = {}
     reports.each do |report|
       return if Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
       return if job.reload.killed
@@ -27,17 +28,20 @@ class ExportAndSendReports
           else
             royalty_revenue_streams = report.royalty_revenue_streams
           end
-          report.export(licensor_folder, royalty_revenue_streams, (films || nil))
+          report_name = report.export(licensor_folder, royalty_revenue_streams, (films || nil))
+          if match_data = report_name.match(/ package (?<timestamp>\d+) /)
+            crossed_films_hash[match_data[:timestamp]] = films.pluck(:id)
+          end
         else
-          new_line = (job.errors_text == "" ? "" : "\n")
+          new_line = (job.errors_text == '' ? '' : "\n")
           job.update({ errors_text: job.errors_text += (new_line + "Film #{film.title} is missing licensor.") })
         end
         job.update({ current_value: job.current_value + 1 })
       end
     end
-    job.update({ first_line: "Adding Emails to Mailgun Queue", current_value: 0, total_value: Dir.entries(Rails.root.join('tmp', "#{time_started}")).length - 2 })
+    job.update({ first_line: 'Adding Emails to Mailgun Queue', current_value: 0, total_value: Dir.entries(Rails.root.join('tmp', "#{time_started}")).length - 2 })
     Dir.foreach("#{Rails.root}/tmp/#{time_started}") do |entry|
-      next if entry == "." || entry == ".."
+      next if entry == '.' || entry == '..'
       licensor = Licensor.find(entry.to_i)
       if licensor.email && !licensor.email.strip.empty?
         file_names = Dir.entries(Rails.root.join('tmp', "#{time_started}", entry))
@@ -56,10 +60,9 @@ class ExportAndSendReports
           mg_client.send_message 'filmmovement.com', message_params
           film_titles = file_names.map { |file_name| file_name.split('-')[0...-1].join('-').strip }
           film_titles.each do |film_title|
-            if film_title.include?(' -- ')
-              crossed_film_titles = film_title.split('--').map(&:strip)
-              crossed_film_titles.each do |film_title|
-                film_id = Film.find_by(title: film_title, film_type: ['Feature', 'TV Series']).id
+            if match_data = film_title.match(/ package (?<timestamp>\d+)/)
+              film_ids = crossed_films_hash[match_data[:timestamp]]
+              film_ids.each do |film_id|
                 report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
                 report.update!(date_sent: Date.today)
               end
@@ -73,16 +76,16 @@ class ExportAndSendReports
           p '-------------------------'
           p "FAILED TO SEND EMAIL TO #{licensor.name}"
           p '-------------------------'
-          new_line = (job.errors_text == "" ? "" : "\n")
+          new_line = (job.errors_text == '' ? '' : "\n")
           job.update({ errors_text: job.errors_text += (new_line + "Failed to send email to #{licensor.name}") })
         ensure
           job.update({ current_value: job.current_value + 1})
         end
       else
-        new_line = (job.errors_text == "" ? "" : "\n")
+        new_line = (job.errors_text == '' ? '' : "\n")
         job.update({ errors_text: job.errors_text += (new_line + "Licensor #{licensor.name} is missing email.") })
       end
     end
-    job.update({ first_line: "Done!", second_line: false })
+    job.update({ first_line: 'Done!', second_line: false })
   end
 end

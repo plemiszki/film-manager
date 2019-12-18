@@ -569,10 +569,12 @@ class RoyaltyReport < ActiveRecord::Base
     pdf = WickedPdf.new.pdf_from_string(string)
     subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
     licensor_name = @film.licensor.name if titles.length > 1
-    save_path = "#{directory}/#{report_name(titles, licensor_name)}"
+    report_name = report_name(titles, licensor_name)
+    save_path = "#{directory}/#{report_name}"
     File.open(save_path, 'wb') do |f|
       f << pdf
     end
+    report_name
   end
 
   def next_report
