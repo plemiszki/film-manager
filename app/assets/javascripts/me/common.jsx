@@ -146,7 +146,8 @@ var FM = {
     ],
     title: [
       "Title can't be blank",
-      "Title has already been taken"
+      "Title has already been taken",
+      "Title cannot contain /"
     ],
     password: [
       "Password can't be blank"

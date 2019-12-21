@@ -11,7 +11,13 @@ class RoyaltyReport < ActiveRecord::Base
   validates_numericality_of :amount_paid, :greater_than_or_equal_to => 0
 
   belongs_to :film
-  has_many :royalty_revenue_streams, dependent: :destroy
+  has_many :royalty_revenue_streams, -> { joins(:revenue_stream).order('revenue_streams.order') }, dependent: :destroy
+
+  def self.calculate_all!
+    RoyaltyReport.all.order(:year, :quarter, :id).each do |report|
+      report.calculate!
+    end
+  end
 
   def self.get_total_due(quarter, year, days_statement_due = nil)
     if days_statement_due
@@ -21,7 +27,6 @@ class RoyaltyReport < ActiveRecord::Base
     end
     sum = 0
     reports.each do |report|
-      report.calculate!
       sum += report.joined_amount_due unless report.joined_amount_due < 0
     end
     sum.to_f
@@ -35,7 +40,6 @@ class RoyaltyReport < ActiveRecord::Base
     end
     sum = 0
     reports.each do |report|
-      report.calculate!
       sum += report.joined_amount_due unless report.joined_amount_due < 0
     end
     sum.to_f
@@ -46,19 +50,17 @@ class RoyaltyReport < ActiveRecord::Base
     sum = 0
     result = {}
     reports.each do |report|
-      report.calculate!
       sum += report.current_reserve
     end
     sum.to_f
   end
 
   def self.get_films_with_amount_due_not_being_sent(quarter, year)
-    reports1 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {export_reports: false}).to_a
-    reports2 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: {send_reports: false}).to_a
+    reports1 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { export_reports: false }).to_a
+    reports2 = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { send_reports: false }).to_a
     reports = reports1 | reports2
     titles = {}
     reports.each do |report|
-      report.calculate!
       if report.joined_amount_due > 0
         titles[report.film.title] = report.joined_amount_due.to_f
       end
@@ -68,19 +70,18 @@ class RoyaltyReport < ActiveRecord::Base
 
   def self.get_reserve_numbers(quarter, year)
     reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { reserve: true })
-    result = Hash.new { |h,k| h[k] = 0}
+    result = Hash.new { |h,k| h[k] = 0 }
     reports.each do |report|
       film = report.film
-      report.calculate!
       result[:total] += report.current_reserve
       result[film.reserve_quarters] += report.current_reserve
     end
     result.map { |key, value| [key, value.to_f] }.to_h
   end
 
-  def create_empty_streams
+  def create_empty_streams!
     FilmRevenuePercentage.where(film_id: self.film_id).joins(:revenue_stream).order('revenue_streams.order').each_with_index do |film_revenue_percentage, index|
-      RoyaltyRevenueStream.create(royalty_report_id: self.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value, cume_revenue: 0, cume_expense: 0)
+      RoyaltyRevenueStream.create!(royalty_report_id: self.id, revenue_stream_id: film_revenue_percentage.revenue_stream_id, licensor_percentage: film_revenue_percentage.value)
     end
   end
 
@@ -91,21 +92,247 @@ class RoyaltyReport < ActiveRecord::Base
         report = film.royalty_reports.order(:id).last
         next unless report
         report.past_reports.each do |report|
-          report.calculate!
           result["Q#{report.quarter} #{report.year}"] += report.current_reserve.to_f
         end
       end
     else
       result = {}
       self.past_reports.each do |report|
-        report.calculate!
         result["Q#{report.quarter} #{report.year}"] = report.current_reserve.to_f
       end
     end
     result
   end
 
-  def export!(directory, royalty_revenue_streams, films = nil)
+  def transfer_and_calculate_from_previous_report!
+    prev_report = self.prev_report
+    if prev_report
+      prev_report_streams = prev_report.royalty_revenue_streams
+      royalty_revenue_streams.each_with_index do |stream, index|
+        new_revenue = prev_report_streams[index].current_revenue + prev_report_streams[index].cume_revenue
+        new_expense = prev_report_streams[index].current_expense + prev_report_streams[index].cume_expense
+        stream.update!(cume_revenue: new_revenue, cume_expense: new_expense)
+      end
+      amount_due = prev_report.joined_amount_due < 0 ? 0 : prev_report.joined_amount_due
+      update!({
+        amount_paid: prev_report.amount_paid + amount_due,
+        cume_total_expenses: prev_report.joined_total_expenses
+      })
+    end
+    self.calculate!
+  end
+
+  def calculate!
+    revenue_stream_ids = Hash[*RevenueStream.all.map { |stream| [stream.name, stream.id] }.flatten]
+    film = self.film
+    self.current_total_revenue = 0.00
+    self.current_total_expenses = 0.00 unless film.deal_type_id == 4
+    self.current_total = 0.00
+    self.cume_total_revenue = 0.00
+    self.cume_total_expenses = 0.00 unless film.deal_type_id == 4
+    self.cume_total = 0.00
+    self.joined_total_revenue = 0.00
+    self.joined_total_expenses = 0.00 unless film.deal_type_id == 4
+    self.joined_total = 0.00
+
+    royalty_revenue_streams = RoyaltyRevenueStream.where(royalty_report_id: self.id).joins(:revenue_stream).order('revenue_streams.order')
+    royalty_revenue_streams.each do |stream|
+      if stream.revenue_stream_id == revenue_stream_ids['Video'] && film.reserve && stream.current_revenue != 0
+        unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
+          if stream.current_revenue > 0
+            self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
+          else
+            self.current_reserve = 0
+          end
+          total_past_reserves = self.get_total_past_reserves
+          self.cume_reserve = total_past_reserves.values.sum
+          self.liquidated_reserve = total_past_reserves.values[0..(film.reserve_quarters * -1)].sum
+        end
+      end
+      # joined revenue and joined expenses will get updated when stream.update is called:
+      stream.joined_revenue = stream.current_revenue + stream.cume_revenue
+      stream.joined_expense = stream.current_expense + stream.cume_expense
+      if film.deal_type_id == 1 # No Expenses Recouped
+        stream.update({
+          current_licensor_share: (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_licensor_share: (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_licensor_share: (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
+      elsif film.deal_type_id == 2 # Expenses Recouped From Top
+        current_difference = stream.current_revenue - stream.current_expense
+        cume_difference = stream.cume_revenue - stream.cume_expense
+        joined_difference = stream.joined_revenue - stream.joined_expense
+        stream.update({
+          current_difference: current_difference,
+          current_licensor_share: (current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_difference: cume_difference,
+          cume_licensor_share: (cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_difference: joined_difference,
+          joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
+      elsif film.deal_type_id == 3 # Theatrical Expenses Recouped From Top
+        if ["Theatrical", "Non-Theatrical", "Commercial Video"].include?(stream.revenue_stream.name)
+          current_difference = stream.current_revenue - stream.current_expense
+          cume_difference = stream.cume_revenue - stream.cume_expense
+          joined_difference = stream.joined_revenue - stream.joined_expense
+        else
+          current_difference = stream.current_revenue
+          cume_difference = stream.cume_revenue
+          joined_difference = stream.joined_revenue
+        end
+        stream.update({
+          current_difference: current_difference,
+          current_licensor_share: (current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_difference: cume_difference,
+          cume_licensor_share: (cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_difference: joined_difference,
+          joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
+      elsif film.deal_type_id == 4 # Expenses Recouped From Licensor Share
+        stream.update({
+          current_licensor_share: (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_licensor_share: (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_licensor_share: (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
+      elsif film.deal_type_id == 5 # GR Percentage
+        current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+        current_difference = stream.current_revenue - current_gr - stream.current_expense
+        cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+        cume_difference = stream.cume_revenue - cume_gr - stream.cume_expense
+        joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+        joined_difference = stream.joined_revenue - joined_gr - stream.joined_expense
+        stream.update({
+          current_gr: current_gr,
+          current_difference: current_difference,
+          current_licensor_share: (current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          cume_gr: cume_gr,
+          cume_difference: cume_difference,
+          cume_licensor_share: (cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+          joined_gr: joined_gr,
+          joined_difference: joined_difference,
+          joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+        })
+      elsif film.deal_type_id == 6 # GR Percentage Theatrical/Non-Theatrical
+        if ["Theatrical", "Non-Theatrical"].include?(stream.revenue_stream.name)
+          current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+          current_difference = stream.current_revenue - current_gr - stream.current_expense
+          cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+          cume_difference = stream.cume_revenue - cume_gr - stream.cume_expense
+          joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
+          joined_difference = stream.joined_revenue - joined_gr - stream.joined_expense
+          stream.update({
+            current_gr: current_gr,
+            current_difference: current_difference,
+            current_licensor_share: (current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+            cume_gr: cume_gr,
+            cume_difference: cume_difference,
+            cume_licensor_share: (cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+            joined_gr: joined_gr,
+            joined_difference: joined_difference,
+            joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+          })
+        else
+          current_difference = stream.current_revenue - stream.current_expense
+          cume_difference = stream.cume_revenue - stream.cume_expense
+          joined_difference = stream.joined_revenue - stream.joined_expense
+          stream.update({
+            current_difference: current_difference,
+            current_licensor_share: (current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+            cume_difference: cume_difference,
+            cume_licensor_share: (cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2),
+            joined_difference: joined_difference,
+            joined_licensor_share: (joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
+          })
+        end
+      end
+
+      self.current_total_revenue += stream.current_revenue
+      self.current_total_expenses += stream.current_expense unless film.deal_type_id == 4
+      self.current_total += stream.current_licensor_share
+
+      self.cume_total_revenue += stream.cume_revenue
+      self.cume_total_expenses += stream.cume_expense unless film.deal_type_id == 4
+      self.cume_total += stream.cume_licensor_share
+
+      self.joined_total_revenue += stream.joined_revenue
+      self.joined_total_expenses += stream.joined_expense unless film.deal_type_id == 4
+      self.joined_total += stream.joined_licensor_share
+    end
+    self.joined_reserve = self.current_reserve + self.cume_reserve
+    if film.deal_type_id == 4
+      self.current_share_minus_expenses = self.current_total - self.current_total_expenses
+      self.joined_total_expenses = self.current_total_expenses + self.cume_total_expenses
+      self.amount_due = self.cume_total - self.cume_total_expenses - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.joined_reserve + self.liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
+    else
+      self.amount_due = self.cume_total - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due = self.joined_total - self.joined_reserve + self.liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
+    end
+    self.save!
+  end
+
+  def self.calculate_crossed_films_report(film, year, quarter)
+    crossed_film_ids = film.crossed_films.pluck(:crossed_film_id)
+    films = Film.where(id: [film.id] + crossed_film_ids)
+    result = RoyaltyReport.new({ id: 0, year: year, quarter: quarter, deal_id: films.first.deal_type_id, gr_percentage: films.first.gr_percentage })
+    streams = []
+    RevenueStream.all.each_with_index do |revenue_stream, index|
+      streams << RoyaltyRevenueStream.new({
+        id: index,
+        revenue_stream_id: revenue_stream.id
+      })
+    end
+    films.each_with_index do |film, index|
+      report = RoyaltyReport.find_by(year: year, quarter: quarter, film_id: film.id)
+      next unless report
+      report_streams = report.royalty_revenue_streams
+      result.update_attributes({
+        current_total: result.current_total + report.current_total,
+        current_total_revenue: result.current_total_revenue + report.current_total_revenue,
+        current_total_expenses: result.current_total_expenses + report.current_total_expenses,
+        current_share_minus_expenses: result.current_share_minus_expenses + report.current_share_minus_expenses,
+        cume_total: result.cume_total + report.cume_total,
+        cume_total_revenue: result.cume_total_revenue + report.cume_total_revenue,
+        cume_total_expenses: result.cume_total_expenses + report.cume_total_expenses,
+        joined_total: result.joined_total + report.joined_total,
+        joined_total_revenue: result.joined_total_revenue + report.joined_total_revenue,
+        joined_total_expenses: result.joined_total_expenses + report.joined_total_expenses,
+        mg: result.mg + report.mg,
+        e_and_o: result.e_and_o + report.e_and_o,
+        amount_paid: result.amount_paid + report.amount_paid,
+        amount_due: result.amount_due + report.amount_due,
+        joined_amount_due: result.joined_amount_due + report.joined_amount_due,
+        current_reserve: result.current_reserve + report.current_reserve,
+        cume_reserve: result.cume_reserve + report.cume_reserve,
+        joined_reserve: result.joined_reserve + report.joined_reserve,
+        liquidated_reserve: result.liquidated_reserve + report.liquidated_reserve
+      })
+      report_streams.each_with_index do |report_stream, index|
+        stream = streams[index]
+        stream.update_attributes({
+          current_revenue: stream.current_revenue + report_stream.current_revenue,
+          current_gr: stream.current_gr + report_stream.current_gr,
+          current_expense: stream.current_expense + report_stream.current_expense,
+          current_difference: stream.current_difference + report_stream.current_difference,
+          current_licensor_share: stream.current_licensor_share + report_stream.current_licensor_share,
+          cume_revenue: stream.cume_revenue + report_stream.cume_revenue,
+          cume_gr: stream.cume_gr + report_stream.cume_gr,
+          cume_expense: stream.cume_expense + report_stream.cume_expense,
+          cume_difference: stream.cume_difference + report_stream.cume_difference,
+          cume_licensor_share: stream.cume_licensor_share + report_stream.cume_licensor_share,
+          joined_revenue: stream.joined_revenue + report_stream.joined_revenue,
+          joined_gr: stream.joined_gr + report_stream.joined_gr,
+          joined_expense: stream.joined_expense + report_stream.joined_expense,
+          joined_difference: stream.joined_difference + report_stream.joined_difference,
+          joined_licensor_share: stream.joined_licensor_share + report_stream.joined_licensor_share,
+          licensor_percentage: report_stream.licensor_percentage, # <-- for now, i'll assume the percentages will be the same for crossed films and send them down based on the last report
+        })
+      end
+    end
+    [result, streams, films]
+  end
+
+  def export(directory, royalty_revenue_streams, films = nil)
     @film = self.film || films.first
     if films
       titles = films.map { |film| film.title }.sort
@@ -342,176 +569,32 @@ class RoyaltyReport < ActiveRecord::Base
     pdf = WickedPdf.new.pdf_from_string(string)
     subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
     licensor_name = @film.licensor.name if titles.length > 1
-    save_path = "#{directory}/#{report_name(titles, licensor_name)}"
+    report_name = report_name(titles, licensor_name)
+    save_path = "#{directory}/#{report_name}"
     File.open(save_path, 'wb') do |f|
       f << pdf
     end
+    report_name
   end
 
-  def calculate!
-    film = self.film
-    self.current_total_revenue = 0.00
-    self.current_total_expenses = 0.00 unless film.deal_type_id == 4
-    self.current_total = 0.00
-    royalty_revenue_streams = RoyaltyRevenueStream.where(royalty_report_id: self.id).joins(:revenue_stream).order('revenue_streams.order')
-    royalty_revenue_streams.each do |stream|
-      if stream.revenue_stream_id == 3 && film.reserve && stream.current_revenue != 0
-        unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
-          if stream.current_revenue > 0
-            self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
-          else
-            self.current_reserve = 0
-          end
-          total_past_reserves = self.get_total_past_reserves
-          self.cume_reserve = total_past_reserves.values.sum
-          self.liquidated_reserve = total_past_reserves.values[0..(film.reserve_quarters * -1)].sum
-        end
-      end
-      stream.joined_revenue = stream.current_revenue + stream.cume_revenue
-      stream.joined_expense = stream.current_expense + stream.cume_expense
-      if film.deal_type_id == 1 # No Expenses Recouped
-        stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_licensor_share = (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif film.deal_type_id == 2 # Expenses Recouped From Top
-        stream.current_difference = stream.current_revenue - stream.current_expense
-        stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_difference = stream.cume_revenue - stream.cume_expense
-        stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_difference = stream.joined_revenue - stream.joined_expense
-        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif film.deal_type_id == 3 # Theatrical Expenses Recouped From Top
-        if ["Theatrical", "Non-Theatrical", "Commercial Video"].include?(stream.revenue_stream.name)
-          stream.current_difference = stream.current_revenue - stream.current_expense
-          stream.cume_difference = stream.cume_revenue - stream.cume_expense
-          stream.joined_difference = stream.joined_revenue - stream.joined_expense
-        else
-          stream.current_difference = stream.current_revenue
-          stream.cume_difference = stream.cume_revenue
-          stream.joined_difference = stream.joined_revenue
-        end
-        stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif film.deal_type_id == 4 # Expenses Recouped From Licensor Share
-        stream.current_licensor_share = (stream.current_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_licensor_share = (stream.cume_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_licensor_share = (stream.joined_revenue * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif film.deal_type_id == 5 # GR Percentage
-        stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-        stream.current_difference = stream.current_revenue - stream.current_gr - stream.current_expense
-        stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-        stream.cume_difference = stream.cume_revenue - stream.cume_gr - stream.cume_expense
-        stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        stream.joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-        stream.joined_difference = stream.joined_revenue - stream.joined_gr - stream.joined_expense
-        stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-      elsif film.deal_type_id == 6 # GR Percentage Theatrical/Non-Theatrical
-        if ["Theatrical", "Non-Theatrical"].include?(stream.revenue_stream.name)
-          stream.current_gr = (stream.current_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-          stream.current_difference = stream.current_revenue - stream.current_gr - stream.current_expense
-          stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-          stream.cume_gr = (stream.cume_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-          stream.cume_difference = stream.cume_revenue - stream.cume_gr - stream.cume_expense
-          stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-          stream.joined_gr = (stream.joined_revenue * (film.gr_percentage.fdiv(100))).truncate(2)
-          stream.joined_difference = stream.joined_revenue - stream.joined_gr - stream.joined_expense
-          stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        else
-          stream.current_difference = stream.current_revenue - stream.current_expense
-          stream.current_licensor_share = (stream.current_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-          stream.cume_difference = stream.cume_revenue - stream.cume_expense
-          stream.cume_licensor_share = (stream.cume_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-          stream.joined_difference = stream.joined_revenue - stream.joined_expense
-          stream.joined_licensor_share = (stream.joined_difference * (stream.licensor_percentage.fdiv(100))).truncate(2)
-        end
-      end
-
-      self.current_total_revenue += stream.current_revenue
-      self.current_total_expenses += stream.current_expense unless film.deal_type_id == 4
-      self.current_total += stream.current_licensor_share
-
-      self.cume_total_revenue += stream.cume_revenue
-      self.cume_total_expenses += stream.cume_expense unless film.deal_type_id == 4
-      self.cume_total += stream.cume_licensor_share
-
-      self.joined_total_revenue += stream.joined_revenue
-      self.joined_total_expenses += stream.joined_expense unless film.deal_type_id == 4
-      self.joined_total += stream.joined_licensor_share
+  def next_report
+    quarter = self.quarter + 1
+    year = self.year
+    if quarter == 5
+      quarter = 1
+      year += 1
     end
-    self.joined_reserve = self.current_reserve + self.cume_reserve
-    if film.deal_type_id == 4
-      self.current_share_minus_expenses = self.current_total - self.current_total_expenses
-      self.joined_total_expenses = self.current_total_expenses + self.cume_total_expenses
-      self.amount_due = self.cume_total - self.cume_total_expenses - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
-      self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.joined_reserve + self.liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
-    else
-      self.amount_due = self.cume_total - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
-      self.joined_amount_due = self.joined_total - self.joined_reserve + self.liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
-    end
-    return royalty_revenue_streams
+    RoyaltyReport.find_by({ year: year, quarter: quarter, film_id: self.film_id })
   end
 
-  def self.calculate_crossed_films_report(film, year, quarter)
-    crossed_film_ids = film.crossed_films.pluck(:crossed_film_id)
-    films = Film.where(id: [film.id] + crossed_film_ids)
-    result = RoyaltyReport.new({ id: 0, year: year, quarter: quarter, deal_id: films.first.deal_type_id, gr_percentage: films.first.gr_percentage })
-    streams = []
-    RevenueStream.all.each_with_index do |revenue_stream, index|
-      streams << RoyaltyRevenueStream.new({
-        id: index,
-        revenue_stream_id: revenue_stream.id
-      })
+  def prev_report
+    quarter = self.quarter - 1
+    year = self.year
+    if quarter == 0
+      quarter = 4
+      year -= 1
     end
-    films.each_with_index do |film, index|
-      report = RoyaltyReport.find_by(year: year, quarter: quarter, film_id: film.id)
-      next unless report
-      report_streams = report.calculate!
-      result.update_attributes({
-        current_total: result.current_total + report.current_total,
-        current_total_revenue: result.current_total_revenue + report.current_total_revenue,
-        current_total_expenses: result.current_total_expenses + report.current_total_expenses,
-        current_share_minus_expenses: result.current_share_minus_expenses + report.current_share_minus_expenses,
-        cume_total: result.cume_total + report.cume_total,
-        cume_total_revenue: result.cume_total_revenue + report.cume_total_revenue,
-        cume_total_expenses: result.cume_total_expenses + report.cume_total_expenses,
-        joined_total: result.joined_total + report.joined_total,
-        joined_total_revenue: result.joined_total_revenue + report.joined_total_revenue,
-        joined_total_expenses: result.joined_total_expenses + report.joined_total_expenses,
-        mg: result.mg + report.mg,
-        e_and_o: result.e_and_o + report.e_and_o,
-        amount_paid: result.amount_paid + report.amount_paid,
-        amount_due: result.amount_due + report.amount_due,
-        joined_amount_due: result.joined_amount_due + report.joined_amount_due,
-        current_reserve: result.current_reserve + report.current_reserve,
-        cume_reserve: result.cume_reserve + report.cume_reserve,
-        joined_reserve: result.joined_reserve + report.joined_reserve,
-        liquidated_reserve: result.liquidated_reserve + report.liquidated_reserve
-      })
-      report_streams.each_with_index do |report_stream, index|
-        stream = streams[index]
-        stream.update_attributes({
-          current_revenue: stream.current_revenue + report_stream.current_revenue,
-          current_gr: stream.current_gr + report_stream.current_gr,
-          current_expense: stream.current_expense + report_stream.current_expense,
-          current_difference: stream.current_difference + report_stream.current_difference,
-          current_licensor_share: stream.current_licensor_share + report_stream.current_licensor_share,
-          cume_revenue: stream.cume_revenue + report_stream.cume_revenue,
-          cume_gr: stream.cume_gr + report_stream.cume_gr,
-          cume_expense: stream.cume_expense + report_stream.cume_expense,
-          cume_difference: stream.cume_difference + report_stream.cume_difference,
-          cume_licensor_share: stream.cume_licensor_share + report_stream.cume_licensor_share,
-          joined_revenue: stream.joined_revenue + report_stream.joined_revenue,
-          joined_gr: stream.joined_gr + report_stream.joined_gr,
-          joined_expense: stream.joined_expense + report_stream.joined_expense,
-          joined_difference: stream.joined_difference + report_stream.joined_difference,
-          joined_licensor_share: stream.joined_licensor_share + report_stream.joined_licensor_share,
-          licensor_percentage: report_stream.licensor_percentage, # <-- for now, i'll assume the percentages will be the same for crossed films and send them down based on the last report
-        })
-      end
-    end
-    [result, streams, films]
+    RoyaltyReport.find_by({ year: year, quarter: quarter, film_id: self.film_id })
   end
 
   def past_reports

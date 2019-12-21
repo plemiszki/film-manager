@@ -33,10 +33,10 @@ class ExportAllReports
           report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
           crossed_films_done += films.pluck(:id)
         else
-          royalty_revenue_streams = report.calculate!
+          royalty_revenue_streams = report.royalty_revenue_streams
         end
         save_path = report.joined_amount_due > 0 ? "#{job_folder}/amount due" : "#{job_folder}/no amount due"
-        report.export!(save_path, royalty_revenue_streams, (films || nil))
+        report.export(save_path, royalty_revenue_streams, (films || nil))
         job.update({ current_value: job.current_value + 1 })
       end
     end

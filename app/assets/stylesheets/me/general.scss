@@ -255,8 +255,13 @@ body {
     }
   }
 
-  .light-orange-button.disabled, .orange-button.disabled, .green-outline-button.disabled {
+  :not(.btn).light-orange-button.disabled, :not(.btn).orange-button.disabled, :not(.btn).green-outline-button.disabled {
     display: none;
+  }
+
+  .btn.disabled {
+    background-color: #D8CDC5;
+    color: rgb(95, 95, 95);
   }
 
   .dotted-box {

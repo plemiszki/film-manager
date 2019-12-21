@@ -15,7 +15,6 @@ class CalculateTotals
       reports = RoyaltyReport.where(quarter: quarter, year: year, films: { days_statement_due: days_due }).includes(:film)
     end
     reports.each do |report|
-      report.calculate!
       film = report.film
       if film.export_reports && film.send_reports && film.reserve
         total_reserves += report.current_reserve

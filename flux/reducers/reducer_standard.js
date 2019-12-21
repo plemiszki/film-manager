@@ -16,9 +16,14 @@ export default function(state = {}, action) {
     delete action["type"]
     return Object.assign({}, state, action);
   case 'ERRORS':
-    return Object.assign({}, state, {
-      errors: action.errors.responseJSON
-    });
+    if (action.errors && action.errors.responseJSON) {
+      return Object.assign({}, state, {
+        errors: action.errors.responseJSON
+      });
+    } else {
+      delete action["type"]
+      return Object.assign({}, state, action);
+    }
   default:
     return state;
   }

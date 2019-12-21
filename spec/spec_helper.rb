@@ -95,7 +95,7 @@ RSpec.configure do |config|
 =end
 end
 
-def set_up
+def set_up_user_and_label_and_licensor_and_rights_and_revenue_streams
   create(:user)
   create(:label)
   create(:licensor)
@@ -119,6 +119,22 @@ def set_up
   ].each_with_index do |name, index|
     create(:right, name: name, order: index)
   end
-  create(:film)
-  create(:royalty_report)
+  [
+    'Theatrical',
+    'Non-Theatrical',
+    'Video',
+    'Commercial Video',
+    'VOD',
+    'SVOD',
+    'TVOD',
+    'AVOD',
+    'FVOD',
+    'Other Internet',
+    'Hotels, Ships, Airlines',
+    'Television',
+    'FM Subscription',
+    'Jewish Festivals'
+  ].each_with_index do |name, index|
+    create(:revenue_stream, name: name, order: index)
+  end
 end

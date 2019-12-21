@@ -78,7 +78,12 @@ $(document).ready(function() {
     ReactDOM.render(<FilmDetails />, document.getElementById("film-details"));
   }
   if ($('#royalty-details')[0]) {
-    ReactDOM.render(<RoyaltyReportDetails />, document.getElementById("royalty-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <RoyaltyReportDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("royalty-details")
+    );
   }
   if ($('#reports-index')[0]) {
     ReactDOM.render(<RoyaltyReportsIndex />, document.getElementById("reports-index"));
