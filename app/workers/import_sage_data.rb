@@ -55,6 +55,7 @@ class ImportSageData
       errors = []
       job.update!(first_line: "Importing #{label.capitalize} From Spreadsheet", second_line: true, current_value: 0, total_value: xlsx.last_row)
       while index <= xlsx.last_row
+        job.update!(current_value: index)
         columns = sheet.row(index)
         found_film = false
         found_box_set = false
@@ -215,10 +216,12 @@ class ImportSageData
         end
 
         index += 1
-        job.update!(current_value: index)
       end
 
-      RoyaltyReport.where(year: year, quarter: quarter).each do |report|
+      reports = RoyaltyReport.where(year: year, quarter: quarter)
+      job.update!(first_line: "Recalculating Statements", second_line: true, current_value: 0, total_value: reports.length)
+      reports.each_with_index do |report, index|
+        job.update!(current_value: index)
         report.calculate!
       end
 
