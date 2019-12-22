@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.5.0'
+ruby '2.6.4'
 
 gem 'rails', '4.2.11.1'
 gem 'pg', '~> 0.15'
@@ -37,10 +37,10 @@ group :development, :test do
 end
 
 group :development do
-  gem 'web-console', '~> 2.0' # see console on error pages (or <% console %>)
-  gem 'spring' # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'web-console', '~> 2.0'
+  gem 'spring'
 end
 
 group :production do
-  gem 'rails_12factor' # apparently heroku needs this
+  gem 'rails_12factor'
 end
