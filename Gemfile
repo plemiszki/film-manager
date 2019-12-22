@@ -1,16 +1,14 @@
 source 'https://rubygems.org'
 ruby '2.5.0'
 
-gem 'rails', '4.2.11.1' # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'pg', '~> 0.15' # Use postgresql as the database for Active Record
-gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
-gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
-gem 'jquery-rails' # Use jquery as the JavaScript library
-gem 'jquery-ui-rails' # more jquery functionality (including drag and drop)
-gem 'jbuilder', '~> 2.0' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'sdoc', '~> 0.4.0', group: :doc # bundle exec rake doc:rails generates the API under doc/api.
+gem 'rails', '4.2.11.1'
+gem 'pg', '~> 0.15'
+gem 'sass-rails'
+gem 'uglifier'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
+gem 'jbuilder'
 
-# My Gems ----------------------
 gem 'aws-sdk'
 gem 'bootstrap-sass'
 gem 'caracal', '1.2.0'
@@ -18,6 +16,7 @@ gem 'clearance', '~> 1.11'
 gem 'httparty'
 gem 'mailgun-ruby', '~>1.1.6'
 gem 'pry-rails'
+gem 'puma'
 gem 'roo-xls'
 gem 'roo', '~> 2.7.0'
 gem 'rubyzip', '~> 1.3.0'
@@ -27,7 +26,6 @@ gem 'validates_timeliness', '~> 4.0'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'xlsx_writer'
-# ------------------------------
 
 group :development, :test do
   gem 'better_errors'
