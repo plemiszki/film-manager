@@ -60,18 +60,68 @@ Sometimes you may want to sublicense certain rights to a film to another company
 
 ## Venues
 
+The venue details page displays a venue's contact information and lists all of its bookings.
+
+![venue](./doc/venue.jpg)
+
 ## Bookings
+
+The booking details page displays information about a booking. On this page you can also record box office information and keep track of invoices and payments. The app will calculate the amount due based on the terms of the booking, the box office (if applicable), and payments received.
+
+![booking](./doc/booking.jpg)
 
 ## Calendar
 
+The calendar offers an easy way to see what films are being released across different outlets within a given month.
+
+![calendar](./doc/calendar.jpg)
+
 ## DVD Purchase Orders
+
+DVDs are added to purchase orders. When complete, an invoice is sent to the customer (unless the customer sells on consignment) and a shipping file is sent to the warehouse for fulfillment.
+
+The app can import inventory reports from the warehouse to display accurate stock information.
+
+![purchase_order](./doc/purchase_order.jpg)
 
 ## DVD Reports
 
+The app offers two kinds of DVD reports. The first report displays monthly totals by customer.
+
+![reports_vendors](./doc/reports_vendors.jpg)
+
+The second report displays unit and revenue totals for each new title by customer.
+
+![reports_titles](./doc/reports_titles.jpg)
+
 ## Catalogs
+
+Another major function of the app is to export PDF catalogs of films for review by potential partners. A spreadsheet of titles can be imported to create a PDF with cover art, basic information, and synopses.
+
+![catalog](./doc/catalog.jpg)
 
 ## Invoices
 
+The app generates and sends invoices for both DVDs and bookings. Invoices are stored and can be exported, edited, or resent if necessary.
+
+![invoice](./doc/invoice.jpg)
+
 ## Merchandise
 
+You may want to sell other items on your website in addition to DVDs.
+
+![merchandise](./doc/merchandise.jpg)
+
 ## Royalty Statements
+
+The app generates royalty statements every quarter. Revenue and expenses are imported from your accounting system. You can then review the statements.
+
+![statements](./doc/statements.jpg)
+
+Clicking `Error Check` will make sure all the revenue and expenses were imported to a revenue stream with a revenue percentage split set up, and also that no films have exceeded their expense cap.
+
+![statements_errors](./doc/statements_errors.jpg)
+
+Manual adjustments to statements can be made as needed.
+
+When ready, clicking `Send All` will generate the statements with the specified due date and send them to the proper licensors.
