@@ -101,8 +101,9 @@ class ConvertDigitalSales extends React.Component {
   }
 
   addAlias(e) {
+    let index = e.target.dataset.index;
     this.setState({
-      currentTitle: e.target.parentElement.parentElement.children[0].innerText,
+      currentTitle: this.state.errors[index],
       filmsModalOpen: true
     });
   }
@@ -137,7 +138,6 @@ class ConvertDigitalSales extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     if (this.state.job.errors_text == "Unable to import spreadsheet") {
       return(
         <div>
@@ -176,7 +176,7 @@ class ConvertDigitalSales extends React.Component {
                             { error }
                           </td>
                           <td style={ { textDecoration: 'underline' } }>
-                            <span style={ { cursor: 'pointer' } } onClick={ this.addAlias.bind(this) }>Add Alias</span>
+                            <span style={ { cursor: 'pointer' } } onClick={ this.addAlias.bind(this) } data-index={ index }>Add Alias</span>
                           </td>
                         </tr>
                       );
