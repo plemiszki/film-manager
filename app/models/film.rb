@@ -53,6 +53,9 @@ class Film < ActiveRecord::Base
   has_many :crossed_films
   has_many :episodes
   has_many :in_theaters_films, dependent: :destroy
+  has_many :alternate_lengths, dependent: :destroy
+  has_many :alternate_subs, dependent: :destroy
+  has_many :alternate_audios, dependent: :destroy
 
   after_create :create_percentages
 

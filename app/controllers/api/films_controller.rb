@@ -342,6 +342,9 @@ class Api::FilmsController < AdminController
     if film.film_type == 'TV Series'
       @episodes = film.episodes
     end
+    @alternate_lengths = film.alternate_lengths
+    @alternate_subs = film.alternate_subs.includes(:language)
+    @alternate_audios = film.alternate_audios.includes(:language)
   end
 
   def create_schedule

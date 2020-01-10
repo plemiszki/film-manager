@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191211225243) do
+ActiveRecord::Schema.define(version: 20200110192007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,33 @@ ActiveRecord::Schema.define(version: 20191211225243) do
   end
 
   add_index "aliases", ["film_id", "text"], name: "index_aliases_on_film_id_and_text", unique: true, using: :btree
+
+  create_table "alternate_audios", force: :cascade do |t|
+    t.integer  "film_id",     null: false
+    t.integer  "language_id", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "alternate_audios", ["film_id", "language_id"], name: "index_alternate_audios_on_film_id_and_language_id", unique: true, using: :btree
+
+  create_table "alternate_lengths", force: :cascade do |t|
+    t.integer  "film_id",    null: false
+    t.integer  "length",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "alternate_lengths", ["film_id", "length"], name: "index_alternate_lengths_on_film_id_and_length", unique: true, using: :btree
+
+  create_table "alternate_subs", force: :cascade do |t|
+    t.integer  "film_id",     null: false
+    t.integer  "language_id", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "alternate_subs", ["film_id", "language_id"], name: "index_alternate_subs_on_film_id_and_language_id", unique: true, using: :btree
 
   create_table "booker_venues", force: :cascade do |t|
     t.integer "booker_id", null: false
