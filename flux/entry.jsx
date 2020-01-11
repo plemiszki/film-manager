@@ -75,7 +75,12 @@ $(document).ready(function() {
     ReactDOM.render(<FilmsIndex filmType={ 'Short' } advanced={ true } />, document.getElementById("shorts-index-advanced"));
   }
   if ($('#film-details')[0]) {
-    ReactDOM.render(<FilmDetails />, document.getElementById("film-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <FilmDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("film-details")
+    );
   }
   if ($('#royalty-details')[0]) {
     ReactDOM.render(

@@ -227,7 +227,7 @@ json.alternateLengths @alternate_lengths do |alternate_length|
   json.id alternate_length.id
   json.length alternate_length.length
 end
-json.alternateSubs @alternate_subs do |alternate_sub|
+json.alternateSubtitles @alternate_subs do |alternate_sub|
   json.id alternate_sub.id
   json.languageName alternate_sub.language.name
 end

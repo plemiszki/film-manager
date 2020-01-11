@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   root to: "films#index"
   resources :films, only: [:index, :show]
   resources :venues, only: [:index, :show]
@@ -106,6 +107,10 @@ Rails.application.routes.draw do
     resources :topics, only: [:index, :create, :show, :update, :destroy]
     resources :episodes, only: [:create, :show, :update, :destroy]
     resources :aliases, only: [:index, :new, :create, :show, :update, :destroy]
+    resources :alternate_lengths, only: [:create, :destroy]
+    resources :alternate_audios, only: [:create, :destroy]
+    resources :alternate_subs, only: [:create, :destroy]
+    resources :alternate_audios, only: [:create, :destroy]
 
     patch '/film_countries/rearrange' => '/api/film_countries#rearrange'
     resources :film_countries, only: [:index, :create, :destroy]

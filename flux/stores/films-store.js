@@ -20,6 +20,9 @@ var _schedule = [];
 var _crossedFilms = [];
 var _otherCrossedFilms = [];
 var _episodes = [];
+var _alternateLengths = [];
+var _alternateAudios = [];
+var _alternateSubtitles = [];
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -37,6 +40,18 @@ FilmsStore.setOtherCrossedFilms = function(otherCrossedFilms) {
 
 FilmsStore.setDealTemplates = function(dealTemplates) {
   _dealTemplates = dealTemplates;
+};
+
+FilmsStore.setAlternateAudios = function(alternateAudios) {
+  _alternateAudios = alternateAudios;
+};
+
+FilmsStore.setAlternateSubtitles = function(alternateSubtitles) {
+  _alternateSubtitles = alternateSubtitles;
+};
+
+FilmsStore.setAlternateLengths = function(alternateLengths) {
+  _alternateLengths = alternateLengths;
 };
 
 FilmsStore.setSchedule = function(schedule) {
@@ -114,6 +129,18 @@ FilmsStore.dealTemplates = function() {
 
 FilmsStore.episodes = function() {
   return HandyTools.sortArrayOfObjects(_episodes, ['seasonNumber', 'episodeNumber']);
+};
+
+FilmsStore.alternateAudios = function() {
+  return HandyTools.alphabetizeArrayOfObjects(_alternateAudios, 'languageName');
+};
+
+FilmsStore.alternateSubtitles = function() {
+  return HandyTools.alphabetizeArrayOfObjects(_alternateSubtitles, 'languageName');
+};
+
+FilmsStore.alternateLengths = function() {
+  return HandyTools.sortArrayOfObjects(_alternateLengths, 'length');
 };
 
 FilmsStore.crossedFilms = function() {
@@ -225,6 +252,9 @@ FilmsStore.__onDispatch = function(payload) {
       this.setBookings(payload.bookings);
       this.setCrossedFilms(payload.crossedFilms);
       this.setOtherCrossedFilms(payload.otherCrossedFilms);
+      this.setAlternateAudios(payload.alternateAudios);
+      this.setAlternateSubtitles(payload.alternateSubtitles);
+      this.setAlternateLengths(payload.alternateLengths);
       if (payload.episodes) {
         this.setEpisodes(payload.episodes);
       }

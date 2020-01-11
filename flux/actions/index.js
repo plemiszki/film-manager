@@ -95,3 +95,21 @@ export function updateEntity(args) {
     );
   }
 }
+
+export function deleteEntity(args) {
+  let { directory, id, callback } = args;
+  return (dispatch) => {
+    return $.ajax({
+      method: 'DELETE',
+      url: `/api/${directory}/${id}`
+    }).then(
+      (response) => {
+        if (callback) {
+          callback.call({}, response);
+        } else {
+          window.location.pathname = `/${directory}`;
+        }
+      }
+    );
+  }
+}

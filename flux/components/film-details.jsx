@@ -1,8 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
+import { deleteEntity } from '../actions/index.js'
 import FilmsStore from '../stores/films-store.js'
 import FilmErrorsStore from '../stores/film-errors-store.js'
 import CountriesStore from '../stores/countries-store.js'
@@ -211,7 +214,10 @@ class FilmDetails extends React.Component {
       job: job,
       crossedFilms: [],
       otherCrossedFilms: [],
-      episodes: []
+      episodes: [],
+      alternateLengths: [],
+      alternateAudios: [],
+      alternateSubtitles: []
     };
   }
 
@@ -268,7 +274,10 @@ class FilmDetails extends React.Component {
       otherCrossedFilms: FilmsStore.otherCrossedFilms(),
       episodes: FilmsStore.episodes(),
       filmRights: FilmsStore.rights(),
-      fetching: false
+      fetching: false,
+      alternateAudios: FilmsStore.alternateAudios(),
+      alternateLengths: FilmsStore.alternateLengths(),
+      alternateSubtitles: FilmsStore.alternateSubtitles()
     }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
@@ -511,6 +520,12 @@ class FilmDetails extends React.Component {
   }
 
   clickAddFormat() {
+    this.setState({
+      formatsModalOpen: true
+    });
+  }
+
+  clickAddAltLength() {
     this.setState({
       formatsModalOpen: true
     });
@@ -803,6 +818,57 @@ class FilmDetails extends React.Component {
   clickArtwork() {
     this.setState({
       artworkModalOpen: true
+    });
+  }
+
+  clickDeleteAltLength(e) {
+    let id = e.target.dataset.id;
+    this.setState({
+      fetching: true
+    });
+    this.props.deleteEntity({
+      directory: 'alternate_lengths',
+      id,
+      callback: (response) => {
+        this.setState({
+          fetching: false,
+          alternateLengths: response.alternateLengths
+        });
+      }
+    });
+  }
+
+  clickDeleteAltSub(e) {
+    let id = e.target.dataset.id;
+    this.setState({
+      fetching: true
+    });
+    this.props.deleteEntity({
+      directory: 'alternate_subs',
+      id,
+      callback: (response) => {
+        this.setState({
+          fetching: false,
+          alternateSubtitles: response.alternateSubs
+        });
+      }
+    });
+  }
+
+  clickDeleteAltAudio(e) {
+    let id = e.target.dataset.id;
+    this.setState({
+      fetching: true
+    });
+    this.props.deleteEntity({
+      directory: 'alternate_audios',
+      id,
+      callback: (response) => {
+        this.setState({
+          fetching: false,
+          alternateAudios: response.alternateAudios
+        });
+      }
     });
   }
 
@@ -1524,6 +1590,42 @@ class FilmDetails extends React.Component {
           </div>
           <hr />
           <div className="row">
+            <div className="col-xs-4">
+              <h3>Alternate Lengths:</h3>
+              <ul className="standard-list">
+                { this.state.alternateLengths.map((alternateLength) => {
+                  return(
+                    <li key={ alternateLength.id }>{ alternateLength.length }<div className="x-button" onClick={ this.clickDeleteAltLength.bind(this) } data-id={ alternateLength.id }></div></li>
+                  );
+                }) }
+              </ul>
+              <a className="blue-outline-button small" onClick={ this.clickAddAltLength.bind(this) }>Add Length</a>
+            </div>
+            <div className="col-xs-4">
+              <h3>Alternate Audio Tracks:</h3>
+              <ul className="standard-list">
+                { this.state.alternateAudios.map((alternateAudio) => {
+                  return(
+                    <li key={ alternateAudio.id }>{ alternateAudio.languageName }<div className="x-button" onClick={ this.clickDeleteAltAudio.bind(this) } data-id={ alternateAudio.id }></div></li>
+                  );
+                }) }
+              </ul>
+              <a className="blue-outline-button small" onClick={ this.clickAddLanguage.bind(this) }>Add Audio Track</a>
+            </div>
+            <div className="col-xs-4">
+              <h3>Alternate Subtitles:</h3>
+              <ul className="standard-list">
+                { this.state.alternateSubtitles.map((alternateSubtitle) => {
+                  return(
+                    <li key={ alternateSubtitle.id }>{ alternateSubtitle.languageName }<div className="x-button" onClick={ this.clickDeleteAltSub.bind(this) } data-id={ alternateSubtitle.id }></div></li>
+                  );
+                }) }
+              </ul>
+              <a className="blue-outline-button small" onClick={ this.clickAddLanguage.bind(this) }>Add Subtitles</a>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
             <div className="col-xs-12">
               <h3>Related Films:</h3>
               <ul className="standard-list">
@@ -2023,4 +2125,12 @@ class FilmDetails extends React.Component {
   }
 }
 
-export default FilmDetails;
+const mapStateToProps = (reducers, props) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilmDetails);

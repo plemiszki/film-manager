@@ -54,7 +54,10 @@ var ServerActions = {
       schedule: response.schedule,
       crossedFilms: response.crossedFilms,
       otherCrossedFilms: response.otherCrossedFilms,
-      episodes: response.episodes
+      episodes: response.episodes,
+      alternateLengths: response.alternateLengths,
+      alternateAudios: response.alternateAudios,
+      alternateSubtitles: response.alternateSubtitles
     });
   },
 
