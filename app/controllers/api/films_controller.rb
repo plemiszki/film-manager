@@ -319,7 +319,8 @@ class Api::FilmsController < AdminController
     @film_countries = FilmCountry.where(film_id: film.id).includes(:country)
     @countries = Country.where.not(id: @film_countries.pluck(:country_id))
     @film_languages = FilmLanguage.where(film_id: film.id).includes(:language)
-    @languages = Language.where.not(id: @film_languages.pluck(:language_id))
+    all_languages = Language.all
+    @languages = all_languages.filter { |language| @film_languages.pluck(:language_id).include?(language.id) == false }
     @film_genres = FilmGenre.where(film_id: film.id).includes(:genre)
     @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
     @film_topics = FilmTopic.where(film_id: film.id).includes(:topic)
@@ -344,7 +345,9 @@ class Api::FilmsController < AdminController
     end
     @alternate_lengths = film.alternate_lengths
     @alternate_subs = film.alternate_subs.includes(:language)
+    @subtitle_languages = all_languages.filter { |language| @alternate_subs.pluck(:language_id).include?(language.id) == false }
     @alternate_audios = film.alternate_audios.includes(:language)
+    @audio_languages = all_languages.filter { |language| @alternate_audios.pluck(:language_id).include?(language.id) == false }
   end
 
   def create_schedule
