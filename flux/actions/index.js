@@ -16,7 +16,7 @@ export function fetchEntities(input) {
   }
 }
 
-export function createEntity(args, arrayName) {
+export function createEntity(args) {
   return (dispatch) => {
     return $.ajax({
       method: 'POST',

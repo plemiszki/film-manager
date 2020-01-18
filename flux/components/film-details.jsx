@@ -29,6 +29,7 @@ import FilmRightsStore from '../stores/film-rights-store.js'
 import FilmRightsStore2 from '../stores/film-rights-store-2.js'
 import { Common, Details, Index, ConfirmDelete } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
+import NewEntity from './new-entity.jsx'
 
 const LicensorModalStyles = {
   overlay: {
@@ -150,6 +151,19 @@ const CopyModalStyles = {
   }
 };
 
+const AltLengthModalStyles = {
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.50)'
+  },
+  content: {
+    background: '#F5F6F7',
+    padding: 0,
+    margin: 'auto',
+    maxWidth: 500,
+    height: 236
+  }
+};
+
 class FilmDetails extends React.Component {
 
   constructor(props) {
@@ -217,7 +231,8 @@ class FilmDetails extends React.Component {
       episodes: [],
       alternateLengths: [],
       alternateAudios: [],
-      alternateSubtitles: []
+      alternateSubtitles: [],
+      newAltLengthModalOpen: false
     };
   }
 
@@ -527,7 +542,7 @@ class FilmDetails extends React.Component {
 
   clickAddAltLength() {
     this.setState({
-      formatsModalOpen: true
+      newAltLengthModalOpen: true
     });
   }
 
@@ -758,7 +773,10 @@ class FilmDetails extends React.Component {
       artworkModalOpen: false,
       crossedFilmModalOpen: false,
       changeDatesModalOpen: false,
-      copyModalOpen: false
+      copyModalOpen: false,
+      newAltLengthModalOpen: false,
+      newAltAudioModalOpen: false,
+      newAltSubModalOpen: false
     });
   }
 
@@ -925,8 +943,14 @@ class FilmDetails extends React.Component {
 
   updateChangedDates() {
     this.setState({
-      changeDatesModalOpen: false,
-      fetching: true
+      changeDatesModalOpen: false
+    });
+  }
+
+  updateAlternateLengths(alternateLengths) {
+    this.setState({
+      newAltLengthModalOpen: false,
+      alternateLengths
     });
   }
 
@@ -1024,6 +1048,9 @@ class FilmDetails extends React.Component {
         </Modal>
         <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ CopyModalStyles }>
           <NewThing thing="film" copy={ true } initialObject={ { title: "", year: "", length: "", filmType: this.state.film.filmType, copyFrom: this.state.film.id } } />
+        </Modal>
+        <Modal isOpen={ this.state.newAltLengthModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+          <NewEntity entityName="alternateLength" initialEntity={ { length: "", filmId: this.state.film.id } } context={ this.props.context } callback={ this.updateAlternateLengths.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ArtworkModalStyles }>
           <h1 className="my-modal-header">Update artwork for all films now?</h1>
@@ -1593,7 +1620,7 @@ class FilmDetails extends React.Component {
             <div className="col-xs-4">
               <h3>Alternate Lengths:</h3>
               <ul className="standard-list">
-                { this.state.alternateLengths.map((alternateLength) => {
+                { HandyTools.sortArrayOfObjects(this.state.alternateLengths, 'length').map((alternateLength) => {
                   return(
                     <li key={ alternateLength.id }>{ alternateLength.length }<div className="x-button" onClick={ this.clickDeleteAltLength.bind(this) } data-id={ alternateLength.id }></div></li>
                   );
@@ -2125,7 +2152,7 @@ class FilmDetails extends React.Component {
   }
 }
 
-const mapStateToProps = (reducers, props) => {
+const mapStateToProps = (reducers) => {
   return reducers.standardReducer;
 };
 

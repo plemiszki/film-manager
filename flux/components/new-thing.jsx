@@ -45,6 +45,7 @@ class NewThing extends React.Component {
   changeFieldArgs() {
     return {
       thing: this.props.thing,
+      allErrors: FM.errors,
       errorsArray: this.state.errors,
       beforeSave: this.properBeforeSave()
     }
@@ -186,7 +187,10 @@ class NewThing extends React.Component {
       digitalRetailerFilm: "Digital Retailer",
       crossedFilm: "Crossed Film",
       merchandiseType: "Merchandise Type",
-      merchandiseItem: "Merchandise"
+      merchandiseItem: "Merchandise",
+      alternateLength: "Alternate Length",
+      alternateSub: "Alternate Sub",
+      alternateAudio: "Alternate Audio Track"
     };
     let verb = (this.props.copy ? "Copy" : "Add");
     if (Object.keys(map).indexOf(this.props.thing) > -1) {
@@ -205,7 +209,7 @@ class NewThing extends React.Component {
           <div className="col-xs-12">
             <h2>Name</h2>
             <input className={Details.errorClass(this.state.errors, FM.errors.name)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state[this.props.thing].name} data-field="name" />
-            {Details.renderFieldError(this.state.errors, FM.errors.name)}
+            { Details.renderFieldError(this.state.errors, FM.errors.name) }
           </div>
         </div>
       );

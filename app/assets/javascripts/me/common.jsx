@@ -347,7 +347,8 @@ var FM = {
       "Year is not a number"
     ],
     length: [
-      "Length is not a number"
+      "Length is not a number",
+      'Length has already been taken'
     ],
     text: [
       "Text can't be blank",

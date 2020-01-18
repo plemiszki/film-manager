@@ -45,16 +45,18 @@ class NewEntity extends React.Component {
   }
 
   clickAdd(e) {
+    let entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
+    let directory = HandyTools.convertToUnderscore(entityNamePlural);
     e.preventDefault();
     this.setState({
       fetching: true
     });
     this.props.createEntity({
-      directory: HandyTools.convertToUnderscore(this.props.entityNamePlural),
+      directory,
       entityName: this.props.entityName,
       entity: this.state[this.props.entityName]
-    }, this.props.entityNamePlural).then(() => {
-      this.props.callback(this.props[this.props.entityNamePlural]);
+    }).then(() => {
+      this.props.callback(this.props[entityNamePlural]);
     }, () => {
       this.setState({
         fetching: false,
@@ -220,6 +222,12 @@ class NewEntity extends React.Component {
                 <option value="Festival">Festival</option>
               </select>
             </div>
+          </div>
+        ]);
+      case 'alternateLength':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'alternateLength', property: 'length' }) }
           </div>
         ]);
     }
