@@ -4,9 +4,9 @@ class Api::FilmsController < AdminController
 
   def index
     if params[:film_type] == 'all'
-      @films = Film.all
+      @films = Film.all.includes(:alternate_lengths, alternate_subs: [:language], alternate_audios: [:language])
     else
-      @films = Film.where(film_type: params[:film_type])
+      @films = Film.where(film_type: params[:film_type]).includes(:alternate_lengths, alternate_subs: [:language], alternate_audios: [:language])
     end
     render 'index.json.jbuilder'
   end
