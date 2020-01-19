@@ -23,6 +23,8 @@ var _episodes = [];
 var _alternateLengths = [];
 var _alternateAudios = [];
 var _alternateSubtitles = [];
+var _subtitleLanguages = [];
+var _audioLanguages = [];
 
 FilmsStore.setFilms = function(films) {
   films.forEach(function(film) {
@@ -98,6 +100,14 @@ FilmsStore.setDvdTypes = function(dvdTypes) {
 
 FilmsStore.setLabels = function(labels) {
   _labels = labels;
+};
+
+FilmsStore.setSubtitleLanguages = function(subtitleLanguages) {
+  _subtitleLanguages = subtitleLanguages;
+};
+
+FilmsStore.setAudioLanguages = function(audioLanguages) {
+  _audioLanguages = audioLanguages;
 };
 
 FilmsStore.setRights = function(rights) {
@@ -226,6 +236,14 @@ FilmsStore.labels = function() {
   return _labels;
 };
 
+FilmsStore.audioLanguages = function() {
+  return HandyTools.alphabetizeArrayOfObjects(_audioLanguages, 'name');
+};
+
+FilmsStore.subtitleLanguages = function() {
+  return HandyTools.alphabetizeArrayOfObjects(_subtitleLanguages, 'name');
+};
+
 FilmsStore.schedule = function() {
   return HandyTools.sortArrayOfDateStrings(_schedule, 'date');
 };
@@ -255,6 +273,8 @@ FilmsStore.__onDispatch = function(payload) {
       this.setAlternateAudios(payload.alternateAudios);
       this.setAlternateSubtitles(payload.alternateSubtitles);
       this.setAlternateLengths(payload.alternateLengths);
+      this.setAudioLanguages(payload.audioLanguages);
+      this.setSubtitleLanguages(payload.subtitleLanguages);
       if (payload.episodes) {
         this.setEpisodes(payload.episodes);
       }

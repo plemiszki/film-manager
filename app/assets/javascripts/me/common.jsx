@@ -348,7 +348,8 @@ var FM = {
     ],
     length: [
       "Length is not a number",
-      'Length has already been taken'
+      'Length has already been taken',
+      'Length must be greater than 0'
     ],
     text: [
       "Text can't be blank",

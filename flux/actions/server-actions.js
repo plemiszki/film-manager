@@ -57,7 +57,9 @@ var ServerActions = {
       episodes: response.episodes,
       alternateLengths: response.alternateLengths,
       alternateAudios: response.alternateAudios,
-      alternateSubtitles: response.alternateSubtitles
+      alternateSubtitles: response.alternateSubtitles,
+      subtitleLanguages: response.subtitleLanguages,
+      audioLanguages: response.audioLanguages
     });
   },
 

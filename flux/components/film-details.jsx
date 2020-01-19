@@ -5,7 +5,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
-import { deleteEntity } from '../actions/index.js'
+import { createEntity, deleteEntity } from '../actions/index.js'
 import FilmsStore from '../stores/films-store.js'
 import FilmErrorsStore from '../stores/film-errors-store.js'
 import CountriesStore from '../stores/countries-store.js'
@@ -184,20 +184,6 @@ class FilmDetails extends React.Component {
       bookings:[],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false,
-      licensorModalOpen: false,
-      dvdModalOpen: false,
-      countriesModalOpen: false,
-      languagesModalOpen: false,
-      genresModalOpen: false,
-      topicsModalOpen: false,
-      quoteModalOpen: false,
-      laurelModalOpen: false,
-      directorModalOpen: false,
-      actorModalOpen: false,
-      relatedFilmsModalOpen: false,
-      formatsModalOpen: false,
-      copyModalOpen: false,
       tab: (FM.params.tab ? HandyTools.capitalize(FM.params.tab) : 'General'),
       filmRights: [],
       filmCountries: [],
@@ -232,7 +218,8 @@ class FilmDetails extends React.Component {
       alternateLengths: [],
       alternateAudios: [],
       alternateSubtitles: [],
-      newAltLengthModalOpen: false
+      subtitleLanguages: [],
+      audioLanguages: []
     };
   }
 
@@ -292,7 +279,9 @@ class FilmDetails extends React.Component {
       fetching: false,
       alternateAudios: FilmsStore.alternateAudios(),
       alternateLengths: FilmsStore.alternateLengths(),
-      alternateSubtitles: FilmsStore.alternateSubtitles()
+      alternateSubtitles: FilmsStore.alternateSubtitles(),
+      audioLanguages: FilmsStore.audioLanguages(),
+      subtitleLanguages: FilmsStore.subtitleLanguages()
     }, () => {
       this.setState({
         changesToSave: this.checkForChanges()
@@ -540,12 +529,6 @@ class FilmDetails extends React.Component {
     });
   }
 
-  clickAddAltLength() {
-    this.setState({
-      newAltLengthModalOpen: true
-    });
-  }
-
   clickFormat(e) {
     ClientActions.createFilmFormat({ filmId: this.state.film.id, formatId: e.target.dataset.id })
   }
@@ -576,6 +559,50 @@ class FilmDetails extends React.Component {
 
   clickLanguage(e) {
     ClientActions.createFilmLanguage({ film_id: this.state.film.id, language_id: e.target.dataset.id })
+  }
+
+  clickAlternateAudio(e) {
+    Common.closeModals.call(this);
+    this.setState({
+      fetching: true
+    });
+    let languageId = e.target.dataset.id;
+    this.props.createEntity({
+      directory: 'alternate_audios',
+      entityName: 'alternate_audio',
+      entity: {
+        filmId: this.state.film.id,
+        languageId
+      }
+    }).then(() => {
+      this.setState({
+        fetching: false,
+        alternateAudios: this.props.alternateAudios,
+        audioLanguages: this.props.audioLanguages
+      });
+    });
+  }
+
+  clickAlternateSubtitle(e) {
+    Common.closeModals.call(this);
+    this.setState({
+      fetching: true
+    });
+    let languageId = e.target.dataset.id;
+    this.props.createEntity({
+      directory: 'alternate_subs',
+      entityName: 'alternate_sub',
+      entity: {
+        filmId: this.state.film.id,
+        languageId
+      }
+    }).then(() => {
+      this.setState({
+        fetching: false,
+        alternateSubtitles: this.props.alternateSubs,
+        subtitleLanguages: this.props.subtitleLanguages
+      });
+    });
   }
 
   clickDeleteLanguage(e) {
@@ -867,7 +894,8 @@ class FilmDetails extends React.Component {
       callback: (response) => {
         this.setState({
           fetching: false,
-          alternateSubtitles: response.alternateSubs
+          alternateSubtitles: response.alternateSubs,
+          subtitleLanguages: response.subtitleLanguages
         });
       }
     });
@@ -884,7 +912,8 @@ class FilmDetails extends React.Component {
       callback: (response) => {
         this.setState({
           fetching: false,
-          alternateAudios: response.alternateAudios
+          alternateAudios: response.alternateAudios,
+          audioLanguages: response.audioLanguages
         });
       }
     });
@@ -1025,8 +1054,14 @@ class FilmDetails extends React.Component {
         <Modal isOpen={ this.state.languagesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.languages } property={ "name" } func={ this.clickLanguage.bind(this) } />
         </Modal>
+        <Modal isOpen={ this.state.alternateAudioModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state.audioLanguages, 'name') } property="name" func={ this.clickAlternateAudio.bind(this) } />
+        </Modal>
+        <Modal isOpen={ this.state.alternateSubtitleModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state.subtitleLanguages, 'name') } property="name" func={ this.clickAlternateSubtitle.bind(this) } />
+        </Modal>
         <Modal isOpen={ this.state.genresModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.genres } property={ "name" } func={ this.clickGenre.bind(this) } />
+          <ModalSelect options={ this.state.genres } property="name" func={ this.clickGenre.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.topicsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.topics } property={ "name" } func={ this.clickTopic.bind(this) } />
@@ -1626,29 +1661,29 @@ class FilmDetails extends React.Component {
                   );
                 }) }
               </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddAltLength.bind(this) }>Add Length</a>
+              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newAltLengthModalOpen', true) }>Add Length</a>
             </div>
             <div className="col-xs-4">
               <h3>Alternate Audio Tracks:</h3>
               <ul className="standard-list">
-                { this.state.alternateAudios.map((alternateAudio) => {
+                { HandyTools.alphabetizeArrayOfObjects(this.state.alternateAudios, 'languageName').map((alternateAudio) => {
                   return(
                     <li key={ alternateAudio.id }>{ alternateAudio.languageName }<div className="x-button" onClick={ this.clickDeleteAltAudio.bind(this) } data-id={ alternateAudio.id }></div></li>
                   );
                 }) }
               </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddLanguage.bind(this) }>Add Audio Track</a>
+              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateAudioModalOpen', true) }>Add Audio Track</a>
             </div>
             <div className="col-xs-4">
               <h3>Alternate Subtitles:</h3>
               <ul className="standard-list">
-                { this.state.alternateSubtitles.map((alternateSubtitle) => {
+                { HandyTools.alphabetizeArrayOfObjects(this.state.alternateSubtitles, 'languageName').map((alternateSubtitle) => {
                   return(
                     <li key={ alternateSubtitle.id }>{ alternateSubtitle.languageName }<div className="x-button" onClick={ this.clickDeleteAltSub.bind(this) } data-id={ alternateSubtitle.id }></div></li>
                   );
                 }) }
               </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddLanguage.bind(this) }>Add Subtitles</a>
+              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateSubtitleModalOpen', true) }>Add Subtitles</a>
             </div>
           </div>
           <hr />
@@ -2157,7 +2192,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ deleteEntity }, dispatch);
+  return bindActionCreators({ createEntity, deleteEntity }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilmDetails);
