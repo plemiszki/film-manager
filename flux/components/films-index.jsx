@@ -61,6 +61,7 @@ class FilmsIndex extends React.Component {
       fetching: true,
       searchText: '',
       sortBy: 'title',
+      filterActive: false,
       films: [],
       allAltLengths: [],
       selectedAltLengths: [],
@@ -188,8 +189,40 @@ class FilmsIndex extends React.Component {
     });
   }
 
+  updateFilter() {
+    let { films, selectedAltSubs, selectedAltAudios, selectedAltLengths } = this.state;
+    let filteredFilms = [];
+    let includeFilm;
+    films.forEach((film) => {
+      includeFilm = true;
+      selectedAltLengths.forEach((length) => {
+        if (film.alternateLengths.indexOf(+length) === -1) {
+          includeFilm = false;
+        }
+      });
+      selectedAltAudios.forEach((audio) => {
+        if (film.alternateAudios.indexOf(audio) === -1) {
+          includeFilm = false;
+        }
+      });
+      selectedAltSubs.forEach((sub) => {
+        if (film.alternateSubs.indexOf(sub) === -1) {
+          includeFilm = false;
+        }
+      });
+      if (includeFilm) {
+        filteredFilms.push(film);
+      }
+    });
+    Common.closeModals.call(this);
+    this.setState({
+      filteredFilms,
+      filterActive: (selectedAltLengths.length > 0 || selectedAltAudios.length > 0 || selectedAltSubs.length > 0)
+    });
+  }
+
   render() {
-    var filteredFilms = this.state.films.filterSearchText(this.state.searchText, this.state.sortBy);
+    var filteredFilms = this.state[this.state.filterActive ? 'filteredFilms' : 'films'].filterSearchText(this.state.searchText, this.state.sortBy);
     return(
       <div id="films-index" className="component">
         <div className="clearfix">
@@ -233,7 +266,7 @@ class FilmsIndex extends React.Component {
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ newRightsModalStyles }>
           <FilmRightsNew search={ true } filmType={ this.props.filmType } availsExport={ this.clickExportMetadata.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FilterModalStyles }>
+        <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.updateFilter.bind(this) } contentLabel="Modal" style={ FilterModalStyles }>
           { this.renderFilter() }
         </Modal>
         { FM.jobModal.call(this, this.state.job) }
@@ -272,7 +305,7 @@ class FilmsIndex extends React.Component {
   renderFilterButton() {
     if (this.props.filmType === 'Feature') {
       return(
-        <a className={ "orange-button float-button metadata-button" + Common.renderInactiveButtonClass(this.state.fetching) + (this.filterActive.call(this) ? ' green' : '') } onClick={ Common.changeState.bind(this, 'filterModalOpen', true) }>Filter</a>
+        <a className={ "orange-button float-button metadata-button" + Common.renderInactiveButtonClass(this.state.fetching) + (this.state.filterActive ? ' green' : '') } onClick={ Common.changeState.bind(this, 'filterModalOpen', true) }>Filter</a>
       );
     }
   }
@@ -332,7 +365,7 @@ class FilmsIndex extends React.Component {
         </div>
         <div className="row">
           <div className="col-xs-12 text-center">
-            <a className="orange-button" onClick={ Common.changeState.bind(this, 'filterModalOpen', false) }>Close Filter</a>
+            <a className="orange-button" onClick={ this.updateFilter.bind(this) }>Close Filter</a>
           </div>
         </div>
       </div>
