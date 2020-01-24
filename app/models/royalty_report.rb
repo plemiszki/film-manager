@@ -13,6 +13,13 @@ class RoyaltyReport < ActiveRecord::Base
   belongs_to :film
   has_many :royalty_revenue_streams, -> { joins(:revenue_stream).order('revenue_streams.order') }, dependent: :destroy
 
+  def self.create_missing_film_statement(year:, quarter:, film_id:)
+    film = Film.find(film_id)
+    report = RoyaltyReport.create!(film_id: film_id, deal_id: film.deal_type_id, quarter: quarter, year: year, mg: film.mg, e_and_o: film.e_and_o)
+    report.create_empty_streams!
+    report.transfer_and_calculate_from_previous_report!
+  end
+
   def self.calculate_all!
     RoyaltyReport.all.order(:year, :quarter, :id).each do |report|
       report.calculate!
