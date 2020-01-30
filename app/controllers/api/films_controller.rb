@@ -35,7 +35,11 @@ class Api::FilmsController < AdminController
     begin
       ActiveRecord::Base.transaction do
         @film = Film.find(params[:id])
-        unless @film.update(film_params)
+        @film.assign_attributes(film_params)
+        if @film.reserve_percentage_changed? || @film.reserve_quarters_changed?
+          recalculate_statements = true
+        end
+        unless @film.save(film_params)
           error_present = true
           errors[:film] = @film.errors.full_messages
         end
@@ -46,6 +50,11 @@ class Api::FilmsController < AdminController
           end
         end
         fail if error_present
+        if recalculate_statements
+          @film.royalty_reports.order(:year, :quarter).each do |report|
+            report.calculate!
+          end
+        end
         gather_data_for_show_view
         render 'show.json.jbuilder'
       end
