@@ -159,12 +159,12 @@ class FilmRightsNew extends React.Component {
             <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>Start Date</h2>
               <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
-              { Details.renderFieldError(this.state.errors, []) }
+              { Details.renderFieldError(this.state.errors, FM.errors.startDate) }
             </div>
             <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>End Date</h2>
               <input className={ Details.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
-              { Details.renderFieldError(this.state.errors, []) }
+              { Details.renderFieldError(this.state.errors, FM.errors.endDate) }
             </div>
             { this.renderExclusiveColumn() }
           </div>

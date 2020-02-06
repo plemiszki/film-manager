@@ -306,7 +306,8 @@ var FM = {
     ],
     startDate: [
       "Start date is not a valid date",
-      "Start date can't be blank"
+      "Start date can't be blank",
+      "Start date can't be after end date"
     ],
     endDate: [
       "End date is not a valid date",
