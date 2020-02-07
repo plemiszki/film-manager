@@ -236,6 +236,7 @@ var ClientActions = {
       reserve_quarters: film.reserveQuarters,
       auto_renew: film.autoRenew,
       auto_renew_term: film.autoRenewTerm,
+      auto_renew_days_notice: film.autoRenewDaysNotice,
       sell_off_period: film.sellOffPeriod,
       year: film.year,
       length: film.length,

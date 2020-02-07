@@ -837,6 +837,10 @@ class FilmDetails extends React.Component {
       FM.errors.autoRenewTerm.forEach((message) => {
         HandyTools.removeFromArray(filmErrors, message);
       });
+      film.autoRenewDaysNotice = 0;
+      FM.errors.autoRenewDaysNotice.forEach((message) => {
+        HandyTools.removeFromArray(filmErrors, message);
+      });
     }
     this.setState({
       film: film,
@@ -1953,27 +1957,34 @@ class FilmDetails extends React.Component {
             <div className="col-xs-3">
               <input id="returns-reserve" className="checkbox" type="checkbox" checked={ this.state.film.reserve } onChange={ this.changeCheckbox.bind(this, 'reserve') } disabled={ !FM.user.hasAdminAccess } /><label className="checkbox" htmlFor="reserve-returns">Reserve Against Returns</label>
             </div>
-            <div className="col-xs-2">
+            <div className={ `col-xs-2${this.state.film.reserve ? '' : ' hidden'}` }>
               <h2>Reserve %</h2>
               <input className={Details.errorClass(this.state.filmErrors, FM.errors.reservePercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reservePercentage} data-field="reservePercentage" disabled={ !this.state.film.reserve } readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
-            <div className="col-xs-2">
+            <div className={ `col-xs-2${this.state.film.reserve ? '' : ' hidden'}` }>
               <h2># of Quarters</h2>
               <input className={Details.errorClass(this.state.filmErrors, FM.errors.reserveQuarters)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveQuarters} data-field="reserveQuarters" disabled={ !this.state.film.reserve } readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
+            <div className={ `spacer${this.state.film.reserve ? ' hidden' : ''}` }></div>
           </div>
           <hr />
           <div className={ "row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew") }>
             <div className="col-xs-3">
               <input id="auto-renew" className="checkbox" type="checkbox" checked={ this.state.film.autoRenew } onChange={ this.changeCheckbox.bind(this, 'autoRenew') } disabled={ !FM.user.hasAdminAccess } /><label className="checkbox">Auto-Renew</label>
             </div>
-            <div className="col-xs-2">
+            <div className={ `col-xs-3${this.state.film.autoRenew ? '' : ' hidden'}` }>
               <h2>Term (Months)</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.autoRenewTerm } data-field="autoRenewTerm" disabled={ !this.state.film.autoRenew } readOnly={ !FM.user.hasAdminAccess } />
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.autoRenewTerm } data-field="autoRenewTerm" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, []) }
             </div>
+            <div className={ `col-xs-2${this.state.film.autoRenew ? '' : ' hidden'}` }>
+              <h2>Days Notice</h2>
+              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.autoRenewDaysNotice) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.autoRenewDaysNotice } data-field="autoRenewDaysNotice" readOnly={ !FM.user.hasAdminAccess } />
+              { Details.renderFieldError(this.state.filmErrors, []) }
+            </div>
+            <div className={ `spacer${this.state.film.autoRenew ? ' hidden' : ''}` }></div>
           </div>
         </div>
       </div>

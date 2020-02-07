@@ -22,7 +22,8 @@ json.films @films do |film|
   json.dayAndDate film.day_and_date
   json.sellOffPeriod film.sell_off_period
   json.autoRenew film.auto_renew
-  json.autoRenewTerm film.auto_renew_term
+  json.autoRenewTerm film.auto_renew_term.to_s
+  json.autoRenewDaysNotice film.auto_renew_days_notice.to_s
   json.year film.year.to_s || ""
   json.length film.length.to_s || ""
   json.synopsis film.synopsis || ""

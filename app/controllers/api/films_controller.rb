@@ -265,6 +265,7 @@ class Api::FilmsController < AdminController
       :sell_off_period,
       :auto_renew,
       :auto_renew_term,
+      :auto_renew_days_notice,
       :year,
       :length,
       :synopsis,
@@ -312,7 +313,7 @@ class Api::FilmsController < AdminController
     film = @films.first
     @film_formats = FilmFormat.where(film_id: params[:id]).includes(:format)
     @formats = Format.where.not(id: @film_formats.map { |ff| ff.format_id })
-    @bookings = Booking.where(film_id: film.id).includes(:venue)
+    @bookings = Booking.where(film_id: film.id).includes(:venue, :payments)
     @calculations = {}
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
@@ -324,21 +325,21 @@ class Api::FilmsController < AdminController
     @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id])
     @rights = FilmRight.where(film_id: params[:id]).includes(:right, :territory)
     @dvds = (film.film_type.in?(['Feature', 'TV Series']) ? Dvd.where(feature_film_id: params[:id]) : Dvd.where(id: [DvdShort.where(short_id: params[:id]).includes(:dvd).map(&:dvd_id)]))
-    @dvd_types = DvdType.where.not(id: @dvds.pluck(:dvd_type_id))
+    @dvd_types = DvdType.where.not(id: @dvds.map(&:dvd_type_id))
     @film_countries = FilmCountry.where(film_id: film.id).includes(:country)
-    @countries = Country.where.not(id: @film_countries.pluck(:country_id))
+    @countries = Country.where.not(id: @film_countries.map(&:country_id))
     @film_languages = FilmLanguage.where(film_id: film.id).includes(:language)
     all_languages = Language.all
-    @languages = all_languages.filter { |language| @film_languages.pluck(:language_id).include?(language.id) == false }
+    @languages = all_languages.filter { |language| @film_languages.map(&:language_id).include?(language.id) == false }
     @film_genres = FilmGenre.where(film_id: film.id).includes(:genre)
-    @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
+    @genres = Genre.where.not(id: @film_genres.map(&:genre_id))
     @film_topics = FilmTopic.where(film_id: film.id).includes(:topic)
-    @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
+    @topics = Topic.where.not(id: @film_topics.map(&:topic_id))
     @labels = Label.all
     @laurels = Laurel.where(film_id: film.id).order(:order)
     @quotes = Quote.where(film_id: film.id).order(:order)
     @related_films = RelatedFilm.where(film_id: film.id)
-    this_film_and_related_film_ids = ([film.id] + @related_films.pluck(:other_film_id))
+    this_film_and_related_film_ids = ([film.id] + @related_films.map(&:other_film_id))
     all_films = Film.all
     @other_films = all_films.reject { |f| this_film_and_related_film_ids.include?(f.id) }
     @actors = Actor.where(actorable_id: film.id)
@@ -348,15 +349,15 @@ class Api::FilmsController < AdminController
     @schedule = create_schedule
     @sub_rights = film.sub_rights
     @crossed_films = film.crossed_films
-    @other_crossed_films = Film.where(licensor_id: film.licensor_id, days_statement_due: film.days_statement_due, deal_type_id: film.deal_type_id).reject { |f| ([film.id] + @crossed_films.pluck(:crossed_film_id)).include?(f.id) || f.film_type == 'Short' }
+    @other_crossed_films = Film.where(licensor_id: film.licensor_id, days_statement_due: film.days_statement_due, deal_type_id: film.deal_type_id).reject { |f| ([film.id] + @crossed_films.map(&:crossed_film_id)).include?(f.id) || f.film_type == 'Short' }
     if film.film_type == 'TV Series'
       @episodes = film.episodes
     end
     @alternate_lengths = film.alternate_lengths
     @alternate_subs = film.alternate_subs.includes(:language)
-    @subtitle_languages = all_languages.filter { |language| @alternate_subs.pluck(:language_id).include?(language.id) == false }
+    @subtitle_languages = all_languages.filter { |language| @alternate_subs.map(&:language_id).include?(language.id) == false }
     @alternate_audios = film.alternate_audios.includes(:language)
-    @audio_languages = all_languages.filter { |language| @alternate_audios.pluck(:language_id).include?(language.id) == false }
+    @audio_languages = all_languages.filter { |language| @alternate_audios.map(&:language_id).include?(language.id) == false }
   end
 
   def create_schedule
