@@ -37,7 +37,10 @@ class ExportFilms
       'Blu-ray Price',
       'Blu-ray Street Date',
       'Blu-ray UPC',
-      'Blu-ray Stock'
+      'Blu-ray Stock',
+      'Auto Renew',
+      'Auto Renew Term',
+      'Auto Renew Days Notice'
     ]
 
     if search_criteria
@@ -84,7 +87,10 @@ class ExportFilms
         blu_ray ? "$#{number_with_precision(blu_ray.price, precision: 2, delimiter: ',')}" : 'n/a',
         (blu_ray && blu_ray.retail_date) ? blu_ray.retail_date.strftime("%-m/%-d/%Y") : 'n/a',
         blu_ray ? blu_ray.upc : 'n/a',
-        blu_ray ? blu_ray.stock : 'n/a'
+        blu_ray ? blu_ray.stock : 'n/a',
+        film.auto_renew ? 'Yes' : 'No',
+        film.auto_renew ? film.auto_renew_term : '',
+        film.auto_renew ? film.auto_renew_days_notice : ''
       ]
 
       if search_criteria
