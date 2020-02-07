@@ -1974,7 +1974,7 @@ class FilmDetails extends React.Component {
             <div className="col-xs-3">
               <input id="auto-renew" className="checkbox" type="checkbox" checked={ this.state.film.autoRenew } onChange={ this.changeCheckbox.bind(this, 'autoRenew') } disabled={ !FM.user.hasAdminAccess } /><label className="checkbox">Auto-Renew</label>
             </div>
-            <div className={ `col-xs-3${this.state.film.autoRenew ? '' : ' hidden'}` }>
+            <div className={ `col-xs-2${this.state.film.autoRenew ? '' : ' hidden'}` }>
               <h2>Term (Months)</h2>
               <input className={ Details.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.autoRenewTerm } data-field="autoRenewTerm" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, []) }
