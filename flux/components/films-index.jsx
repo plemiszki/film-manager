@@ -114,7 +114,7 @@ class FilmsIndex extends React.Component {
     this.setState({
       fetching: false,
       films,
-      modalOpen: false,
+      newFilmModalOpen: false,
       allAltLengths: allAltLengths.sort(),
       allAltAudios: allAltAudios.sort(),
       allAltSubs: allAltSubs.sort()

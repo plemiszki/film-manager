@@ -30,10 +30,12 @@ gem 'xlsx_writer'
 group :development, :test do
   gem 'better_errors'
   gem 'byebug'
+  gem 'capybara'
   gem 'database_cleaner'
   gem 'dotenv-rails'
   gem 'factory_bot'
   gem 'rspec-rails'
+  gem 'selenium-webdriver'
 end
 
 group :development do

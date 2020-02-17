@@ -8,6 +8,8 @@ require 'rspec/rails'
 require 'support/factory_bot'
 require 'clearance/rspec'
 
+Capybara.default_driver = :selenium_chrome
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 FactoryBot.definition_file_paths = [File.expand_path('../factories', __FILE__)]
