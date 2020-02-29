@@ -1,9 +1,9 @@
 require 'rails_helper'
+require 'support/features_helper'
 
 describe 'films_index', type: :feature do
 
   before(:all) {
-    @admin_user = User.create!(name: 'Peter Lemiszki', email: 'peter@filmmovement.com', password: 'password', access: 150)
     Film.create!(title: 'Wilby Wonderful', label_id: 1, year: 2002, length: 90, film_type: 'Feature')
     Film.create!(title: '12 Years', label_id: 1, year: 2002, length: 5, film_type: 'Short')
     Film.create!(title: 'The Adventures of Pete and Pete', label_id: 1, year: 1990, length: 200, film_type: 'TV Series')
@@ -15,13 +15,13 @@ describe 'films_index', type: :feature do
   end
 
   it 'displays all feature films' do
-    visit films_path(as: @admin_user)
+    visit films_path(as: $admin_user)
     expect(page).to have_content 'Features'
     expect(page).to have_content 'Wilby Wonderful'
   end
 
   it 'can add new feature films' do
-    visit films_path(as: @admin_user)
+    visit films_path(as: $admin_user)
     find('.orange-button', text: 'Add Film').click
     find('[data-field="title"]').set('New Film')
     find('[data-field="year"]').set('2002')
@@ -39,7 +39,7 @@ describe 'films_index', type: :feature do
   end
 
   it 'validates new films properly' do
-    visit films_path(as: @admin_user)
+    visit films_path(as: $admin_user)
     find('.orange-button', text: 'Add Film').click
     within('.admin-modal') do
       find('.orange-button', text: 'Add Film').click
@@ -50,13 +50,13 @@ describe 'films_index', type: :feature do
   end
 
   it 'displays all short films' do
-    visit shorts_path(as: @admin_user)
+    visit shorts_path(as: $admin_user)
     expect(page).to have_content 'Shorts'
     expect(page).to have_content '12 Years'
   end
 
   it 'can add new short films' do
-    visit shorts_path(as: @admin_user)
+    visit shorts_path(as: $admin_user)
     find('.orange-button', text: 'Add Short').click
     find('[data-field="title"]').set('New Short')
     find('[data-field="year"]').set('2002')
@@ -74,13 +74,13 @@ describe 'films_index', type: :feature do
   end
 
   it 'displays all tv series' do
-    visit tv_series_index_path(as: @admin_user)
+    visit tv_series_index_path(as: $admin_user)
     expect(page).to have_content 'TV Series'
     expect(page).to have_content 'The Adventures of Pete and Pete'
   end
 
   it 'can add new tv series' do
-    visit tv_series_index_path(as: @admin_user)
+    visit tv_series_index_path(as: $admin_user)
     find('.orange-button', text: 'Add TV Series').click
     find('[data-field="title"]').set('New TV Series')
     find('[data-field="year"]').set('2005')

@@ -7,9 +7,11 @@ class ImportSageData
   REVENUE_STREAM_IDS = Hash[*RevenueStream.all.map { |stream| [stream.name, stream.id] }.flatten]
 
   def perform(year, quarter, time_started, label, original_filename)
-    p '---------------------------'
-    p 'STARTING SAGE IMPORT'
-    p '---------------------------'
+    unless Rails.env == 'test'
+      p '---------------------------'
+      p 'STARTING SAGE IMPORT'
+      p '---------------------------'
+    end
     job = Job.find_by_job_id(time_started)
     reports = RoyaltyReport.where(year: year, quarter: quarter)
 
@@ -226,9 +228,11 @@ class ImportSageData
       end
 
       job.update!({ done: true, first_line: "Import Complete", errors_text: errors.join("\n") })
-      p '---------------------------'
-      p 'FINISHED SAGE IMPORT'
-      p '---------------------------'
+      unless Rails.env == 'test'
+        p '---------------------------'
+        p 'FINISHED SAGE IMPORT'
+        p '---------------------------'
+      end
     rescue
       job.update!({ done: true, errors_text: "Unable to import spreadsheet" })
     end
