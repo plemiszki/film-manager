@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'sidekiq/testing'
+require 'support/controllers_helper'
 
 # HACK UNTIL I UPGRADE TO RAILS 5 -------
 if RUBY_VERSION>='2.6.0'
@@ -19,11 +20,6 @@ end
 # ----------------------------------------
 
 RSpec.describe Api::RoyaltyReportsController do
-
-  before(:each) do
-    set_up_user_and_label_and_licensor_and_rights_and_revenue_streams
-    sign_in_as(User.first)
-  end
 
   context '#show' do
     render_views

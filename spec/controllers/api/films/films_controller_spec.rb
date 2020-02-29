@@ -1,11 +1,10 @@
-require "rails_helper"
+require 'rails_helper'
+require 'support/controllers_helper'
 
 RSpec.describe Api::FilmsController do
 
   before(:each) do
-    set_up_user_and_label_and_licensor_and_rights_and_revenue_streams
     create(:no_expenses_recouped_film)
-    sign_in_as(User.first)
   end
 
   context '#create' do
