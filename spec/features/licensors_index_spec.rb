@@ -4,7 +4,7 @@ require 'support/features_helper'
 describe 'licensors_index', type: :feature do
 
   before(:all) {
-    Licensor.create!(name: 'Visit Films', email: 'ryan@visitfilms.com')
+    Licensor.find_or_create_by(name: 'Visit Films', email: 'ryan@visitfilms.com')
   }
 
   it 'is gated' do
