@@ -4,7 +4,7 @@ require 'support/features_helper'
 describe 'venues_index', type: :feature do
 
   before(:all) {
-    Venue.create!(label: 'Film at Lincoln Center', venue_type: 'Theatrical')
+    Venue.create!(label: 'Film at Lincoln Center', venue_type: 'Theater')
   }
 
   it 'is gated' do

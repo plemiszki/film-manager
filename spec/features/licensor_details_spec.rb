@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'support/features_helper'
 
-describe 'licensors_index', type: :feature do
+describe 'licensor_details', type: :feature do
 
   before(:all) {
     @licensor = Licensor.find_or_create_by(name: 'Visit Films', email: 'ryan@visitfilms.com')
@@ -24,12 +24,11 @@ describe 'licensors_index', type: :feature do
 
   it 'updates information about the licensor' do
     visit licensor_path(@licensor, as: $admin_user)
-    name_field = find('input[data-field="name"]')
-    email_field = find('input[data-field="email"]')
-    address_field = find('textarea[data-field="address"]')
-    name_field.set('New Name')
-    email_field.set('newemail@visitfilms.com')
-    address_field.set("Visit Films\n1300 Main Street\nNew York, NY 10001")
+    fill_out_form({
+      name: 'New Name',
+      email: 'newemail@visitfilms.com',
+      address: "Visit Films\n1300 Main Street\nNew York, NY 10001"
+    })
     save_button = find('.orange-button', text: 'Save')
     save_button.click
     expect(page).not_to have_selector('.spinner')
