@@ -1,6 +1,6 @@
 RSpec.configure do |config|
 
-  config.before(:each, type: :controller) {
+  config.before(:each, type: :controller) do
     create(:user)
     create(:label)
     create(:licensor)
@@ -43,6 +43,6 @@ RSpec.configure do |config|
       create(:revenue_stream, name: name, order: index)
     end
     sign_in_as(User.first)
-  }
-  
+  end
+
 end
