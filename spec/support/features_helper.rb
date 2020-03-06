@@ -1,6 +1,6 @@
 RSpec.configure do |config|
 
-  config.before(:suite) do
+  config.before(:each) do
     $admin_user = User.create!(name: 'Peter Lemiszki', email: 'peter+features@filmmovement.com', password: 'password', access: 150)
   end
 

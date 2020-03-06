@@ -3,9 +3,9 @@ require 'support/features_helper'
 
 describe 'venue_details', type: :feature do
 
-  before(:all) {
+  before(:each) do
     create(:label)
-    @venue = Venue.find_or_create_by(
+    @venue = Venue.create!(
       label: 'Film at Lincoln Center',
       venue_type: 'Theater',
       sage_id: 'LINCOLN',
@@ -25,7 +25,7 @@ describe 'venue_details', type: :feature do
       date_added: Date.today,
       booker_id: 1
     )
-  }
+  end
 
   it 'is gated' do
     visit venue_path(@venue)

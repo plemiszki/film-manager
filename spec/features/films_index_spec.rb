@@ -3,11 +3,11 @@ require 'support/features_helper'
 
 describe 'films_index', type: :feature do
 
-  before(:all) {
+  before(:each) do
     Film.create!(title: 'Wilby Wonderful', label_id: 1, year: 2002, length: 90, film_type: 'Feature')
     Film.create!(title: '12 Years', label_id: 1, year: 2002, length: 5, film_type: 'Short')
     Film.create!(title: 'The Adventures of Pete and Pete', label_id: 1, year: 1990, length: 200, film_type: 'TV Series')
-  }
+  end
 
   it 'is gated' do
     visit films_path

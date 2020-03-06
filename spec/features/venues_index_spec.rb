@@ -3,9 +3,9 @@ require 'support/features_helper'
 
 describe 'venues_index', type: :feature do
 
-  before(:all) {
+  before(:each) do
     Venue.create!(label: 'Film at Lincoln Center', venue_type: 'Theater')
-  }
+  end
 
   it 'is gated' do
     visit venues_path

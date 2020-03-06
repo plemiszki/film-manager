@@ -3,11 +3,11 @@ require 'support/features_helper'
 
 describe 'licensor_details', type: :feature do
 
-  before(:all) {
-    @licensor = Licensor.find_or_create_by(name: 'Visit Films', email: 'ryan@visitfilms.com')
+  before(:each) do
+    @licensor = Licensor.create!(name: 'Visit Films', email: 'ryan@visitfilms.com')
     create(:label)
     create(:film, title: 'Some Film From This Licensor', licensor_id: @licensor.id)
-  }
+  end
 
   it 'is gated' do
     visit licensor_path(@licensor)
