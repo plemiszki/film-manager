@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
+import ModalSelect from './modal-select.jsx'
 import ClientActions from '../actions/client-actions.js'
 import DvdsStore from '../stores/dvds-store.js'
 import ErrorsStore from '../stores/errors-store.js'
@@ -254,14 +255,8 @@ class DvdDetails extends React.Component {
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete entityName="dvd" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.shortsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.SelectModalStyles }>
-          <ul className="licensor-modal-list">
-            { this.state.otherShorts.map((short, index) => {
-              return(
-                <li key={ index } onClick={ this.clickShortButton.bind(this) } data-id={ short.id }>{ short.title }</li>
-              );
-            }) }
-          </ul>
+        <Modal isOpen={ this.state.shortsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+          <ModalSelect options={ this.state.otherShorts } property={ "title" } func={ this.clickShortButton.bind(this) } />
         </Modal>
       </div>
     );
