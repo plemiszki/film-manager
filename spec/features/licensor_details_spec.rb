@@ -29,10 +29,7 @@ describe 'licensor_details', type: :feature do
       email: 'newemail@visitfilms.com',
       address: "Visit Films\n1300 Main Street\nNew York, NY 10001"
     })
-    save_button = find('.orange-button', text: 'Save')
-    save_button.click
-    expect(page).not_to have_selector('.spinner')
-    expect(save_button.text).to eq('Saved')
+    save_and_wait
     expect(@licensor.reload.attributes).to include(
       'name' => 'New Name',
       'email' => 'newemail@visitfilms.com',

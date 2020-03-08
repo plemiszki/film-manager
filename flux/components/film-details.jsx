@@ -307,6 +307,7 @@ class FilmDetails extends React.Component {
 
   getCountries() {
     this.setState({
+      fetching: false,
       filmCountries: CountriesStore.filmCountries(),
       countries: CountriesStore.all(),
       countriesModalOpen: false
@@ -315,6 +316,7 @@ class FilmDetails extends React.Component {
 
   getLanguages() {
     this.setState({
+      fetching: false,
       filmLanguages: LanguagesStore.filmLanguages(),
       languages: LanguagesStore.all(),
       languagesModalOpen: false
@@ -534,6 +536,9 @@ class FilmDetails extends React.Component {
   }
 
   clickDeleteFormat(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.deleteFilmFormat(e.target.dataset.id);
   }
 
@@ -544,10 +549,16 @@ class FilmDetails extends React.Component {
   }
 
   clickCountry(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.createFilmCountry({ film_id: this.state.film.id, country_id: e.target.dataset.id })
   }
 
   clickDeleteCountry(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.deleteFilmCountry(e.target.dataset.id);
   }
 
@@ -558,6 +569,9 @@ class FilmDetails extends React.Component {
   }
 
   clickLanguage(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.createFilmLanguage({ film_id: this.state.film.id, language_id: e.target.dataset.id })
   }
 
@@ -606,6 +620,9 @@ class FilmDetails extends React.Component {
   }
 
   clickDeleteLanguage(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.deleteFilmLanguage(e.target.dataset.id);
   }
 
@@ -620,6 +637,9 @@ class FilmDetails extends React.Component {
   }
 
   clickDeleteGenre(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.deleteFilmGenre(e.target.dataset.id);
   }
 
@@ -634,6 +654,9 @@ class FilmDetails extends React.Component {
   }
 
   clickDeleteTopic(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.deleteFilmTopic(e.target.dataset.id);
   }
 
@@ -1317,7 +1340,7 @@ class FilmDetails extends React.Component {
           <h3>Screening Formats:</h3>
           <div className="row">
             <div className="col-xs-6">
-              <ul className="standard-list">
+              <ul className="standard-list screening-formats-list">
                 { this.state.filmFormats.map((filmFormat) => {
                   return(
                     <li key={ filmFormat.id }>{ filmFormat.format }<div className="x-button" onClick={ this.clickDeleteFormat.bind(this) } data-id={ filmFormat.id }></div></li>
@@ -1406,7 +1429,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h3>Crossed Films</h3>
-              <ul className="standard-list">
+              <ul className="standard-list crossed-films-list">
                 { this.state.crossedFilms.map((crossedFilm) => {
                   return(
                     <li key={ crossedFilm.id }>{ crossedFilm.title }<div className="x-button" onClick={ this.clickDeleteCrossedFilm.bind(this) } data-id={ crossedFilm.id }></div></li>
@@ -1450,7 +1473,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Director(s):</h2>
-              <ul className="standard-list">
+              <ul className="standard-list directors-list">
                 { this.state.directors.map((director) => {
                   return(
                     <li key={ director.id }>{ director.firstName } { director.lastName }<div className="x-button" onClick={ this.clickDeleteDirector.bind(this) } data-id={ director.id }></div></li>
@@ -1485,7 +1508,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h3>Countries:</h3>
-              <ul className="standard-list reorderable">
+              <ul className="standard-list reorderable countries-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'countries' }></li>
                 { this.state.filmCountries.map((filmCountry, index) => {
                   return(
@@ -1500,7 +1523,7 @@ class FilmDetails extends React.Component {
             </div>
             <div className="col-xs-6">
               <h3>Languages:</h3>
-              <ul className="standard-list reorderable">
+              <ul className="standard-list reorderable languages-list">
                 <li className="drop-zone" data-index="-1" data-section="languages"></li>
                 { this.state.filmLanguages.map((filmLanguage, index) => {
                   return(
@@ -1518,7 +1541,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h3>Cast:</h3>
-              <ul className="standard-list reorderable">
+              <ul className="standard-list reorderable actors-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'cast' }></li>
                 { this.state.actors.map((actor, index) => {
                   return(
@@ -1584,7 +1607,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-12">
               <h3>Laurels:</h3>
-              <ul className="standard-list reorderable">
+              <ul className="standard-list reorderable laurels-list">
                 <li className="drop-zone" data-index="-1" data-section="laurels"></li>
                 { this.state.laurels.map((laurel, index) => {
                   return(
@@ -1629,7 +1652,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h3>Genres:</h3>
-              <ul className="standard-list reorderable">
+              <ul className="standard-list reorderable genres-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
                 { this.state.filmGenres.map((filmGenre, index) => {
                   return(
@@ -1644,7 +1667,7 @@ class FilmDetails extends React.Component {
             </div>
             <div className="col-xs-6">
               <h3>Topics:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list topics-list">
                 { this.state.filmTopics.map((filmTopic) => {
                   return(
                     <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic.bind(this) } data-id={ filmTopic.id }></div></li>
@@ -1658,7 +1681,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-4">
               <h3>Alternate Lengths:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list alternate-lengths-list">
                 { HandyTools.sortArrayOfObjects(this.state.alternateLengths, 'length').map((alternateLength) => {
                   return(
                     <li key={ alternateLength.id }>{ alternateLength.length }<div className="x-button" onClick={ this.clickDeleteAltLength.bind(this) } data-id={ alternateLength.id }></div></li>
@@ -1669,7 +1692,7 @@ class FilmDetails extends React.Component {
             </div>
             <div className="col-xs-4">
               <h3>Alternate Audio Tracks:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list alternate-audios-list">
                 { HandyTools.alphabetizeArrayOfObjects(this.state.alternateAudios, 'languageName').map((alternateAudio) => {
                   return(
                     <li key={ alternateAudio.id }>{ alternateAudio.languageName }<div className="x-button" onClick={ this.clickDeleteAltAudio.bind(this) } data-id={ alternateAudio.id }></div></li>
@@ -1680,7 +1703,7 @@ class FilmDetails extends React.Component {
             </div>
             <div className="col-xs-4">
               <h3>Alternate Subtitles:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list alternate-subtitles-list">
                 { HandyTools.alphabetizeArrayOfObjects(this.state.alternateSubtitles, 'languageName').map((alternateSubtitle) => {
                   return(
                     <li key={ alternateSubtitle.id }>{ alternateSubtitle.languageName }<div className="x-button" onClick={ this.clickDeleteAltSub.bind(this) } data-id={ alternateSubtitle.id }></div></li>
@@ -1694,7 +1717,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-12">
               <h3>Related Films:</h3>
-              <ul className="standard-list">
+              <ul className="standard-list related-films-list">
                 { this.state.relatedFilms.map((relatedFilm) => {
                   return(
                     <li key={ relatedFilm.id }>{ relatedFilm.title }<div className="x-button" onClick={ this.clickDeleteRelatedFilm.bind(this) } data-id={ relatedFilm.id }></div></li>

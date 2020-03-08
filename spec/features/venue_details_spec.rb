@@ -74,10 +74,7 @@ describe 'venue_details', type: :feature do
       shipping_zip: '90210',
       shipping_country: 'USA'
     })
-    save_button = find('.orange-button', text: 'Save')
-    save_button.click
-    expect(page).not_to have_selector('.spinner')
-    expect(save_button.text).to eq('Saved')
+    save_and_wait
     expect(@venue.reload.attributes).to include(
       'label' => 'New Label',
       'sage_id' => 'New Sage ID',
