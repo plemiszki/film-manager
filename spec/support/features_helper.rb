@@ -32,6 +32,12 @@ def fill_out_and_submit_modal(data)
     key = key.to_s.camelize(:lower)
     within('.admin-modal') do
       find("input[data-field=#{key}]").set(value)
+    end
+  end
+  within('.admin-modal') do
+    if has_css?('input.btn')
+      find('input.btn').click
+    else
       find('.orange-button').click
     end
   end
