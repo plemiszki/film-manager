@@ -6,6 +6,7 @@ describe 'film_details', type: :feature do
   before(:each) do
     create(:label)
     DvdType.create!(name: 'Retail')
+    DvdType.create!(name: 'Club')
     @film = create(:film,
       title: 'Some Film',
       club_date: '11/1/2002',
@@ -27,6 +28,7 @@ describe 'film_details', type: :feature do
     Language.create!(name: 'Spanish')
     FilmLanguage.create!(film_id: @film.id, language_id: 1)
     Actor.create!(actorable_id: @film.id, actorable_type: 'Film', first_name: 'Brad', last_name: 'Pitt', order: 0)
+    Dvd.create!(feature_film_id: @film.id, dvd_type_id: 1)
   end
 
   it 'is gated' do
@@ -75,6 +77,17 @@ describe 'film_details', type: :feature do
       'avod_release' => Date.parse('1/2/2021'),
       'tvod_release' => Date.parse('1/3/2021')
     )
+  end
+
+  it 'deletes the film' do
+    visit film_path(@film, as: $admin_user)
+    delete_button = find('.orange-button', text: 'Delete Film')
+    delete_button.click
+    within('.confirm-delete') do
+      find('.red-button').click
+    end
+    expect(page).to have_current_path('/films', ignore_query: true)
+    expect(Film.find_by_id(@film.id)).to be(nil)
   end
 
   it 'adds directors' do
@@ -157,6 +170,8 @@ describe 'film_details', type: :feature do
     expect(Actor.count).to eq(0)
   end
 
+  # synopses tab
+
   it 'displays the synopses' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Synopses').click
@@ -188,15 +203,23 @@ describe 'film_details', type: :feature do
     )
   end
 
-  it 'deletes the film' do
+  # dvds tab
+
+  it "displays the film's dvds" do
     visit film_path(@film, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Film')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
+    find('div.tab', text: 'DVDs').click
+    expect(find('.fm-admin-table')).to have_content('Retail')
+  end
+
+  it 'adds dvds' do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'DVDs').click
+    find('.blue-outline-button', text: 'Add DVD').click
+    within('#new-thing') do
+      find('.orange-button', text: 'Add DVD').click
     end
-    expect(page).to have_current_path('/films', ignore_query: true)
-    expect(Film.find_by_id(@film.id)).to be(nil)
+    expect(page).to have_content('DVD Details')
+    expect(@film.dvds.count).to eq(2)
   end
 
 end
