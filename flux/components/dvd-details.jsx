@@ -197,15 +197,15 @@ class DvdDetails extends React.Component {
               </div>
               <div className="col-xs-2">
                 <h2>Stock</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.stock } readOnly={ true } />
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.stock } readOnly={ true } data-field="stock" />
                 { Details.renderFieldError(this.state.errors, []) }
               </div>
-              <div className="col-xs-2 repressing-column">
+              <div className="col-xs-2">
                 <input id="repressing" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.dvd.repressing || false } data-field="repressing" /><label className="checkbox">Repressing</label>
               </div>
               <div className="col-xs-2">
                 <h2>Units Shipped</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.unitsShipped } readOnly={ true } />
+                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.unitsShipped } readOnly={ true } data-field="unitsShipped" />
                 { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>

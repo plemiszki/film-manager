@@ -170,6 +170,13 @@ describe 'film_details', type: :feature do
     expect(Actor.count).to eq(0)
   end
 
+  # contract tab
+
+  it 'displays the contract information' do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Contract').click
+  end
+
   # synopses tab
 
   it 'displays the synopses' do

@@ -12,10 +12,16 @@ def fill_out_form(hash)
     key = key.to_s.camelize(:lower)
     if page.has_css?("input[data-field=#{key}]")
       field = find("input[data-field=#{key}]")
-    else
+      field.set(value)
+    elsif page.has_css?("textarea[data-field=#{key}]")
       field = find("textarea[data-field=#{key}]")
+      field.set(value)
+    elsif page.has_css?("select[data-field=#{key}]", visible: false)
+      field = find("select[data-field=#{key}]", visible: false)
+      nice_select_div = field.sibling('.nice-select')
+      nice_select_div.click
+      find("li[data-value='#{value}']").click
     end
-    field.set(value)
   end
 end
 
