@@ -48,14 +48,14 @@ describe 'dvd_details', type: :feature do
     visit dvd_path(@dvd, as: $admin_user)
     fill_out_form({
       dvdTypeId: { value: 2, type: :select },
-      upc: { value: 1234567890 },
-      preBookDate: { value: '1/1/10' },
-      retailDate: { value: '2/1/10' },
-      price: { value: '$19.95' },
-      repressing: { value: true },
-      discs: { value: 2 },
-      soundConfig: { value: 'stereo' },
-      specialFeatures: { value: 'making of documentary' }
+      upc: 1234567890,
+      preBookDate: '1/1/10',
+      retailDate: '2/1/10',
+      price: '$19.95',
+      repressing: true,
+      discs: 2,
+      soundConfig: 'stereo',
+      specialFeatures: 'making of documentary'
     })
     save_and_wait
     expect(@dvd.reload.attributes).to include(

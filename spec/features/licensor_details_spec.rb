@@ -25,9 +25,9 @@ describe 'licensor_details', type: :feature do
   it 'updates information about the licensor' do
     visit licensor_path(@licensor, as: $admin_user)
     fill_out_form({
-      name: { value: 'New Name' },
-      email: { value: 'newemail@visitfilms.com' },
-      address: { value: "Visit Films\n1300 Main Street\nNew York, NY 10001" }
+      name: 'New Name',
+      email: 'newemail@visitfilms.com',
+      address: "Visit Films\n1300 Main Street\nNew York, NY 10001"
     })
     save_and_wait
     expect(@licensor.reload.attributes).to include(

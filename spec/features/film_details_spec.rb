@@ -79,14 +79,14 @@ describe 'film_details', type: :feature do
   it 'updates general information about the film' do
     visit film_path(@film, as: $admin_user)
     fill_out_form({
-      title: { value: 'New Title' },
-      year: { value: '1999' },
-      length: { value: '120' },
-      club_date: { value: '11/1/2020' },
-      theatrical_release: { value: '12/1/2020' },
-      svod_release: { value: '1/1/2021' },
-      avod_release: { value: '2/1/2021' },
-      tvod_release: { value: '3/1/2021' }
+      title: 'New Title',
+      year: '1999',
+      length: '120',
+      club_date: '11/1/2020',
+      theatrical_release: '12/1/2020',
+      svod_release: '1/1/2021',
+      avod_release: '2/1/2021',
+      tvod_release: '3/1/2021'
     })
     save_and_wait
     expect(@film.reload.attributes).to include(
@@ -116,8 +116,8 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('.blue-outline-button', text: 'Add Director').click
     fill_out_and_submit_modal({
-      first_name: { value: 'Johnny' },
-      last_name: { value: 'Depp' }
+      first_name: 'Johnny',
+      last_name: 'Depp'
     }, :orange_button)
     expect(Director.last.attributes).to include(
       'first_name' => 'Johnny',
@@ -174,8 +174,8 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('.blue-outline-button', text: 'Add Actor').click
     fill_out_and_submit_modal({
-      first_name: { value: 'Robert' },
-      last_name: { value: 'DeNiro' }
+      first_name: 'Robert',
+      last_name: 'DeNiro'
     }, :orange_button)
     expect(Actor.last.attributes).to include(
       'first_name' => 'Robert',
@@ -225,19 +225,19 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Contract').click
     change_modal_select_field('licensorId', 'Frog Productions')
     fill_out_form({
-      start_date: { value: '1/1/2020' },
-      end_date: { value: '1/1/2021' },
-      sage_id: { value: 'NEW SAGE ID' },
+      start_date: '1/1/2020',
+      end_date: '1/1/2021',
+      sage_id: 'NEW SAGE ID',
       deal_type_id: { value: 2, type: :select },
       days_statement_due: { value: 60, type: :select },
-      mg: { value: '$100,000' },
-      e_and_o: { value: '$3,000' },
-      expense_cap: { value: '$30,000' },
-      sell_off_period: { value: 12 },
-      accept_delivery: { value: '3/3/2033' },
-      royalty_notes: { value: 'new royalty notes' },
-      '1': { value: '50' },
-      '2': { value: '50' }
+      mg: '$100,000',
+      e_and_o: '$3,000',
+      expense_cap: '$30,000',
+      sell_off_period: 12,
+      accept_delivery: '3/3/2033',
+      royalty_notes: 'new royalty notes',
+      '1': '50',
+      '2': '50'
     })
     save_and_wait
     expect(@film.reload.attributes).to include(
@@ -277,8 +277,8 @@ describe 'film_details', type: :feature do
     find('.blue-outline-button', text: 'Change All Dates').click
     within('#film-rights-change-dates') do
       fill_out_form({
-        start_date: { value: '3/3/2033' },
-        end_date: { value: '4/4/2044' }
+        start_date: '3/3/2033',
+        end_date: '4/4/2044'
       })
       find('.orange-button', text: 'Change All Dates').click
     end
@@ -303,11 +303,11 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Synopses').click
     fill_out_form({
-      synopsis: { value: 'New Synopsis' },
-      short_synopsis: { value: 'New Short Synopsis' },
-      vod_synopsis: { value: 'New VOD Synopsis' },
-      logline: { value: 'New Logline' },
-      institutional_synopsis: { value: 'New Institutional Synopsis' }
+      synopsis: 'New Synopsis',
+      short_synopsis: 'New Short Synopsis',
+      vod_synopsis: 'New VOD Synopsis',
+      logline: 'New Logline',
+      institutional_synopsis: 'New Institutional Synopsis'
     })
     find('.orange-button', text: 'Save').click
     expect(page).not_to have_selector('.spinner')

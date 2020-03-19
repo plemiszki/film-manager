@@ -25,9 +25,9 @@ describe 'booker_details', type: :feature do
     visit booker_path(@booker, as: $admin_user)
     expect(page).not_to have_selector('.spinner')
     fill_out_form({
-      name: { value: 'New Name' },
-      email: { value: 'newemail@somewhere.com' },
-      phone: { value: '222-222-2222' }
+      name: 'New Name',
+      email: 'newemail@somewhere.com',
+      phone: '222-222-2222'
     })
     save_and_wait
     expect(@booker.reload.attributes).to include(

@@ -8,18 +8,21 @@ end
 
 def fill_out_form(hash)
   expect(page).not_to have_selector('.spinner')
-  hash.each do |key, obj|
+  hash.each do |key, value|
     key = key.to_s.camelize(:lower)
-    value = obj[:value]
-    if obj[:type] && obj[:type] == :select
+    if value.class != Hash
+      field = find("[data-field=\"#{key}\"]")
+      field.set(value)
+    elsif value[:type] != :select
+      field = find("[data-field=\"#{key}\"]")
+      field.set(value[:value])
+    elsif value[:type] == :select
+      value = value[:value]
       field = find("select[data-field=#{key}]", visible: false)
       nice_select_div = field.sibling('.nice-select')
       nice_select_div.click
       sleep 0.25
       find("li[data-value='#{value}']").click
-    else
-      field = find("[data-field=\"#{key}\"]")
-      field.set(value)
     end
   end
 end
@@ -33,8 +36,7 @@ end
 
 def fill_out_and_submit_modal(data, button_type)
   expect(page).not_to have_selector('.spinner')
-  data.each do |key, obj|
-    value = obj[:value]
+  data.each do |key, value|
     key = key.to_s.camelize(:lower)
     within('.admin-modal') do
       find("input[data-field=#{key}]").set(value)
