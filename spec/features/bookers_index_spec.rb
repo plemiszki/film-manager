@@ -22,10 +22,10 @@ describe 'bookers_index', type: :feature do
     visit bookers_path(as: $admin_user)
     find('.float-button', text: 'Add Booker').click
     fill_out_and_submit_modal({
-      name: 'Joe Booker',
-      email: 'joe@somewhere.com',
-      phone: '555-555-5555'
-    })
+      name: { value: 'Joe Booker' },
+      email: { value: 'joe@somewhere.com' },
+      phone: { value: '555-555-5555' }
+    }, :input)
     expect(find('.admin-table')).to have_content 'Joe Booker'
     expect(Booker.last.attributes).to include(
       'name' => 'Joe Booker',
@@ -38,8 +38,8 @@ describe 'bookers_index', type: :feature do
     visit bookers_path(as: $admin_user)
     find('.float-button', text: 'Add Booker').click
     fill_out_and_submit_modal({
-      name: ''
-    })
+      name: { value: '' }
+    }, :input)
     expect(page).to have_content "Name can't be blank"
   end
 

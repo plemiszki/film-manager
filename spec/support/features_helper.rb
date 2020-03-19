@@ -8,19 +8,18 @@ end
 
 def fill_out_form(hash)
   expect(page).not_to have_selector('.spinner')
-  hash.each do |key, value|
+  hash.each do |key, obj|
     key = key.to_s.camelize(:lower)
-    if page.has_css?("input[data-field=#{key}]")
-      field = find("input[data-field=#{key}]")
-      field.set(value)
-    elsif page.has_css?("textarea[data-field=#{key}]")
-      field = find("textarea[data-field=#{key}]")
-      field.set(value)
-    elsif page.has_css?("select[data-field=#{key}]", visible: false)
+    value = obj[:value]
+    if obj[:type] && obj[:type] == :select
       field = find("select[data-field=#{key}]", visible: false)
       nice_select_div = field.sibling('.nice-select')
       nice_select_div.click
+      sleep 0.25
       find("li[data-value='#{value}']").click
+    else
+      field = find("[data-field=\"#{key}\"]")
+      field.set(value)
     end
   end
 end
@@ -32,18 +31,19 @@ def save_and_wait
   expect(save_button.text).to eq('Saved')
 end
 
-def fill_out_and_submit_modal(data)
+def fill_out_and_submit_modal(data, button_type)
   expect(page).not_to have_selector('.spinner')
-  data.each do |key, value|
+  data.each do |key, obj|
+    value = obj[:value]
     key = key.to_s.camelize(:lower)
     within('.admin-modal') do
       find("input[data-field=#{key}]").set(value)
     end
   end
   within('.admin-modal') do
-    if has_css?('input.btn')
+    if button_type == :input
       find('input.btn').click
-    else
+    elsif button_type == :orange_button
       find('.orange-button').click
     end
   end
@@ -55,4 +55,14 @@ def select_from_modal(option)
     find('li', text: option).click
   end
   expect(page).not_to have_selector('.spinner')
+end
+
+def change_modal_select_field(id, selection_text)
+  input = find("input[data-field=\"#{id}\"]")
+  column_div = input.find(:xpath, '..')
+  next_column_div = column_div.sibling('.col-xs-1')
+  within(next_column_div) { find('img').click }
+  within('.ReactModalPortal') do
+    find('li', text: selection_text).click
+  end
 end

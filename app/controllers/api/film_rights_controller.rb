@@ -73,7 +73,13 @@ class Api::FilmRightsController < AdminController
     end_date = params[:end_date]
     if film_id
       if start_date || end_date
-        test_film_right = FilmRight.new({ film_id: 1, right_id: 1, territory_id: 1, start_date: start_date, end_date: end_date })
+        test_film_right = FilmRight.new({
+          film_id: (Film.count + 1),
+          right_id: (Right.count + 1),
+          territory_id: (Territory.count + 1),
+          start_date: start_date,
+          end_date: end_date
+        })
         if test_film_right.valid?
           update_object = {}
           update_object[:start_date] = start_date unless start_date.empty?

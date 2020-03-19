@@ -52,33 +52,33 @@ describe 'venue_details', type: :feature do
   it 'updates information about the venue' do
     visit venue_path(@venue, as: $admin_user)
     fill_out_form({
-      label: 'New Label',
-      sage_id: 'New Sage ID',
-      website: 'newwebiste.com',
-      contact_name: 'Joe Schmo',
-      email: 'joe@newwebsite.com',
-      phone: '222-222-2222',
-      notes: 'new notes',
-      billing_name: 'Billing Name',
-      billing_address_1: 'Billing Address 1',
-      billing_address_2: 'Billing Address 2',
-      billing_city: 'Billing City',
-      billing_state: 'Billing State',
-      billing_zip: '90210',
-      billing_country: 'USA',
-      shipping_name: 'Shipping Name',
-      shipping_address_1: 'Shipping Address 1',
-      shipping_address_2: 'Shipping Address 2',
-      shipping_city: 'Shipping City',
-      shipping_state: 'Shipping State',
-      shipping_zip: '90210',
-      shipping_country: 'USA'
+      label: { value: 'New Label' },
+      sage_id: { value: 'New Sage ID' },
+      website: { value: 'newwebsite.com' },
+      contact_name: { value: 'Joe Schmo' },
+      email: { value: 'joe@newwebsite.com' },
+      phone: { value: '222-222-2222' },
+      notes: { value: 'new notes' },
+      billing_name: { value: 'Billing Name' },
+      billing_address_1: { value: 'Billing Address 1' },
+      billing_address_2: { value: 'Billing Address 2' },
+      billing_city: { value: 'Billing City' },
+      billing_state: { value: 'Billing State' },
+      billing_zip: { value: '90210' },
+      billing_country: { value: 'USA' },
+      shipping_name: { value: 'Shipping Name' },
+      shipping_address_1: { value: 'Shipping Address 1' },
+      shipping_address_2: { value: 'Shipping Address 2' },
+      shipping_city: { value: 'Shipping City' },
+      shipping_state: { value: 'Shipping State' },
+      shipping_zip: { value: '90210' },
+      shipping_country: { value: 'USA' }
     })
     save_and_wait
     expect(@venue.reload.attributes).to include(
       'label' => 'New Label',
       'sage_id' => 'New Sage ID',
-      'website' => 'newwebiste.com',
+      'website' => 'newwebsite.com',
       'contact_name' => 'Joe Schmo',
       'email' => 'joe@newwebsite.com',
       'phone' => '222-222-2222',
@@ -103,13 +103,13 @@ describe 'venue_details', type: :feature do
   it 'copies the billing address to the shipping address' do
     visit venue_path(@venue, as: $admin_user)
     fill_out_form({
-      billing_name: 'Billing Name',
-      billing_address_1: 'Billing Address 1',
-      billing_address_2: 'Billing Address 2',
-      billing_city: 'Billing City',
-      billing_state: 'Billing State',
-      billing_zip: '90210',
-      billing_country: 'USA'
+      billing_name: { value: 'Billing Name' },
+      billing_address_1: { value: 'Billing Address 1' },
+      billing_address_2: { value: 'Billing Address 2' },
+      billing_city: { value: 'Billing City' },
+      billing_state: { value: 'Billing State' },
+      billing_zip: { value: '90210' },
+      billing_country: { value: 'USA' }
     })
     find('.copy-address-button').click
     expect(find('input[data-field="shippingName"]').value).to eq('Billing Name')
