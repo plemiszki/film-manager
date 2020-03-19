@@ -18,7 +18,7 @@ describe 'bookers_index', type: :feature do
     expect(page).to have_content 'Some Booker'
   end
 
-  it 'can add new bookers' do
+  it 'adds new bookers' do
     visit bookers_path(as: $admin_user)
     find('.float-button', text: 'Add Booker').click
     fill_out_and_submit_modal({
