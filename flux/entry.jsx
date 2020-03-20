@@ -211,6 +211,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='alias'
           fetchData={ ['films'] }
@@ -261,6 +262,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='country'
           initialEntity={ { name: '' } }
@@ -293,6 +295,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='digitalRetailer'
           initialEntity={ { name: '' } }
@@ -352,6 +355,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='format'
           initialEntity={ { name: '' } }
@@ -384,6 +388,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='genre'
           initialEntity={ { name: '' } }
@@ -433,6 +438,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='language'
           initialEntity={ { name: '' } }
@@ -487,6 +493,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='merchandiseType'
           initialEntity={ { name: '' } }
@@ -534,6 +541,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='territory'
           initialEntity={ { name: '' } }
@@ -566,6 +574,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='topic'
           initialEntity={ { name: '' } }
@@ -598,6 +607,7 @@ $(document).ready(function() {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
+          csrfToken={ true }
           context={ MyContext }
           entityName='user'
           initialEntity={ { name: '', email: '', title: '', emailSignature: '' } }
