@@ -31,7 +31,6 @@ def save_and_wait
   save_button = find('.orange-button', text: 'Save')
   save_button.click
   expect(page).not_to have_selector('.spinner')
-  expect(save_button.text).to eq('Saved')
 end
 
 def fill_out_and_submit_modal(data, button_type)
