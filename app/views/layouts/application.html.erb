@@ -83,7 +83,7 @@
       <% end %>
     </div>
   <% end %>
-  <% if current_page?(:controller => '/purchase_orders', :action => 'index') %>
+  <% if current_page?(:controller => '/purchase_orders', :action => 'index') && Rails.env != 'test' %>
     <div id="upload-form-inventory" class="hidden">
       <%= form_for User.third do |f| %>
         <%= f.file_field :file %>

@@ -18,7 +18,7 @@ describe 'licensors_index', type: :feature do
     expect(page).to have_content 'Visit Films'
   end
 
-  it 'can add new licensors' do
+  it 'adds new licensors' do
     visit licensors_path(as: $admin_user)
     find('.btn', text: 'Add Licensor').click
     find('[data-field="name"]').set('New Licensor')

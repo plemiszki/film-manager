@@ -6,9 +6,9 @@ RSpec.configure do |config|
 
 end
 
-def fill_out_form(hash)
+def fill_out_form(data)
   expect(page).not_to have_selector('.spinner')
-  hash.each do |key, value|
+  data.each do |key, value|
     key = key.to_s.camelize(:lower)
     if value.class != Hash
       field = find("[data-field=\"#{key}\"]")
@@ -34,13 +34,7 @@ def save_and_wait
 end
 
 def fill_out_and_submit_modal(data, button_type)
-  expect(page).not_to have_selector('.spinner')
-  data.each do |key, value|
-    key = key.to_s.camelize(:lower)
-    within('.admin-modal') do
-      find("input[data-field=#{key}]").set(value)
-    end
-  end
+  fill_out_form(data)
   within('.admin-modal') do
     if button_type == :input
       find('input.btn').click

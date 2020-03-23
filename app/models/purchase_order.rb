@@ -1,6 +1,6 @@
 class PurchaseOrder < ActiveRecord::Base
 
-  validates :number, presence: true
+  validates :number, :year, :month, presence: true
   validates_date :order_date
   validates_date :ship_date, allow_blank: true
 
