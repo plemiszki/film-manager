@@ -1,4 +1,5 @@
 FactoryBot.define do
+  
   factory :user do
     email { 'peter@filmmovement.com' }
     password { 'password' }
@@ -9,4 +10,5 @@ FactoryBot.define do
     access { 150 }
     booker { false }
   end
+
 end

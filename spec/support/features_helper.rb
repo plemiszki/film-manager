@@ -6,6 +6,11 @@ RSpec.configure do |config|
 
 end
 
+def create_dvd_types
+  DvdType.create!(name: 'Retail')
+  DvdType.create!(name: 'Club')
+end
+
 def fill_out_form(data)
   expect(page).not_to have_selector('.spinner')
   data.each do |key, value|

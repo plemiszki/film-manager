@@ -11,8 +11,7 @@ describe 'film_details', type: :feature do
     create(:licensor, name: 'Frog Productions')
     DealTemplate.create!(name: 'No Expenses Recouped')
     DealTemplate.create!(name: 'Expenses Recouped From Top')
-    DvdType.create!(name: 'Retail')
-    DvdType.create!(name: 'Club')
+    create_dvd_types
     @film = create(:film,
       title: 'Some Film',
       licensor_id: 1,

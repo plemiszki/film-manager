@@ -4,38 +4,8 @@ require 'support/features_helper'
 describe 'shipping_address_details', type: :feature do
 
   before(:each) do
-    @dvd_customer = DvdCustomer.create!(
-      name: 'DVD Customer',
-      sage_id: 'Sage ID',
-      payment_terms: 'payment terms',
-      invoices_email: 'invoices@dvdcustomer.com',
-      discount: 50,
-      billing_name: 'Billing Name',
-      address1: 'Address 1',
-      address2: 'Address 2',
-      city: 'City',
-      state: 'MA',
-      zip: '01778',
-      country: 'Country',
-      consignment: false,
-      notes: 'notes'
-    )
-    @dvd_customer_2 = DvdCustomer.create!(
-      name: 'DVD Customer 2',
-      sage_id: 'Sage ID 2',
-      payment_terms: 'payment terms',
-      invoices_email: 'invoices@dvdcustomer.com',
-      discount: 50,
-      billing_name: 'Billing Name',
-      address1: 'Address 1',
-      address2: 'Address 2',
-      city: 'City',
-      state: 'MA',
-      zip: '01778',
-      country: 'Country',
-      consignment: false,
-      notes: 'notes'
-    )
+    @dvd_customer = create(:dvd_customer)
+    @dvd_customer_2 = create(:dvd_customer, name: 'DVD Customer 2', sage_id: 'Sage ID 2')
     @shipping_address = ShippingAddress.create!(
       label: 'Label',
       name: 'Name',

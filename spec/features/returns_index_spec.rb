@@ -4,24 +4,8 @@ require 'support/features_helper'
 describe 'returns_index', type: :feature do
 
   before(:each) do
-    DvdCustomer.create!(
-      name: 'DVD Vendor',
-      discount: 0.5,
-      consignment: false,
-      notes: 'notes',
-      sage_id: 'SAGE ID',
-      invoices_email: 'invoices@dvdvendor.com',
-      payment_terms: '60',
-      per_unit: 7.99,
-      billing_name: 'Billing Name',
-      address1: 'Address 1',
-      address2: 'Address 2',
-      city: 'City',
-      state: 'MA',
-      zip: '01778',
-      country: 'Country'
-    )
-    Return.create!(number: '012345678', customer_id: 1, date: Date.today, month: Date.today.month, year: Date.today.year)
+    create(:dvd_customer)
+    create(:return)
   end
 
   it 'is gated' do

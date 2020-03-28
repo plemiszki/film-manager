@@ -7,8 +7,7 @@ describe 'dvd_details', type: :feature do
     create(:label)
     @film = create(:film, title: 'Some Film')
     @short = create(:film, film_type: 'Short', title: 'A Short Film')
-    DvdType.create!(name: 'Retail')
-    DvdType.create!(name: 'Club')
+    create_dvd_types
     @dvd = Dvd.create!(
       feature_film_id: @film.id,
       dvd_type_id: DvdType.first.id,
