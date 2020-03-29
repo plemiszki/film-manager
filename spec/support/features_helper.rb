@@ -11,6 +11,15 @@ def create_dvd_types
   DvdType.create!(name: 'Club')
 end
 
+def clear_form
+  expect(page).not_to have_selector('.spinner')
+  inputs = page.all("input[data-field], textarea[data-field]")
+  inputs.each do |input|
+    next if input[:type] == 'checkbox'
+    input.set('')
+  end
+end
+
 def fill_out_form(data)
   expect(page).not_to have_selector('.spinner')
   data.each do |key, value|
@@ -33,7 +42,7 @@ def fill_out_form(data)
 end
 
 def save_and_wait
-  save_button = find('.orange-button', text: 'Save')
+  save_button = find('.orange-button', text: /^Save$/)
   save_button.click
   expect(page).not_to have_selector('.spinner')
 end

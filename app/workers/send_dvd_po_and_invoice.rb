@@ -46,7 +46,7 @@ class SendDvdPoAndInvoice
         text: "Hello,\n\nPlease find your invoice attached, in PDF format.\n\nKind Regards,\n\n#{current_user.email_signature}",
         attachment: attachments
       }
-      mg_client.send_message 'filmmovement.com', message_params
+      mg_client.send_message 'filmmovement.com', message_params unless Rails.env.test?
       settings = Setting.first
       settings.update(next_dvd_invoice_number: settings.next_dvd_invoice_number + 1)
     end
@@ -65,7 +65,7 @@ class SendDvdPoAndInvoice
         text: "Please see attached shipping files.",
         attachment: attachments
       }
-      mg_client.send_message 'filmmovement.com', message_params
+      mg_client.send_message 'filmmovement.com', message_params unless Rails.env.test?
       purchase_order.decrement_stock!
     end
 

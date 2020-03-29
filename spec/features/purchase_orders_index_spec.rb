@@ -4,39 +4,9 @@ require 'support/features_helper'
 describe 'purchase_orders_index', type: :feature do
 
   before(:each) do
-    DvdCustomer.create!(
-      name: 'DVD Customer',
-      sage_id: 'Sage ID',
-      payment_terms: 'payment terms',
-      invoices_email: 'invoices@dvdcustomer.com',
-      discount: 50,
-      billing_name: 'Billing Name',
-      address1: 'Address 1',
-      address2: 'Address 2',
-      city: 'City',
-      state: 'MA',
-      zip: '01778',
-      country: 'Country',
-      consignment: false,
-      notes: 'notes'
-    )
-    ShippingAddress.create!(
-      label: 'Label',
-      name: 'Name',
-      address1: 'Address 1',
-      address2: 'Address 2',
-      city: 'City',
-      state: 'MA',
-      zip: '01778',
-      country: 'Country',
-      customer_id: '1'
-    )
-    PurchaseOrder.create!(
-      number: '450000',
-      order_date: Date.today,
-      year: Date.today.year,
-      month: Date.today.month
-    )
+    create(:dvd_customer)
+    create(:shipping_address)
+    create(:purchase_order)
   end
 
   it 'is gated' do
