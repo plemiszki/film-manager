@@ -41,6 +41,14 @@ def fill_out_form(data)
   end
 end
 
+def click_nice_select_option(css_selector, option_text)
+  field = find(css_selector, visible: false)
+  nice_select_div = field.sibling('.nice-select')
+  nice_select_div.click
+  sleep 0.25
+  find('li', text: option_text).click
+end
+
 def save_and_wait
   save_button = find('.orange-button', text: /^Save$/)
   save_button.click
