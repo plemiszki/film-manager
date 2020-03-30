@@ -155,16 +155,19 @@ describe 'purchase_order_details_spec', type: :feature do
     expect(PurchaseOrder.find_by_id(@purchase_order.id)).to be(nil)
   end
 
-  # it 'ships the purchase order' do
-  #   create(:setting)
-  #   Sidekiq::Testing.inline! do
-  #     visit purchase_order_path(@purchase_order, as: $admin_user)
-  #     find('.orange-button', text: 'Ship Now').click
-  #     expect(page).to have_current_path('/purchase_orders', ignore_query: true)
-  #     expect(@purchase_order.reload.attributes).to include(
-  #       'ship_date' => Date.today
-  #     )
-  #   end
-  # end
+  it 'ships the purchase order' do
+    create(:setting)
+    Sidekiq::Testing.inline! do
+      visit purchase_order_path(@purchase_order, as: $admin_user)
+      find('.orange-button', text: 'Ship Now').click
+      expect(page).to have_no_css('.spinner', wait: 10)
+      expect(page).to have_current_path('/purchase_orders', ignore_query: true)
+      expect(@purchase_order.reload.attributes).to include(
+        'ship_date' => Date.today,
+        'source_doc' => '5533'
+      )
+      expect(Invoice.count).to eq(1)
+    end
+  end
 
 end
