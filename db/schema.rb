@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200206234711) do
+ActiveRecord::Schema.define(version: 20200330195135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -627,9 +627,17 @@ ActiveRecord::Schema.define(version: 20200206234711) do
   add_index "royalty_revenue_streams", ["royalty_report_id"], name: "index_royalty_revenue_streams_on_royalty_report_id", using: :btree
 
   create_table "settings", force: :cascade do |t|
-    t.string  "booking_confirmation_text"
-    t.integer "next_booking_invoice_number"
-    t.integer "next_dvd_invoice_number"
+    t.string  "booking_confirmation_text",                     default: ""
+    t.integer "next_booking_invoice_number",                   default: 1
+    t.integer "next_dvd_invoice_number",                       default: 1
+    t.string  "dvd_invoice_email_text",                        default: ""
+    t.string  "paid_booking_invoice_email_text",               default: ""
+    t.string  "partially_paid_booking_invoice_email_text",     default: ""
+    t.string  "unpaid_overage_booking_invoice_email_text",     default: ""
+    t.string  "unpaid_non_overage_booking_invoice_email_text", default: ""
+    t.string  "booking_invoice_payment_info_email_text",       default: ""
+    t.string  "shipping_terms_email_text",                     default: ""
+    t.string  "all_booking_invoices_email_text",               default: ""
   end
 
   create_table "shipping_addresses", force: :cascade do |t|

@@ -142,7 +142,12 @@ $(document).ready(function() {
     ReactDOM.render(<BookingDetails />, document.getElementById("booking-details"));
   }
   if ($('#setting-details')[0]) {
-    ReactDOM.render(<SettingDetails />, document.getElementById("setting-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SettingDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("setting-details")
+    );
   }
   if ($('#quote-details')[0]) {
     ReactDOM.render(<QuoteDetails />, document.getElementById("quote-details"));

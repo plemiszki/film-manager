@@ -1,9 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import SettingsStore from '../stores/settings-store.js'
-import ErrorsStore from '../stores/errors-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { fetchEntity, updateEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class SettingsDetails extends React.Component {
@@ -21,24 +21,17 @@ class SettingsDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.settingsListener = SettingsStore.addListener(this.getSettings.bind(this));
-    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchSettings(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.settingsListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getSettings() {
-    this.setState({
-      settings: Tools.deepCopy(SettingsStore.settings()),
-      settingsSaved: SettingsStore.settings(),
-      fetching: false
-    }, () => {
+    this.props.fetchEntity({
+      url: '/api/settings'
+    }).then(() => {
       this.setState({
-        changesToSave: this.checkForChanges()
+        settings: this.props.settings,
+        settingsSaved: Tools.deepCopy(this.props.settings),
+        fetching: false
+      }, () => {
+        this.setState({
+          changesToSave: this.checkForChanges()
+        });
       });
     });
   }
@@ -51,14 +44,32 @@ class SettingsDetails extends React.Component {
   }
 
   clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
-      }, () => {
-        ClientActions.updateSettings(this.state.settings);
+    this.setState({
+      fetching: true,
+      justSaved: true
+    }, () => {
+      this.props.updateEntity({
+        url: '/api/settings',
+        entityName: 'settings',
+        entity: {
+          booking_confirmation_text: this.state.settings.bookingConfirmationText,
+          dvd_invoice_email_text: this.state.settings.dvdInvoiceEmailText,
+          paid_booking_invoice_email_text: this.state.settings.paidBookingInvoiceEmailText,
+          partially_paid_booking_invoice_email_text: this.state.settings.partiallyPaidBookingInvoiceEmailText,
+          unpaid_overage_booking_invoice_email_text: this.state.settings.unpaidOverageBookingInvoiceEmailText,
+          unpaid_non_overage_booking_invoice_email_text: this.state.settings.unpaidNonOverageBookingInvoiceEmailText,
+          booking_invoice_payment_info_email_text: this.state.settings.bookingInvoicePaymentInfoEmailText,
+          all_booking_invoices_email_text: this.state.settings.allBookingInvoicesEmailText
+        }
+      }).then(() => {
+        this.setState({
+          fetching: false,
+          changesToSave: false,
+          settings: this.props.report,
+          settingsSaved: Tools.deepCopy(this.props.report)
+        });
       });
-    }
+    });
   }
 
   checkForChanges() {
@@ -67,7 +78,8 @@ class SettingsDetails extends React.Component {
 
   changeFieldArgs() {
     return {
-      thing: "settings",
+      allErrors: FM.errors,
+      entity: 'settings',
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this)
     }
@@ -82,11 +94,15 @@ class SettingsDetails extends React.Component {
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
-              <div className="col-xs-12">
-                <h2>Booking Confirmation Email Text</h2>
-                <textarea rows="15" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.settings.bookingConfirmationText || "" } data-field="bookingConfirmationText" />
-                { Details.renderFieldError(this.state.errors, FM.errors.bookingConfirmationText) }
-              </div>
+              { Details.renderTextBox.bind(this)({ columnHeader: 'Booking Confirmation Email Copy', rows: 15, columnWidth: 12, entity: 'settings', property: 'bookingConfirmationText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'Paid Booking Invoice Email Copy', rows: 6, columnWidth: 12, entity: 'settings', property: 'paidBookingInvoiceEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'Partially Paid Booking Invoice Email Copy', rows: 6, columnWidth: 12, entity: 'settings', property: 'partiallyPaidBookingInvoiceEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'Unpaid Overage Booking Invoice Email Copy', rows: 6, columnWidth: 12, entity: 'settings', property: 'unpaidOverageBookingInvoiceEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'Unpaid Non-Overage Booking Invoice Email Copy', rows: 6, columnWidth: 12, entity: 'settings', property: 'unpaidNonOverageBookingInvoiceEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'Booking Invoice Payment Info Email Copy', rows: 6, columnWidth: 12, entity: 'settings', property: 'bookingInvoicePaymentInfoEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'Booking Invoice Shipping Terms Email Copy', rows: 4, columnWidth: 12, entity: 'settings', property: 'shippingTermsEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'All Booking Invoices Email Copy', subheader: 'Included at the end of all booking invoice emails.', rows: 4, columnWidth: 12, entity: 'settings', property: 'allBookingInvoicesEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'DVD Invoice Email Copy', rows: 4, columnWidth: 12, entity: 'settings', property: 'dvdInvoiceEmailText' }) }
             </div>
             { this.renderButtons() }
           </div>
@@ -103,7 +119,7 @@ class SettingsDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "btn orange-button " + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
       </div>
@@ -115,4 +131,12 @@ class SettingsDetails extends React.Component {
   }
 }
 
-export default SettingsDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchEntity, updateEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsDetails);
