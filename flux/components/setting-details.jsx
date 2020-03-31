@@ -65,8 +65,8 @@ class SettingsDetails extends React.Component {
         this.setState({
           fetching: false,
           changesToSave: false,
-          settings: this.props.report,
-          settingsSaved: Tools.deepCopy(this.props.report)
+          settings: this.props.settings,
+          settingsSaved: Tools.deepCopy(this.props.settings)
         });
       });
     });
