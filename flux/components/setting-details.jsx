@@ -59,6 +59,7 @@ class SettingsDetails extends React.Component {
           unpaid_overage_booking_invoice_email_text: this.state.settings.unpaidOverageBookingInvoiceEmailText,
           unpaid_non_overage_booking_invoice_email_text: this.state.settings.unpaidNonOverageBookingInvoiceEmailText,
           booking_invoice_payment_info_email_text: this.state.settings.bookingInvoicePaymentInfoEmailText,
+          shipping_terms_email_text: this.state.settings.shippingTermsEmailText,
           all_booking_invoices_email_text: this.state.settings.allBookingInvoicesEmailText
         }
       }).then(() => {
