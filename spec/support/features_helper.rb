@@ -41,6 +41,15 @@ def fill_out_form(data)
   end
 end
 
+def verify_db_and_component(entity, data)
+  arrow_syntax = data.map { |key, value| [key.to_s, value] }.to_h
+  expect(entity.reload.attributes).to include(arrow_syntax)
+  data.each do |key, value|
+    field = find("[data-field=\"#{key.to_s.camelize(:lower)}\"]")
+    expect(field.value).to eq value
+  end
+end
+
 def click_nice_select_option(css_selector, option_text)
   field = find(css_selector, visible: false)
   nice_select_div = field.sibling('.nice-select')
