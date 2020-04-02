@@ -43,7 +43,7 @@ class SendDvdPoAndInvoice
         to: dvd_customer.invoices_email,
         cc: current_user.email,
         subject: "Invoice for PO #{purchase_order.number}",
-        text: "Hello,\n\nPlease find your invoice attached, in PDF format.\n\nKind Regards,\n\n#{current_user.email_signature}",
+        text: "#{Setting.first.dvd_invoice_email_text.strip}\n\nKind Regards,\n\n#{current_user.email_signature}",
         attachment: attachments
       }
       mg_client.send_message 'filmmovement.com', message_params unless Rails.env.test?

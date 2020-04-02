@@ -9,6 +9,7 @@ class SendBookingInvoice
 
     invoice = Invoice.find(invoice_id)
     current_user = User.find(current_user_id)
+    settings = Setting.first
 
     if invoice.total_minus_payments <= 0
       payment_status = 'paid'
@@ -20,25 +21,25 @@ class SendBookingInvoice
 
     if payment_status == 'paid'
       subject = "Your paid invoice/receipt from Film Movement is attached"
-      text = "Hello,\n\nYour Film Movement invoice has been paid. Please find a receipt attached for your records. Thank you.\n\n"
+      text = "#{settings.paid_booking_invoice_email_text.strip}\n\n"
     elsif payment_status == 'partial'
       subject = "Your Film Movement invoice - outstanding balance"
-      text = "Hello,\n\nThank you for your payment. There is a balance remaining on your account. Please see your payment receipt and outstanding balance attached.\n\n"
+      text = "#{settings.partially_paid_booking_invoice_email_text.strip}\n\n"
     else
       subject = "Your Film Movement Invoice"
       if overage == 'true'
-        text = "Hello,\n\nWe hope your screening was successful. A percentage of the box office is due to Film Movement as per the previously arranged terms. The attached invoice includes the new amount due, and indicates any guarantees which may have been billed on a previous invoice.\n\n"
+        text = "#{settings.unpaid_overage_booking_invoice_email_text.strip}\n\n"
       else
-        text = "Hello,\n\nPlease find your invoice attached, in PDF format.\n\n"
+        text = "#{settings.unpaid_non_overage_booking_invoice_email_text.strip}\n\n"
       end
     end
 
     unless payment_status == 'paid'
-      text += "The payment terms and remittance address are included in the document. We accept payments by check, wire, or credit card; to send a wire or credit card information, please contact #{current_user.name} at #{current_user.email}. All figures are in USD.\n\n"
-      text += "Please note that exhibition materials will be sent approximately two weeks before your screening date, assuming this invoice has been paid. Exhibition materials will not be sent ahead of payment.\n\n" if shipping_terms
+      text += "#{settings.booking_invoice_payment_info_email_text.strip}\n\n"
+      text += "#{settings.shipping_terms_email_text.strip}\n\n" if shipping_terms
     end
 
-    text += "Thank you for your business.\n\nKind Regards,\n\n#{current_user.email_signature}"
+    text += "#{settings.all_booking_invoices_email_text.strip}\n\nKind Regards,\n\n#{current_user.email_signature}"
 
     # send invoice
     invoice.export!(pathname)
