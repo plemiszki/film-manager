@@ -490,7 +490,7 @@ class BookingDetails extends React.Component {
                 <a className="jump-link" href={ `/venues/${this.state.booking.venueId}` }>Jump to Venue Details</a>
                 { Details.renderFieldError(this.state.errors, []) }
               </div>
-              <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectFilmButton.bind(this) }></div>
+              <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectVenueButton.bind(this) }></div>
             </div>
             <div className="row">
               <div className="col-xs-2">
