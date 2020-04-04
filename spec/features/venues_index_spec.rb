@@ -18,7 +18,7 @@ describe 'venues_index', type: :feature do
     expect(page).to have_content 'Film at Lincoln Center'
   end
 
-  it 'can add new venues' do
+  it 'adds new venues' do
     visit venues_path(as: $admin_user)
     find('.btn', text: 'Add Venue').click
     find('[data-field="label"]').set('New Venue')
@@ -34,7 +34,7 @@ describe 'venues_index', type: :feature do
     )
   end
 
-  it 'validates new venues properly' do
+  it 'validates new venues' do
     visit venues_path(as: $admin_user)
     find('.btn', text: 'Add Venue').click
     within('.admin-modal') do

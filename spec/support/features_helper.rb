@@ -1,7 +1,7 @@
 RSpec.configure do |config|
 
   config.before(:each) do
-    $admin_user = User.create!(name: 'Peter Lemiszki', email: 'peter+features@filmmovement.com', password: 'password', access: 150)
+    $admin_user = create(:user, email: 'peter+features@filmmovement.com')
   end
 
 end
@@ -27,9 +27,15 @@ def fill_out_form(data)
     if value.class != Hash
       field = find("[data-field=\"#{key}\"]")
       field.set(value)
-    elsif value[:type] != :select
+    elsif value[:type] == :select_modal
       field = find("[data-field=\"#{key}\"]")
-      field.set(value[:value])
+      parent_div = field.find(:xpath, '..')
+      next_div = parent_div.sibling('.col-xs-1')
+      within(next_div) do
+        img = find('img')
+        img.click
+      end
+      select_from_modal(value[:value])
     elsif value[:type] == :select
       value = value[:value]
       field = find("select[data-field=#{key}]", visible: false)
@@ -37,17 +43,24 @@ def fill_out_form(data)
       nice_select_div.click
       sleep 0.25
       find("li[data-value='#{value}']").click
+    else
+      field = find("[data-field=\"#{key}\"]")
+      field.set(value[:value])
     end
   end
 end
 
 def verify_db_and_component(entity, data)
-  arrow_syntax = data.map { |key, value| [key.to_s, value] }.to_h
-  expect(entity.reload.attributes).to include(arrow_syntax)
+  verify_db(entity, data)
   data.each do |key, value|
     field = find("[data-field=\"#{key.to_s.camelize(:lower)}\"]")
     expect(field.value).to eq value
   end
+end
+
+def verify_db(entity, data)
+  arrow_syntax = data.map { |key, value| [key.to_s, value] }.to_h
+  expect(entity.reload.attributes).to include(arrow_syntax)
 end
 
 def click_nice_select_option(css_selector, option_text)

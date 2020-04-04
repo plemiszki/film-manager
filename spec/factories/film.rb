@@ -3,6 +3,7 @@ FactoryBot.define do
   factory :film do
 
     film_type { 'Feature' }
+    title { 'Wilby Wonderful' }
     length { 90 }
     year { 2002 }
     label_id { Label.last.id }
