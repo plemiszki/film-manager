@@ -3,8 +3,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ReportStore from '../stores/reports-store.js'
-import ReportErrorsStore from '../stores/report-errors-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import { fetchEntity, updateEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
@@ -46,14 +44,6 @@ class ReportDetails extends React.Component {
           changesToSave: this.checkForChanges()
         });
       });
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      reportErrors: ReportErrorsStore.reportErrors(),
-      streamErrors: ReportErrorsStore.streamErrors(),
-      fetching: false
     });
   }
 

@@ -127,7 +127,12 @@ $(document).ready(function() {
     ReactDOM.render(<ReturnDetails />, document.getElementById("return-details"));
   }
   if ($('#venue-details')[0]) {
-    ReactDOM.render(<VenueDetails />, document.getElementById("venue-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <VenueDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("venue-details")
+    );
   }
   if ($('#bookings-index')[0]) {
     ReactDOM.render(<BookingsIndex timeframe={ 'upcoming' } />, document.getElementById("bookings-index"));

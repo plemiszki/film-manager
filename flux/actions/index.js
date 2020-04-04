@@ -109,6 +109,9 @@ export function deleteEntity(args) {
         } else {
           window.location.pathname = `/${directory}`;
         }
+      },
+      (response) => {
+        dispatch({ deleteError: response.responseJSON, type: 'ERRORS' });
       }
     );
   }

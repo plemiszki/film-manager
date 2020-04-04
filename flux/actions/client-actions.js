@@ -11,6 +11,9 @@ var ClientActions = {
       method: 'DELETE',
       success: function() {
         window.location.pathname = '/' + directory;
+      },
+      error: function() {
+        console.log('we are here!');
       }
     });
   },

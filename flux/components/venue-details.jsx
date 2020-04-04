@@ -1,10 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import VenuesStore from '../stores/venues-store.js'
-import ErrorsStore from '../stores/errors-store.js'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, ModalMessage, Details, Index } from 'handy-components'
+import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ShredderModalStyles = {
@@ -35,39 +35,26 @@ class VenueDetails extends React.Component {
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteError: {}
     };
   }
 
   componentDidMount() {
-    FM.setUpNiceSelect('select',  FM.changeField.bind(this, this.changeFieldArgs()) );
-    this.venueListener = VenuesStore.addListener(this.getVenue.bind(this));
-    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchVenue(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.venueListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getVenue() {
-    this.setState({
-      venue: Tools.deepCopy(VenuesStore.find(window.location.pathname.split("/")[2])),
-      venueSaved: VenuesStore.find(window.location.pathname.split("/")[2]),
-      bookings: VenuesStore.bookings(),
-      fetching: false
-    }, () => {
+    this.props.fetchEntity({
+      directory: 'venues',
+      id: window.location.pathname.split('/')[2]
+    }).then(() => {
       this.setState({
-        changesToSave: this.checkForChanges()
+        venue: this.props.venue,
+        venueSaved: Tools.deepCopy(this.props.venue),
+        bookings: this.props.bookings,
+        fetching: false
+      }, () => {
+        FM.setUpNiceSelect('select',  FM.changeField.bind(this, this.changeFieldArgs()) );
+        this.setState({
+          changesToSave: this.checkForChanges()
+        });
       });
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      errors: ErrorsStore.all(),
-      fetching: false
     });
   }
 
@@ -90,14 +77,24 @@ class VenueDetails extends React.Component {
   }
 
   clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
-      }, () => {
-        ClientActions.updateVenue(this.state.venue);
+    this.setState({
+      fetching: true,
+      justSaved: true
+    }, () => {
+      this.props.updateEntity({
+        id: window.location.pathname.split('/')[2],
+        directory: 'venues',
+        entityName: 'venue',
+        entity: this.state.venue
+      }).then(() => {
+        this.setState({
+          fetching: false,
+          changesToSave: false,
+          venue: this.props.venue,
+          venueSaved: Tools.deepCopy(this.props.venue)
+        });
       });
-    }
+    });
   }
 
   clickDelete() {
@@ -111,7 +108,16 @@ class VenueDetails extends React.Component {
       fetching: true,
       deleteModalOpen: false
     }, () => {
-      ClientActions.deleteAndGoToIndex('venues', this.state.venue.id);
+      this.props.deleteEntity({
+        id: window.location.pathname.split('/')[2],
+        directory: 'venues',
+      }).then(() => {}, () => {
+        this.setState({
+          messageModalOpen: true,
+          deleteError: this.props.deleteError,
+          fetching: false
+        })
+      })
     });
   }
 
@@ -119,7 +125,8 @@ class VenueDetails extends React.Component {
     this.setState({
       deleteModalOpen: false,
       dvdsModalOpen: false,
-      shredderModalOpen: false
+      shredderModalOpen: false,
+      messageModalOpen: false
     });
   }
 
@@ -378,6 +385,9 @@ class VenueDetails extends React.Component {
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete entityName="venue" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
+        <Modal isOpen={ this.state.messageModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.messageModalStyles() }>
+          <ModalMessage message={ this.state.deleteError.message } memo={ this.state.deleteError.memo } />
+        </Modal>
         <Modal isOpen={ this.state.shredderModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ShredderModalStyles }>
           <div className="shredder-modal">
             <textarea onChange={ this.clearShredderError.bind(this) }></textarea>
@@ -397,14 +407,14 @@ class VenueDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "btn orange-button" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
         <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
           Delete Venue
         </a>
       </div>
-    )
+    );
   }
 
   componentDidUpdate() {
@@ -413,4 +423,12 @@ class VenueDetails extends React.Component {
   }
 }
 
-export default VenueDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchEntity, updateEntity, deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VenueDetails);

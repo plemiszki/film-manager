@@ -5,16 +5,7 @@ describe 'venue_details', type: :feature do
 
   before(:each) do
     create(:label)
-    @venue = Venue.create!(
-      label: 'Film at Lincoln Center',
-      venue_type: 'Theater',
-      sage_id: 'LINCOLN',
-      website: 'lincolncenter.com',
-      contact_name: 'Bobby Joe',
-      email: 'bobby@lincolncenter.com',
-      phone: '555-555-5555',
-      notes: 'some notes'
-    )
+    @venue = create(:venue)
     Booking.create!(
       film_id: create(:film, title: 'Wilby Wonderful').id,
       venue_id: @venue.id,
@@ -25,6 +16,7 @@ describe 'venue_details', type: :feature do
       date_added: Date.today,
       booker_id: 1
     )
+    @no_bookings_venue = create(:venue, label: 'No Bookings Venue', sage_id: 'SAD')
   end
 
   it 'is gated' do
@@ -137,15 +129,26 @@ describe 'venue_details', type: :feature do
     expect(find('input[data-field="billingCountry"]').value).to eq('USA')
   end
 
-  it 'deletes the venue' do
-    visit venue_path(@venue, as: $admin_user)
+  it 'deletes venues with no bookings' do
+    visit venue_path(@no_bookings_venue, as: $admin_user)
     delete_button = find('.orange-button', text: 'Delete Venue')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click
     end
     expect(page).to have_current_path('/venues', ignore_query: true)
-    expect(Venue.find_by_id(@venue.id)).to be(nil)
+    expect(Venue.find_by_id(@no_bookings_venue.id)).to be(nil)
+  end
+
+  it 'errors on delete for venues with bookings' do
+    visit venue_path(@venue, as: $admin_user)
+    delete_button = find('.orange-button', text: 'Delete Venue')
+    delete_button.click
+    within('.confirm-delete') do
+      find('.red-button').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(page).to have_content 'This venue cannot be deleted because there are bookings associated with it.'
   end
 
 end

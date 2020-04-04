@@ -8,8 +8,8 @@ class Api::VenuesController < AdminController
   end
 
   def show
-    @venues = Venue.where(id: params[:id])
-    @bookings = Booking.where(venue_id: @venues.first.id).includes(:film)
+    @venue = Venue.find(params[:id])
+    @bookings = Booking.where(venue_id: @venue.id).includes(:film)
     @calculations = {}
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
@@ -44,10 +44,11 @@ class Api::VenuesController < AdminController
 
   def destroy
     @venue = Venue.find(params[:id])
-    if @venue.destroy
-      render json: @venue, status: 200
+    if @venue.bookings.present?
+      render json: { message: 'This venue cannot be deleted because there are bookings associated with it.', memo: 'To delete this venue, please first delete the associated bookings.' }, status: 422
     else
-      render json: @venue.errors.full_messages, status: 422
+      @venue.destroy
+      render json: @venue, status: 200
     end
   end
 

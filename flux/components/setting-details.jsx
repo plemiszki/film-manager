@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import HandyTools from 'handy-tools'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, Details, Index } from 'handy-components'
 import { fetchEntity, updateEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 

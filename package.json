@@ -9,7 +9,7 @@
     "babel-loader": "8.0.5",
     "change-case": "3.1.0",
     "flux": "^3.1.0",
-    "handy-components": "^1.30.2",
+    "handy-components": "1.31.0",
     "handy-tools": "2.6.0",
     "jquery": "3.4.1",
     "jquery-match-height": "0.7.2",
