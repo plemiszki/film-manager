@@ -93,6 +93,11 @@ class VenueDetails extends React.Component {
           venue: this.props.venue,
           venueSaved: Tools.deepCopy(this.props.venue)
         });
+      }, () => {
+        this.setState({
+          fetching: false,
+          errors: this.props.errors
+        });
       });
     });
   }

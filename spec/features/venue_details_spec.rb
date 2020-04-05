@@ -92,6 +92,13 @@ describe 'venue_details', type: :feature do
     )
   end
 
+  it 'validates information about the venue' do
+    visit venue_path(@venue, as: $admin_user)
+    clear_form
+    save_and_wait
+    expect(page).to have_content("Label can't be blank")
+  end
+
   it 'copies the billing address to the shipping address' do
     visit venue_path(@venue, as: $admin_user)
     fill_out_form({

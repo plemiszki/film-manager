@@ -15,7 +15,7 @@ def clear_form
   expect(page).not_to have_selector('.spinner')
   inputs = page.all("input[data-field], textarea[data-field]")
   inputs.each do |input|
-    next if input[:type] == 'checkbox'
+    next if input[:type] == 'checkbox' || input[:readonly] == 'true'
     input.set('')
   end
 end
@@ -72,7 +72,7 @@ def click_nice_select_option(css_selector, option_text)
 end
 
 def save_and_wait
-  save_button = find('.orange-button', text: /^Save$/)
+  save_button = find('.orange-button, .btn', text: /^Save$/)
   save_button.click
   expect(page).not_to have_selector('.spinner')
 end
