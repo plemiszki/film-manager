@@ -50,16 +50,18 @@ def fill_out_form(data)
   end
 end
 
-def verify_db_and_component(entity, data)
-  verify_db(entity, data)
-  data.each do |key, value|
-    field = find("[data-field=\"#{key.to_s.camelize(:lower)}\"]")
-    expect(field.value).to eq value
+def verify_db_and_component(entity:, data:, db_data: {}, component_data: {})
+  db_data = data.merge(db_data)
+  component_data = data.merge(component_data)
+  verify_db({ entity: entity, data: db_data })
+  component_data.each do |key, value|
+    field = find("[data-field=\"#{key.to_s.camelize(:lower)}\"]", visible: :all)
+    expect(field.value).to eq get_value(value).to_s
   end
 end
 
-def verify_db(entity, data)
-  arrow_syntax = data.map { |key, value| [key.to_s, value] }.to_h
+def verify_db(entity:, data:)
+  arrow_syntax = data.map { |key, value| [key.to_s, get_value(value)] }.to_h
   expect(entity.reload.attributes).to include(arrow_syntax)
 end
 
@@ -72,6 +74,7 @@ def click_nice_select_option(css_selector, option_text)
 end
 
 def save_and_wait
+  expect(page).not_to have_selector('.spinner')
   save_button = find('.orange-button, .btn', text: /^Save$/)
   save_button.click
   expect(page).not_to have_selector('.spinner')
@@ -104,4 +107,10 @@ def change_modal_select_field(id, selection_text)
   within('.ReactModalPortal') do
     find('li', text: selection_text).click
   end
+end
+
+private
+
+def get_value(value)
+  value.class == Hash ? value[:value] : value
 end

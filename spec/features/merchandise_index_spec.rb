@@ -37,14 +37,17 @@ describe 'merchandise_index', type: :feature do
       film_id: { type: :select_modal, value: 'Wilby Wonderful' }
     }, :orange_button)
     expect(find('.fm-admin-table')).to have_content 'Wilby Wonderful Shirt'
-    verify_db(MerchandiseItem.last, {
-      name: 'Wilby Wonderful Shirt',
-      merchandise_type_id: 1,
-      description: 'totally rad t-shirt',
-      size: 'Small',
-      price: 24.95,
-      inventory: 20,
-      film_id: 1
+    verify_db({
+      entity: MerchandiseItem.last,
+      data: {
+        name: 'Wilby Wonderful Shirt',
+        merchandise_type_id: 1,
+        description: 'totally rad t-shirt',
+        size: 'Small',
+        price: 24.95,
+        inventory: 20,
+        film_id: 1
+      }
     })
   end
 
