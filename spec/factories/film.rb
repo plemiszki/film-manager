@@ -9,6 +9,9 @@ FactoryBot.define do
     label_id { Label.last.id }
     mg { 500 }
     e_and_o { 2000 }
+    rating { 'Not Rated' }
+    aspect_ratio { '16:9' }
+    sound_config { 'stereo' }
 
     factory :no_expenses_recouped_film do
       title { 'No Expenses Recouped' }

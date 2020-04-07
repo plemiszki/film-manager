@@ -299,6 +299,7 @@ class FilmDetails extends React.Component {
 
   getFormats() {
     this.setState({
+      fetching: false,
       filmFormats: FormatsStore.filmFormats(),
       formats: FormatsStore.all(),
       formatsModalOpen: false

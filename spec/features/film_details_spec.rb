@@ -319,6 +319,80 @@ describe 'film_details', type: :feature do
     )
   end
 
+  # marketing tab
+
+  # bookings tab
+
+  it "displays the film's booking information" do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Bookings').click
+    expect(find('input[data-field="rating"]').value).to eq 'Not Rated'
+    expect(find('input[data-field="aspectRatio"]').value).to eq '16:9'
+    expect(find('input[data-field="soundConfig"]').value).to eq 'stereo'
+  end
+
+  it "updates the film's booking information" do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Bookings').click
+    new_info = {
+      rating: 'R',
+      aspect_ratio: '4:3',
+      sound_config: 'mono'
+    }
+    fill_out_form(new_info)
+    save_and_wait
+    verify_db_and_component({
+      entity: @film,
+      data: new_info
+    })
+  end
+
+  it "displays the film's screening formats" do
+    create(:format)
+    create(:film_format)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Bookings').click
+    within('ul.screening-formats-list') do
+      expect(page).to have_content('35mm')
+    end
+  end
+
+  it 'adds screening formats' do
+    create(:format)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Bookings').click
+    find('.blue-outline-button', text: 'Add Format').click
+    select_from_modal('35mm')
+    expect(page).to have_no_css('.spinner')
+    within('ul.screening-formats-list') do
+      expect(page).to have_content('35mm')
+    end
+  end
+
+  it 'removes screening formats' do
+    create(:format)
+    create(:film_format)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Bookings').click
+    find('.x-button').click
+    expect(page).to have_no_css('.spinner')
+    expect(FilmFormat.count).to be(0)
+    expect(page).to have_no_content('35mm')
+  end
+
+  it "displays the film's bookings" do
+    create(:venue)
+    create(:booking)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Bookings').click
+    within('.bookings-table') do
+      expect(page).to have_content('Film at Lincoln Center')
+    end
+    within('.bookings-count-list') do
+      expect(page).to have_content('Theatrical: 1')
+    end
+  end
+
   # dvds tab
 
   it "displays the film's dvds" do
