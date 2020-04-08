@@ -412,4 +412,16 @@ describe 'film_details', type: :feature do
     expect(@film.dvds.count).to eq(2)
   end
 
+  # sublicensors tab
+
+  it "displays the film's licensed rights" do
+    create(:sublicensor)
+    create(:sub_right)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Sublicensing').click
+    within('.fm-admin-table') do
+      expect(page).to have_content('Kanopy')
+    end
+  end
+
 end
