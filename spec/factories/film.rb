@@ -12,6 +12,15 @@ FactoryBot.define do
     rating { 'Not Rated' }
     aspect_ratio { '16:9' }
     sound_config { 'stereo' }
+    fm_plus_url { 'https://www.filmmovementplus.com/wilbywonderful' }
+    standalone_site { 'https://www.wilbywonderful.com' }
+    vimeo_trailer { 'http://vimeo.com/68840880' }
+    youtube_trailer { 'https://www.youtube.com/watch?v=PCu7WguDGGY' }
+    prores_trailer { 'https://www.dropbox.com/s/g2ysczkh6ulvrbf/MyArt_Trailer_ProRes.mov?dl=0' }
+    facebook_link { 'https://www.facebook.com/wilbywonderful' }
+    twitter_link { 'https://twitter.com/wilbywonderful' }
+    instagram_link { 'https://www.instagram.com/wilbywonderful' }
+    imdb_id { 'tt2328696' }
 
     factory :no_expenses_recouped_film do
       title { 'No Expenses Recouped' }

@@ -321,6 +321,128 @@ describe 'film_details', type: :feature do
 
   # marketing tab
 
+  it "displays the film's marketing information" do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    expect(find('input[data-field="fmPlusUrl"]').value).to eq 'https://www.filmmovementplus.com/wilbywonderful'
+    expect(find('input[data-field="standaloneSite"]').value).to eq 'https://www.wilbywonderful.com'
+    expect(find('input[data-field="vimeoTrailer"]').value).to eq 'http://vimeo.com/68840880'
+    expect(find('input[data-field="youtubeTrailer"]').value).to eq 'https://www.youtube.com/watch?v=PCu7WguDGGY'
+    expect(find('input[data-field="proresTrailer"]').value).to eq 'https://www.dropbox.com/s/g2ysczkh6ulvrbf/MyArt_Trailer_ProRes.mov?dl=0'
+    expect(find('input[data-field="facebookLink"]').value).to eq 'https://www.facebook.com/wilbywonderful'
+    expect(find('input[data-field="twitterLink"]').value).to eq 'https://twitter.com/wilbywonderful'
+    expect(find('input[data-field="instagramLink"]').value).to eq 'https://www.instagram.com/wilbywonderful'
+    expect(find('input[data-field="imdbId"]').value).to eq 'tt2328696'
+  end
+
+  it "updates the film's marketing information" do
+
+  end
+
+  it "validates the film's marketing information" do
+
+  end
+
+  it 'displays laurels' do
+
+  end
+
+  it 'add laurels' do
+
+  end
+
+  it 'removes laurels' do
+
+  end
+
+  it 'displays quotes' do
+
+  end
+
+  it 'removes quotes' do
+
+  end
+
+  it 'displays genres' do
+
+  end
+
+  it 'adds genres' do
+
+  end
+
+  it 'removes genres' do
+
+  end
+
+  it 'displays topics' do
+
+  end
+
+  it 'adds topics' do
+
+  end
+
+  it 'removes topics' do
+
+  end
+
+  it 'displays alternate lengths' do
+
+  end
+
+  it 'adds alternate lengths' do
+
+  end
+
+  it 'removes alternate lengths' do
+
+  end
+
+  it 'displays alternate audio tracks' do
+
+  end
+
+  it 'adds alternate audio tracks' do
+
+  end
+
+  it 'removes alternate audio tracks' do
+
+  end
+
+  it 'displays alternate subtitles' do
+
+  end
+
+  it 'adds alternate subtitles' do
+
+  end
+
+  it 'removes alternate subtitles' do
+
+  end
+
+  it 'displays related films' do
+
+  end
+
+  it 'adds related films' do
+
+  end
+
+  it 'removes related films' do
+
+  end
+
+  it 'displays digital retailers' do
+
+  end
+
+  it 'adds digital retailers' do
+
+  end
+
   # bookings tab
 
   it "displays the film's booking information" do
