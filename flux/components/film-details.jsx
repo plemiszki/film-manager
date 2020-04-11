@@ -328,7 +328,8 @@ class FilmDetails extends React.Component {
     this.setState({
       filmGenres: GenresStore.filmGenres(),
       genres: GenresStore.all(),
-      genresModalOpen: false
+      genresModalOpen: false,
+      fetching: false
     });
   }
 
@@ -336,7 +337,8 @@ class FilmDetails extends React.Component {
     this.setState({
       filmTopics: TopicsStore.filmTopics(),
       topics: TopicsStore.all(),
-      topicsModalOpen: false
+      topicsModalOpen: false,
+      fetching: false
     });
   }
 
@@ -634,6 +636,9 @@ class FilmDetails extends React.Component {
   }
 
   clickGenre(e) {
+    this.setState({
+      fetching: true
+    })
     ClientActions.createFilmGenre({ film_id: this.state.film.id, genre_id: e.target.dataset.id })
   }
 
@@ -651,6 +656,9 @@ class FilmDetails extends React.Component {
   }
 
   clickTopic(e) {
+    this.setState({
+      fetching: false
+    });
     ClientActions.createFilmTopic({ film_id: this.state.film.id, topic_id: e.target.dataset.id })
   }
 
@@ -982,17 +990,19 @@ class FilmDetails extends React.Component {
 
   changeFieldArgs(errors) {
     return {
+      allErrors: FM.errors,
       thing: "film",
       errorsArray: errors || this.state.filmErrors,
-      beforeSave: (newThing, key, value) => {
+      beforeSave: (newEntity, key, value) => {
         if (key == "dealTypeId") {
           if (value <= 4) {
-            newThing.grPercentage = "";
+            newEntity.grPercentage = "";
             FM.removeFieldError(this.state.filmErrors, "grPercentage")
           } else {
-            newThing.grPercentage = "0";
+            newEntity.grPercentage = "0";
           }
         }
+        return newEntity;
       },
       changesFunction: this.checkForChanges.bind(this)
     }
@@ -1596,13 +1606,11 @@ class FilmDetails extends React.Component {
       return(
         <div>
           <hr className="smaller-margin" />
-          <div className="row checkboxes">
-            <div className="col-xs-12">
-              <input id="active" type="checkbox" checked={ this.state.film.active || false } onChange={ this.changeCheckbox.bind(this, 'active') } /><label htmlFor="active">Active on Website</label>
-              <input id="eduPage" type="checkbox" checked={ this.state.film.eduPage || false } onChange={ this.changeCheckbox.bind(this, 'eduPage') } /><label htmlFor="eduPage">Educational Page</label>
-              <input id="videoPage" type="checkbox" checked={ this.state.film.videoPage || false } onChange={ this.changeCheckbox.bind(this, 'videoPage') } /><label htmlFor="videoPage">Video Page</label>
-              <input id="dayAndDate" type="checkbox" checked={ this.state.film.dayAndDate || false } onChange={ this.changeCheckbox.bind(this, 'dayAndDate') } /><label htmlFor="dayAndDate">Day and Date</label>
-            </div>
+          <div className="row row-of-checkboxes">
+            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
+            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
+            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
+            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
           </div>
           <hr />
           <div className="row">
@@ -1620,19 +1628,15 @@ class FilmDetails extends React.Component {
                 }) }
               </ul>
               <a className="blue-outline-button small" onClick={ this.clickAddLaurel.bind(this) }>Add Laurel</a>
-              <div className="row checkboxes badge-checkboxes">
-                <div className="col-xs-4">
-                  <input id="certified-fresh" type="checkbox" checked={ this.state.film.certifiedFresh } onChange={ this.changeCheckbox.bind(this, 'certifiedFresh') } /><label htmlFor="certified-fresh">Certified Fresh</label>
-                </div>
-                <div className="col-xs-4">
-                  <input id="critics-pick" type="checkbox" checked={ this.state.film.criticsPick } onChange={ this.changeCheckbox.bind(this, 'criticsPick') } /><label htmlFor="critics-pick">Critic's Pick</label>
-                </div>
+              <div className="row row-of-checkboxes badge-checkboxes">
+                { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
+                { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
               </div>
             </div>
           </div>
           <hr />
           <div className="row">
-            <div className="col-xs-12">
+            <div className="col-xs-12 quotes-list">
               <h3 className="quotes-header">Quotes:</h3>
               <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
               { this.state.quotes.map((quote, index) => {

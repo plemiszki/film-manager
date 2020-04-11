@@ -203,6 +203,17 @@
     margin-bottom: 15px;
   }
 
+  .row-of-checkboxes {
+
+    label.checkbox {
+      margin-top: 0;
+    }
+
+    .no-field-error {
+      margin-bottom: 0;
+    }
+  }
+
   .checkboxes {
 
     .col-xs-6 {

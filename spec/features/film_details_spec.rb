@@ -333,58 +333,173 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="twitterLink"]').value).to eq 'https://twitter.com/wilbywonderful'
     expect(find('input[data-field="instagramLink"]').value).to eq 'https://www.instagram.com/wilbywonderful'
     expect(find('input[data-field="imdbId"]').value).to eq 'tt2328696'
+    expect(find('input[data-field="active"]').checked?).to eq true
+    expect(find('input[data-field="eduPage"]').checked?).to eq true
+    expect(find('input[data-field="videoPage"]').checked?).to eq true
+    expect(find('input[data-field="dayAndDate"]').checked?).to eq true
+    expect(find('input[data-field="certifiedFresh"]').checked?).to eq true
+    expect(find('input[data-field="criticsPick"]').checked?).to eq true
   end
 
   it "updates the film's marketing information" do
-
-  end
-
-  it "validates the film's marketing information" do
-
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    new_info = {
+      fm_plus_url: 'https://www.filmmovementplus.com/vilbyvonderful',
+      standalone_site: 'https://www.vilbyvonderful.com',
+      vimeo_trailer: 'http://vimeo.com/1',
+      youtube_trailer: 'https://www.youtube.com/watch?v=1',
+      prores_trailer: 'https://www.dropbox.com/s/g2ysczkh6ulvrbf/Another_Trailer_ProRes.mov?dl=0',
+      facebook_link: 'https://www.facebook.com/vilbyvonderful',
+      twitter_link: 'https://twitter.com/vilbyvonderful',
+      instagram_link: 'https://www.instagram.com/vilbyvonderful',
+      imdb_id: 'tt20736',
+      active: false,
+      edu_page: false,
+      video_page: false,
+      day_and_date: false,
+      certified_fresh: false,
+      critics_pick: false
+    }
+    fill_out_form(new_info)
+    save_and_wait
+    verify_db_and_component({
+      entity: @film,
+      data: new_info
+    })
   end
 
   it 'displays laurels' do
-
+    create(:laurel)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.laurels-list') do
+      expect(page).to have_content('Cannes International Film Festival')
+    end
   end
 
   it 'add laurels' do
-
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Laurel').click
+    laurel_info = {
+      result: { value: 'Nominated', type: :select },
+      award_name: 'Best Film',
+      festival: 'Academy Awards'
+    }
+    fill_out_and_submit_modal(laurel_info, :orange_button)
+    expect(Laurel.count).to eq(1)
+    expect(page).to have_content('Nominated - Best Film - Academy Awards')
   end
 
   it 'removes laurels' do
-
+    create(:laurel)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.laurels-list') do
+      find('.x-button').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(Laurel.count).to eq(0)
+    expect(page).to have_no_content('Cannes International Film Festival')
   end
 
   it 'displays quotes' do
-
+    create(:quote)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.quotes-list') do
+      expect(page).to have_content('This is the greatest film in history.')
+      expect(page).to have_content('Roger Ebert')
+      expect(page).to have_content('Chicago Sun')
+    end
   end
 
-  it 'removes quotes' do
-
+  it 'adds quotes' do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Quote').click
+    quote_info = {
+      text: 'I thought I died and went to heaven.',
+      author: 'Peter Biskind',
+      publication: 'Rolling Stone'
+    }
+    fill_out_and_submit_modal(quote_info, :orange_button)
+    expect(Quote.count).to eq(1)
+    expect(page).to have_content('"I thought I died and went to heaven."')
+    expect(page).to have_content('Peter Biskind, Rolling Stone')
   end
 
   it 'displays genres' do
-
+    create(:genre)
+    create(:film_genre)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.genres-list') do
+      expect(page).to have_content('Comedy')
+    end
   end
 
   it 'adds genres' do
-
+    create(:genre)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Genre').click
+    select_from_modal('Comedy')
+    expect(page).to have_no_css('.spinner')
+    expect(FilmGenre.count).to eq(1)
+    within('.genres-list') do
+      expect(page).to have_content('Comedy')
+    end
   end
 
   it 'removes genres' do
-
+    create(:genre)
+    create(:film_genre)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.genres-list') do
+      find('.x-button').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(FilmGenre.count).to eq(0)
+    expect(page).to have_no_content('Comedy')
   end
 
   it 'displays topics' do
-
+    create(:topic)
+    create(:film_topic)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.topics-list') do
+      expect(page).to have_content('Latino')
+    end
   end
 
   it 'adds topics' do
-
+    create(:topic)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Topic').click
+    select_from_modal('Latino')
+    expect(page).to have_no_css('.spinner')
+    expect(FilmTopic.count).to eq(1)
+    within('.topics-list') do
+      expect(page).to have_content('Latino')
+    end
   end
 
   it 'removes topics' do
-
+    create(:topic)
+    create(:film_topic)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.topics-list') do
+      find('.x-button').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(FilmTopic.count).to eq(0)
+    expect(page).to have_no_content('Latino')
   end
 
   it 'displays alternate lengths' do

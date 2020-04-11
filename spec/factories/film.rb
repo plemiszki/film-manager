@@ -21,6 +21,12 @@ FactoryBot.define do
     twitter_link { 'https://twitter.com/wilbywonderful' }
     instagram_link { 'https://www.instagram.com/wilbywonderful' }
     imdb_id { 'tt2328696' }
+    active { true }
+    edu_page { true }
+    video_page { true }
+    day_and_date { true }
+    certified_fresh { true }
+    critics_pick { true }
 
     factory :no_expenses_recouped_film do
       title { 'No Expenses Recouped' }

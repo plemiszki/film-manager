@@ -11,11 +11,12 @@ def create_dvd_types
   DvdType.create!(name: 'Club')
 end
 
-def clear_form
+def clear_form(except: nil)
   expect(page).not_to have_selector('.spinner')
   inputs = page.all("input[data-field], textarea[data-field]")
   inputs.each do |input|
     next if input[:type] == 'checkbox' || input[:readonly] == 'true'
+    next if except.present? && except.include?(input['data-field'])
     input.set('')
   end
 end
@@ -56,7 +57,11 @@ def verify_db_and_component(entity:, data:, db_data: {}, component_data: {})
   verify_db({ entity: entity, data: db_data })
   component_data.each do |key, value|
     field = find("[data-field=\"#{key.to_s.camelize(:lower)}\"]", visible: :all)
-    expect(field.value).to eq get_value(value).to_s
+    if field['type'] == 'checkbox'
+      expect(field.checked?).to eq get_value(value)
+    else
+      expect(field.value).to eq get_value(value).to_s
+    end
   end
 end
 
