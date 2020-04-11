@@ -24,3 +24,7 @@ module FilmManager
     config.active_record.raise_in_transactional_callbacks = true
   end
 end
+
+Raven.configure do |config|
+  config.dsn = ENV.fetch('SENTRY_DSN', '')
+end
