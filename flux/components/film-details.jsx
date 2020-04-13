@@ -785,6 +785,9 @@ class FilmDetails extends React.Component {
   }
 
   clickCrossedFilm(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.createCrossedFilm({ filmId: this.state.film.id, crossedFilmId: e.target.dataset.id });
   }
 
@@ -1428,16 +1431,10 @@ class FilmDetails extends React.Component {
       return(
         <div>
           <hr className="smaller-margin" />
-          <div className="row checkboxes">
-            <div className="col-xs-4">
-              <input id="export-reports" type="checkbox" checked={ this.state.film.exportReports } onChange={this.changeCheckbox.bind(this, 'exportReports')} /><label htmlFor="export-reports">Export Reports</label>
-            </div>
-            <div className={"col-xs-4" + (this.state.film.exportReports ? "" : " hidden")}>
-              <input id="send-reports" type="checkbox" checked={ this.state.film.sendReports } onChange={this.changeCheckbox.bind(this, 'sendReports')} /><label htmlFor="send-reports">Send Reports</label>
-            </div>
-            <div className="col-xs-4">
-              <input id="ignore-sage-id" type="checkbox" checked={ this.state.film.ignoreSageId } onChange={this.changeCheckbox.bind(this, 'ignoreSageId')} /><label htmlFor="ignore-sage-id">Ignore Sage ID on Import</label>
-            </div>
+          <div className="row row-of-checkboxes">
+            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'exportReports' }) }
+            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'sendReports', hidden: !this.state.film.exportReports }) }
+            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'ignoreSageId', columnHeader: 'Ignore Sage ID on Import' }) }
           </div>
           <hr />
           <div className="row">

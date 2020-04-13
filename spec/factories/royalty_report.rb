@@ -2,10 +2,12 @@ FactoryBot.define do
 
   factory :royalty_report do
 
+    film_id { 1 }
     year { 2019 }
     quarter { 1 }
     mg { 500 }
     e_and_o { 2000 }
+    deal_id { 1 }
 
     factory :no_expenses_recouped_royalty_report do
       deal_id { 1 }

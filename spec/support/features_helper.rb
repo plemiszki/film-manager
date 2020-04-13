@@ -86,8 +86,8 @@ def save_and_wait
 end
 
 def fill_out_and_submit_modal(data, button_type)
-  fill_out_form(data)
   within('.admin-modal') do
+    fill_out_form(data)
     if button_type == :input
       find('input.btn').click
     elsif button_type == :orange_button
@@ -98,7 +98,8 @@ def fill_out_and_submit_modal(data, button_type)
 end
 
 def select_from_modal(option)
-  within('.modal-select') do
+  modal_select = page.document.find('.modal-select')
+  within(modal_select) do
     find('li', text: option).click
   end
   expect(page).not_to have_selector('.spinner')

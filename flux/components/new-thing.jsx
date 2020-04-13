@@ -234,21 +234,9 @@ class NewThing extends React.Component {
     if (this.props.thing === "film" || this.props.thing === 'tvSeries') {
       return(
         <div className="row">
-          <div className="col-xs-8">
-            <h2>Title</h2>
-            <input className={ Details.errorClass(this.state.errors, FM.errors.title) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.title } data-field="title" />
-            { Details.renderFieldError(this.state.errors, FM.errors.title) }
-          </div>
-          <div className="col-xs-2">
-            <h2>Year</h2>
-            <input className={ Details.errorClass(this.state.errors, FM.errors.year) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.year } data-field="year" />
-            { Details.renderFieldError(this.state.errors, FM.errors.year) }
-          </div>
-          <div className="col-xs-2">
-            <h2>Length (minutes)</h2>
-            <input className={ Details.errorClass(this.state.errors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length } data-field="length" />
-            { Details.renderFieldError(this.state.errors, FM.errors.length) }
-          </div>
+          { Details.renderField.bind(this)({ columnWidth: 8, entity: 'film', property: 'title' }) }
+          { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'year' }) }
+          { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'length', columnHeader: 'Length (minutes)' }) }
         </div>
       );
     }

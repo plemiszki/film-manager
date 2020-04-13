@@ -742,6 +742,66 @@ describe 'film_details', type: :feature do
     expect(@film.dvds.count).to eq(2)
   end
 
+  # statements
+
+  it 'displays information about statements' do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Statements').click
+    expect(find('input[data-field="exportReports"]').checked?).to eq true
+    expect(find('input[data-field="sendReports"]').checked?).to eq true
+    expect(find('input[data-field="ignoreSageId"]').checked?).to eq true
+  end
+
+  it 'updates information about statements' do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Statements').click
+    new_info = {
+      send_reports: false,
+      export_reports: false,
+      ignore_sage_id: false
+    }
+    fill_out_form(new_info)
+    save_and_wait
+    verify_db_and_component({
+      entity: @film,
+      data: {
+        export_reports: false,
+        ignore_sage_id: false
+      },
+      db_data: {
+        send_reports: false
+      }
+    })
+  end
+
+  it 'displays crossed films' do
+    create(:film, title: 'Another Film')
+    create(:crossed_film)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Statements').click
+    expect(page).to have_content('Another Film')
+  end
+
+  it 'adds crossed films' do
+    create(:film, title: 'Another Film')
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Statements').click
+    find('.blue-outline-button', text: 'Add Film').click
+    select_from_modal('Another Film')
+    expect(page).to have_no_css('.spinner')
+    expect(CrossedFilm.count).to eq(2)
+    expect(page).to have_content('Another Film')
+  end
+
+  it 'displays statements' do
+    create(:royalty_report)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Statements').click
+    within('.fm-admin-table') do
+      expect(page).to have_content('2019')
+    end
+  end
+
   # sublicensors tab
 
   it "displays the film's licensed rights" do
@@ -752,6 +812,37 @@ describe 'film_details', type: :feature do
     within('.fm-admin-table') do
       expect(page).to have_content('Kanopy')
     end
+  end
+
+  # bottom buttons
+
+  it 'copies the film' do
+    visit film_path(@film, as: $admin_user)
+    copy_button = find('.orange-button', text: 'Copy Film')
+    copy_button.click
+    new_film_data = {
+      title: 'New Film',
+      year: 1999,
+      length: 120
+    }
+    fill_out_and_submit_modal(new_film_data, :orange_button)
+    expect(page).to have_no_css('.spinner')
+    verify_db({
+      entity: Film.last,
+      data: new_film_data
+    })
+    expect(page).to have_current_path("/films/#{Film.last.id}", ignore_query: true)
+  end
+
+  it 'deletes the film' do
+    visit film_path(@film, as: $admin_user)
+    delete_button = find('.orange-button', text: 'Delete Film')
+    delete_button.click
+    within('.confirm-delete') do
+      find('.red-button').click
+    end
+    expect(page).to have_current_path('/films', ignore_query: true)
+    expect(Film.find_by_id(@film.id)).to be(nil)
   end
 
 end
