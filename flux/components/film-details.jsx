@@ -778,6 +778,9 @@ class FilmDetails extends React.Component {
   }
 
   clickRelatedFilm(e) {
+    this.setState({
+      fetching: true
+    });
     ClientActions.createRelatedFilm({ filmId: this.state.film.id, otherFilmId: e.target.dataset.id });
   }
 

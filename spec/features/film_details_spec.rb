@@ -45,8 +45,8 @@ describe 'film_details', type: :feature do
     Country.create!(name: 'Canada')
     Country.create!(name: 'Belize')
     FilmCountry.create!(film_id: @film.id, country_id: 1)
-    Language.create!(name: 'French')
-    Language.create!(name: 'Spanish')
+    create(:language)
+    create(:language, name: 'Spanish')
     FilmLanguage.create!(film_id: @film.id, language_id: 1)
     Actor.create!(actorable_id: @film.id, actorable_type: 'Film', first_name: 'Brad', last_name: 'Pitt', order: 0)
     Dvd.create!(feature_film_id: @film.id, dvd_type_id: 1)
@@ -503,59 +503,152 @@ describe 'film_details', type: :feature do
   end
 
   it 'displays alternate lengths' do
-
+    create(:alternate_length)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.alternate-lengths-list') do
+      expect(page).to have_content('60')
+    end
   end
 
   it 'adds alternate lengths' do
-
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Length').click
+    fill_out_and_submit_modal({ length: 60 }, :input)
+    expect(AlternateLength.count).to eq(1)
+    expect(page).to have_content('60')
   end
 
   it 'removes alternate lengths' do
-
+    create(:alternate_length)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.alternate-lengths-list') do
+      find('.x-button').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(AlternateLength.count).to be(0)
+    expect(page).to have_no_content('60')
   end
 
   it 'displays alternate audio tracks' do
-
+    create(:alternate_audio)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.alternate-audios-list') do
+      expect(page).to have_content('French')
+    end
   end
 
   it 'adds alternate audio tracks' do
-
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Audio Track').click
+    select_from_modal('French')
+    expect(AlternateAudio.count).to eq(1)
+    expect(page).to have_content('French')
   end
 
   it 'removes alternate audio tracks' do
-
+    create(:alternate_audio)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.alternate-audios-list') do
+      find('.x-button').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(AlternateAudio.count).to be(0)
+    expect(page).to have_no_content('French')
   end
 
   it 'displays alternate subtitles' do
-
+    create(:alternate_sub)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.alternate-subtitles-list') do
+      expect(page).to have_content('French')
+    end
   end
 
   it 'adds alternate subtitles' do
-
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Subtitles').click
+    select_from_modal('French')
+    expect(AlternateSub.count).to eq(1)
+    expect(page).to have_content('French')
   end
 
   it 'removes alternate subtitles' do
-
+    create(:alternate_sub)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.alternate-subtitles-list') do
+      find('.x-button').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(AlternateSub.count).to be(0)
+    expect(page).to have_no_content('French')
   end
 
   it 'displays related films' do
-
+    create(:film, title: 'Another Film')
+    create(:related_film)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.related-films-list') do
+      expect(page).to have_content('Another Film')
+    end
   end
 
   it 'adds related films' do
-
+    create(:film, title: 'Another Film')
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Related Film').click
+    select_from_modal('Another Film')
+    expect(page).to have_no_css('.spinner')
+    expect(RelatedFilm.count).to eq(1)
+    expect(page).to have_content('Another Film')
   end
 
   it 'removes related films' do
-
+    create(:film, title: 'Another Film')
+    create(:related_film)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.related-films-list') do
+      find('.x-button').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(RelatedFilm.count).to be(0)
+    expect(page).to have_no_content('Another Film')
   end
 
   it 'displays digital retailers' do
-
+    create(:digital_retailer)
+    create(:digital_retailer_film)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.digital-retailers-table') do
+      expect(page).to have_content('iTunes')
+    end
   end
 
   it 'adds digital retailers' do
-
+    create(:digital_retailer)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Digital Retailer').click
+    fill_out_and_submit_modal({
+      digital_retailer_id: { value: 1, type: :select },
+      url: 'https://www.itunes.com/another_film'
+    }, :orange_button)
+    expect(page).to have_no_css('.spinner')
+    expect(DigitalRetailerFilm.count).to eq(1)
+    expect(page).to have_content('iTunes')
+    expect(page).to have_content('https://www.itunes.com/another_film')
   end
 
   # bookings tab
