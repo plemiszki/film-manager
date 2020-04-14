@@ -663,7 +663,7 @@ var FM = {
   },
 
   renderDropdownFieldError: function(stateErrors, fieldErrors) {
-    for (i = 0; i < fieldErrors.length; i++) {
+    for (let i = 0; i < fieldErrors.length; i++) {
       if (stateErrors.indexOf(fieldErrors[i]) > -1) {
         return(
           <div className="yesDropdownFieldError">{fieldErrors[i]}</div>

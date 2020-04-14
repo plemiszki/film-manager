@@ -45,6 +45,7 @@ class SubRightDetails extends React.Component {
         changesToSave: this.checkForChanges()
       });
     });
+    FM.setUpNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
   }
 
   getErrors() {
@@ -187,11 +188,6 @@ class SubRightDetails extends React.Component {
         </a>
       </div>
     );
-  }
-
-  componentDidUpdate() {
-    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    $('.match-height-layout').matchHeight();
   }
 }
 
