@@ -78,6 +78,11 @@ FactoryBot.define do
       ignore_sage_id { false }
     end
 
+    factory :tv_series do
+      title { 'Nazi Junkies' }
+      film_type { 'TV Series' }
+    end
+
   end
 
 end

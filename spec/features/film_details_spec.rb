@@ -814,6 +814,39 @@ describe 'film_details', type: :feature do
     end
   end
 
+  # episodes tab
+
+  it 'displays the episodes' do
+    @tv_series = create(:tv_series)
+    create(:episode, film_id: @tv_series.id)
+    visit film_path(@tv_series, as: $admin_user)
+    find('div.tab', text: 'Episodes').click
+    within('.fm-admin-table') do
+      expect(page).to have_content('Pilot')
+    end
+  end
+
+  it 'adds episodes' do
+    @tv_series = create(:tv_series)
+    create(:episode, film_id: @tv_series.id)
+    visit film_path(@tv_series, as: $admin_user)
+    find('div.tab', text: 'Episodes').click
+    find('.blue-outline-button', text: 'Add Episode').click
+    info = {
+      title: 'Episode 2',
+      length: 60,
+      season_number: 1,
+      episode_number: 2
+    }
+    fill_out_and_submit_modal(info, :orange_button)
+    expect(page).to have_no_css('.spinner')
+    expect(current_path).to eq("/episodes/#{Episode.last.id}")
+    verify_db_and_component({
+      entity: Episode.last,
+      data: info
+    })
+  end
+
   # bottom buttons
 
   it 'copies the film' do
