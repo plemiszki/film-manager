@@ -79,13 +79,14 @@ class Api::BookingsController < AdminController
     if params[:date_added_end]
       queries << "date_added <= DATE '#{params[:date_added_end]}'"
     end
+    included_associations = [:film, :venue, :format, :weekly_box_offices, :payments]
     if queries.empty?
-      @bookings = Booking.all.includes(:film, :venue, :format)
+      @bookings = Booking.all.includes(*included_associations)
     else
-      @bookings = Booking.where(queries.join(' and ')).includes(:film, :venue, :format, :weekly_box_offices)
+      @bookings = Booking.where(queries.join(' and ')).includes(*included_associations)
       if params[:box_office_received] && params[:box_office_received].downcase == 'true'
         ids = Booking.joins(:weekly_box_offices).group('bookings.id').map(&:id)
-        @new_bookings = Booking.where(id: ids).includes(:film, :venue, :format, :weekly_box_offices)
+        @new_bookings = Booking.where(id: ids).includes(*included_associations)
         @bookings += @new_bookings
       elsif params[:box_office_received] && params[:box_office_received].downcase == 'false'
         ids = Booking.joins(:weekly_box_offices).group('bookings.id')
