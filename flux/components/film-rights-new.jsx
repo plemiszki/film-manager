@@ -44,12 +44,19 @@ class FilmRightsNew extends React.Component {
   }
 
   getRightsAndTerritories() {
-    this.setState({
+    let newState = {
+      fetching: false,
       territories: FilmRightsStore.territories(),
-      rights: FilmRightsStore.rights(),
-      films: (this.props.sublicensorId ? FilmRightsStore.films() : []),
-      fetching: false
-    }, () => {
+      rights: FilmRightsStore.rights()
+    }
+    if (this.props.sublicensorId) {
+      let films = FilmRightsStore.films();
+      let filmRight = this.state.filmRight;
+      filmRight.filmId = films[0].id;
+      newState.films = films;
+      newState.filmRight = filmRight;
+    }
+    this.setState(newState, () => {
       FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     });
   }
