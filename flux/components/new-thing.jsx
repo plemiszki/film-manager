@@ -342,7 +342,7 @@ class NewThing extends React.Component {
             <div className="col-xs-3 select-scroll-3">
               <h2>Booked By</h2>
               <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
-                { BookingsStore.bookers().map(function(user) {
+                { BookingsStore.activeBookers().map(function(user) {
                   return(
                     <option key={ user.id } value={ user.id }>{ user.name }</option>
                   );

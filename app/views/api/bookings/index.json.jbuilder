@@ -30,6 +30,7 @@ json.users @users do |user|
   json.id user.id
   json.name user.name
   json.booker user.booker
+  json.inactive user.inactive
 end
 json.formats @formats do |format|
   json.id format.id

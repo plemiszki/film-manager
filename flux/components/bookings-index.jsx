@@ -253,7 +253,7 @@ class BookingsIndex extends React.Component {
         </div>
         { this.renderSeeAllButton() }
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.bookers()[0] && BookingsStore.bookers()[0].id, userId: FM.user.id } } />
+          <NewThing thing="booking" initialObject={ { bookingType: "Non-Theatrical", status: "Tentative", bookerId: BookingsStore.activeBookers()[0] && BookingsStore.activeBookers()[0].id, userId: FM.user.id } } />
         </Modal>
         <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ AdvancedSearchModalStyles }>
           <AdvancedSearch />
