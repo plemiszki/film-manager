@@ -206,7 +206,7 @@ class BookingsIndex extends React.Component {
                         { booking.film }
                       </td>
                       <td>
-                        { booking.venue }
+                        { HandyTools.ellipsis(booking.venue, 42) }
                       </td>
                       <td>
                         { booking.shippingCity }

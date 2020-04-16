@@ -41,7 +41,7 @@ class Api::BookingsController < AdminController
       queries << "venue_id = #{params[:venue_id]}"
     end
     if params[:city]
-      queries << "lower(shipping_city) = '#{params[:city].downcase}'"
+      queries << "lower(shipping_city) = '#{CGI::unescape(params[:city].downcase)}'"
     end
     if params[:state]
       queries << "lower(shipping_state) = '#{params[:state].downcase}'"
