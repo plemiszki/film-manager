@@ -6,7 +6,7 @@ class FilmRight < ActiveRecord::Base
   validate :end_date_after_start_date
 
   def end_date_after_start_date
-    return unless errors.blank? && start_date && end_date
+    return unless start_date && end_date
     if start_date.presence >= end_date
       errors.add(:start_date, "can't be after end date")
     end
