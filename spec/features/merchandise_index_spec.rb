@@ -34,7 +34,7 @@ describe 'merchandise_index', type: :feature do
       size: 'Small',
       price: 24.95,
       inventory: 20,
-      film_id: { type: :select_modal, value: 'Wilby Wonderful' }
+      film_id: { type: :select_modal_old, value: 'Wilby Wonderful' }
     }, :orange_button)
     expect(find('.fm-admin-table')).to have_content 'Wilby Wonderful Shirt'
     verify_db({

@@ -38,7 +38,7 @@ describe 'merchandise_details', type: :feature do
       size: 'Large',
       price: '$20.00',
       inventory: 50,
-      film_id: { value: 'A Screaming Man', type: :select_modal }
+      film_id: { value: 'A Screaming Man', type: :select_modal_old }
     }
     fill_out_form(new_info)
     save_and_wait

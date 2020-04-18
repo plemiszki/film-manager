@@ -109,7 +109,6 @@ BookingsStore.activeBookers = function() {
     return(_users[id]);
   });
   users = users.filter(function(user) { return user.booker && user.inactive === false });
-  console.log(users);
   return HandyTools.alphabetizeArrayOfObjects(users, 'name');
 };
 

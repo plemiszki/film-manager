@@ -52,6 +52,9 @@ class Api::BookingsController < AdminController
     if params[:type]
       queries << "lower(booking_type) IN (#{params[:type].map { |type| "'#{type.downcase}'" }.join(', ')})"
     end
+    if params[:status]
+      queries << "lower(status) = '#{params[:status].downcase}'"
+    end
     if params[:box_office_received]
       queries << "box_office_received = #{params[:box_office_received]}"
     end

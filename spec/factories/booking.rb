@@ -9,6 +9,17 @@ FactoryBot.define do
     start_date { Date.today }
     end_date { Date.today + 1.day }
     booker_id { 1 }
+
+    factory :future_booking do
+      start_date { Date.today + 1.month }
+      end_date { Date.today + 1.month }
+    end
+
+    factory :past_booking do
+      start_date { Date.today - 1.month }
+      end_date { Date.today - 1.month }
+    end
+
   end
 
 end

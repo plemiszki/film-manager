@@ -32,6 +32,12 @@ def fill_out_form(data)
       field = find("[data-field=\"#{key}\"]")
       parent_div = field.find(:xpath, '..')
       next_div = parent_div.sibling('.col-xs-1')
+      next_div.click
+      select_from_modal(value[:value])
+    elsif value[:type] == :select_modal_old
+      field = find("[data-field=\"#{key}\"]")
+      parent_div = field.find(:xpath, '..')
+      next_div = parent_div.sibling('.col-xs-1')
       within(next_div) do
         img = find('img')
         img.click

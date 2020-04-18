@@ -275,21 +275,21 @@ class NewThing extends React.Component {
       return(
         <div>
           <div className="row">
-            <div className="col-xs-5">
-              <h2>Film</h2>
-              <input className={ Details.errorClass(this.state.errors, FM.errors.film) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly={ true } />
-              { Details.renderFieldError(this.state.errors, FM.errors.film) }
+            <div>
+              <div className="col-xs-5">
+                <h2>Film</h2>
+                <input className={ Details.errorClass(this.state.errors, FM.errors.film) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly={ true } />
+                { Details.renderFieldError(this.state.errors, FM.errors.film) }
+              </div>
+              <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectFilmButton.bind(this) } />
             </div>
-            <div className="col-xs-1 select-from-modal">
-              <img src={ Images.openModal } onClick={ this.clickSelectFilmButton.bind(this) } />
-            </div>
-            <div className="col-xs-5">
-              <h2>Venue</h2>
-              <input className={ Details.errorClass(this.state.errors, FM.errors.venue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly={ true } />
-              { Details.renderFieldError(this.state.errors, FM.errors.venue) }
-            </div>
-            <div className="col-xs-1 select-from-modal">
-              <img src={ Images.openModal } onClick={ this.clickSelectVenueButton.bind(this) } />
+            <div>
+              <div className="col-xs-5">
+                <h2>Venue</h2>
+                <input className={ Details.errorClass(this.state.errors, FM.errors.venue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly={ true } />
+                { Details.renderFieldError(this.state.errors, FM.errors.venue) }
+              </div>
+              <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectVenueButton.bind(this) } />
             </div>
           </div>
           <div className="row">

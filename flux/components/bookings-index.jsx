@@ -182,6 +182,7 @@ class BookingsIndex extends React.Component {
                   <th className="small-column"><div className={ FM.sortClass.call(this, "dateAdded") } onClick={ FM.clickHeader.bind(this, "dateAdded") }>Date Added</div></th>
                   <th className="med-column"><div className={ FM.sortClass.call(this, "terms") } onClick={ FM.clickHeader.bind(this, "terms") }>Terms</div></th>
                   <th className="med-column"><div className={ FM.sortClass.call(this, "bookingType") } onClick={ FM.clickHeader.bind(this, "bookingType") }>Type</div></th>
+                  <th className="med-column"><div className={ FM.sortClass.call(this, "status") } onClick={ FM.clickHeader.bind(this, "status") }>Status</div></th>
                   <th className="small-column"><div className={ FM.sortClass.call(this, "format") } onClick={ FM.clickHeader.bind(this, "format") }>Format</div></th>
                   <th className="small-column"><div className={ FM.sortClass.call(this, "materialsSent") } onClick={ FM.clickHeader.bind(this, "materialsSent") }>Materials Sent</div></th>
                   <th className="small-column"><div className={ FM.sortClass.call(this, "boxOfficeReceived") } onClick={ FM.clickHeader.bind(this, "boxOfficeReceived") }>BO Received</div></th>
@@ -222,6 +223,9 @@ class BookingsIndex extends React.Component {
                       </td>
                       <td>
                         { booking.bookingType }
+                      </td>
+                      <td>
+                        { booking.status }
                       </td>
                       <td>
                         { booking.format }

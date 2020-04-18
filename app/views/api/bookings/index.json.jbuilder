@@ -12,6 +12,7 @@ json.bookings @bookings do |booking|
   json.boxOfficeReceived booking.box_office_received || booking.weekly_box_offices.count > 0 ? 'Yes' : 'No'
   json.materialsSent booking.materials_sent ? 'Yes' : 'No'
   json.bookingType booking.booking_type
+  json.status booking.status
   json.valid @calculations[booking.id][:valid]
   json.totalGross dollarify(number_with_precision(@calculations[booking.id][:total_gross], precision: 2, delimiter: ','))
   json.ourShare dollarify(number_with_precision(@calculations[booking.id][:our_share], precision: 2, delimiter: ','))
