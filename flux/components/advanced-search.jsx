@@ -27,12 +27,14 @@ class AdvancedSearch extends React.Component {
       searchByMaterialsSent: false,
       searchByType: false,
       searchByDateAdded: false,
+      searchByStatus: false,
       filmId: 1,
       venueId: 1,
       city: "",
       state: "",
       boxOfficeReceived: 'Yes',
       materialsSent: 'Yes',
+      status: 'Confirmed',
       formats: [],
       types: [],
       startDateStart: HandyTools.stringifyDate(new Date),
@@ -135,6 +137,9 @@ class AdvancedSearch extends React.Component {
     if (this.state.searchByMaterialsSent) {
       params.push("materials_sent=" + (this.state.materialsSent == 'Yes' ? 'true' : 'false'));
     }
+    if (this.state.searchByStatus) {
+      params.push("status=" + this.state.status);
+    }
     if (this.state.searchByStartDate) {
       params.push("start_date_start=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.startDateStart)));
       params.push("start_date_end=" + HandyTools.stringifyDateWithHyphens(new Date(this.state.startDateEnd)));
@@ -175,6 +180,13 @@ class AdvancedSearch extends React.Component {
               <input id="state-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox.bind(this) } checked={ this.state.searchByState } data-thing={ "State" } /><label className={ "checkbox" } htmlFor="state-checkbox">Search by State</label><br />
               <div className={ this.state.searchByState ? '' : 'hidden' }>
                 <input onChange={ this.changeField.bind(this) } value={ this.state.state || "" } data-field="state" style={ { width: 100 } } />
+              </div>
+              <input id="status" className="checkbox" type="checkbox" onChange={ this.changeCheckbox.bind(this) } checked={ this.state.searchByStatus } data-thing={ "Status" } /><label className={ "checkbox" } htmlFor="status">Search by Status</label><br />
+              <div className={ this.state.searchByStatus ? 'clearfix' : 'hidden clearfix' }>
+                <select onChange={ this.changeField.bind(this) } data-field="status" value={ this.state.status } data-thing={ "status" }>
+                  <option value={ 'Confirmed' }>Confirmed</option>
+                  <option value={ 'Tentative' }>Tentative</option>
+                </select>
               </div>
               <input id="type-checkbox" className="checkbox" type="checkbox" onChange={ this.changeCheckbox.bind(this) } checked={ this.state.searchByType } data-thing={ "Type" } /><label className={ "checkbox" } htmlFor="type-checkbox">Search by Type</label><br />
               <div className={ this.state.searchByType ? '' : 'hidden' }>
@@ -228,13 +240,9 @@ class AdvancedSearch extends React.Component {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="text-center">
-              <a className={ "orange-button" } onClick={ this.clickSearch.bind(this) }>
-                Search
-              </a>
-            </div>
-          </div>
+          <a className="orange-button" onClick={ this.clickSearch.bind(this) }>
+            Search
+          </a>
         </div>
         <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />

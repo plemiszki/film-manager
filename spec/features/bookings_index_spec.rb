@@ -72,29 +72,33 @@ describe 'bookings_index', type: :feature do
     START_DATES = ['21/1/1', '21/1/2']
     ADDED_DATES = ['20/1/1', '20/1/2']
     FORMATS = ['HD File', 'Blu-ray'].each { |name| create(:format, name: name) }
+    STATUSES = ['Tentative', 'Confirmed']
     FILMS.each_with_index do |film, film_index|
       VENUES.each_with_index do |venue, venue_index|
         CITIES.each do |city_text|
           TYPES.each do |type|
             START_DATES.each do |start_date|
               ADDED_DATES.each do |added_date|
-                FORMATS.each_with_index do |format, format_index|
-                  city, state = city_text.split(',').map(&:strip)
-                  data = {
-                    film_id: film_index + 1,
-                    venue_id: venue_index + 1,
-                    shipping_city: city,
-                    shipping_state: state,
-                    start_date: Date.parse(start_date),
-                    end_date: Date.parse(start_date) + 1.day,
-                    date_added: Date.parse(added_date),
-                    format_id: format_index + 2,
-                    booking_type: type
-                  }
-                  create(:booking, data.merge({ box_office_received: true, materials_sent: Date.today }))
-                  create(:booking, data.merge({ box_office_received: true, materials_sent: nil }))
-                  create(:booking, data.merge({ box_office_received: false, materials_sent: Date.today }))
-                  create(:booking, data.merge({ box_office_received: false, materials_sent: nil }))
+                STATUSES.each do |status|
+                  FORMATS.each_with_index do |format, format_index|
+                    city, state = city_text.split(',').map(&:strip)
+                    data = {
+                      film_id: film_index + 1,
+                      venue_id: venue_index + 1,
+                      shipping_city: city,
+                      shipping_state: state,
+                      start_date: Date.parse(start_date),
+                      end_date: Date.parse(start_date) + 1.day,
+                      date_added: Date.parse(added_date),
+                      format_id: format_index + 2,
+                      booking_type: type,
+                      status: status
+                    }
+                    create(:booking, data.merge({ box_office_received: true, materials_sent: Date.today }))
+                    create(:booking, data.merge({ box_office_received: true, materials_sent: nil }))
+                    create(:booking, data.merge({ box_office_received: false, materials_sent: Date.today }))
+                    create(:booking, data.merge({ box_office_received: false, materials_sent: nil }))
+                  end
                 end
               end
             end

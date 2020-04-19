@@ -2,9 +2,15 @@
   margin-bottom: 0;
 
   .white-box {
-    height: 573px;
+    height: 698px;
     position: relative;
     overflow-x: hidden;
+  }
+
+  a.orange-button {
+    position: absolute;
+    left: calc(50% - 87px);
+    bottom: 36px;
   }
 
   label, .checkbox {
@@ -46,12 +52,6 @@
 
   img {
     cursor: pointer;
-  }
-
-  div.text-center {
-    position: absolute;
-    width: 100%;
-    bottom: 36px;
   }
 
   div.type-checkboxes {

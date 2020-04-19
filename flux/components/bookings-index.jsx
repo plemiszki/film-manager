@@ -33,7 +33,7 @@ const AdvancedSearchModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 575
+    height: 700
   }
 };
 
