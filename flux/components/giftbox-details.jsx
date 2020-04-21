@@ -178,7 +178,7 @@ class GiftboxDetails extends React.Component {
               </div>
               <div className={ "col-xs-3" + (this.state.giftbox.onDemand === "yes" ? " hidden" : "") } >
                 <h2>Quantity</h2>
-                <input value={ this.state.giftbox.quantity === undefined ? "" : this.state.giftbox.quantity } readOnly={ true } />
+                <input value={ this.state.giftbox.quantity === undefined ? "" : this.state.giftbox.quantity } readOnly={ true } data-field="quantity" />
                 { Details.renderFieldError([], []) }
               </div>
               <div className="col-xs-3">
