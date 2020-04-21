@@ -306,6 +306,7 @@ $(document).ready(function() {
       <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
+          customDeletePath='/settings'
           context={ MyContext }
           entityName='digitalRetailer'
           initialEntity={ { name: '' } }
