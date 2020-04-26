@@ -81,7 +81,7 @@ class Calendar extends React.Component {
                         <td className="monthCell">
                           { this.monthName(index) }
                         </td>
-                        <td>
+                        <td data-test="theatrical">
                           { this.state.months[index].theatricalReleases.map((theatricalRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" + (theatricalRelease.tentative ? ' tentative' : '') }>
@@ -92,7 +92,7 @@ class Calendar extends React.Component {
                             })
                           }
                         </td>
-                        <td>
+                        <td data-test="dvd">
                           { this.state.months[index].dvdReleases.map((dvdRelease, index) => {
                               return(
                                 <div key={ index } className="film">
@@ -103,7 +103,7 @@ class Calendar extends React.Component {
                             })
                           }
                         </td>
-                        <td>
+                        <td data-test="tvod">
                           { this.state.months[index].tvodReleases.map((tvodRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" + (tvodRelease.tentative ? ' tentative' : '') }>
@@ -114,7 +114,7 @@ class Calendar extends React.Component {
                             })
                           }
                         </td>
-                        <td>
+                        <td data-test="svod">
                           { this.state.months[index].svodReleases.map((svodRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" + (svodRelease.tentative ? ' tentative' : '') }>
@@ -125,7 +125,7 @@ class Calendar extends React.Component {
                             })
                           }
                         </td>
-                        <td>
+                        <td data-test="club">
                           { this.state.months[index].clubReleases.map((clubRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" }>

@@ -14,6 +14,7 @@ describe 'user_details', type: :feature do
 
   it 'displays information about the user' do
     visit user_path($admin_user, as: $admin_user)
+    expect(page).to have_no_css('.spinner')
     expect(page).to have_content 'User Details'
     expect(find('input[data-field="name"]').value).to eq 'Peter Lemiszki'
     expect(find('input[data-field="email"]').value).to eq 'peter+features@filmmovement.com'
