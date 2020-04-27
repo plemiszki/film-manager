@@ -477,20 +477,24 @@ class BookingDetails extends React.Component {
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
-              <div className="col-xs-5">
-                <h2>Film</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly="true" />
-                <a className="jump-link" href={ `/films/${this.state.booking.filmId}` }>Jump to Film Details</a>
-                { Details.renderFieldError(this.state.errors, []) }
+              <div>
+                <div className="col-xs-5">
+                  <h2>Film</h2>
+                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly={ true } />
+                  <a className="jump-link" href={ `/films/${this.state.booking.filmId}` }>Jump to Film Details</a>
+                  { Details.renderFieldError(this.state.errors, []) }
+                </div>
+                <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectFilmButton.bind(this) }></div>
               </div>
-              <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectFilmButton.bind(this) }></div>
-              <div className="col-xs-5">
-                <h2>Venue</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly="true" />
-                <a className="jump-link" href={ `/venues/${this.state.booking.venueId}` }>Jump to Venue Details</a>
-                { Details.renderFieldError(this.state.errors, []) }
+              <div>
+                <div className="col-xs-5">
+                  <h2>Venue</h2>
+                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly={ true } />
+                  <a className="jump-link" href={ `/venues/${this.state.booking.venueId}` }>Jump to Venue Details</a>
+                  { Details.renderFieldError(this.state.errors, []) }
+                </div>
+                <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectVenueButton.bind(this) }></div>
               </div>
-              <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectVenueButton.bind(this) }></div>
             </div>
             <div className="row">
               <div className="col-xs-2">

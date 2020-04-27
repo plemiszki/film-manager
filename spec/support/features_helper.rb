@@ -44,12 +44,19 @@ def fill_out_form(data)
       end
       select_from_modal(value[:value])
     elsif value[:type] == :select
-      value = value[:value]
       field = find("select[data-field=#{key}]", visible: false)
       nice_select_div = field.sibling('.nice-select')
       nice_select_div.click
       sleep 0.25
-      find("li[data-value='#{value}']").click
+      within(nice_select_div) do
+        if value[:value]
+          find("li[data-value='#{value[:value]}']").click
+        elsif value[:label]
+          find('li', text: value[:label]).click
+        else
+          raise 'missing value or label attribute!'
+        end
+      end
     else
       field = find("[data-field=\"#{key}\"]")
       field.set(value[:value])
