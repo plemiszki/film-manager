@@ -19,6 +19,7 @@ describe 'booking_details', type: :feature do
 
   it 'displays information about the booking' do
     visit booking_path(@booking, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="filmId"]').value).to eq('Wilby Wonderful')
     expect(find('input[data-field="venueId"]').value).to eq('Film at Lincoln Center')
     expect(find('input[data-field="startDate"]').value).to eq(Date.today.strftime('%-m/%-d/%y'))
@@ -138,71 +139,283 @@ describe 'booking_details', type: :feature do
   end
 
   it 'displays weekly terms' do
-
+    @booking.update(terms_change: true)
+    create(:weekly_term)
+    create(:weekly_term, terms: '30%')
+    visit booking_path(@booking, as: $admin_user)
+    within('.weekly-terms') do
+      expect(page).to have_content('40%')
+      expect(page).to have_content('30%')
+    end
   end
 
   it 'adds weekly terms' do
+    @booking.update(terms_change: true)
+    visit booking_path(@booking, as: $admin_user)
+    find('.blue-outline-button', text: /\AAdd Week\z/).click
+    fill_out_and_submit_modal({
+      terms: '20%'
+    }, :orange_button)
+    wait_for_ajax
+    within('.weekly-terms') do
+      expect(page).to have_content('20%')
+    end
+  end
 
+  it 'validates weekly terms' do
+    @booking.update(terms_change: true)
+    visit booking_path(@booking, as: $admin_user)
+    find('.blue-outline-button', text: /\AAdd Week\z/).click
+    fill_out_and_submit_modal({}, :orange_button)
+    wait_for_ajax
+    within('.admin-modal') do
+      expect(page).to have_content("Terms can't be blank")
+    end
   end
 
   it 'removes weekly terms' do
-
+    @booking.update(terms_change: true)
+    create(:weekly_term)
+    visit booking_path(@booking, as: $admin_user)
+    within('.weekly-terms') do
+      find('.x-button').click
+    end
+    wait_for_ajax
+    within('.weekly-terms') do
+      expect(page).to have_no_content('40%')
+    end
   end
 
   it 'displays weekly box office returns' do
-
+    @booking.update(terms_change: true)
+    2.times do |index|
+      create(:weekly_term)
+      create(:weekly_box_office, amount: 100 * (index + 1), order: index)
+    end
+    visit booking_path(@booking, as: $admin_user)
+    within('.weekly-box-offices') do
+      expect(page).to have_content('Week 1 - $100.00')
+      expect(page).to have_content('Week 2 - $200.00')
+    end
   end
 
   it 'adds weekly box office returns' do
+    @booking.update(terms_change: true)
+    visit booking_path(@booking, as: $admin_user)
+    find('.blue-outline-button', text: 'Add Weekly Box Office').click
+    fill_out_and_submit_modal({
+      amount: '500'
+    }, :orange_button)
+    wait_for_ajax
+    within('.weekly-box-offices') do
+      expect(page).to have_content('Week 1 - $500.00')
+    end
+  end
 
+  it 'validates weekly box office returns' do
+    @booking.update(terms_change: true)
+    visit booking_path(@booking, as: $admin_user)
+    find('.blue-outline-button', text: 'Add Weekly Box Office').click
+    fill_out_and_submit_modal({}, :orange_button)
+    wait_for_ajax
+    within('.admin-modal') do
+      expect(page).to have_content("Amount can't be blank")
+    end
+    fill_out_and_submit_modal({ amount: 'asdf' }, :orange_button)
+    wait_for_ajax
+    within('.admin-modal') do
+      expect(page).to have_content("Amount is not a number")
+    end
   end
 
   it 'removes weekly box office returns' do
-
+    @booking.update(terms_change: true)
+    create(:weekly_box_office)
+    visit booking_path(@booking, as: $admin_user)
+    within('.weekly-box-offices') do
+      find('.x-button').click
+    end
+    wait_for_ajax
+    within('.weekly-box-offices') do
+      expect(page).to have_no_content('Week 1 - $500.00')
+    end
   end
 
   it 'displays invoices' do
+    create(:booking_invoice)
     visit booking_path(@booking, as: $admin_user)
+    within('.invoices-table') do
+      expect(page).to have_content('1B')
+    end
   end
 
   it 'adds invoices' do
+    create(:setting)
     visit booking_path(@booking, as: $admin_user)
+    find('.blue-outline-button', text: 'Add Invoice').click
+    within('.new-invoice-modal') do
+      find('#advance-checkbox').click
+      find('.orange-button', text: 'Send Invoice').click
+    end
+    wait_for_ajax
+    expect(Invoice.count).to eq(1)
+    expect(Invoice.first.total).to eq(100)
+    expect(InvoiceRow.count).to eq(1)
+    expect(InvoiceRow.first.item_label).to eq('Advance')
+    expect(InvoiceRow.first.total_price).to eq(100)
+    within('.invoices-table') do
+      expect(page).to have_content('1B')
+    end
   end
 
   it 'edits invoices' do
+    create(:booking_invoice)
+    create(:invoice_row, item_label: 'Advance', unit_price: 100, total_price: 100)
     visit booking_path(@booking, as: $admin_user)
-  end
-
-  it 'removes invoices?' do
-    visit booking_path(@booking, as: $admin_user)
+    within('.invoices-table') do
+      find('img').click
+    end
+    within('.new-invoice-modal') do
+      find('#advance-checkbox').click
+      find('#overage-checkbox').click
+      find('.orange-button', text: 'Resend Invoice').click
+    end
+    wait_for_ajax
+    expect(InvoiceRow.first.item_label).to eq('Overage (Total Gross: $1,000.00)')
+    expect(InvoiceRow.first.total_price).to eq(350)
   end
 
   it 'displays payments' do
+    create(:booking_invoice)
+    create(:payment)
     visit booking_path(@booking, as: $admin_user)
+    within('.payments-list') do
+      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
+    end
   end
 
   it 'adds payments' do
     visit booking_path(@booking, as: $admin_user)
+    find('.blue-outline-button', text: 'Add Payment').click
+    info = {
+      date: Date.today.strftime('%-m/%-d/%y'),
+      amount: 20,
+      notes: 'note about payment'
+    }
+    fill_out_and_submit_modal(info, :orange_button)
+    wait_for_ajax
+    verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
+    within('.payments-list') do
+      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $20.00")
+    end
+  end
+
+  it 'validates payments' do
+    visit booking_path(@booking, as: $admin_user)
+    find('.blue-outline-button', text: 'Add Payment').click
+    fill_out_and_submit_modal({}, :orange_button)
+    wait_for_ajax
+    within('.admin-modal') do
+      expect(page).to have_content('Amount is not a number')
+    end
   end
 
   it 'removes payments' do
+    create(:booking_invoice)
+    create(:payment)
     visit booking_path(@booking, as: $admin_user)
+    within('.payments-list') do
+      find('.x-button').click
+    end
+    wait_for_ajax
+    expect(Payment.count).to eq(0)
+    within('.payments-list') do
+      expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
+    end
   end
 
   it 'sends booking confirmations' do
+    create(:setting)
     visit booking_path(@booking, as: $admin_user)
+    find('.confirmation-button').click
+    wait_for_ajax
+    expect(@booking.reload.booking_confirmation_sent).to eq(Date.today)
+    expect(find('input[data-field="bookingConfirmationSent"]').value).to eq(Date.today.strftime('%-m/%-d/%y'))
   end
 
-  it 'calculates bookings' do
+  it 'calculates total gross' do
     visit booking_path(@booking, as: $admin_user)
+    expect(find('input[data-field="totalGross"]').value).to eq('$1,000.00')
+  end
+
+  it 'calculates straight percentages' do
+    @booking.update(deduction: 0)
+    visit booking_path(@booking, as: $admin_user)
+    expect(find('input[data-field="ourShare"]').value).to eq('$515.00')
+  end
+
+  it 'calculates advance vs percentages' do
+    @booking.update(terms: '$300 vs 50%', deduction: 0)
+    visit booking_path(@booking, as: $admin_user)
+    expect(find('input[data-field="ourShare"]').value).to eq('$515.00')
+    @booking.update(box_office: 100)
+    visit booking_path(@booking, as: $admin_user)
+    expect(find('input[data-field="ourShare"]').value).to eq('$315.00')
   end
 
   it 'copies bookings' do
+    create(:film, title: 'Another Film')
     visit booking_path(@booking, as: $admin_user)
+    find('.copy-button').click
+    fill_out_and_submit_modal({
+      film_id: { value: 'Another Film', type: :select_modal }
+    }, :orange_button)
+    wait_for_ajax
+    expect(page).to have_current_path("/bookings/2", ignore_query: true)
+    expect(Booking.count).to eq(2)
+    verify_db({
+      entity: Booking.last,
+      data: {
+        film_id: 2,
+        venue_id: 1,
+        booking_type: 'Theatrical',
+        status: 'Confirmed',
+        date_added: Date.today,
+        start_date: Date.today,
+        end_date: Date.today + 1.day,
+        booker_id: 2,
+        email: 'someone@somevenue.com',
+        advance: 100,
+        shipping_fee: 15,
+        billing_name: 'Film Society of Lincoln Center',
+        billing_address1: '165 West 65th St',
+        billing_address2: '4th Fl',
+        billing_city: 'New York',
+        billing_state: 'NY',
+        billing_zip: '10024',
+        billing_country: 'USA',
+        shipping_name: 'New York Film Festival',
+        shipping_address1: 'The Film Society of Lincoln Center',
+        shipping_address2: '70 Lincoln Center Plaza',
+        shipping_city: 'New York',
+        shipping_state: 'NY',
+        shipping_zip: '10023',
+        shipping_country: 'USA',
+        notes: 'some notes',
+        terms: '50%'
+      }
+    })
   end
 
   it 'deletes bookings' do
     visit booking_path(@booking, as: $admin_user)
+    delete_button = find('.orange-button', text: 'Delete Booking')
+    delete_button.click
+    within('.confirm-delete') do
+      find('.red-button').click
+    end
+    expect(page).to have_current_path('/bookings', ignore_query: true)
+    expect(Booking.find_by_id(@booking.id)).to be(nil)
   end
 
 end

@@ -233,7 +233,7 @@ class Api::BookingsController < AdminController
                         subject: "Your Film Movement Booking Confirmation",
                         text: email_text
                       }
-    mg_client.send_message 'filmmovement.com', message_params
+    mg_client.send_message 'filmmovement.com', message_params if Rails.env.production?
     @bookings.first.update(booking_confirmation_sent: Date.today)
     @calculations = booking_calculations(@bookings.first)
     render "show.json.jbuilder"

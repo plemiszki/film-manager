@@ -746,7 +746,7 @@ class BookingDetails extends React.Component {
             <div className="row">
               <div className="col-xs-6">
                 <h3>Payments:</h3>
-                <ul>
+                <ul className="payments-list">
                   { this.state.payments.map((payment) => {
                     return(
                       <li key={ payment.id }>{ payment.date } - { payment.amount }{ payment.notes && " (" + payment.notes + ")" }<div className="x-button" onClick={ this.clickDeletePayment.bind(this) } data-id={ payment.id }></div></li>
@@ -811,16 +811,16 @@ class BookingDetails extends React.Component {
       return(
         <div>
           <h2>Total Gross</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.totalGross } readOnly={ true } />
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.totalGross } readOnly={ true } data-field="totalGross" />
           { Details.renderFieldError(this.state.errors, []) }
           <h2>Our Share</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.ourShare } readOnly={ true } />
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.ourShare } readOnly={ true } data-field="ourShare" />
           { Details.renderFieldError(this.state.errors, []) }
           <h2>Received</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.received } readOnly={ true } />
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.received } readOnly={ true } data-field="received" />
           { Details.renderFieldError(this.state.errors, []) }
           <h2>Owed</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.owed } readOnly={ true } />
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.owed } readOnly={ true } data-field="owed" />
           { Details.renderFieldError(this.state.errors, []) }
         </div>
       );
@@ -836,7 +836,7 @@ class BookingDetails extends React.Component {
       return(
         <div className="col-xs-6">
           <h2>Terms by Week</h2>
-          <ul>
+          <ul className="weekly-terms">
             { this.state.weeklyTerms.map((weeklyTerms) => {
               return(
                 <li key={ weeklyTerms.id }>Week { +weeklyTerms.order + 1 } - { weeklyTerms.terms }<div className="x-button" onClick={ this.clickDeleteWeek.bind(this) } data-id={ weeklyTerms.id }></div></li>
@@ -934,14 +934,14 @@ class BookingDetails extends React.Component {
       return(
         <div className="col-xs-6">
           <h2>Box Office by Week</h2>
-          <ul>
-            { this.state.weeklyBoxOffices.map(function(weeklyBoxOffice) {
+          <ul className="weekly-box-offices">
+            { this.state.weeklyBoxOffices.map((weeklyBoxOffice) => {
               return(
                 <li key={ weeklyBoxOffice.id }>Week { +weeklyBoxOffice.order + 1 } - { weeklyBoxOffice.amount }<div className="x-button" onClick={ this.clickDeleteWeeklyBoxOffice.bind(this) } data-id={ weeklyBoxOffice.id }></div></li>
               );
-            }.bind(this)) }
+            }) }
           </ul>
-          <a className={ 'blue-outline-button small' } onClick={ this.clickAddWeeklyBoxOffice.bind(this) }>Add Weekly Box Office</a>
+          <a className="blue-outline-button small" onClick={ this.clickAddWeeklyBoxOffice.bind(this) }>Add Weekly Box Office</a>
         </div>
       );
     } else {

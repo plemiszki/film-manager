@@ -128,6 +128,10 @@ def change_modal_select_field(id, selection_text)
   end
 end
 
+def wait_for_ajax
+  expect(page).to have_no_css('.spinner')
+end
+
 private
 
 def get_value(value)
