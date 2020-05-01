@@ -586,7 +586,8 @@ var ClientActions = {
           city: dvdCustomer.city,
           state: dvdCustomer.state,
           zip: dvdCustomer.zip,
-          country: dvdCustomer.country
+          country: dvdCustomer.country,
+          include_in_title_report: dvdCustomer.includeInTitleReport
         }
       },
       success: function(response) {

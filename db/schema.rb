@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200416132410) do
+ActiveRecord::Schema.define(version: 20200501153451) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -176,14 +176,14 @@ ActiveRecord::Schema.define(version: 20200416132410) do
   add_index "directors", ["film_id"], name: "index_directors_on_film_id", using: :btree
 
   create_table "dvd_customers", force: :cascade do |t|
-    t.string  "name",                                                null: false
-    t.decimal "discount",       precision: 5, scale: 2
-    t.boolean "consignment",                                         null: false
-    t.string  "notes",                                  default: ""
-    t.string  "sage_id",                                             null: false
-    t.string  "invoices_email",                                      null: false
-    t.string  "payment_terms",                                       null: false
-    t.decimal "per_unit",       precision: 5, scale: 2
+    t.string  "name",                                                            null: false
+    t.decimal "discount",                precision: 5, scale: 2
+    t.boolean "consignment",                                                     null: false
+    t.string  "notes",                                           default: ""
+    t.string  "sage_id",                                                         null: false
+    t.string  "invoices_email",                                                  null: false
+    t.string  "payment_terms",                                                   null: false
+    t.decimal "per_unit",                precision: 5, scale: 2
     t.string  "billing_name"
     t.string  "address1"
     t.string  "address2"
@@ -191,6 +191,7 @@ ActiveRecord::Schema.define(version: 20200416132410) do
     t.string  "state"
     t.string  "zip"
     t.string  "country"
+    t.boolean "include_in_title_report",                         default: false
   end
 
   create_table "dvd_shorts", force: :cascade do |t|

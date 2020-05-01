@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'support/features_helper'
 
-describe 'user_details', type: :feature do
+describe 'sub_right_details', type: :feature do
 
   before :each do
     create(:label)
@@ -22,11 +22,12 @@ describe 'user_details', type: :feature do
 
   it 'displays information about the sublicensed right' do
     visit sub_right_path(@sub_right, as: $admin_user)
+    wait_for_ajax
     expect(find('select[data-field="filmId"]', visible: false).value).to eq '1'
     expect(find('select[data-field="rightId"]', visible: false).value).to eq '1'
     expect(find('select[data-field="territoryId"]', visible: false).value).to eq '1'
-    expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%d/%y')
-    expect(find('input[data-field="endDate"]').value).to eq (Date.today + 1.year).strftime('%-m/%d/%y')
+    expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%-d/%y')
+    expect(find('input[data-field="endDate"]').value).to eq (Date.today + 1.year).strftime('%-m/%-d/%y')
     expect(find('select[data-field="exclusive"]', visible: false).value).to eq 'No'
   end
 

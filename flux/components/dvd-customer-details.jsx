@@ -58,7 +58,7 @@ class DvdCustomerDetails extends React.Component {
       this.setState({
         fetching: true,
         justSaved: true
-      }, function() {
+      }, () => {
         ClientActions.updateDvdCustomer(this.state.dvdCustomer);
       });
     }
@@ -92,7 +92,8 @@ class DvdCustomerDetails extends React.Component {
       thing: "dvdCustomer",
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
-      beforeSave: this.beforeSave.bind(this)
+      beforeSave: this.beforeSave.bind(this),
+      allErrors: FM.errors
     }
   }
 
@@ -126,9 +127,7 @@ class DvdCustomerDetails extends React.Component {
                 <input className={ Details.errorClass(this.state.errors, FM.errors.discount) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.discount || "" } data-field="discount" />
                 { Details.renderFieldError(this.state.errors, FM.errors.discount) }
               </div>
-              <div className="col-xs-2 consignment-column">
-                <input id="consignment" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.dvdCustomer.consignment || false } data-field="consignment" /><label className="checkbox">Consignment</label>
-              </div>
+              { Details.renderCheckbox.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'consignment' }) }
             </div>
             <div className={ "row" + (this.state.dvdCustomer.consignment ? " hidden" : "") }>
               <div className="col-xs-6">
@@ -189,6 +188,9 @@ class DvdCustomerDetails extends React.Component {
               </div>
             </div>
             <hr />
+            <div className="row checkboxes-only">
+              { Details.renderCheckbox.bind(this)({ columnWidth: 12, entity: 'dvdCustomer', property: 'includeInTitleReport', columnHeader: 'Include as Column in New DVD Titles Sales Report' }) }
+            </div>
             <div className="row">
               <div className="col-xs-12">
                 <h2>Notes</h2>
@@ -226,7 +228,6 @@ class DvdCustomerDetails extends React.Component {
 
   componentDidUpdate() {
     FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    $('.match-height-layout').matchHeight();
   }
 }
 

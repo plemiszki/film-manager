@@ -22,8 +22,8 @@ describe 'film_right_details', type: :feature do
     visit film_right_path(@film_right, as: $admin_user)
     expect(find('select[data-field="rightId"]', visible: false).value).to eq '1'
     expect(find('select[data-field="territoryId"]', visible: false).value).to eq '1'
-    expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%d/%y')
-    expect(find('input[data-field="endDate"]').value).to eq (Date.today + 1.year).strftime('%-m/%d/%y')
+    expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%-d/%y')
+    expect(find('input[data-field="endDate"]').value).to eq (Date.today + 1.year).strftime('%-m/%-d/%y')
     expect(find('select[data-field="exclusive"]', visible: false).value).to eq 'Yes'
   end
 
