@@ -331,11 +331,11 @@ class ReportsIndex extends React.Component {
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
-            <select onChange={ (e) => { this.setState({ daysDue: e.target.value }); } } value={ this.state.daysDue }>
-              <option value={ "all" }>All</option>
-              <option value={ "30" }>30 days</option>
-              <option value={ "45" }>45 days</option>
-              <option value={ "60" }>60 days</option>
+            <select id="days-filter" onChange={ (e) => { this.setState({ daysDue: e.target.value }); } } value={ this.state.daysDue }>
+              <option value="all">All</option>
+              <option value="30">30 days</option>
+              <option value="45">45 days</option>
+              <option value="60">60 days</option>
             </select>
             <table className="fm-admin-table">
               <thead>

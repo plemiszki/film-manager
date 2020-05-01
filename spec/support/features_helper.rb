@@ -132,6 +132,21 @@ def wait_for_ajax
   expect(page).to have_no_css('.spinner')
 end
 
+def get_proper_quarter(date)
+  month = date.month
+  year = date.year
+  month -= 2
+  if month < 1
+    year -= 1
+    month += 12
+  end
+  return [quarter(month), year]
+end
+
+def quarter(month)
+  (month + 2) / 3
+end
+
 private
 
 def get_value(value)
