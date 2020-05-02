@@ -107,13 +107,14 @@ class Api::PurchaseOrdersController < AdminController
     @dvd_units = Hash.new { |hash, key| hash[key] = {} }
     @dvd_sales = Hash.new { |hash, key| hash[key] = {} }
     @dvds.each do |dvd|
-      { amazon: 8, aec: 1, baker: 3, ingram: 4, midwest: 2 }.each do |key, value|
-        units = PurchaseOrderItem.where(item_id: dvd.id, item_type: "dvd").includes(:purchase_order).select { |item| item.purchase_order.customer_id == value && item.purchase_order.ship_date }.reduce(0) { |total, item| total += item.qty }
-        returned_units = ReturnItem.where(item_id: dvd.id, item_type: "dvd").includes(:return).select { |item| item.return.customer_id == value }.reduce(0) { |total, item| total += item.qty }
+      @title_report_dvd_customers = DvdCustomer.where(include_in_title_report: true).order(:name)
+      @title_report_dvd_customers.each do |dvd_customer|
+        units = PurchaseOrderItem.where(item_id: dvd.id, item_type: "dvd").includes(:purchase_order).select { |item| item.purchase_order.customer_id == dvd_customer.id && item.purchase_order.ship_date }.reduce(0) { |total, item| total += item.qty }
+        returned_units = ReturnItem.where(item_id: dvd.id, item_type: "dvd").includes(:return).select { |item| item.return.customer_id == dvd_customer.id }.reduce(0) { |total, item| total += item.qty }
         units -= returned_units
-        @dvd_units[dvd.id][key] = units
-        sales = units * Invoice.get_item_price(dvd.id, 'dvd', DvdCustomer.find(value), dvd).to_f
-        @dvd_sales[dvd.id][key] = sales
+        @dvd_units[dvd.id][dvd_customer.id] = units
+        sales = units * Invoice.get_item_price(dvd.id, 'dvd', dvd_customer, dvd).to_f
+        @dvd_sales[dvd.id][dvd_customer.id] = sales
       end
       all_rows = PurchaseOrderItem.where(item_id: dvd.id, item_type: "dvd").includes(purchase_order: :customer).select { |item| po = item.purchase_order; po.ship_date && po.customer_id != 0 }
       all_return_rows = ReturnItem.where(item_id: dvd.id, item_type: "dvd").includes(return: :customer)

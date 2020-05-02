@@ -34,6 +34,7 @@ class DvdReports extends React.Component {
     this.state = {
       fetching: true,
       dvdCustomers: [],
+      titleReportCustomers: [],
       year: (new Date).getFullYear(),
       exportModalOpen: false,
       export: {
@@ -60,7 +61,8 @@ class DvdReports extends React.Component {
 
   getCustomers() {
     this.setState({
-      dvdSaved: DvdCustomersStore.all(),
+      dvdCustomers: DvdCustomersStore.all(),
+      titleReportCustomers: DvdCustomersStore.titlesReport(),
       fetching: false
     });
   }
@@ -167,7 +169,7 @@ class DvdReports extends React.Component {
                   </thead>
                   <tbody>
                     <tr><td></td></tr>
-                    { DvdCustomersStore.all().map((dvdCustomer, index) => {
+                    { this.state.dvdCustomers.map((dvdCustomer, index) => {
                       return(
                         <tr key={index}>
                           <td className="name-column">
@@ -269,16 +271,7 @@ class DvdReports extends React.Component {
                       <th className="date">Date</th>
                       <th className="units">TOTAL</th>
                       <th></th>
-                      <th className="units">Amazon</th>
-                      <th></th>
-                      <th className="units">AEC</th>
-                      <th></th>
-                      <th className="units">B & T</th>
-                      <th></th>
-                      <th className="units">Ingram</th>
-                      <th></th>
-                      <th className="units">Midwest</th>
-                      <th></th>
+                      { this.renderDvdCustomerHeaders() }
                     </tr>
                   </thead>
                   <tbody>
@@ -289,16 +282,7 @@ class DvdReports extends React.Component {
                           <td>{ dvd.retailDate }</td>
                           <td className="bold">{ dvd.totalUnits }</td>
                           <td className="bold">{ dvd.totalSales }</td>
-                          <td>{ dvd.amazonUnits }</td>
-                          <td>{ dvd.amazonSales }</td>
-                          <td>{ dvd.aecUnits }</td>
-                          <td>{ dvd.aecSales }</td>
-                          <td>{ dvd.bakerUnits }</td>
-                          <td>{ dvd.bakerSales }</td>
-                          <td>{ dvd.ingramUnits }</td>
-                          <td>{ dvd.ingramSales }</td>
-                          <td>{ dvd.midwestUnits }</td>
-                          <td>{ dvd.midwestSales }</td>
+                          { this.renderDvdCustomerData(dvd) }
                         </tr>
                       );
                     }) }
@@ -331,6 +315,24 @@ class DvdReports extends React.Component {
         { FM.jobErrorsModal.call(this) }
       </div>
     );
+  }
+
+  renderDvdCustomerHeaders() {
+    return this.state.titleReportCustomers.map((customer, index) => {
+      return([
+        <th key={ index } className="units">{ customer.name }</th>,
+        <th key={ `${index}-B`}></th>
+      ]);
+    })
+  }
+
+  renderDvdCustomerData(dvd) {
+    return this.state.titleReportCustomers.map((customer, index) => {
+      return([
+        <td key={ index } className="units">{ dvd.sales[index].units }</td>,
+        <td key={ `${index}-B`}>{ dvd.sales[index].amount }</td>
+      ]);
+    })
   }
 
   componentDidUpdate() {

@@ -41,6 +41,17 @@ DvdCustomersStore.all = function() {
   return HandyTools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
 };
 
+DvdCustomersStore.titlesReport = () => {
+  var dvdCustomers = Object.keys(_dvdCustomers).reduce((accum, id) => {
+    let dvdCustomer = _dvdCustomers[id];
+    if (dvdCustomer.includeInTitleReport) {
+      accum.push(dvdCustomer);
+    }
+    return accum;
+  }, []);
+  return HandyTools.alphabetizeArrayOfObjects(dvdCustomers, 'name');
+};
+
 DvdCustomersStore.monthTotals = function() {
   return _monthTotals;
 }
