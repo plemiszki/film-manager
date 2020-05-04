@@ -18,12 +18,41 @@ class Invoice < ActiveRecord::Base
     end
   end
 
+  def self.create_invoice_from_po(purchase_order, args = {})
+    dvd_customer = purchase_order.customer
+    data = {
+      from: purchase_order,
+      invoice_type: 'dvd',
+      customer_id: purchase_order.customer_id,
+      number: "#{Setting.first.next_dvd_invoice_number}D",
+      sent_date: Date.today,
+      po_number: purchase_order.number,
+      billing_name: dvd_customer.billing_name,
+      billing_address1: dvd_customer.address1,
+      billing_address2: dvd_customer.address2,
+      billing_city: dvd_customer.city,
+      billing_state: dvd_customer.state,
+      billing_zip: dvd_customer.zip,
+      billing_country: dvd_customer.country,
+      shipping_name: purchase_order.name,
+      shipping_address1: purchase_order.address1,
+      shipping_address2: purchase_order.address2,
+      shipping_city: purchase_order.city,
+      shipping_state: purchase_order.state,
+      shipping_zip: purchase_order.zip,
+      shipping_country: purchase_order.country,
+      payment_terms: dvd_customer.payment_terms,
+      notes: purchase_order.notes
+    }.merge(args)
+    Invoice.create_invoice(data)
+  end
+
   def self.create_invoice(args)
     if args[:from].class.to_s == "PurchaseOrder"
       purchase_order = args[:from]
       dvd_customer = DvdCustomer.find(purchase_order.customer_id)
       args.delete(:from)
-      invoice = Invoice.create(args)
+      invoice = Invoice.create!(args)
       rows = purchase_order.purchase_order_items
     end
     total = 0

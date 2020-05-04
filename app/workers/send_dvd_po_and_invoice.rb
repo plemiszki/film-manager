@@ -12,30 +12,7 @@ class SendDvdPoAndInvoice
 
     # send invoice
     if purchase_order.send_invoice
-      invoice = Invoice.create_invoice({
-        from: purchase_order,
-        invoice_type: 'dvd',
-        customer_id: dvd_customer.id,
-        number: "#{Setting.first.next_dvd_invoice_number}D",
-        sent_date: Date.today,
-        po_number: purchase_order.number,
-        billing_name: dvd_customer.billing_name,
-        billing_address1: dvd_customer.address1,
-        billing_address2: dvd_customer.address2,
-        billing_city: dvd_customer.city,
-        billing_state: dvd_customer.state,
-        billing_zip: dvd_customer.zip,
-        billing_country: dvd_customer.country,
-        shipping_name: purchase_order.name,
-        shipping_address1: purchase_order.address1,
-        shipping_address2: purchase_order.address2,
-        shipping_city: purchase_order.city,
-        shipping_state: purchase_order.state,
-        shipping_zip: purchase_order.zip,
-        shipping_country: purchase_order.country,
-        payment_terms: dvd_customer.payment_terms,
-        notes: purchase_order.notes
-      })
+      invoice = Invoice.create_invoice_from_po(purchase_order)
       invoice.export!(pathname)
       attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]
       message_params = {

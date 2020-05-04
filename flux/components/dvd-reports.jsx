@@ -74,7 +74,7 @@ class DvdReports extends React.Component {
         jobModalOpen: false,
         errorsModalOpen: job.errors_text !== "",
         job: job
-      }, function() {
+      }, () => {
         if (job.errors_text === "") {
           window.location.href = job.first_line;
         }
@@ -156,7 +156,7 @@ class DvdReports extends React.Component {
               <a className={"orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
             </div>
           </div>
-          <div className="white-box">
+          <div className="white-box months-report">
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
@@ -208,27 +208,28 @@ class DvdReports extends React.Component {
                     { DvdCustomersStore.all().map((dvdCustomer, index) => {
                       return(
                         <tr key={index}>
-                          <td className="bold">{ dvdCustomer.sales.total }</td>
-                          <td>{ dvdCustomer.sales[1] }</td>
-                          <td>{ dvdCustomer.sales[2] }</td>
-                          <td>{ dvdCustomer.sales[3] }</td>
-                          <td>{ dvdCustomer.sales[4] }</td>
-                          <td>{ dvdCustomer.sales[5] }</td>
-                          <td>{ dvdCustomer.sales[6] }</td>
-                          <td>{ dvdCustomer.sales[7] }</td>
-                          <td>{ dvdCustomer.sales[8] }</td>
-                          <td>{ dvdCustomer.sales[9] }</td>
-                          <td>{ dvdCustomer.sales[10] }</td>
-                          <td>{ dvdCustomer.sales[11] }</td>
-                          <td>{ dvdCustomer.sales[12] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-total` }className="bold">{ dvdCustomer.sales.total }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-jan` }>{ dvdCustomer.sales[1] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-feb` }>{ dvdCustomer.sales[2] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-mar` }>{ dvdCustomer.sales[3] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-apr` }>{ dvdCustomer.sales[4] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-may` }>{ dvdCustomer.sales[5] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-jun` }>{ dvdCustomer.sales[6] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-jul` }>{ dvdCustomer.sales[7] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-aug` }>{ dvdCustomer.sales[8] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-sep` }>{ dvdCustomer.sales[9] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-oct` }>{ dvdCustomer.sales[10] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-nov` }>{ dvdCustomer.sales[11] }</td>
+                          <td data-test={ `${dvdCustomer.nickname}-dec` }>{ dvdCustomer.sales[12] }</td>
                         </tr>
                       );
                     }) }
                     <tr className="bold">
-                      <td>{ DvdCustomersStore.yearTotal() }</td>
+                      <td data-test="year-total">{ DvdCustomersStore.yearTotal() }</td>
                       { DvdCustomersStore.monthTotals().map((month, index) => {
+                        const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
                         return(
-                          <td key={index}>{ month }</td>
+                          <td key={ index } data-test={ `total-${months[index]}` }>{ month }</td>
                         );
                       }) }
                     </tr>
@@ -239,7 +240,7 @@ class DvdReports extends React.Component {
           </div>
         </div>
         <div className="component">
-          <div className="white-box">
+          <div className="white-box titles-report">
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
@@ -280,8 +281,8 @@ class DvdReports extends React.Component {
                       return(
                         <tr key={ index }>
                           <td>{ dvd.retailDate }</td>
-                          <td className="bold">{ dvd.totalUnits }</td>
-                          <td className="bold">{ dvd.totalSales }</td>
+                          <td className="bold" data-test={ `${dvd.id}-total-units` }>{ dvd.totalUnits }</td>
+                          <td className="bold" data-test={ `${dvd.id}-total-sales` }>{ dvd.totalSales }</td>
                           { this.renderDvdCustomerData(dvd) }
                         </tr>
                       );
@@ -320,7 +321,7 @@ class DvdReports extends React.Component {
   renderDvdCustomerHeaders() {
     return this.state.titleReportCustomers.map((customer, index) => {
       return([
-        <th key={ index } className="units">{ customer.name }</th>,
+        <th key={ index } className="units">{ customer.nickname || customer.name }</th>,
         <th key={ `${index}-B`}></th>
       ]);
     })
@@ -329,8 +330,8 @@ class DvdReports extends React.Component {
   renderDvdCustomerData(dvd) {
     return this.state.titleReportCustomers.map((customer, index) => {
       return([
-        <td key={ index } className="units">{ dvd.sales[index].units }</td>,
-        <td key={ `${index}-B`}>{ dvd.sales[index].amount }</td>
+        <td key={ index } className="units" data-test={ `${dvd.id}-${customer.nickname}-units` }>{ dvd.sales[index].units }</td>,
+        <td key={ `${index}-B`} data-test={ `${dvd.id}-${customer.nickname}-sales` }>{ dvd.sales[index].amount }</td>
       ]);
     })
   }

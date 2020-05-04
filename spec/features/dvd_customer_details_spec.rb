@@ -18,7 +18,8 @@ describe 'dvd_customer_details', type: :feature do
       zip: '01778',
       country: 'Country',
       consignment: false,
-      notes: 'notes'
+      notes: 'notes',
+      nickname: 'nickname'
     )
   end
 
@@ -42,6 +43,7 @@ describe 'dvd_customer_details', type: :feature do
     expect(find('input[data-field="state"]').value).to eq 'MA'
     expect(find('input[data-field="zip"]').value).to eq '01778'
     expect(find('input[data-field="country"]').value).to eq 'Country'
+    expect(find('input[data-field="nickname"]').value).to eq 'nickname'
     expect(find('textarea[data-field="notes"]').value).to eq 'notes'
     expect(find('input[data-field="consignment"]').checked?).to eq false
     expect(find('input[data-field="includeInTitleReport"]').checked?).to eq false
@@ -64,7 +66,8 @@ describe 'dvd_customer_details', type: :feature do
       country: 'New Country',
       consignment: false,
       notes: 'new notes',
-      include_in_title_report: true
+      include_in_title_report: true,
+      nickname: 'new nickname'
     }
     fill_out_form(info)
     save_and_wait
@@ -89,7 +92,8 @@ describe 'dvd_customer_details', type: :feature do
       country: 'New Country',
       consignment: true,
       notes: 'new notes',
-      include_in_title_report: true
+      include_in_title_report: true,
+      nickname: 'new nickname'
     }
     fill_out_form(info)
     save_and_wait

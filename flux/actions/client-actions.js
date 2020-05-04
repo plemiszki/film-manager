@@ -587,7 +587,8 @@ var ClientActions = {
           state: dvdCustomer.state,
           zip: dvdCustomer.zip,
           country: dvdCustomer.country,
-          include_in_title_report: dvdCustomer.includeInTitleReport
+          include_in_title_report: dvdCustomer.includeInTitleReport,
+          nickname: dvdCustomer.nickname
         }
       },
       success: function(response) {

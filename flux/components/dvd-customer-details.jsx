@@ -189,14 +189,15 @@ class DvdCustomerDetails extends React.Component {
             </div>
             <hr />
             <div className="row checkboxes-only">
-              { Details.renderCheckbox.bind(this)({ columnWidth: 12, entity: 'dvdCustomer', property: 'includeInTitleReport', columnHeader: 'Include as Column in New DVD Titles Sales Report' }) }
+              { Details.renderCheckbox.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'includeInTitleReport', columnHeader: 'Include as Column in New DVD Titles Sales Report' }) }
             </div>
             <div className="row">
-              <div className="col-xs-12">
+              <div className="col-xs-9">
                 <h2>Notes</h2>
                 <textarea rows="5" className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.notes || "" } data-field="notes" />
                 { Details.renderFieldError(this.state.errors, []) }
               </div>
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'nickname' }) }
             </div>
             { this.renderButtons() }
           </div>

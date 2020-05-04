@@ -15,4 +15,5 @@ json.dvdCustomer do
   json.zip @dvd_customer.zip || ""
   json.country @dvd_customer.country || ""
   json.includeInTitleReport @dvd_customer.include_in_title_report
+  json.nickname @dvd_customer.nickname
 end

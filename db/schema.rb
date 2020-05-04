@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200501153451) do
+ActiveRecord::Schema.define(version: 20200504001951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -192,6 +192,7 @@ ActiveRecord::Schema.define(version: 20200501153451) do
     t.string  "zip"
     t.string  "country"
     t.boolean "include_in_title_report",                         default: false
+    t.string  "nickname",                                        default: ""
   end
 
   create_table "dvd_shorts", force: :cascade do |t|
