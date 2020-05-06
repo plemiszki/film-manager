@@ -147,6 +147,15 @@ def quarter(month)
   (month + 2) / 3
 end
 
+def dollarify(input)
+  input << '0' if input.split('.')[1].length < 2
+  if (input[0] == '-')
+    '-$' + input[1..-1]
+  else
+    '$' + input
+  end
+end
+
 private
 
 def get_value(value)

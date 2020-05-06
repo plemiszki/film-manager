@@ -24,25 +24,29 @@ RSpec.configure do |config|
     ].each_with_index do |name, index|
       create(:right, name: name, order: index)
     end
-    [
-      'Theatrical',
-      'Non-Theatrical',
-      'Video',
-      'Commercial Video',
-      'VOD',
-      'SVOD',
-      'TVOD',
-      'AVOD',
-      'FVOD',
-      'Other Internet',
-      'Hotels, Ships, Airlines',
-      'Television',
-      'FM Subscription',
-      'Jewish Festivals'
-    ].each_with_index do |name, index|
-      create(:revenue_stream, name: name, order: index)
-    end
+    create_revenue_streams
     sign_in_as(User.first)
   end
 
+end
+
+def create_revenue_streams
+  [
+    'Theatrical',
+    'Non-Theatrical',
+    'Video',
+    'Commercial Video',
+    'VOD',
+    'SVOD',
+    'TVOD',
+    'AVOD',
+    'FVOD',
+    'Other Internet',
+    'Hotels, Ships, Airlines',
+    'Television',
+    'FM Subscription',
+    'Jewish Festivals'
+  ].each_with_index do |name, index|
+    create(:revenue_stream, name: name, order: index)
+  end
 end
