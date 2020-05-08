@@ -417,6 +417,21 @@ var ClientActions = {
     });
   },
 
+  reportsSummary: function(quarter, year, daysDue) {
+    $.ajax({
+      url: '/api/royalty_reports/summary',
+      method: 'GET',
+      data: {
+        quarter: quarter,
+        year: year,
+        days_due: daysDue
+      },
+      success: function(response) {
+        ServerActions.receiveJob(response);
+      }
+    });
+  },
+
   fetchGiftboxes: function() {
     $.ajax({
       url: '/api/giftboxes',

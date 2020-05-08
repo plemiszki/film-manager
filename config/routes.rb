@@ -71,6 +71,7 @@ Rails.application.routes.draw do
     resources :giftbox_dvds, only: [:create, :destroy]
     get '/royalty_reports/zip' => '/api/royalty_reports#zip'
     get '/royalty_reports/status' => '/api/royalty_reports#status'
+    get '/royalty_reports/summary' => '/api/royalty_reports#summary'
     resources :royalty_reports, only: [:index, :show, :create, :update, :destroy]
     get '/royalty_reports/:id/export' => '/api/royalty_reports#export'
     post '/royalty_reports/export_all' => '/api/royalty_reports#export_all'

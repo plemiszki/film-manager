@@ -94,6 +94,18 @@ class Api::RoyaltyReportsController < AdminController
     render json: job
   end
 
+  def summary
+    time_started = Time.now.to_s
+    if params[:days_due] == 'all'
+      total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter])
+    else
+      total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter], films: { days_statement_due: params[:days_due] })
+    end
+    job = Job.create!(job_id: time_started, name: 'summary', first_line: 'Creating Summary', second_line: true, current_value: 0, total_value: total_reports.length)
+    CreateReportsSummary.perform_async(params[:quarter], params[:year], params[:days_due], time_started)
+    render json: job
+  end
+
   def export
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")

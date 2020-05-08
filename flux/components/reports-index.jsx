@@ -91,7 +91,7 @@ class ReportsIndex extends React.Component {
     this.reportsListener = ReportsStore.addListener(this.getReports.bind(this));
     this.fileListener = FileStore.addListener(this.fileDone);
     this.jobListener = JobStore.addListener(this.getJob.bind(this));
-    FM.resetNiceSelect('select', (e) => { this.setState({daysDue: e.target.value}); });
+    FM.resetNiceSelect('select', (e) => { this.setState({ daysDue: e.target.value }); });
     $('#upload-form-sage #user_file').on('change', this.pickFile.bind(this));
     ClientActions.fetchReports(this.state.quarter, this.state.year);
     if (FM.params.job_id) {
@@ -116,11 +116,11 @@ class ReportsIndex extends React.Component {
   getJob() {
     var job = JobStore.job();
     if (job.done || job.first_line.slice(0, 5) === "Done!") {
-      if (job.name === "export all") {
+      if (job.name === "export all" || job.name === 'summary') {
         this.setState({
           jobModalOpen: false,
           job: job
-        }, function() {
+        }, () => {
           window.location.href = job.first_line;
         });
       } else {
@@ -204,40 +204,40 @@ class ReportsIndex extends React.Component {
   }
 
   clickExport(e) {
-    if (!e.target.classList.contains('inactive')) {
-      this.setState({
-        fetching: true
-      });
-      ClientActions.exportAll(this.state.daysDue, this.state.quarter, this.state.year);
-    }
+    this.setState({
+      fetching: true
+    });
+    ClientActions.exportAll(this.state.daysDue, this.state.quarter, this.state.year);
   }
 
   clickSend(e) {
-    if (!e.target.classList.contains('inactive')) {
-      this.setState({
-        sendModalOpen: true
-      });
-    }
+    this.setState({
+      sendModalOpen: true
+    });
   }
 
   clickErrorCheck(e) {
-    if (!e.target.classList.contains('inactive')) {
-      this.setState({
-        fetching: true,
-        jobFirstLine: "Checking For Errors"
-      });
-      ClientActions.errorCheck(this.state.quarter, this.state.year);
-    }
+    this.setState({
+      fetching: true,
+      jobFirstLine: "Checking For Errors"
+    });
+    ClientActions.errorCheck(this.state.quarter, this.state.year);
   }
 
   clickTotals(e) {
-    if (!e.target.classList.contains('inactive')) {
-      this.setState({
-        fetching: true,
-        jobFirstLine: 'Calculating Totals'
-      });
-      ClientActions.statementTotals(this.state.quarter, this.state.year, this.state.daysDue);
-    }
+    this.setState({
+      fetching: true,
+      jobFirstLine: 'Calculating Totals'
+    });
+    ClientActions.statementTotals(this.state.quarter, this.state.year, this.state.daysDue);
+  }
+
+  clickSummary(e) {
+    this.setState({
+      fetching: true,
+      jobFirstLine: 'Creating Summary'
+    });
+    ClientActions.reportsSummary(this.state.quarter, this.state.year, this.state.daysDue);
   }
 
   clickConfirmSend(e) {
@@ -319,13 +319,14 @@ class ReportsIndex extends React.Component {
         <div id="reports-index" className="component">
           <div className="clearfix">
             <h1>Statements - Q{ this.state.quarter }, { this.state.year }</h1>
-            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickSend.bind(this) }>Send All</a>
-            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickExport.bind(this) }>Export All</a>
-            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickTotals.bind(this) }>Totals</a>
-            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickErrorCheck.bind(this) }>Error Check</a>
-            <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickImport.bind(this) }>Import</a>
-            <a className={ "orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
-            <a className={ "orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
+            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickSend.bind(this) }>Send All</a>
+            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickExport.bind(this) }>Export All</a>
+            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickSummary.bind(this) }>Summary</a>
+            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickTotals.bind(this) }>Totals</a>
+            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickErrorCheck.bind(this) }>Error Check</a>
+            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickImport.bind(this) }>Import</a>
+            <a className={ "btn orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
+            <a className={ "btn orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           </div>
           <div className="white-box">
             { Common.renderSpinner(this.state.fetching) }
