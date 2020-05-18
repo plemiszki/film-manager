@@ -117,9 +117,9 @@ class Api::RoyaltyReportsController < AdminController
       streams = report.royalty_revenue_streams
       films = [film]
     end
-    report.export(pathname, streams, films)
-    File.open("#{pathname}/#{report_name(film, report)}", 'r') do |f|
-      send_data f.read, filename: report_name(film, report)
+    report_name = report.export(pathname, streams, films)
+    File.open("#{pathname}/#{report_name}", 'r') do |f|
+      send_data f.read, filename: report_name
     end
   end
 
@@ -147,10 +147,6 @@ class Api::RoyaltyReportsController < AdminController
 
   def redirect_unless_super_admin
     redirect_to "/" unless current_user.access == "super_admin"
-  end
-
-  def report_name(film, report)
-    "#{film.crossed_film_titles.sort.join(' -- ')} - Q#{report.quarter} #{report.year}.pdf"
   end
 
   def recalculate_any_future_reports
