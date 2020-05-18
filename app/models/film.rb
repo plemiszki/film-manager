@@ -111,4 +111,10 @@ class Film < ActiveRecord::Base
     result
   end
 
+  def fix_duplicate_quote_order_values!
+    quotes.order(:order).each_with_index do |quote, index|
+      quote.update!(order: index)
+    end
+  end
+
 end
