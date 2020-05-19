@@ -534,8 +534,8 @@ class RoyaltyReport < ActiveRecord::Base
     string += "</div>"
     if @film.reserve
       string += "<div class=\"page-break\"></div>"
-      string += "<h1 style='text-align: center; margin-bottom: 10px;'>Reserves Against Returns</h1>"
-      string += "<h3 style='text-align: center; margin-bottom: 20px;'>#{@film.title}</h3>"
+      string += "<h1 style='text-align: center; margin-bottom: #{films.length > 1 ? '20' : '10'}px;'>Reserves Against Returns</h1>"
+      string += "<h3 style='text-align: center; margin-bottom: 20px;'>#{@film.title}</h3>" unless films.length > 1
       string += "<table style='padding: 5px; border: 1px solid black;'>"
       string += "<tr><th>Quarter Withheld</th><th>Reserve Amount</th><th>Amount Liquidated</th><th>Total Remaining</th><th>Quarter Liquidated</th></tr>"
       total_reserves = 0
