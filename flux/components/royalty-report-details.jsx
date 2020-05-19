@@ -110,6 +110,10 @@ class ReportDetails extends React.Component {
     window.location.pathname = 'api/royalty_reports/' + window.location.pathname.split('/')[2] + '/export';
   }
 
+  clickExportUncrossed() {
+    window.location.pathname = 'api/royalty_reports/' + window.location.pathname.split('/')[2] + '/export';
+  }
+
   checkForChanges() {
     if (Tools.objectsAreEqual(this.state.report, this.state.reportSaved) == false) {
       return true;
@@ -129,12 +133,7 @@ class ReportDetails extends React.Component {
   render() {
     return(
       <div className="component">
-        { this.state.films.map((film, index) => {
-          return(
-            <h1 key={ index }><span onClick={ this.clickTitle.bind(this, film.id) }>{ film.title }</span></h1>
-          );
-        }) }
-        <h3>{this.state.report.year} - Q{this.state.report.quarter}</h3>
+        { this.renderHeader() }
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -377,6 +376,35 @@ class ReportDetails extends React.Component {
         </div>
       </div>
     );
+  }
+
+  renderHeader() {
+    if (this.state.films.length === 0) {
+      return null;
+    } else if (this.state.films.length === 1) {
+      let film = this.state.films[0];
+      return([
+        <h1 key="1"><span onClick={ this.clickTitle.bind(this, film.id) }>{ film.title }</span></h1>,
+        <h3 key="2">{ this.state.report.year } - Q{ this.state.report.quarter }</h3>
+      ]);
+    } else {
+      return([
+        <h1 key="1">Crossed Films Statement</h1>,
+        <h3 key="2">{ this.state.report.year } - Q{ this.state.report.quarter }</h3>,
+        <div key="3" className="crossed-statement-header">
+          <div>
+            { this.state.films.map((film, index) => {
+              return(
+                <a key={ index } href={ `/films/${film.id}` }>{ film.title }</a>
+              );
+            }) }
+          </div>
+          <div id="export-uncrossed" className={ "btn orange-button " + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExportUncrossed.bind(this) }>
+            Export Uncrossed Statements
+          </div>
+        </div>
+      ]);
+    }
   }
 
   renderRowHeaders() {

@@ -28,7 +28,7 @@ class ExportAndSendReports
           else
             royalty_revenue_streams = report.royalty_revenue_streams
           end
-          report_name = report.export(licensor_folder, royalty_revenue_streams, (films || nil))
+          report_name = report.export(directory: licensor_folder, royalty_revenue_streams: royalty_revenue_streams, films: (films || nil))
           if match_data = report_name.match(/ package (?<timestamp>\d+) /)
             crossed_films_hash[match_data[:timestamp]] = films.pluck(:id)
           end

@@ -339,7 +339,7 @@ class RoyaltyReport < ActiveRecord::Base
     [result, streams, films]
   end
 
-  def export(directory, royalty_revenue_streams, films = nil)
+  def export(directory:, royalty_revenue_streams:, films: nil)
     @film = self.film || films.first
     if films
       titles = films.map { |film| film.title }.sort

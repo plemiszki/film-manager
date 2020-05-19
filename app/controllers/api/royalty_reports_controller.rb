@@ -15,6 +15,7 @@ class Api::RoyaltyReportsController < AdminController
     @film = @report.film
     if @film.has_crossed_films?
       @report, @streams, @films = RoyaltyReport.calculate_crossed_films_report(@film, @report.year, @report.quarter)
+      @films = @films.sort_by { |film| film.title }
     else
       @streams = @report.royalty_revenue_streams
       @films = [@film]
@@ -117,7 +118,7 @@ class Api::RoyaltyReportsController < AdminController
       streams = report.royalty_revenue_streams
       films = [film]
     end
-    report_name = report.export(pathname, streams, films)
+    report_name = report.export(directory: pathname, royalty_revenue_streams: streams, films: films)
     File.open("#{pathname}/#{report_name}", 'r') do |f|
       send_data f.read, filename: report_name
     end
