@@ -423,7 +423,6 @@ class ReportsIndex extends React.Component {
 
   componentDidUpdate() {
     FM.resetNiceSelect('select', (e) => { this.setState({ daysDue: e.target.value }); });
-    $('.match-height-layout').matchHeight();
     if (this.state.jobModalOpen) {
       window.setTimeout(() => {
         $.ajax({

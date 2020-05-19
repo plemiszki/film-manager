@@ -594,8 +594,8 @@ var FM = {
       <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ FM.jobModalStyles }>
         <div className="jobs-modal">
           { Common.renderSpinner(true) }
-          <div className="first-line">{ this.state.job.first_line }</div>
-          <div className={ "second-line" + (this.state.job.second_line ? "" : " hidden") }>({ this.state.job.current_value } of { this.state.job.total_value })</div>
+          <div className="first-line">{ job.first_line || job.firstLine }</div>
+          <div className={ "second-line" + ((job.second_line || job.secondLine) ? "" : " hidden") }>({ job.current_value || job.currentValue } of { job.total_value || job.totalValue })</div>
         </div>
       </Modal>
     );

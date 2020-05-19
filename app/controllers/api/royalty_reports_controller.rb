@@ -116,12 +116,19 @@ class Api::RoyaltyReportsController < AdminController
       report, streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
     else
       streams = report.royalty_revenue_streams
-      films = [film]
     end
-    report_name = report.export(directory: pathname, royalty_revenue_streams: streams, films: films)
+    report_name = report.export(directory: pathname, royalty_revenue_streams: streams, multiple_films: (films || nil))
     File.open("#{pathname}/#{report_name}", 'r') do |f|
       send_data f.read, filename: report_name
     end
+  end
+
+  def export_uncrossed
+    time_started = Time.now.to_s
+    reports = RoyaltyReport.where(quarter: params[:quarter], year: params[:year], film_id: params[:film_ids])
+    @job = Job.create!(job_id: time_started, name: "export uncrossed", first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: reports.length)
+    ExportUncrossedReports.perform_async(reports.map(&:id), time_started)
+    render '/api/jobs/show.json.jbuilder'
   end
 
   def codes

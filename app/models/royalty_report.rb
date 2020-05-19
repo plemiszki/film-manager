@@ -92,10 +92,10 @@ class RoyaltyReport < ActiveRecord::Base
     end
   end
 
-  def get_total_past_reserves(films = nil)
+  def get_total_past_reserves(multiple_films = nil)
     if self.id.zero?
       result = Hash.new(0)
-      films.each do |film|
+      multiple_films.each do |film|
         report = film.royalty_reports.order(:id).last
         next unless report
         report.past_reports.each do |report|
@@ -339,13 +339,12 @@ class RoyaltyReport < ActiveRecord::Base
     [result, streams, films]
   end
 
-  def export(directory:, royalty_revenue_streams:, films: nil)
-    @film = self.film || films.first
-    if films
-      titles = films.map { |film| film.title }.sort
+  def export(directory:, royalty_revenue_streams:, multiple_films: nil)
+    @film = self.film || multiple_films.first
+    if multiple_films
+      titles = multiple_films.map(&:title).sort
     else
-      crossed_film_ids = @film.crossed_films.pluck(:crossed_film_id)
-      titles = Film.where(id: [@film.id] + crossed_film_ids).pluck(:title)
+      titles = [@film.title]
     end
     string = "<style>"
     string += "body {"
@@ -534,14 +533,14 @@ class RoyaltyReport < ActiveRecord::Base
     string += "</div>"
     if @film.reserve
       string += "<div class=\"page-break\"></div>"
-      string += "<h1 style='text-align: center; margin-bottom: #{films.length > 1 ? '20' : '10'}px;'>Reserves Against Returns</h1>"
-      string += "<h3 style='text-align: center; margin-bottom: 20px;'>#{@film.title}</h3>" unless films.length > 1
+      string += "<h1 style='text-align: center; margin-bottom: #{titles.length > 1 ? '20' : '10'}px;'>Reserves Against Returns</h1>"
+      string += "<h3 style='text-align: center; margin-bottom: 20px;'>#{@film.title}</h3>" unless titles.length > 1
       string += "<table style='padding: 5px; border: 1px solid black;'>"
       string += "<tr><th>Quarter Withheld</th><th>Reserve Amount</th><th>Amount Liquidated</th><th>Total Remaining</th><th>Quarter Liquidated</th></tr>"
       total_reserves = 0
       total_liquidated = 0
       total_remaining = 0
-      total_past_reserves = self.get_total_past_reserves(films)
+      total_past_reserves = self.get_total_past_reserves(multiple_films)
       quarters_with_reserves = total_past_reserves.length
       total_past_reserves.each_with_index do |(quarter, amount), index|
         if amount > 0

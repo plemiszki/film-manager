@@ -5,7 +5,7 @@ class ExportAndSendReports
   def perform(days_due, quarter, year, time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     job = Job.find_by_job_id(time_started)
-    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: {export_reports: true, send_reports: true}, date_sent: nil)
+    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: { export_reports: true, send_reports: true }, date_sent: nil)
     crossed_films_done = []
     crossed_films_hash = {}
     reports.each do |report|
@@ -28,7 +28,7 @@ class ExportAndSendReports
           else
             royalty_revenue_streams = report.royalty_revenue_streams
           end
-          report_name = report.export(directory: licensor_folder, royalty_revenue_streams: royalty_revenue_streams, films: (films || nil))
+          report_name = report.export(directory: licensor_folder, royalty_revenue_streams: royalty_revenue_streams, multiple_films: (films || nil))
           if match_data = report_name.match(/ package (?<timestamp>\d+) /)
             crossed_films_hash[match_data[:timestamp]] = films.pluck(:id)
           end

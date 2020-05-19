@@ -116,3 +116,23 @@ export function deleteEntity(args) {
     );
   }
 }
+
+export function exportUncrossedReports(args) {
+  let { film_ids } = args;
+  return (dispatch) => {
+    return $.ajax({
+      method: 'GET',
+      url: '/api/royalty_reports/export_uncrossed',
+      data: {
+        quarter: args.quarter,
+        year: args.year,
+        film_ids: args.filmIds
+      }
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'EXPORT_UNCROSSED_REPORTS' });
+        dispatch(obj);
+      }
+    );
+  }
+}

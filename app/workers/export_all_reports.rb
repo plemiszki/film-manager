@@ -36,7 +36,7 @@ class ExportAllReports
           royalty_revenue_streams = report.royalty_revenue_streams
         end
         save_path = report.joined_amount_due > 0 ? "#{job_folder}/amount due" : "#{job_folder}/no amount due"
-        report.export(directory: save_path, royalty_revenue_streams: royalty_revenue_streams, films: (films || nil))
+        report.export(directory: save_path, royalty_revenue_streams: royalty_revenue_streams, multiple_films: (films || nil))
         job.update({ current_value: job.current_value + 1 })
       end
     end
@@ -54,7 +54,7 @@ class ExportAllReports
       end
     end
 
-    job.update({first_line: "Creating Archive", second_line: false})
+    job.update({first_line: "Uploading to AWS", second_line: false})
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'

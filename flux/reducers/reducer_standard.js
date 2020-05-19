@@ -1,18 +1,11 @@
 export default function(state = {}, action) {
   switch (action.type) {
   case 'FETCH_ENTITIES':
-    delete action["type"]
-    return Object.assign({}, state, action);
   case 'NEW_ENTITY_DATA':
-    delete action["type"]
-    return Object.assign({}, state, action);
   case 'CREATE_ENTITY':
-    delete action["type"]
-    return Object.assign({}, state, action);
   case 'FETCH_ENTITY':
-    delete action["type"]
-    return Object.assign({}, state, action);
   case 'UPDATE_ENTITY':
+  case 'EXPORT_UNCROSSED_REPORTS':
     delete action["type"]
     return Object.assign({}, state, action);
   case 'ERRORS':

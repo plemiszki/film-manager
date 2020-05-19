@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
-import { fetchEntity, updateEntity } from '../actions/index'
+import { fetchEntity, updateEntity, exportUncrossedReports } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class ReportDetails extends React.Component {
@@ -23,7 +23,9 @@ class ReportDetails extends React.Component {
       films: [],
       changesToSave: false,
       justSaved: false,
-      showJoined: true
+      showJoined: true,
+      jobModalOpen: false,
+      job: {}
     };
   }
 
@@ -111,7 +113,45 @@ class ReportDetails extends React.Component {
   }
 
   clickExportUncrossed() {
-    window.location.pathname = 'api/royalty_reports/' + window.location.pathname.split('/')[2] + '/export';
+    this.setState({
+      fetching: true
+    }, () => {
+      this.props.exportUncrossedReports({
+        filmIds: this.state.films.map(film => film.id),
+        quarter: this.state.report.quarter,
+        year: this.state.report.year
+      }).then(() => {
+        this.setState({
+          fetching: false,
+          job: this.props.job,
+          jobModalOpen: true
+        });
+        this.waitAndCheckJob();
+      });
+    });
+  }
+
+  waitAndCheckJob() {
+    window.setTimeout(() => {
+      this.props.fetchEntity({
+        directory: 'jobs',
+        id: this.state.job.id
+      }).then(() => {
+        const job = this.props.job;
+        this.setState({
+          job
+        })
+        if (job.done) {
+          this.setState({
+            jobModalOpen: false
+          }, () => {
+            window.location.href = job.firstLine;
+          });
+        } else {
+          this.waitAndCheckJob();
+        }
+      })
+    }, 1500)
   }
 
   checkForChanges() {
@@ -374,6 +414,7 @@ class ReportDetails extends React.Component {
           </div>
           { this.renderButtons() }
         </div>
+        { FM.jobModal.call(this, this.state.job) }
       </div>
     );
   }
@@ -391,7 +432,9 @@ class ReportDetails extends React.Component {
       return([
         <h1 key="1">Crossed Films Statement</h1>,
         <h3 key="2">{ this.state.report.year } - Q{ this.state.report.quarter }</h3>,
-        <div key="3" className="crossed-statement-header">
+        <div key="3" className="white-box crossed-statement-header">
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div>
             { this.state.films.map((film, index) => {
               return(
@@ -480,7 +523,6 @@ class ReportDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    $('.match-height-layout').matchHeight();
     $('.match-height-row').matchHeight();
   }
 }
@@ -490,7 +532,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, updateEntity }, dispatch);
+  return bindActionCreators({ fetchEntity, updateEntity, exportUncrossedReports }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReportDetails);
