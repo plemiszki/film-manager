@@ -1047,7 +1047,11 @@ GEM
       method_source (~> 1.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
+<<<<<<< HEAD
     public_suffix (4.0.5)
+=======
+    public_suffix (4.0.3)
+>>>>>>> 5d5a33674f37b58bd2fdb99c22e650a9366a6fc7
     puma (4.3.5)
       nio4r (~> 2.0)
     rack (1.6.13)
