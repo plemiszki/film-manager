@@ -14,6 +14,7 @@ describe 'giftbox_details', type: :feature do
 
   it 'displays information about the giftbox' do
     visit giftbox_path(@giftbox, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="name"]').value).to eq('Beyond Borders')
     expect(find('input[data-field="upc"]').value).to eq('857692005017')
     expect(find('input[data-field="msrp"]').value).to eq('$39.95')

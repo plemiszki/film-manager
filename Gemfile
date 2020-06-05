@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.6.6'
 
-gem 'rails', '4.2.11.3'
+gem 'rails', '5.2.4.3'
 gem 'pg', '~> 0.15'
 gem 'sass-rails'
 gem 'uglifier'
@@ -27,6 +27,10 @@ gem 'validates_timeliness', '~> 4.0'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'xlsx_writer'
+
+group :test do
+  gem 'rails-controller-testing'
+end
 
 group :development, :test do
   gem 'better_errors'

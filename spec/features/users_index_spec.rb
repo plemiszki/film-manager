@@ -10,6 +10,7 @@ describe 'users_index', type: :feature do
 
   it 'displays all users' do
     visit users_path(as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'Users'
     expect(page).to have_content 'Peter Lemiszki'
     expect(page).to have_content 'Software Engineer'
@@ -27,7 +28,7 @@ describe 'users_index', type: :feature do
     expect(User.last.attributes).to include(
       'name' => 'Bob',
       'email' => 'bob@domain.com',
-      'access' => 50
+      'access' => 'user'
     )
   end
 
