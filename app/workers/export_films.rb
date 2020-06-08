@@ -44,6 +44,7 @@ class ExportFilms
     ]
 
     if search_criteria
+      search_criteria = JSON.parse(search_criteria)
       search_criteria["selected_territories"].each do |territory_id|
         territory_name = Territory.find(territory_id).name
         search_criteria["selected_rights"].each do |right_id|

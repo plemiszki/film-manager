@@ -595,7 +595,7 @@ var FM = {
         <div className="jobs-modal">
           { Common.renderSpinner(true) }
           <div className="first-line">{ job.first_line || job.firstLine }</div>
-          <div className={ "second-line" + ((job.second_line || job.secondLine) ? "" : " hidden") }>({ job.current_value || job.currentValue } of { job.total_value || job.totalValue })</div>
+          <div className={ "second-line" + ((job.second_line || job.secondLine) ? "" : " hidden") }>({ job.current_value || job.currentValue || 0 } of { job.total_value || job.totalValue })</div>
         </div>
       </Modal>
     );

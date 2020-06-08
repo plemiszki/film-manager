@@ -197,7 +197,7 @@ class Api::FilmsController < AdminController
     end
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export films", first_line: "Exporting Metadata", second_line: true, current_value: 0, total_value: film_ids.length)
-    ExportFilms.perform_async(film_ids, time_started, search_criteria)
+    ExportFilms.perform_async(film_ids, time_started, search_criteria.to_json)
     render json: job
   end
 
