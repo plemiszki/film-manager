@@ -26,6 +26,23 @@ class PurchaseOrder < ActiveRecord::Base
     end
   end
 
+  def resend_shipping_files(sender_email)
+    pathname = Rails.root.join('tmp', Time.now.to_s)
+    FileUtils.mkdir_p("#{pathname}")
+    mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
+    self.create_shipping_files(pathname, self.source_doc)
+    attachments = [File.open("#{pathname}/#{source_doc}_worderline.txt", "r"), File.open("#{pathname}/#{source_doc}_worder.txt", "r")]
+    message_params = {
+      from: sender_email,
+      to: 'fulfillment@theadsgroup.com',
+      cc: sender_email,
+      subject: "Film Movement Sales Order #{self.source_doc}",
+      text: "Please see attached shipping files.",
+      attachment: attachments
+    }
+    mg_client.send_message 'filmmovement.com', message_params unless Rails.env.test?
+  end
+
   def create_shipping_files(pathname, source_doc)
     save_path = "#{pathname}/#{source_doc}_worderline.txt"
     File.open(save_path, 'wb') do |f|
