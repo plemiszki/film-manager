@@ -15,7 +15,8 @@ class CreateReportsSummary
       'Title',
       'Licensor',
       'Owed',
-      'Reserves'
+      'Reserves Liquated This Quarter',
+      'Remaining Reserves'
     ]
     sheet.add_row(column_names)
 
@@ -27,11 +28,14 @@ class CreateReportsSummary
     reports = reports.to_a.sort_by { |report| report.film.title }
     reports.each do |report|
       film = report.film
+      reserves_breakdown = report.get_reserves_breakdown
+      quarter_string = "Q#{report.quarter} #{report.year}"
       sheet.add_row([
         film.title,
         film.licensor.try(:name) || '(None)',
         report.joined_amount_due,
-        report.joined_reserve
+        reserves_breakdown[quarter_string]['liquidated_this_quarter'],
+        reserves_breakdown[quarter_string]['total_reserves']
       ])
       job.update({ current_value: job.current_value + 1 })
     end

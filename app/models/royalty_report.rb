@@ -99,16 +99,52 @@ class RoyaltyReport < ActiveRecord::Base
         report = film.royalty_reports.order(:id).last
         next unless report
         report.past_reports.each do |report|
-          result["Q#{report.quarter} #{report.year}"] += report.current_reserve.to_f
+          result["Q#{report.quarter} #{report.year}"] += report.current_reserve
         end
       end
     else
       result = {}
       self.past_reports.each do |report|
-        result["Q#{report.quarter} #{report.year}"] = report.current_reserve.to_f
+        result["Q#{report.quarter} #{report.year}"] = report.current_reserve
       end
     end
     result
+  end
+
+  def get_reserves_breakdown
+    result = {}
+    film = self.film
+    total_past_reserves = self.get_total_past_reserves
+    quarters_with_reserves = total_past_reserves.length
+    total_reserves = 0
+    total_past_reserves.each_with_index do |(quarter_string, amount), index|
+      year = quarter_string.split(' ')[-1].to_i
+      quarter = quarter_string.split(' ')[0][-1].to_i
+      result[quarter_string] = {}
+      result[quarter_string]['new_reserves_this_quarter'] = amount
+      due_for_liquidation = RoyaltyReport.quarter_math(year: year, quarter: quarter, diff: film.reserve_quarters * -1)
+      if result["Q#{due_for_liquidation[:quarter]} #{due_for_liquidation[:year]}"]
+        liquidated_this_quarter = result["Q#{due_for_liquidation[:quarter]} #{due_for_liquidation[:year]}"]['new_reserves_this_quarter']
+      else
+        liquidated_this_quarter = 0
+      end
+      result[quarter_string]['liquidated_this_quarter'] = liquidated_this_quarter
+      total_reserves += amount
+      total_reserves -= liquidated_this_quarter
+      result[quarter_string]['total_reserves'] = total_reserves
+    end
+    this_quarter_string = "Q#{self.quarter} #{self.year}"
+    result[this_quarter_string] = {}
+    result[this_quarter_string]['new_reserves_this_quarter'] = self.current_reserve
+    due_for_liquidation = RoyaltyReport.quarter_math(year: year, quarter: quarter, diff: film.reserve_quarters * -1)
+    if result["Q#{due_for_liquidation[:quarter]} #{due_for_liquidation[:year]}"]
+      liquidated_this_quarter = result["Q#{due_for_liquidation[:quarter]} #{due_for_liquidation[:year]}"]['new_reserves_this_quarter']
+    else
+      liquidated_this_quarter = 0
+    end
+    result[this_quarter_string]['liquidated_this_quarter'] = liquidated_this_quarter
+    result[this_quarter_string]['total_reserves'] = total_reserves + self.current_reserve - liquidated_this_quarter
+    return result
   end
 
   def transfer_and_calculate_from_previous_report!
@@ -601,6 +637,25 @@ class RoyaltyReport < ActiveRecord::Base
       year -= 1
     end
     RoyaltyReport.find_by({ year: year, quarter: quarter, film_id: self.film_id })
+  end
+
+  def self.quarter_math(quarter:, year:, diff:)
+    diff_years, diff_quarters = diff.divmod(4)
+    result_year = year + diff_years
+    result_quarter = quarter + diff_quarters
+    if result_quarter > 4
+      years, quarters = result_quarter.divmod(4)
+      result_year += years
+      result_quarter = quarters
+    elsif result_quarter < 1
+      years, quarters = result_quarter.divmod(4)
+      result_year += years
+      result_quarter += 4
+    end
+    {
+      year: result_year,
+      quarter: result_quarter
+    }
   end
 
   def past_reports
