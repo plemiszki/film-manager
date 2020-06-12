@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import ReactModal from 'react-modal'
 import { StandardIndex, SimpleDetails } from 'handy-components'
+import HandyTools from 'handy-tools';
 import FM from '../app/assets/javascripts/me/common.jsx'
 
 import configureStore from './store/store';
@@ -675,6 +676,28 @@ $(document).ready(function() {
         <JobsIndex context={ MyContext } />
       </Provider>,
       document.querySelector('#jobs-index')
+    );
+  }
+  if (document.querySelector('#virtual-bookings-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <StandardIndex
+          context={ MyContext }
+          entityName='virtualBooking'
+          entityNamePlural='virtualBookings'
+          columns={ ['startDate', 'endDate', 'film', 'venue', 'shippingCity', 'shippingState', 'dateAdded'] }
+          columnHeaders={ ['Start Date', 'End Date', 'Film', 'Venue', 'City', 'State', 'Added'] }
+          modalRows={ 2 }
+          modalDimensions={ { width: 1000 } }
+        >
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['films', 'venues'] }
+            initialEntity={ { filmId: '', venueId: '', dateAdded: HandyTools.todayDMY(), startDate: '', endDate: '', shippingCity: '', shippingState: '', terms: '', url: 'https://' } }
+          />
+        </StandardIndex>
+      </Provider>,
+      document.querySelector('#virtual-bookings-index')
     );
   }
 });

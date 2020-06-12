@@ -22,7 +22,8 @@ class NewEntity extends React.Component {
       fetching: !!this.props.fetchData,
       [this.props.entityName]: HandyTools.deepCopy(this.props.initialEntity),
       errors: [],
-      films: []
+      films: [],
+      venues: []
     };
   }
 
@@ -228,6 +229,19 @@ class NewEntity extends React.Component {
         return([
           <div key="1" className="row">
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'alternateLength', property: 'length' }) }
+          </div>
+        ]);
+      case 'virtualBooking':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'filmId', columnHeader: 'Film', customType: 'modal', modalDisplayProperty: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'venueId', columnHeader: 'Venue', customType: 'modal', modalDisplayProperty: 'label' }) }
+          </div>,
+          <div key="2" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'startDate' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'endDate' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'terms' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'url' }) }
           </div>
         ]);
     }

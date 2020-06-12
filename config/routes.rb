@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :venues, only: [:index, :show]
   get '/bookings/advanced' => 'bookings#advanced'
   resources :bookings, only: [:index, :show]
+  resources :virtual_bookings, only: [:index, :show]
   resources :bookers, only: [:index, :show]
   resources :dvds, only: [:show]
   resources :shorts, only: [:index]
@@ -65,6 +66,7 @@ Rails.application.routes.draw do
     resources :bookings, only: [:index, :show, :create, :update, :destroy]
     post '/bookings/copy' => 'bookings#copy'
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
+    resources :virtual_bookings, only: [:index, :new, :create, :show, :update, :destroy]
     resources :bookers, only: [:index, :show, :create, :update, :destroy]
     resources :booker_venues, only: [:create, :destroy]
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]
