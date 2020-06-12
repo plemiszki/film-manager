@@ -397,7 +397,11 @@ var FM = {
       "Sublicensor has already been taken"
     ],
     filmId: [
-      "Sublicensor has already been taken"
+      "Sublicensor has already been taken",
+      "Film can't be blank"
+    ],
+    venueId: [
+      "Venue can't be blank"
     ],
     seasonNumber: [
       'Season number is not a number'

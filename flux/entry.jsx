@@ -643,8 +643,15 @@ $(document).ready(function() {
         <StandardIndex
           context={ MyContext }
           entityName='venue'
-          columns={ ['label', 'venueType', 'city', 'state'] }
-          columnHeaders={ ['Label', 'Type', 'City', 'State'] }
+          columns={ [
+            'label',
+            {
+              name: 'venueType',
+              header: 'Type'
+            },
+            'city',
+            'state'
+          ] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
         >
@@ -685,8 +692,44 @@ $(document).ready(function() {
           context={ MyContext }
           entityName='virtualBooking'
           entityNamePlural='virtualBookings'
-          columns={ ['startDate', 'endDate', 'film', 'venue', 'shippingCity', 'shippingState', 'dateAdded'] }
-          columnHeaders={ ['Start Date', 'End Date', 'Film', 'Venue', 'City', 'State', 'Added'] }
+          columns={ [
+            {
+              name: 'startDate',
+              sortColumn: 'startDateTimestamp',
+              sortDir: 'desc',
+              width: 125
+            },
+            {
+              name: 'endDate',
+              sortColumn: 'endDateTimestamp',
+              sortDir: 'desc',
+              width: 125
+            },
+            {
+              name: 'film',
+              width: 350
+            },
+            {
+              name: 'venue',
+              width: 350
+            },
+            {
+              name: 'shippingCity',
+              header: 'City',
+              width: 125
+            },
+            {
+              name: 'shippingState',
+              header: 'State',
+              width: 125
+            },
+            {
+              name: 'dateAdded',
+              sortColumn: 'dateAddedTimestamp',
+              sortDir: 'desc',
+              width: 125
+            }
+          ] }
           modalRows={ 2 }
           modalDimensions={ { width: 1000 } }
         >
