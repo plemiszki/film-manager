@@ -25,44 +25,30 @@ class Api::VirtualBookingsController < AdminController
     end
   end
 
-  # def show
-  #   @bookings = Booking.where(id: params[:id]).includes(:invoices)
-  #   @invoices = @bookings.first.invoices.includes(:invoice_rows)
-  #   @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
-  #   @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])
-  #   @payments = Payment.where(booking_id: params[:id])
-  #   @films = Film.all
-  #   @venues = Venue.all
-  #   @users = User.all
-  #   @formats = Format.all
-  #   @calculations = booking_calculations(@bookings.first)
-  #   render "show.json.jbuilder"
-  # end
+  def show
+    @virtual_booking = VirtualBooking.find(params[:id])
+    @films = Film.all
+    @venues = Venue.all
+    render "show.json.jbuilder"
+  end
 
-  # def update
-  #   @booking = Booking.find(params[:id])
-  #   if @booking.update(booking_params)
-  #     @bookings = Booking.where(id: params[:id]).includes(:invoices)
-  #     @invoices = @bookings.first.invoices
-  #     @films = Film.all
-  #     @venues = Venue.all
-  #     @users = User.all
-  #     @formats = Format.all
-  #     @calculations = booking_calculations(@bookings.first)
-  #     render "show.json.jbuilder"
-  #   else
-  #     render json: @booking.errors.full_messages, status: 422
-  #   end
-  # end
-  #
-  # def destroy
-  #   @bookings = Booking.find(params[:id])
-  #   if @bookings.destroy
-  #     render json: @bookings, status: 200
-  #   else
-  #     render json: @bookings.errors.full_messages, status: 422
-  #   end
-  # end
+  def update
+    @virtual_booking = VirtualBooking.find(params[:id])
+    if @virtual_booking.update(virtual_booking_params)
+      render "show.json.jbuilder"
+    else
+      render json: @virtual_booking.errors.full_messages, status: 422
+    end
+  end
+
+  def destroy
+    @virtual_booking = VirtualBooking.find(params[:id])
+    if @virtual_booking.destroy
+      render json: @virtual_booking, status: 200
+    else
+      render json: @virtual_booking.errors.full_messages, status: 422
+    end
+  end
 
   private
 

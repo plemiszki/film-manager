@@ -743,4 +743,28 @@ $(document).ready(function() {
       document.querySelector('#virtual-bookings-index')
     );
   }
+  if (document.querySelector('#virtual-booking-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='virtualBooking'
+          fetchData={ ['films', 'venues'] }
+          initialEntity={ { filmId: '', venueId: '' } }
+          fields={ [[
+            { columnWidth: 6, entity: 'virtualBooking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' },
+            { columnWidth: 6, entity: 'virtualBooking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', customType: 'modal', modalDisplayProperty: 'label' },
+            { columnWidth: 3, entity: 'virtualBooking', property: 'shippingCity', columnHeader: 'City' },
+            { columnWidth: 2, entity: 'virtualBooking', property: 'shippingState', columnHeader: 'State' },
+            { columnWidth: 2, entity: 'virtualBooking', property: 'startDate' },
+            { columnWidth: 2, entity: 'virtualBooking', property: 'endDate' },
+            { columnWidth: 3, entity: 'virtualBooking', property: 'terms' },
+            { columnWidth: 8, entity: 'virtualBooking', property: 'url' }
+          ]] }
+        />
+      </Provider>,
+      document.querySelector('#virtual-booking-details')
+    );
+  }
 });

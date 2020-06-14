@@ -6,6 +6,7 @@ FactoryBot.define do
     date_added { Date.today }
     start_date { Date.today }
     end_date { Date.today + 1.day }
+    terms { '50%' }
     shipping_city { 'New York' }
     shipping_state { 'NY' }
     url { 'https://www.someurl.com' }
