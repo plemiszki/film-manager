@@ -19,6 +19,7 @@ describe 'virtual_booking_details', type: :feature do
 
   it 'displays information about the virtual_booking' do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="filmId"]').value).to eq('Wilby Wonderful')
     expect(find('input[data-field="venueId"]').value).to eq('Film at Lincoln Center')
     expect(find('input[data-field="shippingCity"]').value).to eq('New York')

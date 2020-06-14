@@ -12,6 +12,10 @@ FactoryBot.define do
     factory :repertory_film do
       section { 'Repertory' }
     end
+
+    factory :virtual_film do
+      section { 'Virtual' }
+    end
   end
 
 end
