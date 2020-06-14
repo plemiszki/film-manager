@@ -447,10 +447,12 @@ var ServerActions = {
   receiveInTheatersFilms: function(response) {
     AppDispatcher.dispatch({
       actionType: "IN_THEATERS_RECEIVED",
+      virtual: response.virtual,
       inTheaters: response.inTheaters,
       comingSoon: response.comingSoon,
       repertory: response.repertory,
-      films: response.films
+      films: response.films,
+      nonVirtualFilms: response.nonVirtualFilms
     });
   },
 

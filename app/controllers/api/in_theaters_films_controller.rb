@@ -42,7 +42,10 @@ class Api::InTheatersFilmsController < AdminController
     @in_theaters = InTheatersFilm.where(section: 'In Theaters').includes(:film)
     @coming_soon = InTheatersFilm.where(section: 'Coming Soon').includes(:film)
     @repertory = InTheatersFilm.where(section: 'Repertory').includes(:film)
-    @films = Film.where.not(id: (@in_theaters.pluck(:film_id) + @coming_soon.pluck(:film_id) + @repertory.pluck(:film_id))).where(film_type: 'Feature')
+    @virtual = InTheatersFilm.where(section: 'Virtual').includes(:film)
+    films = Film.all
+    @non_virtual_films = films.where.not(id: @virtual.pluck(:film_id)).where(film_type: 'Feature')
+    @films = films.where.not(id: (@in_theaters.pluck(:film_id) + @coming_soon.pluck(:film_id) + @repertory.pluck(:film_id))).where(film_type: 'Feature')
   end
 
 end

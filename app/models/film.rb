@@ -57,6 +57,7 @@ class Film < ActiveRecord::Base
   has_many :alternate_lengths, dependent: :destroy
   has_many :alternate_subs, dependent: :destroy
   has_many :alternate_audios, dependent: :destroy
+  has_many :virtual_bookings
 
   after_create :create_percentages
 

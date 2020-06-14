@@ -73,12 +73,20 @@ class InTheatersIndexItem extends React.Component {
           <div>
             { this.props.film.film }
           </div>
-          <img className="handle" src={ Images.handle } onMouseDown={ this.mouseDownHandler.bind(this) } onMouseUp={ this.mouseUpHandler.bind(this) } />
+          { this.renderHandle() }
           <div className="x-button" onClick={ this.props.clickXButton } data-id={ this.props.film.id }></div>
           { this.renderBottomDropZone() }
         </td>
       </tr>
     );
+  }
+
+  renderHandle() {
+    if (this.props.renderHandle) {
+      return(
+        <img className="handle" src={ Images.handle } onMouseDown={ this.mouseDownHandler.bind(this) } onMouseUp={ this.mouseUpHandler.bind(this) } />
+      );
+    }
   }
 
   renderTopDropZone() {

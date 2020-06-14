@@ -28,6 +28,7 @@ class InTheatersIndex extends React.Component {
     super(props)
     this.state = {
       fetching: true,
+      virtual: [],
       inTheaters: [],
       comingSoon: [],
       repertory: [],
@@ -48,10 +49,12 @@ class InTheatersIndex extends React.Component {
   getFilms() {
     this.setState({
       fetching: false,
+      virtual: InTheatersStore.virtual(),
       inTheaters: InTheatersStore.inTheaters(),
       comingSoon: InTheatersStore.comingSoon(),
       repertory: InTheatersStore.repertory(),
-      films: InTheatersStore.films()
+      films: InTheatersStore.films(),
+      nonVirtualFilms: InTheatersStore.nonVirtualFilms()
     });
   }
 
@@ -86,6 +89,13 @@ class InTheatersIndex extends React.Component {
     });
   }
 
+  clickAddVirtualFilm() {
+    this.setState({
+      modalOpen: true,
+      addSection: 'Virtual'
+    });
+  }
+
   clickAddRepertoryFilm() {
     this.setState({
       modalOpen: true,
@@ -108,6 +118,23 @@ class InTheatersIndex extends React.Component {
         <div className="white-box">
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <table className="fm-admin-table no-hover no-highlight virtual">
+            <thead>
+              <tr>
+                <th>Virtual Bookings</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td></tr>
+              { this.state.virtual.map((film, index) => {
+                return(
+                  <InTheatersIndexItem key={ `virtual-${film.id}` } index={ index } film={ film } section={ 'virtual' } clickXButton={ this.clickXButton.bind(this) } renderHandle={ this.state.virtual.length > 1 } films={ this.state.virtual } />
+                );
+              }) }
+            </tbody>
+          </table>
+          <a className={ 'blue-outline-button small' } onClick={ this.clickAddVirtualFilm.bind(this) }>Add Film</a>
+          <hr />
           <table className="fm-admin-table no-hover no-highlight in-theaters">
             <thead>
               <tr>
@@ -160,14 +187,10 @@ class InTheatersIndex extends React.Component {
           <a className="blue-outline-button small" onClick={ this.clickAddRepertoryFilm.bind(this) }>Add Film</a>
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.films } property={ "title" } func={ this.selectFilm.bind(this) } />
+          <ModalSelect options={ this.state.addSection === 'Virtual' ? this.state.nonVirtualFilms : this.state.films } property={ "title" } func={ this.selectFilm.bind(this) } />
         </Modal>
       </div>
     );
-  }
-
-  componentDidUpdate() {
-    $('.match-height-layout').matchHeight();
   }
 }
 
