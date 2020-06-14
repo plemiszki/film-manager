@@ -359,7 +359,8 @@ describe 'film_details', type: :feature do
       video_page: false,
       day_and_date: false,
       certified_fresh: false,
-      critics_pick: false
+      critics_pick: false,
+      rental_url: 'https://www.filmmovement.com/rentsomething'
     }
     fill_out_form(new_info)
     save_and_wait

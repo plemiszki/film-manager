@@ -302,7 +302,8 @@ class Api::FilmsController < AdminController
       :critics_pick,
       :imdb_id,
       :accept_delivery,
-      :day_and_date
+      :day_and_date,
+      :rental_url
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result
