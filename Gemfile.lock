@@ -1228,7 +1228,7 @@ DEPENDENCIES
   sidekiq
   spring
   timeliness
-  uglifier
+  uglifier (= 4.2.0)
   validates_timeliness (~> 4.0)
   web-console (~> 2.0)
   wicked_pdf
