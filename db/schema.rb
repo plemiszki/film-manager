@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_14_145208) do
+ActiveRecord::Schema.define(version: 2020_06_17_120207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -335,6 +335,8 @@ ActiveRecord::Schema.define(version: 2020_06_14_145208) do
     t.boolean "day_and_date", default: false
     t.integer "auto_renew_days_notice", default: 0
     t.string "rental_url", default: ""
+    t.decimal "rental_price", precision: 5, scale: 2, default: "0.0"
+    t.integer "rental_days", default: 0
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
     t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"

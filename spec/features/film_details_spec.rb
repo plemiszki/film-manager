@@ -332,6 +332,7 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="facebookLink"]').value).to eq 'https://www.facebook.com/wilbywonderful'
     expect(find('input[data-field="twitterLink"]').value).to eq 'https://twitter.com/wilbywonderful'
     expect(find('input[data-field="instagramLink"]').value).to eq 'https://www.instagram.com/wilbywonderful'
+    expect(find('input[data-field="rentalUrl"]').value).to eq 'https://www.filmmovement.com/rentals/wilbywonderful'
     expect(find('input[data-field="imdbId"]').value).to eq 'tt2328696'
     expect(find('input[data-field="active"]').checked?).to eq true
     expect(find('input[data-field="eduPage"]').checked?).to eq true
@@ -339,6 +340,8 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="dayAndDate"]').checked?).to eq true
     expect(find('input[data-field="certifiedFresh"]').checked?).to eq true
     expect(find('input[data-field="criticsPick"]').checked?).to eq true
+    expect(find('input[data-field="rentalDays"]').value).to eq '3'
+    expect(find('input[data-field="rentalPrice"]').value).to eq '$10.00'
   end
 
   it "updates the film's marketing information" do
@@ -360,13 +363,16 @@ describe 'film_details', type: :feature do
       day_and_date: false,
       certified_fresh: false,
       critics_pick: false,
-      rental_url: 'https://www.filmmovement.com/rentsomething'
+      rental_url: 'https://www.filmmovement.com/rentals/vilbyvonderful',
+      rental_days: 4,
+      rental_price: 20
     }
     fill_out_form(new_info)
     save_and_wait
     verify_db_and_component({
       entity: @film,
-      data: new_info
+      data: new_info,
+      component_data: { rental_price: '$20.00' }
     })
   end
 

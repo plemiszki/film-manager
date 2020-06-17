@@ -15,6 +15,8 @@ class Film < ActiveRecord::Base
   validates_numericality_of :sell_off_period, :greater_than_or_equal_to => 0
   validates_date :start_date, :end_date, :avod_release, :tvod_release, :svod_release, :club_date, :theatrical_release, :accept_delivery, allow_blank: true
   validates_uniqueness_of :club_date, allow_nil: true
+  validates_numericality_of :rental_price, :greater_than_or_equal_to => 0
+  validates_numericality_of :rental_days, :greater_than_or_equal_to => 0
 
   def gr_percentage_tenth_decimal
     if [5, 6].include?(deal_type_id)

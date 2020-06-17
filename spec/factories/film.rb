@@ -31,6 +31,9 @@ FactoryBot.define do
     export_reports { true }
     send_reports { true }
     ignore_sage_id { true }
+    rental_url { 'https://www.filmmovement.com/rentals/wilbywonderful' }
+    rental_days { 3 }
+    rental_price { 10 }
 
     factory :no_expenses_recouped_film do
       title { 'No Expenses Recouped' }

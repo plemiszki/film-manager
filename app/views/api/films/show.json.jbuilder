@@ -60,6 +60,8 @@ json.films @films do |film|
   json.imdbId film.imdb_id
   json.acceptDelivery film.accept_delivery ? film.accept_delivery.strftime("%-m/%-d/%y") : ""
   json.rentalUrl film.rental_url
+  json.rentalPrice '$' + number_with_precision(film.rental_price, precision: 2, delimiter: ',')
+  json.rentalDays film.rental_days.to_s
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

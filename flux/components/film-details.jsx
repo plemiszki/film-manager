@@ -1813,11 +1813,11 @@ class FilmDetails extends React.Component {
           </div>
           <div className="row">
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'rentalUrl' }) }
-            <div className="col-xs-3">
-              <h2>IMDB ID</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.imdbId || "" } data-field="imdbId" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalPrice' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalDays' }) }
+          </div>
+          <div className="row">
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
           </div>
         </div>
       )
