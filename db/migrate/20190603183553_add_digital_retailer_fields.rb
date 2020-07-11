@@ -1,4 +1,4 @@
-class AddDigitalRetailerFields < ActiveRecord::Migration
+class AddDigitalRetailerFields < ActiveRecord::Migration[5.2]
   def change
     add_column :digital_retailers, :billing_name, :string, default: ""
     add_column :digital_retailers, :billing_address1, :string, default: ""

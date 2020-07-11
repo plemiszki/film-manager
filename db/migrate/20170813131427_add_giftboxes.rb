@@ -1,4 +1,4 @@
-class AddGiftboxes < ActiveRecord::Migration
+class AddGiftboxes < ActiveRecord::Migration[5.2]
   def change
     create_table :giftboxes do |t|
       t.string :name, null: false

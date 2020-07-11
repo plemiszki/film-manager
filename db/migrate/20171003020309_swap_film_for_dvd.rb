@@ -1,4 +1,4 @@
-class SwapFilmForDvd < ActiveRecord::Migration
+class SwapFilmForDvd < ActiveRecord::Migration[5.2]
   def change
     drop_table :giftbox_films
     create_table :giftbox_dvds do |t|

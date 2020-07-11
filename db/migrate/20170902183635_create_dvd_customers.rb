@@ -1,4 +1,4 @@
-class CreateDvdCustomers < ActiveRecord::Migration
+class CreateDvdCustomers < ActiveRecord::Migration[5.2]
   def change
     create_table :dvd_customers do |t|
       t.string :name, null: false

@@ -1,4 +1,4 @@
-class CreateWeeklyBoxOffices < ActiveRecord::Migration
+class CreateWeeklyBoxOffices < ActiveRecord::Migration[5.2]
   def change
     create_table :weekly_box_offices do |t|
       t.integer :order, null: false

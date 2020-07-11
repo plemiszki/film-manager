@@ -1,4 +1,4 @@
-class CreateSubRights < ActiveRecord::Migration
+class CreateSubRights < ActiveRecord::Migration[5.2]
   def change
     create_table :sub_rights do |t|
       t.integer :right_id, null: false

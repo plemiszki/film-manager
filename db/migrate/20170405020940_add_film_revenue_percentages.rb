@@ -1,4 +1,4 @@
-class AddFilmRevenuePercentages < ActiveRecord::Migration
+class AddFilmRevenuePercentages < ActiveRecord::Migration[5.2]
   def change
     create_table :film_revenue_percentages do |t|
       t.integer :film_id, null: false

@@ -1,4 +1,4 @@
-class ChangeReturnColumns < ActiveRecord::Migration
+class ChangeReturnColumns < ActiveRecord::Migration[5.2]
   def change
     add_column :returns, :month, :integer, null: false
     add_column :returns, :year, :integer, null: false

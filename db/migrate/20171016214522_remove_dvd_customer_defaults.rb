@@ -1,4 +1,4 @@
-class RemoveDvdCustomerDefaults < ActiveRecord::Migration
+class RemoveDvdCustomerDefaults < ActiveRecord::Migration[5.2]
   def change
     change_column_default(:dvd_customers, :consignment, nil)
     change_column_default(:dvd_customers, :sage_id, nil)

@@ -1,4 +1,4 @@
-class AddStuffToReports < ActiveRecord::Migration
+class AddStuffToReports < ActiveRecord::Migration[5.2]
   def change
     add_column :royalty_reports, :deal_id, :integer
     change_column :royalty_reports, :deal_id, :integer, null: false

@@ -1,4 +1,4 @@
-class CreatePastBookers < ActiveRecord::Migration
+class CreatePastBookers < ActiveRecord::Migration[5.2]
   def change
     create_table :past_bookers do |t|
       t.string :name, null: false

@@ -1,4 +1,4 @@
-class CreateSublicensors < ActiveRecord::Migration
+class CreateSublicensors < ActiveRecord::Migration[5.2]
   def change
     create_table :sublicensors do |t|
       t.string :name, null: false

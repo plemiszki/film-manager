@@ -1,4 +1,4 @@
-class ChangeImportedInvoicesColumns < ActiveRecord::Migration
+class ChangeImportedInvoicesColumns < ActiveRecord::Migration[5.2]
   def change
     rename_column :bookings, :advance_invoice_id, :imported_advance_invoice_number
     change_column :bookings, :imported_advance_invoice_number, :string

@@ -1,4 +1,4 @@
-class InvoicePayments < ActiveRecord::Migration
+class InvoicePayments < ActiveRecord::Migration[5.2]
   def change
     create_table :invoice_payments do |t|
       t.integer :invoice_id, null: false

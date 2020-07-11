@@ -1,4 +1,4 @@
-class FixMistake < ActiveRecord::Migration
+class FixMistake < ActiveRecord::Migration[5.2]
   def change
     remove_column :royalty_revenue_streams, :joined_total_revenue
     remove_column :royalty_revenue_streams, :joined_total_expenses

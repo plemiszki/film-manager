@@ -1,4 +1,4 @@
-class CreateAlternateSubs < ActiveRecord::Migration
+class CreateAlternateSubs < ActiveRecord::Migration[5.2]
   def change
     create_table :alternate_subs do |t|
       t.integer :film_id, null: false

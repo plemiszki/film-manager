@@ -1,4 +1,4 @@
-class CreateReturns < ActiveRecord::Migration
+class CreateReturns < ActiveRecord::Migration[5.2]
   def change
     create_table :returns do |t|
       t.string :number, null: false

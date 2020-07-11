@@ -1,4 +1,4 @@
-class AddRoyaltyReports < ActiveRecord::Migration
+class AddRoyaltyReports < ActiveRecord::Migration[5.2]
   def change
     create_table :royalty_reports do |t|
       t.integer :film_id, null: false

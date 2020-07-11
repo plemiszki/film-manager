@@ -1,4 +1,4 @@
-class AddGiftboxJoinTable < ActiveRecord::Migration
+class AddGiftboxJoinTable < ActiveRecord::Migration[5.2]
   def change
     create_table :giftbox_films do |t|
       t.integer :giftbox_id, null: false

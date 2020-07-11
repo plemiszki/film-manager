@@ -1,4 +1,4 @@
-class CreateAlternateLengths < ActiveRecord::Migration
+class CreateAlternateLengths < ActiveRecord::Migration[5.2]
   def change
     create_table :alternate_lengths do |t|
       t.integer :film_id, null: false

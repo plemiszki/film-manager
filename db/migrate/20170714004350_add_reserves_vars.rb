@@ -1,4 +1,4 @@
-class AddReservesVars < ActiveRecord::Migration
+class AddReservesVars < ActiveRecord::Migration[5.2]
   def change
     add_column :films, :reserve, :boolean, default: false
     add_column :films, :reserve_percentage, :decimal, precision: 5, scale: 2, default: 0

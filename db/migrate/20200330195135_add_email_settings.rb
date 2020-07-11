@@ -1,4 +1,4 @@
-class AddEmailSettings < ActiveRecord::Migration
+class AddEmailSettings < ActiveRecord::Migration[5.2]
   def change
     add_column :settings, :dvd_invoice_email_text, :string, default: ''
     add_column :settings, :paid_booking_invoice_email_text, :string, default: ''

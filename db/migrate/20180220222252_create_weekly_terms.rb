@@ -1,4 +1,4 @@
-class CreateWeeklyTerms < ActiveRecord::Migration
+class CreateWeeklyTerms < ActiveRecord::Migration[5.2]
   def change
     create_table :weekly_terms do |t|
       t.integer :booking_id,  null: false

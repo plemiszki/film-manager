@@ -1,4 +1,4 @@
-class RenameStuff < ActiveRecord::Migration
+class RenameStuff < ActiveRecord::Migration[5.2]
   def change
     rename_column :countries, :text, :name
     rename_column :languages, :text, :name

@@ -1,4 +1,4 @@
-class PurchaseOrderItem < ActiveRecord::Migration
+class PurchaseOrderItem < ActiveRecord::Migration[5.2]
   def change
     drop_table :purchase_order_dvds
     create_table :purchase_order_items do |t|

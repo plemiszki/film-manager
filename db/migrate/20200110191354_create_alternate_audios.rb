@@ -1,4 +1,4 @@
-class CreateAlternateAudios < ActiveRecord::Migration
+class CreateAlternateAudios < ActiveRecord::Migration[5.2]
   def change
     create_table :alternate_audios do |t|
       t.integer :film_id, null: false

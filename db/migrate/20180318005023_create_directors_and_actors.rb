@@ -1,4 +1,4 @@
-class CreateDirectorsAndActors < ActiveRecord::Migration
+class CreateDirectorsAndActors < ActiveRecord::Migration[5.2]
   def change
     create_table :directors do |t|
       t.integer :film_id, null: false

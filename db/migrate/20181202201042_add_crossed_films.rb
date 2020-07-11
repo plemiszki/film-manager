@@ -1,4 +1,4 @@
-class AddCrossedFilms < ActiveRecord::Migration
+class AddCrossedFilms < ActiveRecord::Migration[5.2]
   def change
     create_table :crossed_films do |t|
       t.integer :film_id, null: false

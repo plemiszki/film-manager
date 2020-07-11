@@ -1,4 +1,4 @@
-class AddMoreDefaults < ActiveRecord::Migration
+class AddMoreDefaults < ActiveRecord::Migration[5.2]
   def change
     change_column_default :dvds, :upc, ""
     change_column_default :dvds, :stock, 0

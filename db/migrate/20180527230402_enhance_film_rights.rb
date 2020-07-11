@@ -1,4 +1,4 @@
-class EnhanceFilmRights < ActiveRecord::Migration
+class EnhanceFilmRights < ActiveRecord::Migration[5.2]
   def change
     add_column :film_rights, :territory_id, :integer
     add_column :film_rights, :start_date, :date

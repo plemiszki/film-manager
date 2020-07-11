@@ -1,4 +1,4 @@
-class ChangeNumberFieldsToDecimals < ActiveRecord::Migration
+class ChangeNumberFieldsToDecimals < ActiveRecord::Migration[5.2]
   def change
     change_column :films, :gr_percentage, :decimal, :precision => 5, :scale => 2
     change_column :films, :mg, :decimal, :precision => 5, :scale => 2

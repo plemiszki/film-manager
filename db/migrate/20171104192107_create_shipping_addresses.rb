@@ -1,4 +1,4 @@
-class CreateShippingAddresses < ActiveRecord::Migration
+class CreateShippingAddresses < ActiveRecord::Migration[5.2]
   def change
     create_table :shipping_addresses do |t|
       t.string :label

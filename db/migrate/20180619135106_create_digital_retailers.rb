@@ -1,4 +1,4 @@
-class CreateDigitalRetailers < ActiveRecord::Migration
+class CreateDigitalRetailers < ActiveRecord::Migration[5.2]
   def change
     create_table :digital_retailers do |t|
       t.string :name, null: false

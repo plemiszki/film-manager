@@ -1,4 +1,4 @@
-class CreateDvdShorts < ActiveRecord::Migration
+class CreateDvdShorts < ActiveRecord::Migration[5.2]
   def change
     create_table :dvd_shorts do |t|
       t.integer :dvd_id, null: false

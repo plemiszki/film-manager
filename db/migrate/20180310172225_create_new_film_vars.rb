@@ -1,4 +1,4 @@
-class CreateNewFilmVars < ActiveRecord::Migration
+class CreateNewFilmVars < ActiveRecord::Migration[5.2]
   def change
     add_column :films, :year, :integer
     add_column :films, :length, :integer

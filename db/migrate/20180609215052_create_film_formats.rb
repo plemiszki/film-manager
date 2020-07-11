@@ -1,4 +1,4 @@
-class CreateFilmFormats < ActiveRecord::Migration
+class CreateFilmFormats < ActiveRecord::Migration[5.2]
   def change
     create_table :film_formats do |t|
       t.integer :film_id, null: false

@@ -1,4 +1,4 @@
-class CreateMerchandiseTypes < ActiveRecord::Migration
+class CreateMerchandiseTypes < ActiveRecord::Migration[5.2]
   def change
     create_table :merchandise_types do |t|
       t.string :name, null: false

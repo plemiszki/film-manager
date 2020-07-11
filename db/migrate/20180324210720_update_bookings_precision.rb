@@ -1,4 +1,4 @@
-class UpdateBookingsPrecision < ActiveRecord::Migration
+class UpdateBookingsPrecision < ActiveRecord::Migration[5.2]
   def change
     change_column :bookings, :advance, :decimal, precision: 8, scale: 2, default: 0.0
     change_column :bookings, :house_expense, :decimal, precision: 8, scale: 2, default: 0.0

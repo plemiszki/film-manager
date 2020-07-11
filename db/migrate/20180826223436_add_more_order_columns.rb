@@ -1,4 +1,4 @@
-class AddMoreOrderColumns < ActiveRecord::Migration
+class AddMoreOrderColumns < ActiveRecord::Migration[5.2]
   def change
     add_column :film_languages, :order, :integer
     add_column :film_countries, :order, :integer

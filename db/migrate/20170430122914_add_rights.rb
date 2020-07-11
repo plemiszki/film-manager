@@ -1,4 +1,4 @@
-class AddRights < ActiveRecord::Migration
+class AddRights < ActiveRecord::Migration[5.2]
   def change
     create_table :rights do |t|
       t.string :name, null: false
