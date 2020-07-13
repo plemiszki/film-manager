@@ -1,7 +1,9 @@
 class Api::DirectorsController < AdminController
 
+  include Reorderable
+
   def create
-    @director = Director.new(director_params)
+    @director = Director.new(director_params.merge({ order: Director.where(film_id: director_params[:film_id]).count }))
     if @director.save
       @directors = Director.where(film_id: @director.film_id)
       render "index.json.jbuilder"
@@ -13,6 +15,7 @@ class Api::DirectorsController < AdminController
   def destroy
     @director = Director.find(params[:id])
     @director.destroy
+    reorder(Director.where(film_id: @director.film_id).order(:order))
     @directors = Director.where(film_id: @director.film_id)
     render "index.json.jbuilder"
   end

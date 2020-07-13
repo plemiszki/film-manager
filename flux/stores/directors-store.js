@@ -21,7 +21,7 @@ DirectorsStore.all = function() {
   var directors = Object.keys(_directors).map(function(id) {
     return(_directors[id]);
   });
-  return HandyTools.alphabetizeArrayOfObjects(directors, 'lastName');
+  return HandyTools.sortArrayOfObjects(directors, 'order');
 };
 
 DirectorsStore.__onDispatch = function(payload) {

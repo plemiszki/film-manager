@@ -61,6 +61,7 @@ json.array!(@films) do |film|
     json.id director.id
     json.first_name director.first_name
     json.last_name director.last_name
+    json.order director.order
   end
   json.cast film.actors do |actor|
     json.id actor.id
