@@ -20,6 +20,15 @@ class Api::DirectorsController < AdminController
     render "index.json.jbuilder"
   end
 
+  def rearrange
+    params[:new_order].each do |index, id|
+      director = Director.find(id)
+      director.update(order: index)
+    end
+    @directors = Director.where(film_id: params[:film_id])
+    render 'index.json.jbuilder'
+  end
+
   private
 
   def director_params

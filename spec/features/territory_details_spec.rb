@@ -15,6 +15,7 @@ describe 'territory_details', type: :feature do
 
   it 'displays information about the territory' do
     visit territory_path(@territory, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="name"]').value).to eq('USA')
   end
 

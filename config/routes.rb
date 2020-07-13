@@ -128,8 +128,9 @@ Rails.application.routes.draw do
     resources :laurels, only: [:create, :destroy]
     patch '/actors/rearrange' => '/api/actors#rearrange'
     resources :actors, only: [:create, :destroy]
-
+    patch '/directors/rearrange' => '/api/directors#rearrange'
     resources :directors, only: [:create, :destroy]
+    
     resources :film_formats, only: [:index, :create, :destroy]
     resources :film_topics, only: [:index, :create, :destroy]
     resources :related_films, only: [:create, :destroy]

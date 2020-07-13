@@ -487,6 +487,9 @@ class FilmDetails extends React.Component {
       case 'genres':
         entityArray = 'filmGenres';
         directory = 'film_genres'
+      case 'directors':
+        entityArray = 'directors';
+        directory = 'directors'
     }
     this.state[entityArray].forEach((entity) => {
       currentOrder[entity.order] = entity.id;
@@ -1484,10 +1487,14 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Director(s):</h2>
-              <ul className="standard-list directors-list">
-                { this.state.directors.map((director) => {
+              <ul className="standard-list reorderable directors-list">
+                <li className="drop-zone" data-index="-1" data-section={ 'directors' }></li>
+                { this.state.directors.map((director, index) => {
                   return(
-                    <li key={ director.id }>{ director.firstName } { director.lastName }<div className="x-button" onClick={ this.clickDeleteDirector.bind(this) } data-id={ director.id }></div></li>
+                    <div key={ director.id }>
+                      <li data-id={ director.id } data-index={ index } data-section="directors">{ director.firstName } { director.lastName } - { director.order }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteDirector.bind(this) } data-id={ director.id }></div></li>
+                      <li className="drop-zone" data-index={ index } data-section="directors"></li>
+                    </div>
                   );
                 }) }
               </ul>

@@ -2329,21 +2329,24 @@ var ClientActions = {
         switch (directory) {
           case 'film_countries':
             ServerActions.receiveFilmCountries(response);
-            break
+            break;
           case 'film_languages':
             ServerActions.receiveFilmLanguages(response);
-            break
+            break;
           case 'film_genres':
             ServerActions.receiveFilmGenres(response);
-            break
+            break;
           case 'actors':
             ServerActions.receiveActors(response);
-            break
+            break;
           case 'laurels':
             ServerActions.receiveLaurels(response);
-            break
+            break;
           case 'quotes':
             ServerActions.receiveQuotes(response);
+            break;
+          case 'directors':
+            ServerActions.receiveDirectors(response);
         }
       }
     });
