@@ -1492,7 +1492,7 @@ class FilmDetails extends React.Component {
                 { this.state.directors.map((director, index) => {
                   return(
                     <div key={ director.id }>
-                      <li data-id={ director.id } data-index={ index } data-section="directors">{ director.firstName } { director.lastName } - { director.order }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteDirector.bind(this) } data-id={ director.id }></div></li>
+                      <li data-id={ director.id } data-index={ index } data-section="directors">{ director.firstName } { director.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteDirector.bind(this) } data-id={ director.id }></div></li>
                       <li className="drop-zone" data-index={ index } data-section="directors"></li>
                     </div>
                   );
