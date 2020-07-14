@@ -28,6 +28,7 @@ import GiftBoxDetails from './components/giftbox-details.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
 import InvoiceDetails from './components/invoice-details.jsx'
 import InvoicesIndex from './components/invoices-index.jsx'
+import CreditMemosIndex from './components/credit-memos-index.jsx'
 import JobsIndex from './components/jobs-index.jsx'
 import LicensorDetails from './components/licensor-details.jsx'
 import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
@@ -117,6 +118,17 @@ $(document).ready(function() {
   }
   if ($('#invoice-details')[0]) {
     ReactDOM.render(<InvoiceDetails />, document.getElementById("invoice-details"));
+  }
+  if ($('#credit-memos-index')[0]) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <CreditMemosIndex context={ MyContext } />
+      </Provider>,
+      document.getElementById("credit-memos-index")
+    );
+  }
+  if ($('#credit-memo-details')[0]) {
+    ReactDOM.render(<CreditMemoDetails />, document.getElementById("credit-memo-details"));
   }
   if ($('#dvd-reports')[0]) {
     ReactDOM.render(<DvdReports />, document.getElementById("dvd-reports"));
