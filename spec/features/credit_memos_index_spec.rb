@@ -32,7 +32,7 @@ describe 'credit_memos_index', type: :feature do
     create(:credit_memo, { number: '31' })
     create(:credit_memo, { number: '32' })
     visit credit_memos_path(as: $admin_user)
-    update_filter
+    update_credit_memos_filter
     expect(page).to have_no_content('24')
     expect(page).to have_no_content('25')
     expect(page).to have_content('26')
@@ -46,7 +46,7 @@ describe 'credit_memos_index', type: :feature do
 
 end
 
-def update_filter
+def update_credit_memos_filter
   find('.orange-button', text: 'Filter').click
   within('.filter-modal') do
     find('.starting-number').set('26')
