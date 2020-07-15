@@ -36,7 +36,7 @@ class CreditMemosIndex extends React.Component {
       sortBy: "sentDate",
       creditMemos: [],
       filterModalOpen: false,
-      filterNumber: 0,
+      filterStartNumber: 0,
       filterEndNumber: "",
       jobModalOpen: !!job.id,
       job: job
@@ -91,27 +91,23 @@ class CreditMemosIndex extends React.Component {
       filterModalOpen: true
     }, () => {
       window.setTimeout(() => {
-        $('.filter-modal select').val(this.state.filterType);
-        $('.filter-modal select').niceSelect();
-        $('.filter-modal input.starting-number').val(this.state.filterNumber);
+        $('.filter-modal input.starting-number').val(this.state.filterStartNumber);
         $('.filter-modal input.end-number').val(this.state.filterEndNumber);
       }, 10);
     });
   }
 
   validateFilterInput() {
-    var type = $('.filter-modal select').val();
-    var number = $('.filter-modal input.starting-number').val();
+    var startNumber = $('.filter-modal input.starting-number').val();
     var endNumber = $('.filter-modal input.end-number').val();
-    var numberOK = !isNaN(+number);
+    var startNumberOK = !isNaN(+startNumber);
     var endNumberOK = (endNumber === "" || !isNaN(+endNumber));
-    if (numberOK && endNumberOK) {
+    if (startNumberOK && endNumberOK) {
       if (endNumber) {
-        if (+endNumber >= +number) {
+        if (+endNumber >= +startNumber) {
           this.setState({
-            filterType: type,
-            filterNumber: +number,
-            filterEndNumber: +endNumber,
+            filterStartNumber: startNumber,
+            filterEndNumber: endNumber,
             filterModalOpen: false
           });
         } else {
@@ -119,13 +115,13 @@ class CreditMemosIndex extends React.Component {
         }
       } else {
         this.setState({
-          filterType: type,
-          filterNumber: +number,
+          filterEndNumber: '',
+          filterStartNumber: startNumber,
           filterModalOpen: false
         });
       }
     } else {
-      if (!numberOK) {
+      if (!startNumberOK) {
         $('.filter-modal input.starting-number').addClass('error');
       }
       if (!endNumberOK) {
@@ -151,7 +147,7 @@ class CreditMemosIndex extends React.Component {
   }
 
   filterExists() {
-    if (this.state.filterNumber != "0" || this.state.filterEndNumber != "") {
+    if (this.state.filterStartNumber != "0" || this.state.filterEndNumber != "") {
       return " green";
     } else {
       return "";
@@ -159,19 +155,28 @@ class CreditMemosIndex extends React.Component {
   }
 
   clickExport() {
-    if (!this.state.fetching) {
-      this.setState({
-        fetching: true
-      });
-      let creditMemoIds = this.state.creditMemos.map((creditMemo) => {
-        return creditMemo.id;
-      });
-      ClientActions.exportCreditMemos(creditMemoIds);
-    }
+    // if (!this.state.fetching) {
+    //   this.setState({
+    //     fetching: true
+    //   });
+    //   let creditMemoIds = this.state.creditMemos.map((creditMemo) => {
+    //     return creditMemo.id;
+    //   });
+    //   ClientActions.exportCreditMemos(creditMemoIds);
+    // }
   }
 
   render() {
+    const { filterStartNumber, filterEndNumber } = this.state;
     let filteredCreditMemos = this.state.creditMemos.filterSearchText(this.state.searchText, this.state.sortBy);
+    filteredCreditMemos = filteredCreditMemos.filter((creditMemo) => {
+      const { number } = creditMemo;
+      if (filterEndNumber) {
+        return (+number >= +filterStartNumber && +number <= +filterEndNumber);
+      } else {
+        return (+number >= +filterStartNumber);
+      }
+    });
     return(
       <div id="credit-memos-index" className="component">
         <h1>Credit Memos</h1>
@@ -217,19 +222,11 @@ class CreditMemosIndex extends React.Component {
         <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ filterModalStyles }>
           <div className="filter-modal">
             <div className="row">
-              <div className="col-xs-4">
-                <h2>Type</h2>
-                <select>
-                  <option value="all">All</option>
-                  <option value="Booking">Booking</option>
-                  <option value="DVD">DVD</option>
-                </select>
-              </div>
-              <div className="col-xs-4">
+              <div className="col-xs-6">
                 <h2>Starting Number</h2>
                 <input className="starting-number" onChange={ this.clearNumberError.bind(this) } />
               </div>
-              <div className="col-xs-4">
+              <div className="col-xs-6">
                 <h2>Ending Number</h2>
                 <input className="end-number" onChange={ this.clearNumberError.bind(this) } />
               </div>

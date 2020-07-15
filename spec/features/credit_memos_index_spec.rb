@@ -21,22 +21,36 @@ describe 'credit_memos_index', type: :feature do
     expect(page).to have_content 'DVD Vendor'
   end
 
-  # it 'filters credit memos by type' do
-  #   visit credit_memos_path(as: $admin_user)
-  #   update_filter('Booking')
-  #   expect(page).to have_content('1B')
-  #   expect(page).to have_no_content('1D')
-  #   update_filter('DVD')
-  #   expect(page).to have_no_content('1B')
-  #   expect(page).to have_content('1D')
-  # end
+  it 'filters credit memos' do
+    create(:credit_memo, { number: '24' })
+    create(:credit_memo, { number: '25' })
+    create(:credit_memo, { number: '26' })
+    create(:credit_memo, { number: '27' })
+    create(:credit_memo, { number: '28' })
+    create(:credit_memo, { number: '29' })
+    create(:credit_memo, { number: '30' })
+    create(:credit_memo, { number: '31' })
+    create(:credit_memo, { number: '32' })
+    visit credit_memos_path(as: $admin_user)
+    update_filter
+    expect(page).to have_no_content('24')
+    expect(page).to have_no_content('25')
+    expect(page).to have_content('26')
+    expect(page).to have_content('27')
+    expect(page).to have_content('28')
+    expect(page).to have_no_content('29')
+    expect(page).to have_no_content('30')
+    expect(page).to have_no_content('31')
+    expect(page).to have_no_content('32')
+  end
 
 end
 
-def update_filter(type)
+def update_filter
   find('.orange-button', text: 'Filter').click
   within('.filter-modal') do
-    click_nice_select_option('select', type)
+    find('.starting-number').set('26')
+    find('.end-number').set('28')
     find('.orange-button', text: 'Update Filter').click
   end
 end
