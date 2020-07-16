@@ -32,12 +32,12 @@ class CreditMemosIndex extends React.Component {
     };
     this.state = {
       fetching: true,
-      searchText: "",
-      sortBy: "sentDate",
+      searchText: '',
+      sortBy: 'sentDate',
       creditMemos: [],
       filterModalOpen: false,
-      filterStartNumber: 0,
-      filterEndNumber: "",
+      filterStartNumber: '',
+      filterEndNumber: '',
       jobModalOpen: !!job.id,
       job: job
     };
@@ -100,7 +100,7 @@ class CreditMemosIndex extends React.Component {
   validateFilterInput() {
     var startNumber = $('.filter-modal input.starting-number').val();
     var endNumber = $('.filter-modal input.end-number').val();
-    var startNumberOK = !isNaN(+startNumber);
+    var startNumberOK = (startNumber === "" || !isNaN(+startNumber));
     var endNumberOK = (endNumber === "" || !isNaN(+endNumber));
     if (startNumberOK && endNumberOK) {
       if (endNumber) {
@@ -147,7 +147,7 @@ class CreditMemosIndex extends React.Component {
   }
 
   filterExists() {
-    if (this.state.filterStartNumber != "0" || this.state.filterEndNumber != "") {
+    if (this.state.filterStartNumber != "" || this.state.filterEndNumber != "") {
       return " green";
     } else {
       return "";
@@ -171,10 +171,14 @@ class CreditMemosIndex extends React.Component {
     let filteredCreditMemos = this.state.creditMemos.filterSearchText(this.state.searchText, this.state.sortBy);
     filteredCreditMemos = filteredCreditMemos.filter((creditMemo) => {
       const { number } = creditMemo;
-      if (filterEndNumber) {
+      if (filterStartNumber && filterEndNumber) {
         return (+number >= +filterStartNumber && +number <= +filterEndNumber);
-      } else {
+      } else if (filterEndNumber) {
+        return (+number <= +filterEndNumber);
+      } else if (filterStartNumber) {
         return (+number >= +filterStartNumber);
+      } else {
+        return true;
       }
     });
     return(

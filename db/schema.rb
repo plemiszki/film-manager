@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_13_151120) do
+ActiveRecord::Schema.define(version: 2020_07_16_120201) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,13 +150,6 @@ ActiveRecord::Schema.define(version: 2020_07_13_151120) do
     t.string "billing_state", default: ""
     t.string "billing_zip", default: ""
     t.string "billing_country", default: ""
-    t.string "shipping_name", default: ""
-    t.string "shipping_address1", default: ""
-    t.string "shipping_address2", default: ""
-    t.string "shipping_city", default: ""
-    t.string "shipping_state", default: ""
-    t.string "shipping_zip", default: ""
-    t.string "shipping_country", default: ""
     t.decimal "total", precision: 8, scale: 2, default: "0.0"
     t.string "return_number", null: false
     t.integer "customer_id", null: false
