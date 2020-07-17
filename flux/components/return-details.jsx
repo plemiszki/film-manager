@@ -151,6 +151,12 @@ class ReturnDetails extends React.Component {
     ClientActions.deleteReturnItem(e.target.dataset.id);
   }
 
+  clickGenerateButton() {
+    this.setState({
+      fetching: true
+    });
+  }
+
   closeModal() {
     this.setState({
       selectItemModalOpen: false,
@@ -246,6 +252,8 @@ class ReturnDetails extends React.Component {
             <a className="blue-outline-button small" onClick={ this.clickAddItemButton.bind(this) }>Add Item</a>
             <hr />
             { this.renderButtons() }
+            <hr />
+            { this.renderCreditMemoSection() }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
@@ -268,6 +276,18 @@ class ReturnDetails extends React.Component {
     );
   }
 
+  renderCreditMemoSection() {
+    if (this.state.return.creditMemoId) {
+      return(
+        <div><a style={ { textDecoration: 'underline' } } href={ `/credit_memos/${this.state.return.creditMemoId}` }>Credit Memo { this.state.return.creditMemoNumber }</a> was sent on { this.state.return.creditMemoDate }.</div>
+      );
+    } else if (this.state.return.id) {
+      return(
+        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickGenerateButton.bind(this) }>Generate Credit Memo</a>
+      );
+    }
+  }
+
   renderXButton(item) {
     if (!this.state.return.shipDate) {
       return(
@@ -286,7 +306,7 @@ class ReturnDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button m-bottom" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
         <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
@@ -298,7 +318,6 @@ class ReturnDetails extends React.Component {
 
   componentDidUpdate() {
     FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    $('.match-height-layout').matchHeight();
   }
 }
 
