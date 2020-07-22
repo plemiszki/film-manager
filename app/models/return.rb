@@ -10,9 +10,10 @@ class Return < ActiveRecord::Base
 
   def generate_credit_memo!
     fail 'credit memo exists!' if credit_memo.present?
+    new_credit_memo = nil
     ActiveRecord::Base.transaction do
       new_credit_memo = CreditMemo.create!(
-        number: Setting.first.next_credit_memo_number,
+        number: "CM#{Setting.first.next_credit_memo_number}",
         return_number: number,
         sent_date: Date.today,
         customer_id: customer_id,
@@ -42,6 +43,7 @@ class Return < ActiveRecord::Base
       end
     end
     Setting.increment_credit_memo_number!
+    new_credit_memo
   end
 
 end
