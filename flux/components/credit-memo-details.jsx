@@ -32,12 +32,12 @@ class CreditMemoDetails extends React.Component {
   }
 
   clickExport() {
-    window.location.pathname = `api/credit_memos/${this.state.creditMemo.id}/export`;
+    window.location.pathname = `credit_memos/${this.state.creditMemo.id}/export`;
   }
 
   render() {
     return(
-      <div id="creditMemo-details">
+      <div id="credit-memo-details">
         <div className="component">
           <h1>Credit Memo Details</h1>
           <div className="white-box">

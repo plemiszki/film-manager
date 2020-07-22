@@ -1,6 +1,6 @@
 class Invoice < ActiveRecord::Base
 
-  include ActionView::Helpers::NumberHelper
+  include Dollarify
 
   validates :invoice_type, :number, presence: true
   validates :number, uniqueness: true
@@ -274,17 +274,6 @@ class Invoice < ActiveRecord::Base
     save_path = "#{path}/Invoice #{self.number}.pdf"
     File.open(save_path, 'wb') do |f|
       f << pdf
-    end
-  end
-
-  private
-
-  def dollarify(input)
-    input = number_with_precision(input, precision: 2, delimiter: ',').to_s
-    if (input[0] == "-")
-      '($' + input[1..-1] + ')'
-    else
-      '$' + input
     end
   end
 

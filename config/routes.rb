@@ -23,7 +23,8 @@ Rails.application.routes.draw do
   resources :invoices, only: [:index, :show]
   resources :returns, only: [:index, :show]
   resources :credit_memos, only: [:index, :show]
-  resource :setting, path: "settings"
+  get '/credit_memos/:id/export' => 'credit_memos#export'
+  resource :setting, path: 'settings'
   get '/catalog' => 'films#catalog'
   patch '/users/1' => 'api/convert#import'
   patch '/users/2' => 'api/royalty_reports#import'
