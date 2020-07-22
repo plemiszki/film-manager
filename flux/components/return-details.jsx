@@ -283,7 +283,7 @@ class ReturnDetails extends React.Component {
       );
     } else if (this.state.return.id) {
       return(
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickGenerateButton.bind(this) }>Generate Credit Memo</a>
+        <a className={ "orange-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate Credit Memo</a>
       );
     }
   }

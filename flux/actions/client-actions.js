@@ -1064,7 +1064,7 @@ var ClientActions = {
         }
       },
       success: function(response) {
-        ServerActions.receiveReturns(response);
+        window.location.pathname = "/returns/" + response.return.id;
       },
       error: function(response) {
         ServerActions.receiveErrors(response);

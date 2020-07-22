@@ -18,9 +18,7 @@ class Api::ReturnsController < AdminController
   def create
     @return = Return.new(return_params)
     if @return.save
-      @returns = Return.all.includes(:customer)
-      @dvd_customers = DvdCustomer.all
-      render "index.json.jbuilder"
+      render "create.json.jbuilder"
     else
       render json: @return.errors.full_messages, status: 422
     end
