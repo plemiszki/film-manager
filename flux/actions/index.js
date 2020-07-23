@@ -1,6 +1,22 @@
 import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 
+export function sendRequest(args) {
+  let { url, method, data } = args;
+  return (dispatch) => {
+    return $.ajax({
+      method: method.toUpperCase(),
+      url,
+      data
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'SEND_REQUEST' });
+        dispatch(obj);
+      }
+    );
+  }
+}
+
 export function fetchEntities(input) {
   let url = input.url || `/api/${input.directory}`;
   return (dispatch) => {
@@ -10,6 +26,20 @@ export function fetchEntities(input) {
     }).then(
       (response) => {
         let obj = Object.assign(response, { type: 'FETCH_ENTITIES' });
+        dispatch(obj);
+      }
+    );
+  }
+}
+
+export function fetchDataForNew(args) {
+  return (dispatch) => {
+    return $.ajax({
+      method: 'GET',
+      url: `/api/${args.directory}/new`
+    }).then(
+      (response) => {
+        let obj = Object.assign(response, { type: 'NEW_ENTITY_DATA' });
         dispatch(obj);
       }
     );
@@ -45,20 +75,6 @@ export function fetchEntity(args) {
     }).then(
       (response) => {
         let obj = Object.assign(response, { type: 'FETCH_ENTITY' });
-        dispatch(obj);
-      }
-    );
-  }
-}
-
-export function fetchDataForNew(args) {
-  return (dispatch) => {
-    return $.ajax({
-      method: 'GET',
-      url: `/api/${args.directory}/new`
-    }).then(
-      (response) => {
-        let obj = Object.assign(response, { type: 'NEW_ENTITY_DATA' });
         dispatch(obj);
       }
     );

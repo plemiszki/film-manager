@@ -143,7 +143,12 @@ $(document).ready(function() {
     ReactDOM.render(<ReturnsIndex />, document.getElementById("returns-index"));
   }
   if ($('#return-details')[0]) {
-    ReactDOM.render(<ReturnDetails />, document.getElementById("return-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <ReturnDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("return-details")
+    );
   }
   if ($('#venue-details')[0]) {
     ReactDOM.render(

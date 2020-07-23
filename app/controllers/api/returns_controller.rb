@@ -54,6 +54,12 @@ class Api::ReturnsController < AdminController
     render json: job
   end
 
+  def send_credit_memo
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: 'send credit memo', first_line: 'Generating Credit Memo', second_line: false)
+    render json: { job: job }
+  end
+
   private
 
   def return_params

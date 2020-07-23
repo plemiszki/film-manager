@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
@@ -7,6 +9,7 @@ import ReturnItemsStore from '../stores/return-items-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -36,7 +39,11 @@ class ReturnDetails extends React.Component {
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      jobModalOpen: false,
+      job: {
+        errors_text: ''
+      }
     };
   }
 
@@ -155,6 +162,16 @@ class ReturnDetails extends React.Component {
     this.setState({
       fetching: true
     });
+    this.props.sendRequest({
+      url: '/api/returns/send_credit_memo',
+      method: 'post'
+    }).then(() => {
+      this.setState({
+        job: this.props.job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
   }
 
   closeModal() {
@@ -272,6 +289,7 @@ class ReturnDetails extends React.Component {
             </div>
           </div>
         </Modal>
+        { FM.jobModal.call(this, this.state.job) }
       </div>
     );
   }
@@ -283,7 +301,7 @@ class ReturnDetails extends React.Component {
       );
     } else if (this.state.return.id) {
       return(
-        <a className={ "orange-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate Credit Memo</a>
+        <a className={ "orange-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate and Send Credit Memo</a>
       );
     }
   }
@@ -321,4 +339,12 @@ class ReturnDetails extends React.Component {
   }
 }
 
-export default ReturnDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReturnDetails);
