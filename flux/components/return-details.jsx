@@ -163,7 +163,7 @@ class ReturnDetails extends React.Component {
       fetching: true
     });
     this.props.sendRequest({
-      url: '/api/returns/send_credit_memo',
+      url: `/api/returns/${this.state.return.id}/send_credit_memo`,
       method: 'post'
     }).then(() => {
       this.setState({
@@ -301,7 +301,7 @@ class ReturnDetails extends React.Component {
       );
     } else if (this.state.return.id) {
       return(
-        <a className={ "orange-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate and Send Credit Memo</a>
+        <a className={ "orange-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate and Send Credit Memo</a>
       );
     }
   }
@@ -336,6 +336,27 @@ class ReturnDetails extends React.Component {
 
   componentDidUpdate() {
     FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
+    if (this.state.jobModalOpen) {
+      window.setTimeout(() => {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: (response) => {
+            if (response.done) {
+              window.location.reload();
+            } else {
+              this.setState({
+                job: response
+              });
+            }
+          }
+        });
+      }, 1500)
+    }
   }
 }
 

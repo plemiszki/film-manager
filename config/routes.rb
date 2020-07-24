@@ -103,7 +103,7 @@ Rails.application.routes.draw do
     get '/calendar' => 'calendar#show'
     resources :returns, only: [:index, :create, :show, :update, :destroy]
     post '/returns/export' => '/api/returns#export'
-    post '/returns/send_credit_memo' => '/api/returns#send_credit_memo'
+    post '/returns/:id/send_credit_memo' => '/api/returns#send_credit_memo'
     resources :return_items, only: [:create, :destroy]
     resources :weekly_terms, only: [:create, :destroy]
     resources :weekly_box_offices, only: [:create, :destroy]

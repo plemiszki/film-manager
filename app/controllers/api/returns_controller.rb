@@ -57,6 +57,7 @@ class Api::ReturnsController < AdminController
   def send_credit_memo
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: 'send credit memo', first_line: 'Generating Credit Memo', second_line: false)
+    GenerateAndSendCreditMemo.perform_async(time_started, params[:id])
     render json: { job: job }
   end
 
