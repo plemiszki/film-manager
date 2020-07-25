@@ -120,4 +120,12 @@ class Film < ActiveRecord::Base
     end
   end
 
+  def create_royalty_statement!(quarter, year)
+    raise 'ignore sage id' if ignore_sage_id
+    raise 'report exists!' if RoyaltyReport.find_by_film_id_and_quarter_and_year(id, quarter, year)
+    report = RoyaltyReport.create!(film_id: id, deal_id: deal_type_id, quarter: quarter, year: year, mg: mg, e_and_o: e_and_o)
+    report.create_empty_streams!
+    report.transfer_and_calculate_from_previous_report!
+  end
+
 end
