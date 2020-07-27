@@ -346,6 +346,7 @@ class ReturnDetails extends React.Component {
             time: this.state.job.job_id
           },
           success: (response) => {
+            console.log(response);
             if (response.done) {
               window.location.reload();
             } else {

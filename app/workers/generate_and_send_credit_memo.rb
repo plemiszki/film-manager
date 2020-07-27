@@ -6,6 +6,8 @@ class GenerateAndSendCreditMemo
 
     job = Job.find_by_job_id(time_started)
 
+    fail
+
     # Generate
     dvd_return = Return.find(return_id)
     credit_memo = dvd_return.generate_credit_memo!
@@ -39,7 +41,7 @@ class GenerateAndSendCreditMemo
 
     p error
     credit_memo.try(:destroy)
-    job.update!({ done: true, errors_text: 'failed to send credit memo' })
+    job.update!({ done: true, metadata: { message: 'Failed to Send Credit Memo' }})
 
   end
 
