@@ -41,6 +41,7 @@ class ReturnDetails extends React.Component {
       justSaved: false,
       deleteModalOpen: false,
       jobModalOpen: false,
+      noErrorsModalOpen: false,
       job: {
         errors_text: ''
       }
@@ -194,6 +195,12 @@ class ReturnDetails extends React.Component {
     }
   }
 
+  modalCloseAndRefresh() {
+    this.setState({
+      noErrorsModalOpen: false
+    });
+  }
+
   findOtherItem(type, id) {
     var result;
     this.state.otherItems.forEach((otherItem, index) => {
@@ -290,6 +297,7 @@ class ReturnDetails extends React.Component {
           </div>
         </Modal>
         { FM.jobModal.call(this, this.state.job) }
+        { FM.jobNoErrorsModal.call(this) }
       </div>
     );
   }
@@ -346,14 +354,17 @@ class ReturnDetails extends React.Component {
             time: this.state.job.job_id
           },
           success: (response) => {
-            console.log(response);
-            if (response.done) {
-              window.location.reload();
+            let newState = {
+              job: response
+            };
+            if (response.status === 'failed' || response.status === 'success') {
+              newState.jobModalOpen = false;
+              newState.noErrorsModalOpen = true;
             } else {
-              this.setState({
-                job: response
-              });
+              newState.jobModalOpen = true;
+              newState.noErrorsModalOpen = false;
             }
+            this.setState(newState);
           }
         });
       }, 1500)
