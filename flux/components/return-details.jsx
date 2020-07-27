@@ -360,6 +360,13 @@ class ReturnDetails extends React.Component {
             if (response.status === 'failed' || response.status === 'success') {
               newState.jobModalOpen = false;
               newState.noErrorsModalOpen = true;
+              if (response.status === 'success') {
+                let r = this.state.return;
+                r.creditMemoId = response.metadata['credit_memo_id']
+                r.creditMemoNumber = response.metadata['credit_memo_number']
+                r.creditMemoDate = response.metadata['credit_memo_date']
+                newState.return = r;
+              }
             } else {
               newState.jobModalOpen = true;
               newState.noErrorsModalOpen = false;
