@@ -44,16 +44,19 @@ class ExportBookings
       "Shipping Notes",
       "Delivered",
       "Box Office Received",
-      "Box Office"
+      "Box Office",
+      "Venue Website",
+      "Booking ID"
     ])
 
     bookings = Booking.where(id: booking_ids).order(:id).includes(:film, :venue, :format)
     bookings.each_with_index do |booking, booking_index|
+      venue = booking.venue
       sheet.add_row([
         booking.start_date,
         booking.end_date,
         booking.film.title,
-        booking.venue.label,
+        venue.label,
         booking.booking_type,
         booking.status,
         booking.terms,
@@ -83,7 +86,9 @@ class ExportBookings
         booking.shipping_notes,
         (booking.delivered ? 'Yes' : 'No'),
         (booking.box_office_received ? 'Yes' : 'No'),
-        booking.box_office
+        booking.box_office,
+        venue.website,
+        booking.id
       ])
       job.update({ current_value: booking_index + 1 })
     end
