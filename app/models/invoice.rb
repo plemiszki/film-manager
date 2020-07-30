@@ -227,6 +227,7 @@ class Invoice < ActiveRecord::Base
       booking = self.booking
       string += "<tr><th></th><th></th><th></th><th></th></tr>"
     end
+    total_dvds = 0
     self.invoice_rows.each_with_index do |row, index|
       if index == 38 || ((index - 38) % 51 == 0)
         string += '</table><div class="page-break"><table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>'
@@ -243,6 +244,7 @@ class Invoice < ActiveRecord::Base
         string += "<td>#{row.item_label}</td>"
       end
       if self.invoice_type == "dvd"
+        total_dvds += row.item_qty
         string += "<td>#{dollarify(row.unit_price.to_s)}</td><td>#{row.item_qty}</td>"
       else
         string += "<td></td><td></td>"
@@ -263,7 +265,7 @@ class Invoice < ActiveRecord::Base
         string += "</tr>"
       end
     end
-    string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td></td><td>#{dollarify(self.total_minus_payments.to_s)}</td></tr>"
+    string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td>#{self.invoice_type == "dvd" ? "#{total_dvds}" : ""}</td><td>#{dollarify(self.total_minus_payments.to_s)}</td></tr>"
     string += "</table>"
     unless self.notes.empty?
       string += "<div class=\"notes\">"
