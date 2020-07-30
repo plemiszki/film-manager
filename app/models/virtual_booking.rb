@@ -20,13 +20,12 @@ class VirtualBooking < ActiveRecord::Base
         next
       end
       venue_name = columns[3].strip
-      # venue_name = "Film Society of Lincoln Center" if venue_name == "Film at Lincoln Center"
+      venue_name = "Time and Space Limited" if venue_name == "Time & Space Ltd."
+      venue_name = "Time and Space Limited" if venue_name == "Time & Space Limited"
+      venue_name = "Corazon Cinema and Cafe" if venue_name == "Corazon Cinema and Café"
+      venue_name = "Gateway Film Center 8" if venue_name == "Gateway Film Center"
+      venue_name = "SIE Film Center" if venue_name == "SIE FilmCenter"
       venue = Venue.find_by_label(venue_name)
-      if venue.nil?
-        missing_venues << venue_name
-        index += 1
-        next
-      end
       booking_id = columns[35]
       booking = Booking.find(booking_id)
       city = columns[23]
@@ -44,7 +43,6 @@ class VirtualBooking < ActiveRecord::Base
         url: url
       )
       index += 1
-      IO.popen('pbcopy', 'w') { |f| f << missing_venues.uniq.join("\n") }
     end
   end
 
