@@ -105,15 +105,17 @@ class Invoice < ActiveRecord::Base
 
   def export!(path)
     string = "<style>"
+    string += "@import url('https://fonts.googleapis.com/css2?family=Tinos:wght@700&display=swap');"
+    string += "@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');"
+    string += "@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap');"
     string += "body {"
-    string +=   "font-family: Arial;"
+    string +=   "font-family: Roboto;"
     string +=   "font-size: 12px;"
     string +=   "line-height: 16px;"
     string += "}"
     string += "table {"
     string +=   "margin-top: 40px;"
     string +=   "width: 100%;"
-    string +=   "font-family: Arial;"
     string +=   "font-size: 12px;"
     string +=   "line-height: 14px;"
     string +=   "text-align: left;"
@@ -126,11 +128,11 @@ class Invoice < ActiveRecord::Base
     string += "}"
     string += ".upper-right-bold {"
     string +=   "margin-top: 10px;"
-    string +=   "font-weight: bold;"
+    string +=   "font-family: Lato;"
     string +=   "font-size: 18px;"
     string += "}"
     string += ".invoice-header {"
-    string +=   "font-family: Times;"
+    string +=   "font-family: Tinos;"
     string +=   "line-height: normal;"
     string +=   "letter-spacing: .5px;"
     string +=   "font-size: 40px;"
@@ -141,6 +143,7 @@ class Invoice < ActiveRecord::Base
     string +=   "margin-bottom: 4px;"
     string += "}"
     string += "th {"
+    string +=   "font-family: Lato;"
     string +=   "padding-bottom: 10px;"
     string += "}"
     string += "th, td {"
@@ -153,7 +156,7 @@ class Invoice < ActiveRecord::Base
     string +=   "width: 10%;"
     string += "}"
     string += "tr.total-row td {"
-    string +=   "font-weight: bold;"
+    string +=   "font-family: Lato;"
     string +=   "padding-top: 10px;"
     string += "}"
     string += "td.big-margin {"
@@ -166,7 +169,7 @@ class Invoice < ActiveRecord::Base
     string +=   "display: inline-block;"
     string += "}"
     string += ".address-block p, .notes p {"
-    string +=   "font-weight: bold;"
+    string +=   "font-family: Lato;"
     string +=   "margin-bottom: 5px;"
     string += "}"
     string += ".address-block.first {"
@@ -224,6 +227,7 @@ class Invoice < ActiveRecord::Base
       booking = self.booking
       string += "<tr><th></th><th></th><th></th><th></th></tr>"
     end
+    total_dvds = 0
     self.invoice_rows.each_with_index do |row, index|
       if index == 38 || ((index - 38) % 51 == 0)
         string += '</table><div class="page-break"><table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>'
@@ -240,6 +244,7 @@ class Invoice < ActiveRecord::Base
         string += "<td>#{row.item_label}</td>"
       end
       if self.invoice_type == "dvd"
+        total_dvds += row.item_qty
         string += "<td>#{dollarify(row.unit_price.to_s)}</td><td>#{row.item_qty}</td>"
       else
         string += "<td></td><td></td>"
@@ -260,7 +265,7 @@ class Invoice < ActiveRecord::Base
         string += "</tr>"
       end
     end
-    string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td></td><td>#{dollarify(self.total_minus_payments.to_s)}</td></tr>"
+    string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td>#{self.invoice_type == "dvd" ? "#{total_dvds}" : ""}</td><td>#{dollarify(self.total_minus_payments.to_s)}</td></tr>"
     string += "</table>"
     unless self.notes.empty?
       string += "<div class=\"notes\">"

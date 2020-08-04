@@ -43,7 +43,7 @@ class ExportFilms
       'Auto Renew Days Notice'
     ]
 
-    if search_criteria
+    if search_criteria != 'null'
       search_criteria = JSON.parse(search_criteria)
       search_criteria["selected_territories"].each do |territory_id|
         territory_name = Territory.find(territory_id).name
@@ -94,7 +94,7 @@ class ExportFilms
         film.auto_renew ? film.auto_renew_days_notice : ''
       ]
 
-      if search_criteria
+      if search_criteria != 'null'
         search_criteria["selected_territories"].each do |territory_id|
           search_criteria["selected_rights"].each do |right_id|
             film_right = FilmRight.find_by({ right_id: right_id, territory_id: territory_id, film_id: film.id })
