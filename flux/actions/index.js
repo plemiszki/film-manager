@@ -3,11 +3,14 @@ import ChangeCase from 'change-case'
 
 export function sendRequest(args) {
   let { url, method, data } = args;
+  if (data) {
+    data = HandyTools.convertObjectKeysToUnderscore(data);
+  }
   return (dispatch) => {
     return $.ajax({
       method: method.toUpperCase(),
       url,
-      data: HandyTools.convertObjectKeysToUnderscore(data)
+      data
     }).then(
       (response) => {
         let obj = Object.assign(response, { type: 'SEND_REQUEST' });
