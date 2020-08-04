@@ -1,5 +1,8 @@
 class CreditMemo < ActiveRecord::Base
 
+  DVDS_ON_FIRST_PAGE = 37
+  DVDS_PER_PAGE = 46
+
   include Dollarify
 
   validates :sent_date, :number, :return_number, :customer_id, presence: true
@@ -49,9 +52,8 @@ class CreditMemo < ActiveRecord::Base
     string +=   "font-size: 16px;"
     string +=   "margin-bottom: 4px;"
     string += "}"
-    string += "th {"
+    string += "th, tr.total-row td {"
     string +=   "font-family: Lato;"
-    string +=   "padding-bottom: 10px;"
     string += "}"
     string += "th, td {"
     string +=   "width: 20%;"
@@ -62,9 +64,8 @@ class CreditMemo < ActiveRecord::Base
     string += "th:nth-of-type(3), td:nth-of-type(3) {"
     string +=   "width: 10%;"
     string += "}"
-    string += "tr.total-row td {"
-    string +=   "font-family: Lato;"
-    string +=   "padding-top: 10px;"
+    string += "th, td {"
+    string +=   "padding-bottom: 10px;"
     string += "}"
     string += "td.big-margin {"
     string +=   "padding-bottom: 20px;"
@@ -115,7 +116,7 @@ class CreditMemo < ActiveRecord::Base
     total_dvds = 0
     credit_memo_rows.each_with_index do |row, index|
       total_dvds += row.item_qty
-      if index == 38 || ((index - 38) % 51 == 0)
+      if index == DVDS_ON_FIRST_PAGE || ((index - DVDS_ON_FIRST_PAGE) % DVDS_PER_PAGE == 0)
         string += '</table><div class="page-break"><table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>'
       end
       string += "<tr>"
