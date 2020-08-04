@@ -1,5 +1,8 @@
 class Invoice < ActiveRecord::Base
 
+  DVDS_ON_FIRST_PAGE = 37
+  DVDS_PER_PAGE = 46
+
   include Dollarify
 
   validates :invoice_type, :number, presence: true
@@ -142,9 +145,8 @@ class Invoice < ActiveRecord::Base
     string +=   "font-size: 16px;"
     string +=   "margin-bottom: 4px;"
     string += "}"
-    string += "th {"
+    string += "th, tr.total-row td {"
     string +=   "font-family: Lato;"
-    string +=   "padding-bottom: 10px;"
     string += "}"
     string += "th, td {"
     string +=   "width: 20%;"
@@ -155,9 +157,8 @@ class Invoice < ActiveRecord::Base
     string += "th:nth-of-type(3), td:nth-of-type(3) {"
     string +=   "width: 10%;"
     string += "}"
-    string += "tr.total-row td {"
-    string +=   "font-family: Lato;"
-    string +=   "padding-top: 10px;"
+    string += "th, td {"
+    string +=   "padding-bottom: 10px;"
     string += "}"
     string += "td.big-margin {"
     string +=   "padding-bottom: 20px;"
@@ -176,6 +177,7 @@ class Invoice < ActiveRecord::Base
     string +=   "margin-right: 50px;"
     string += "}"
     string += "</style>"
+
     string += "<div class=\"upper-right\">"
     string +=   "<div class=\"invoice-header\">INVOICE</div>"
     string +=   "Date Sent: #{self.sent_date.strftime("%-m/%-d/%y")}<br>"
@@ -229,7 +231,7 @@ class Invoice < ActiveRecord::Base
     end
     total_dvds = 0
     self.invoice_rows.each_with_index do |row, index|
-      if index == 38 || ((index - 38) % 51 == 0)
+      if index == DVDS_ON_FIRST_PAGE || ((index - DVDS_ON_FIRST_PAGE) % DVDS_PER_PAGE == 0)
         string += '</table><div class="page-break"><table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>'
       end
       string += "<tr>"

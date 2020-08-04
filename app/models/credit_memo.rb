@@ -11,17 +11,18 @@ class CreditMemo < ActiveRecord::Base
   belongs_to :return
 
   def export(path)
-
     string = "<style>"
+    string += "@import url('https://fonts.googleapis.com/css2?family=Tinos:wght@700&display=swap');"
+    string += "@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');"
+    string += "@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap');"
     string += "body {"
-    string +=   "font-family: Arial;"
+    string +=   "font-family: Roboto;"
     string +=   "font-size: 12px;"
     string +=   "line-height: 16px;"
     string += "}"
     string += "table {"
     string +=   "margin-top: 40px;"
     string +=   "width: 100%;"
-    string +=   "font-family: Arial;"
     string +=   "font-size: 12px;"
     string +=   "line-height: 14px;"
     string +=   "text-align: left;"
@@ -29,19 +30,19 @@ class CreditMemo < ActiveRecord::Base
     string += "}"
     string += ".upper-right {"
     string +=   "float: right;"
-    string +=   "width: 200px;"
+    string +=   "width: 300px;"
     string +=   "line-height: 1.5;"
     string += "}"
     string += ".upper-right-bold {"
     string +=   "margin-top: 10px;"
-    string +=   "font-weight: bold;"
+    string +=   "font-family: Lato;"
     string +=   "font-size: 18px;"
     string += "}"
     string += ".invoice-header {"
-    string +=   "font-family: Times;"
+    string +=   "font-family: Tinos;"
     string +=   "line-height: normal;"
     string +=   "letter-spacing: .5px;"
-    string +=   "font-size: 30px;"
+    string +=   "font-size: 40px;"
     string +=   "margin-bottom: 10px;"
     string += "}"
     string += ".film-movement {"
@@ -49,6 +50,7 @@ class CreditMemo < ActiveRecord::Base
     string +=   "margin-bottom: 4px;"
     string += "}"
     string += "th {"
+    string +=   "font-family: Lato;"
     string +=   "padding-bottom: 10px;"
     string += "}"
     string += "th, td {"
@@ -61,7 +63,7 @@ class CreditMemo < ActiveRecord::Base
     string +=   "width: 10%;"
     string += "}"
     string += "tr.total-row td {"
-    string +=   "font-weight: bold;"
+    string +=   "font-family: Lato;"
     string +=   "padding-top: 10px;"
     string += "}"
     string += "td.big-margin {"
@@ -72,10 +74,9 @@ class CreditMemo < ActiveRecord::Base
     string += "}"
     string += ".address-block {"
     string +=   "display: inline-block;"
-    string +=   "width: 300px;"
     string += "}"
-    string += ".address-block p {"
-    string +=   "font-weight: bold;"
+    string += ".address-block p, .notes p {"
+    string +=   "font-family: Lato;"
     string +=   "margin-bottom: 5px;"
     string += "}"
     string += ".address-block.first {"
@@ -111,7 +112,9 @@ class CreditMemo < ActiveRecord::Base
 
     string += "<table>"
     string += "<tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>"
+    total_dvds = 0
     credit_memo_rows.each_with_index do |row, index|
+      total_dvds += row.item_qty
       if index == 38 || ((index - 38) % 51 == 0)
         string += '</table><div class="page-break"><table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>'
       end
@@ -121,7 +124,7 @@ class CreditMemo < ActiveRecord::Base
       string += "<td>#{dollarify(row.total_price.to_s)}</td>"
       string += "</tr>"
     end
-    string += "<tr class=\"total-row\"><td>Total</td><td></td><td></td><td>#{dollarify(self.total.to_s)}</td></tr>"
+    string += "<tr class=\"total-row\"><td>Total</td><td></td><td>#{total_dvds}</td><td>#{dollarify(self.total.to_s)}</td></tr>"
     string += "</table>"
     string += "</div>"
     File.open(path, 'wb') do |f|
