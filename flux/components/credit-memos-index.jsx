@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
-import { fetchEntities } from '../actions/index'
+import { sendRequest, fetchEntities } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const filterModalStyles = {
@@ -53,27 +53,6 @@ class CreditMemosIndex extends React.Component {
       });
     });
   }
-
-  // getJob() {
-  //   var job = JobStore.job();
-  //   if (job.done) {
-  //     this.setState({
-  //       jobModalOpen: false,
-  //       errorsModalOpen: job.errors_text !== "",
-  //       job: job
-  //     }, function() {
-  //       if (job.errors_text === "") {
-  //         window.location.href = job.first_line;
-  //       }
-  //     });
-  //   } else {
-  //     this.setState({
-  //       jobModalOpen: true,
-  //       job: job,
-  //       fetching: false
-  //     });
-  //   }
-  // }
 
   redirect(id) {
     window.location.pathname = "credit_memos/" + id;
@@ -155,15 +134,25 @@ class CreditMemosIndex extends React.Component {
   }
 
   clickExport() {
-    // if (!this.state.fetching) {
-    //   this.setState({
-    //     fetching: true
-    //   });
-    //   let creditMemoIds = this.state.creditMemos.map((creditMemo) => {
-    //     return creditMemo.id;
-    //   });
-    //   ClientActions.exportCreditMemos(creditMemoIds);
-    // }
+    if (!this.state.fetching) {
+      this.setState({
+        fetching: true
+      });
+      let creditMemoIds = this.state.creditMemos.map((creditMemo) => {
+        return creditMemo.id;
+      });
+      this.props.sendRequest({
+        url: `/api/credit_memos/export`,
+        method: 'get',
+        data: { creditMemoIds }
+      }).then(() => {
+        this.setState({
+          job: this.props.job,
+          fetching: false,
+          jobModalOpen: true
+        });
+      });
+    }
   }
 
   render() {
@@ -258,23 +247,32 @@ class CreditMemosIndex extends React.Component {
     }
   }
 
-  // componentDidUpdate() {
-  //   if (this.state.jobModalOpen) {
-  //     window.setTimeout(() => {
-  //       $.ajax({
-  //         url: '/api/jobs/status',
-  //         method: 'GET',
-  //         data: {
-  //           id: this.state.job.id,
-  //           time: this.state.job.job_id
-  //         },
-  //         success: (response) => {
-  //           ServerActions.receiveJob(response);
-  //         }
-  //       });
-  //     }, 1500)
-  //   }
-  // }
+  componentDidUpdate() {
+    if (this.state.jobModalOpen) {
+      window.setTimeout(() => {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: (response) => {
+            let newState = {
+              job: response
+            };
+            if (response.status === 'success') {
+              newState.jobModalOpen = false;
+            }
+            this.setState(newState);
+            if (response.status === 'success') {
+              window.location.href = response.metadata.url;
+            }
+          }
+        });
+      }, 1500)
+    }
+  }
 }
 
 const mapStateToProps = (reducers) => {
@@ -282,7 +280,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntities }, dispatch);
+  return bindActionCreators({ fetchEntities, sendRequest }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreditMemosIndex);

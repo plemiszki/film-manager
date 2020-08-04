@@ -7,7 +7,7 @@ export function sendRequest(args) {
     return $.ajax({
       method: method.toUpperCase(),
       url,
-      data
+      data: HandyTools.convertObjectKeysToUnderscore(data)
     }).then(
       (response) => {
         let obj = Object.assign(response, { type: 'SEND_REQUEST' });

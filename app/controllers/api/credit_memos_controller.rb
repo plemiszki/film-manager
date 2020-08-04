@@ -15,4 +15,12 @@ class Api::CreditMemosController < AdminController
     render 'show.json.jbuilder'
   end
 
+  def export_sage
+    credit_memo_ids = params[:credit_memo_ids].to_a.map(&:to_i)
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "export credit memos", first_line: "Exporting Credit Memos", second_line: true, current_value: 0, total_value: credit_memo_ids.length)
+    ExportCreditMemos.perform_async(credit_memo_ids, time_started)
+    render json: { job: job }
+  end
+
 end
