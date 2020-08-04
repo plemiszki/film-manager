@@ -1,6 +1,7 @@
 class ReturnItem < ActiveRecord::Base
 
   belongs_to :return
+  belongs_to :dvd, foreign_key: :item_id
 
   def item
     if item_type == 'dvd'

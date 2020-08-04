@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_13_001629) do
+ActiveRecord::Schema.define(version: 2020_07_27_133337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -129,6 +129,32 @@ ActiveRecord::Schema.define(version: 2020_07_13_001629) do
 
   create_table "countries", force: :cascade do |t|
     t.string "name", null: false
+  end
+
+  create_table "credit_memo_rows", force: :cascade do |t|
+    t.integer "credit_memo_id", null: false
+    t.string "item_label", null: false
+    t.decimal "unit_price", precision: 8, scale: 2, default: "0.0"
+    t.integer "item_qty", null: false
+    t.decimal "total_price", precision: 8, scale: 2, default: "0.0"
+    t.integer "dvd_id", null: false
+  end
+
+  create_table "credit_memos", force: :cascade do |t|
+    t.date "sent_date", null: false
+    t.string "number", null: false
+    t.string "billing_name", default: ""
+    t.string "billing_address1", default: ""
+    t.string "billing_address2", default: ""
+    t.string "billing_city", default: ""
+    t.string "billing_state", default: ""
+    t.string "billing_zip", default: ""
+    t.string "billing_country", default: ""
+    t.decimal "total", precision: 8, scale: 2, default: "0.0"
+    t.string "return_number", null: false
+    t.integer "customer_id", null: false
+    t.index ["customer_id"], name: "index_credit_memos_on_customer_id"
+    t.index ["number"], name: "index_credit_memos_on_number", unique: true
   end
 
   create_table "crossed_films", force: :cascade do |t|
@@ -431,6 +457,8 @@ ActiveRecord::Schema.define(version: 2020_07_13_001629) do
     t.string "name"
     t.boolean "done", default: false
     t.boolean "killed", default: false
+    t.jsonb "metadata"
+    t.integer "status", default: 0
   end
 
   create_table "labels", force: :cascade do |t|
@@ -621,6 +649,8 @@ ActiveRecord::Schema.define(version: 2020_07_13_001629) do
     t.string "booking_invoice_payment_info_email_text", default: ""
     t.string "shipping_terms_email_text", default: ""
     t.string "all_booking_invoices_email_text", default: ""
+    t.integer "next_credit_memo_number", default: 1
+    t.string "credit_memo_email_text", default: ""
   end
 
   create_table "shipping_addresses", force: :cascade do |t|

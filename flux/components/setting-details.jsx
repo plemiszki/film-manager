@@ -54,6 +54,7 @@ class SettingsDetails extends React.Component {
         entity: {
           booking_confirmation_text: this.state.settings.bookingConfirmationText,
           dvd_invoice_email_text: this.state.settings.dvdInvoiceEmailText,
+          credit_memo_email_text: this.state.settings.creditMemoEmailText,
           paid_booking_invoice_email_text: this.state.settings.paidBookingInvoiceEmailText,
           partially_paid_booking_invoice_email_text: this.state.settings.partiallyPaidBookingInvoiceEmailText,
           unpaid_overage_booking_invoice_email_text: this.state.settings.unpaidOverageBookingInvoiceEmailText,
@@ -103,7 +104,8 @@ class SettingsDetails extends React.Component {
               { Details.renderTextBox.bind(this)({ columnHeader: 'Booking Invoice Payment Info Email Copy', subheader: 'Included in all booking invoice emails with a balance due.', rows: 15, columnWidth: 12, entity: 'settings', property: 'bookingInvoicePaymentInfoEmailText' }) }
               { Details.renderTextBox.bind(this)({ columnHeader: 'Booking Invoice Shipping Terms Email Copy', subheader: 'Included in invoice emails for non-theatrical or festival bookings with an advance.', rows: 4, columnWidth: 12, entity: 'settings', property: 'shippingTermsEmailText' }) }
               { Details.renderTextBox.bind(this)({ columnHeader: 'Booking Invoices Additional Email Copy', subheader: 'Included at the end of all booking invoice emails.', rows: 4, columnWidth: 12, entity: 'settings', property: 'allBookingInvoicesEmailText' }) }
-              { Details.renderTextBox.bind(this)({ columnHeader: 'DVD Invoice Email Copy', rows: 4, columnWidth: 12, entity: 'settings', property: 'dvdInvoiceEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'DVD Invoice Email Copy', rows: 10, columnWidth: 12, entity: 'settings', property: 'dvdInvoiceEmailText' }) }
+              { Details.renderTextBox.bind(this)({ columnHeader: 'Credit Memo Email Copy', rows: 8, columnWidth: 12, entity: 'settings', property: 'creditMemoEmailText' }) }
             </div>
             { this.renderButtons() }
           </div>

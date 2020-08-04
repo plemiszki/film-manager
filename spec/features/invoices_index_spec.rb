@@ -23,17 +23,17 @@ describe 'invoices_index', type: :feature do
 
   it 'filters invoices by type' do
     visit invoices_path(as: $admin_user)
-    update_filter('Booking')
+    update_invoices_filter('Booking')
     expect(page).to have_content('1B')
     expect(page).to have_no_content('1D')
-    update_filter('DVD')
+    update_invoices_filter('DVD')
     expect(page).to have_no_content('1B')
     expect(page).to have_content('1D')
   end
 
 end
 
-def update_filter(type)
+def update_invoices_filter(type)
   find('.orange-button', text: 'Filter').click
   within('.filter-modal') do
     click_nice_select_option('select', type)

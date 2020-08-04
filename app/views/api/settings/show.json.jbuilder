@@ -1,6 +1,7 @@
 json.settings do
   json.bookingConfirmationText @settings.booking_confirmation_text
   json.dvdInvoiceEmailText @settings.dvd_invoice_email_text
+  json.creditMemoEmailText @settings.credit_memo_email_text
   json.paidBookingInvoiceEmailText @settings.paid_booking_invoice_email_text
   json.partiallyPaidBookingInvoiceEmailText @settings.partially_paid_booking_invoice_email_text
   json.unpaidOverageBookingInvoiceEmailText @settings.unpaid_overage_booking_invoice_email_text

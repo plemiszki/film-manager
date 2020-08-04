@@ -28,12 +28,13 @@ describe 'returns_index', type: :feature do
       date: Date.today,
       number: 'return order number'
     }, :orange_button)
-    expect(find('.fm-admin-table')).to have_content 'return order number'
-    expect(Return.last.attributes).to include(
+    new_return = Return.last
+    expect(new_return.attributes).to include(
       'customer_id' => 1,
       'date' => Date.today,
       'number' => 'return order number'
     )
+    expect(page).to have_current_path("/returns/#{new_return.id}", ignore_query: true)
   end
 
   it 'validates new returns properly' do

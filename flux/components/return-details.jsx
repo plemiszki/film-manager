@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
@@ -7,6 +9,7 @@ import ReturnItemsStore from '../stores/return-items-store.js'
 import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -36,7 +39,12 @@ class ReturnDetails extends React.Component {
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
+      deleteModalOpen: false,
+      jobModalOpen: false,
+      noErrorsModalOpen: false,
+      job: {
+        errors_text: ''
+      }
     };
   }
 
@@ -151,6 +159,22 @@ class ReturnDetails extends React.Component {
     ClientActions.deleteReturnItem(e.target.dataset.id);
   }
 
+  clickGenerateButton() {
+    this.setState({
+      fetching: true
+    });
+    this.props.sendRequest({
+      url: `/api/returns/${this.state.return.id}/send_credit_memo`,
+      method: 'post'
+    }).then(() => {
+      this.setState({
+        job: this.props.job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
+  }
+
   closeModal() {
     this.setState({
       selectItemModalOpen: false,
@@ -169,6 +193,12 @@ class ReturnDetails extends React.Component {
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this)
     }
+  }
+
+  modalCloseAndRefresh() {
+    this.setState({
+      noErrorsModalOpen: false
+    });
   }
 
   findOtherItem(type, id) {
@@ -246,6 +276,8 @@ class ReturnDetails extends React.Component {
             <a className="blue-outline-button small" onClick={ this.clickAddItemButton.bind(this) }>Add Item</a>
             <hr />
             { this.renderButtons() }
+            <hr />
+            { this.renderCreditMemoSection() }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
@@ -264,8 +296,22 @@ class ReturnDetails extends React.Component {
             </div>
           </div>
         </Modal>
+        { FM.jobModal.call(this, this.state.job) }
+        { FM.jobNoErrorsModal.call(this) }
       </div>
     );
+  }
+
+  renderCreditMemoSection() {
+    if (this.state.return.creditMemoId) {
+      return(
+        <div><a style={ { textDecoration: 'underline' } } href={ `/credit_memos/${this.state.return.creditMemoId}` }>Credit Memo { this.state.return.creditMemoNumber }</a> was sent on { this.state.return.creditMemoDate }.</div>
+      );
+    } else if (this.state.return.id) {
+      return(
+        <a className={ "orange-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate and Send Credit Memo</a>
+      );
+    }
   }
 
   renderXButton(item) {
@@ -286,7 +332,7 @@ class ReturnDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "orange-button m-bottom" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
         <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
@@ -298,8 +344,47 @@ class ReturnDetails extends React.Component {
 
   componentDidUpdate() {
     FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    $('.match-height-layout').matchHeight();
+    if (this.state.jobModalOpen) {
+      window.setTimeout(() => {
+        $.ajax({
+          url: '/api/jobs/status',
+          method: 'GET',
+          data: {
+            id: this.state.job.id,
+            time: this.state.job.job_id
+          },
+          success: (response) => {
+            let newState = {
+              job: response
+            };
+            if (response.status === 'failed' || response.status === 'success') {
+              newState.jobModalOpen = false;
+              newState.noErrorsModalOpen = true;
+              if (response.status === 'success') {
+                let r = this.state.return;
+                r.creditMemoId = response.metadata['credit_memo_id']
+                r.creditMemoNumber = response.metadata['credit_memo_number']
+                r.creditMemoDate = response.metadata['credit_memo_date']
+                newState.return = r;
+              }
+            } else {
+              newState.jobModalOpen = true;
+              newState.noErrorsModalOpen = false;
+            }
+            this.setState(newState);
+          }
+        });
+      }, 1500)
+    }
   }
 }
 
-export default ReturnDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReturnDetails);

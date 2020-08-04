@@ -3,6 +3,9 @@ json.returns @returns do |r|
   json.number r.number
   json.customerId r.customer_id.to_s
   json.date r.date
+  json.creditMemoId r.credit_memo.try(:id) || ''
+  json.creditMemoNumber r.credit_memo.try(:number) || ''
+  json.creditMemoDate r.credit_memo.try(:sent_date).try(:strftime, "%-m/%-d/%y") || ''
 end
 json.customers @dvd_customers do |customer|
   json.id customer.id

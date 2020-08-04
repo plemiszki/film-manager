@@ -22,7 +22,9 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show]
   resources :invoices, only: [:index, :show]
   resources :returns, only: [:index, :show]
-  resource :setting, path: "settings"
+  resources :credit_memos, only: [:index, :show]
+  get '/credit_memos/:id/export' => 'credit_memos#export'
+  resource :setting, path: 'settings'
   get '/catalog' => 'films#catalog'
   patch '/users/1' => 'api/convert#import'
   patch '/users/2' => 'api/royalty_reports#import'
@@ -96,10 +98,13 @@ Rails.application.routes.draw do
     get '/invoices/:id/export' => '/api/invoices#export'
     post '/invoices/export' => '/api/invoices#export_sage'
     post '/invoices' => '/api/invoices#create'
+    get '/credit_memos/export' => '/api/credit_memos#export_sage'
+    resources :credit_memos, only: [:index, :create, :show]
     post '/dvd_reports/export' => '/api/purchase_orders#export'
     get '/calendar' => 'calendar#show'
     resources :returns, only: [:index, :create, :show, :update, :destroy]
     post '/returns/export' => '/api/returns#export'
+    post '/returns/:id/send_credit_memo' => '/api/returns#send_credit_memo'
     resources :return_items, only: [:create, :destroy]
     resources :weekly_terms, only: [:create, :destroy]
     resources :weekly_box_offices, only: [:create, :destroy]
@@ -130,7 +135,7 @@ Rails.application.routes.draw do
     resources :actors, only: [:create, :destroy]
     patch '/directors/rearrange' => '/api/directors#rearrange'
     resources :directors, only: [:create, :destroy]
-    
+
     resources :film_formats, only: [:index, :create, :destroy]
     resources :film_topics, only: [:index, :create, :destroy]
     resources :related_films, only: [:create, :destroy]

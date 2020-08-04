@@ -28,6 +28,8 @@ import GiftBoxDetails from './components/giftbox-details.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
 import InvoiceDetails from './components/invoice-details.jsx'
 import InvoicesIndex from './components/invoices-index.jsx'
+import CreditMemosIndex from './components/credit-memos-index.jsx'
+import CreditMemoDetails from './components/credit-memo-details.jsx'
 import JobsIndex from './components/jobs-index.jsx'
 import LicensorDetails from './components/licensor-details.jsx'
 import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
@@ -118,6 +120,22 @@ $(document).ready(function() {
   if ($('#invoice-details')[0]) {
     ReactDOM.render(<InvoiceDetails />, document.getElementById("invoice-details"));
   }
+  if ($('#credit-memos-index')[0]) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <CreditMemosIndex context={ MyContext } />
+      </Provider>,
+      document.getElementById("credit-memos-index")
+    );
+  }
+  if ($('#credit-memo-details')[0]) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <CreditMemoDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("credit-memo-details")
+    );
+  }
   if ($('#dvd-reports')[0]) {
     ReactDOM.render(<DvdReports />, document.getElementById("dvd-reports"));
   }
@@ -125,7 +143,12 @@ $(document).ready(function() {
     ReactDOM.render(<ReturnsIndex />, document.getElementById("returns-index"));
   }
   if ($('#return-details')[0]) {
-    ReactDOM.render(<ReturnDetails />, document.getElementById("return-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <ReturnDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("return-details")
+    );
   }
   if ($('#venue-details')[0]) {
     ReactDOM.render(
