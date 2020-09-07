@@ -134,10 +134,10 @@ class ExportCreditMemos
           item.item_label,
           '30200',
           '', # 50
-          (item.unit_price * -1),
+          item.unit_price,
           '1',
           '', '',
-          (item.total_price * -1),
+          item.total_price,
           '', '', '', '', '',
           '1',
           '', '', '',
