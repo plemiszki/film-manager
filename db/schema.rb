@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_133337) do
+ActiveRecord::Schema.define(version: 2020_09_26_224459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_133337) do
 
   create_table "alternate_lengths", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
-    t.integer "length", null: false
+    t.string "length", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["film_id", "length"], name: "index_alternate_lengths_on_film_id_and_length", unique: true

@@ -97,7 +97,7 @@ class FilmsIndex extends React.Component {
     films.forEach((film) => {
       film.alternateLengths.forEach((length) => {
         if (allAltLengths.indexOf(length) === -1) {
-          allAltLengths.push(+length);
+          allAltLengths.push(length);
         }
       });
       film.alternateAudios.forEach((audio) => {
@@ -196,7 +196,7 @@ class FilmsIndex extends React.Component {
     films.forEach((film) => {
       includeFilm = true;
       selectedAltLengths.forEach((length) => {
-        if (film.alternateLengths.indexOf(+length) === -1) {
+        if (film.alternateLengths.indexOf(length) === -1) {
           includeFilm = false;
         }
       });
