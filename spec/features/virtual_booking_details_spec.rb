@@ -57,7 +57,6 @@ describe 'virtual_booking_details', type: :feature do
     save_and_wait
     expect(page).to have_content("Start date is not a valid date")
     expect(page).to have_content("End date is not a valid date")
-    expect(page).to have_content("Url can't be blank")
   end
 
   it 'deletes the virtual_booking' do
