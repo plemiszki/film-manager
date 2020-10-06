@@ -192,7 +192,7 @@ class Invoice < ActiveRecord::Base
     string += "</div></div>"
     string += "<div class=\"film-movement\">Film Movement</div>"
     string += "237 West 35th Street<br>"
-    string += "Suite 604<br>"
+    string += "Suite 303<br>"
     string += "New York, NY 10001<br>"
     string += "212.941.7744<br>"
     string += "Federal Tax IDN: 46-4076413<br>"

@@ -19,7 +19,7 @@ describe 'user_details', type: :feature do
     expect(find('input[data-field="name"]').value).to eq 'Peter Lemiszki'
     expect(find('input[data-field="email"]').value).to eq 'peter+features@filmmovement.com'
     expect(find('input[data-field="title"]').value).to eq 'Software Engineer'
-    expect(find('textarea[data-field="emailSignature"]').value).to eq "Peter Lemiszki\nFILM MOVEMENT\n237 West 35th Street, Suite 604\nNew York, NY 10001\nP: 212.941.7645 x206\nF: 212.941.7812\nFilmmovement.com"
+    expect(find('textarea[data-field="emailSignature"]').value).to eq "Peter Lemiszki\nFILM MOVEMENT\n237 West 35th Street, Suite 303\nNew York, NY 10001\nP: 212.941.7645 x206\nF: 212.941.7812\nFilmmovement.com"
     expect(find('input[data-field="access"]').value).to eq 'super_admin'
   end
 
@@ -29,7 +29,7 @@ describe 'user_details', type: :feature do
       name: 'Johnny Mo',
       email: 'johnny@filmmovement.com',
       title: 'Jabroni',
-      email_signature: "Johnny Mo\nFILM MOVEMENT\n237 West 35th Street, Suite 604\nNew York, NY 10001\nP: 212.941.7645 x206\nF: 212.941.7812\nFilmmovement.com"
+      email_signature: "Johnny Mo\nFILM MOVEMENT\n237 West 35th Street, Suite 303\nNew York, NY 10001\nP: 212.941.7645 x206\nF: 212.941.7812\nFilmmovement.com"
     }
     fill_out_form(new_info)
     save_and_wait
