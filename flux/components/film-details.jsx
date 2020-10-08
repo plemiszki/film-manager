@@ -1825,6 +1825,7 @@ class FilmDetails extends React.Component {
           </div>
           <div className="row">
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
           </div>
         </div>
       )

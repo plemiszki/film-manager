@@ -62,6 +62,7 @@ json.films @films do |film|
   json.rentalUrl film.rental_url
   json.rentalPrice '$' + number_with_precision(film.rental_price, precision: 2, delimiter: ',')
   json.rentalDays film.rental_days.to_s
+  json.tvRating film.tv_rating
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

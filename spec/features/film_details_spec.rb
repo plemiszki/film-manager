@@ -33,7 +33,8 @@ describe 'film_details', type: :feature do
       vod_synopsis: 'VOD Synopsis',
       short_synopsis: 'Short Synopsis',
       logline: 'Logline',
-      institutional_synopsis: 'Institutional Synopsis'
+      institutional_synopsis: 'Institutional Synopsis',
+      tv_rating: 'R'
     )
     Right.create!(name: 'Theatrical', order: 0)
     Right.create!(name: 'Non-Theatrical', order: 1)
@@ -342,6 +343,7 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="criticsPick"]').checked?).to eq true
     expect(find('input[data-field="rentalDays"]').value).to eq '3'
     expect(find('input[data-field="rentalPrice"]').value).to eq '$10.00'
+    expect(find('input[data-field="tvRating"]').value).to eq 'R'
   end
 
   it "updates the film's marketing information" do
@@ -365,7 +367,8 @@ describe 'film_details', type: :feature do
       critics_pick: false,
       rental_url: 'https://www.filmmovement.com/rentals/vilbyvonderful',
       rental_days: 4,
-      rental_price: 20
+      rental_price: 20,
+      tv_rating: 'G'
     }
     fill_out_form(new_info)
     save_and_wait

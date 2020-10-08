@@ -40,7 +40,8 @@ class ExportFilms
       'Blu-ray Stock',
       'Auto Renew',
       'Auto Renew Term',
-      'Auto Renew Days Notice'
+      'Auto Renew Days Notice',
+      'TV Rating'
     ]
 
     if search_criteria != 'null'
@@ -91,7 +92,8 @@ class ExportFilms
         blu_ray ? blu_ray.stock : 'n/a',
         film.auto_renew ? 'Yes' : 'No',
         film.auto_renew ? film.auto_renew_term : '',
-        film.auto_renew ? film.auto_renew_days_notice : ''
+        film.auto_renew ? film.auto_renew_days_notice : '',
+        film.tv_rating
       ]
 
       if search_criteria != 'null'
