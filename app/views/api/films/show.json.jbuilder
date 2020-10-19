@@ -213,6 +213,11 @@ json.bookings @bookings do |booking|
   json.valid @calculations[booking.id][:valid]
   json.owed dollarify(number_with_precision(@calculations[booking.id][:owed], precision: 2, delimiter: ','))
 end
+json.virtualBookings @virtual_bookings do |booking|
+  json.id booking.id
+  json.venue booking.venue.label
+  json.startDate booking.start_date.strftime("%-m/%-d/%y")
+end
 json.digitalRetailers @digital_retailers do |digital_retailer|
   json.id digital_retailer.id
   json.name digital_retailer.name

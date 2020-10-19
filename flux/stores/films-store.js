@@ -14,6 +14,7 @@ var _rights = {};
 var _subRights = {};
 var _dvds = {};
 var _bookings = [];
+var _virtualBookings = [];
 var _dvdTypes = [];
 var _labels = [];
 var _schedule = [];
@@ -92,6 +93,10 @@ FilmsStore.setDvds = function(dvds) {
 
 FilmsStore.setBookings = function(bookings) {
   _bookings = bookings;
+};
+
+FilmsStore.setVirtualBookings = function(virtualBookings) {
+  _virtualBookings = virtualBookings;
 };
 
 FilmsStore.setDvdTypes = function(dvdTypes) {
@@ -225,7 +230,16 @@ FilmsStore.dvds = function() {
 };
 
 FilmsStore.bookings = function() {
-  return HandyTools.sortArrayOfDateStrings(_bookings, 'startDate').reverse();
+  let mappedVirtualBookings = _virtualBookings.map((virtualBooking) => {
+    return {
+      id: virtualBooking.id,
+      startDate: virtualBooking.startDate,
+      venue: virtualBooking.venue,
+      type: 'Virtual'
+    }
+  });
+  let combinedBookings = _bookings.concat(mappedVirtualBookings);
+  return HandyTools.sortArrayOfDateStrings(combinedBookings, 'startDate').reverse();
 };
 
 FilmsStore.dvdTypes = function() {
@@ -268,6 +282,7 @@ FilmsStore.__onDispatch = function(payload) {
       this.setDvdTypes(payload.dvdTypes);
       this.setLabels(payload.labels);
       this.setBookings(payload.bookings);
+      this.setVirtualBookings(payload.virtualBookings);
       this.setCrossedFilms(payload.crossedFilms);
       this.setOtherCrossedFilms(payload.otherCrossedFilms);
       this.setAlternateAudios(payload.alternateAudios);

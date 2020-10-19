@@ -318,6 +318,7 @@ class Api::FilmsController < AdminController
     @film_formats = FilmFormat.where(film_id: params[:id]).includes(:format)
     @formats = Format.where.not(id: @film_formats.map { |ff| ff.format_id })
     @bookings = Booking.where(film_id: film.id).includes(:venue, :payments)
+    @virtual_bookings = VirtualBooking.where(film_id: film.id).includes(:venue)
     @calculations = {}
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)

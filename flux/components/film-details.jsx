@@ -1409,7 +1409,16 @@ class FilmDetails extends React.Component {
               <tr><td></td><td></td><td></td></tr>
               { _.orderBy(filteredBookings, [FM.commonSort.bind(this)]).map((booking, index) => {
                 return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, "bookings", booking.id) }>
+                  <tr
+                    key={ index }
+                    onClick={ () => {
+                      if (booking.type === 'Virtual') {
+                        this.redirect.call(this, "virtual_bookings", booking.id);
+                      } else {
+                        this.redirect.call(this, "bookings", booking.id)
+                      }
+                    }}
+                  >
                     <td className="indent">
                       { booking.startDate }
                     </td>
@@ -1420,7 +1429,7 @@ class FilmDetails extends React.Component {
                       { booking.type }
                     </td>
                     <td>
-                      { booking.valid ? booking.owed : 'Invalid' }
+                      { booking.type === 'Virtual' ? 'N/A' : (booking.valid ? booking.owed : 'Invalid') }
                     </td>
                   </tr>
                 );

@@ -47,6 +47,7 @@ var ServerActions = {
       relatedFilms: response.relatedFilms,
       otherFilms: response.otherFilms,
       bookings: response.bookings,
+      virtualBookings: response.virtualBookings,
       filmFormats: response.filmFormats,
       formats: response.formats,
       digitalRetailers: response.digitalRetailers,

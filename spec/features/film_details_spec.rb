@@ -723,10 +723,15 @@ describe 'film_details', type: :feature do
   it "displays the film's bookings" do
     create(:venue)
     create(:booking)
+    create(:venue, label: 'Alamo Drafthouse Cinema')
+    create(:virtual_booking, venue_id: 2)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Bookings').click
     within('.bookings-table') do
       expect(page).to have_content('Film at Lincoln Center')
+      expect(page).to have_content('Theatrical')
+      expect(page).to have_content('Alamo Drafthouse Cinema')
+      expect(page).to have_content('Virtual')
     end
     within('.bookings-count-list') do
       expect(page).to have_content('Theatrical: 1')
