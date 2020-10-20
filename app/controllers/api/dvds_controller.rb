@@ -62,7 +62,9 @@ class Api::DvdsController < AdminController
   private
 
   def dvd_params
-    params[:dvd].permit(:name, :upc, :price, :dvd_type_id, :feature_film_id, :stock, :repressing, :sound_config, :special_features, :discs, :units_shipped, :first_shipment, :pre_book_date, :retail_date)
+    result = params[:dvd].permit(:name, :upc, :price, :dvd_type_id, :feature_film_id, :stock, :repressing, :sound_config, :special_features, :discs, :units_shipped, :first_shipment, :pre_book_date, :retail_date)
+    result[:upc] = result[:upc].strip
+    result
   end
 
 end
