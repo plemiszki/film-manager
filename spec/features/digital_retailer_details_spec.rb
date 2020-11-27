@@ -15,6 +15,7 @@ describe 'digital_retailer_details', type: :feature do
 
   it 'displays information about the digital retailer' do
     visit digital_retailer_path(@digtial_retailer, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="name"]').value).to eq('iTunes')
     expect(find('input[data-field="sageId"]').value).to eq('Apple iTns')
     expect(find('input[data-field="billingName"]').value).to eq('Apple iTunes')
