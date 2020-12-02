@@ -7,6 +7,6 @@ json.rights @rights do |right|
   json.name right.name
 end
 json.films @films do |film|
-  json.id film.id.to_s
+  json.id film.id
   json.title film.title
 end

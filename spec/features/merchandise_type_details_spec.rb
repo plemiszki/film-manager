@@ -15,6 +15,7 @@ describe 'merchandise_type_details', type: :feature do
 
   it 'displays information about the merchandise_type' do
     visit merchandise_type_path(@merchandise_type, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="name"]').value).to eq('Shirt')
   end
 

@@ -60,6 +60,7 @@ describe 'film_details', type: :feature do
 
   it 'displays general information about the film' do
     visit film_path(@film, as: $admin_user)
+    wait_for_ajax
     expect(page).not_to have_selector('.spinner')
     expect(find('input[data-field="title"]').value).to eq 'Some Film'
     expect(find('.directors-list')).to have_content('Rob Reiner')

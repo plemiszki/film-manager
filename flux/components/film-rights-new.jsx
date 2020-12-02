@@ -99,7 +99,8 @@ class FilmRightsNew extends React.Component {
   changeFieldArgs() {
     return {
       thing: 'filmRight',
-      errorsArray: this.state.errors
+      errorsArray: this.state.errors,
+      allErrors: Errors
     }
   }
 
@@ -152,17 +153,7 @@ class FilmRightsNew extends React.Component {
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
-            <div className={ this.props.sublicensorId ? "col-xs-6 select-scroll" : "hidden" }>
-              <h2>Film</h2>
-              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="filmId" value={ this.state.filmRight.filmId }>
-                { this.state.films.map((film, index) => {
-                  return(
-                    <option key={ index } value={ film.id }>{ film.title }</option>
-                  );
-                }) }
-              </select>
-              { Details.renderFieldError(this.state.errors, []) }
-            </div>
+            { this.renderFilmField.call(this) }
             <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
               <h2>Start Date</h2>
               <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
@@ -211,6 +202,16 @@ class FilmRightsNew extends React.Component {
         </div>
       </div>
     );
+  }
+
+  renderFilmField() {
+    if (this.props.sublicensorId) {
+      return(
+        <>
+          { Details.renderField.bind(this)({ columnWidth: 6, entity: 'filmRight', property: 'filmId', columnHeader: 'Film', customType: 'modal', modalDisplayProperty: 'title' }) }
+        </>
+      );
+    }
   }
 
   renderExclusiveColumn() {

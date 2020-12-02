@@ -12,7 +12,7 @@ class Api::SubRightsController < AdminController
     error = false
     params[:rights].each do |right_id|
       params[:territories].each do |territory_id|
-        @sub_right = SubRight.find_by({ sublicensor_id: params[:sub_right][:sublicensor_id], right_id: right_id, territory_id: territory_id, film_id: params[:sub_right][:film_id] })
+        @sub_right = SubRight.find_by({ sublicensor_id: params[:sub_right][:sublicensor_id], right_id: right_id, territory_id: territory_id, film_id: params[:sub_right][:film_id], exclusive: params[:sub_right][:exclusive] })
         if @sub_right
           if @sub_right.update({ start_date: params[:sub_right][:start_date], end_date: params[:sub_right][:end_date], exclusive: params[:sub_right][:exclusive] })
           else
