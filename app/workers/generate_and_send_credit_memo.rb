@@ -23,7 +23,8 @@ class GenerateAndSendCreditMemo
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
     current_user = User.find(current_user_id)
     email_text = "#{Setting.first.credit_memo_email_text}\n\nKind Regards,\n\n#{current_user.email_signature}"
-    recipient_email_address = (ENV['CREDIT_MEMO_TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : credit_memo.customer.invoices_email)
+    dvd_customer = credit_memo.customer
+    recipient_email_address = (ENV['CREDIT_MEMO_TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : (dvd_customer.credit_memo_email.presence || dvd_customer.invoices_email))
     message_params = {
       from: current_user.email,
       to: recipient_email_address,
@@ -37,7 +38,6 @@ class GenerateAndSendCreditMemo
 
   rescue => error
 
-    p error
     credit_memo.try(:destroy)
     job.update!({ status: :failed, first_line: 'Failed to Send Credit Memo' })
 

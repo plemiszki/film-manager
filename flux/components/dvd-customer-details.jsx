@@ -130,21 +130,12 @@ class DvdCustomerDetails extends React.Component {
               { Details.renderCheckbox.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'consignment' }) }
             </div>
             <div className={ "row" + (this.state.dvdCustomer.consignment ? " hidden" : "") }>
-              <div className="col-xs-6">
-                <h2>Invoices Email</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.invoicesEmail) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.invoicesEmail || "" } data-field="invoicesEmail" />
-                { Details.renderFieldError(this.state.errors, FM.errors.invoicesEmail) }
-              </div>
-              <div className="col-xs-3">
-                <h2>Sage ID</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.sageId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.sageId || "" } data-field="sageId" />
-                { Details.renderFieldError(this.state.errors, FM.errors.sageId) }
-              </div>
-              <div className="col-xs-3">
-                <h2>Payment Terms (in days)</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.paymentTerms) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.paymentTerms || "" } data-field="paymentTerms" />
-                { Details.renderFieldError(this.state.errors, FM.errors.paymentTerms) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'invoicesEmail' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'sageId' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'paymentTerms', columnHeader: 'Payment Terms (in days)' }) }
+            </div>
+            <div className={ "row" + (this.state.dvdCustomer.consignment ? " hidden" : "") }>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'creditMemoEmail', columnHeader: 'Credit Memos Email' }) }
             </div>
             <hr />
             <p>Billing Address:</p>

@@ -598,6 +598,7 @@ var ClientActions = {
           notes: dvdCustomer.notes,
           sage_id: dvdCustomer.sageId,
           invoices_email: dvdCustomer.invoicesEmail,
+          credit_memo_email: dvdCustomer.creditMemoEmail,
           payment_terms: dvdCustomer.paymentTerms,
           billing_name: dvdCustomer.billingName,
           address1: dvdCustomer.address1,

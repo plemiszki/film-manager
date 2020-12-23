@@ -6,6 +6,7 @@ json.dvdCustomer do
   json.notes @dvd_customer.notes
   json.sageId @dvd_customer.sage_id
   json.invoicesEmail @dvd_customer.invoices_email
+  json.creditMemoEmail @dvd_customer.credit_memo_email
   json.paymentTerms @dvd_customer.payment_terms
   json.billingName @dvd_customer.billing_name || ""
   json.address1 @dvd_customer.address1 || ""

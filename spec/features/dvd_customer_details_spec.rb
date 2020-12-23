@@ -9,6 +9,7 @@ describe 'dvd_customer_details', type: :feature do
       sage_id: 'Sage ID',
       payment_terms: 'payment terms',
       invoices_email: 'invoices@dvdcustomer.com',
+      credit_memo_email: 'creditmemos@dvdcustomer.com',
       discount: 50,
       billing_name: 'Billing Name',
       address1: 'Address 1',
@@ -34,6 +35,7 @@ describe 'dvd_customer_details', type: :feature do
     expect(find('input[data-field="name"]').value).to eq 'DVD Customer'
     expect(find('input[data-field="discount"]').value).to eq '50.0'
     expect(find('input[data-field="invoicesEmail"]').value).to eq 'invoices@dvdcustomer.com'
+    expect(find('input[data-field="creditMemoEmail"]').value).to eq 'creditmemos@dvdcustomer.com'
     expect(find('input[data-field="sageId"]').value).to eq 'Sage ID'
     expect(find('input[data-field="paymentTerms"]').value).to eq 'payment terms'
     expect(find('input[data-field="billingName"]').value).to eq 'Billing Name'
@@ -56,6 +58,7 @@ describe 'dvd_customer_details', type: :feature do
       sage_id: 'new sage id',
       payment_terms: 'new payment terms',
       invoices_email: 'newinvoices@dvdcustomer.com',
+      credit_memo_email: 'newcreditmemos@dvdcustomer.com',
       discount: 25,
       billing_name: 'New Billing Name',
       address1: 'New Address 1',

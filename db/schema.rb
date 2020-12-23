@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_08_134600) do
+ActiveRecord::Schema.define(version: 2020_12_23_192000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -211,6 +211,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_134600) do
     t.string "country"
     t.boolean "include_in_title_report", default: false
     t.string "nickname", default: ""
+    t.string "credit_memo_email", default: ""
   end
 
   create_table "dvd_shorts", id: :serial, force: :cascade do |t|
