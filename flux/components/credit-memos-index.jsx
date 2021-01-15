@@ -159,13 +159,14 @@ class CreditMemosIndex extends React.Component {
     const { filterStartNumber, filterEndNumber } = this.state;
     let filteredCreditMemos = this.state.creditMemos.filterSearchText(this.state.searchText, this.state.sortBy);
     filteredCreditMemos = filteredCreditMemos.filter((creditMemo) => {
-      const { number } = creditMemo;
+      let { number } = creditMemo;
+      number = +number.slice(2);
       if (filterStartNumber && filterEndNumber) {
-        return (+number >= +filterStartNumber && +number <= +filterEndNumber);
+        return (number >= +filterStartNumber && number <= +filterEndNumber);
       } else if (filterEndNumber) {
-        return (+number <= +filterEndNumber);
+        return (number <= +filterEndNumber);
       } else if (filterStartNumber) {
-        return (+number >= +filterStartNumber);
+        return (number >= +filterStartNumber);
       } else {
         return true;
       }
