@@ -128,4 +128,29 @@ class Film < ActiveRecord::Base
     report.transfer_and_calculate_from_previous_report!
   end
 
+  def self.generate_mrss_feed
+    films = []
+  end
+
+  def self.generate_david_spreadsheet
+    xlsx = Roo::Spreadsheet.open(Rails.root.join('comcast-films.xlsx').to_s, extension: :xlsx)
+    sheet = xlsx.sheet(0)
+    index = 1
+    result = []
+    while index <= xlsx.last_row
+      columns = sheet.row(index)
+      title = columns[0].to_s.strip
+      is_trailer = title.downcase.include?('trailer')
+      title = title.gsub(/trailer/i, '').gsub('-', '').strip
+      films = Film.where("LOWER(title) = ?", title.downcase)
+      unless films.length == 1
+        result << title
+      end
+      index += 1
+    end
+    p result.length
+    result
+    # export spreadsheet with Title, ID, Trailer?, File Name
+  end
+
 end
