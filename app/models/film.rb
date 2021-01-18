@@ -140,8 +140,11 @@ class Film < ActiveRecord::Base
     while index <= xlsx.last_row
       columns = sheet.row(index)
       title = columns[0].to_s.strip
-      is_trailer = title.downcase.include?('trailer')
-      title = title.gsub(/trailer/i, '').gsub('-', '').strip
+      if title.downcase.include?('trailer') || title.downcase.include?('preview') || title.downcase.include?('traile')
+        index += 1
+        next
+      end
+      #title = title.gsub(/trailer/i, '').gsub('-', '').strip
       films = Film.where("LOWER(title) = ?", title.downcase)
       unless films.length == 1
         result << title
