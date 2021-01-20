@@ -144,15 +144,14 @@ class Film < ActiveRecord::Base
         index += 1
         next
       end
-      #title = title.gsub(/trailer/i, '').gsub('-', '').strip
-      films = Film.where("LOWER(title) = ?", title.downcase)
-      unless films.length == 1
+      films = Film.fuzzy_search(title: title)
+      if films.empty?
         result << title
       end
       index += 1
     end
-    p result.length
     result
+    # IO.popen('pbcopy', 'w') { |f| f << result.join("\n") }
     # export spreadsheet with Title, ID, Trailer?, File Name
   end
 
