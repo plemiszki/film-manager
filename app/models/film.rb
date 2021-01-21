@@ -136,7 +136,7 @@ class Film < ActiveRecord::Base
     xlsx = Roo::Spreadsheet.open(Rails.root.join('comcast-films.xlsx').to_s, extension: :xlsx)
     sheet = xlsx.sheet(0)
     index = 1
-    result = []
+    films = []
     while index <= xlsx.last_row
       columns = sheet.row(index)
       title = columns[0].to_s.strip
@@ -144,15 +144,33 @@ class Film < ActiveRecord::Base
         index += 1
         next
       end
-      films = Film.fuzzy_search(title: title)
-      if films.empty?
-        result << title
+      search_results = Film.fuzzy_search(title: title)
+      unless search_results.empty?
+        films << search_results.first
       end
       index += 1
     end
-    result
-    # IO.popen('pbcopy', 'w') { |f| f << result.join("\n") }
-    # export spreadsheet with Title, ID, Trailer?, File Name
+
+    require 'xlsx_writer'
+    doc = XlsxWriter.new
+    sheet = doc.add_sheet('Films')
+    base_array = [
+      'ID',
+      'Title',
+      'File',
+      'Trailer File',
+      'Image - 1536 x 2048',
+      'Image - 2048 x 1536',
+      'Image - 1920 x 1080'
+    ]
+    sheet.add_row(base_array)
+
+    films.each do |film|
+      sheet.add_row([film.id, film.title])
+    end
+
+    FileUtils.mv doc.path, "#{Rails.root}/data-for-comcast.xlsx"
+    doc.cleanup
   end
 
 end
