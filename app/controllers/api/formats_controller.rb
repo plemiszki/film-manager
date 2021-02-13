@@ -41,7 +41,7 @@ class Api::FormatsController < AdminController
   private
 
   def format_params
-    params[:format].permit(:name)
+    params[:format].permit(:name, :active)
   end
 
 end

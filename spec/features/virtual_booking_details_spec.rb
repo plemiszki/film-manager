@@ -40,14 +40,21 @@ describe 'virtual_booking_details', type: :feature do
       shipping_city: 'Wayland',
       shipping_state: 'MA',
       terms: '100%',
-      url: 'https://www.hippothemovie.com'
+      url: 'https://www.hippothemovie.com',
+      host: { value: 'Venue', type: :select }
     }
     fill_out_form(new_info)
     save_and_wait
     verify_db_and_component({
       entity: @virtual_booking,
       data: new_info,
-      db_data: { film_id: 2, venue_id: 2, start_date: Date.parse('1/1/2020'), end_date: Date.parse('1/2/2020') }
+      db_data: {
+        film_id: 2,
+        venue_id: 2,
+        start_date: Date.parse('1/1/2020'),
+        end_date: Date.parse('1/2/2020'),
+        host: 'Venue'
+      }
     })
   end
 

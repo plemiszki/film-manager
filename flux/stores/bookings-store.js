@@ -96,6 +96,17 @@ BookingsStore.formats = function() {
   return HandyTools.alphabetizeArrayOfObjects(formats, 'name');
 };
 
+BookingsStore.activeFormats = function() {
+  var formats = Object.keys(_formats).map(function(id) {
+    return(_formats[id]);
+  });
+  formats = formats.filter((format) => {
+    console.log(format);
+    return format.active === true;
+  });
+  return HandyTools.alphabetizeArrayOfObjects(formats, 'name');
+};
+
 BookingsStore.bookers = function() {
   var users = Object.keys(_users).map(function(id) {
     return(_users[id]);

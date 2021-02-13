@@ -324,7 +324,7 @@ class NewThing extends React.Component {
             <div className="col-xs-2">
               <h2>Format</h2>
               <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="formatId" value={ this.state.booking.formatId }>
-                { BookingsStore.formats().map(function(format) {
+                { BookingsStore.activeFormats().map(function(format) {
                   return(
                     <option key={ format.id } value={ format.id }>{ format.name }</option>
                   );

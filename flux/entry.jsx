@@ -395,9 +395,10 @@ $(document).ready(function() {
           entityName='format'
           initialEntity={ { name: '' } }
           fields={ [[
-            { columnWidth: 12, entity: 'format', property: 'name' }
+            { columnWidth: 4, entity: 'format', property: 'name' },
+            { columnWidth: 2, entity: 'format', property: 'active', type: 'dropdown', boolean: true }
           ]] }
-          customDeletePath='/settings'
+          hideDeleteButton={ true }
         />
       </Provider>,
       document.querySelector('#format-details')
@@ -783,7 +784,18 @@ $(document).ready(function() {
             { columnWidth: 2, entity: 'virtualBooking', property: 'startDate' },
             { columnWidth: 2, entity: 'virtualBooking', property: 'endDate' },
             { columnWidth: 3, entity: 'virtualBooking', property: 'terms' },
-            { columnWidth: 8, entity: 'virtualBooking', property: 'url' }
+            { columnWidth: 8, entity: 'virtualBooking', property: 'url' },
+            { columnWidth: 2,
+              entity: 'virtualBooking',
+              property: 'host',
+              type: 'dropdown',
+              columnHeader: 'Hosted By',
+              options: [
+                { id: 'FM', text: 'FM' },
+                { id: 'Venue', text: 'Venue' }
+              ],
+              optionDisplayProperty: 'text'
+            }
           ]] }
         />
       </Provider>,

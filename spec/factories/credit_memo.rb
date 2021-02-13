@@ -2,7 +2,7 @@ FactoryBot.define do
 
   factory :credit_memo do
     sent_date { Date.today }
-    number { '23' }
+    number { 'CM23' }
     customer_id { 1 }
     return_number { 'NH345DJ' }
     billing_name { 'Alliance Inventory' }

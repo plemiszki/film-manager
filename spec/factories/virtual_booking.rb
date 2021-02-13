@@ -10,6 +10,7 @@ FactoryBot.define do
     shipping_city { 'New York' }
     shipping_state { 'NY' }
     url { 'https://www.someurl.com' }
+    host { 'FM' }
   end
 
 end

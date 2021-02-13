@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_23_192000) do
+ActiveRecord::Schema.define(version: 2021_02_13_155215) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "actors", id: :serial, force: :cascade do |t|
@@ -374,6 +375,7 @@ ActiveRecord::Schema.define(version: 2020_12_23_192000) do
 
   create_table "formats", id: :serial, force: :cascade do |t|
     t.string "name", null: false
+    t.boolean "active", default: true
     t.index ["name"], name: "index_formats_on_name", unique: true
   end
 
@@ -750,6 +752,7 @@ ActiveRecord::Schema.define(version: 2020_12_23_192000) do
     t.string "shipping_state", default: ""
     t.string "terms", default: ""
     t.string "url", default: "", null: false
+    t.integer "host", default: 0
   end
 
   create_table "weekly_box_offices", id: :serial, force: :cascade do |t|

@@ -9,6 +9,7 @@ json.virtualBooking do
   json.shippingState @virtual_booking.shipping_state || ""
   json.terms @virtual_booking.terms || ""
   json.url @virtual_booking.url || ""
+  json.host @virtual_booking.host
 end
 json.films @films do |film|
   json.id film.id

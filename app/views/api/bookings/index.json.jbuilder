@@ -36,4 +36,5 @@ end
 json.formats @formats do |format|
   json.id format.id
   json.name format.name
+  json.active format.active
 end
