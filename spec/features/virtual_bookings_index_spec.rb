@@ -34,14 +34,15 @@ describe 'virtual_bookings_index', type: :feature do
       start_date: Date.today.strftime('%-m/%d/%y'),
       end_date: ((Date.today + 1.day).strftime('%-m/%d/%y')),
       terms: '50%',
-      url: 'https://www.someurl.com'
+      url: 'https://www.someurl.com',
+      host: { value: 'Venue', type: :select }
     }
     fill_out_and_submit_modal(info, :input)
     expect(find('.admin-table')).to have_content 'Another Film'
     expect(find('.admin-table')).to have_content 'Another Venue'
     verify_db({
       entity: VirtualBooking.last,
-      data: info.merge({ film_id: 2, venue_id: 2, date_added: Date.today, start_date: Date.today, end_date: Date.today + 1 })
+      data: info.merge({ film_id: 2, venue_id: 2, date_added: Date.today, start_date: Date.today, end_date: Date.today + 1, host: 'Venue' })
     })
   end
 

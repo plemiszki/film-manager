@@ -238,10 +238,23 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'venueId', columnHeader: 'Venue', customType: 'modal', modalDisplayProperty: 'label' }) }
           </div>,
           <div key="2" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'startDate' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'endDate' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'terms' }) }
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'url' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'startDate' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'endDate' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'terms' }) }
+            { Details.renderDropDown.bind(this)({ columnWidth: 3,
+              entity: 'virtualBooking',
+              property: 'host',
+              type: 'dropdown',
+              columnHeader: 'Hosted By',
+              options: [
+                { id: 'FM', text: 'FM' },
+                { id: 'Venue', text: 'Venue' }
+              ],
+              optionDisplayProperty: 'text'
+            }) }
+          </div>,
+          <div key="3" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'virtualBooking', property: 'url' }) }
           </div>
         ]);
     }

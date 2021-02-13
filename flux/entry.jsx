@@ -754,13 +754,24 @@ $(document).ready(function() {
               width: 125
             }
           ] }
-          modalRows={ 2 }
+          modalRows={ 3 }
           modalDimensions={ { width: 1000 } }
         >
           <NewEntity
             context={ MyContext }
             fetchData={ ['films', 'venues'] }
-            initialEntity={ { filmId: '', venueId: '', dateAdded: HandyTools.todayDMY(), startDate: '', endDate: '', shippingCity: '', shippingState: '', terms: '', url: 'https://' } }
+            initialEntity={ {
+              filmId: '',
+              venueId: '',
+              dateAdded: HandyTools.todayDMY(),
+              startDate: '',
+              endDate: '',
+              shippingCity: '',
+              shippingState: '',
+              terms: '',
+              url: 'https://',
+              host: 'FM'
+            } }
           />
         </StandardIndex>
       </Provider>,
