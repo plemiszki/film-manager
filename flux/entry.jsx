@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import ReactModal from 'react-modal'
-import { StandardIndex, SimpleDetails } from 'handy-components'
+import { FullIndex, SimpleDetails } from 'handy-components'
 import HandyTools from 'handy-tools';
 import FM from '../app/assets/javascripts/me/common.jsx'
 
@@ -223,7 +223,7 @@ $(document).ready(function() {
   if (document.querySelector('#aliases-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='alias'
           entityNamePlural='aliases'
@@ -236,7 +236,7 @@ $(document).ready(function() {
             fetchData={ ['films'] }
             initialEntity={ { text: '', filmId: '' } }
           />
-        </StandardIndex>
+      </FullIndex>
       </Provider>,
       document.querySelector('#aliases-index')
     );
@@ -262,7 +262,7 @@ $(document).ready(function() {
   if (document.querySelector('#bookers-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='booker'
           columns={ ['name', 'email', 'phone'] }
@@ -270,7 +270,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '', email: '', phone: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#bookers-index')
     );
@@ -278,7 +278,7 @@ $(document).ready(function() {
   if (document.querySelector('#countries-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='country'
           entityNamePlural='countries'
@@ -287,7 +287,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#countries-index')
     );
@@ -312,7 +312,7 @@ $(document).ready(function() {
   if (document.querySelector('#digital-retailers-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='digitalRetailer'
           columns={ ['name'] }
@@ -320,7 +320,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#digital-retailers-index')
     );
@@ -357,7 +357,7 @@ $(document).ready(function() {
   if (document.querySelector('#dvd-customers-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='dvdCustomer'
           columns={ ['name'] }
@@ -365,7 +365,7 @@ $(document).ready(function() {
           header="DVD Customers"
         >
           <NewEntity context={ MyContext } initialEntity={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#dvd-customers-index')
     );
@@ -373,7 +373,7 @@ $(document).ready(function() {
   if (document.querySelector('#formats-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='format'
           columns={ ['name'] }
@@ -381,7 +381,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#formats-index')
     );
@@ -407,7 +407,7 @@ $(document).ready(function() {
   if (document.querySelector('#genres-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='genre'
           columns={ ['name'] }
@@ -415,7 +415,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#genres-index')
     );
@@ -440,7 +440,7 @@ $(document).ready(function() {
   if (document.querySelector('#giftboxes-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='giftbox'
           entityNamePlural='giftboxes'
@@ -449,7 +449,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '', upc: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#giftboxes-index')
     );
@@ -457,7 +457,7 @@ $(document).ready(function() {
   if (document.querySelector('#languages-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='language'
           columns={ ['name'] }
@@ -465,7 +465,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#languages-index')
     );
@@ -490,7 +490,7 @@ $(document).ready(function() {
   if (document.querySelector('#licensors-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='licensor'
           columns={ ['name'] }
@@ -498,7 +498,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#licensors-index')
     );
@@ -512,7 +512,7 @@ $(document).ready(function() {
   if (document.querySelector('#merchandise-types-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='merchandiseType'
           columns={ ['name'] }
@@ -520,7 +520,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#merchandise-types-index')
     );
@@ -545,7 +545,7 @@ $(document).ready(function() {
   if (document.querySelector('#shipping-addresses-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='shippingAddress'
           entityNamePlural='shippingAddresses'
@@ -559,7 +559,7 @@ $(document).ready(function() {
   if (document.querySelector('#territories-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='territory'
           entityNamePlural='territories'
@@ -568,7 +568,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#territories-index')
     );
@@ -593,7 +593,7 @@ $(document).ready(function() {
   if (document.querySelector('#topics-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='topic'
           columns={ ['name'] }
@@ -601,7 +601,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#topics-index')
     );
@@ -626,7 +626,7 @@ $(document).ready(function() {
   if (document.querySelector('#users-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='user'
           columns={ ['name', 'title'] }
@@ -634,7 +634,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: "", email: "", password: "" } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#users-index')
     );
@@ -664,7 +664,7 @@ $(document).ready(function() {
   if (document.querySelector('#venues-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='venue'
           columns={ [
@@ -680,7 +680,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { label: '', sageId: '', venueType: 'Theater' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#venues-index')
     );
@@ -688,7 +688,7 @@ $(document).ready(function() {
   if (document.querySelector('#sublicensors-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='sublicensor'
           columns={ ['name'] }
@@ -696,7 +696,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#sublicensors-index')
     );
@@ -712,7 +712,7 @@ $(document).ready(function() {
   if (document.querySelector('#virtual-bookings-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='virtualBooking'
           entityNamePlural='virtualBookings'
@@ -773,7 +773,7 @@ $(document).ready(function() {
               host: 'FM'
             } }
           />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#virtual-bookings-index')
     );
