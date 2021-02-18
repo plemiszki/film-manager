@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import ReactModal from 'react-modal'
-import { FullIndex, SimpleDetails } from 'handy-components'
+import { FullIndex, SearchIndex, SimpleDetails } from 'handy-components'
 import HandyTools from 'handy-tools';
 import FM from '../app/assets/javascripts/me/common.jsx'
 
@@ -115,7 +115,23 @@ $(document).ready(function() {
     ReactDOM.render(<ShippingAddressDetails />, document.getElementById("shipping-address-details"));
   }
   if ($('#invoices-index')[0]) {
-    ReactDOM.render(<InvoicesIndex />, document.getElementById("invoices-index"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SearchIndex
+          context={ MyContext }
+          entityName='invoice'
+          entityNamePlural='invoices'
+          columns={[
+            { name: 'sentDate'},
+            { name: 'number', header: 'Invoice Number' },
+            { name: 'type' },
+            { name: 'poNumber', header: 'PO Number' }
+          ]}
+          hideNewButton={ true }
+        />
+      </Provider>,
+      document.getElementById("invoices-index")
+    );
   }
   if ($('#invoice-details')[0]) {
     ReactDOM.render(<InvoiceDetails />, document.getElementById("invoice-details"));
