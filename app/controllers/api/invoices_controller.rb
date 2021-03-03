@@ -5,9 +5,35 @@ class Api::InvoicesController < AdminController
   include ApplicationHelper
 
   def index
-    @invoices = Invoice.all.order('id DESC')
-    @invoices = @invoices.limit(100) unless params[:all]
-    render "index.json.jbuilder"
+
+    batch_size = params[:batch_size].to_i
+    page = params[:page].to_i
+    order_column = params[:order_by]
+    order_direction = params[:order_direction]
+    order_string = order_column
+    order_string += ' DESC' if order_direction == 'desc'
+
+    @invoices = Invoice.all.order(order_string)
+    @invoices = @invoices.limit(batch_size * page)
+    first_record = (batch_size * (page - 1))
+    last_record = first_record + batch_size
+    @invoices = @invoices[first_record..last_record]
+
+    total_count = Invoice.count
+    pages_count = total_count / batch_size
+    pages_count += 1 if total_count % batch_size > 0
+
+    @page_numbers = [page]
+    index = 1
+    while @page_numbers.length < 10 do
+      @page_numbers << (page + index)
+      @page_numbers << (page - index)
+      @page_numbers.select! { |page| page > 0 && page <= pages_count }
+      index += 1
+    end
+    @page_numbers.sort!
+    @more_pages = pages_count > @page_numbers[-1]
+    render 'index.json.jbuilder'
   end
 
   def create

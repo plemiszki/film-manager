@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import ReactModal from 'react-modal'
-import { FullIndex, SearchIndex, SimpleDetails } from 'handy-components'
+import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria } from 'handy-components'
 import HandyTools from 'handy-tools';
 import FM from '../app/assets/javascripts/me/common.jsx'
 
@@ -122,13 +122,20 @@ $(document).ready(function() {
           entityName='invoice'
           entityNamePlural='invoices'
           columns={[
-            { name: 'sentDate'},
-            { name: 'number', header: 'Invoice Number' },
-            { name: 'type' },
-            { name: 'poNumber', header: 'PO Number' }
+            { name: 'sentDate', sortDir: 'desc', sortColumn: 'sentDateTimestamp', width: 248 },
+            { name: 'number', header: 'Invoice Number', width: 338 },
+            { name: 'type', dbName: 'invoice_type', width: 172 },
+            { name: 'poNumber', header: 'PO Number', width: 298 }
           ]}
           hideNewButton={ true }
-        />
+          batchSize={ 50 }
+          searchModalRows={ 1 }
+          searchModalDimensions={ { width: 1000 } }
+        >
+          <SearchCriteria
+            context={ MyContext }
+          />
+        </SearchIndex>
       </Provider>,
       document.getElementById("invoices-index")
     );
