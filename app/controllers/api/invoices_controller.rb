@@ -4,6 +4,8 @@ class Api::InvoicesController < AdminController
   include ActionView::Helpers::NumberHelper
   include ApplicationHelper
 
+  MAX_PAGE_LINKS = 10
+
   def index
 
     batch_size = params[:batch_size].to_i
@@ -13,19 +15,29 @@ class Api::InvoicesController < AdminController
     order_string = order_column
     order_string += ' DESC' if order_direction == 'desc'
 
-    @invoices = Invoice.all.order(order_string)
-    @invoices = @invoices.limit(batch_size * page)
+    if params[:search_criteria]
+      where_obj = {}
+      params[:search_criteria].each do |key, value|
+        key = value["db_name"] if value["db_name"]
+        where_obj[key] = value["value"]
+      end
+      invoices_meeting_search_criteria = Invoice.where(where_obj)
+    else
+      invoices_meeting_search_criteria = Invoice.all
+    end
+
+    @invoices = invoices_meeting_search_criteria.order(order_string).limit(batch_size * page)
     first_record = (batch_size * (page - 1))
     last_record = first_record + batch_size
     @invoices = @invoices[first_record..last_record]
 
-    total_count = Invoice.count
+    total_count = invoices_meeting_search_criteria.count
     pages_count = total_count / batch_size
     pages_count += 1 if total_count % batch_size > 0
 
     @page_numbers = [page]
     index = 1
-    while @page_numbers.length < 10 do
+    while @page_numbers.length < [pages_count, MAX_PAGE_LINKS].min do
       @page_numbers << (page + index)
       @page_numbers << (page - index)
       @page_numbers.select! { |page| page > 0 && page <= pages_count }

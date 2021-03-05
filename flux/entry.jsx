@@ -129,11 +129,15 @@ $(document).ready(function() {
           ]}
           hideNewButton={ true }
           batchSize={ 50 }
-          searchModalRows={ 1 }
-          searchModalDimensions={ { width: 1000 } }
+          searchModalRows={ 2 }
+          searchModalDimensions={ { width: 600 } }
         >
           <SearchCriteria
             context={ MyContext }
+            fields={[
+              { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
+              { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 }
+            ]}
           />
         </SearchIndex>
       </Provider>,
