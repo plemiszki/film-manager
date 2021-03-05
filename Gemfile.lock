@@ -1199,6 +1199,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    textacular (5.4.0)
+      activerecord (>= 5.0, < 6.2)
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -1266,6 +1268,7 @@ DEPENDENCIES
   sentry-raven
   sidekiq
   spring
+  textacular
   timeliness
   uglifier (= 4.2.0)
   validates_timeliness (~> 4.0)
@@ -1278,4 +1281,4 @@ RUBY VERSION
    ruby 2.7.2p137
 
 BUNDLED WITH
-   2.1.4
+   2.2.12

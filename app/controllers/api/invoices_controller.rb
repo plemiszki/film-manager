@@ -22,6 +22,9 @@ class Api::InvoicesController < AdminController
         where_obj[key] = value["value"]
       end
       invoices_meeting_search_criteria = Invoice.where(where_obj)
+      if invoices_meeting_search_criteria.length == 0
+        invoices_meeting_search_criteria = Invoice.fuzzy_search(where_obj)
+      end
     else
       invoices_meeting_search_criteria = Invoice.all
     end
@@ -31,7 +34,7 @@ class Api::InvoicesController < AdminController
     last_record = first_record + batch_size
     @invoices = @invoices[first_record..last_record]
 
-    total_count = invoices_meeting_search_criteria.count
+    total_count = invoices_meeting_search_criteria.to_a.count # <-- casting to array avoids fuzzy_search error
     pages_count = total_count / batch_size
     pages_count += 1 if total_count % batch_size > 0
 
