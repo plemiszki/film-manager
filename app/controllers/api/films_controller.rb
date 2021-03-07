@@ -306,7 +306,8 @@ class Api::FilmsController < AdminController
       :rental_url,
       :rental_price,
       :rental_days,
-      :tv_rating
+      :tv_rating,
+      :contractual_obligations
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

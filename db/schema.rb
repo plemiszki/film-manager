@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_05_230219) do
+ActiveRecord::Schema.define(version: 2021_03_07_211006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -367,6 +367,7 @@ ActiveRecord::Schema.define(version: 2021_03_05_230219) do
     t.decimal "rental_price", precision: 5, scale: 2, default: "0.0"
     t.integer "rental_days", default: 0
     t.string "tv_rating", default: ""
+    t.string "contractual_obligations", default: ""
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
     t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"
