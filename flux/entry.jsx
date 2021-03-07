@@ -129,14 +129,24 @@ $(document).ready(function() {
           ]}
           hideNewButton={ true }
           batchSize={ 50 }
-          searchModalRows={ 2 }
+          searchModalRows={ 3 }
           searchModalDimensions={ { width: 600 } }
         >
           <SearchCriteria
             context={ MyContext }
             fields={[
               { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
-              { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 }
+              { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
+              {
+                name: 'invoiceType',
+                type: 'static dropdown',
+                options: [
+                  { value: 'dvd', text: 'DVD' },
+                  { value: 'booking', text: 'Booking' }
+                ],
+                columnHeader: 'Type',
+                columnWidth: 3
+              }
             ]}
           />
         </SearchIndex>
