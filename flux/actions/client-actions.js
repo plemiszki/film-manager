@@ -273,7 +273,8 @@ var ClientActions = {
       rental_url: film.rentalUrl,
       rental_days: film.rentalDays,
       rental_price: HandyTools.removeFinanceSymbols(film.rentalPrice),
-      tv_rating: film.tvRating
+      tv_rating: film.tvRating,
+      contractual_obligations: film.contractualObligations
     };
     filmObj = Object.assign(filmObj, FM.removeQuestion(film.avodRelease, 'avod'));
     filmObj = Object.assign(filmObj, FM.removeQuestion(film.svodRelease, 'svod'));

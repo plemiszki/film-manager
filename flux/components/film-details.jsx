@@ -1933,9 +1933,13 @@ class FilmDetails extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-xs-12">
+            <div className="col-xs-6">
               <h2>Royalty Notes</h2>
               <textarea rows="3" className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" readOnly={ !FM.user.hasAdminAccess } />
+            </div>
+            <div className="col-xs-6">
+              <h2>Contractual Obligations</h2>
+              <textarea rows="3" className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.contractualObligations || ""} data-field="contractualObligations" readOnly={ !FM.user.hasAdminAccess } />
             </div>
           </div>
         </div>
