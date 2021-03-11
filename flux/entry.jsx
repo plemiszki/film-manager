@@ -129,7 +129,7 @@ $(document).ready(function() {
           ]}
           hideNewButton={ true }
           batchSize={ 50 }
-          searchModalRows={ 3 }
+          searchModalRows={ 4 }
           searchModalDimensions={ { width: 600 } }
         >
           <SearchCriteria
@@ -137,6 +137,7 @@ $(document).ready(function() {
             fields={[
               { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
               { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
+              { name: 'number', type: 'number range', columnHeader: 'Invoice Number', columnWidth: 10 },
               {
                 name: 'invoiceType',
                 type: 'static dropdown',
