@@ -13,6 +13,12 @@ class CreditMemo < ActiveRecord::Base
   belongs_to :customer, class_name: 'DvdCustomer'
   belongs_to :return
 
+  def self.fill_num_column!
+    self.all.each do |memo|
+      memo.update(num: memo.number[2..-1])
+    end
+  end
+
   def export(path)
     string = "<style>"
     string += "@import url('https://fonts.googleapis.com/css2?family=Tinos:wght@700&display=swap');"

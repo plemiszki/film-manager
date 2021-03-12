@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_07_211006) do
+ActiveRecord::Schema.define(version: 2021_03_11_223432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(version: 2021_03_07_211006) do
     t.decimal "total", precision: 8, scale: 2, default: "0.0"
     t.string "return_number", null: false
     t.integer "customer_id", null: false
+    t.integer "num"
     t.index ["customer_id"], name: "index_credit_memos_on_customer_id"
     t.index ["number"], name: "index_credit_memos_on_number", unique: true
   end
@@ -448,6 +449,7 @@ ActiveRecord::Schema.define(version: 2021_03_07_211006) do
     t.string "notes", default: ""
     t.integer "customer_id"
     t.integer "booking_id"
+    t.integer "num"
     t.index ["booking_id"], name: "index_invoices_on_booking_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
   end

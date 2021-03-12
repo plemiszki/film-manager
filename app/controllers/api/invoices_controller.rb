@@ -59,6 +59,7 @@ class Api::InvoicesController < AdminController
       invoice_type: 'booking',
       sent_date: Date.today,
       number: "#{Setting.first.next_booking_invoice_number}B",
+      num: Setting.first.next_booking_invoice_number,
       billing_name: booking.billing_name,
       billing_address1: booking.billing_address1,
       billing_address2: booking.billing_address2,
