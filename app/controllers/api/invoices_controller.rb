@@ -19,7 +19,11 @@ class Api::InvoicesController < AdminController
       where_obj = {}
       params[:search_criteria].each do |key, value|
         key = value["db_name"] if value["db_name"]
-        where_obj[key] = value["value"]
+        if value["min_value"]
+          where_obj[key] = Range.new(value["min_value"].to_i, value["max_value"].to_i)
+        else
+          where_obj[key] = value["value"]
+        end
       end
       invoices_meeting_search_criteria = Invoice.where(where_obj)
       if invoices_meeting_search_criteria.length == 0

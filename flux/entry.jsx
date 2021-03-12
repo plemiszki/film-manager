@@ -137,7 +137,7 @@ $(document).ready(function() {
             fields={[
               { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
               { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
-              { name: 'number', type: 'number range', columnHeader: 'Invoice Number', columnWidth: 10 },
+              { name: 'num', type: 'number range', columnHeader: 'Invoice Number', columnWidth: 10 },
               {
                 name: 'invoiceType',
                 type: 'static dropdown',
