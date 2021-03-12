@@ -13,6 +13,12 @@ class Invoice < ActiveRecord::Base
   belongs_to :customer, class_name: 'DvdCustomer'
   belongs_to :booking
 
+  def self.fill_num_column!
+    self.all.each do |invoice|
+      invoice.update(num: invoice.number[0..-2])
+    end
+  end
+
   def total_minus_payments
     if invoice_type == 'booking'
       total - invoice_payments.reduce(0) { |sum, ip| sum += ip.amount }
@@ -28,6 +34,7 @@ class Invoice < ActiveRecord::Base
       invoice_type: 'dvd',
       customer_id: purchase_order.customer_id,
       number: "#{Setting.first.next_dvd_invoice_number}D",
+      num: Setting.first.next_dvd_invoice_number,
       sent_date: Date.today,
       po_number: purchase_order.number,
       billing_name: dvd_customer.billing_name,

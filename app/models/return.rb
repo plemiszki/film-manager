@@ -14,6 +14,7 @@ class Return < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       new_credit_memo = CreditMemo.create!(
         number: "CM#{Setting.first.next_credit_memo_number}",
+        num: Setting.first.next_credit_memo_number,
         return_number: number,
         sent_date: Date.today,
         customer_id: customer_id,
