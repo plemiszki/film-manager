@@ -18,11 +18,14 @@ class Api::InvoicesController < AdminController
     if params[:search_criteria]
       where_obj = {}
       params[:search_criteria].each do |key, value|
-        key = value["db_name"] if value["db_name"]
-        if value["min_value"]
-          where_obj[key] = Range.new(value["min_value"].to_i, value["max_value"].to_i)
+        key = value['db_name'] if value['db_name']
+        if value['min_value']
+          where_obj[key] = Range.new(value['min_value'].to_i, value['max_value'].to_i)
+        elsif value['start_date']
+          convert_date = -> (string) { Date.strptime(string, "%m/%d/%y") }
+          where_obj[key] = Range.new(convert_date.(value['start_date']), convert_date.(value['end_date']))
         else
-          where_obj[key] = value["value"]
+          where_obj[key] = value['value']
         end
       end
       invoices_meeting_search_criteria = Invoice.where(where_obj)

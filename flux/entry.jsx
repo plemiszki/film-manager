@@ -147,7 +147,8 @@ $(document).ready(function() {
                 ],
                 columnHeader: 'Type',
                 columnWidth: 3
-              }
+              },
+              { name: 'sentDate', type: 'date range', columnWidth: 10 },
             ]}
           />
         </SearchIndex>

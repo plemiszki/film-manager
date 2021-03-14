@@ -1189,15 +1189,13 @@ GEM
     mime-types-data (3.2021.0225)
     mimemagic (0.3.5)
     mini_mime (1.0.2)
-    mini_portile2 (2.5.0)
     minitest (5.14.4)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     murmurhash3 (0.1.6)
     netrc (0.11.0)
     nio4r (2.5.7)
-    nokogiri (1.11.2)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.11.2-x86_64-darwin)
       racc (~> 1.4)
     pg (0.21.0)
     pry (0.14.0)
@@ -1310,7 +1308,7 @@ GEM
       sprockets (>= 3.0.0)
     textacular (5.4.0)
       activerecord (>= 5.0, < 6.2)
-    thor (1.0.1)
+    thor (1.1.0)
     thread_safe (0.3.6)
     tilt (2.0.10)
     timeliness (0.4.4)
@@ -1344,7 +1342,7 @@ GEM
       nokogiri (~> 1.8)
 
 PLATFORMS
-  ruby
+  x86_64-darwin-19
 
 DEPENDENCIES
   aws-sdk
@@ -1390,8 +1388,4 @@ RUBY VERSION
    ruby 2.7.2p137
 
 BUNDLED WITH
-<<<<<<< HEAD
    2.2.12
-=======
-   2.2.14
->>>>>>> master
