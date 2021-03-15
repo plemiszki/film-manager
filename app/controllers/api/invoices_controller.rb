@@ -10,6 +10,7 @@ class Api::InvoicesController < AdminController
 
     batch_size = params[:batch_size].to_i
     page = params[:page].to_i
+    offset = batch_size * (page - 1)
     order_column = params[:order_by]
     order_direction = params[:order_direction]
     order_string = order_column
@@ -36,10 +37,7 @@ class Api::InvoicesController < AdminController
       invoices_meeting_search_criteria = Invoice.all
     end
 
-    @invoices = invoices_meeting_search_criteria.order(order_string).limit(batch_size * page)
-    first_record = (batch_size * (page - 1))
-    last_record = first_record + batch_size
-    @invoices = @invoices[first_record..last_record]
+    @invoices = invoices_meeting_search_criteria.order(order_string).limit(batch_size).offset(offset)
 
     total_count = invoices_meeting_search_criteria.to_a.count # <-- casting to array avoids fuzzy_search error
     pages_count = total_count / batch_size
