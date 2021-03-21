@@ -27,7 +27,6 @@ import FilmsIndex from './components/films-index.jsx'
 import GiftBoxDetails from './components/giftbox-details.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
 import InvoiceDetails from './components/invoice-details.jsx'
-import InvoicesIndex from './components/invoices-index.jsx'
 import CreditMemosIndex from './components/credit-memos-index.jsx'
 import CreditMemoDetails from './components/credit-memo-details.jsx'
 import JobsIndex from './components/jobs-index.jsx'
@@ -703,23 +702,40 @@ $(document).ready(function() {
   if (document.querySelector('#venues-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <FullIndex
+        <SearchIndex
           context={ MyContext }
           entityName='venue'
-          columns={ [
-            'label',
-            {
-              name: 'venueType',
-              header: 'Type'
-            },
-            'city',
-            'state'
-          ] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
+          entityNamePlural='venues'
+          columns={[
+            { name: 'label' },
+            { name: 'type', dbName: 'venue_type' },
+            { name: 'city', dbName: 'shipping_city' },
+            { name: 'state', dbName: 'shipping_state' }
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
         >
-          <NewEntity context={ MyContext } initialEntity={ { label: '', sageId: '', venueType: 'Theater' } } />
-        </FullIndex>
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'label', columnWidth: 6 },
+              {
+                name: 'venueType',
+                type: 'static dropdown',
+                options: [
+                  { value: 'Theater', text: 'Theater' },
+                  { value: 'Non-Theatrical', text: 'Non-Theatrical' },
+                  { value: 'Festival', text: 'Festival' },
+                ],
+                columnHeader: 'Type',
+                columnWidth: 4
+              },
+              { name: 'shippingCity', columnWidth: 6 },
+              { name: 'shippingState', columnWidth: 3 }
+            ]}
+          />
+        </SearchIndex>
       </Provider>,
       document.querySelector('#venues-index')
     );

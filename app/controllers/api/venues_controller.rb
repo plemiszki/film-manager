@@ -1,9 +1,10 @@
 class Api::VenuesController < AdminController
 
   include BookingCalculations
+  include SearchIndex
 
   def index
-    @venues = Venue.all
+    @venues = perform_search(model: 'Venue')
     render "index.json.jbuilder"
   end
 
