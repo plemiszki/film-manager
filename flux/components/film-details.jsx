@@ -1131,7 +1131,7 @@ class FilmDetails extends React.Component {
         <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ CopyModalStyles }>
           <NewThing thing="film" copy={ true } initialObject={ { title: "", year: "", length: "", filmType: this.state.film.filmType, copyFrom: this.state.film.id } } />
         </Modal>
-        <Modal isOpen={ this.state.newAltLengthModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.modalStyles({ width: 500 }, 1) }>
+        <Modal isOpen={ this.state.newAltLengthModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
           <NewEntity entityName="alternateLength" initialEntity={ { length: "", filmId: this.state.film.id } } context={ this.props.context } callback={ this.updateAlternateLengths.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ArtworkModalStyles }>

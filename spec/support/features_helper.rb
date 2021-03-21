@@ -110,6 +110,35 @@ def fill_out_and_submit_modal(data, button_type)
   expect(page).not_to have_selector('.spinner')
 end
 
+def search_index(criteria)
+  expect(page).not_to have_selector('.spinner')
+  find('.search-button').click
+  criteria.each do |key, value|
+    key = key.to_s.camelize(:lower)
+    if value[:type] == :select
+      field = find("div[data-test-field=#{key}]")
+      within(field) do
+        checkbox = find('input[type="checkbox"]')
+        checkbox.set(true)
+        select_element = find("select", visible: false)
+        nice_select_div = select_element.sibling('.nice-select')
+        nice_select_div.click
+        sleep 0.25
+        within(nice_select_div) do
+          if value[:value]
+            find("li[data-value='#{value[:value]}']").click
+          elsif value[:label]
+            find('li', text: value[:label]).click
+          else
+            raise 'missing value or label attribute!'
+          end
+        end
+      end
+    end
+  end
+  find('input.submit-button').click
+end
+
 def select_from_modal(option)
   modal_select = page.document.find('.modal-select')
   within(modal_select) do
