@@ -127,10 +127,10 @@ $(document).ready(function() {
             { name: 'type', dbName: 'invoice_type', width: 172 },
             { name: 'poNumber', header: 'PO Number', width: 298 }
           ]}
-          hideNewButton={ true }
           batchSize={ 50 }
           searchModalRows={ 4 }
           searchModalDimensions={ { width: 600 } }
+          showExportButton={ true }
         >
           <SearchCriteria
             context={ MyContext }

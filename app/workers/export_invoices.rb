@@ -92,6 +92,10 @@ class ExportInvoices
     invoices.each_with_index do |invoice, invoice_index|
       if invoice.invoice_type == 'booking'
         booking = invoice.booking
+        unless booking
+          errors << "Missing Booking for Invoice #{invoice.number}"
+          next
+        end
         booking_venue = booking.venue
         booking_film = booking.film
         booking_gl_code = get_gl_code(booking)
@@ -165,7 +169,11 @@ class ExportInvoices
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object("#{time_started}/invoices.xlsx")
     obj.upload_file(file_path, acl:'public-read')
-    job.update!({ done: true, first_line: errors.empty? ? obj.public_url : "Errors Found", errors_text: errors.empty? ? "" : errors.uniq.join("\n") })
+    if errors.present?
+      job.update!({ status: 'failed', first_line: 'Errors Found', errors_text: errors.uniq.join("\n") })
+    else
+      job.update!({ status: 'success', first_line: '', metadata: { url: obj.public_url }, errors_text: '' })
+    end
   end
 
   def get_gl_code(booking)
