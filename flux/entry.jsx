@@ -715,6 +715,9 @@ $(document).ready(function() {
           batchSize={ 50 }
           searchModalRows={ 4 }
           searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 1 }
+          newModalDimensions={ { width: 900 } }
         >
           <SearchCriteria
             context={ MyContext }
@@ -735,6 +738,7 @@ $(document).ready(function() {
               { name: 'shippingState', columnWidth: 3 }
             ]}
           />
+          <NewEntity context={ MyContext } initialEntity={ { label: '', sageId: '', venueType: 'Theater' } } />
         </SearchIndex>
       </Provider>,
       document.querySelector('#venues-index')

@@ -8,6 +8,15 @@ class Api::VenuesController < AdminController
     render "index.json.jbuilder"
   end
 
+  def create
+    @venue = Venue.new(venue_params)
+    if @venue.save
+      render "show.json.jbuilder"
+    else
+      render json: @venue.errors.full_messages, status: 422
+    end
+  end
+
   def show
     @venue = Venue.find(params[:id])
     @bookings = Booking.where(venue_id: @venue.id).includes(:film)
@@ -16,16 +25,6 @@ class Api::VenuesController < AdminController
       @calculations[booking.id] = booking_calculations(booking)
     end
     render "show.json.jbuilder"
-  end
-
-  def create
-    @venue = Venue.new(venue_params)
-    if @venue.save
-      @venues = Venue.all
-      render "index.json.jbuilder"
-    else
-      render json: @venue.errors.full_messages, status: 422
-    end
   end
 
   def update
