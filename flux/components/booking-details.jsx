@@ -217,7 +217,7 @@ class BookingDetails extends React.Component {
     });
   }
 
-  clickSelectFilm(event) {
+  clickSelectFilm(option, event) {
     var booking = this.state.booking;
     booking.filmId = +event.target.dataset.id;
     this.setState({
@@ -236,7 +236,7 @@ class BookingDetails extends React.Component {
     });
   }
 
-  clickSelectVenue(event) {
+  clickSelectVenue(option, event) {
     var booking = this.state.booking;
     booking.venueId = +event.target.dataset.id;
     this.setState({

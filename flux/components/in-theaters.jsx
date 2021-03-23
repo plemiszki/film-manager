@@ -103,7 +103,7 @@ class InTheatersIndex extends React.Component {
     });
   }
 
-  selectFilm(e) {
+  selectFilm(option, e) {
     this.setState({
       modalOpen: false,
       fetching: true

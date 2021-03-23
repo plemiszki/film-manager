@@ -109,7 +109,7 @@ class MerchandiseItemDetails extends React.Component {
     });
   }
 
-  selectFilm(e) {
+  selectFilm(option, e) {
     var merchandiseItem = this.state.merchandiseItem;
     merchandiseItem.filmId = +e.target.dataset.id;
     this.setState({

@@ -537,7 +537,7 @@ class FilmDetails extends React.Component {
     });
   }
 
-  clickFormat(e) {
+  clickFormat(option, e) {
     ClientActions.createFilmFormat({ filmId: this.state.film.id, formatId: e.target.dataset.id })
   }
 
@@ -554,7 +554,7 @@ class FilmDetails extends React.Component {
     });
   }
 
-  clickCountry(e) {
+  clickCountry(option, e) {
     this.setState({
       fetching: true
     });
@@ -574,14 +574,14 @@ class FilmDetails extends React.Component {
     });
   }
 
-  clickLanguage(e) {
+  clickLanguage(option, e) {
     this.setState({
       fetching: true
     });
     ClientActions.createFilmLanguage({ film_id: this.state.film.id, language_id: e.target.dataset.id })
   }
 
-  clickAlternateAudio(e) {
+  clickAlternateAudio(option, e) {
     Common.closeModals.call(this);
     this.setState({
       fetching: true
@@ -603,7 +603,7 @@ class FilmDetails extends React.Component {
     });
   }
 
-  clickAlternateSubtitle(e) {
+  clickAlternateSubtitle(option, e) {
     Common.closeModals.call(this);
     this.setState({
       fetching: true
@@ -638,7 +638,7 @@ class FilmDetails extends React.Component {
     });
   }
 
-  clickGenre(e) {
+  clickGenre(option, e) {
     this.setState({
       fetching: true
     })
@@ -658,7 +658,7 @@ class FilmDetails extends React.Component {
     });
   }
 
-  clickTopic(e) {
+  clickTopic(option, e) {
     this.setState({
       fetching: false
     });
@@ -780,14 +780,14 @@ class FilmDetails extends React.Component {
     ClientActions.deleteRelatedFilm(e.target.dataset.id);
   }
 
-  clickRelatedFilm(e) {
+  clickRelatedFilm(option, e) {
     this.setState({
       fetching: true
     });
     ClientActions.createRelatedFilm({ filmId: this.state.film.id, otherFilmId: e.target.dataset.id });
   }
 
-  clickCrossedFilm(e) {
+  clickCrossedFilm(option, e) {
     this.setState({
       fetching: true
     });

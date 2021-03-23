@@ -79,7 +79,7 @@ class GiftboxDetails extends React.Component {
     });
   }
 
-  selectDvd(event) {
+  selectDvd(option, event) {
     var dvdId = event.target.dataset.id;
     this.setState({
       fetching: true,

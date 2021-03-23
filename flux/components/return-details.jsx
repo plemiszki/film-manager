@@ -126,9 +126,9 @@ class ReturnDetails extends React.Component {
     });
   }
 
-  clickSelectItem(event) {
+  clickSelectItem(option, event) {
     this.setState({
-      selectedItemId: event.target.dataset.id,
+      selectedItemId: option.id,
       selectedItemType: event.target.dataset.type,
       selectItemModalOpen: false,
       qtyModalOpen: true,

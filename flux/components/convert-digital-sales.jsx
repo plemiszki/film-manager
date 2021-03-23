@@ -114,7 +114,7 @@ class ConvertDigitalSales extends React.Component {
     });
   }
 
-  selectFilm(e) {
+  selectFilm(option, e) {
     let filmId = +e.target.dataset.id;
     this.setState({
       filmsModalOpen: false,

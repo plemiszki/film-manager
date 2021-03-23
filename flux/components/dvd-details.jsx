@@ -85,7 +85,7 @@ class DvdDetails extends React.Component {
     });
   }
 
-  clickShortButton(event) {
+  clickShortButton(option, event) {
     var shortId = event.target.dataset.id;
     this.setState({
       fetching: true,

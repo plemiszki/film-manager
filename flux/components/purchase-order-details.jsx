@@ -154,7 +154,7 @@ class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  clickSelectShippingAddress(event) {
+  clickSelectShippingAddress(option, event) {
     for (var i = 0; i < this.state.shippingAddresses.length; i++) {
       if (this.state.shippingAddresses[i].id === +event.target.dataset.id) {
         var address = this.state.shippingAddresses[i];
@@ -190,7 +190,7 @@ class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  clickSelectItem(event) {
+  clickSelectItem(option, event) {
     this.setState({
       selectedItemId: event.target.dataset.id,
       selectedItemType: event.target.dataset.type,

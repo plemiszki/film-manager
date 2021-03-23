@@ -79,7 +79,7 @@ class BookerDetails extends React.Component {
     });
   }
 
-  selectVenue(e) {
+  selectVenue(option, e) {
     this.setState({
       venuesModalOpen: false,
       fetching: true
