@@ -8,8 +8,8 @@ class Api::VirtualBookingsController < AdminController
   end
 
   def new
-    @films = Film.all
-    @venues = Venue.all
+    @films = Film.all.order(:title)
+    @venues = Venue.all.order(:label)
     render "new.json.jbuilder"
   end
 

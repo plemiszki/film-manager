@@ -20,7 +20,7 @@ class ModalSelect extends React.Component {
         <ul className="licensor-modal-list">
           { this.state.options.filterSearchText(this.state.searchText, this.props.property).map((option, index) => {
             return(
-              <li key={ index } onClick={ this.props.func } data-id={ option.id } data-type={ option.itemType }>{ option[this.props.property] }</li>
+              <li key={ index } onClick={ this.props.func.bind(this, option) } data-id={ option.id } data-type={ option.itemType }>{ option[this.props.property] }</li>
             );
           }) }
         </ul>

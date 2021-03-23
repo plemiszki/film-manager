@@ -787,18 +787,37 @@ $(document).ready(function() {
           batchSize={ 50 }
           searchModalRows={ 4 }
           searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 3 }
+          newModalDimensions={ { width: 1000 } }
         >
           <SearchCriteria
             context={ MyContext }
             fields={[
               { name: 'startDate', type: 'date range', columnWidth: 10 },
               { name: 'endDate', type: 'date range', columnWidth: 10 },
-              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', columnWidth: 8 },
-              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', columnWidth: 8 },
+              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
               { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
               { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
               { name: 'dateAdded', type: 'date range', columnWidth: 10 },
             ]}
+          />
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['films', 'venues'] }
+            initialEntity={ {
+              filmId: '',
+              venueId: '',
+              dateAdded: HandyTools.todayDMY(),
+              startDate: '',
+              endDate: '',
+              shippingCity: '',
+              shippingState: '',
+              terms: '',
+              url: 'https://',
+              host: 'FM'
+            } }
           />
         </SearchIndex>
       </Provider>,

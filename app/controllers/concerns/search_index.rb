@@ -33,9 +33,9 @@ module SearchIndex
         end
       end
       widgets_meeting_search_criteria = widget.where(where_obj)
-      if widgets_meeting_search_criteria.length == 0
-        widgets_meeting_search_criteria = widget.fuzzy_search(where_obj)
-      end
+      # if widgets_meeting_search_criteria.length == 0
+      #   widgets_meeting_search_criteria = widget.fuzzy_search(where_obj)
+      # end
     else
       widgets_meeting_search_criteria = widget.all
     end
