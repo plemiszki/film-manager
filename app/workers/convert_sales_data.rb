@@ -189,7 +189,7 @@ class ConvertSalesData
             '',
             '',
             '',
-            sage_id == 'SHORTS' ? 'Shorts' : film.title,
+            { :type => :String, :value => (sage_id == 'SHORTS' ? 'Shorts' : film.title) },
             gl_code,
             '',
             (amount.fdiv(100) * -1),
@@ -200,7 +200,7 @@ class ConvertSalesData
             '', '', '', '', '',
             '1',
             '', '', '',
-            sage_id
+            { :type => :String, :value => sage_id }
           ])
           job.update!(current_value: index)
         end
