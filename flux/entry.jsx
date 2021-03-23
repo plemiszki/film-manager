@@ -771,68 +771,36 @@ $(document).ready(function() {
   if (document.querySelector('#virtual-bookings-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <FullIndex
+        <SearchIndex
           context={ MyContext }
           entityName='virtualBooking'
           entityNamePlural='virtualBookings'
-          columns={ [
-            {
-              name: 'startDate',
-              sortColumn: 'startDateTimestamp',
-              sortDir: 'desc',
-              width: 125
-            },
-            {
-              name: 'endDate',
-              sortColumn: 'endDateTimestamp',
-              sortDir: 'desc',
-              width: 125
-            },
-            {
-              name: 'film',
-              width: 350
-            },
-            {
-              name: 'venue',
-              width: 350
-            },
-            {
-              name: 'shippingCity',
-              header: 'City',
-              width: 125
-            },
-            {
-              name: 'shippingState',
-              header: 'State',
-              width: 125
-            },
-            {
-              name: 'dateAdded',
-              sortColumn: 'dateAddedTimestamp',
-              sortDir: 'desc',
-              width: 125
-            }
-          ] }
-          modalRows={ 3 }
-          modalDimensions={ { width: 1000 } }
+          columns={[
+            { name: 'startDate', sortDir: 'desc', sortColumn: 'startDateTimestamp', width: 125 },
+            { name: 'endDate', sortDir: 'desc', sortColumn: 'endDateTimestamp', width: 125 },
+            { name: 'film', width: 350 },
+            { name: 'venue', width: 350 },
+            { name: 'city', width: 125 },
+            { name: 'state', width: 125 },
+            { name: 'dateAdded', sortDir: 'desc', sortColumn: 'dateAddedTimestamp', width: 125 },
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
         >
-          <NewEntity
+          <SearchCriteria
             context={ MyContext }
-            fetchData={ ['films', 'venues'] }
-            initialEntity={ {
-              filmId: '',
-              venueId: '',
-              dateAdded: HandyTools.todayDMY(),
-              startDate: '',
-              endDate: '',
-              shippingCity: '',
-              shippingState: '',
-              terms: '',
-              url: 'https://',
-              host: 'FM'
-            } }
+            fields={[
+              { name: 'startDate', type: 'date range', columnWidth: 10 },
+              { name: 'endDate', type: 'date range', columnWidth: 10 },
+              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', columnWidth: 8 },
+              { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
+              { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
+              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
+            ]}
           />
-        </FullIndex>
+        </SearchIndex>
       </Provider>,
       document.querySelector('#virtual-bookings-index')
     );

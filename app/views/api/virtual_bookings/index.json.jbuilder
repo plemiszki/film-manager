@@ -8,6 +8,8 @@ json.virtualBookings @virtual_bookings do |booking|
   json.venue booking.venue.label
   json.dateAdded booking.date_added.strftime("%-m/%-d/%y")
   json.dateAddedTimestamp booking.date_added.to_time.to_i
-  json.shippingCity booking.shipping_city
-  json.shippingState booking.shipping_state
+  json.city booking.shipping_city
+  json.state booking.shipping_state
 end
+json.pageNumbers @page_numbers
+json.morePages @more_pages
