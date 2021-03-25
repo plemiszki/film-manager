@@ -7,8 +7,5 @@ json.purchaseOrders @purchase_orders do |purchase_order|
   json.invoice purchase_order.invoice ? purchase_order.invoice.number : ""
   json.salesOrder purchase_order.source_doc || ""
 end
-json.shippingAddresses @shipping_addresses do |shipping_address|
-  json.id shipping_address.id
-  json.label shipping_address.label
-end
-json.needToUpdate @jobs.empty? ? true : DateTime.parse(@jobs.last.job_id).to_date.past?
+json.pageNumbers @page_numbers
+json.morePages @more_pages

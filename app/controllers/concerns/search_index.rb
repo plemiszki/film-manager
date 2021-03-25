@@ -4,7 +4,7 @@ module SearchIndex
 
   extend ActiveSupport::Concern
 
-  def perform_search(model:)
+  def perform_search(model:, associations: [])
 
     widget = model.constantize
 
@@ -40,7 +40,7 @@ module SearchIndex
       widgets_meeting_search_criteria = widget.all
     end
 
-    widgets = widgets_meeting_search_criteria.order(order_string).limit(batch_size).offset(offset)
+    widgets = widgets_meeting_search_criteria.order(order_string).includes(associations).limit(batch_size).offset(offset)
 
     if params[:batch_size]
       total_count = widgets_meeting_search_criteria.to_a.count # <-- casting to array avoids fuzzy_search error

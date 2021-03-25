@@ -25,6 +25,7 @@ import FilmDetails from './components/film-details.jsx'
 import FilmRightDetails from './components/film-right-details.jsx'
 import FilmsIndex from './components/films-index.jsx'
 import GiftBoxDetails from './components/giftbox-details.jsx'
+import ImportInventory from './components/import-inventory.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
 import InvoiceDetails from './components/invoice-details.jsx'
 import CreditMemosIndex from './components/credit-memos-index.jsx'
@@ -36,7 +37,6 @@ import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
 import NewEntity from './components/new-entity.jsx'
 import NewThing from './components/new-thing.jsx'
 import PurchaseOrderDetails from './components/purchase-order-details.jsx'
-import PurchaseOrdersIndex from './components/purchase-orders-index.jsx'
 import QuoteDetails from './components/quote-details.jsx'
 import ReturnDetails from './components/return-details.jsx'
 import ReturnsIndex from './components/returns-index.jsx'
@@ -105,7 +105,53 @@ $(document).ready(function() {
     ReactDOM.render(<DvdDetails />, document.getElementById("dvd-details"));
   }
   if ($('#purchase-orders-index')[0]) {
-    ReactDOM.render(<PurchaseOrdersIndex />, document.getElementById("purchase-orders-index"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <ImportInventory context={ MyContext } />
+      </Provider>,
+      document.getElementById("import-inventory")
+    );
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SearchIndex
+          context={ MyContext }
+          entityName='purchaseOrder'
+          entityNamePlural='purchaseOrders'
+          columns={[
+            { name: 'shipDate', width: 162 },
+            { name: 'number', width: 201 },
+            { name: 'customer', width: 373 },
+            { name: 'invoice', width: 96 },
+            { name: 'salesOrder', width: 155 },
+            { name: 'units', width: 69 },
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
+              { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
+              { name: 'num', type: 'number range', columnHeader: 'Invoice Number', columnWidth: 10 },
+              {
+                name: 'invoiceType',
+                type: 'static dropdown',
+                options: [
+                  { value: 'dvd', text: 'DVD' },
+                  { value: 'booking', text: 'Booking' }
+                ],
+                columnHeader: 'Type',
+                columnWidth: 3
+              },
+              { name: 'sentDate', type: 'date range', columnWidth: 10 },
+            ]}
+          />
+        </SearchIndex>
+      </Provider>,
+      document.getElementById("purchase-orders-index")
+    );
   }
   if ($('#purchase-order-details')[0]) {
     ReactDOM.render(<PurchaseOrderDetails />, document.getElementById("purchase-order-details"));
