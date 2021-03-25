@@ -91,7 +91,7 @@ Rails.application.routes.draw do
     resources :dvd_shorts, only: [:create, :destroy]
     get '/dvd_reports' => '/api/purchase_orders#reporting'
     get '/purchase_orders/check_jobs' => 'purchase_orders#check_jobs'
-    resources :purchase_orders, only: [:index, :show, :create, :update, :destroy]
+    resources :purchase_orders, only: [:index, :new, :show, :create, :update, :destroy]
     post '/purchase_orders/ship' => '/api/purchase_orders#ship'
     resources :purchase_order_items, only: [:create, :destroy]
     resources :shipping_addresses, only: [:index, :create, :show, :update, :destroy]

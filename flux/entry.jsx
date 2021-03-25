@@ -115,38 +115,40 @@ $(document).ready(function() {
       <Provider context={ MyContext } store={ store }>
         <SearchIndex
           context={ MyContext }
+          header='DVD Purchase Orders'
           entityName='purchaseOrder'
           entityNamePlural='purchaseOrders'
           columns={[
-            { name: 'shipDate', width: 162 },
-            { name: 'number', width: 201 },
-            { name: 'customer', width: 373 },
-            { name: 'invoice', width: 96 },
-            { name: 'salesOrder', width: 155 },
-            { name: 'units', width: 69 },
+            { name: 'orderDate', sortDir: 'desc', sortColumn: 'orderDateTimestamp', width: 162 },
+            { name: 'number', columnHeader: 'PO Number', width: 191 },
+            { name: 'customer', orderByDisabled: true, width: 221 },
+            { name: 'shipDate', sortDir: 'desc', sortColumn: 'shipDateTimestamp', width: 162 },
+            { name: 'salesOrder', dbName: 'source_doc', sortDir: 'desc', width: 155 },
+            { name: 'invoice', orderByDisabled: true, width: 96 },
+            { name: 'units', orderByDisabled: true, width: 69 }
           ]}
           batchSize={ 50 }
           searchModalRows={ 4 }
           searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 2 }
+          newModalDimensions={ { width: 600 } }
         >
           <SearchCriteria
             context={ MyContext }
             fields={[
-              { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
-              { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
-              { name: 'num', type: 'number range', columnHeader: 'Invoice Number', columnWidth: 10 },
-              {
-                name: 'invoiceType',
-                type: 'static dropdown',
-                options: [
-                  { value: 'dvd', text: 'DVD' },
-                  { value: 'booking', text: 'Booking' }
-                ],
-                columnHeader: 'Type',
-                columnWidth: 3
-              },
-              { name: 'sentDate', type: 'date range', columnWidth: 10 },
+              { name: 'orderDate', type: 'date range', columnWidth: 10 },
+              { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
+              { name: 'customer', type: 'modal', responseArrayName: 'customers', modalDisplayProperty: 'name', columnWidth: 8 },
+              { name: 'shipDate', type: 'date range', columnWidth: 10 },
+              { name: 'salesOrder', columnWidth: 6 },
             ]}
+          />
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['shippingAddresses'] }
+            initialEntity={ { number: '', orderDate: '', shippingAddressId: '' } }
+            redirectAfterCreate={ true }
           />
         </SearchIndex>
       </Provider>,

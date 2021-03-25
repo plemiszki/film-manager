@@ -18,6 +18,11 @@ class Api::PurchaseOrdersController < AdminController
     render "index.json.jbuilder"
   end
 
+  def new
+    @shipping_addresses = ShippingAddress.all.order(:label)
+    @dvd_customers = DvdCustomer.all.order(:name)
+  end
+
   def show
     @purchase_orders = PurchaseOrder.where(id: params[:id])
     @shipping_addresses = ShippingAddress.all

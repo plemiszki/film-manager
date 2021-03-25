@@ -23,7 +23,8 @@ class NewEntity extends React.Component {
       [this.props.entityName]: HandyTools.deepCopy(this.props.initialEntity),
       errors: [],
       films: [],
-      venues: []
+      venues: [],
+      shippingAddresses: []
     };
   }
 
@@ -57,7 +58,11 @@ class NewEntity extends React.Component {
       entityName: this.props.entityName,
       entity: this.state[this.props.entityName]
     }).then(() => {
-      this.props.callback(this.props[entityNamePlural]);
+      if (this.props.redirectAfterCreate) {
+        window.location.href = `/${directory}/${this.props[this.props.entityName].id}`;
+      } else {
+        this.props.callback(this.props[entityNamePlural]);
+      }
     }, () => {
       this.setState({
         fetching: false,
@@ -77,10 +82,10 @@ class NewEntity extends React.Component {
     return(
       <div className="component admin-modal">
         <form className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderFields() }
           <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.props.buttonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` } onClick={ this.clickAdd.bind(this) } />
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
         </form>
       </div>
     );
@@ -178,6 +183,24 @@ class NewEntity extends React.Component {
         return([
           <div key="1" className="row">
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'merchandiseType', property: 'name' }) }
+          </div>
+        ]);
+      case 'purchaseOrder':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({
+              columnWidth: 12,
+              entity: 'purchaseOrder',
+              property: 'shippingAddressId',
+              columnHeader: 'Shipping Address',
+              customType: 'modal',
+              modalDisplayProperty: 'label',
+              optionsArrayName: 'shippingAddresses'
+            }) }
+          </div>,
+          <div key="2" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'number' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'orderDate' }) }
           </div>
         ]);
       case 'sublicensor':
