@@ -119,12 +119,12 @@ $(document).ready(function() {
           entityName='purchaseOrder'
           entityNamePlural='purchaseOrders'
           columns={[
-            { name: 'orderDate', sortDir: 'desc', sortColumn: 'orderDateTimestamp', width: 162 },
+            { name: 'orderDate', sortDir: 'desc', width: 162 },
             { name: 'number', columnHeader: 'PO Number', width: 191 },
-            { name: 'customer', orderByDisabled: true, width: 221 },
-            { name: 'shipDate', sortDir: 'desc', sortColumn: 'shipDateTimestamp', width: 162 },
+            { name: 'customer', dbName: 'dvd_customers.name', width: 221 },
+            { name: 'shipDate', sortDir: 'desc', width: 162 },
             { name: 'salesOrder', dbName: 'source_doc', sortDir: 'desc', width: 155 },
-            { name: 'invoice', orderByDisabled: true, width: 96 },
+            { name: 'invoice', dbName: 'invoices.num', sortDir: 'desc', width: 96 },
             { name: 'units', orderByDisabled: true, width: 69 }
           ]}
           batchSize={ 50 }
@@ -245,10 +245,58 @@ $(document).ready(function() {
     );
   }
   if ($('#bookings-index')[0]) {
-    ReactDOM.render(<BookingsIndex timeframe={ 'upcoming' } />, document.getElementById("bookings-index"));
-  }
-  if ($('#bookings-index-past')[0]) {
-    ReactDOM.render(<BookingsIndex />, document.getElementById("bookings-index-past"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SearchIndex
+          context={ MyContext }
+          entityName='booking'
+          entityNamePlural='bookings'
+          columns={[
+            { name: 'dateAdded', sortDir: 'desc', width: 162 },
+            { name: 'film', dbName: 'films.title', width: 350 },
+            { name: 'venue', dbName: 'venues.label', width: 350 },
+            { name: 'startDate', sortDir: 'desc', width: 162 },
+            { name: 'endDate', sortDir: 'desc', width: 162 },
+            { name: 'city', dbName: 'shipping_city', width: 162 },
+            { name: 'state', dbName: 'shipping_state', width: 162 },
+            { name: 'terms', width: 162 },
+            { name: 'type', dbName: 'booking_type', width: 162 },
+            { name: 'status', width: 162 },
+            { name: 'format', dbName: 'formats.name', width: 162 },
+            { name: 'materialsSent', width: 125 },
+            { name: 'boxOfficeReceived', header: 'BO Received', width: 125 },
+            { name: 'totalGross', orderByDisabled: true, width: 125 },
+            { name: 'ourShare', orderByDisabled: true, width: 125 },
+            { name: 'received', orderByDisabled: true, width: 125 },
+            { name: 'owed', orderByDisabled: true, width: 125 },
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 2 }
+          newModalDimensions={ { width: 600 } }
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'orderDate', type: 'date range', columnWidth: 10 },
+              { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
+              { name: 'customer', type: 'modal', responseArrayName: 'customers', modalDisplayProperty: 'name', columnWidth: 8 },
+              { name: 'shipDate', type: 'date range', columnWidth: 10 },
+              { name: 'salesOrder', columnWidth: 6 },
+            ]}
+          />
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['shippingAddresses'] }
+            initialEntity={ { number: '', orderDate: '', shippingAddressId: '' } }
+            redirectAfterCreate={ true }
+          />
+        </SearchIndex>
+      </Provider>,
+      document.getElementById("bookings-index")
+    );
   }
   if ($('#bookings-index-advanced')[0]) {
     ReactDOM.render(<BookingsIndex advanced={ true } />, document.getElementById("bookings-index-advanced"));
@@ -824,13 +872,13 @@ $(document).ready(function() {
           entityName='virtualBooking'
           entityNamePlural='virtualBookings'
           columns={[
-            { name: 'startDate', sortDir: 'desc', sortColumn: 'startDateTimestamp', width: 125 },
-            { name: 'endDate', sortDir: 'desc', sortColumn: 'endDateTimestamp', width: 125 },
-            { name: 'film', width: 350 },
-            { name: 'venue', width: 350 },
-            { name: 'city', width: 125 },
-            { name: 'state', width: 125 },
-            { name: 'dateAdded', sortDir: 'desc', sortColumn: 'dateAddedTimestamp', width: 125 },
+            { name: 'dateAdded', sortDir: 'desc', width: 162 },
+            { name: 'film', dbName: 'films.title', width: 350 },
+            { name: 'venue', dbName: 'venues.label', width: 350 },
+            { name: 'startDate', sortDir: 'desc', width: 162 },
+            { name: 'endDate', sortDir: 'desc', width: 162 },
+            { name: 'city', dbName: 'shipping_city', width: 162 },
+            { name: 'state', dbName: 'shipping_state', width: 162 },
           ]}
           batchSize={ 50 }
           searchModalRows={ 4 }
