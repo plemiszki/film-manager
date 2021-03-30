@@ -274,8 +274,8 @@ $(document).ready(function() {
           searchModalRows={ 4 }
           searchModalDimensions={ { width: 600 } }
           showNewButton={ true }
-          newModalRows={ 2 }
-          newModalDimensions={ { width: 600 } }
+          newModalRows={ 3 }
+          newModalDimensions={ { width: 1000 } }
         >
           <SearchCriteria
             context={ MyContext }
