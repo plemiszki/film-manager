@@ -65,7 +65,7 @@ Rails.application.routes.draw do
     get '/bookings/upcoming' => '/api/bookings#upcoming_index'
     get '/bookings/advanced' => '/api/bookings#advanced'
     post '/bookings/export' => '/api/bookings#export'
-    resources :bookings, only: [:index, :show, :create, :update, :destroy]
+    resources :bookings, only: [:index, :new, :show, :create, :update, :destroy]
     post '/bookings/copy' => 'bookings#copy'
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     resources :virtual_bookings, only: [:index, :new, :create, :show, :update, :destroy]

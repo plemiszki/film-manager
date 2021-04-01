@@ -9,4 +9,7 @@ class User < ActiveRecord::Base
   has_many :bookings, foreign_key: :booker_id
   has_many :entered_bookings, class_name: "Booking"
 
+  scope :bookers, -> { where(booker: true) }
+  scope :active_bookers, -> { where(booker: true, inactive: false) }
+
 end

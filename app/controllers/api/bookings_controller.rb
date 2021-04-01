@@ -12,6 +12,14 @@ class Api::BookingsController < AdminController
     render 'index.json.jbuilder'
   end
 
+  def new
+    @films = Film.all
+    @venues = Venue.all
+    @users = User.active_bookers
+    @formats = Format.all
+    render 'new.json.jbuilder'
+  end
+
   def advanced
     queries = []
     if params[:film_id]

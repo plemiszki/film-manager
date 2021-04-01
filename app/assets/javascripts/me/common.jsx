@@ -415,6 +415,12 @@ var FM = {
     ],
     acceptDelivery: [
       "Accept delivery is not a valid date"
+    ],
+    bookerId: [
+      "Booker is mandatory"
+    ],
+    formatId: [
+      "Format can't be blank"
     ]
   },
 

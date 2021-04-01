@@ -289,8 +289,8 @@ $(document).ready(function() {
           />
           <NewEntity
             context={ MyContext }
-            fetchData={ ['shippingAddresses'] }
-            initialEntity={ { number: '', orderDate: '', shippingAddressId: '' } }
+            fetchData={ ['films', 'venues', 'formats', 'users'] }
+            initialEntity={ { filmId: '', venueId: '', startDate: '', endDate: '', bookingType: 'Non-Theatrical', status: 'Tentative', formatId: '', terms: '', bookerId: '', dateAdded: HandyTools.todayDMY() } }
             redirectAfterCreate={ true }
           />
         </SearchIndex>
