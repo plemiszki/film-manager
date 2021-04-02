@@ -4,7 +4,7 @@ class Api::BookingsController < AdminController
   include SearchIndex
 
   def index
-    @bookings = perform_search(model: 'Booking', associations: ['film', 'venue', 'format'])
+    @bookings = perform_search(model: 'Booking', associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices'])
     @calculations = {}
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
