@@ -280,11 +280,18 @@ $(document).ready(function() {
           <SearchCriteria
             context={ MyContext }
             fields={[
-              { name: 'orderDate', type: 'date range', columnWidth: 10 },
-              { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
-              { name: 'customer', type: 'modal', responseArrayName: 'customers', modalDisplayProperty: 'name', columnWidth: 8 },
-              { name: 'shipDate', type: 'date range', columnWidth: 10 },
-              { name: 'salesOrder', columnWidth: 6 },
+              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
+              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+              { name: 'startDate', type: 'date range', columnWidth: 10 },
+              { name: 'endDate', type: 'date range', columnWidth: 10 },
+              { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
+              { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
+              { name: 'type', dbName: 'booking_type', type: 'static dropdown', options: [{ value: 'Theatrical', text: 'Theatrical' }, { value: 'Non-Theatrical', text: 'Non-Theatrical' }, { value: 'Festival', text: 'Festival' }], columnWidth: 4 },
+              { name: 'status', type: 'static dropdown', options: [{ value: 'Tentative', text: 'Tentative' }, { value: 'Confirmed', text: 'Confirmed' }], columnWidth: 4 },
+              { name: 'format', dbName: 'format_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'formats', columnWidth: 4 },
+              { name: 'materialsSent', type: 'yes/no', columnWidth: 4 },
+              { name: 'boxOfficeReceived', type: 'yes/no', columnWidth: 4 },
             ]}
           />
           <NewEntity
@@ -890,13 +897,13 @@ $(document).ready(function() {
           <SearchCriteria
             context={ MyContext }
             fields={[
-              { name: 'startDate', type: 'date range', columnWidth: 10 },
-              { name: 'endDate', type: 'date range', columnWidth: 10 },
+              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
               { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
               { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+              { name: 'startDate', type: 'date range', columnWidth: 10 },
+              { name: 'endDate', type: 'date range', columnWidth: 10 },
               { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
               { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
-              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
             ]}
           />
           <NewEntity

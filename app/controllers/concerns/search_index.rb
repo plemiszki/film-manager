@@ -20,7 +20,7 @@ module SearchIndex
     order_string += ' DESC' if order_direction == 'desc'
 
     if params[:search_criteria]
-      where_obj = {}
+      where_obj, not_obj = {}, {}
       params[:search_criteria].each do |key, value|
         key = value['db_name'] if value['db_name']
         if value['min_value']
@@ -28,11 +28,13 @@ module SearchIndex
         elsif value['start_date']
           convert_date = -> (string) { Date.strptime(string, "%m/%d/%y") }
           where_obj[key] = Range.new(convert_date.(value['start_date']), convert_date.(value['end_date']))
+        elsif value.has_key?('not')
+          not_obj[key] = value['not']
         else
           where_obj[key] = value['value']
         end
       end
-      widgets_meeting_search_criteria = widget.where(where_obj)
+      widgets_meeting_search_criteria = widget.where(where_obj).where.not(not_obj)
       # if widgets_meeting_search_criteria.length == 0
       #   widgets_meeting_search_criteria = widget.fuzzy_search(where_obj)
       # end

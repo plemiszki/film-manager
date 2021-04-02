@@ -4,6 +4,14 @@ class Api::BookingsController < AdminController
   include SearchIndex
 
   def index
+    if params[:search_criteria] && params[:search_criteria][:materials_sent]
+      if params[:search_criteria][:materials_sent][:value] == "f"
+        params[:search_criteria][:materials_sent][:value] = nil
+      else
+        params[:search_criteria][:materials_sent].delete(:value)
+        params[:search_criteria][:materials_sent][:not] = nil
+      end
+    end
     @bookings = perform_search(model: 'Booking', associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices'])
     @calculations = {}
     @bookings.each do |booking|
@@ -13,10 +21,10 @@ class Api::BookingsController < AdminController
   end
 
   def new
-    @films = Film.all
-    @venues = Venue.all
-    @users = User.active_bookers
-    @formats = Format.all
+    @films = Film.all.order(:title)
+    @venues = Venue.all.order(:label)
+    @users = User.active_bookers.order(:name)
+    @formats = Format.all.order(:name)
     render 'new.json.jbuilder'
   end
 
