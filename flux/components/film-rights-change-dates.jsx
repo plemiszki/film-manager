@@ -55,8 +55,6 @@ class FilmRightsChangeDates extends React.Component {
     return(
       <div id="film-rights-change-dates" className="component admin-modal">
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
             <div className="col-xs-6">
               <h2>Start Date</h2>
@@ -70,6 +68,8 @@ class FilmRightsChangeDates extends React.Component {
             </div>
           </div>
           <a className={ "orange-button" + Common.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.clickChange.bind(this) }>Change All Dates</a>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
       </div>
     );

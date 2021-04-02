@@ -143,8 +143,6 @@ class EpisodeDetails extends React.Component {
         <div className="component details-component">
           <h1>Episode Details</h1>
           <div id="episode-profile-box" className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Title</h2>
@@ -194,6 +192,8 @@ class EpisodeDetails extends React.Component {
             </div>
             <hr />
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.actorModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ DirectorModalStyles }>

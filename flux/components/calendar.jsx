@@ -11,7 +11,7 @@ class Calendar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: false,
+      fetching: true,
       year: (new Date).getFullYear(),
       months: []
     };
@@ -61,8 +61,6 @@ class Calendar extends React.Component {
             <a className={ "orange-button float-button small" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           </div>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <table>
               <thead>
                 <tr>
@@ -141,6 +139,8 @@ class Calendar extends React.Component {
                 }
               </tbody>
             </table>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
       </div>

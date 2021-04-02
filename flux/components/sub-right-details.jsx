@@ -105,8 +105,6 @@ class SubRightDetails extends React.Component {
         <div className="component details-component">
           <h1>Sublicensed Right Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6 select-scroll">
                 <h2>Film</h2>
@@ -163,6 +161,8 @@ class SubRightDetails extends React.Component {
               </div>
             </div>
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

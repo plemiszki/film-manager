@@ -178,8 +178,6 @@ class CreditMemosIndex extends React.Component {
         <a className={ "orange-button float-button margin-right" + this.filterExists() + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openFilterModal.bind(this) }>Filter</a>
         <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className="fm-admin-table">
             <thead>
               <tr>
@@ -211,6 +209,8 @@ class CreditMemosIndex extends React.Component {
               }.bind(this)) }
             </tbody>
           </table>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
         { this.renderSeeAllButton() }
         <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ filterModalStyles }>

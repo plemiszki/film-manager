@@ -292,8 +292,6 @@ class PurchaseOrderDetails extends React.Component {
         <div className="component">
           <h1>Purchase Order Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Number</h2>
@@ -429,6 +427,8 @@ class PurchaseOrderDetails extends React.Component {
               </div>
             </div>
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

@@ -116,8 +116,6 @@ class InTheatersIndex extends React.Component {
       <div id="in-theaters-index" className="component">
         <h1>In Theaters</h1>
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className="fm-admin-table no-hover no-highlight virtual">
             <thead>
               <tr>
@@ -185,6 +183,8 @@ class InTheatersIndex extends React.Component {
             </tbody>
           </table>
           <a className="blue-outline-button small" onClick={ this.clickAddRepertoryFilm.bind(this) }>Add Film</a>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.addSection === 'Virtual' ? this.state.nonVirtualFilms : this.state.films } property={ "title" } func={ this.selectFilm.bind(this) } />

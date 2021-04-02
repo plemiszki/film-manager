@@ -141,8 +141,6 @@ class NewThing extends React.Component {
     return(
       <div id="new-thing" className="component admin-modal">
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderNameField() }
           { this.renderEmailField() }
           { this.renderPasswordField() }
@@ -169,6 +167,8 @@ class NewThing extends React.Component {
           <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAdd.bind(this) }>
             { this.renderAddButton() }
           </a>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
       </div>
     )

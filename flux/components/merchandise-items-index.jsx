@@ -71,8 +71,6 @@ class MerchandiseItemsIndex extends React.Component {
         <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNew.bind(this) }>Add Merchandise</a>
         <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <table className="fm-admin-table">
             <thead>
               <tr>
@@ -104,6 +102,8 @@ class MerchandiseItemsIndex extends React.Component {
               }) }
             </tbody>
           </table>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
         <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalStyles }>
           <NewThing thing="merchandiseItem" initialObject={ { name: "", merchandiseTypeId: newEntityTypeId.toString(), description: "", size: "", inventory: "", price: "", filmId: "" } } />

@@ -1041,8 +1041,6 @@ class FilmDetails extends React.Component {
         <h1>{ title } Details</h1>
         { this.renderTopTabs() }
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
             <div className="col-xs-1">
               <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ this.state.film.artworkUrl ? { 'backgroundImage': `url(${this.state.film.artworkUrl})` } : {} } onClick={ this.clickArtwork.bind(this) }></div>
@@ -1060,6 +1058,8 @@ class FilmDetails extends React.Component {
           </div>
           { this.renderTab(this.state.tab) }
           { this.renderButtons() }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
         <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete entityName="film" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />

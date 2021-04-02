@@ -149,8 +149,6 @@ class GiftboxDetails extends React.Component {
         <div className="component details-component">
           <h1>Gift Box Details</h1>
           <div id="giftbox-profile-box" className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
@@ -212,6 +210,8 @@ class GiftboxDetails extends React.Component {
               </tbody>
             </table>
             <a className={ 'blue-outline-button small' } onClick={ this.clickAddDvdButton.bind(this) }>Add DVD</a>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

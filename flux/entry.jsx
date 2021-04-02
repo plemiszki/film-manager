@@ -803,10 +803,10 @@ $(document).ready(function() {
           entityName='venue'
           entityNamePlural='venues'
           columns={[
-            { name: 'label' },
-            { name: 'type', dbName: 'venue_type' },
-            { name: 'city', dbName: 'shipping_city' },
-            { name: 'state', dbName: 'shipping_state' }
+            { name: 'label', width: 633 },
+            { name: 'type', dbName: 'venue_type', width: 175 },
+            { name: 'city', dbName: 'shipping_city', width: 188 },
+            { name: 'state', dbName: 'shipping_state', width: 60 }
           ]}
           batchSize={ 50 }
           searchModalRows={ 4 }

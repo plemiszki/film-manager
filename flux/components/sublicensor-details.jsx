@@ -136,8 +136,6 @@ class SublicensorDetails extends React.Component {
         <div className="component details-component">
           <h1>Sublicensor Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
@@ -216,6 +214,8 @@ class SublicensorDetails extends React.Component {
                 <a className="blue-outline-button small" onClick={ this.clickAddRight.bind(this) }>Add Rights</a>
               </div>
             </div>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>

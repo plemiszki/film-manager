@@ -103,8 +103,6 @@ class DigitalRetailerFilmDetails extends React.Component {
         <div className="component details-component">
           <h1>Digital Retailer Film Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Company</h2>
@@ -126,6 +124,8 @@ class DigitalRetailerFilmDetails extends React.Component {
               </div>
             </div>
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
