@@ -137,11 +137,16 @@ def search_index(criteria)
             raise 'missing value or label attribute!'
           end
         end
-      when :date
-        start_field = find("input.number-range.min", visible: false)
+      when :date_range
+        start_field = find("input.min", visible: false)
         start_field.set(value[:start])
-        end_field = find("input.number-range.max", visible: false)
+        end_field = find("input.max", visible: false)
         start_field.set(value[:end])
+      when :number_range
+        start_field = find("input.min", visible: false)
+        start_field.set(value[:start])
+        end_field = find("input.max", visible: false)
+        end_field.set(value[:end])
       else
         input_element = find("input.test-input-field", visible: false)
         input_element.set(value[:value])

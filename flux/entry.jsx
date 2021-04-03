@@ -27,14 +27,12 @@ import GiftBoxDetails from './components/giftbox-details.jsx'
 import ImportInventory from './components/import-inventory.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
 import InvoiceDetails from './components/invoice-details.jsx'
-import CreditMemosIndex from './components/credit-memos-index.jsx'
 import CreditMemoDetails from './components/credit-memo-details.jsx'
 import JobsIndex from './components/jobs-index.jsx'
 import LicensorDetails from './components/licensor-details.jsx'
 import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
 import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
 import NewEntity from './components/new-entity.jsx'
-import NewThing from './components/new-thing.jsx'
 import PurchaseOrderDetails from './components/purchase-order-details.jsx'
 import QuoteDetails from './components/quote-details.jsx'
 import ReturnDetails from './components/return-details.jsx'
@@ -208,7 +206,31 @@ $(document).ready(function() {
   if ($('#credit-memos-index')[0]) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <CreditMemosIndex context={ MyContext } />
+        <SearchIndex
+          context={ MyContext }
+          entityName='creditMemo'
+          columns={[
+            { name: 'sentDate', sortDir: 'desc', width: 163 },
+            { name: 'number', sortDir: 'desc', header: 'Credit Memo Number', width: 299 },
+            { name: 'customer', header: 'DVD Customer', dbName: 'customer_id', width: 299 },
+            { name: 'returnNumber', width: 295 }
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+          showExportButton={ true }
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'sentDate', type: 'date range', columnWidth: 10 },
+              { name: 'number', columnHeader: 'Credit Memo Number', columnWidth: 6 },
+              { name: 'num', type: 'number range', columnHeader: 'Credit Memo Number', columnWidth: 10 },
+              { name: 'customer', dbName: 'customer_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'customers', columnWidth: 6 },
+              { name: 'returnNumber', columnWidth: 6 },
+            ]}
+          />
+        </SearchIndex>
       </Provider>,
       document.getElementById("credit-memos-index")
     );

@@ -94,12 +94,12 @@ Rails.application.routes.draw do
     post '/purchase_orders/ship' => '/api/purchase_orders#ship'
     resources :purchase_order_items, only: [:create, :destroy]
     resources :shipping_addresses, only: [:index, :create, :show, :update, :destroy]
+    get '/invoices/:id/export' => '/api/invoices#export_single'
+    get '/invoices/export' => '/api/invoices#export'
     resources :invoices, only: [:index, :show, :update]
-    get '/invoices/:id/export' => '/api/invoices#export'
-    post '/invoices/export' => '/api/invoices#export_sage'
     post '/invoices' => '/api/invoices#create'
-    get '/credit_memos/export' => '/api/credit_memos#export_sage'
-    resources :credit_memos, only: [:index, :create, :show]
+    get '/credit_memos/export' => '/api/credit_memos#export'
+    resources :credit_memos, only: [:index, :new, :create, :show]
     post '/dvd_reports/export' => '/api/purchase_orders#export'
     get '/calendar' => 'calendar#show'
     resources :returns, only: [:index, :create, :show, :update, :destroy]

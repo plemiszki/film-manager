@@ -100,7 +100,7 @@ class Api::InvoicesController < AdminController
     render 'show.json.jbuilder'
   end
 
-  def export
+  def export_single
     invoice = Invoice.find(params[:id])
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")
@@ -110,12 +110,12 @@ class Api::InvoicesController < AdminController
     end
   end
 
-  def export_sage
+  def export
     invoice_ids = perform_search(model: 'Invoice').pluck(:id)
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export invoices", first_line: "Exporting Invoices", second_line: true, current_value: 0, total_value: invoice_ids.length)
     ExportInvoices.perform_async(invoice_ids, time_started)
-    render json: { job: job }
+    render json: { job: job.render_json }
   end
 
   private

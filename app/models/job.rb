@@ -10,4 +10,8 @@ class Job < ActiveRecord::Base
     s3.bucket(ENV['S3_BUCKET']).clear!
   end
 
+  def render_json
+    self.as_json.deep_transform_keys { |k| k.to_s.camelize(:lower) }
+  end
+
 end

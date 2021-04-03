@@ -118,9 +118,9 @@ describe 'bookings_index', type: :feature do
       materials_sent: { label: 'No', type: :select },
       type: { label: 'Non-Theatrical', type: :select },
       status: { label: 'Confirmed', type: :select },
-      start_date: { start: '1/2/21', end: '1/2/21', type: :date },
-      end_date: { start: '1/3/21', end: '1/3/21', type: :date },
-      date_added: { start: '1/2/20', end: '1/2/20', type: :date }
+      start_date: { start: '1/2/21', end: '1/2/21', type: :date_range },
+      end_date: { start: '1/3/21', end: '1/3/21', type: :date_range },
+      date_added: { start: '1/2/20', end: '1/2/20', type: :date_range }
     })
     expect(page).to have_no_css('.spinner')
     expect(page).to have_content('Wilby Wonderful').once

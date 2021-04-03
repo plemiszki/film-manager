@@ -22,17 +22,19 @@ describe 'credit_memos_index', type: :feature do
   end
 
   it 'filters credit memos' do
-    create(:credit_memo, { number: 'CM24' })
-    create(:credit_memo, { number: 'CM25' })
-    create(:credit_memo, { number: 'CM26' })
-    create(:credit_memo, { number: 'CM27' })
-    create(:credit_memo, { number: 'CM28' })
-    create(:credit_memo, { number: 'CM29' })
-    create(:credit_memo, { number: 'CM30' })
-    create(:credit_memo, { number: 'CM31' })
-    create(:credit_memo, { number: 'CM32' })
+    create(:credit_memo, { number: 'CM24', num: 24 })
+    create(:credit_memo, { number: 'CM25', num: 25 })
+    create(:credit_memo, { number: 'CM26', num: 26 })
+    create(:credit_memo, { number: 'CM27', num: 27 })
+    create(:credit_memo, { number: 'CM28', num: 28 })
+    create(:credit_memo, { number: 'CM29', num: 29 })
+    create(:credit_memo, { number: 'CM30', num: 30 })
+    create(:credit_memo, { number: 'CM31', num: 31 })
+    create(:credit_memo, { number: 'CM32', num: 32 })
     visit credit_memos_path(as: $admin_user)
-    update_credit_memos_filter
+    search_index({
+      num: { start: 26, end: 28, type: :number_range }
+    })
     expect(page).to have_no_content('CM24')
     expect(page).to have_no_content('CM25')
     expect(page).to have_content('CM26')
@@ -44,13 +46,4 @@ describe 'credit_memos_index', type: :feature do
     expect(page).to have_no_content('CM32')
   end
 
-end
-
-def update_credit_memos_filter
-  find('.orange-button', text: 'Filter').click
-  within('.filter-modal') do
-    find('.starting-number').set('26')
-    find('.end-number').set('28')
-    find('.orange-button', text: 'Update Filter').click
-  end
 end
