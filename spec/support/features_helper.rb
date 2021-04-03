@@ -115,11 +115,15 @@ def search_index(criteria)
   find('.search-button').click
   criteria.each do |key, value|
     key = key.to_s.camelize(:lower)
-    if value[:type] == :select
-      field = find("div[data-test-field=#{key}]")
-      within(field) do
-        checkbox = find('input[type="checkbox"]')
-        checkbox.set(true)
+    field = find("div[data-test-field=#{key}]")
+    within(field) do
+      checkbox = find('input[type="checkbox"]')
+      checkbox.set(true)
+      case value[:type]
+      when :select_modal
+        find('.select-from-modal').click
+        select_from_modal(value[:value])
+      when :select
         select_element = find("select", visible: false)
         nice_select_div = select_element.sibling('.nice-select')
         nice_select_div.click
@@ -133,6 +137,14 @@ def search_index(criteria)
             raise 'missing value or label attribute!'
           end
         end
+      when :date
+        start_field = find("input.number-range.min", visible: false)
+        start_field.set(value[:start])
+        end_field = find("input.number-range.max", visible: false)
+        start_field.set(value[:end])
+      else
+        input_element = find("input.test-input-field", visible: false)
+        input_element.set(value[:value])
       end
     end
   end

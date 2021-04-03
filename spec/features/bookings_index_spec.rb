@@ -18,15 +18,13 @@ describe 'bookings_index', type: :feature do
     expect(page).to have_content 'Please sign in to continue.'
   end
 
-  it 'displays all bookings' do
-    @future_booking = create(:future_booking)
-    @past_booking = create(:past_booking, film_id: 2, venue_id: 2)
+  it 'displays bookings' do
+    create(:future_booking)
+    create(:past_booking, film_id: 2, venue_id: 2)
     visit bookings_path(as: $admin_user)
     within('#bookings-index', match: :first) do
       expect(page).to have_content 'Wilby Wonderful'
       expect(page).to have_content 'Film at Lincoln Center'
-    end
-    within('#bookings-index-past') do
       expect(page).to have_content 'Another Film'
       expect(page).to have_content 'New York Film Festival'
     end
@@ -34,7 +32,7 @@ describe 'bookings_index', type: :feature do
 
   it 'adds bookings' do
     visit bookings_path(as: $admin_user)
-    find('.orange-button', text: 'Add Booking').click
+    find('.new-button', text: 'Add Booking').click
     info = {
       film_id: { value: 'Wilby Wonderful', type: :select_modal },
       venue_id: { value: 'Film at Lincoln Center', type: :select_modal },
@@ -46,7 +44,7 @@ describe 'bookings_index', type: :feature do
       terms: '50%',
       booker_id: { value: 2, type: :select }
     }
-    fill_out_and_submit_modal(info, :orange_button)
+    fill_out_and_submit_modal(info, :input)
     verify_db({
       entity: Booking.last,
       data: info.merge({ film_id: 1, venue_id: 1, start_date: Date.today, end_date: Date.today + 1.day })
@@ -56,12 +54,14 @@ describe 'bookings_index', type: :feature do
 
   it 'validates new bookings' do
     visit bookings_path(as: $admin_user)
-    find('.orange-button', text: 'Add Booking').click
-    fill_out_and_submit_modal({}, :orange_button)
+    find('.new-button', text: 'Add Booking').click
+    fill_out_and_submit_modal({}, :input)
     expect(page).to have_content "Film can't be blank"
     expect(page).to have_content "Venue can't be blank"
     expect(page).to have_content 'Start date is not a valid date'
     expect(page).to have_content 'End date is not a valid date'
+    expect(page).to have_content "Format can't be blank"
+    expect(page).to have_content "Booker is mandatory"
   end
 
   it 'performs advanced searches' do
@@ -106,26 +106,22 @@ describe 'bookings_index', type: :feature do
         end
       end
     end
+    sleep 2
     visit bookings_path(as: $admin_user)
-    find('.orange-button', text: 'Advanced Search').click
-    find_all('input[type="checkbox"]').each { |checkbox| checkbox.set(true) }
-    fill_out_form({
-      city: 'Wayland',
-      state: 'MA',
-      start_date_start: '1/2/21',
-      start_date_end: '1/2/21',
-      end_date_start: '1/3/21',
-      end_date_end: '1/3/21',
-      date_added_start: '1/2/20',
-      date_added_end: '1/2/20',
-      box_office_received: { value: 'No', type: :select },
-      materials_sent: { value: 'No', type: :select }
+    search_index({
+      film: { value: 'Wilby Wonderful', type: :select_modal },
+      venue: { value: 'Film at Lincoln Center', type: :select_modal },
+      format: { value: 'Blu-ray', type: :select_modal },
+      shipping_city: { value: 'Wayland' },
+      shipping_state: { value: 'MA' },
+      box_office_received: { label: 'No', type: :select },
+      materials_sent: { label: 'No', type: :select },
+      type: { label: 'Non-Theatrical', type: :select },
+      status: { label: 'Confirmed', type: :select },
+      start_date: { start: '1/2/21', end: '1/2/21', type: :date },
+      end_date: { start: '1/3/21', end: '1/3/21', type: :date },
+      date_added: { start: '1/2/20', end: '1/2/20', type: :date }
     })
-    find('#non-theatrical').set(true)
-    find('#Blu-ray-checkbox').set(true)
-    within('#advanced-search') do
-      find('.orange-button', text: 'Search').click
-    end
     expect(page).to have_no_css('.spinner')
     expect(page).to have_content('Wilby Wonderful').once
     expect(page).to have_content('Film at Lincoln Center').once
