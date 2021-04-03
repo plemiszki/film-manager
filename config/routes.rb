@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   root to: "films#index"
   resources :films, only: [:index, :show]
   resources :venues, only: [:index, :show]
-  get '/bookings/advanced' => 'bookings#advanced'
   resources :bookings, only: [:index, :show]
   resources :virtual_bookings, only: [:index, :show]
   resources :bookers, only: [:index, :show]

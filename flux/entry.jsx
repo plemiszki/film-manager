@@ -11,7 +11,6 @@ let store = configureStore();
 
 import BookerDetails from './components/booker-details.jsx'
 import BookingDetails from './components/booking-details.jsx'
-import BookingsIndex from './components/bookings-index.jsx'
 import Calendar from './components/calendar.jsx'
 import Catalog from './components/catalog.jsx'
 import ConvertDigitalSales from './components/convert-digital-sales.jsx'
@@ -304,9 +303,6 @@ $(document).ready(function() {
       </Provider>,
       document.getElementById("bookings-index")
     );
-  }
-  if ($('#bookings-index-advanced')[0]) {
-    ReactDOM.render(<BookingsIndex advanced={ true } />, document.getElementById("bookings-index-advanced"));
   }
   if ($('#booking-details')[0]) {
     ReactDOM.render(<BookingDetails />, document.getElementById("booking-details"));
