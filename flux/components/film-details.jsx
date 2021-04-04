@@ -1581,6 +1581,11 @@ class FilmDetails extends React.Component {
               </ul>
               <a className="blue-outline-button small" onClick={ this.clickAddActor.bind(this) }>Add Actor</a>
             </div>
+            { this.state.film.filmType === 'Short' ? (
+              <>
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
+              </>  
+            ) : null }
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <h3>Release Dates:</h3>
               <h2>Theatrical Release</h2>
