@@ -106,8 +106,9 @@ describe 'bookings_index', type: :feature do
         end
       end
     end
-    sleep 3
+    sleep 2
     visit bookings_path(as: $admin_user)
+    wait_for_ajax
     search_index({
       film: { value: 'Wilby Wonderful', type: :select_modal },
       venue: { value: 'Film at Lincoln Center', type: :select_modal },
