@@ -42,7 +42,8 @@ class ExportFilms
       'Auto Renew Term',
       'Auto Renew Days Notice',
       'TV Rating',
-      'IMDB ID'
+      'IMDB ID',
+      'FM Plus URL'
     ]
 
     if search_criteria != 'null'
@@ -95,7 +96,8 @@ class ExportFilms
         film.auto_renew ? film.auto_renew_term : '',
         film.auto_renew ? film.auto_renew_days_notice : '',
         film.tv_rating,
-        film.imdb_id
+        film.imdb_id,
+        film.fm_plus_url,
       ]
 
       if search_criteria != 'null'
