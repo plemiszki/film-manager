@@ -1,10 +1,20 @@
 class Api::VenuesController < AdminController
 
   include BookingCalculations
+  include SearchIndex
 
   def index
-    @venues = Venue.all
+    @venues = perform_search(model: 'Venue')
     render "index.json.jbuilder"
+  end
+
+  def create
+    @venue = Venue.new(venue_params)
+    if @venue.save
+      render "show.json.jbuilder"
+    else
+      render json: @venue.errors.full_messages, status: 422
+    end
   end
 
   def show
@@ -15,16 +25,6 @@ class Api::VenuesController < AdminController
       @calculations[booking.id] = booking_calculations(booking)
     end
     render "show.json.jbuilder"
-  end
-
-  def create
-    @venue = Venue.new(venue_params)
-    if @venue.save
-      @venues = Venue.all
-      render "index.json.jbuilder"
-    else
-      render json: @venue.errors.full_messages, status: 422
-    end
   end
 
   def update

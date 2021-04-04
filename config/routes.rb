@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   root to: "films#index"
   resources :films, only: [:index, :show]
   resources :venues, only: [:index, :show]
-  get '/bookings/advanced' => 'bookings#advanced'
   resources :bookings, only: [:index, :show]
   resources :virtual_bookings, only: [:index, :show]
   resources :bookers, only: [:index, :show]
@@ -65,7 +64,7 @@ Rails.application.routes.draw do
     get '/bookings/upcoming' => '/api/bookings#upcoming_index'
     get '/bookings/advanced' => '/api/bookings#advanced'
     post '/bookings/export' => '/api/bookings#export'
-    resources :bookings, only: [:index, :show, :create, :update, :destroy]
+    resources :bookings, only: [:index, :new, :show, :create, :update, :destroy]
     post '/bookings/copy' => 'bookings#copy'
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     resources :virtual_bookings, only: [:index, :new, :create, :show, :update, :destroy]
@@ -90,16 +89,17 @@ Rails.application.routes.draw do
     resources :dvds, only: [:show, :create, :update, :destroy]
     resources :dvd_shorts, only: [:create, :destroy]
     get '/dvd_reports' => '/api/purchase_orders#reporting'
-    resources :purchase_orders, only: [:index, :show, :create, :update, :destroy]
+    get '/purchase_orders/check_jobs' => 'purchase_orders#check_jobs'
+    resources :purchase_orders, only: [:index, :new, :show, :create, :update, :destroy]
     post '/purchase_orders/ship' => '/api/purchase_orders#ship'
     resources :purchase_order_items, only: [:create, :destroy]
     resources :shipping_addresses, only: [:index, :create, :show, :update, :destroy]
+    get '/invoices/:id/export' => '/api/invoices#export_single'
+    get '/invoices/export' => '/api/invoices#export'
     resources :invoices, only: [:index, :show, :update]
-    get '/invoices/:id/export' => '/api/invoices#export'
-    post '/invoices/export' => '/api/invoices#export_sage'
     post '/invoices' => '/api/invoices#create'
-    get '/credit_memos/export' => '/api/credit_memos#export_sage'
-    resources :credit_memos, only: [:index, :create, :show]
+    get '/credit_memos/export' => '/api/credit_memos#export'
+    resources :credit_memos, only: [:index, :new, :create, :show]
     post '/dvd_reports/export' => '/api/purchase_orders#export'
     get '/calendar' => 'calendar#show'
     resources :returns, only: [:index, :create, :show, :update, :destroy]

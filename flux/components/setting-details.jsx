@@ -93,8 +93,6 @@ class SettingsDetails extends React.Component {
         <div className="component">
           <h1>Settings</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               { Details.renderTextBox.bind(this)({ columnHeader: 'Booking Confirmation Email Copy', rows: 15, columnWidth: 12, entity: 'settings', property: 'bookingConfirmationText' }) }
               { Details.renderTextBox.bind(this)({ columnHeader: 'Unpaid Non-Overage Booking Invoice Email Copy', rows: 6, columnWidth: 12, entity: 'settings', property: 'unpaidNonOverageBookingInvoiceEmailText' }) }
@@ -108,6 +106,8 @@ class SettingsDetails extends React.Component {
               { Details.renderTextBox.bind(this)({ columnHeader: 'Credit Memo Email Copy', rows: 8, columnWidth: 12, entity: 'settings', property: 'creditMemoEmailText' }) }
             </div>
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
       </div>

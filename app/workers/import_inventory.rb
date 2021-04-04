@@ -69,7 +69,22 @@ class ImportInventory
           -1
         end
       end
-      job.update!({ done: true, first_line: errors.empty? ? "Import complete.\nThere were no changes." : "Stock Updated", errors_text: errors.join("\n") })
+      if errors.empty?
+        job.update!({
+          done: true,
+          status: "success",
+          first_line: "Import complete.\nThere were no changes.",
+          metadata: { showSuccessMessageModal: true }
+        })
+      else
+        job.update!({
+          done: true,
+          status: "success",
+          first_line: "Stock Updated",
+          errors_text: errors.join("\n"),
+          metadata: { useErrorsModalOnSuccess: true }
+        })
+      end
       p '---------------------------'
       p 'FINISHED INVENTORY IMPORT'
       p '---------------------------'

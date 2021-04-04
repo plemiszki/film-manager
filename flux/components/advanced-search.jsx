@@ -86,14 +86,14 @@ class AdvancedSearch extends React.Component {
     });
   }
 
-  clickSelectFilm(e) {
+  clickSelectFilm(option, e) {
     this.setState({
       filmId: +e.target.dataset.id,
       filmsModalOpen: false
     });
   }
 
-  clickSelectVenue(e) {
+  clickSelectVenue(option, e) {
     this.setState({
       venueId: +e.target.dataset.id,
       venuesModalOpen: false

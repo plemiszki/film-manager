@@ -157,8 +157,6 @@ class DvdReports extends React.Component {
             </div>
           </div>
           <div className="white-box months-report">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
                 <table className="fm-admin-table no-hover no-highlight">
@@ -237,12 +235,12 @@ class DvdReports extends React.Component {
                 </table>
               </div>
             </div>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
           </div>
         </div>
         <div className="component">
           <div className="white-box titles-report">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
             <div className="row">
               <div className="col-xs-3">
                 <table className="fm-admin-table no-hover no-highlight">
@@ -291,6 +289,8 @@ class DvdReports extends React.Component {
                 </table>
               </div>
             </div>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.exportModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ exportModalStyles }>

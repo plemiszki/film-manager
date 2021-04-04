@@ -81,7 +81,7 @@ class NewThing extends React.Component {
     });
   }
 
-  clickSelectFilm(event) {
+  clickSelectFilm(option, event) {
     var booking = this.state.booking;
     booking.filmId = +event.target.dataset.id;
     FM.removeFieldError(this.state.errors, "film");
@@ -91,7 +91,7 @@ class NewThing extends React.Component {
     });
   }
 
-  clickSelectFilmForMerchandise(e) {
+  clickSelectFilmForMerchandise(option, e) {
     var merchandiseItem = this.state.merchandiseItem;
     merchandiseItem.filmId = +e.target.dataset.id;
     this.setState({
@@ -106,7 +106,7 @@ class NewThing extends React.Component {
     });
   }
 
-  clickSelectVenue(event) {
+  clickSelectVenue(option, event) {
     var booking = this.state.booking;
     booking.venueId = +event.target.dataset.id;
     FM.removeFieldError(this.state.errors, "venue");
@@ -141,8 +141,6 @@ class NewThing extends React.Component {
     return(
       <div id="new-thing" className="component admin-modal">
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderNameField() }
           { this.renderEmailField() }
           { this.renderPasswordField() }
@@ -169,6 +167,8 @@ class NewThing extends React.Component {
           <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) + this.addMargin() } onClick={ this.clickAdd.bind(this) }>
             { this.renderAddButton() }
           </a>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
       </div>
     )

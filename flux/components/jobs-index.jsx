@@ -60,8 +60,6 @@ class JobsIndex extends React.Component {
       return(
         <div id="jobs-index" className="component">
           <div className="white-box" style={ { padding: 20 } }>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -20, -20, 5) }
             <table className="fm-admin-table no-hover no-highlight">
               <thead>
                 <tr>
@@ -93,6 +91,8 @@ class JobsIndex extends React.Component {
                 }) }
               </tbody>
             </table>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -20, -20, 5) }
           </div>
         </div>
       );

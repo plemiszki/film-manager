@@ -109,7 +109,7 @@ class MerchandiseItemDetails extends React.Component {
     });
   }
 
-  selectFilm(e) {
+  selectFilm(option, e) {
     var merchandiseItem = this.state.merchandiseItem;
     merchandiseItem.filmId = +e.target.dataset.id;
     this.setState({
@@ -128,8 +128,6 @@ class MerchandiseItemDetails extends React.Component {
         <div className="component details-component">
           <h1>Merchandise Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Name</h2>
@@ -183,6 +181,8 @@ class MerchandiseItemDetails extends React.Component {
               </div>
             </div>
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>

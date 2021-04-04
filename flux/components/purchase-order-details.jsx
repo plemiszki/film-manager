@@ -154,7 +154,7 @@ class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  clickSelectShippingAddress(event) {
+  clickSelectShippingAddress(option, event) {
     for (var i = 0; i < this.state.shippingAddresses.length; i++) {
       if (this.state.shippingAddresses[i].id === +event.target.dataset.id) {
         var address = this.state.shippingAddresses[i];
@@ -190,7 +190,7 @@ class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  clickSelectItem(event) {
+  clickSelectItem(option, event) {
     this.setState({
       selectedItemId: event.target.dataset.id,
       selectedItemType: event.target.dataset.type,
@@ -292,8 +292,6 @@ class PurchaseOrderDetails extends React.Component {
         <div className="component">
           <h1>Purchase Order Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Number</h2>
@@ -429,6 +427,8 @@ class PurchaseOrderDetails extends React.Component {
               </div>
             </div>
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

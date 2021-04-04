@@ -217,7 +217,7 @@ class BookingDetails extends React.Component {
     });
   }
 
-  clickSelectFilm(event) {
+  clickSelectFilm(option, event) {
     var booking = this.state.booking;
     booking.filmId = +event.target.dataset.id;
     this.setState({
@@ -236,7 +236,7 @@ class BookingDetails extends React.Component {
     });
   }
 
-  clickSelectVenue(event) {
+  clickSelectVenue(option, event) {
     var booking = this.state.booking;
     booking.venueId = +event.target.dataset.id;
     this.setState({
@@ -474,8 +474,6 @@ class BookingDetails extends React.Component {
         <div className="component details-component">
           <h1>Booking Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div>
                 <div className="col-xs-5">
@@ -762,6 +760,8 @@ class BookingDetails extends React.Component {
             </div>
             <hr />
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

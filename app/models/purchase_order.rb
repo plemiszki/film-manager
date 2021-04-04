@@ -1,8 +1,17 @@
 class PurchaseOrder < ActiveRecord::Base
 
-  validates :number, :year, :month, presence: true
+  validates :number, presence: true
   validates_date :order_date
   validates_date :ship_date, allow_blank: true
+
+  after_validation :set_month_and_year, on: [:create, :update]
+
+  def set_month_and_year
+    if self.errors.empty?
+      self.month = self.order_date.month
+      self.year = self.order_date.year
+    end
+  end
 
   has_many :purchase_order_items, dependent: :destroy
   has_many :items, through: :purchase_order_items

@@ -187,8 +187,6 @@ class VenueDetails extends React.Component {
         <div className="component details-component">
           <h1>Venue Details</h1>
           <div id="venue-profile-box" className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Label</h2>
@@ -335,6 +333,8 @@ class VenueDetails extends React.Component {
               </div>
             </div>
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <div className="venue-bookings-index component">

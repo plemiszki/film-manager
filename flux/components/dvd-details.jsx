@@ -85,7 +85,7 @@ class DvdDetails extends React.Component {
     });
   }
 
-  clickShortButton(event) {
+  clickShortButton(option, event) {
     var shortId = event.target.dataset.id;
     this.setState({
       fetching: true,
@@ -154,8 +154,6 @@ class DvdDetails extends React.Component {
         <div className="component">
           <h1>DVD Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-6">
                 <h2>Title</h2>
@@ -250,6 +248,8 @@ class DvdDetails extends React.Component {
             </table>
             <a className="blue-outline-button small" onClick={ this.clickAddShortButton.bind(this) }>Add Short</a>
             { this.renderButtons() }
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

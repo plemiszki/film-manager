@@ -3,11 +3,11 @@ class Api::InvoicesController < AdminController
   include BookingCalculations
   include ActionView::Helpers::NumberHelper
   include ApplicationHelper
+  include SearchIndex
 
   def index
-    @invoices = Invoice.all.order('id DESC')
-    @invoices = @invoices.limit(100) unless params[:all]
-    render "index.json.jbuilder"
+    @invoices = perform_search(model: 'Invoice')
+    render 'index.json.jbuilder'
   end
 
   def create
@@ -100,7 +100,7 @@ class Api::InvoicesController < AdminController
     render 'show.json.jbuilder'
   end
 
-  def export
+  def export_single
     invoice = Invoice.find(params[:id])
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")
@@ -110,12 +110,12 @@ class Api::InvoicesController < AdminController
     end
   end
 
-  def export_sage
-    invoice_ids = params[:invoice_ids].to_a.map(&:to_i)
+  def export
+    invoice_ids = perform_search(model: 'Invoice').pluck(:id)
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export invoices", first_line: "Exporting Invoices", second_line: true, current_value: 0, total_value: invoice_ids.length)
     ExportInvoices.perform_async(invoice_ids, time_started)
-    render json: job
+    render json: { job: job.render_json }
   end
 
   private

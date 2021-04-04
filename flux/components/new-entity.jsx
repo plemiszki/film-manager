@@ -23,11 +23,13 @@ class NewEntity extends React.Component {
       [this.props.entityName]: HandyTools.deepCopy(this.props.initialEntity),
       errors: [],
       films: [],
-      venues: []
+      venues: [],
+      shippingAddresses: []
     };
   }
 
   componentDidMount() {
+    HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
     if (this.props.fetchData) {
       this.props.fetchDataForNew({ directory }).then(() => {
         let entity = HandyTools.deepCopy(this.state[this.props.entityName]);
@@ -37,11 +39,11 @@ class NewEntity extends React.Component {
         })
         obj[this.props.entityName] = entity;
         this.setState(obj, () => {
-          HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+          HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
         });
       });
     } else {
-      HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+      HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
     }
   }
 
@@ -57,11 +59,17 @@ class NewEntity extends React.Component {
       entityName: this.props.entityName,
       entity: this.state[this.props.entityName]
     }).then(() => {
-      this.props.callback(this.props[entityNamePlural]);
+      if (this.props.redirectAfterCreate) {
+        window.location.href = `/${directory}/${this.props[this.props.entityName].id}`;
+      } else {
+        this.props.callback(this.props[entityNamePlural]);
+      }
     }, () => {
       this.setState({
         fetching: false,
         errors: this.props.errors
+      }, () => {
+        HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
     });
   }
@@ -77,10 +85,10 @@ class NewEntity extends React.Component {
     return(
       <div className="component admin-modal">
         <form className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { this.renderFields() }
           <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.props.buttonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` } onClick={ this.clickAdd.bind(this) } />
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          { Common.renderSpinner(this.state.fetching) }
         </form>
       </div>
     );
@@ -101,6 +109,26 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'name' }) }
             { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'email' }) }
             { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'phone' }) }
+          </div>
+        ]);
+      case 'booking':
+        const bookingTypes = [{ value: 'Theatrical' }, { value: 'Non-Theatrical' }, { value: 'Festival' }, { value: 'Press/WOM' }];
+        const statuses = [{ value: 'Confirmed' }, { value: 'Tentative' }];
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', customType: 'modal', modalDisplayProperty: 'label' }) }
+          </div>,
+          <div key="2" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'startDate' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'endDate' }) }
+            { Details.renderDropDown.bind(this)({ columnWidth: 3, entity: 'booking', property: 'bookingType', columnHeader: 'Type', options: bookingTypes, optionDisplayProperty: 'value' }) }
+            { Details.renderDropDown.bind(this)({ columnWidth: 3, entity: 'booking', property: 'status', options: statuses, optionDisplayProperty: 'value' }) }
+            { Details.renderDropDown.bind(this)({ columnWidth: 2, entity: 'booking', property: 'formatId', columnHeader: 'Format', options: this.state.formats || [], optionDisplayProperty: 'name', maxOptions: 6, optional: true }) }
+          </div>,
+          <div key="3" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'terms' }) }
+            { Details.renderDropDown.bind(this)({ columnWidth: 3, entity: 'booking', property: 'bookerId', columnHeader: 'Booked By', options: this.state.users || [], optionDisplayProperty: 'name', maxOptions: 3, optional: true }) }
           </div>
         ]);
       case 'country':
@@ -178,6 +206,24 @@ class NewEntity extends React.Component {
         return([
           <div key="1" className="row">
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'merchandiseType', property: 'name' }) }
+          </div>
+        ]);
+      case 'purchaseOrder':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({
+              columnWidth: 12,
+              entity: 'purchaseOrder',
+              property: 'shippingAddressId',
+              columnHeader: 'Shipping Address',
+              customType: 'modal',
+              modalDisplayProperty: 'label',
+              optionsArrayName: 'shippingAddresses'
+            }) }
+          </div>,
+          <div key="2" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'number' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'orderDate' }) }
           </div>
         ]);
       case 'sublicensor':

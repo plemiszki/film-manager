@@ -175,8 +175,6 @@ class ReportDetails extends React.Component {
       <div className="component">
         { this.renderHeader() }
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <h4>Current Period</h4>
           { this.renderRowHeaders() }
           { this.state.streams.map((stream, index) => {
@@ -413,6 +411,8 @@ class ReportDetails extends React.Component {
             </div>
           </div>
           { this.renderButtons() }
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
         { FM.jobModal.call(this, this.state.job) }
       </div>

@@ -329,8 +329,6 @@ class ReportsIndex extends React.Component {
             <a className={ "btn orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           </div>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
             <select id="days-filter" onChange={ (e) => { this.setState({ daysDue: e.target.value }); } } value={ this.state.daysDue }>
               <option value="all">All</option>
@@ -369,6 +367,8 @@ class ReportsIndex extends React.Component {
                 }.bind(this)) }
               </tbody>
             </table>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
         <Modal isOpen={ this.state.importModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ importModalStyles }>

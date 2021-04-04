@@ -1,110 +1,31 @@
 class Api::BookingsController < AdminController
 
   include BookingCalculations
+  include SearchIndex
 
   def index
-    if params[:all]
-      @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue, :format)
-    else
-      @bookings = Booking.where("start_date < ?", Date.today).includes(:film, :venue, :format).order('start_date DESC').limit(25)
+    if params[:search_criteria] && params[:search_criteria][:materials_sent]
+      if params[:search_criteria][:materials_sent][:value] == "f"
+        params[:search_criteria][:materials_sent][:value] = nil
+      else
+        params[:search_criteria][:materials_sent].delete(:value)
+        params[:search_criteria][:materials_sent][:not] = nil
+      end
     end
+    @bookings = perform_search(model: 'Booking', associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices'])
     @calculations = {}
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
     end
-    @films = Film.all
-    @venues = Venue.all
-    @users = User.all
-    @formats = Format.all
     render 'index.json.jbuilder'
   end
 
-  def upcoming_index
-    if params[:all]
-      @bookings = Booking.where("start_date >= ?", Date.today).includes(:film, :venue)
-    else
-      @bookings = Booking.where("start_date >= ?", Date.today).includes(:film, :venue).order('start_date ASC').limit(25)
-    end
-    @calculations = {}
-    @bookings.each do |booking|
-      @calculations[booking.id] = booking_calculations(booking)
-    end
-    render 'upcoming.json.jbuilder'
-  end
-
-  def advanced
-    queries = []
-    if params[:film_id]
-      queries << "film_id = #{params[:film_id]}"
-    end
-    if params[:venue_id]
-      queries << "venue_id = #{params[:venue_id]}"
-    end
-    if params[:city]
-      queries << "lower(shipping_city) = '#{CGI::unescape(params[:city].downcase)}'"
-    end
-    if params[:state]
-      queries << "lower(shipping_state) = '#{params[:state].downcase}'"
-    end
-    if params[:format_id]
-      queries << "format_id IN (#{params[:format_id].map { |format_id| "'#{format_id}'" }.join(', ')})"
-    end
-    if params[:type]
-      queries << "lower(booking_type) IN (#{params[:type].map { |type| "'#{type.downcase}'" }.join(', ')})"
-    end
-    if params[:status]
-      queries << "lower(status) = '#{params[:status].downcase}'"
-    end
-    if params[:box_office_received]
-      queries << "box_office_received = #{params[:box_office_received]}"
-    end
-    if params[:materials_sent] && params[:materials_sent].downcase == 'true'
-      queries << "materials_sent IS NOT NULL"
-    end
-    if params[:materials_sent] && params[:materials_sent].downcase == 'false'
-      queries << "materials_sent IS NULL"
-    end
-    if params[:start_date_start]
-      queries << "start_date >= DATE '#{params[:start_date_start]}'"
-    end
-    if params[:start_date_end]
-      queries << "start_date <= DATE '#{params[:start_date_end]}'"
-    end
-    if params[:end_date_start]
-      queries << "end_date >= DATE '#{params[:end_date_start]}'"
-    end
-    if params[:end_date_end]
-      queries << "end_date <= DATE '#{params[:end_date_end]}'"
-    end
-    if params[:date_added_start]
-      queries << "date_added >= DATE '#{params[:date_added_start]}'"
-    end
-    if params[:date_added_end]
-      queries << "date_added <= DATE '#{params[:date_added_end]}'"
-    end
-    included_associations = [:film, :venue, :format, :weekly_box_offices, :payments]
-    if queries.empty?
-      @bookings = Booking.all.includes(*included_associations)
-    else
-      @bookings = Booking.where(queries.join(' and ')).includes(*included_associations)
-      if params[:box_office_received] && params[:box_office_received].downcase == 'true'
-        ids = Booking.joins(:weekly_box_offices).group('bookings.id').map(&:id)
-        @new_bookings = Booking.where(id: ids).includes(*included_associations)
-        @bookings += @new_bookings
-      elsif params[:box_office_received] && params[:box_office_received].downcase == 'false'
-        ids = Booking.joins(:weekly_box_offices).group('bookings.id')
-        @bookings.delete(ids)
-      end
-    end
-    @calculations = {}
-    @bookings.each do |booking|
-      @calculations[booking.id] = booking_calculations(booking)
-    end
-    @films = Film.all
-    @venues = Venue.all
-    @users = User.all
-    @formats = Format.all
-    render 'advanced.json.jbuilder'
+  def new
+    @films = Film.all.order(:title)
+    @venues = Venue.all.order(:label)
+    @users = User.active_bookers.order(:name)
+    @formats = Format.all.order(:name)
+    render 'new.json.jbuilder'
   end
 
   def show

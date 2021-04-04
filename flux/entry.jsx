@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import ReactModal from 'react-modal'
-import { StandardIndex, SimpleDetails } from 'handy-components'
+import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria } from 'handy-components'
 import HandyTools from 'handy-tools';
 import FM from '../app/assets/javascripts/me/common.jsx'
 
@@ -11,7 +11,6 @@ let store = configureStore();
 
 import BookerDetails from './components/booker-details.jsx'
 import BookingDetails from './components/booking-details.jsx'
-import BookingsIndex from './components/bookings-index.jsx'
 import Calendar from './components/calendar.jsx'
 import Catalog from './components/catalog.jsx'
 import ConvertDigitalSales from './components/convert-digital-sales.jsx'
@@ -25,19 +24,16 @@ import FilmDetails from './components/film-details.jsx'
 import FilmRightDetails from './components/film-right-details.jsx'
 import FilmsIndex from './components/films-index.jsx'
 import GiftBoxDetails from './components/giftbox-details.jsx'
+import ImportInventory from './components/import-inventory.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
 import InvoiceDetails from './components/invoice-details.jsx'
-import InvoicesIndex from './components/invoices-index.jsx'
-import CreditMemosIndex from './components/credit-memos-index.jsx'
 import CreditMemoDetails from './components/credit-memo-details.jsx'
 import JobsIndex from './components/jobs-index.jsx'
 import LicensorDetails from './components/licensor-details.jsx'
 import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
 import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
 import NewEntity from './components/new-entity.jsx'
-import NewThing from './components/new-thing.jsx'
 import PurchaseOrderDetails from './components/purchase-order-details.jsx'
-import PurchaseOrdersIndex from './components/purchase-orders-index.jsx'
 import QuoteDetails from './components/quote-details.jsx'
 import ReturnDetails from './components/return-details.jsx'
 import ReturnsIndex from './components/returns-index.jsx'
@@ -106,7 +102,55 @@ $(document).ready(function() {
     ReactDOM.render(<DvdDetails />, document.getElementById("dvd-details"));
   }
   if ($('#purchase-orders-index')[0]) {
-    ReactDOM.render(<PurchaseOrdersIndex />, document.getElementById("purchase-orders-index"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <ImportInventory context={ MyContext } />
+      </Provider>,
+      document.getElementById("import-inventory")
+    );
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SearchIndex
+          context={ MyContext }
+          header='DVD Purchase Orders'
+          entityName='purchaseOrder'
+          entityNamePlural='purchaseOrders'
+          columns={[
+            { name: 'orderDate', sortDir: 'desc', width: 162 },
+            { name: 'number', columnHeader: 'PO Number', width: 191 },
+            { name: 'customer', dbName: 'dvd_customers.name', width: 221 },
+            { name: 'shipDate', sortDir: 'desc', width: 162 },
+            { name: 'salesOrder', dbName: 'source_doc', sortDir: 'desc', width: 155 },
+            { name: 'invoice', dbName: 'invoices.num', sortDir: 'desc', width: 96 },
+            { name: 'units', orderByDisabled: true, width: 69 }
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 2 }
+          newModalDimensions={ { width: 600 } }
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'orderDate', type: 'date range', columnWidth: 10 },
+              { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
+              { name: 'customer', type: 'modal', responseArrayName: 'customers', modalDisplayProperty: 'name', columnWidth: 8 },
+              { name: 'shipDate', type: 'date range', columnWidth: 10 },
+              { name: 'salesOrder', columnWidth: 6 },
+            ]}
+          />
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['shippingAddresses'] }
+            initialEntity={ { number: '', orderDate: '', shippingAddressId: '' } }
+            redirectAfterCreate={ true }
+          />
+        </SearchIndex>
+      </Provider>,
+      document.getElementById("purchase-orders-index")
+    );
   }
   if ($('#purchase-order-details')[0]) {
     ReactDOM.render(<PurchaseOrderDetails />, document.getElementById("purchase-order-details"));
@@ -115,7 +159,46 @@ $(document).ready(function() {
     ReactDOM.render(<ShippingAddressDetails />, document.getElementById("shipping-address-details"));
   }
   if ($('#invoices-index')[0]) {
-    ReactDOM.render(<InvoicesIndex />, document.getElementById("invoices-index"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SearchIndex
+          context={ MyContext }
+          entityName='invoice'
+          entityNamePlural='invoices'
+          columns={[
+            { name: 'sentDate', sortDir: 'desc', sortColumn: 'sentDateTimestamp', width: 248 },
+            { name: 'number', header: 'Invoice Number', width: 338 },
+            { name: 'type', dbName: 'invoice_type', width: 172 },
+            { name: 'poNumber', header: 'PO Number', width: 298 }
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+          showExportButton={ true }
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
+              { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
+              { name: 'num', type: 'number range', columnHeader: 'Invoice Number', columnWidth: 10 },
+              {
+                name: 'invoiceType',
+                type: 'static dropdown',
+                options: [
+                  { value: 'dvd', text: 'DVD' },
+                  { value: 'booking', text: 'Booking' }
+                ],
+                columnHeader: 'Type',
+                columnWidth: 3
+              },
+              { name: 'sentDate', type: 'date range', columnWidth: 10 },
+            ]}
+          />
+        </SearchIndex>
+      </Provider>,
+      document.getElementById("invoices-index")
+    );
   }
   if ($('#invoice-details')[0]) {
     ReactDOM.render(<InvoiceDetails />, document.getElementById("invoice-details"));
@@ -123,7 +206,31 @@ $(document).ready(function() {
   if ($('#credit-memos-index')[0]) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <CreditMemosIndex context={ MyContext } />
+        <SearchIndex
+          context={ MyContext }
+          entityName='creditMemo'
+          columns={[
+            { name: 'sentDate', sortDir: 'desc', width: 163 },
+            { name: 'number', sortDir: 'desc', header: 'Credit Memo Number', width: 299 },
+            { name: 'customer', header: 'DVD Customer', dbName: 'customer_id', width: 299 },
+            { name: 'returnNumber', width: 295 }
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+          showExportButton={ true }
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'sentDate', type: 'date range', columnWidth: 10 },
+              { name: 'number', columnHeader: 'Credit Memo Number', columnWidth: 6 },
+              { name: 'num', type: 'number range', columnHeader: 'Credit Memo Number', columnWidth: 10 },
+              { name: 'customer', dbName: 'customer_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'customers', columnWidth: 6 },
+              { name: 'returnNumber', columnWidth: 6 },
+            ]}
+          />
+        </SearchIndex>
       </Provider>,
       document.getElementById("credit-memos-index")
     );
@@ -159,13 +266,65 @@ $(document).ready(function() {
     );
   }
   if ($('#bookings-index')[0]) {
-    ReactDOM.render(<BookingsIndex timeframe={ 'upcoming' } />, document.getElementById("bookings-index"));
-  }
-  if ($('#bookings-index-past')[0]) {
-    ReactDOM.render(<BookingsIndex />, document.getElementById("bookings-index-past"));
-  }
-  if ($('#bookings-index-advanced')[0]) {
-    ReactDOM.render(<BookingsIndex advanced={ true } />, document.getElementById("bookings-index-advanced"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SearchIndex
+          context={ MyContext }
+          entityName='booking'
+          entityNamePlural='bookings'
+          columns={[
+            { name: 'dateAdded', sortDir: 'desc', width: 162 },
+            { name: 'film', dbName: 'films.title', width: 350 },
+            { name: 'venue', dbName: 'venues.label', width: 350 },
+            { name: 'startDate', sortDir: 'desc', width: 162 },
+            { name: 'endDate', sortDir: 'desc', width: 162 },
+            { name: 'city', dbName: 'shipping_city', width: 162 },
+            { name: 'state', dbName: 'shipping_state', width: 162 },
+            { name: 'terms', width: 162 },
+            { name: 'type', dbName: 'booking_type', width: 162 },
+            { name: 'status', width: 162 },
+            { name: 'format', dbName: 'formats.name', width: 162 },
+            { name: 'materialsSent', width: 125 },
+            { name: 'boxOfficeReceived', header: 'BO Received', width: 125 },
+            { name: 'totalGross', orderByDisabled: true, width: 125 },
+            { name: 'ourShare', orderByDisabled: true, width: 125 },
+            { name: 'received', orderByDisabled: true, width: 125 },
+            { name: 'owed', orderByDisabled: true, width: 125 },
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 3 }
+          newModalDimensions={ { width: 1000 } }
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
+              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+              { name: 'startDate', type: 'date range', columnWidth: 10 },
+              { name: 'endDate', type: 'date range', columnWidth: 10 },
+              { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
+              { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
+              { name: 'type', dbName: 'booking_type', type: 'static dropdown', options: [{ value: 'Theatrical', text: 'Theatrical' }, { value: 'Non-Theatrical', text: 'Non-Theatrical' }, { value: 'Festival', text: 'Festival' }], columnWidth: 4 },
+              { name: 'status', type: 'static dropdown', options: [{ value: 'Tentative', text: 'Tentative' }, { value: 'Confirmed', text: 'Confirmed' }], columnWidth: 4 },
+              { name: 'format', dbName: 'format_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'formats', columnWidth: 4 },
+              { name: 'materialsSent', type: 'yes/no', columnWidth: 4 },
+              { name: 'boxOfficeReceived', type: 'yes/no', columnWidth: 4 },
+            ]}
+          />
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['films', 'venues', 'formats', 'users'] }
+            initialEntity={ { filmId: '', venueId: '', startDate: '', endDate: '', bookingType: 'Non-Theatrical', status: 'Tentative', formatId: '', terms: '', bookerId: '', dateAdded: HandyTools.todayDMY() } }
+            redirectAfterCreate={ true }
+          />
+        </SearchIndex>
+      </Provider>,
+      document.getElementById("bookings-index")
+    );
   }
   if ($('#booking-details')[0]) {
     ReactDOM.render(<BookingDetails />, document.getElementById("booking-details"));
@@ -223,7 +382,7 @@ $(document).ready(function() {
   if (document.querySelector('#aliases-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='alias'
           entityNamePlural='aliases'
@@ -236,7 +395,7 @@ $(document).ready(function() {
             fetchData={ ['films'] }
             initialEntity={ { text: '', filmId: '' } }
           />
-        </StandardIndex>
+      </FullIndex>
       </Provider>,
       document.querySelector('#aliases-index')
     );
@@ -262,7 +421,7 @@ $(document).ready(function() {
   if (document.querySelector('#bookers-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='booker'
           columns={ ['name', 'email', 'phone'] }
@@ -270,7 +429,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '', email: '', phone: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#bookers-index')
     );
@@ -278,7 +437,7 @@ $(document).ready(function() {
   if (document.querySelector('#countries-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='country'
           entityNamePlural='countries'
@@ -287,7 +446,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#countries-index')
     );
@@ -312,7 +471,7 @@ $(document).ready(function() {
   if (document.querySelector('#digital-retailers-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='digitalRetailer'
           columns={ ['name'] }
@@ -320,7 +479,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#digital-retailers-index')
     );
@@ -357,7 +516,7 @@ $(document).ready(function() {
   if (document.querySelector('#dvd-customers-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='dvdCustomer'
           columns={ ['name'] }
@@ -365,7 +524,7 @@ $(document).ready(function() {
           header="DVD Customers"
         >
           <NewEntity context={ MyContext } initialEntity={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#dvd-customers-index')
     );
@@ -373,7 +532,7 @@ $(document).ready(function() {
   if (document.querySelector('#formats-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='format'
           columns={ ['name'] }
@@ -381,7 +540,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#formats-index')
     );
@@ -407,7 +566,7 @@ $(document).ready(function() {
   if (document.querySelector('#genres-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='genre'
           columns={ ['name'] }
@@ -415,7 +574,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#genres-index')
     );
@@ -440,7 +599,7 @@ $(document).ready(function() {
   if (document.querySelector('#giftboxes-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='giftbox'
           entityNamePlural='giftboxes'
@@ -449,7 +608,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '', upc: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#giftboxes-index')
     );
@@ -457,7 +616,7 @@ $(document).ready(function() {
   if (document.querySelector('#languages-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='language'
           columns={ ['name'] }
@@ -465,7 +624,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#languages-index')
     );
@@ -490,7 +649,7 @@ $(document).ready(function() {
   if (document.querySelector('#licensors-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='licensor'
           columns={ ['name'] }
@@ -498,7 +657,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#licensors-index')
     );
@@ -512,7 +671,7 @@ $(document).ready(function() {
   if (document.querySelector('#merchandise-types-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='merchandiseType'
           columns={ ['name'] }
@@ -520,7 +679,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#merchandise-types-index')
     );
@@ -545,7 +704,7 @@ $(document).ready(function() {
   if (document.querySelector('#shipping-addresses-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='shippingAddress'
           entityNamePlural='shippingAddresses'
@@ -559,7 +718,7 @@ $(document).ready(function() {
   if (document.querySelector('#territories-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='territory'
           entityNamePlural='territories'
@@ -568,7 +727,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#territories-index')
     );
@@ -593,7 +752,7 @@ $(document).ready(function() {
   if (document.querySelector('#topics-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='topic'
           columns={ ['name'] }
@@ -601,7 +760,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#topics-index')
     );
@@ -626,7 +785,7 @@ $(document).ready(function() {
   if (document.querySelector('#users-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='user'
           columns={ ['name', 'title'] }
@@ -634,7 +793,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: "", email: "", password: "" } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#users-index')
     );
@@ -664,23 +823,44 @@ $(document).ready(function() {
   if (document.querySelector('#venues-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <SearchIndex
           context={ MyContext }
           entityName='venue'
-          columns={ [
-            'label',
-            {
-              name: 'venueType',
-              header: 'Type'
-            },
-            'city',
-            'state'
-          ] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
+          entityNamePlural='venues'
+          columns={[
+            { name: 'label', width: 633 },
+            { name: 'type', dbName: 'venue_type', width: 175 },
+            { name: 'city', dbName: 'shipping_city', width: 188 },
+            { name: 'state', dbName: 'shipping_state', width: 60 }
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 1 }
+          newModalDimensions={ { width: 900 } }
         >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'label', columnWidth: 6 },
+              {
+                name: 'venueType',
+                type: 'static dropdown',
+                options: [
+                  { value: 'Theater', text: 'Theater' },
+                  { value: 'Non-Theatrical', text: 'Non-Theatrical' },
+                  { value: 'Festival', text: 'Festival' },
+                ],
+                columnHeader: 'Type',
+                columnWidth: 4
+              },
+              { name: 'shippingCity', columnWidth: 6 },
+              { name: 'shippingState', columnWidth: 3 }
+            ]}
+          />
           <NewEntity context={ MyContext } initialEntity={ { label: '', sageId: '', venueType: 'Theater' } } />
-        </StandardIndex>
+        </SearchIndex>
       </Provider>,
       document.querySelector('#venues-index')
     );
@@ -688,7 +868,7 @@ $(document).ready(function() {
   if (document.querySelector('#sublicensors-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <FullIndex
           context={ MyContext }
           entityName='sublicensor'
           columns={ ['name'] }
@@ -696,7 +876,7 @@ $(document).ready(function() {
           modalDimensions={ { width: 900 } }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
-        </StandardIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#sublicensors-index')
     );
@@ -712,51 +892,38 @@ $(document).ready(function() {
   if (document.querySelector('#virtual-bookings-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <StandardIndex
+        <SearchIndex
           context={ MyContext }
           entityName='virtualBooking'
           entityNamePlural='virtualBookings'
-          columns={ [
-            {
-              name: 'startDate',
-              sortColumn: 'startDateTimestamp',
-              sortDir: 'desc',
-              width: 125
-            },
-            {
-              name: 'endDate',
-              sortColumn: 'endDateTimestamp',
-              sortDir: 'desc',
-              width: 125
-            },
-            {
-              name: 'film',
-              width: 350
-            },
-            {
-              name: 'venue',
-              width: 350
-            },
-            {
-              name: 'shippingCity',
-              header: 'City',
-              width: 125
-            },
-            {
-              name: 'shippingState',
-              header: 'State',
-              width: 125
-            },
-            {
-              name: 'dateAdded',
-              sortColumn: 'dateAddedTimestamp',
-              sortDir: 'desc',
-              width: 125
-            }
-          ] }
-          modalRows={ 3 }
-          modalDimensions={ { width: 1000 } }
+          columns={[
+            { name: 'dateAdded', sortDir: 'desc', width: 162 },
+            { name: 'film', dbName: 'films.title', width: 350 },
+            { name: 'venue', dbName: 'venues.label', width: 350 },
+            { name: 'startDate', sortDir: 'desc', width: 162 },
+            { name: 'endDate', sortDir: 'desc', width: 162 },
+            { name: 'city', dbName: 'shipping_city', width: 162 },
+            { name: 'state', dbName: 'shipping_state', width: 162 },
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 4 }
+          searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 3 }
+          newModalDimensions={ { width: 1000 } }
         >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
+              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+              { name: 'startDate', type: 'date range', columnWidth: 10 },
+              { name: 'endDate', type: 'date range', columnWidth: 10 },
+              { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
+              { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
+            ]}
+          />
           <NewEntity
             context={ MyContext }
             fetchData={ ['films', 'venues'] }
@@ -773,7 +940,7 @@ $(document).ready(function() {
               host: 'FM'
             } }
           />
-        </StandardIndex>
+        </SearchIndex>
       </Provider>,
       document.querySelector('#virtual-bookings-index')
     );

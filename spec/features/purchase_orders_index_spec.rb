@@ -22,12 +22,12 @@ describe 'purchase_orders_index', type: :feature do
 
   it 'adds new purchase orders' do
     visit purchase_orders_path(as: $admin_user)
-    find('.orange-button', text: 'Add New').click
+    find('.new-button', text: 'Add Purchase Order').click
     fill_out_and_submit_modal({
       number: '450001',
       order_date: '1/1/2025',
-      shipping_address_id: { value: 1, type: :select }
-    }, :orange_button)
+      shipping_address_id: { value: 'Label', type: :select_modal }
+    }, :input)
     new_po = PurchaseOrder.last
     expect(new_po.attributes).to include(
       'number' => '450001',
@@ -46,10 +46,10 @@ describe 'purchase_orders_index', type: :feature do
 
   it 'validates new purchase orders properly' do
     visit purchase_orders_path(as: $admin_user)
-    find('.orange-button', text: 'Add New').click
+    find('.new-button', text: 'Add Purchase Order').click
     fill_out_and_submit_modal({
       number: ''
-    }, :orange_button)
+    }, :input)
     expect(page).to have_content "Number can't be blank"
     expect(page).to have_content "Order date is not a valid date"
   end

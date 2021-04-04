@@ -150,8 +150,6 @@ class FilmRightsNew extends React.Component {
     return(
       <div id="film-rights-new" className="component">
         <div className="white-box">
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           <div className="row">
             { this.renderFilmField.call(this) }
             <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
@@ -199,6 +197,8 @@ class FilmRightsNew extends React.Component {
           <a className={ "orange-button" + Common.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.props.search ? this.clickSearch.bind(this) : this.clickAdd.bind(this) }>
             { this.props.search ? 'Search' : 'Add Rights' }
           </a>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
       </div>
     );

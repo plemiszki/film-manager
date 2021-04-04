@@ -79,7 +79,7 @@ class BookerDetails extends React.Component {
     });
   }
 
-  selectVenue(e) {
+  selectVenue(option, e) {
     this.setState({
       venuesModalOpen: false,
       fetching: true
@@ -146,8 +146,6 @@ class BookerDetails extends React.Component {
         <div className="component details-component">
           <h1>Booker Details</h1>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
@@ -179,6 +177,8 @@ class BookerDetails extends React.Component {
               </div>
             </div>
             { this.renderButtons() }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { Common.renderSpinner(this.state.fetching) }
           </div>
         </div>
         <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>

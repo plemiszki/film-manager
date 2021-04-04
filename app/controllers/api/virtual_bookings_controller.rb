@@ -1,13 +1,15 @@
 class Api::VirtualBookingsController < AdminController
 
+  include SearchIndex
+
   def index
-    @virtual_bookings = VirtualBooking.all.includes(:film, :venue).order('start_date DESC')
+    @virtual_bookings = perform_search(model: 'VirtualBooking', associations: ['film', 'venue'])
     render 'index.json.jbuilder'
   end
 
   def new
-    @films = Film.all
-    @venues = Venue.all
+    @films = Film.all.order(:title)
+    @venues = Venue.all.order(:label)
     render "new.json.jbuilder"
   end
 

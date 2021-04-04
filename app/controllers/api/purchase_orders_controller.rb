@@ -1,13 +1,26 @@
 class Api::PurchaseOrdersController < AdminController
 
   include PurchaseOrderItems
+  include SearchIndex
+
+  def check_jobs
+    jobs = Job.where(name: "import inventory").order(:id)
+    last_job = jobs.last
+    active_job = last_job && last_job.done == false ? last_job : nil
+    render json: {
+      needToUpdate: jobs.empty? || DateTime.parse(last_job.job_id).to_date.past?,
+      job: active_job
+    }
+  end
 
   def index
-    @purchase_orders = PurchaseOrder.all.includes(:customer, :purchase_order_items).order('ship_date DESC')
-    @purchase_orders = @purchase_orders.limit(25) unless params[:all]
-    @shipping_addresses = ShippingAddress.all
-    @jobs = Job.where(name: "import inventory").order(:id)
+    @purchase_orders = perform_search(model: 'PurchaseOrder', associations: [:customer, :purchase_order_items, :invoice])
     render "index.json.jbuilder"
+  end
+
+  def new
+    @shipping_addresses = ShippingAddress.all.order(:label)
+    @dvd_customers = DvdCustomer.all.order(:name)
   end
 
   def show

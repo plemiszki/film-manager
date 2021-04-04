@@ -28,6 +28,8 @@ class Film < ActiveRecord::Base
     errors.add(:title, 'cannot contain /') if title.include?('/')
   end
 
+  after_create :create_percentages
+
   belongs_to :licensor
   belongs_to :label
   has_many :film_revenue_percentages, dependent: :destroy
@@ -52,7 +54,7 @@ class Film < ActiveRecord::Base
   has_many :bookings
   has_many :digital_retailer_films
   has_many :digital_retailers, through: :digital_retailer_films
-  has_many :sub_rights
+  has_many :sub_rights, dependent: :destroy
   has_many :crossed_films
   has_many :episodes
   has_many :in_theaters_films, dependent: :destroy
@@ -62,7 +64,8 @@ class Film < ActiveRecord::Base
   has_many :virtual_bookings
   has_many :aliases, dependent: :destroy
 
-  after_create :create_percentages
+  scope :features, -> { where(film_type: 'Feature') }
+  scope :shorts, -> { where(film_type: 'Short') }
 
   def create_percentages
     unless film_type == 'Short'

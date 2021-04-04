@@ -114,7 +114,7 @@ class ConvertDigitalSales extends React.Component {
     });
   }
 
-  selectFilm(e) {
+  selectFilm(option, e) {
     let filmId = +e.target.dataset.id;
     this.setState({
       filmsModalOpen: false,
@@ -156,8 +156,6 @@ class ConvertDigitalSales extends React.Component {
           <h1 style={ { width: '100%', textAlign: 'center' } }>There are unrecognized films in this sales report.</h1>
           <p className="text-center m-bottom">Please create aliases for the below titles, then re-upload the sales report.</p>
           <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             <div className="row">
               <div className="col-xs-12">
                 <table className="admin-table no-links no-cursor">
@@ -185,6 +183,8 @@ class ConvertDigitalSales extends React.Component {
                 </table>
               </div>
             </div>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
           <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
             <ModalSelect options={ this.state.films } property="title" func={ this.selectFilm.bind(this) } />
