@@ -160,6 +160,8 @@ Rails.application.routes.draw do
     get '/website/gift_boxes' => '/api/website#gift_boxes'
     get '/website/bookings' => '/api/website#bookings'
     get '/website/merchandise' => '/api/website#merchandise'
+
+    get '/justwatch' => 'external#justwatch'
   end
 
   # Clearance ------------------------
