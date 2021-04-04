@@ -15,8 +15,8 @@ class Catalog extends React.Component {
     };
     if ($('#job-id').length == 1) {
       job.id = $('#job-id')[0].innerHTML;
-      job.second_line = false;
-      job.first_line = "Reading Spreadsheet";
+      job.secondLine = false;
+      job.firstLine = "Reading Spreadsheet";
     }
     this.state = {
       jobModalOpen: !!job.id,
@@ -33,7 +33,7 @@ class Catalog extends React.Component {
           method: 'GET',
           data: {
             id: this.state.job.id,
-            time: this.state.job.job_id
+            time: this.state.job.jobId
           },
           success(response) {
             ServerActions.receiveJob(response);
@@ -54,7 +54,7 @@ class Catalog extends React.Component {
         jobModalOpen: false,
         job: job
       }, () => {
-        window.location.href = job.first_line;
+        window.location.href = job.firstLine;
       });
     } else {
       this.setState({

@@ -20,8 +20,8 @@ class ConvertDigitalSales extends React.Component {
     };
     if ($('#job-id').length == 1) {
       job.id = $('#job-id')[0].innerHTML;
-      job.second_line = false;
-      job.first_line = "Importing Sales Report";
+      job.secondLine = false;
+      job.firstLine = "Importing Sales Report";
     }
     this.state = {
       jobModalOpen: !!job.id,
@@ -64,19 +64,19 @@ class ConvertDigitalSales extends React.Component {
       this.setState({
         jobModalOpen: false,
         job: job,
-        errorsModalOpen: job.errors_text == "Unable to import spreadsheet"
+        errorsModalOpen: job.errorsText == "Unable to import spreadsheet"
       }, () => {
-        if (job.errors_text) {
+        if (job.errorsText) {
           if (!this.state.errorsModalOpen) {
             this.setState({
-              errors: JSON.parse(job.errors_text),
+              errors: JSON.parse(job.errorsText),
               fetching: true
             }, () => {
               ClientActions.fetchFilms('all');
             });
           }
         } else {
-          window.location.href = job.first_line;
+          window.location.href = job.firstLine;
         }
       });
     } else {
@@ -138,7 +138,7 @@ class ConvertDigitalSales extends React.Component {
   }
 
   render() {
-    if (this.state.job.errors_text == "Unable to import spreadsheet") {
+    if (this.state.job.errorsText == "Unable to import spreadsheet") {
       return(
         <div>
           { FM.jobErrorsModal.call(this) }

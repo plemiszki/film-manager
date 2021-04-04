@@ -63,12 +63,12 @@ class ReportsIndex extends React.Component {
     super(props)
     let date = new Date;
     let job = {
-      errors_text: ""
+      errorsText: ""
     };
     if ($('#sage-import-id').length == 1) {
       job.id = $('#sage-import-id')[0].innerHTML;
-      job.second_line = false;
-      job.first_line = "Importing Q" + $('#sage-import-quarter')[0].innerHTML + " " + $('#sage-import-label')[0].innerHTML;
+      job.secondLine = false;
+      job.firstLine = "Importing Q" + $('#sage-import-quarter')[0].innerHTML + " " + $('#sage-import-label')[0].innerHTML;
     }
     this.state = {
       fetching: true,
@@ -115,19 +115,19 @@ class ReportsIndex extends React.Component {
 
   getJob() {
     var job = JobStore.job();
-    if (job.done || job.first_line.slice(0, 5) === "Done!") {
+    if (job.done || job.firstLine.slice(0, 5) === "Done!") {
       if (job.name === "export all" || job.name === 'summary') {
         this.setState({
           jobModalOpen: false,
           job: job
         }, () => {
-          window.location.href = job.first_line;
+          window.location.href = job.firstLine;
         });
       } else {
         this.setState({
           jobModalOpen: false,
-          errorsModalOpen: job.errors_text !== "",
-          noErrorsModalOpen: job.errors_text === "",
+          errorsModalOpen: job.errorsText !== "",
+          noErrorsModalOpen: job.errorsText === "",
           sendModalOpen: false,
           job: job
         });

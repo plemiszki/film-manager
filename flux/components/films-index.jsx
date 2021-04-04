@@ -129,7 +129,7 @@ class FilmsIndex extends React.Component {
         searchModalOpen: false,
         job: job
       }, () => {
-        window.location.href = job.first_line;
+        window.location.href = job.firstLine;
       });
     } else {
       this.setState({

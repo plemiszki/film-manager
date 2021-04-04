@@ -106,7 +106,7 @@ describe 'bookings_index', type: :feature do
         end
       end
     end
-    sleep 2
+    sleep 3
     visit bookings_path(as: $admin_user)
     search_index({
       film: { value: 'Wilby Wonderful', type: :select_modal },

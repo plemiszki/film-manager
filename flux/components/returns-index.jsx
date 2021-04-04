@@ -86,11 +86,11 @@ class ReturnsIndex extends React.Component {
     if (job.done) {
       this.setState({
         jobModalOpen: false,
-        errorsModalOpen: job.errors_text !== "",
+        errorsModalOpen: job.errorsText !== "",
         job: job
       }, function() {
-        if (job.errors_text === "") {
-          window.location.href = job.first_line;
+        if (job.errorsText === "") {
+          window.location.href = job.firstLine;
         }
       });
     } else {

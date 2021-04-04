@@ -29,7 +29,7 @@ class DvdReports extends React.Component {
   constructor(props) {
     super(props)
     var job = {
-      errors_text: ""
+      errorsText: ""
     };
     this.state = {
       fetching: true,
@@ -72,11 +72,11 @@ class DvdReports extends React.Component {
     if (job.done) {
       this.setState({
         jobModalOpen: false,
-        errorsModalOpen: job.errors_text !== "",
+        errorsModalOpen: job.errorsText !== "",
         job: job
       }, () => {
-        if (job.errors_text === "") {
-          window.location.href = job.first_line;
+        if (job.errorsText === "") {
+          window.location.href = job.firstLine;
         }
       });
     } else {

@@ -411,9 +411,9 @@ class FilmDetails extends React.Component {
     var job = JobStore.job();
     if (job.done) {
       var film = this.state.film;
-      film.artworkUrl = job.first_line;
+      film.artworkUrl = job.firstLine;
       var filmSaved = this.state.filmSaved;
-      filmSaved.artworkUrl = job.first_line;
+      filmSaved.artworkUrl = job.firstLine;
       this.setState({
         film: film,
         filmSaved: filmSaved,
@@ -1584,7 +1584,7 @@ class FilmDetails extends React.Component {
             { this.state.film.filmType === 'Short' ? (
               <>
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
-              </>  
+              </>
             ) : null }
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <h3>Release Dates:</h3>

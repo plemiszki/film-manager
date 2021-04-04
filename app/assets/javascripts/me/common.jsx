@@ -604,8 +604,8 @@ var FM = {
       <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ FM.jobModalStyles }>
         <div className="jobs-modal">
           { Common.renderSpinner(true) }
-          <div className="first-line">{ job.first_line || job.firstLine }</div>
-          <div className={ "second-line" + ((job.second_line || job.secondLine) ? "" : " hidden") }>({ job.current_value || job.currentValue || 0 } of { job.total_value || job.totalValue })</div>
+          <div className="first-line">{ job.firstLine }</div>
+          <div className={ "second-line" + (job.secondLine ? "" : " hidden") }>({ job.currentValue || 0 } of { job.totalValue })</div>
         </div>
       </Modal>
     );
@@ -615,8 +615,8 @@ var FM = {
     return(
       <Modal isOpen={ this.state.errorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ FM.errorsModalStyles }>
         <div className="errors-modal">
-          <h1>{ this.state.job.first_line }</h1>
-          { this.state.job.errors_text.split("\n").map((error, index) => {
+          <h1>{ this.state.job.firstLine }</h1>
+          { this.state.job.errorsText.split("\n").map((error, index) => {
             var greenClass = "";
             if (error.substr(error.length - 3) === " :)") {
               greenClass = " green";
@@ -635,7 +635,7 @@ var FM = {
     return(
       <Modal isOpen={ this.state.noErrorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ FM.noErrorsModalStyles }>
         <div className="send-modal">
-          <h1>{ this.state.job.first_line }</h1>
+          <h1>{ this.state.job.firstLine }</h1>
           <a className="orange-button" onClick={ this.modalCloseAndRefresh.bind(this) }>OK</a>
         </div>
       </Modal>
