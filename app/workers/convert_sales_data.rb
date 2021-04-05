@@ -202,7 +202,7 @@ class ConvertSalesData
             '', '', '',
             { :type => :String, :value => sage_id }
           ])
-          job.update!(current_value: index)
+          job.update!(current_value: invoice_row_index)
         end
         invoice_row_index += 1
       end
