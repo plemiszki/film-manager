@@ -1164,8 +1164,8 @@ class FilmDetails extends React.Component {
 
   renderTopTab(label) {
     if (this.state.film.id) {
-      if (['General', 'Contract', 'Synopses', 'DVDs', 'Bookings'].indexOf(label) > -1 ||
-          (['Marketing', 'Statements', 'Sublicensing'].indexOf(label) > -1 && (this.state.film.filmType == 'Feature' || this.state.film.filmType == 'TV Series')) ||
+      if (['General', 'Contract', 'Synopses', 'DVDs', 'Bookings', 'Marketing'].indexOf(label) > -1 ||
+          (['Statements', 'Sublicensing'].indexOf(label) > -1 && (this.state.film.filmType == 'Feature' || this.state.film.filmType == 'TV Series')) ||
           (label == 'Episodes' && this.state.film.filmType == 'TV Series'))
       {
         return(
@@ -1581,11 +1581,6 @@ class FilmDetails extends React.Component {
               </ul>
               <a className="blue-outline-button small" onClick={ this.clickAddActor.bind(this) }>Add Actor</a>
             </div>
-            { this.state.film.filmType === 'Short' ? (
-              <>
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
-              </>
-            ) : null }
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <h3>Release Dates:</h3>
               <h2>Theatrical Release</h2>
@@ -1624,225 +1619,237 @@ class FilmDetails extends React.Component {
         </div>
       );
     } else if (this.state.tab === "Marketing") {
-      return(
-        <div>
-          <hr className="smaller-margin" />
-          <div className="row row-of-checkboxes">
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
-          </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-12">
-              <h3>Laurels:</h3>
-              <ul className="standard-list reorderable laurels-list">
-                <li className="drop-zone" data-index="-1" data-section="laurels"></li>
-                { this.state.laurels.map((laurel, index) => {
-                  return(
-                    <div key={ laurel.id }>
-                      <li data-index={ index } data-section="laurels">{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteLaurel.bind(this) } data-id={ laurel.id }></div></li>
-                      <li className="drop-zone" data-index={ index } data-section="laurels"></li>
-                    </div>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddLaurel.bind(this) }>Add Laurel</a>
-              <div className="row row-of-checkboxes badge-checkboxes">
-                { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
-                { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
-              </div>
+      if (this.state.film.filmType === "Short") {
+        return(
+          <div>
+            <hr />
+            <div className="row">
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'fmPlusUrl', columnHeader: 'Film Movement Plus Link' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
             </div>
           </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-12 quotes-list">
-              <h3 className="quotes-header">Quotes:</h3>
-              <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
-              { this.state.quotes.map((quote, index) => {
-                return(
-                  <div key={ quote.id } className="quote-container">
-                    { this.renderQuote(quote, index) }
-                  </div>
-                );
-              }) }
+        )
+      } else {
+        return(
+          <div>
+            <hr className="smaller-margin" />
+            <div className="row row-of-checkboxes">
+              { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
+              { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
+              { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
+              { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
             </div>
-          </div>
-          <div className="row">
-            <div className="col-xs-12">
-              <a className="blue-outline-button small" onClick={ this.clickAddQuote.bind(this) }>Add Quote</a>
-            </div>
-          </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-6">
-              <h3>Genres:</h3>
-              <ul className="standard-list reorderable genres-list">
-                <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
-                { this.state.filmGenres.map((filmGenre, index) => {
-                  return(
-                    <div key={ filmGenre.id }>
-                      <li data-index={ index } data-section="genres">{ filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteGenre.bind(this) } data-id={ filmGenre.id }></div></li>
-                      <li className="drop-zone" data-index={ index } data-section="genres"></li>
-                    </div>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddGenre.bind(this) }>Add Genre</a>
-            </div>
-            <div className="col-xs-6">
-              <h3>Topics:</h3>
-              <ul className="standard-list topics-list">
-                { this.state.filmTopics.map((filmTopic) => {
-                  return(
-                    <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic.bind(this) } data-id={ filmTopic.id }></div></li>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddTopic.bind(this) }>Add Topic</a>
-            </div>
-          </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-4">
-              <h3>Alternate Lengths:</h3>
-              <ul className="standard-list alternate-lengths-list">
-                { HandyTools.sortArrayOfObjects(this.state.alternateLengths, 'length').map((alternateLength) => {
-                  return(
-                    <li key={ alternateLength.id }>{ alternateLength.length }<div className="x-button" onClick={ this.clickDeleteAltLength.bind(this) } data-id={ alternateLength.id }></div></li>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newAltLengthModalOpen', true) }>Add Length</a>
-            </div>
-            <div className="col-xs-4">
-              <h3>Alternate Audio Tracks:</h3>
-              <ul className="standard-list alternate-audios-list">
-                { HandyTools.alphabetizeArrayOfObjects(this.state.alternateAudios, 'languageName').map((alternateAudio) => {
-                  return(
-                    <li key={ alternateAudio.id }>{ alternateAudio.languageName }<div className="x-button" onClick={ this.clickDeleteAltAudio.bind(this) } data-id={ alternateAudio.id }></div></li>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateAudioModalOpen', true) }>Add Audio Track</a>
-            </div>
-            <div className="col-xs-4">
-              <h3>Alternate Subtitles:</h3>
-              <ul className="standard-list alternate-subtitles-list">
-                { HandyTools.alphabetizeArrayOfObjects(this.state.alternateSubtitles, 'languageName').map((alternateSubtitle) => {
-                  return(
-                    <li key={ alternateSubtitle.id }>{ alternateSubtitle.languageName }<div className="x-button" onClick={ this.clickDeleteAltSub.bind(this) } data-id={ alternateSubtitle.id }></div></li>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateSubtitleModalOpen', true) }>Add Subtitles</a>
-            </div>
-          </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-12">
-              <h3>Related Films:</h3>
-              <ul className="standard-list related-films-list">
-                { this.state.relatedFilms.map((relatedFilm) => {
-                  return(
-                    <li key={ relatedFilm.id }>{ relatedFilm.title }<div className="x-button" onClick={ this.clickDeleteRelatedFilm.bind(this) } data-id={ relatedFilm.id }></div></li>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddRelatedFilm.bind(this) }>Add Related Film</a>
-            </div>
-          </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-12">
-              <h3>Digital Retailers:</h3>
-              <table className="fm-admin-table digital-retailers-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Url</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td></td><td></td></tr>
-                  { this.state.digitalRetailerFilms.map((digitalRetailerFilm, index) => {
+            <hr />
+            <div className="row">
+              <div className="col-xs-12">
+                <h3>Laurels:</h3>
+                <ul className="standard-list reorderable laurels-list">
+                  <li className="drop-zone" data-index="-1" data-section="laurels"></li>
+                  { this.state.laurels.map((laurel, index) => {
                     return(
-                      <tr key={ index } onClick={ this.redirect.bind(this, 'digital_retailer_films', digitalRetailerFilm.id) }>
-                        <td className="name-column">
-                          { digitalRetailerFilm.name }
-                        </td>
-                        <td>
-                          { digitalRetailerFilm.url }
-                        </td>
-                      </tr>
+                      <div key={ laurel.id }>
+                        <li data-index={ index } data-section="laurels">{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteLaurel.bind(this) } data-id={ laurel.id }></div></li>
+                        <li className="drop-zone" data-index={ index } data-section="laurels"></li>
+                      </div>
                     );
                   }) }
-                </tbody>
-              </table>
-              <a className="blue-outline-button small" onClick={ this.clickAddDigitalRetailer.bind(this) }>Add Digital Retailer</a>
+                </ul>
+                <a className="blue-outline-button small" onClick={ this.clickAddLaurel.bind(this) }>Add Laurel</a>
+                <div className="row row-of-checkboxes badge-checkboxes">
+                  { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
+                  { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-12 quotes-list">
+                <h3 className="quotes-header">Quotes:</h3>
+                <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
+                { this.state.quotes.map((quote, index) => {
+                  return(
+                    <div key={ quote.id } className="quote-container">
+                      { this.renderQuote(quote, index) }
+                    </div>
+                  );
+                }) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-12">
+                <a className="blue-outline-button small" onClick={ this.clickAddQuote.bind(this) }>Add Quote</a>
+              </div>
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-6">
+                <h3>Genres:</h3>
+                <ul className="standard-list reorderable genres-list">
+                  <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
+                  { this.state.filmGenres.map((filmGenre, index) => {
+                    return(
+                      <div key={ filmGenre.id }>
+                        <li data-index={ index } data-section="genres">{ filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteGenre.bind(this) } data-id={ filmGenre.id }></div></li>
+                        <li className="drop-zone" data-index={ index } data-section="genres"></li>
+                      </div>
+                    );
+                  }) }
+                </ul>
+                <a className="blue-outline-button small" onClick={ this.clickAddGenre.bind(this) }>Add Genre</a>
+              </div>
+              <div className="col-xs-6">
+                <h3>Topics:</h3>
+                <ul className="standard-list topics-list">
+                  { this.state.filmTopics.map((filmTopic) => {
+                    return(
+                      <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic.bind(this) } data-id={ filmTopic.id }></div></li>
+                    );
+                  }) }
+                </ul>
+                <a className="blue-outline-button small" onClick={ this.clickAddTopic.bind(this) }>Add Topic</a>
+              </div>
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-4">
+                <h3>Alternate Lengths:</h3>
+                <ul className="standard-list alternate-lengths-list">
+                  { HandyTools.sortArrayOfObjects(this.state.alternateLengths, 'length').map((alternateLength) => {
+                    return(
+                      <li key={ alternateLength.id }>{ alternateLength.length }<div className="x-button" onClick={ this.clickDeleteAltLength.bind(this) } data-id={ alternateLength.id }></div></li>
+                    );
+                  }) }
+                </ul>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newAltLengthModalOpen', true) }>Add Length</a>
+              </div>
+              <div className="col-xs-4">
+                <h3>Alternate Audio Tracks:</h3>
+                <ul className="standard-list alternate-audios-list">
+                  { HandyTools.alphabetizeArrayOfObjects(this.state.alternateAudios, 'languageName').map((alternateAudio) => {
+                    return(
+                      <li key={ alternateAudio.id }>{ alternateAudio.languageName }<div className="x-button" onClick={ this.clickDeleteAltAudio.bind(this) } data-id={ alternateAudio.id }></div></li>
+                    );
+                  }) }
+                </ul>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateAudioModalOpen', true) }>Add Audio Track</a>
+              </div>
+              <div className="col-xs-4">
+                <h3>Alternate Subtitles:</h3>
+                <ul className="standard-list alternate-subtitles-list">
+                  { HandyTools.alphabetizeArrayOfObjects(this.state.alternateSubtitles, 'languageName').map((alternateSubtitle) => {
+                    return(
+                      <li key={ alternateSubtitle.id }>{ alternateSubtitle.languageName }<div className="x-button" onClick={ this.clickDeleteAltSub.bind(this) } data-id={ alternateSubtitle.id }></div></li>
+                    );
+                  }) }
+                </ul>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateSubtitleModalOpen', true) }>Add Subtitles</a>
+              </div>
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-12">
+                <h3>Related Films:</h3>
+                <ul className="standard-list related-films-list">
+                  { this.state.relatedFilms.map((relatedFilm) => {
+                    return(
+                      <li key={ relatedFilm.id }>{ relatedFilm.title }<div className="x-button" onClick={ this.clickDeleteRelatedFilm.bind(this) } data-id={ relatedFilm.id }></div></li>
+                    );
+                  }) }
+                </ul>
+                <a className="blue-outline-button small" onClick={ this.clickAddRelatedFilm.bind(this) }>Add Related Film</a>
+              </div>
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-12">
+                <h3>Digital Retailers:</h3>
+                <table className="fm-admin-table digital-retailers-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Url</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td><td></td></tr>
+                    { this.state.digitalRetailerFilms.map((digitalRetailerFilm, index) => {
+                      return(
+                        <tr key={ index } onClick={ this.redirect.bind(this, 'digital_retailer_films', digitalRetailerFilm.id) }>
+                          <td className="name-column">
+                            { digitalRetailerFilm.name }
+                          </td>
+                          <td>
+                            { digitalRetailerFilm.url }
+                          </td>
+                        </tr>
+                      );
+                    }) }
+                  </tbody>
+                </table>
+                <a className="blue-outline-button small" onClick={ this.clickAddDigitalRetailer.bind(this) }>Add Digital Retailer</a>
+              </div>
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-6">
+                <h2>Film Movement Plus Link</h2>
+                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.fmPlusUrl || "" } data-field="fmPlusUrl" />
+                { Details.renderFieldError(this.state.filmErrors, []) }
+              </div>
+              <div className="col-xs-6">
+                <h2>Standalone Site</h2>
+                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.standaloneSite || "" } data-field="standaloneSite" />
+                { Details.renderFieldError(this.state.filmErrors, []) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-6">
+                <h2>Vimeo Trailer Link</h2>
+                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vimeoTrailer || "" } data-field="vimeoTrailer" />
+                { Details.renderFieldError(this.state.filmErrors, []) }
+              </div>
+              <div className="col-xs-6">
+                <h2>YouTube Trailer Link</h2>
+                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.youtubeTrailer || "" } data-field="youtubeTrailer" />
+                { Details.renderFieldError(this.state.filmErrors, []) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-6">
+                <h2>ProRes Trailer Link</h2>
+                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.proresTrailer || "" } data-field="proresTrailer" />
+                { Details.renderFieldError(this.state.filmErrors, []) }
+              </div>
+              <div className="col-xs-6">
+                <h2>Facebook Link</h2>
+                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.facebookLink || "" } data-field="facebookLink" />
+                { Details.renderFieldError(this.state.filmErrors, []) }
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-xs-6">
+                <h2>Twitter Link</h2>
+                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.twitterLink || "" } data-field="twitterLink" />
+                { Details.renderFieldError(this.state.filmErrors, []) }
+              </div>
+              <div className="col-xs-6">
+                <h2>Instagram Link</h2>
+                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
+                { Details.renderFieldError(this.state.filmErrors, []) }
+              </div>
+            </div>
+            <div className="row">
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'rentalUrl' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalPrice' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalDays' }) }
+            </div>
+            <div className="row">
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
             </div>
           </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-6">
-              <h2>Film Movement Plus Link</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.fmPlusUrl || "" } data-field="fmPlusUrl" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className="col-xs-6">
-              <h2>Standalone Site</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.standaloneSite || "" } data-field="standaloneSite" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-xs-6">
-              <h2>Vimeo Trailer Link</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vimeoTrailer || "" } data-field="vimeoTrailer" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className="col-xs-6">
-              <h2>YouTube Trailer Link</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.youtubeTrailer || "" } data-field="youtubeTrailer" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-xs-6">
-              <h2>ProRes Trailer Link</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.proresTrailer || "" } data-field="proresTrailer" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className="col-xs-6">
-              <h2>Facebook Link</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.facebookLink || "" } data-field="facebookLink" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-xs-6">
-              <h2>Twitter Link</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.twitterLink || "" } data-field="twitterLink" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className="col-xs-6">
-              <h2>Instagram Link</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-          </div>
-          <div className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'rentalUrl' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalPrice' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalDays' }) }
-          </div>
-          <div className="row">
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
-          </div>
-        </div>
-      )
+        )
+      }
     } else if (this.state.tab === "Synopses") {
       return(
         <div>
