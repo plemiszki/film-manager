@@ -165,7 +165,7 @@ class Api::BookingsController < AdminController
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export bookings", first_line: "Exporting Bookings", second_line: true, current_value: 0, total_value: booking_ids.length)
     ExportBookings.perform_async(booking_ids, time_started)
-    render json: job
+    render json: job.render_json
   end
 
   private

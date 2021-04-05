@@ -198,7 +198,7 @@ class Api::FilmsController < AdminController
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export films", first_line: "Exporting Metadata", second_line: true, current_value: 0, total_value: film_ids.length)
     ExportFilms.perform_async(film_ids, time_started, search_criteria.to_json)
-    render json: job
+    render json: job.render_json
   end
 
   def catalog
@@ -225,7 +225,7 @@ class Api::FilmsController < AdminController
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "update artwork", first_line: "Updating Artwork", second_line: true, current_value: 0, total_value: Film.count)
     UpdateArtwork.perform_async(time_started, params[:trigger_id])
-    render json: job
+    render json: job.render_json
   end
 
   private

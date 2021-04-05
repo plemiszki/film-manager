@@ -80,7 +80,7 @@ class Api::RoyaltyReportsController < AdminController
     total_reports = RoyaltyReport.where(year: params[:year], quarter: params[:quarter])
     job = Job.create!(job_id: time_started, first_line: 'Checking For Errors', second_line: true, current_value: 0, total_value: total_reports.length)
     ErrorCheck.perform_async(params[:quarter], params[:year], time_started)
-    render json: job
+    render json: job.render_json
   end
 
   def totals
@@ -92,7 +92,7 @@ class Api::RoyaltyReportsController < AdminController
     end
     job = Job.create!(job_id: time_started, first_line: 'Calculating Totals', second_line: true, current_value: 0, total_value: total_reports.length)
     CalculateTotals.perform_async(params[:quarter], params[:year], params[:days_due], time_started)
-    render json: job
+    render json: job.render_json
   end
 
   def summary
@@ -104,7 +104,7 @@ class Api::RoyaltyReportsController < AdminController
     end
     job = Job.create!(job_id: time_started, name: 'summary', first_line: 'Creating Summary', second_line: true, current_value: 0, total_value: total_reports.length)
     CreateReportsSummary.perform_async(params[:quarter], params[:year], params[:days_due], time_started)
-    render json: job
+    render json: job.render_json
   end
 
   def export
@@ -140,7 +140,7 @@ class Api::RoyaltyReportsController < AdminController
     total_reports = RoyaltyReport.joins(:film).where(films: { days_statement_due: params[:days_due], export_reports: true }, quarter: params[:quarter], year: params[:year])
     job = Job.create!(job_id: time_started, name: "export all", first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
     ExportAllReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
-    render json: job
+    render json: job.render_json
   end
 
   def send_all
@@ -148,7 +148,7 @@ class Api::RoyaltyReportsController < AdminController
     total_reports = RoyaltyReport.joins(:film).where(films: { days_statement_due: params[:days_due], export_reports: true, send_reports: true }, quarter: params[:quarter], year: params[:year], date_sent: nil)
     job = Job.create!(job_id: time_started, first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
     ExportAndSendReports.perform_async(params[:days_due], params[:quarter], params[:year], time_started)
-    render json: job
+    render json: job.render_json
   end
 
   private

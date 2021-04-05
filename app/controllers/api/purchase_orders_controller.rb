@@ -151,7 +151,7 @@ class Api::PurchaseOrdersController < AdminController
     total_pos = PurchaseOrder.where(order_date: start_date..end_date).count
     job = Job.create!(job_id: time_started, name: "export dvd sales", first_line: "Exporting DVD Sales", second_line: true, current_value: 0, total_value: total_pos)
     ExportDvdSales.perform_async(time_started, start_date, end_date)
-    render json: job
+    render json: job.render_json
   end
 
   private
