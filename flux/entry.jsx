@@ -273,11 +273,11 @@ $(document).ready(function() {
           entityName='booking'
           entityNamePlural='bookings'
           columns={[
-            { name: 'dateAdded', sortDir: 'desc', width: 162 },
+            { name: 'startDate', width: 162 },
+            { name: 'endDate', width: 162 },
             { name: 'film', dbName: 'films.title', width: 350 },
             { name: 'venue', dbName: 'venues.label', width: 350 },
-            { name: 'startDate', sortDir: 'desc', width: 162 },
-            { name: 'endDate', sortDir: 'desc', width: 162 },
+            { name: 'dateAdded', sortDir: 'desc', width: 162 },
             { name: 'city', dbName: 'shipping_city', width: 162 },
             { name: 'state', dbName: 'shipping_state', width: 162 },
             { name: 'terms', width: 162 },
@@ -897,11 +897,11 @@ $(document).ready(function() {
           entityName='virtualBooking'
           entityNamePlural='virtualBookings'
           columns={[
-            { name: 'dateAdded', sortDir: 'desc', width: 162 },
+            { name: 'startDate', width: 162 },
+            { name: 'endDate', width: 162 },
             { name: 'film', dbName: 'films.title', width: 350 },
             { name: 'venue', dbName: 'venues.label', width: 350 },
-            { name: 'startDate', sortDir: 'desc', width: 162 },
-            { name: 'endDate', sortDir: 'desc', width: 162 },
+            { name: 'dateAdded', sortDir: 'desc', width: 162 },
             { name: 'city', dbName: 'shipping_city', width: 162 },
             { name: 'state', dbName: 'shipping_state', width: 162 },
           ]}
