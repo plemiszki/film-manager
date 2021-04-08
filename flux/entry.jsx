@@ -843,7 +843,7 @@ $(document).ready(function() {
           <SearchCriteria
             context={ MyContext }
             fields={[
-              { name: 'label', columnWidth: 6 },
+              { name: 'label', fuzzy: true, columnWidth: 6 },
               {
                 name: 'venueType',
                 type: 'static dropdown',

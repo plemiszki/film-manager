@@ -21,6 +21,7 @@ module SearchIndex
 
     if params[:search_criteria]
       where_obj, not_obj = {}, {}
+      fuzzy_where_obj = {}
       params[:search_criteria].each do |key, value|
         key = value['db_name'] if value['db_name']
         if value['min_value']
@@ -31,13 +32,17 @@ module SearchIndex
         elsif value.has_key?('not')
           not_obj[key] = value['not']
         else
-          where_obj[key] = value['value']
+          if value['fuzzy']
+            fuzzy_where_obj[key] = value['value']
+          else
+            where_obj[key] = value['value']
+          end
         end
       end
       widgets_meeting_search_criteria = widget.where(where_obj).where.not(not_obj)
-      # if widgets_meeting_search_criteria.length == 0
-      #   widgets_meeting_search_criteria = widget.fuzzy_search(where_obj)
-      # end
+      fuzzy_where_obj.each do |key, value|
+        widgets_meeting_search_criteria = widgets_meeting_search_criteria.where('label ilike ?', "%#{value}%")
+      end
     else
       widgets_meeting_search_criteria = widget.all
     end
