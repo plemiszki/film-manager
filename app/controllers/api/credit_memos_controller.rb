@@ -21,7 +21,7 @@ class Api::CreditMemosController < AdminController
   end
 
   def export
-    credit_memo_ids = params[:credit_memo_ids].to_a.map(&:to_i)
+    credit_memo_ids = perform_search(model: 'CreditMemo').pluck(:id)
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export credit memos", first_line: "Exporting Credit Memos", second_line: true, current_value: 0, total_value: credit_memo_ids.length)
     ExportCreditMemos.perform_async(credit_memo_ids, time_started)
