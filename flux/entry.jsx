@@ -301,11 +301,11 @@ $(document).ready(function() {
           <SearchCriteria
             context={ MyContext }
             fields={[
-              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
-              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
-              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
               { name: 'startDate', type: 'date range', columnWidth: 10 },
               { name: 'endDate', type: 'date range', columnWidth: 10 },
+              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
               { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
               { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
               { name: 'type', dbName: 'booking_type', type: 'static dropdown', options: [{ value: 'Theatrical', text: 'Theatrical' }, { value: 'Non-Theatrical', text: 'Non-Theatrical' }, { value: 'Festival', text: 'Festival' }], columnWidth: 4 },
@@ -915,11 +915,11 @@ $(document).ready(function() {
           <SearchCriteria
             context={ MyContext }
             fields={[
-              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
-              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
-              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
               { name: 'startDate', type: 'date range', columnWidth: 10 },
               { name: 'endDate', type: 'date range', columnWidth: 10 },
+              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
               { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
               { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
             ]}
