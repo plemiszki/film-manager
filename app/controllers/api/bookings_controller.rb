@@ -12,7 +12,7 @@ class Api::BookingsController < AdminController
         params[:search_criteria][:materials_sent][:not] = nil
       end
     end
-    @bookings = perform_search(model: 'Booking', associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices'])
+    @bookings = perform_search(model: 'Booking', associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices', 'invoices'])
     @calculations = {}
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)

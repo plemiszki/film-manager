@@ -284,6 +284,7 @@ $(document).ready(function() {
             { name: 'type', dbName: 'booking_type', width: 162 },
             { name: 'status', width: 162 },
             { name: 'format', dbName: 'formats.name', width: 162 },
+            { name: 'invoiceNumbers', header: 'Invoices', orderByDisabled: true, width: 162 },
             { name: 'materialsSent', width: 125 },
             { name: 'boxOfficeReceived', header: 'BO Received', width: 125 },
             { name: 'totalGross', orderByDisabled: true, width: 125 },
