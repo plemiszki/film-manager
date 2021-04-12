@@ -328,7 +328,12 @@ $(document).ready(function() {
     );
   }
   if ($('#booking-details')[0]) {
-    ReactDOM.render(<BookingDetails />, document.getElementById("booking-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <BookingDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("booking-details")
+    );
   }
   if ($('#setting-details')[0]) {
     ReactDOM.render(

@@ -100,6 +100,14 @@ class Api::InvoicesController < AdminController
     render 'show.json.jbuilder'
   end
 
+  def destroy
+    invoice = Invoice.find(params[:id])
+    invoice.destroy
+    booking = invoice.booking
+    @invoices = booking.invoices
+    render 'index.json.jbuilder'
+  end
+
   def export_single
     invoice = Invoice.find(params[:id])
     pathname = Rails.root.join('tmp', Time.now.to_s)

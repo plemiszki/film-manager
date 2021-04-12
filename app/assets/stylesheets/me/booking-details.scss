@@ -62,12 +62,25 @@
     }
   }
 
+  .delete-invoice {
+    display: inline-block;
+    background-image: asset-url('gray-x.png');
+    background-size: contain;
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+  }
+
   a.blue-outline-button {
     margin-bottom: 30px;
   }
 
   .invoices-table {
-    td:last-of-type {
+    line-height: 0;
+    th.button {
+      width: 80px;
+    }
+    td.button {
       width: 80px;
 
       img {

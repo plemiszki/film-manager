@@ -96,7 +96,7 @@ Rails.application.routes.draw do
     resources :shipping_addresses, only: [:index, :create, :show, :update, :destroy]
     get '/invoices/:id/export' => '/api/invoices#export_single'
     get '/invoices/export' => '/api/invoices#export'
-    resources :invoices, only: [:index, :show, :update]
+    resources :invoices, only: [:index, :show, :update, :destroy]
     post '/invoices' => '/api/invoices#create'
     get '/credit_memos/export' => '/api/credit_memos#export'
     resources :credit_memos, only: [:index, :new, :create, :show]

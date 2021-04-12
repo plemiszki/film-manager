@@ -1,4 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { deleteEntity } from '../actions/index.js'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
@@ -69,6 +72,7 @@ class BookingDetails extends React.Component {
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
+      deleteInvoiceModalOpen: false,
       copyModalOpen: false,
       newWeeklyTermsModalOpen: false,
       newWeeklyBoxOfficeModalOpen: false,
@@ -208,6 +212,26 @@ class BookingDetails extends React.Component {
       deleteModalOpen: false
     }, () => {
       ClientActions.deleteAndGoToIndex('bookings', this.state.booking.id);
+    });
+  }
+
+  confirmDeleteInvoice() {
+    this.setState({
+      fetching: true,
+      deleteInvoiceModalOpen: false
+    }, () => {
+      this.setState({
+        fetching: false
+      });
+      this.props.deleteEntity({
+        directory: 'invoices',
+        id: this.state.deleteInvoiceId,
+        callback: (response) => {
+          this.setState({
+            invoices: response.invoices
+          });
+        }
+      });
     });
   }
 
@@ -457,6 +481,11 @@ class BookingDetails extends React.Component {
         newInvoiceShipFee: !!oldShipFee,
         resendInvoiceId: invoice.number,
         invoicePayments: paymentsObj
+      });
+    } else if (e.target.tagName === 'DIV' && e.target.classList.contains('delete-invoice')) {
+      this.setState({
+        deleteInvoiceId: id,
+        deleteInvoiceModalOpen: true
       });
     } else {
       this.redirect("invoices", id);
@@ -712,11 +741,12 @@ class BookingDetails extends React.Component {
                       <th>Sent</th>
                       <th>Number</th>
                       <th>Total</th>
-                      <th>Edit</th>
+                      <th className="button">Edit</th>
+                      <th className="button">Delete</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td></td><td></td><td></td><td></td></tr>
+                    <tr><td></td><td></td><td></td><td></td><td></td></tr>
                     { this.state.invoices.map((invoice, index) => {
                       return(
                         <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id) }>
@@ -729,8 +759,11 @@ class BookingDetails extends React.Component {
                           <td>
                             { invoice.total }
                           </td>
-                          <td>
+                          <td className="button">
                             <img src={ Images.edit } />
+                          </td>
+                          <td className="button">
+                            <div className="delete-invoice"></div>
                           </td>
                         </tr>
                       );
@@ -766,6 +799,9 @@ class BookingDetails extends React.Component {
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete entityName="booking" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        </Modal>
+        <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="invoice" confirmDelete={ this.confirmDeleteInvoice.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
           <NewThing thing="booking" copyFrom={ this.state.booking.id } initialObject={ { copyFrom: this.state.booking.id } } />
@@ -1011,4 +1047,12 @@ class BookingDetails extends React.Component {
   }
 }
 
-export default BookingDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BookingDetails);
