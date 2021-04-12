@@ -285,6 +285,22 @@ describe 'booking_details', type: :feature do
     expect(InvoiceRow.first.total_price).to eq(350)
   end
 
+  it 'deletes invoices' do
+    create(:booking_invoice)
+    visit booking_path(@booking, as: $admin_user)
+    within('.invoices-table') do
+      find('div.delete-invoice').click
+    end
+    within('.confirm-delete') do
+      find('.red-button').click
+    end
+    wait_for_ajax
+    expect(Invoice.count).to eq(0)
+    within('.invoices-table') do
+      expect(page).to have_no_content('1B')
+    end
+  end
+
   it 'displays payments' do
     create(:booking_invoice)
     create(:payment)
