@@ -6,7 +6,7 @@ class Api::SublicensorsController < AdminController
   end
 
   def show
-    @sublicensors = Sublicensor.where(id: params[:id])
+    @sublicensor = Sublicensor.find(params[:id])
     @rights = SubRight.where(sublicensor_id: params[:id]).includes(:right, :territory)
     render "show.json.jbuilder"
   end
@@ -24,7 +24,6 @@ class Api::SublicensorsController < AdminController
   def update
     @sublicensor = Sublicensor.find(params[:id])
     if @sublicensor.update(sublicensor_params)
-      @sublicensors = Sublicensor.where(id: params[:id])
       render "show.json.jbuilder"
     else
       render json: @sublicensor.errors.full_messages, status: 422

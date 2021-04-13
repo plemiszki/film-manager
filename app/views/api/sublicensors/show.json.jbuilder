@@ -1,10 +1,10 @@
-json.sublicensors @sublicensors do |sublicensor|
-  json.id sublicensor.id
-  json.name sublicensor.name
-  json.email sublicensor.email || ""
-  json.phone sublicensor.phone || ""
-  json.contactName sublicensor.contact_name || ""
-  json.w8 sublicensor.w8 == true ? "yes" : "no"
+json.sublicensor do
+  json.id @sublicensor.id
+  json.name @sublicensor.name
+  json.email @sublicensor.email || ""
+  json.phone @sublicensor.phone || ""
+  json.contactName @sublicensor.contact_name || ""
+  json.w8 @sublicensor.w8
 end
 json.rights @rights do |right|
   json.id right.id

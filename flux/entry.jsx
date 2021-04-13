@@ -356,7 +356,24 @@ $(document).ready(function() {
     ReactDOM.render(<FilmRightDetails />, document.getElementById("film-right-details"));
   }
   if ($('#sublicensor-details')[0]) {
-    ReactDOM.render(<SublicensorDetails />, document.getElementById("sublicensor-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='sublicensor'
+          initialEntity={ { name: '', contactName: '', email: '', phone: '', w8: false } }
+          fields={ [[
+            { columnWidth: 4, entity: 'sublicensor', property: 'name' },
+            { columnWidth: 4, entity: 'sublicensor', property: 'contactName' },
+            { columnWidth: 4, entity: 'sublicensor', property: 'email' },
+            { columnWidth: 4, entity: 'sublicensor', property: 'phone' },
+            { columnWidth: 2, entity: 'sublicensor', property: 'w8', columnHeader: 'W-8 on File', type: 'dropdown', boolean: true },
+          ]] }
+        />
+      </Provider>,
+      document.getElementById("sublicensor-details")
+    );
   }
   if ($('#digital-retailer-film-details')[0]) {
     ReactDOM.render(<DigitalRetailerFilmDetails />, document.getElementById("digital-retailer-film-details"));
