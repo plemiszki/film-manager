@@ -1,10 +1,21 @@
 class Api::SubRightsController < AdminController
 
+  include SearchIndex
+
+  def index
+    @sub_rights = perform_search(model: 'SubRight', associations: ['film', 'territory', 'right'])
+    render 'index.json.jbuilder'
+  end
+
+  def new
+    @territories = Territory.all.order(:name)
+    @rights = Right.all.order(:name)
+    @films = Film.all.order(:title)
+    render 'new.json.jbuilder'
+  end
+
   def show
-    @sub_rights = SubRight.where(id: params[:id])
-    @territories = Territory.all
-    @rights = Right.all
-    @films = Film.all
+    @sub_right = SubRight.find(params[:id])
     render 'show.json.jbuilder'
   end
 

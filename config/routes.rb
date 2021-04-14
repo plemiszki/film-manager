@@ -152,7 +152,7 @@ Rails.application.routes.draw do
     post '/in_theaters' => '/api/in_theaters_films#create'
     post '/in_theaters/rearrange' => '/api/in_theaters_films#rearrange'
     delete '/in_theaters/:id' => '/api/in_theaters_films#destroy'
-    resources :sub_rights, only: [:create, :show, :update, :destroy]
+    resources :sub_rights, only: [:index, :new, :create, :show, :update, :destroy]
     resources :merchandise_types, only: [:index, :create, :show, :update, :destroy]
     resources :merchandise_items, only: [:index, :create, :show, :update, :destroy]
 

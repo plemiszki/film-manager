@@ -375,6 +375,41 @@ $(document).ready(function() {
       document.getElementById("sublicensor-details")
     );
   }
+  if ($('#sublicensor-rights-index')[0]) {
+    const directoryNames = window.location.pathname.split('/');
+    const sublicensorId = directoryNames[directoryNames.length - 1];
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SearchIndex
+          context={ MyContext }
+          header="Sublicensed Rights"
+          entityName='subRight'
+          columns={[
+            { name: 'film', dbName: 'film_id' },
+            { name: 'right', dbName: 'right_id', width: 200 },
+            { name: 'territory', dbName: 'territory_id', width: 250 },
+            { name: 'startDate', width: 120 },
+            { name: 'endDate', width: 120 },
+            { name: 'exclusive', width: 80 },
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 3 }
+          searchModalDimensions={ { width: 600 } }
+          staticSearchCriteria={ { sublicensorId: { value: sublicensorId } }}
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 9 },
+              { name: 'right', dbName: 'right_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'rights', columnWidth: 6 },
+              { name: 'territory', dbName: 'territory_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'territories', columnWidth: 6 }
+            ]}
+          />
+        </SearchIndex>
+      </Provider>,
+      document.getElementById("sublicensor-rights-index")
+    );
+  }
   if ($('#digital-retailer-film-details')[0]) {
     ReactDOM.render(<DigitalRetailerFilmDetails />, document.getElementById("digital-retailer-film-details"));
   }
