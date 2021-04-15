@@ -23,6 +23,7 @@ import EpisodeDetails from './components/episode-details.jsx'
 import FilmDetails from './components/film-details.jsx'
 import FilmRightDetails from './components/film-right-details.jsx'
 import FilmsIndex from './components/films-index.jsx'
+import FilmRightsNew from './components/film-rights-new.jsx'
 import GiftBoxDetails from './components/giftbox-details.jsx'
 import ImportInventory from './components/import-inventory.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
@@ -396,6 +397,9 @@ $(document).ready(function() {
           searchModalRows={ 3 }
           searchModalDimensions={ { width: 600 } }
           staticSearchCriteria={ { sublicensorId: { value: sublicensorId } }}
+          showNewButton={ true }
+          newButtonText="Add Rights"
+          newModalDimensions={ { width: 1000, height: 598 } }
         >
           <SearchCriteria
             context={ MyContext }
@@ -404,6 +408,10 @@ $(document).ready(function() {
               { name: 'right', dbName: 'right_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'rights', columnWidth: 6 },
               { name: 'territory', dbName: 'territory_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'territories', columnWidth: 6 }
             ]}
+          />
+          <FilmRightsNew
+            initialEntity={ {} }
+            sublicensorId={ sublicensorId }
           />
         </SearchIndex>
       </Provider>,

@@ -108,7 +108,7 @@ const NewRightsModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 613
+    height: 598
   }
 };
 
