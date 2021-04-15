@@ -15,7 +15,10 @@ class Api::SubRightsController < AdminController
   end
 
   def show
-    @sub_right = SubRight.find(params[:id])
+    @sub_rights = SubRight.where(id: params[:id])
+    @territories = Territory.all
+    @rights = Right.all
+    @films = Film.all
     render 'show.json.jbuilder'
   end
 
