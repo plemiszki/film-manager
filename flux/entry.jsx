@@ -364,13 +364,17 @@ $(document).ready(function() {
           context={ MyContext }
           entityName='sublicensor'
           initialEntity={ { name: '', contactName: '', email: '', phone: '', w8: false } }
-          fields={ [[
-            { columnWidth: 4, entity: 'sublicensor', property: 'name' },
-            { columnWidth: 4, entity: 'sublicensor', property: 'contactName' },
-            { columnWidth: 4, entity: 'sublicensor', property: 'email' },
-            { columnWidth: 4, entity: 'sublicensor', property: 'phone' },
-            { columnWidth: 2, entity: 'sublicensor', property: 'w8', columnHeader: 'W-8 on File', type: 'dropdown', boolean: true },
-          ]] }
+          fields={ [
+            [
+              { columnWidth: 4, entity: 'sublicensor', property: 'name' },
+              { columnWidth: 4, entity: 'sublicensor', property: 'contactName' },
+              { columnWidth: 4, entity: 'sublicensor', property: 'email' },
+            ],
+            [
+              { columnWidth: 4, entity: 'sublicensor', property: 'phone' },
+              { columnWidth: 2, entity: 'sublicensor', property: 'w8', columnHeader: 'W-8 on File', type: 'dropdown', boolean: true },
+            ]
+          ] }
         />
       </Provider>,
       document.getElementById("sublicensor-details")

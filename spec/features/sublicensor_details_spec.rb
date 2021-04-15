@@ -18,7 +18,7 @@ describe 'sublicensor_details', type: :feature do
     expect(find('input[data-field="contactName"]').value).to eq 'Becky LePlant'
     expect(find('input[data-field="email"]').value).to eq 'someone@kanopy.com'
     expect(find('input[data-field="phone"]').value).to eq '212-941-7744'
-    expect(find('select[data-field="w8"]', visible: false).value).to eq 'yes'
+    expect(find('select[data-field="w8"]', visible: false).value).to eq 't'
   end
 
   it 'updates information about the sublicensor' do
@@ -28,7 +28,7 @@ describe 'sublicensor_details', type: :feature do
       contact_name: 'Joe Schmo',
       email: 'joe@fandor.com',
       phone: '555-555-5555',
-      w8: { value: 'no', type: :select }
+      w8: { value: 'f', type: :select }
     }
     fill_out_form(new_info)
     save_and_wait
@@ -53,7 +53,7 @@ describe 'sublicensor_details', type: :feature do
     create(:territory)
     create(:sub_right)
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    within('.fm-admin-table') do
+    within('.search-index') do
       expect(page).to have_content 'Wilby Wonderful'
     end
   end
@@ -64,7 +64,7 @@ describe 'sublicensor_details', type: :feature do
     create(:right)
     create(:territory)
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Rights').click
+    find('.new-button', text: 'Add Rights').click
     within('#film-rights-new') do
       fill_out_form({
         start_date: '1/1/2010',
@@ -73,8 +73,8 @@ describe 'sublicensor_details', type: :feature do
       find_all('.blue-outline-button', text: 'ALL').each { |button| button.click }
       find('.orange-button').click
     end
-    expect(page).to have_no_css '.spinner'
-    within('.fm-admin-table') do
+    wait_for_ajax
+    within('.search-index') do
       expect(page).to have_content 'Wilby Wonderful'
       expect(page).to have_content 'Theatrical'
       expect(page).to have_content 'USA'
@@ -83,7 +83,7 @@ describe 'sublicensor_details', type: :feature do
 
   it 'deletes the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Sublicensor')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click
