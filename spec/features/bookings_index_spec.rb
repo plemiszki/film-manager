@@ -117,7 +117,7 @@ describe 'bookings_index', type: :feature do
       shipping_state: { value: 'MA' },
       box_office_received: { label: 'No', type: :select },
       materials_sent: { label: 'No', type: :select },
-      type: { label: 'Non-Theatrical', type: :select },
+      type: { labels: ['Non-Theatrical'], type: :checkboxes },
       status: { label: 'Confirmed', type: :select },
       start_date: { start: '1/2/21', end: '1/2/21', type: :date_range },
       end_date: { start: '1/3/21', end: '1/3/21', type: :date_range },

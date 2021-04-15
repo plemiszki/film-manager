@@ -147,6 +147,12 @@ def search_index(criteria)
         start_field.set(value[:start])
         end_field = find("input.max", visible: false)
         end_field.set(value[:end])
+      when :checkboxes
+        within('.checkboxes-container') do
+          value[:labels].each do |label|
+            find("label", text: label).click
+          end
+        end
       else
         input_element = find("input.test-input-field", visible: false)
         input_element.set(value[:value])

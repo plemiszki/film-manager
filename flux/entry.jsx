@@ -310,7 +310,7 @@ $(document).ready(function() {
               { name: 'dateAdded', type: 'date range', columnWidth: 10 },
               { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
               { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
-              { name: 'type', dbName: 'booking_type', type: 'static dropdown', options: [{ value: 'Theatrical', text: 'Theatrical' }, { value: 'Non-Theatrical', text: 'Non-Theatrical' }, { value: 'Festival', text: 'Festival' }], columnWidth: 4 },
+              { name: 'type', dbName: 'booking_type', type: 'checkboxes', options: [{ value: 'Theatrical', text: 'Theatrical' }, { value: 'Non-Theatrical', text: 'Non-Theatrical' }, { value: 'Festival', text: 'Festival' }], columnWidth: 5 },
               { name: 'status', type: 'static dropdown', options: [{ value: 'Tentative', text: 'Tentative' }, { value: 'Confirmed', text: 'Confirmed' }], columnWidth: 4 },
               { name: 'format', dbName: 'format_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'formats', columnWidth: 4 },
               { name: 'materialsSent', type: 'yes/no', columnWidth: 4 },

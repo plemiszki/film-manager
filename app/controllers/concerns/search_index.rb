@@ -29,6 +29,8 @@ module SearchIndex
         elsif value['start_date']
           convert_date = -> (string) { Date.strptime(string, "%m/%d/%y") }
           where_obj[key] = Range.new(convert_date.(value['start_date']), convert_date.(value['end_date']))
+        elsif value['value'].is_a?(ActionController::Parameters)
+          where_obj[key] = value['value'].values
         elsif value.has_key?('not')
           not_obj[key] = value['not']
         else
