@@ -299,6 +299,7 @@ $(document).ready(function() {
           showNewButton={ true }
           newModalRows={ 3 }
           newModalDimensions={ { width: 1000 } }
+          preserveSearchCriteria={ true }
         >
           <SearchCriteria
             context={ MyContext }
