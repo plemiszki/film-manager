@@ -42,7 +42,6 @@ import RoyaltyReportDetails from './components/royalty-report-details.jsx'
 import RoyaltyReportsIndex from './components/reports-index.jsx'
 import SettingDetails from './components/setting-details.jsx'
 import ShippingAddressDetails from './components/shipping-address-details.jsx'
-import SublicensorDetails from './components/sublicensor-details.jsx'
 import SubRightDetails from './components/sub-right-details.jsx'
 import VenueDetails from './components/venue-details.jsx'
 
