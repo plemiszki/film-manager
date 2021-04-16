@@ -18,6 +18,31 @@ class Booking < ActiveRecord::Base
   has_many :payments, dependent: :destroy
   has_many :invoices, dependent: :destroy
 
+  # INVOICES_SUBQUERY = <<-SQL
+  #   select bookings.id as booking_id, sum(total) as total_invoices
+  #   from bookings
+  #   join invoices on bookings.id = invoices.booking_id
+  #   group by bookings.id
+  # SQL
+  #
+  # PAYMENTS_SUBQUERY = <<-SQL
+  #   select bookings.id as booking_id, sum(amount) as total_payments
+  #   from bookings
+  #   join payments on bookings.id = payments.booking_id
+  #   group by bookings.id
+  # SQL
+  #
+  # def self.test
+  #   Booking
+  #     .joins(:invoices, :payments)
+  #     .select(:id, :film_id, 'invoices_subquery.total_invoices', 'payments_subquery.total_payments')
+  #     .joins("join(#{INVOICES_SUBQUERY}) as invoices_subquery on bookings.id = invoices_subquery.booking_id")
+  #     .joins("join(#{PAYMENTS_SUBQUERY}) as payments_subquery on bookings.id = payments_subquery.booking_id")
+  #     .group(:id, :film_id, 'invoices_subquery.total_invoices', 'payments_subquery.total_payments')
+  #     .having('sum(invoices_subquery.total_invoices) > sum(payments_subquery.total_payments)')
+  #     .map(&:attributes)
+  # end
+
   def booker_id_or_old_booker_id
     unless booker_id || old_booker_id
       errors.add(:base, "Booker is mandatory")

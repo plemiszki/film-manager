@@ -316,6 +316,7 @@ $(document).ready(function() {
               { name: 'format', dbName: 'format_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'formats', columnWidth: 4 },
               { name: 'materialsSent', type: 'yes/no', columnWidth: 4 },
               { name: 'boxOfficeReceived', type: 'yes/no', columnWidth: 4 },
+              { name: 'balanceDue', type: 'yes/no', columnWidth: 4 },
             ]}
           />
           <NewEntity

@@ -3,6 +3,27 @@ class Api::BookingsController < AdminController
   include BookingCalculations
   include SearchIndex
 
+  INVOICES_SUBQUERY = <<-SQL
+    select bookings.id as booking_id, sum(total) as total_invoices
+    from bookings
+    join invoices on bookings.id = invoices.booking_id
+    group by bookings.id
+  SQL
+
+  PAYMENTS_SUBQUERY = <<-SQL
+    select bookings.id as booking_id, sum(amount) as total_payments
+    from bookings
+    join payments on bookings.id = payments.booking_id
+    group by bookings.id
+  SQL
+
+  BALANCE_DUE_JOINS = [
+    :invoices,
+    :payments,
+    "join(#{INVOICES_SUBQUERY}) as invoices_subquery on bookings.id = invoices_subquery.booking_id",
+    "join(#{PAYMENTS_SUBQUERY}) as payments_subquery on bookings.id = payments_subquery.booking_id"
+  ]
+
   def index
     if params[:search_criteria] && params[:search_criteria][:materials_sent]
       if params[:search_criteria][:materials_sent][:value] == "f"
@@ -12,7 +33,24 @@ class Api::BookingsController < AdminController
         params[:search_criteria][:materials_sent][:not] = nil
       end
     end
-    @bookings = perform_search(model: 'Booking', associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices', 'invoices'])
+    @bookings = perform_search(
+      model: 'Booking',
+      associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices', 'invoices'],
+      custom_queries: {
+        balance_due: {
+          true: {
+            joins: BALANCE_DUE_JOINS,
+            group: :id,
+            having: 'sum(invoices_subquery.total_invoices) > sum(payments_subquery.total_payments)'
+          },
+          f: {
+            joins: BALANCE_DUE_JOINS,
+            group: :id,
+            having: 'sum(invoices_subquery.total_invoices) <= sum(payments_subquery.total_payments)'
+          }
+        }
+      }
+    )
     @calculations = {}
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)

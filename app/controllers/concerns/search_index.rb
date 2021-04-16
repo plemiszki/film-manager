@@ -4,7 +4,7 @@ module SearchIndex
 
   extend ActiveSupport::Concern
 
-  def perform_search(model:, associations: [])
+  def perform_search(model:, associations: [], custom_queries: {})
 
     widget = model.constantize
 
@@ -23,6 +23,7 @@ module SearchIndex
       where_obj, not_obj = {}, {}
       fuzzy_where_obj = {}
       params[:search_criteria].each do |key, value|
+        next if key.in?(custom_queries.keys.map(&:to_s))
         key = value['db_name'] if value['db_name']
         if value['min_value']
           where_obj[key] = Range.new(value['min_value'].to_i, value['max_value'].to_i)
@@ -44,6 +45,16 @@ module SearchIndex
       widgets_meeting_search_criteria = widget.where(where_obj).where.not(not_obj)
       fuzzy_where_obj.each do |key, value|
         widgets_meeting_search_criteria = widgets_meeting_search_criteria.where('label ilike ?', "%#{value}%")
+      end
+      custom_queries.each do |field_name, values_hash|
+        if params[:search_criteria][field_name]
+          value = params[:search_criteria][field_name]["value"].to_sym
+          info = values_hash[value]
+          widgets_meeting_search_criteria = widgets_meeting_search_criteria
+            .joins(info[:joins])
+            .group(info[:group])
+            .having(info[:having])
+        end
       end
     else
       widgets_meeting_search_criteria = widget.all
