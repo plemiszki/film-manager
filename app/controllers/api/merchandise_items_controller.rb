@@ -5,10 +5,10 @@ class Api::MerchandiseItemsController < AdminController
     render "index.json.jbuilder"
   end
 
-  def show
-    @merchandise_items = MerchandiseItem.where(id: params[:id])
-    @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
-    render "show.json.jbuilder"
+  def new
+    @films = Film.select(:id, :title)
+    @merchandise_types = MerchandiseType.select(:id, :name)
+    render 'new.json.jbuilder'
   end
 
   def create
@@ -19,6 +19,12 @@ class Api::MerchandiseItemsController < AdminController
     else
       render json: @merchandise_item.errors.full_messages, status: 422
     end
+  end
+
+  def show
+    @merchandise_items = MerchandiseItem.where(id: params[:id])
+    @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
+    render "show.json.jbuilder"
   end
 
   def update

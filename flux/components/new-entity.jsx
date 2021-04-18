@@ -202,6 +202,33 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'licensor', property: 'name' }) }
           </div>
         ]);
+      case 'merchandiseItem':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'merchandiseItem', property: 'name' }) }
+            { Details.renderDropDown.bind(this)({ columnWidth: 6, entity: 'merchandiseItem', property: 'merchandiseTypeId', columnHeader: 'Type', options: this.state.merchandiseTypes || [], optionDisplayProperty: 'name' }) }
+          </div>,
+          <div key="2" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'merchandiseItem', property: 'description' }) }
+          </div>,
+          <div key="3" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'merchandiseItem', property: 'size' }) }
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'merchandiseItem', property: 'price' }) }
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'merchandiseItem', property: 'inventory' }) }
+          </div>,
+          <div key="4" className="row">
+            { Details.renderField.bind(this)({
+              columnWidth: 12,
+              entity: 'merchandiseItem',
+              property: 'filmId',
+              columnHeader: 'Associated Film',
+              customType: 'modal',
+              modalDisplayProperty: 'title',
+              optionsArrayName: 'films',
+              noneOption: true
+            }) }
+          </div>
+        ]);
       case 'merchandiseType':
         return([
           <div key="1" className="row">

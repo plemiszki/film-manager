@@ -32,7 +32,6 @@ import CreditMemoDetails from './components/credit-memo-details.jsx'
 import JobsIndex from './components/jobs-index.jsx'
 import LicensorDetails from './components/licensor-details.jsx'
 import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
-import MerchandiseItemsIndex from './components/merchandise-items-index.jsx'
 import NewEntity from './components/new-entity.jsx'
 import PurchaseOrderDetails from './components/purchase-order-details.jsx'
 import QuoteDetails from './components/quote-details.jsx'
@@ -735,7 +734,22 @@ $(document).ready(function() {
   }
   if (document.querySelector('#merchandise-items-index')) {
     ReactDOM.render(
-      <MerchandiseItemsIndex />,
+      <Provider context={ MyContext } store={ store }>
+        <FullIndex
+          header="Merchandise"
+          context={ MyContext }
+          entityName='merchandiseItem'
+          columns={ ['name', 'type', 'size', 'price'] }
+          modalRows={ 4 }
+          modalDimensions={ { width: 800 } }
+        >
+          <NewEntity
+            context={ MyContext }
+            initialEntity={ { name: '', description: '', size: '', price: '', inventory: '', filmId: '', merchandiseTypeId: 1 } }
+            fetchData={ ['films', 'merchandiseTypes'] }
+          />
+        </FullIndex>
+      </Provider>,
       document.querySelector('#merchandise-items-index')
     );
   }
