@@ -12,5 +12,6 @@ json.films @films do |film|
     json.quality "hd"
     json.type "subscription"
     json.country_iso country_iso
+    json.web_url film.fm_plus_url
   end
 end
