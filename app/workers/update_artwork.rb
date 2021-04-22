@@ -4,7 +4,7 @@ class UpdateArtwork
 
   def perform(time_started, trigger_id)
     job = Job.find_by_job_id(time_started)
-    response = HTTParty.get("http://filmmovement.com/api/products?key=#{ENV['CYBER_NY_API_KEY']}")
+    response = HTTParty.get("http://filmmovement.com/fm-api/products?key=#{ENV['CYBER_NY_API_KEY']}")
     films = {}
     response.each do |element|
       films[element["id"]] = element
