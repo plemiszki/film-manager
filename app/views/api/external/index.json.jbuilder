@@ -26,7 +26,7 @@ json.films @films do |film|
     json.type 'subscription'
     json.country_iso country_iso
     json.web_url film.fm_plus_url
-    json.audio_languages film.languages.map { |language| language.iso_code }
-    json.subtitle_languages film.languages.pluck(:name) == ['English'] ? [] : 'en'
+    json.audio_languages film.languages.map { |language| language.iso_code }.compact
+    json.subtitle_languages film.languages.pluck(:name) == ['English'] ? [] : ['en']
   end
 end

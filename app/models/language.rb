@@ -26,6 +26,18 @@ class Language < ActiveRecord::Base
     tupi: 'gn',
   }
 
+  def self.missing_iso_code
+    obj = {}
+    Language.all.each do |language|
+      obj[language.name] = language.iso_code
+    end
+    result = []
+    obj.each do |key, value|
+      result << key if value.nil?
+    end
+    result
+  end
+
   def iso_code
     key = name.downcase.gsub('-', '').gsub(' ', '').to_sym
     return CODES[key] unless CODES[key].nil?
