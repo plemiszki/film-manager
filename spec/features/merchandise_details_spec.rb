@@ -38,7 +38,7 @@ describe 'merchandise_details', type: :feature do
       size: 'Large',
       price: '$20.00',
       inventory: 50,
-      film_id: { value: 'A Screaming Man', type: :select_modal_old }
+      film_id: { value: 'A Screaming Man', type: :select_modal }
     }
     fill_out_form(new_info)
     save_and_wait
@@ -60,7 +60,7 @@ describe 'merchandise_details', type: :feature do
 
   it 'deletes the merchandise item' do
     visit merchandise_item_path(@merchandise_item, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Merchandise')
+    delete_button = find('.delete-button')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

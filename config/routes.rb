@@ -154,7 +154,7 @@ Rails.application.routes.draw do
     delete '/in_theaters/:id' => '/api/in_theaters_films#destroy'
     resources :sub_rights, only: [:index, :new, :create, :show, :update, :destroy]
     resources :merchandise_types, only: [:index, :create, :show, :update, :destroy]
-    resources :merchandise_items, only: [:index, :create, :show, :update, :destroy]
+    resources :merchandise_items, only: [:index, :new, :create, :show, :update, :destroy]
 
     get '/website/films' => '/api/website#films'
     get '/website/gift_boxes' => '/api/website#gift_boxes'

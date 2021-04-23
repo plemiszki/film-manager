@@ -31,7 +31,6 @@ import InvoiceDetails from './components/invoice-details.jsx'
 import CreditMemoDetails from './components/credit-memo-details.jsx'
 import JobsIndex from './components/jobs-index.jsx'
 import LicensorDetails from './components/licensor-details.jsx'
-import MerchandiseItemDetails from './components/merchandise-item-details.jsx'
 import NewEntity from './components/new-entity.jsx'
 import PurchaseOrderDetails from './components/purchase-order-details.jsx'
 import QuoteDetails from './components/quote-details.jsx'
@@ -366,13 +365,13 @@ $(document).ready(function() {
           initialEntity={ { name: '', contactName: '', email: '', phone: '', w8: false } }
           fields={ [
             [
-              { columnWidth: 4, entity: 'sublicensor', property: 'name' },
-              { columnWidth: 4, entity: 'sublicensor', property: 'contactName' },
-              { columnWidth: 4, entity: 'sublicensor', property: 'email' },
+              { columnWidth: 4, property: 'name' },
+              { columnWidth: 4, property: 'contactName' },
+              { columnWidth: 4, property: 'email' },
             ],
             [
-              { columnWidth: 4, entity: 'sublicensor', property: 'phone' },
-              { columnWidth: 2, entity: 'sublicensor', property: 'w8', columnHeader: 'W-8 on File', type: 'dropdown', boolean: true },
+              { columnWidth: 4, property: 'phone' },
+              { columnWidth: 2, property: 'w8', columnHeader: 'W-8 on File', type: 'dropdown', boolean: true },
             ]
           ] }
         />
@@ -446,7 +445,36 @@ $(document).ready(function() {
     ReactDOM.render(<EpisodeDetails />, document.getElementById("episode-details"));
   }
   if ($('#merchandise-item-details')[0]) {
-    ReactDOM.render(<MerchandiseItemDetails />, document.getElementById("merchandise-item-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='merchandiseItem'
+          fetchData={ ['films', 'merchandiseTypes'] }
+          header="Merchandise Details"
+          initialEntity={ { text: '', merchandiseTypeId: '', name: '', size: '', price: '', inventory: '', description: '', filmId: '' } }
+          fields={ [
+            [
+              { columnWidth: 6, property: 'name' },
+              { columnWidth: 6, property: 'merchandiseTypeId', columnHeader: 'Type', type: 'dropdown', optionsArrayName: 'merchandiseTypes', optionDisplayProperty: 'name' }
+            ],
+            [
+              { columnWidth: 12, property: 'description' }
+            ],
+            [
+              { columnWidth: 4, property: 'size' },
+              { columnWidth: 4, property: 'price', removeFinanceSymbols: true },
+              { columnWidth: 4, property: 'inventory' },
+            ],
+            [
+              { columnWidth: 12, property: 'filmId', columnHeader: 'Associated Film', customType: 'modal', modalDisplayProperty: 'title', noneOption: true }
+            ]
+          ] }
+        />
+      </Provider>,
+      document.getElementById("merchandise-item-details")
+    );
   }
 
   if (document.querySelector('#aliases-index')) {
@@ -465,7 +493,7 @@ $(document).ready(function() {
             fetchData={ ['films'] }
             initialEntity={ { text: '', filmId: '' } }
           />
-      </FullIndex>
+        </FullIndex>
       </Provider>,
       document.querySelector('#aliases-index')
     );
@@ -480,8 +508,8 @@ $(document).ready(function() {
           fetchData={ ['films'] }
           initialEntity={ { text: '', filmId: '' } }
           fields={ [[
-            { columnWidth: 6, entity: 'alias', property: 'text' },
-            { columnWidth: 6, entity: 'alias', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' }
+            { columnWidth: 6, property: 'text' },
+            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' }
           ]] }
         />
       </Provider>,
@@ -530,7 +558,7 @@ $(document).ready(function() {
           entityName='country'
           initialEntity={ { name: '' } }
           fields={ [[
-            { columnWidth: 12, entity: 'country', property: 'name' }
+            { columnWidth: 12, property: 'name' }
           ]] }
           customDeletePath='/settings'
         />
@@ -565,17 +593,17 @@ $(document).ready(function() {
           initialEntity={ { name: '' } }
           fields={ [
             [
-              { columnWidth: 9, entity: 'digitalRetailer', property: 'name', columnHeader: 'Name (Internal)' },
-              { columnWidth: 3, entity: 'digitalRetailer', property: 'sageId', columnHeader: 'Sage ID' }
+              { columnWidth: 9, property: 'name', columnHeader: 'Name (Internal)' },
+              { columnWidth: 3, property: 'sageId', columnHeader: 'Sage ID' }
             ],
             [
-              { columnWidth: 4, entity: 'digitalRetailer', property: 'billingName', columnHeader: 'Billing Name' },
-              { columnWidth: 4, entity: 'digitalRetailer', property: 'billingAddress1', columnHeader: 'Address 1' },
-              { columnWidth: 4, entity: 'digitalRetailer', property: 'billingAddress2', columnHeader: 'Address 2' },
-              { columnWidth: 3, entity: 'digitalRetailer', property: 'billingCity', columnHeader: 'City' },
-              { columnWidth: 1, entity: 'digitalRetailer', property: 'billingState', columnHeader: 'State' },
-              { columnWidth: 2, entity: 'digitalRetailer', property: 'billingZip', columnHeader: 'Zip' },
-              { columnWidth: 2, entity: 'digitalRetailer', property: 'billingCountry', columnHeader: 'Country' }
+              { columnWidth: 4, property: 'billingName', columnHeader: 'Billing Name' },
+              { columnWidth: 4, property: 'billingAddress1', columnHeader: 'Address 1' },
+              { columnWidth: 4, property: 'billingAddress2', columnHeader: 'Address 2' },
+              { columnWidth: 3, property: 'billingCity', columnHeader: 'City' },
+              { columnWidth: 1, property: 'billingState', columnHeader: 'State' },
+              { columnWidth: 2, property: 'billingZip', columnHeader: 'Zip' },
+              { columnWidth: 2, property: 'billingCountry', columnHeader: 'Country' }
             ]
           ] }
         />
@@ -624,8 +652,8 @@ $(document).ready(function() {
           entityName='format'
           initialEntity={ { name: '' } }
           fields={ [[
-            { columnWidth: 4, entity: 'format', property: 'name' },
-            { columnWidth: 2, entity: 'format', property: 'active', type: 'dropdown', boolean: true }
+            { columnWidth: 4, property: 'name' },
+            { columnWidth: 2, property: 'active', type: 'dropdown', boolean: true }
           ]] }
           hideDeleteButton={ true }
         />
@@ -658,7 +686,7 @@ $(document).ready(function() {
           entityName='genre'
           initialEntity={ { name: '' } }
           fields={ [[
-            { columnWidth: 12, entity: 'genre', property: 'name' }
+            { columnWidth: 12, property: 'name' }
           ]] }
           customDeletePath='/settings'
         />
@@ -708,7 +736,7 @@ $(document).ready(function() {
           entityName='language'
           initialEntity={ { name: '' } }
           fields={ [[
-            { columnWidth: 12, entity: 'language', property: 'name' }
+            { columnWidth: 12, property: 'name' }
           ]] }
           customDeletePath='/settings'
         />
@@ -778,7 +806,7 @@ $(document).ready(function() {
           entityName='merchandiseType'
           initialEntity={ { name: '' } }
           fields={ [[
-            { columnWidth: 12, entity: 'merchandiseType', property: 'name' }
+            { columnWidth: 12, property: 'name' }
           ]] }
           customDeletePath='/settings'
         />
@@ -826,7 +854,7 @@ $(document).ready(function() {
           entityName='territory'
           initialEntity={ { name: '' } }
           fields={ [[
-            { columnWidth: 12, entity: 'territory', property: 'name' }
+            { columnWidth: 12, property: 'name' }
           ]] }
           customDeletePath='/settings'
         />
@@ -859,7 +887,7 @@ $(document).ready(function() {
           entityName='topic'
           initialEntity={ { name: '' } }
           fields={ [[
-            { columnWidth: 12, entity: 'topic', property: 'name' }
+            { columnWidth: 12, property: 'name' }
           ]] }
           customDeletePath='/settings'
         />
@@ -892,12 +920,12 @@ $(document).ready(function() {
           entityName='user'
           initialEntity={ { name: '', email: '', title: '', emailSignature: '' } }
           fields={ [[
-            { columnWidth: 4, entity: 'user', property: 'name' },
-            { columnWidth: 4, entity: 'user', property: 'email' },
-            { columnWidth: 4, entity: 'user', property: 'title' }
+            { columnWidth: 4, property: 'name' },
+            { columnWidth: 4, property: 'email' },
+            { columnWidth: 4, property: 'title' }
           ],[
-            { columnWidth: 10, entity: 'user', property: 'emailSignature', type: 'textbox', rows: 8 },
-            { columnWidth: 2, entity: 'user', property: 'access', readOnly: true }
+            { columnWidth: 10, property: 'emailSignature', type: 'textbox', rows: 8 },
+            { columnWidth: 2, property: 'access', readOnly: true }
           ]] }
           hideDeleteButton={ !FM.user.hasSuperAdminAccess }
         />
@@ -1040,14 +1068,14 @@ $(document).ready(function() {
           fetchData={ ['films', 'venues'] }
           initialEntity={ { filmId: '', venueId: '' } }
           fields={ [[
-            { columnWidth: 6, entity: 'virtualBooking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' },
-            { columnWidth: 6, entity: 'virtualBooking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', customType: 'modal', modalDisplayProperty: 'label' },
-            { columnWidth: 3, entity: 'virtualBooking', property: 'shippingCity', columnHeader: 'City' },
-            { columnWidth: 2, entity: 'virtualBooking', property: 'shippingState', columnHeader: 'State' },
-            { columnWidth: 2, entity: 'virtualBooking', property: 'startDate' },
-            { columnWidth: 2, entity: 'virtualBooking', property: 'endDate' },
-            { columnWidth: 3, entity: 'virtualBooking', property: 'terms' },
-            { columnWidth: 8, entity: 'virtualBooking', property: 'url' },
+            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' },
+            { columnWidth: 6, property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', customType: 'modal', modalDisplayProperty: 'label' },
+            { columnWidth: 3, property: 'shippingCity', columnHeader: 'City' },
+            { columnWidth: 2, property: 'shippingState', columnHeader: 'State' },
+            { columnWidth: 2, property: 'startDate' },
+            { columnWidth: 2, property: 'endDate' },
+            { columnWidth: 3, property: 'terms' },
+            { columnWidth: 8, property: 'url' },
             { columnWidth: 2,
               entity: 'virtualBooking',
               property: 'host',

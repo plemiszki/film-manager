@@ -22,15 +22,17 @@ class Api::MerchandiseItemsController < AdminController
   end
 
   def show
-    @merchandise_items = MerchandiseItem.where(id: params[:id])
-    @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
+    @merchandise_item = MerchandiseItem.find(params[:id])
+    @films = Film.select(:id, :title)
+    @merchandise_types = MerchandiseType.select(:id, :name)
     render "show.json.jbuilder"
   end
 
   def update
     @merchandise_item = MerchandiseItem.find(params[:id])
     if @merchandise_item.update(merchandise_item_params)
-      @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
+      @films = Film.select(:id, :title)
+      @merchandise_types = MerchandiseType.select(:id, :name)
       render "show.json.jbuilder"
     else
       render json: @merchandise_item.errors.full_messages, status: 422

@@ -408,7 +408,7 @@ class FilmDetails extends React.Component {
   }
 
   getJob() {
-    var job = JobStore.job();
+    let job = JobStore.job();
     if (job.done) {
       var film = this.state.film;
       film.artworkUrl = job.firstLine;
