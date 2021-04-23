@@ -7,7 +7,7 @@ class Api::ExternalController < ApplicationController
   protect_from_forgery with: :null_session
 
   def justwatch
-    @films = Film.where.not(fm_plus_url: '').order(:title).includes(:film_rights)
+    @films = Film.where.not(fm_plus_url: '').order(:title).includes(:film_rights, :directors, :languages)
     render 'index.json.jbuilder'
   end
 
