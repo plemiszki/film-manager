@@ -33,7 +33,6 @@ import JobsIndex from './components/jobs-index.jsx'
 import LicensorDetails from './components/licensor-details.jsx'
 import NewEntity from './components/new-entity.jsx'
 import PurchaseOrderDetails from './components/purchase-order-details.jsx'
-import QuoteDetails from './components/quote-details.jsx'
 import ReturnDetails from './components/return-details.jsx'
 import ReturnsIndex from './components/returns-index.jsx'
 import RoyaltyReportDetails from './components/royalty-report-details.jsx'
@@ -344,7 +343,27 @@ $(document).ready(function() {
     );
   }
   if ($('#quote-details')[0]) {
-    ReactDOM.render(<QuoteDetails />, document.getElementById("quote-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='quote'
+          initialEntity={ { text: '', author: '', publication: '' } }
+          fields={ [
+            [
+              { columnWidth: 12, property: 'text', type: 'textbox', rows: 5 }
+            ],
+            [
+              { columnWidth: 6, property: 'author' },
+              { columnWidth: 6, property: 'publication' }
+            ]
+          ] }
+          deleteCallback={ function() { window.location.pathname = `/films/${this.state.quote.filmId}` } }
+        />
+      </Provider>,
+      document.getElementById("quote-details")
+    );
   }
   if ($('#booker-details')[0]) {
     ReactDOM.render(<BookerDetails />, document.getElementById("booker-details"));

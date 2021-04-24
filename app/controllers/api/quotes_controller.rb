@@ -3,7 +3,7 @@ class Api::QuotesController < AdminController
   include Reorderable
 
   def show
-    @quotes = Quote.where(id: params[:id]).order(:order)
+    @quote = Quote.find(params[:id])
     render "show.json.jbuilder"
   end
 
@@ -21,7 +21,6 @@ class Api::QuotesController < AdminController
   def update
     @quote = Quote.find(params[:id])
     if @quote.update(quote_params)
-      @quotes = Quote.where(id: params[:id]).order(:order)
       render "show.json.jbuilder"
     else
       render json: @quote.errors.full_messages, status: 422

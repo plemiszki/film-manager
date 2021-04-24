@@ -45,7 +45,7 @@ describe 'quote_details', type: :feature do
 
   it 'deletes the quote' do
     visit quote_path(@quote, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Quote')
+    delete_button = find('.delete-button')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click
