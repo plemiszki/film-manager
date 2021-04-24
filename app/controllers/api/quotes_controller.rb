@@ -12,7 +12,7 @@ class Api::QuotesController < AdminController
     @quote = Quote.new(quote_params.merge({ order: current_length }))
     if @quote.save
       @quotes = Quote.where(film_id: quote_params[:film_id]).order(:order)
-      render "show.json.jbuilder"
+      render "index.json.jbuilder"
     else
       render json: @quote.errors.full_messages, status: 422
     end
@@ -40,7 +40,7 @@ class Api::QuotesController < AdminController
       quote.update(order: index)
     end
     @quotes = Quote.where(film_id: params[:film_id]).order(:order)
-    render 'show.json.jbuilder'
+    render 'index.json.jbuilder'
   end
 
   private

@@ -39,7 +39,6 @@ import RoyaltyReportDetails from './components/royalty-report-details.jsx'
 import RoyaltyReportsIndex from './components/reports-index.jsx'
 import SettingDetails from './components/setting-details.jsx'
 import ShippingAddressDetails from './components/shipping-address-details.jsx'
-import SubRightDetails from './components/sub-right-details.jsx'
 import VenueDetails from './components/venue-details.jsx'
 
 $(document).ready(function() {
@@ -447,7 +446,32 @@ $(document).ready(function() {
     ReactDOM.render(<Calendar />, document.getElementById("calendar"));
   }
   if ($('#sub-right-details')[0]) {
-    ReactDOM.render(<SubRightDetails />, document.getElementById("sub-right-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          header="Sublicensed Right Details"
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='subRight'
+          fetchData={ ['films', 'rights', 'territories'] }
+          initialEntity={ { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '', exclusive: false } }
+          fields={ [
+            [
+              { columnWidth: 6, columnHeader: 'Film', property: 'filmId', type: 'modal', modalDisplayProperty: 'title' },
+              { columnWidth: 3, columnHeader: 'Right', property: 'rightId', type: 'dropdown', optionsArrayName: 'rights', optionDisplayProperty: 'name' },
+              { columnWidth: 3, columnHeader: 'Territory', property: 'territoryId', type: 'dropdown', optionsArrayName: 'territories', optionDisplayProperty: 'name' }
+            ],
+            [
+              { columnWidth: 2, property: 'startDate' },
+              { columnWidth: 2, property: 'endDate' },
+              { columnWidth: 2, property: 'exclusive', type: 'dropdown', boolean: true }
+            ]
+          ] }
+          deleteCallback={ function() { window.location.pathname = `/sublicensors/${this.state.subRight.sublicensorId}` } }
+        />
+      </Provider>,
+      document.getElementById("sub-right-details")
+    );
   }
   if ($('#catalog')[0]) {
     ReactDOM.render(<Catalog />, document.getElementById("catalog"));
@@ -487,7 +511,7 @@ $(document).ready(function() {
               { columnWidth: 4, property: 'inventory' },
             ],
             [
-              { columnWidth: 12, property: 'filmId', columnHeader: 'Associated Film', customType: 'modal', modalDisplayProperty: 'title', noneOption: true }
+              { columnWidth: 12, property: 'filmId', columnHeader: 'Associated Film', type: 'modal', modalDisplayProperty: 'title', noneOption: true }
             ]
           ] }
         />
@@ -528,7 +552,7 @@ $(document).ready(function() {
           initialEntity={ { text: '', filmId: '' } }
           fields={ [[
             { columnWidth: 6, property: 'text' },
-            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' }
+            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', modalDisplayProperty: 'title' }
           ]] }
         />
       </Provider>,
@@ -1087,8 +1111,8 @@ $(document).ready(function() {
           fetchData={ ['films', 'venues'] }
           initialEntity={ { filmId: '', venueId: '' } }
           fields={ [[
-            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', customType: 'modal', modalDisplayProperty: 'title' },
-            { columnWidth: 6, property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', customType: 'modal', modalDisplayProperty: 'label' },
+            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', modalDisplayProperty: 'title' },
+            { columnWidth: 6, property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', modalDisplayProperty: 'label' },
             { columnWidth: 3, property: 'shippingCity', columnHeader: 'City' },
             { columnWidth: 2, property: 'shippingState', columnHeader: 'State' },
             { columnWidth: 2, property: 'startDate' },

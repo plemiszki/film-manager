@@ -15,7 +15,7 @@ class Api::SubRightsController < AdminController
   end
 
   def show
-    @sub_rights = SubRight.where(id: params[:id])
+    @sub_right = SubRight.find(params[:id])
     @territories = Territory.all
     @rights = Right.all
     @films = Film.all

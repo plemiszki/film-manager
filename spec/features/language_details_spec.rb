@@ -15,6 +15,7 @@ describe 'language_details', type: :feature do
 
   it 'displays information about the language' do
     visit language_path(@language, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="name"]').value).to eq('French')
   end
 

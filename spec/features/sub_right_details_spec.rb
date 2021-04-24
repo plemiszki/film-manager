@@ -23,30 +23,30 @@ describe 'sub_right_details', type: :feature do
   it 'displays information about the sublicensed right' do
     visit sub_right_path(@sub_right, as: $admin_user)
     wait_for_ajax
-    expect(find('select[data-field="filmId"]', visible: false).value).to eq '1'
+    expect(find('input[data-field="filmId"]').value).to eq "Wilby Wonderful"
     expect(find('select[data-field="rightId"]', visible: false).value).to eq '1'
     expect(find('select[data-field="territoryId"]', visible: false).value).to eq '1'
     expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%-d/%y')
     expect(find('input[data-field="endDate"]').value).to eq (Date.today + 1.year).strftime('%-m/%-d/%y')
-    expect(find('select[data-field="exclusive"]', visible: false).value).to eq 'No'
+    expect(find('select[data-field="exclusive"]', visible: false).value).to eq 'f'
   end
 
   it 'updates information about the sublicensed right' do
     visit sub_right_path(@sub_right, as: $admin_user)
     new_info = {
-      film_id: { value: 2, type: :select },
+      film_id: { value: 'Another Film', type: :select_modal },
       right_id: { value: 2, type: :select },
       territory_id: { value: 2, type: :select },
       start_date: '12/1/20',
       end_date: '12/15/30',
-      exclusive: { value: 'Yes', type: :select }
+      exclusive: { value: 't', type: :select }
     }
     fill_out_form(new_info)
     save_and_wait
     verify_db_and_component({
       entity: @sub_right,
       data: new_info,
-      db_data: { exclusive: true, start_date: Date.parse('20/12/1'), end_date: Date.parse('30/12/15') }
+      db_data: { film_id: 2, exclusive: true, start_date: Date.parse('20/12/1'), end_date: Date.parse('30/12/15') }
     })
   end
 
@@ -63,7 +63,7 @@ describe 'sub_right_details', type: :feature do
 
   it 'deletes the sublicensed right' do
     visit sub_right_path(@sub_right, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Right')
+    delete_button = find('.delete-button')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click
