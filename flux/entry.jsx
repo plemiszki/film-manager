@@ -132,7 +132,7 @@ $(document).ready(function() {
             fields={[
               { name: 'orderDate', type: 'date range', columnWidth: 10 },
               { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
-              { name: 'customer', type: 'modal', responseArrayName: 'customers', modalDisplayProperty: 'name', columnWidth: 8 },
+              { name: 'customer', type: 'modal', responseArrayName: 'customers', optionDisplayProperty: 'name', columnWidth: 8 },
               { name: 'shipDate', type: 'date range', columnWidth: 10 },
               { name: 'salesOrder', columnWidth: 6 },
             ]}
@@ -222,7 +222,7 @@ $(document).ready(function() {
               { name: 'sentDate', type: 'date range', columnWidth: 10 },
               { name: 'number', columnHeader: 'Credit Memo Number', columnWidth: 6 },
               { name: 'num', type: 'number range', columnHeader: 'Credit Memo Number', columnWidth: 10 },
-              { name: 'customer', dbName: 'customer_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'customers', columnWidth: 6 },
+              { name: 'customer', dbName: 'customer_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'customers', columnWidth: 6 },
               { name: 'returnNumber', columnWidth: 6 },
             ]}
           />
@@ -243,7 +243,43 @@ $(document).ready(function() {
     ReactDOM.render(<DvdReports />, document.getElementById("dvd-reports"));
   }
   if ($('#returns-index')[0]) {
-    ReactDOM.render(<ReturnsIndex />, document.getElementById("returns-index"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SearchIndex
+          header="DVD Returns"
+          context={ MyContext }
+          entityName='return'
+          columns={[
+            { name: 'date', sortDir: 'desc', width: 196 },
+            { name: 'number', width: 458 },
+            { name: 'customer', dbName: 'dvd_customers.name', width: 322 },
+            { name: 'units', orderByDisabled: true, width: 80 }
+          ]}
+          batchSize={ 50 }
+          searchModalRows={ 3 }
+          searchModalDimensions={ { width: 600 } }
+          showNewButton={ true }
+          newModalRows={ 1 }
+          newModalDimensions={ { width: 998 } }
+        >
+          <SearchCriteria
+            context={ MyContext }
+            fields={[
+              { name: 'date', type: 'date range', columnWidth: 10 },
+              { name: 'number', columnWidth: 6 },
+              { name: 'customer', type: 'modal', responseArrayName: 'customers', optionDisplayProperty: 'name', columnWidth: 8 },
+            ]}
+          />
+          <NewEntity
+            context={ MyContext }
+            fetchData={ ['customers'] }
+            initialEntity={ { number: '', date: '', customerId: '' } }
+            redirectAfterCreate={ true }
+          />
+        </SearchIndex>
+      </Provider>,
+      document.getElementById("returns-index")
+    );
   }
   if ($('#return-details')[0]) {
     ReactDOM.render(
@@ -301,14 +337,14 @@ $(document).ready(function() {
             fields={[
               { name: 'startDate', type: 'date range', columnWidth: 10 },
               { name: 'endDate', type: 'date range', columnWidth: 10 },
-              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
-              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+              { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', optionDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
               { name: 'dateAdded', type: 'date range', columnWidth: 10 },
               { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
               { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
               { name: 'type', dbName: 'booking_type', type: 'checkboxes', options: [{ value: 'Theatrical', text: 'Theatrical' }, { value: 'Non-Theatrical', text: 'Non-Theatrical' }, { value: 'Festival', text: 'Festival' }], columnWidth: 5 },
               { name: 'status', type: 'static dropdown', options: [{ value: 'Tentative', text: 'Tentative' }, { value: 'Confirmed', text: 'Confirmed' }], columnWidth: 4 },
-              { name: 'format', dbName: 'format_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'formats', columnWidth: 4 },
+              { name: 'format', dbName: 'format_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'formats', columnWidth: 4 },
               { name: 'materialsSent', type: 'yes/no', columnWidth: 4 },
               { name: 'boxOfficeReceived', type: 'yes/no', columnWidth: 4 },
               { name: 'balanceDue', type: 'yes/no', columnWidth: 4 },
@@ -425,9 +461,9 @@ $(document).ready(function() {
           <SearchCriteria
             context={ MyContext }
             fields={[
-              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 9 },
-              { name: 'right', dbName: 'right_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'rights', columnWidth: 6 },
-              { name: 'territory', dbName: 'territory_id', type: 'modal', modalDisplayProperty: 'name', responseArrayName: 'territories', columnWidth: 6 }
+              { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 9 },
+              { name: 'right', dbName: 'right_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'rights', columnWidth: 6 },
+              { name: 'territory', dbName: 'territory_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'territories', columnWidth: 6 }
             ]}
           />
           <FilmRightsNew
@@ -457,7 +493,7 @@ $(document).ready(function() {
           initialEntity={ { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '', exclusive: false } }
           fields={ [
             [
-              { columnWidth: 6, columnHeader: 'Film', property: 'filmId', type: 'modal', modalDisplayProperty: 'title' },
+              { columnWidth: 6, columnHeader: 'Film', property: 'filmId', type: 'modal', optionDisplayProperty: 'title' },
               { columnWidth: 3, columnHeader: 'Right', property: 'rightId', type: 'dropdown', optionsArrayName: 'rights', optionDisplayProperty: 'name' },
               { columnWidth: 3, columnHeader: 'Territory', property: 'territoryId', type: 'dropdown', optionsArrayName: 'territories', optionDisplayProperty: 'name' }
             ],
@@ -511,7 +547,7 @@ $(document).ready(function() {
               { columnWidth: 4, property: 'inventory' },
             ],
             [
-              { columnWidth: 12, property: 'filmId', columnHeader: 'Associated Film', type: 'modal', modalDisplayProperty: 'title', noneOption: true }
+              { columnWidth: 12, property: 'filmId', columnHeader: 'Associated Film', type: 'modal', optionDisplayProperty: 'title', noneOption: true }
             ]
           ] }
         />
@@ -552,7 +588,7 @@ $(document).ready(function() {
           initialEntity={ { text: '', filmId: '' } }
           fields={ [[
             { columnWidth: 6, property: 'text' },
-            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', modalDisplayProperty: 'title' }
+            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }
           ]] }
         />
       </Provider>,
@@ -1073,8 +1109,8 @@ $(document).ready(function() {
             fields={[
               { name: 'startDate', type: 'date range', columnWidth: 10 },
               { name: 'endDate', type: 'date range', columnWidth: 10 },
-              { name: 'film', dbName: 'film_id', type: 'modal', modalDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
-              { name: 'venue', dbName: 'venue_id', type: 'modal', modalDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+              { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+              { name: 'venue', dbName: 'venue_id', type: 'modal', optionDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
               { name: 'dateAdded', type: 'date range', columnWidth: 10 },
               { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
               { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
@@ -1111,8 +1147,8 @@ $(document).ready(function() {
           fetchData={ ['films', 'venues'] }
           initialEntity={ { filmId: '', venueId: '' } }
           fields={ [[
-            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', modalDisplayProperty: 'title' },
-            { columnWidth: 6, property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', modalDisplayProperty: 'label' },
+            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' },
+            { columnWidth: 6, property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label' },
             { columnWidth: 3, property: 'shippingCity', columnHeader: 'City' },
             { columnWidth: 2, property: 'shippingState', columnHeader: 'State' },
             { columnWidth: 2, property: 'startDate' },

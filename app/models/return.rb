@@ -8,6 +8,15 @@ class Return < ActiveRecord::Base
   belongs_to :customer, class_name: "DvdCustomer", foreign_key: :customer_id
   belongs_to :credit_memo, primary_key: :return_number, foreign_key: :number
 
+  after_validation :set_month_and_year, on: [:create, :update]
+
+  def set_month_and_year
+    if self.errors.empty?
+      self.month = self.date.month
+      self.year = self.date.year
+    end
+  end
+
   def generate_credit_memo!
     fail 'credit memo exists!' if credit_memo.present?
     new_credit_memo = nil

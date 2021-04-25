@@ -1,11 +1,16 @@
 class Api::ReturnsController < AdminController
 
   include ReturnItems
+  include SearchIndex
 
   def index
-    @returns = Return.all.includes(:customer, :return_items)
-    @dvd_customers = DvdCustomer.all
+    @returns = perform_search(model: 'Return', associations: [:customer, :return_items])
     render "index.json.jbuilder"
+  end
+
+  def new
+    @dvd_customers = DvdCustomer.select(:id, :name).order(:name)
+    render 'new.json.jbuilder'
   end
 
   def show

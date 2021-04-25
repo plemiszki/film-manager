@@ -102,7 +102,7 @@ Rails.application.routes.draw do
     resources :credit_memos, only: [:index, :new, :create, :show]
     post '/dvd_reports/export' => '/api/purchase_orders#export'
     get '/calendar' => 'calendar#show'
-    resources :returns, only: [:index, :create, :show, :update, :destroy]
+    resources :returns, only: [:index, :new, :create, :show, :update, :destroy]
     post '/returns/export' => '/api/returns#export'
     post '/returns/:id/send_credit_memo' => '/api/returns#send_credit_memo'
     resources :return_items, only: [:create, :destroy]

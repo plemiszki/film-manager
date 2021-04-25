@@ -208,7 +208,7 @@ class FilmRightsNew extends React.Component {
     if (this.props.sublicensorId) {
       return(
         <>
-          { Details.renderField.bind(this)({ columnWidth: 6, entity: 'filmRight', property: 'filmId', columnHeader: 'Film', type: 'modal', modalDisplayProperty: 'title' }) }
+          { Details.renderField.bind(this)({ columnWidth: 6, entity: 'filmRight', property: 'filmId', columnHeader: 'Film', type: 'modal', optionDisplayProperty: 'title' }) }
         </>
       );
     }

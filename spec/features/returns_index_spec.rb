@@ -22,12 +22,12 @@ describe 'returns_index', type: :feature do
 
   it 'adds new returns' do
     visit returns_path(as: $admin_user)
-    find('.orange-button', text: 'Add New').click
+    find('.new-button').click
     fill_out_and_submit_modal({
-      customer_id: { value: 1, type: :select },
+      customer_id: { value: 'DVD Vendor', type: :select_modal },
       date: Date.today,
       number: 'return order number'
-    }, :orange_button)
+    }, :input)
     new_return = Return.last
     expect(new_return.attributes).to include(
       'customer_id' => 1,
@@ -39,10 +39,10 @@ describe 'returns_index', type: :feature do
 
   it 'validates new returns properly' do
     visit returns_path(as: $admin_user)
-    find('.orange-button', text: 'Add New').click
+    find('.new-button').click
     fill_out_and_submit_modal({
-      customer_id: { value: 1, type: :select }
-    }, :orange_button)
+      customer_id: { value: 'DVD Vendor', type: :select_modal }
+    }, :input)
     expect(page).to have_content "Number can't be blank"
     expect(page).to have_content "Date can't be blank"
   end

@@ -24,7 +24,8 @@ class NewEntity extends React.Component {
       errors: [],
       films: [],
       venues: [],
-      shippingAddresses: []
+      shippingAddresses: [],
+      customers: []
     };
   }
 
@@ -100,7 +101,7 @@ class NewEntity extends React.Component {
         return([
           <div key="1" className="row">
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'alias', property: 'text' }) }
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'alias', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', modalDisplayProperty: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'alias', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }) }
           </div>
         ]);
       case 'booker':
@@ -116,8 +117,8 @@ class NewEntity extends React.Component {
         const statuses = [{ value: 'Confirmed' }, { value: 'Tentative' }];
         return([
           <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', modalDisplayProperty: 'title' }) }
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', modalDisplayProperty: 'label' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label' }) }
           </div>,
           <div key="2" className="row">
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'startDate' }) }
@@ -223,7 +224,7 @@ class NewEntity extends React.Component {
               property: 'filmId',
               columnHeader: 'Associated Film',
               type: 'modal',
-              modalDisplayProperty: 'title',
+              optionDisplayProperty: 'title',
               optionsArrayName: 'films',
               noneOption: true
             }) }
@@ -244,13 +245,21 @@ class NewEntity extends React.Component {
               property: 'shippingAddressId',
               columnHeader: 'Shipping Address',
               type: 'modal',
-              modalDisplayProperty: 'label',
+              optionDisplayProperty: 'label',
               optionsArrayName: 'shippingAddresses'
             }) }
           </div>,
           <div key="2" className="row">
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'number' }) }
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'orderDate' }) }
+          </div>
+        ]);
+      case 'return':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 5, entity: 'return', type: 'modal', property: 'customerId', columnHeader: 'Customer', optionsArrayName: 'customers', optionDisplayProperty: 'name' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'return', property: 'date' }) }
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'return', property: 'number' }) }
           </div>
         ]);
       case 'sublicensor':
@@ -307,8 +316,8 @@ class NewEntity extends React.Component {
       case 'virtualBooking':
         return([
           <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'filmId', columnHeader: 'Film', type: 'modal', modalDisplayProperty: 'title' }) }
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'venueId', columnHeader: 'Venue', type: 'modal', modalDisplayProperty: 'label' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'filmId', columnHeader: 'Film', type: 'modal', optionDisplayProperty: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'venueId', columnHeader: 'Venue', type: 'modal', optionDisplayProperty: 'label' }) }
           </div>,
           <div key="2" className="row">
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'startDate' }) }
