@@ -42,7 +42,7 @@ class Film < ActiveRecord::Base
   has_many :directors, -> { order(:order) }, dependent: :destroy
   has_many :actors, as: :actorable, dependent: :destroy
   has_many :film_countries, dependent: :destroy
-  has_many :film_languages, dependent: :destroy
+  has_many :film_languages, -> { order(:order) }, dependent: :destroy
   has_many :film_genres, dependent: :destroy
   has_many :film_topics, dependent: :destroy
   has_many :countries, through: :film_countries
