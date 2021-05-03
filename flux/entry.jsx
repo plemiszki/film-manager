@@ -36,7 +36,6 @@ import PurchaseOrderDetails from './components/purchase-order-details.jsx'
 import ReturnDetails from './components/return-details.jsx'
 import RoyaltyReportDetails from './components/royalty-report-details.jsx'
 import RoyaltyReportsIndex from './components/reports-index.jsx'
-import SettingDetails from './components/setting-details.jsx'
 import ShippingAddressDetails from './components/shipping-address-details.jsx'
 import VenueDetails from './components/venue-details.jsx'
 
@@ -371,7 +370,39 @@ $(document).ready(function() {
   if ($('#setting-details')[0]) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <SettingDetails context={ MyContext } />
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='settings'
+          header="Settings"
+          hideDeleteButton={ true }
+          initialEntity={ {
+            booking_confirmation_text: '',
+            unpaid_overage_booking_invoice_email_text: '',
+            unpaid_non_overage_booking_invoice_email_text: '',
+            partially_paid_booking_invoice_email_text: '',
+            paid_booking_invoice_email_text: '',
+            booking_invoice_payment_info_email_text: '',
+            shipping_terms_email_text: '',
+            all_booking_invoices_email_text: '',
+            dvd_invoice_email_text: '',
+            credit_memo_email_text: '',
+          } }
+          fields={ [
+            [
+              { columnWidth: 12, property: 'bookingConfirmationText', columnHeader: 'Booking Confirmation Email Copy', type: 'textbox', rows: 15 },
+              { columnWidth: 12, property: 'unpaidNonOverageBookingInvoiceEmailText', columnHeader: 'Unpaid Non-Overage Booking Invoice Email Copy', type: 'textbox', rows: 6 },
+              { columnWidth: 12, property: 'unpaidOverageBookingInvoiceEmailText', columnHeader: 'Unpaid Overage Booking Invoice Email Copy', type: 'textbox', rows: 6 },
+              { columnWidth: 12, property: 'partiallyPaidBookingInvoiceEmailText', columnHeader: 'Partially Paid Booking Invoice Email Copy', type: 'textbox', rows: 6 },
+              { columnWidth: 12, property: 'paidBookingInvoiceEmailText', columnHeader: 'Paid Booking Invoice Email Copy', type: 'textbox', rows: 6 },
+              { columnWidth: 12, property: 'bookingInvoicePaymentInfoEmailText', columnHeader: 'Booking Invoice Payment Info Email Copy', subheader: 'Included in all booking invoice emails with a balance due.', type: 'textbox', rows: 15 },
+              { columnWidth: 12, property: 'shippingTermsEmailText', columnHeader: 'Booking Invoice Shipping Terms Email Copy', subheader: 'Included in invoice emails for non-theatrical or festival bookings with an advance.', type: 'textbox', rows: 4 },
+              { columnWidth: 12, property: 'allBookingInvoicesEmailText', columnHeader: 'Booking Invoices Additional Email Copy', subheader: 'Included at the end of all booking invoice emails.', type: 'textbox', rows: 4 },
+              { columnWidth: 12, property: 'dvdInvoiceEmailText', columnHeader: 'DVD Invoice Email Copy', type: 'textbox', rows: 10 },
+              { columnWidth: 12, property: 'creditMemoEmailText', columnHeader: 'Credit Memo Email Copy', type: 'textbox', rows: 8 },
+            ]
+          ] }
+        />
       </Provider>,
       document.getElementById("setting-details")
     );
