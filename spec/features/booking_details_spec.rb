@@ -95,7 +95,7 @@ describe 'booking_details', type: :feature do
       tracking_number: '987654321',
       shipping_notes: 'new shipping notes',
       box_office: '2000',
-      exclude_from_bo_requests: { value: true, type: :checkbox }
+      exclude_from_bo_requests: { value: true }
     }
     fill_out_form(new_info)
     save_and_wait
