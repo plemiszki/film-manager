@@ -15,7 +15,6 @@ import Calendar from './components/calendar.jsx'
 import Catalog from './components/catalog.jsx'
 import ConvertDigitalSales from './components/convert-digital-sales.jsx'
 import CurrentUserDropDown from './components/current-user-dropdown.jsx'
-import DigitalRetailerFilmDetails from './components/digital-retailer-film-details.jsx'
 import DvdCustomerDetails from './components/dvd-customer-details.jsx'
 import DvdDetails from './components/dvd-details.jsx'
 import DvdReports from './components/dvd-reports.jsx'
@@ -506,7 +505,25 @@ $(document).ready(function() {
     );
   }
   if ($('#digital-retailer-film-details')[0]) {
-    ReactDOM.render(<DigitalRetailerFilmDetails />, document.getElementById("digital-retailer-film-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='digitalRetailerFilm'
+          initialEntity={ { filmId: '', digitalRetailerId: '', url: '' } }
+          fetchData={ ['films', 'digitalRetailers'] }
+          fields={ [
+            [
+              { columnWidth: 5, columnHeader: 'Company', property: 'digitalRetailerId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'digitalRetailers' },
+              { columnWidth: 7, columnHeader: 'URL', property: 'url' },
+            ]
+          ] }
+          deleteCallback={ function() { window.location.pathname = `/films/${this.state.digitalRetailerFilm.filmId}` } }
+        />
+      </Provider>,
+      document.getElementById("digital-retailer-film-details")
+    );
   }
   if ($('#calendar')[0]) {
     ReactDOM.render(<Calendar />, document.getElementById("calendar"));

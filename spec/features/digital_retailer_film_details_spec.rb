@@ -19,21 +19,24 @@ describe 'digital_retailer_film_details', type: :feature do
   it 'displays information about the digital retailer film' do
     visit digital_retailer_film_path(@digital_retailer_film, as: $admin_user)
     wait_for_ajax
-    expect(find('select[data-field="digitalRetailerId"]', visible: false).value).to eq('1')
+    expect(find('input[data-field="digitalRetailerId"]').value).to eq('iTunes')
     expect(find('input[data-field="url"]').value).to eq('https://itunes.com/wildywonderful')
   end
 
   it 'updates information about the digital retailer film' do
     visit digital_retailer_film_path(@digital_retailer_film, as: $admin_user)
     new_info = {
-      digital_retailer_id: { value: 2, type: :select },
+      digital_retailer_id: { value: 'Kanopy', type: :select_modal },
       url: 'https://itunes.com/kanopy'
     }
     fill_out_form(new_info)
     save_and_wait
     verify_db_and_component({
       entity: @digital_retailer_film,
-      data: new_info
+      data: new_info,
+      db_data: {
+        digital_retailer_id: 2
+      }
     })
   end
 
@@ -41,7 +44,7 @@ describe 'digital_retailer_film_details', type: :feature do
     create(:digital_retailer_film, digital_retailer_id: 2)
     visit digital_retailer_film_path(@digital_retailer_film, as: $admin_user)
     clear_form
-    fill_out_form({ digital_retailer_id: { value: 2, type: :select }})
+    fill_out_form({ digital_retailer_id: { value: 'Kanopy', type: :select_modal }})
     save_and_wait
     expect(page).to have_content "Url can't be blank"
     expect(page).to have_content "Digital retailer has already been taken"
@@ -49,7 +52,7 @@ describe 'digital_retailer_film_details', type: :feature do
 
   it 'deletes digital retailer film' do
     visit digital_retailer_film_path(@digital_retailer_film, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Digital Retailer Film')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

@@ -12,17 +12,16 @@ class Api::DigitalRetailerFilmsController < AdminController
   end
 
   def show
-    @digital_retailer_films = DigitalRetailerFilm.where(id: params[:id])
-    @digital_retailers = DigitalRetailer.all
-    render 'index.json.jbuilder'
+    @digital_retailer_film = DigitalRetailerFilm.find(params[:id])
+    @digital_retailers = DigitalRetailer.select(:id, :name).order(:name)
+    render 'show.json.jbuilder'
   end
 
   def update
     @digital_retailer_film = DigitalRetailerFilm.find(params[:id])
     if @digital_retailer_film.update(digital_retailer_film_params)
-      @digital_retailer_films = DigitalRetailerFilm.where(id: params[:id])
-      @digital_retailers = DigitalRetailer.all
-      render 'index.json.jbuilder'
+      @digital_retailers = DigitalRetailer.select(:id, :name).order(:name)
+      render 'show.json.jbuilder'
     else
       render json: @digital_retailer_film.errors.full_messages, status: 422
     end

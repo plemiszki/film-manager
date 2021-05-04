@@ -57,6 +57,8 @@ def fill_out_form(data)
           raise 'missing value or label attribute!'
         end
       end
+    elsif value[:type]
+      raise "field type \"#{value[:type]}\" not recognized"
     else
       field = find("[data-field=\"#{key}\"]")
       field.set(value[:value])

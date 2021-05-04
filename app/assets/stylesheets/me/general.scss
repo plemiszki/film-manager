@@ -36,6 +36,10 @@ html {
 
 a.standard-link {
   text-decoration: underline;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .nice-select.three-options ul {
