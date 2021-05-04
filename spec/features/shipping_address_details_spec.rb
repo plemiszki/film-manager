@@ -35,7 +35,7 @@ describe 'shipping_address_details', type: :feature do
     expect(find('input[data-field="state"]').value).to eq 'MA'
     expect(find('input[data-field="zip"]').value).to eq '01778'
     expect(find('input[data-field="country"]').value).to eq 'Country'
-    expect(find('select[data-field="customerId"]', visible: false).value).to eq '1'
+    expect(find('input[data-field="customerId"]').value).to eq 'DVD Vendor'
   end
 
   it 'updates information about the shipping address' do
@@ -49,7 +49,7 @@ describe 'shipping_address_details', type: :feature do
       state: 'NY',
       zip: '10001',
       country: 'New Country',
-      customerId: { value: 2, type: :select }
+      customerId: { value: 'DVD Customer 2', type: :select_modal }
     })
     save_and_wait
     expect(@shipping_address.reload.attributes).to include(
@@ -76,7 +76,7 @@ describe 'shipping_address_details', type: :feature do
 
   it 'deletes the licensor' do
     visit shipping_address_path(@shipping_address, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Shipping Address')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

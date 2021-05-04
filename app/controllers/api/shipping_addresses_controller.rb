@@ -16,7 +16,7 @@ class Api::ShippingAddressesController < AdminController
   end
 
   def show
-    @shipping_addresses = ShippingAddress.where(id: params[:id])
+    @shipping_address = ShippingAddress.find(params[:id])
     @dvd_customers = DvdCustomer.all
     render "show.json.jbuilder"
   end

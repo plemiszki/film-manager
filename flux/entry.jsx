@@ -35,7 +35,6 @@ import PurchaseOrderDetails from './components/purchase-order-details.jsx'
 import ReturnDetails from './components/return-details.jsx'
 import RoyaltyReportDetails from './components/royalty-report-details.jsx'
 import RoyaltyReportsIndex from './components/reports-index.jsx'
-import ShippingAddressDetails from './components/shipping-address-details.jsx'
 import VenueDetails from './components/venue-details.jsx'
 
 $(document).ready(function() {
@@ -149,7 +148,35 @@ $(document).ready(function() {
     ReactDOM.render(<PurchaseOrderDetails />, document.getElementById("purchase-order-details"));
   }
   if ($('#shipping-address-details')[0]) {
-    ReactDOM.render(<ShippingAddressDetails />, document.getElementById("shipping-address-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='shippingAddress'
+          initialEntity={ { label: '', name: '', address1: '', address2: '', city: '', state: '', zip: '', country: '', customerId: '' } }
+          fetchData={ ['dvdCustomers'] }
+          fields={ [
+            [
+              { columnWidth: 4, property: 'label' }
+            ],
+            [
+              { columnWidth: 4, property: 'name' },
+              { columnWidth: 4, property: 'address1', columnHeader: 'Address 1' },
+              { columnWidth: 4, property: 'address2', columnHeader: 'Address 2' }
+            ],
+            [
+              { columnWidth: 3, property: 'city' },
+              { columnWidth: 1, property: 'state' },
+              { columnWidth: 2, property: 'zip' },
+              { columnWidth: 2, property: 'country' },
+              { columnWidth: 4, property: 'customerId', type: 'modal', optionsArrayName: 'dvdCustomers', optionDisplayProperty: 'name', columnHeader: 'Customer' }
+            ]
+          ] }
+        />
+      </Provider>,
+      document.getElementById("shipping-address-details")
+    );
   }
   if ($('#invoices-index')[0]) {
     ReactDOM.render(
