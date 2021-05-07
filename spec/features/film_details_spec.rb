@@ -102,17 +102,6 @@ describe 'film_details', type: :feature do
     )
   end
 
-  it 'deletes the film' do
-    visit film_path(@film, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Film')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
-    expect(page).to have_current_path('/films', ignore_query: true)
-    expect(Film.find_by_id(@film.id)).to be(nil)
-  end
-
   it 'adds directors' do
     visit film_path(@film, as: $admin_user)
     find('.blue-outline-button', text: 'Add Director').click

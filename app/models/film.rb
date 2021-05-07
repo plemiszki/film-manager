@@ -44,7 +44,7 @@ class Film < ActiveRecord::Base
   has_many :film_countries, -> { order(:order) }, dependent: :destroy
   has_many :film_languages, -> { order(:order) }, dependent: :destroy
   has_many :film_genres, -> { order(:order) }, dependent: :destroy
-  has_many :film_topics, -> { order(:order) }, dependent: :destroy
+  has_many :film_topics, dependent: :destroy
   has_many :countries, through: :film_countries
   has_many :languages, through: :film_languages
   has_many :film_formats, dependent: :destroy
