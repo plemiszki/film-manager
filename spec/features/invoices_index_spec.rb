@@ -35,4 +35,10 @@ describe 'invoices_index', type: :feature do
     expect(page).to have_content('1D')
   end
 
+  it 'starts the export job' do
+    visit invoices_path(as: $admin_user)
+    find('.export-button', text: 'Export').click
+    expect(page).to have_content('Exporting Invoices')
+  end
+
 end

@@ -883,4 +883,11 @@ describe 'film_details', type: :feature do
     expect(Film.find_by_id(@film.id)).to be(nil)
   end
 
+  it 'starts the update artwork job' do
+    visit film_path(@film, as: $admin_user)
+    find('.key-art').click
+    find('.orange-button', text: 'Yes').click
+    expect(page).to have_content('Updating Artwork')
+  end
+
 end
