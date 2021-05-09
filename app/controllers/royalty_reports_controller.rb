@@ -3,12 +3,12 @@ class RoyaltyReportsController < AdminController
   before_action :redirect_unless_super_admin
 
   def index
-    render "index.html.erb"
+    render 'index', formats: [:html], handlers: [:erb]
   end
 
   def show
     @royalty_report = RoyaltyReport.find_by(id: params[:id])
-    render "show.html.erb"
+    render 'show', formats: [:html], handlers: [:erb]
   end
 
   private

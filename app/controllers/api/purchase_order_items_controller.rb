@@ -9,7 +9,7 @@ class Api::PurchaseOrderItemsController < AdminController
     if @purchase_order_item.save
       @purchase_orders = PurchaseOrder.where(id: @purchase_order_item.purchase_order_id)
       get_data_for_items
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @purchase_order_item.errors.full_messages, status: 422
     end
@@ -21,7 +21,7 @@ class Api::PurchaseOrderItemsController < AdminController
     reorder(PurchaseOrderItem.where(purchase_order_id: @purchase_order_item.purchase_order_id).order(:order))
     @purchase_orders = PurchaseOrder.where(id: @purchase_order_item.purchase_order_id)
     get_data_for_items
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

@@ -8,7 +8,7 @@ class Api::RelatedFilmsController < AdminController
     if @related_film.save
       @related_films = RelatedFilm.where(film_id: @related_film.film_id).includes(:other_film)
       @other_films = Film.where.not(id: ([@related_film.film_id] + @related_films.pluck(:other_film_id)))
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @related_film.errors.full_messages, status: 422
     end
@@ -20,7 +20,7 @@ class Api::RelatedFilmsController < AdminController
     reorder(RelatedFilm.where(film_id: @related_film.film_id).order(:order))
     @related_films = RelatedFilm.where(film_id: @related_film.film_id).includes(:other_film)
     @other_films = Film.where.not(id: ([@related_film.film_id] + @related_films.pluck(:other_film_id)))
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

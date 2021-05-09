@@ -22,7 +22,7 @@ class Api::CalendarController < AdminController
         club_releases: club_releases
       }
     end
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
 end

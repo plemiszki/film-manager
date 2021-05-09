@@ -8,7 +8,7 @@ class Api::FilmCountriesController < AdminController
     if @film_country.save
       @film_countries = FilmCountry.where(film_id: @film_country.film_id).includes(:film)
       @countries = Country.where.not(id: @film_countries.pluck(:country_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     end
   end
 
@@ -18,7 +18,7 @@ class Api::FilmCountriesController < AdminController
     reorder(FilmCountry.where(film_id: @film_country.film_id).order(:order))
     @film_countries = FilmCountry.where(film_id: @film_country.film_id).includes(:film)
     @countries = Country.where.not(id: @film_countries.pluck(:country_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def rearrange
@@ -28,7 +28,7 @@ class Api::FilmCountriesController < AdminController
     end
     @film_countries = FilmCountry.where(film_id: params[:film_id]).includes(:film)
     @countries = Country.where.not(id: @film_countries.pluck(:country_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

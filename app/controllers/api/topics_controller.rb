@@ -2,19 +2,19 @@ class Api::TopicsController < AdminController
 
   def index
     @topics = Topic.all
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @topic = Topic.find(params[:id])
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @topic = Topic.new(topic_params)
     if @topic.save
       @topics = Topic.all
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @topic.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::TopicsController < AdminController
   def update
     @topic = Topic.find(params[:id])
     if @topic.update(topic_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @topic.errors.full_messages, status: 422
     end

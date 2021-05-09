@@ -39,7 +39,7 @@ class Api::FilmsController < AdminController
         if @film.reserve_percentage_changed? || @film.reserve_quarters_changed?
           recalculate_statements = true
         end
-        unless @film.save(film_params)
+        unless @film.update(film_params)
           error_present = true
           errors[:film] = @film.errors.full_messages
         end

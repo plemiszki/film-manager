@@ -2,25 +2,25 @@ class Api::AliasesController < AdminController
 
   def index
     @aliases = Alias.all.includes(:film)
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def new
     @films = Film.all
-    render "new.json.jbuilder"
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @alias = Alias.find(params[:id])
     @films = Film.all
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @alias = Alias.new(alias_params)
     if @alias.save
       @aliases = Alias.all.includes(:film)
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @alias.errors.full_messages, status: 422
     end
@@ -30,7 +30,7 @@ class Api::AliasesController < AdminController
     @alias = Alias.find(params[:id])
     if @alias.update(alias_params)
       @films = Film.all
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @alias.errors.full_messages, status: 422
     end

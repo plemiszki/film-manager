@@ -5,7 +5,7 @@ class Api::DvdsController < AdminController
     @dvd_types = DvdType.all
     @shorts = @dvds[0].shorts
     @other_shorts = Film.where(film_type: 'Short') - @shorts
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -24,7 +24,7 @@ class Api::DvdsController < AdminController
       @dvd_types = DvdType.all
       @shorts = @dvds[0].shorts
       @other_shorts = Film.where(film_type: 'Short') - @shorts
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @dvd.errors.full_messages, status: 422
     end

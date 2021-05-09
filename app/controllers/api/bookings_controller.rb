@@ -55,7 +55,7 @@ class Api::BookingsController < AdminController
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
     end
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def new
@@ -63,7 +63,7 @@ class Api::BookingsController < AdminController
     @venues = Venue.all.order(:label)
     @users = User.active_bookers.order(:name)
     @formats = Format.all.order(:name)
-    render 'new.json.jbuilder'
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
@@ -77,7 +77,7 @@ class Api::BookingsController < AdminController
     @users = User.all
     @formats = Format.all
     @calculations = booking_calculations(@bookings.first)
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -101,7 +101,7 @@ class Api::BookingsController < AdminController
       @booking.shipping_country = venue.shipping_country
       @booking.email = venue.email
       @booking.save!
-      render "create.json.jbuilder"
+      render 'create', formats: [:json], handlers: [:jbuilder]
     else
       render json: @booking.errors.full_messages, status: 422
     end
@@ -151,7 +151,7 @@ class Api::BookingsController < AdminController
           WeeklyTerm.create!({ booking_id: @booking.id, terms: weekly_term.terms, order: weekly_term.order })
         end
       end
-      render "create.json.jbuilder"
+      render 'create', formats: [:json], handlers: [:jbuilder]
     else
       render json: ["Film can't be blank"], status: 422
     end
@@ -167,7 +167,7 @@ class Api::BookingsController < AdminController
       @users = User.all
       @formats = Format.all
       @calculations = booking_calculations(@bookings.first)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @booking.errors.full_messages, status: 422
     end
@@ -195,7 +195,7 @@ class Api::BookingsController < AdminController
     mg_client.send_message 'filmmovement.com', message_params if Rails.env.production?
     @bookings.first.update(booking_confirmation_sent: Date.today)
     @calculations = booking_calculations(@bookings.first)
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def export

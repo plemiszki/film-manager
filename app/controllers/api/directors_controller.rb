@@ -6,7 +6,7 @@ class Api::DirectorsController < AdminController
     @director = Director.new(director_params.merge({ order: Director.where(film_id: director_params[:film_id]).count }))
     if @director.save
       @directors = Director.where(film_id: @director.film_id)
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @director.errors.full_messages, status: 422
     end
@@ -17,7 +17,7 @@ class Api::DirectorsController < AdminController
     @director.destroy
     reorder(Director.where(film_id: @director.film_id).order(:order))
     @directors = Director.where(film_id: @director.film_id)
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def rearrange
@@ -26,7 +26,7 @@ class Api::DirectorsController < AdminController
       director.update(order: index)
     end
     @directors = Director.where(film_id: params[:film_id])
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

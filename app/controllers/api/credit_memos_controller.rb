@@ -6,18 +6,18 @@ class Api::CreditMemosController < AdminController
 
   def index
     @credit_memos = perform_search(model: 'CreditMemo', associations: ['customer'])
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def new
     @customers = DvdCustomer.all.order(:name)
-    render "new.json.jbuilder"
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @credit_memo = CreditMemo.find(params[:id])
     @rows = @credit_memo.credit_memo_rows
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def export

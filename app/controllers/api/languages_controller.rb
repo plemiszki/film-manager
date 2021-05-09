@@ -2,19 +2,19 @@ class Api::LanguagesController < AdminController
 
   def index
     @languages = Language.all
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @language = Language.find(params[:id])
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @language = Language.new(language_params)
     if @language.save
       @languages = Language.all
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @language.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::LanguagesController < AdminController
   def update
     @language = Language.find(params[:id])
     if @language.update(language_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @language.errors.full_messages, status: 422
     end

@@ -2,21 +2,21 @@ class Api::BookersController < AdminController
 
   def index
     @bookers = Booker.all
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @bookers = Booker.where(id: params[:id])
     @booker_venues = BookerVenue.where(booker_id: params[:id])
     @venues = Venue.where.not(id: @booker_venues.pluck(:venue_id))
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @booker = Booker.new(booker_params)
     if @booker.save
       @bookers = Booker.all
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @booker.errors.full_messages, status: 422
     end
@@ -28,7 +28,7 @@ class Api::BookersController < AdminController
       @bookers = Booker.where(id: params[:id])
       @booker_venues = BookerVenue.where(booker_id: params[:id])
       @venues = Venue.where.not(id: @booker_venues.pluck(:venue_id))
-      render 'show.json.jbuilder'
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @booker.errors.full_messages, status: 422
     end

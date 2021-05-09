@@ -15,7 +15,7 @@ class Api::PurchaseOrdersController < AdminController
 
   def index
     @purchase_orders = perform_search(model: 'PurchaseOrder', associations: [:customer, :purchase_order_items, :invoice])
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def new
@@ -27,7 +27,7 @@ class Api::PurchaseOrdersController < AdminController
     @purchase_orders = PurchaseOrder.where(id: params[:id])
     @shipping_addresses = ShippingAddress.all
     get_data_for_items
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -53,7 +53,7 @@ class Api::PurchaseOrdersController < AdminController
     params.delete(:shipping_address_id)
     @purchase_order = PurchaseOrder.new(params)
     if @purchase_order.save
-      render "create.json.jbuilder"
+      render 'create', formats: [:json], handlers: [:jbuilder]
     else
       render json: @purchase_order.errors.full_messages, status: 422
     end
@@ -65,7 +65,7 @@ class Api::PurchaseOrdersController < AdminController
       @purchase_orders = PurchaseOrder.where(id: params[:id])
       @shipping_addresses = ShippingAddress.all
       get_data_for_items
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @purchase_order.errors.full_messages, status: 422
     end
@@ -141,7 +141,7 @@ class Api::PurchaseOrdersController < AdminController
       end
       @dvd_sales[dvd.id][:total_sales] = total_sales
     end
-    render "reporting.json.jbuilder"
+    render 'reporting', formats: [:json], handlers: [:jbuilder]
   end
 
   def export

@@ -9,7 +9,7 @@ class Api::WeeklyBoxOfficesController < AdminController
     if @weekly_box_office.save
       @weekly_box_offices = WeeklyBoxOffice.where(booking_id: @weekly_box_office.booking_id)
       @calculations = booking_calculations(Booking.find(@weekly_box_office.booking_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @weekly_box_office.errors.full_messages, status: 422
     end
@@ -21,7 +21,7 @@ class Api::WeeklyBoxOfficesController < AdminController
     reorder(WeeklyBoxOffice.where(booking_id: @weekly_box_office.booking_id).order(:order))
     @weekly_box_offices = WeeklyBoxOffice.where(booking_id: @weekly_box_office.booking_id)
     @calculations = booking_calculations(Booking.find(@weekly_box_office.booking_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

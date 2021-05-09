@@ -6,7 +6,7 @@ class Api::GiftboxDvdsController < AdminController
       @giftboxes = Giftbox.where(id: giftbox_dvd_params[:giftbox_id])
       @dvds = @giftboxes[0].dvds
       @other_dvds = Dvd.includes(:feature, :dvd_type) - @dvds
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @giftbox_dvd.errors.full_messages, status: 422
     end
@@ -18,7 +18,7 @@ class Api::GiftboxDvdsController < AdminController
       @giftboxes = Giftbox.where(id: giftbox_dvd_params[:giftbox_id])
       @dvds = @giftboxes[0].dvds.includes(:feature)
       @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @giftbox_dvd.errors.full_messages, status: 422
     end

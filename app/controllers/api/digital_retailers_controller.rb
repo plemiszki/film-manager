@@ -2,19 +2,19 @@ class Api::DigitalRetailersController < AdminController
 
   def index
     @digital_retailers = DigitalRetailer.all
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @digital_retailer = DigitalRetailer.find(params[:id])
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @digital_retailer = DigitalRetailer.new(digital_retailer_params)
     if @digital_retailer.save
       @digital_retailers = DigitalRetailer.all
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @digital_retailer.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::DigitalRetailersController < AdminController
   def update
     @digital_retailer = DigitalRetailer.find(params[:id])
     if @digital_retailer.update(digital_retailer_params)
-      render 'show.json.jbuilder'
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @digital_retailer.errors.full_messages, status: 422
     end

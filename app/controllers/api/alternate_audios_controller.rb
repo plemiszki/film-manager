@@ -5,7 +5,7 @@ class Api::AlternateAudiosController < ApplicationController
     if alternate_audio.save!
       @alternate_audios = alternate_audio.film.alternate_audios
       @audio_languages = Language.where.not(id: @alternate_audios.pluck(:language_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: alternate_audio.errors.full_messages, status: 422
     end
@@ -15,7 +15,7 @@ class Api::AlternateAudiosController < ApplicationController
     audio = AlternateAudio.find(params[:id]).destroy
     @alternate_audios = audio.film.alternate_audios
     @audio_languages = Language.where.not(id: @alternate_audios.pluck(:language_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

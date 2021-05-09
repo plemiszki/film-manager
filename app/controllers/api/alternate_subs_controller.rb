@@ -5,7 +5,7 @@ class Api::AlternateSubsController < ApplicationController
     if alternate_sub.save!
       @alternate_subs = alternate_sub.film.alternate_subs
       @subtitle_languages = Language.where.not(id: @alternate_subs.pluck(:language_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: alternate_sub.errors.full_messages, status: 422
     end
@@ -15,7 +15,7 @@ class Api::AlternateSubsController < ApplicationController
     sub = AlternateSub.find(params[:id]).destroy
     @alternate_subs = sub.film.alternate_subs
     @subtitle_languages = Language.where.not(id: @alternate_subs.pluck(:language_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

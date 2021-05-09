@@ -4,13 +4,13 @@ class Api::VirtualBookingsController < AdminController
 
   def index
     @virtual_bookings = perform_search(model: 'VirtualBooking', associations: ['film', 'venue'])
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def new
     @films = Film.all.order(:title)
     @venues = Venue.all.order(:label)
-    render "new.json.jbuilder"
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -21,7 +21,7 @@ class Api::VirtualBookingsController < AdminController
       @virtual_booking.shipping_state = venue.shipping_state
       @virtual_booking.save!
       @virtual_bookings = VirtualBooking.all.includes(:film, :venue).order('start_date DESC')
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @virtual_booking.errors.full_messages, status: 422
     end
@@ -31,13 +31,13 @@ class Api::VirtualBookingsController < AdminController
     @virtual_booking = VirtualBooking.find(params[:id])
     @films = Film.all
     @venues = Venue.all
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
     @virtual_booking = VirtualBooking.find(params[:id])
     if @virtual_booking.update(virtual_booking_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @virtual_booking.errors.full_messages, status: 422
     end

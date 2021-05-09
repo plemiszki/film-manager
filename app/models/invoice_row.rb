@@ -1,6 +1,6 @@
 class InvoiceRow < ActiveRecord::Base
 
-  validates :invoice_id, :item_label, :item_qty, null: false
+  validates :invoice_id, :item_label, :item_qty, presence: true
 
   belongs_to :invoice
 

@@ -7,7 +7,7 @@ class Api::InvoicesController < AdminController
 
   def index
     @invoices = perform_search(model: 'Invoice')
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -50,7 +50,7 @@ class Api::InvoicesController < AdminController
     settings = Setting.first
     settings.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1)
     @invoices = booking.invoices.includes(:invoice_rows)
-    render 'booking.json.jbuilder'
+    render 'booking', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
@@ -97,7 +97,7 @@ class Api::InvoicesController < AdminController
     invoice = @invoices.first
     @rows = invoice.invoice_rows
     @payments = invoice.invoice_payments if invoice.invoice_type == 'booking'
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def destroy
@@ -105,7 +105,7 @@ class Api::InvoicesController < AdminController
     invoice.destroy
     booking = invoice.booking
     @invoices = booking.invoices
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def export_single

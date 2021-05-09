@@ -5,13 +5,13 @@ class Api::VenuesController < AdminController
 
   def index
     @venues = perform_search(model: 'Venue')
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @venue = Venue.new(venue_params)
     if @venue.save
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @venue.errors.full_messages, status: 422
     end
@@ -24,7 +24,7 @@ class Api::VenuesController < AdminController
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
     end
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
@@ -36,7 +36,7 @@ class Api::VenuesController < AdminController
       @bookings.each do |booking|
         @calculations[booking.id] = booking_calculations(booking)
       end
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @venue.errors.full_messages, status: 422
     end

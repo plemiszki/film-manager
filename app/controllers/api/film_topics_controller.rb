@@ -5,7 +5,7 @@ class Api::FilmTopicsController < AdminController
     if @film_topic.save
       @film_topics = FilmTopic.where(film_id: @film_topic.film_id).includes(:film)
       @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     end
   end
 
@@ -14,7 +14,7 @@ class Api::FilmTopicsController < AdminController
     @film_topic.destroy
     @film_topics = FilmTopic.where(film_id: @film_topic.film_id).includes(:film)
     @topics = Topic.where.not(id: @film_topics.pluck(:topic_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

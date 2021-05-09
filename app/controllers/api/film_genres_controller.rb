@@ -8,7 +8,7 @@ class Api::FilmGenresController < AdminController
     if @film_genre.save
       @film_genres = FilmGenre.where(film_id: @film_genre.film_id).includes(:film)
       @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     end
   end
 
@@ -18,7 +18,7 @@ class Api::FilmGenresController < AdminController
     reorder(FilmGenre.where(film_id: @film_genre.film_id).order(:order))
     @film_genres = FilmGenre.where(film_id: @film_genre.film_id).includes(:film)
     @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def rearrange
@@ -28,7 +28,7 @@ class Api::FilmGenresController < AdminController
     end
     @film_genres = FilmGenre.where(film_id: params[:film_id]).includes(:film)
     @genres = Genre.where.not(id: @film_genres.pluck(:genre_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

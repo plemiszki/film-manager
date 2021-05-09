@@ -2,7 +2,7 @@ class FormatsController < AdminController
 
   def show
     @format = Format.find_by(id: params[:id])
-    render "show.html.erb"
+    render 'show', formats: [:html], handlers: [:erb]
   end
 
 end

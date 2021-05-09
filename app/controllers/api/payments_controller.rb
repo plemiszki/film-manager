@@ -7,7 +7,7 @@ class Api::PaymentsController < AdminController
     if @payment.save
       @payments = Payment.where(booking_id: @payment.booking_id)
       @calculations = booking_calculations(Booking.find(@payment.booking_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @payment.errors.full_messages, status: 422
     end
@@ -18,7 +18,7 @@ class Api::PaymentsController < AdminController
     @payment.destroy
     @payments = Payment.where(booking_id: @payment.booking_id)
     @calculations = booking_calculations(Booking.find(@payment.booking_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

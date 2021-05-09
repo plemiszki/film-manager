@@ -2,19 +2,19 @@ class Api::SublicensorsController < AdminController
 
   def index
     @sublicensors = Sublicensor.all
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @sublicensor = Sublicensor.find(params[:id])
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @sublicensor = Sublicensor.new(sublicensor_params)
     if @sublicensor.save
       @sublicensors = Sublicensor.all
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @sublicensor.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::SublicensorsController < AdminController
   def update
     @sublicensor = Sublicensor.find(params[:id])
     if @sublicensor.update(sublicensor_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @sublicensor.errors.full_messages, status: 422
     end

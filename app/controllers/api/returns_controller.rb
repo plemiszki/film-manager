@@ -5,25 +5,25 @@ class Api::ReturnsController < AdminController
 
   def index
     @returns = perform_search(model: 'Return', associations: [:customer, :return_items])
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def new
     @dvd_customers = DvdCustomer.select(:id, :name).order(:name)
-    render 'new.json.jbuilder'
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @returns = Return.where(id: params[:id])
     @dvd_customers = DvdCustomer.all
     get_data_for_items
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @return = Return.new(return_params)
     if @return.save
-      render "create.json.jbuilder"
+      render 'create', formats: [:json], handlers: [:jbuilder]
     else
       render json: @return.errors.full_messages, status: 422
     end
@@ -34,7 +34,7 @@ class Api::ReturnsController < AdminController
     if @return.update(return_params)
       @returns = Return.where(id: params[:id])
       @dvd_customers = DvdCustomer.all
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @return.errors.full_messages, status: 422
     end

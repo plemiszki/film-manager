@@ -2,19 +2,19 @@ class Api::DvdCustomersController < AdminController
 
   def index
     @dvd_customers = DvdCustomer.all
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @dvd_customer = DvdCustomer.find(params[:id])
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @dvd_customer = DvdCustomer.new(dvd_customer_params)
     if @dvd_customer.save
       @dvd_customers = DvdCustomer.all
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @dvd_customer.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::DvdCustomersController < AdminController
   def update
     @dvd_customer = DvdCustomer.find(params[:id])
     if @dvd_customer.update(dvd_customer_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @dvd_customer.errors.full_messages, status: 422
     end

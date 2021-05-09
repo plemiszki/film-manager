@@ -5,7 +5,7 @@ class Api::BookerVenuesController < AdminController
     if @booker_venue.save
       @booker_venues = BookerVenue.where(booker_id: @booker_venue.booker_id).includes(:venue)
       @venues = Venue.where.not(id: @booker_venues.pluck(:venue_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     end
   end
 
@@ -14,7 +14,7 @@ class Api::BookerVenuesController < AdminController
     @booker_venue.destroy
     @booker_venues = BookerVenue.where(booker_id: @booker_venue.booker_id).includes(:venue)
     @venues = Venue.where.not(id: @booker_venues.pluck(:venue_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

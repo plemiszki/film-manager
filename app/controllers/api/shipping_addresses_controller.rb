@@ -2,14 +2,14 @@ class Api::ShippingAddressesController < AdminController
 
   def index
     @shipping_addresses = ShippingAddress.all
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @shipping_address = ShippingAddress.new(shipping_address_params)
     if @shipping_address.save
       @shipping_addresses = ShippingAddress.all
-      render "create.json.jbuilder"
+      render 'create', formats: [:json], handlers: [:jbuilder]
     else
       render json: @shipping_address.errors.full_messages, status: 422
     end
@@ -18,7 +18,7 @@ class Api::ShippingAddressesController < AdminController
   def show
     @shipping_address = ShippingAddress.find(params[:id])
     @dvd_customers = DvdCustomer.all
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
@@ -26,7 +26,7 @@ class Api::ShippingAddressesController < AdminController
     if @shipping_address.update(shipping_address_params)
       @shipping_addresses = ShippingAddress.where(id: params[:id])
       @dvd_customers = DvdCustomer.all
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @shipping_address.errors.full_messages, status: 422
     end

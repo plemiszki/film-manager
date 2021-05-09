@@ -8,7 +8,7 @@ class Api::FilmLanguagesController < AdminController
     if @film_language.save
       @film_languages = FilmLanguage.where(film_id: @film_language.film_id).includes(:film)
       @languages = Language.where.not(id: @film_languages.pluck(:language_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     end
   end
 
@@ -18,7 +18,7 @@ class Api::FilmLanguagesController < AdminController
     reorder(FilmLanguage.where(film_id: @film_language.film_id).order(:order))
     @film_languages = FilmLanguage.where(film_id: @film_language.film_id).includes(:film)
     @languages = Language.where.not(id: @film_languages.pluck(:language_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def rearrange
@@ -28,7 +28,7 @@ class Api::FilmLanguagesController < AdminController
     end
     @film_languages = FilmLanguage.where(film_id: params[:film_id]).includes(:film)
     @languages = Language.where.not(id: @film_languages.pluck(:language_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

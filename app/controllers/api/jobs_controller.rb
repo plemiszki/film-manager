@@ -7,19 +7,19 @@ class Api::JobsController < AdminController
 
   def index
     @jobs = Job.where(name: 'export all', done: false, killed: false)
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @job = Job.find(params[:id])
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
     job = Job.find(params[:id])
     job.update(job_params)
     @jobs = Job.where(name: 'export all', done: false, killed: false)
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

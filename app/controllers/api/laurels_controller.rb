@@ -7,7 +7,7 @@ class Api::LaurelsController < AdminController
     @laurel = Laurel.new(laurel_params.merge({ order: current_length }))
     if @laurel.save
       @laurels = Laurel.where(film_id: @laurel.film_id).order(:order)
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @laurel.errors.full_messages, status: 422
     end
@@ -18,7 +18,7 @@ class Api::LaurelsController < AdminController
     @laurel.destroy
     reorder(Laurel.where(film_id: @laurel.film_id).order(:order))
     @laurels = Laurel.where(film_id: @laurel.film_id).order(:order)
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def rearrange
@@ -27,7 +27,7 @@ class Api::LaurelsController < AdminController
       laurel.update(order: index)
     end
     @laurels = Laurel.where(film_id: params[:film_id]).order(:order)
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

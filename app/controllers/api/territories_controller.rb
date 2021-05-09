@@ -2,12 +2,12 @@ class Api::TerritoriesController < AdminController
 
   def index
     @territories = Territory.all
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @territory = Territory.find(params[:id])
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -18,7 +18,7 @@ class Api::TerritoriesController < AdminController
         FilmRight.create!(film_id: film_right.film_id, territory_id: @territory.id, right_id: film_right.right_id, start_date: film_right.start_date, end_date: film_right.end_date, exclusive: film_right.exclusive)
       end
       @territories = Territory.all
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @territory.errors.full_messages, status: 422
     end
@@ -27,7 +27,7 @@ class Api::TerritoriesController < AdminController
   def update
     @territory = Territory.find(params[:id])
     if @territory.update(territory_params)
-      render 'show.json.jbuilder'
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @territory.errors.full_messages, status: 422
     end

@@ -4,7 +4,7 @@ class Api::FilmRightsController < AdminController
     @film_rights = FilmRight.where(id: params[:id]).includes(:film)
     @territories = Territory.all
     @rights = Right.all
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -32,7 +32,7 @@ class Api::FilmRightsController < AdminController
       render json: @film_right.errors.full_messages, status: 422
     else
       @film_rights = FilmRight.where(film_id: params[:film_right][:film_id]).includes(:film)
-      render 'create.json.jbuilder'
+      render 'create', formats: [:json], handlers: [:jbuilder]
     end
   end
 
@@ -42,7 +42,7 @@ class Api::FilmRightsController < AdminController
       @film_rights = FilmRight.where(id: params[:id]).includes(:film)
       @territories = Territory.all
       @rights = Right.all
-      render 'show.json.jbuilder'
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @film_right.errors.full_messages, status: 422
     end
@@ -63,7 +63,7 @@ class Api::FilmRightsController < AdminController
     @rights = Right.all
     @territories = Territory.all
     @films = Film.all if params[:films_too]
-    render 'new.json.jbuilder'
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def change_dates
@@ -100,7 +100,7 @@ class Api::FilmRightsController < AdminController
       render json: errors, status: 422
     else
       @film_rights = FilmRight.where(film_id: film_id).includes(:film)
-      render 'create.json.jbuilder', status: 200
+      render 'create', formats: [:json], handlers: [:jbuilder], status: 200
     end
   end
 

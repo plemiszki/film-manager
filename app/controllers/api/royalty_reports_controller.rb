@@ -7,7 +7,7 @@ class Api::RoyaltyReportsController < AdminController
   def index
     @reports = RoyaltyReport.includes(film: [:licensor]).where(quarter: params[:quarter], year: params[:year])
     @errors = flash[:errors] || []
-    render 'index.json.jbuilder', formats: [:json], handlers: [:jbuilder]
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show

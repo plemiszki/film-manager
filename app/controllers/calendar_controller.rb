@@ -1,7 +1,7 @@
 class CalendarController < AdminController
 
   def show
-    render "show.html.erb"
+    render 'show', formats: [:html], handlers: [:erb]
   end
 
 end

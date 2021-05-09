@@ -5,7 +5,7 @@ class Api::FilmFormatsController < AdminController
     if @film_format.save
       @film_formats = FilmFormat.where(film_id: @film_format.film_id).includes(:film)
       @formats = Format.where.not(id: @film_formats.pluck(:format_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     end
   end
 
@@ -14,7 +14,7 @@ class Api::FilmFormatsController < AdminController
     @film_format.destroy
     @film_formats = FilmFormat.where(film_id: @film_format.film_id).includes(:film)
     @formats = Format.where.not(id: @film_formats.pluck(:format_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

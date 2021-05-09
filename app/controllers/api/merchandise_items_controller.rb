@@ -2,20 +2,20 @@ class Api::MerchandiseItemsController < AdminController
 
   def index
     @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def new
     @films = Film.select(:id, :title)
     @merchandise_types = MerchandiseType.select(:id, :name)
-    render 'new.json.jbuilder'
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @merchandise_item = MerchandiseItem.new(merchandise_item_params)
     if @merchandise_item.save
       @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @merchandise_item.errors.full_messages, status: 422
     end
@@ -25,7 +25,7 @@ class Api::MerchandiseItemsController < AdminController
     @merchandise_item = MerchandiseItem.find(params[:id])
     @films = Film.select(:id, :title)
     @merchandise_types = MerchandiseType.select(:id, :name)
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
@@ -33,7 +33,7 @@ class Api::MerchandiseItemsController < AdminController
     if @merchandise_item.update(merchandise_item_params)
       @films = Film.select(:id, :title)
       @merchandise_types = MerchandiseType.select(:id, :name)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @merchandise_item.errors.full_messages, status: 422
     end

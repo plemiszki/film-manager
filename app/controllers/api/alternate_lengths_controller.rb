@@ -4,7 +4,7 @@ class Api::AlternateLengthsController < ApplicationController
     alternate_length = AlternateLength.new(alternate_length_params)
     if alternate_length.save
       @alternate_lengths = alternate_length.film.alternate_lengths
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: alternate_length.errors.full_messages, status: 422
     end
@@ -13,7 +13,7 @@ class Api::AlternateLengthsController < ApplicationController
   def destroy
     length = AlternateLength.find(params[:id]).destroy
     @alternate_lengths = length.film.alternate_lengths
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

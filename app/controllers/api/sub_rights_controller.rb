@@ -4,14 +4,14 @@ class Api::SubRightsController < AdminController
 
   def index
     @sub_rights = perform_search(model: 'SubRight', associations: ['film', 'territory', 'right'])
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def new
     @territories = Territory.all.order(:name)
     @rights = Right.all.order(:name)
     @films = Film.all.order(:title)
-    render 'new.json.jbuilder'
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
@@ -19,7 +19,7 @@ class Api::SubRightsController < AdminController
     @territories = Territory.all
     @rights = Right.all
     @films = Film.all
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -57,7 +57,7 @@ class Api::SubRightsController < AdminController
       @territories = Territory.all
       @rights = Right.all
       @films = Film.all
-      render 'show.json.jbuilder'
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @sub_right.errors.full_messages, status: 422
     end

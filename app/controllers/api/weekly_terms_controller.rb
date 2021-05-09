@@ -9,7 +9,7 @@ class Api::WeeklyTermsController < AdminController
     if @weekly_term.save
       @weekly_terms = WeeklyTerm.where(booking_id: @weekly_term.booking_id)
       @calculations = booking_calculations(Booking.find(@weekly_term.booking_id))
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @weekly_term.errors.full_messages, status: 422
     end
@@ -21,7 +21,7 @@ class Api::WeeklyTermsController < AdminController
     reorder(WeeklyTerm.where(booking_id: @weekly_term.booking_id).order(:order))
     @weekly_terms = WeeklyTerm.where(booking_id: @weekly_term.booking_id)
     @calculations = booking_calculations(Booking.find(@weekly_term.booking_id))
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

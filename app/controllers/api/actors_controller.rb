@@ -7,7 +7,7 @@ class Api::ActorsController < AdminController
     @actor = Actor.new(actor_params.merge({ order: current_length }))
     if @actor.save
       @actors = Actor.where(actorable_id: @actor.actorable_id, actorable_type: @actor.actorable_type)
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @actor.errors.full_messages, status: 422
     end
@@ -18,7 +18,7 @@ class Api::ActorsController < AdminController
     @actor.destroy
     reorder(Actor.where(actorable_id: @actor.actorable_id, actorable_type: @actor.actorable_type).order(:order))
     @actors = Actor.where(actorable_id: @actor.actorable_id, actorable_type: @actor.actorable_type)
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def rearrange
@@ -27,7 +27,7 @@ class Api::ActorsController < AdminController
       actor.update(order: index)
     end
     @actors = Actor.where(actorable_id: params[:actorable_id], actorable_type: params[:actorable_type]).order(:order)
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

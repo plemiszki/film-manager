@@ -2,19 +2,19 @@ class Api::GenresController < AdminController
 
   def index
     @genres = Genre.all
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @genre = Genre.find(params[:id])
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @genre = Genre.new(genre_params)
     if @genre.save
       @genres = Genre.all
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @genre.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::GenresController < AdminController
   def update
     @genre = Genre.find(params[:id])
     if @genre.update(genre_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @genre.errors.full_messages, status: 422
     end

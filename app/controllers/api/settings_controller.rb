@@ -2,13 +2,13 @@ class Api::SettingsController < AdminController
 
   def show
     @settings = Setting.first
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
     @settings = Setting.first
     if @settings.update(settings_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @settings.errors.full_messages, status: 422
     end

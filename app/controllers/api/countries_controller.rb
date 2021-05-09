@@ -2,19 +2,19 @@ class Api::CountriesController < AdminController
 
   def index
     @countries = Country.all
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @country = Country.find(params[:id])
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @country = Country.new(country_params)
     if @country.save
       @countries = Country.all
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @country.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::CountriesController < AdminController
   def update
     @country = Country.find(params[:id])
     if @country.update(country_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @country.errors.full_messages, status: 422
     end

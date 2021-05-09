@@ -4,7 +4,7 @@ class Api::InTheatersFilmsController < AdminController
 
   def index
     index_data
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
@@ -12,7 +12,7 @@ class Api::InTheatersFilmsController < AdminController
     @film = InTheatersFilm.new(film_id: film_params[:film_id], section: film_params[:section], order: current_length)
     if @film.save
       index_data
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     end
   end
 
@@ -20,7 +20,7 @@ class Api::InTheatersFilmsController < AdminController
     @film = InTheatersFilm.find(params[:id]).destroy
     reorder(InTheatersFilm.where(section: @film.section).order(:order))
     index_data
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def rearrange
@@ -29,7 +29,7 @@ class Api::InTheatersFilmsController < AdminController
       film.update(order: index)
     end
     index_data
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

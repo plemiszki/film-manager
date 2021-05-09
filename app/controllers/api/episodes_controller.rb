@@ -3,14 +3,14 @@ class Api::EpisodesController < AdminController
   def show
     @episode = Episode.find(params[:id])
     @actors = @episode.actors
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @episode = Episode.new(episode_params)
     if @episode.save
       @episodes = Episode.all
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @episode.errors.full_messages, status: 422
     end
@@ -20,7 +20,7 @@ class Api::EpisodesController < AdminController
     @episode = Episode.find(params[:id])
     if @episode.update(episode_params)
       @episodes = Episode.all
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @episode.errors.full_messages, status: 422
     end

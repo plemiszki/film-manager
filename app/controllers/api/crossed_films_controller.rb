@@ -11,7 +11,7 @@ class Api::CrossedFilmsController < AdminController
         days_statement_due: master_film.days_statement_due,
         deal_type_id: master_film.deal_type_id
       ).reject { |film| ([master_film.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @crossed_film.errors.full_messages, status: 422
     end
@@ -28,7 +28,7 @@ class Api::CrossedFilmsController < AdminController
       days_statement_due: master_film.days_statement_due,
       deal_type_id: master_film.deal_type_id
     ).reject { |film| ([master_film.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

@@ -1,16 +1,16 @@
 class PurchaseOrdersController < AdminController
 
   def index
-    render "index.html.erb"
+    render 'index', formats: [:html], handlers: [:erb]
   end
 
   def show
     @purchase_order = PurchaseOrder.find_by(id: params[:id])
-    render "show.html.erb"
+    render 'show', formats: [:html], handlers: [:erb]
   end
 
   def reporting
-    render "reporting.html.erb"
+    render 'reporting', formats: [:html], handlers: [:erb]
   end
 
 end

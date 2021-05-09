@@ -11,7 +11,7 @@ class Api::ReturnItemsController < AdminController
     if @return_item.save
       @returns = Return.where(id: @return_item.return_id)
       get_data_for_items
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @return_item.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::ReturnItemsController < AdminController
     reorder(ReturnItem.where(return_id: @return_item.return_id).order(:order))
     @returns = Return.where(id: @return_item.return_id)
     get_data_for_items
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private

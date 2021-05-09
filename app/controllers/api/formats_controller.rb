@@ -2,19 +2,19 @@ class Api::FormatsController < AdminController
 
   def index
     @formats = Format.all
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @format = Format.find(params[:id])
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @format = Format.new(format_params)
     if @format.save
       @formats = Format.all
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @format.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::FormatsController < AdminController
   def update
     @format = Format.find(params[:id])
     if @format.update(format_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @format.errors.full_messages, status: 422
     end
