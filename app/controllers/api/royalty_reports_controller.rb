@@ -7,7 +7,7 @@ class Api::RoyaltyReportsController < AdminController
   def index
     @reports = RoyaltyReport.includes(film: [:licensor]).where(quarter: params[:quarter], year: params[:year])
     @errors = flash[:errors] || []
-    render "index.json.jbuilder"
+    render 'index.json.jbuilder', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
@@ -20,7 +20,7 @@ class Api::RoyaltyReportsController < AdminController
       @streams = @report.royalty_revenue_streams
       @films = [@film]
     end
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
@@ -48,7 +48,7 @@ class Api::RoyaltyReportsController < AdminController
         @streams = @report.royalty_revenue_streams
         @film = Film.find(@report.film_id)
         @films = [@film]
-        render "show.json.jbuilder"
+        render 'show', formats: [:json], handlers: [:jbuilder]
       end
     rescue
       render json: errors, status: 422

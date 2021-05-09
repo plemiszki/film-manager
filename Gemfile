@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 ruby '2.7.3'
 
-gem 'rails', '5.2.5'
-gem 'pg', '~> 0.15'
+gem 'rails', '6.1.3.2'
+gem 'pg'
 gem 'sass-rails'
 gem 'uglifier', '4.2.0'
 gem 'jquery-rails'

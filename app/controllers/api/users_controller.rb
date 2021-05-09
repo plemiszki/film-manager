@@ -2,19 +2,19 @@ class Api::UsersController < Clearance::UsersController
 
   def api_index
     @users = User.where.not(name: "Producer")
-    render "index.json.jbuilder"
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     @user = User.find(params[:id])
-    render "show.json.jbuilder"
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def api_create
     @user = User.new(user_params)
     if @user.save
       @users = User.all
-      render "index.json.jbuilder"
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @user.errors.full_messages, status: 422
     end
@@ -23,7 +23,7 @@ class Api::UsersController < Clearance::UsersController
   def api_update
     @user = User.find(params[:id])
     if @user.update(user_params)
-      render "show.json.jbuilder"
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @user.errors.full_messages, status: 422
     end

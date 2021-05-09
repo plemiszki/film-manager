@@ -329,7 +329,7 @@ class RoyaltyReport < ActiveRecord::Base
       report = RoyaltyReport.find_by(year: year, quarter: quarter, film_id: film.id)
       next unless report
       report_streams = report.royalty_revenue_streams
-      result.update_attributes({
+      result.update({
         current_total: result.current_total + report.current_total,
         current_total_revenue: result.current_total_revenue + report.current_total_revenue,
         current_total_expenses: result.current_total_expenses + report.current_total_expenses,
@@ -352,7 +352,7 @@ class RoyaltyReport < ActiveRecord::Base
       })
       report_streams.each_with_index do |report_stream, index|
         stream = streams[index]
-        stream.update_attributes({
+        stream.update({
           current_revenue: stream.current_revenue + report_stream.current_revenue,
           current_gr: stream.current_gr + report_stream.current_gr,
           current_expense: stream.current_expense + report_stream.current_expense,

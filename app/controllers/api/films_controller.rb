@@ -8,19 +8,19 @@ class Api::FilmsController < AdminController
     else
       @films = Film.where(film_type: params[:film_type]).includes(:alternate_lengths, alternate_subs: [:language], alternate_audios: [:language])
     end
-    render 'index.json.jbuilder'
+    render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
     gather_data_for_show_view
-    render 'show.json.jbuilder'
+    render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @film = Film.new(title: params[:title], label_id: 1, days_statement_due: 30, film_type: params[:film_type], year: params[:year], length: params[:length])
     if @film.save
       @films = Film.where(film_type: params[:film_type])
-      render 'index.json.jbuilder'
+      render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @film.errors.full_messages, status: 422
     end
@@ -56,7 +56,7 @@ class Api::FilmsController < AdminController
           end
         end
         gather_data_for_show_view
-        render 'show.json.jbuilder'
+        render 'show', formats: [:json], handlers: [:jbuilder]
       end
     rescue
       render json: errors, status: 422

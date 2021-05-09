@@ -19,7 +19,7 @@ RSpec.describe Api::RoyaltyReportsController do
       get :show, params: { id: report.id }
       parsed_response = JSON.parse(response.body)
       expect(parsed_response["report"]["joinedAmountDue"]).to eq("-$1,800.00")
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -44,7 +44,7 @@ RSpec.describe Api::RoyaltyReportsController do
       get :show, params: { id: report.id }
       parsed_response = JSON.parse(response.body)
       expect(parsed_response["report"]["joinedAmountDue"]).to eq("-$3,600.00")
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -65,7 +65,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.mg).to eq(300)
       expect(report.e_and_o).to eq(400)
       expect(report.amount_paid).to eq(500)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -98,7 +98,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(stream.joined_revenue).to eq(1100)
       expect(stream.joined_expense).to eq(550)
       expect(stream.joined_licensor_share).to eq(550)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -128,7 +128,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.current_total_revenue).to eq(1400)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -144,7 +144,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.current_total).to eq(700)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -160,7 +160,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.cume_total_revenue).to eq(14000)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -176,7 +176,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.cume_total).to eq(3500)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -195,7 +195,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.cume_total).to eq(7000)
       expect(report.joined_total).to eq(7700)
       expect(report.joined_amount_due).to eq(2700)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -219,7 +219,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(stream.cume_difference).to eq(500)
       expect(stream.cume_licensor_share).to eq(250)
       expect(stream.joined_licensor_share).to eq(275)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -235,7 +235,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.current_total_expenses).to eq(980)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -251,7 +251,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.current_total).to eq(350)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -266,7 +266,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.cume_total_expenses).to eq(11_200)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -282,7 +282,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.cume_total).to eq(4200)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -301,7 +301,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.cume_total).to eq(4480)
       expect(report.joined_total).to eq(4900)
       expect(report.joined_amount_due).to eq(2000)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -335,7 +335,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(video_stream.cume_difference).to eq(1000)
       expect(video_stream.cume_licensor_share).to eq(500)
       expect(video_stream.joined_licensor_share).to eq(550)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -351,7 +351,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.current_total).to eq(625)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -367,7 +367,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.cume_total).to eq(5300)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -386,7 +386,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.cume_total).to eq(5360)
       expect(report.joined_total).to eq(5890)
       expect(report.joined_amount_due).to eq(2990)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -406,7 +406,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(stream.cume_revenue).to eq(1000)
       expect(stream.cume_licensor_share).to eq(500)
       expect(stream.joined_licensor_share).to eq(550)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -422,7 +422,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: { current_total_expenses: 250, cume_total_expenses: 350 }, streams: streams }, as: :json
       report.reload
       expect(report.current_total).to eq(700)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -438,7 +438,7 @@ RSpec.describe Api::RoyaltyReportsController do
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
       report.reload
       expect(report.cume_total).to eq(5600)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -460,7 +460,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.joined_total_expenses).to eq(1100)
       expect(report.amount_due).to eq(1900)
       expect(report.joined_amount_due).to eq(2160)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -482,7 +482,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(stream.cume_gr).to eq(200)
       expect(stream.cume_licensor_share).to eq(400)
       expect(stream.joined_licensor_share).to eq(440)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -502,7 +502,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.joined_total).to eq(2310)
       expect(report.amount_due).to eq(-800)
       expect(report.joined_amount_due).to eq(-590)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -532,7 +532,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(video_stream.cume_gr).to eq(0)
       expect(video_stream.cume_licensor_share).to eq(500)
       expect(video_stream.joined_licensor_share).to eq(550)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -552,7 +552,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.joined_total).to eq(3630)
       expect(report.amount_due).to eq(400)
       expect(report.joined_amount_due).to eq(730)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
 
@@ -623,7 +623,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.joined_total).to eq(350)
       expect(report.amount_due).to eq(-2500)
       expect(report.joined_amount_due).to eq(-2175)
-      expect(response).to render_template('api/royalty_reports/show.json.jbuilder')
+      expect(response).to render_template('api/royalty_reports/show', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
       # second report
       report = create(:dvd_reserve_royalty_report, quarter: 2)
