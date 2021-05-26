@@ -55,7 +55,7 @@ class ExportBookings
       sheet.add_row([
         booking.start_date,
         booking.end_date,
-        booking.film.title,
+        { type: :String, value: booking.film.title },
         venue.label,
         booking.booking_type,
         booking.status,

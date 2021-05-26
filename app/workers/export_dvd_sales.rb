@@ -45,7 +45,7 @@ class ExportDvdSales
           order.number,
           customer.name,
           licensor ? licensor.name : '',
-          item.item_type == 'dvd' ? feature.title : giftbox.name,
+          { type: :String, value: item.item_type == 'dvd' ? feature.title : giftbox.name },
           item.item_type == 'dvd' ? dvd.upc : giftbox.upc,
           item.item_type == 'dvd' ? dvd.dvd_type.name : '',
           price,

@@ -66,7 +66,7 @@ class ExportFilms
       blu_ray = Dvd.find_by({ feature_film_id: film.id, dvd_type_id: 6 })
 
       base_array = [
-        film.title,
+        { type: :String, value: film.title },
         (film.licensor ? film.licensor.name : ''),
         film.start_date ? film.start_date.strftime("%-m/%-d/%Y") : '',
         film.end_date ? film.end_date.strftime("%-m/%-d/%Y") : '',

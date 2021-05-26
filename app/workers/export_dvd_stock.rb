@@ -24,7 +24,7 @@ class ExportDvdStock
     films = Film.where(film_type: 'Feature').order(:title).includes(:licensor)
     films.each_with_index do |film, index|
       row = [
-        film.title,
+        { type: :String, value: film.title },
         film.licensor.try(:name) || ''
       ]
       dvd_types.each do |dvd_type|

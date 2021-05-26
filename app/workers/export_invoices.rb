@@ -141,7 +141,7 @@ class ExportInvoices
           'FALSE',
           item.item_qty,
           '', '', '', '',
-          (invoice.invoice_type == 'dvd' ? item.item_label : "#{booking_film.title} #{booking.start_date.strftime("%-m/%-d/%y")} - #{booking.end_date.strftime("%-m/%-d/%y")}"),
+          { type: :String, value: (invoice.invoice_type == 'dvd' ? item.item_label : "#{booking_film.title} #{booking.start_date.strftime("%-m/%-d/%y")} - #{booking.end_date.strftime("%-m/%-d/%y")}") },
           (invoice.invoice_type == 'dvd' ? '30200' : (item.item_label == 'Shipping Fee' ? '40069' : booking_gl_code)),
           '', # 50
           (item.unit_price * -1),
