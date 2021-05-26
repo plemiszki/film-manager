@@ -16,6 +16,7 @@ describe 'episode_details', type: :feature do
 
   it 'displays information about the episode' do
     visit episode_path(@episode, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="title"]').value).to eq('Pilot')
     expect(find('input[data-field="length"]').value).to eq('60')
     expect(find('input[data-field="seasonNumber"]').value).to eq('1')
