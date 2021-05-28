@@ -104,7 +104,7 @@ class ExportInvoices
       items.each_with_index do |item, index|
         errors << "No Sage ID for #{booking_venue.label}" if invoice.invoice_type == 'booking' && booking_venue.sage_id.empty?
         sheet.add_row([
-          (invoice.invoice_type == 'dvd' ? invoice.customer.sage_id : booking_venue.sage_id),
+          { type: :String, value: (invoice.invoice_type == 'dvd' ? invoice.customer.sage_id : booking_venue.sage_id) },
           '',
           invoice.number,
           '',
@@ -151,7 +151,7 @@ class ExportInvoices
           '', '', '', '', '',
           '1',
           '', '', '',
-          (invoice.invoice_type == 'booking' ? (item.item_label == 'Shipping Fee' ? '' : booking_film.get_sage_id) : (item.item_type == 'dvd' ? Film.find(item.item_id).get_sage_id : Giftbox.find(item.item_id).sage_id))
+          { type: :String, value: (invoice.invoice_type == 'booking' ? (item.item_label == 'Shipping Fee' ? '' : booking_film.get_sage_id) : (item.item_type == 'dvd' ? Film.find(item.item_id).get_sage_id : Giftbox.find(item.item_id).sage_id)) }
         ])
       end
       job.update({ current_value: invoice_index + 1 })
