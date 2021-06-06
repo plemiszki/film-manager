@@ -402,6 +402,7 @@ $(document).ready(function() {
           entityName='settings'
           header="Settings"
           hideDeleteButton={ true }
+          fetchData={ ['users'] }
           initialEntity={ {
             booking_confirmation_text: '',
             unpaid_overage_booking_invoice_email_text: '',
@@ -426,6 +427,7 @@ $(document).ready(function() {
               { columnWidth: 12, property: 'allBookingInvoicesEmailText', columnHeader: 'Booking Invoices Additional Email Copy', subheader: 'Included at the end of all booking invoice emails.', type: 'textbox', rows: 4 },
               { columnWidth: 12, property: 'dvdInvoiceEmailText', columnHeader: 'DVD Invoice Email Copy', type: 'textbox', rows: 10 },
               { columnWidth: 12, property: 'creditMemoEmailText', columnHeader: 'Credit Memo Email Copy', type: 'textbox', rows: 8 },
+              { columnWidth: 5, columnHeader: 'Sender of Box Office Reminders', property: 'boxOfficeRemindersUserId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'users' }
             ]
           ] }
         />

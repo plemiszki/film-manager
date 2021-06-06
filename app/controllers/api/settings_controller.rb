@@ -2,12 +2,14 @@ class Api::SettingsController < AdminController
 
   def show
     @settings = Setting.first
+    @users = User.box_office_reminder_senders
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
     @settings = Setting.first
     if @settings.update(settings_params)
+      @users = User.box_office_reminder_senders
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @settings.errors.full_messages, status: 422
@@ -27,7 +29,8 @@ class Api::SettingsController < AdminController
       :unpaid_non_overage_booking_invoice_email_text,
       :booking_invoice_payment_info_email_text,
       :shipping_terms_email_text,
-      :all_booking_invoices_email_text
+      :all_booking_invoices_email_text,
+      :box_office_reminders_user_id
     )
   end
 

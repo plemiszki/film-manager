@@ -11,5 +11,6 @@ class User < ActiveRecord::Base
 
   scope :bookers, -> { where(booker: true) }
   scope :active_bookers, -> { where(booker: true, inactive: false) }
+  scope :box_office_reminder_senders, -> { where(booker: true, inactive: false).where.not(name: 'Producer') }
 
 end

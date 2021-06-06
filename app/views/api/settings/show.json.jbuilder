@@ -9,4 +9,9 @@ json.settings do
   json.bookingInvoicePaymentInfoEmailText @settings.booking_invoice_payment_info_email_text
   json.shippingTermsEmailText @settings.shipping_terms_email_text
   json.allBookingInvoicesEmailText @settings.all_booking_invoices_email_text
+  json.boxOfficeRemindersUserId @settings.box_office_reminders_user_id
+end
+json.users @users do |user|
+  json.id user.id
+  json.name user.name
 end

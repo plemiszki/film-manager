@@ -60,8 +60,9 @@ class Booking < ActiveRecord::Base
     end
   end
 
-  def self.send_box_office_reminders(name:, email:)
+  def self.send_box_office_reminders
     return unless Time.now.in_time_zone("America/New_York").strftime("%A") == "Friday"
+    sender = Setting.first.box_office_reminders_sender
 
 email_body = <<-COPY
 Hello,
@@ -70,7 +71,7 @@ This is an automated request to remind you that we have not received the box off
 
 Kind Regards,
 
-#{name}
+#{sender.name}
 Film Movement
 
 COPY
@@ -100,9 +101,9 @@ COPY
       venue = booking.venue
       venue_name = (venue.billing_name.present? ? venue.billing_name : venue.label)
       message_params = {
-        from: email,
+        from: sender.email,
         to: booking.email,
-        bcc: email,
+        bcc: sender.email,
         subject: "Box Office Reminder: #{booking.film.title} at #{venue_name} (#{booking.start_date.strftime("%-m/%-d/%y")})",
         text: email_body
       }
