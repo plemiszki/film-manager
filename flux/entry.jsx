@@ -283,6 +283,7 @@ $(document).ready(function() {
           searchModalRows={ 3 }
           searchModalDimensions={ { width: 600 } }
           showNewButton={ true }
+          showExportButton={ true }
           newModalRows={ 1 }
           newModalDimensions={ { width: 998 } }
         >

@@ -47,4 +47,10 @@ describe 'returns_index', type: :feature do
     expect(page).to have_content "Date can't be blank"
   end
 
+  it 'starts the export job' do
+    visit returns_path(as: $admin_user)
+    find('.export-button', text: 'Export').click
+    expect(page).to have_content('Exporting DVD Returns')
+  end
+
 end

@@ -50,13 +50,11 @@ class Api::ReturnsController < AdminController
   end
 
   def export
-    start_date = Date.strptime(params[:start_date], "%m/%d/%y")
-    end_date = Date.strptime(params[:end_date], "%m/%d/%y")
+    return_ids = perform_search(model: 'Return').pluck(:id)
     time_started = Time.now.to_s
-    total_returns = Return.where(date: start_date..end_date).count
-    job = Job.create!(job_id: time_started, name: "export returns", first_line: "Exporting DVD Returns", second_line: true, current_value: 0, total_value: total_returns)
-    ExportDvdReturns.perform_async(time_started, start_date, end_date)
-    render json: job.render_json
+    job = Job.create!(job_id: time_started, name: "export returns", first_line: "Exporting DVD Returns", second_line: true, current_value: 0, total_value: return_ids.length)
+    ExportDvdReturns.perform_async(return_ids, time_started)
+    render json: { job: job.render_json }
   end
 
   def send_credit_memo

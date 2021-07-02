@@ -2,8 +2,7 @@ class ExportDvdReturns
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  def perform(time_started, start_date, end_date)
-    errors = []
+  def perform(return_ids, time_started)
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
@@ -24,7 +23,7 @@ class ExportDvdReturns
       "Total"
     ])
 
-    returns = Return.where(date: start_date..end_date).includes(:customer)
+    returns = Return.where(id: return_ids).order(:id)
     returns.each_with_index do |rtn, rtn_index|
       items = rtn.return_items
       items.each_with_index do |item, index|
@@ -66,7 +65,7 @@ class ExportDvdReturns
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object("#{time_started}/returns.xlsx")
     obj.upload_file(file_path, acl:'public-read')
-    job.update!({ done: true, first_line: errors.empty? ? obj.public_url : "Errors Found", errors_text: errors.empty? ? "" : errors.uniq.join("\n") })
+    job.update!({ status: :success, metadata: { url: obj.public_url } })
   end
 
 end
