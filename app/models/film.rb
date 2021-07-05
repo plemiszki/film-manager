@@ -132,4 +132,12 @@ class Film < ActiveRecord::Base
     report.transfer_and_calculate_from_previous_report!
   end
 
+  def self.backfill_end_date_calc!
+    Film.all.includes(:film_rights).each do |film|
+      film.film_rights.each do |film_right|
+        film_right.update(end_date_calc: film.auto_renew ? (film_right.end_date + film.auto_renew_term.months) : film_right.end_date)
+      end
+    end
+  end
+
 end

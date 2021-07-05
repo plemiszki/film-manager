@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_06_163335) do
+ActiveRecord::Schema.define(version: 2021_07_05_222224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -292,6 +292,7 @@ ActiveRecord::Schema.define(version: 2021_06_06_163335) do
     t.date "start_date"
     t.date "end_date"
     t.boolean "exclusive", default: false
+    t.date "end_date_calc"
     t.index ["right_id", "film_id", "territory_id"], name: "index_film_rights_on_right_id_and_film_id_and_territory_id", unique: true
   end
 
@@ -369,6 +370,7 @@ ActiveRecord::Schema.define(version: 2021_06_06_163335) do
     t.integer "rental_days", default: 0
     t.string "tv_rating", default: ""
     t.string "contractual_obligations", default: ""
+    t.date "end_date_calc"
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
     t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"

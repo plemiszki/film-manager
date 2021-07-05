@@ -231,11 +231,11 @@ class Api::FilmsController < AdminController
   private
 
   def filter_by_dates(film_rights, search_criteria, right_id)
-    result = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date >= ? OR end_date IS NULL)', search_criteria[:start_date], search_criteria[:end_date])
+    result = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date_calc >= ? OR end_date_calc IS NULL)', search_criteria[:start_date], search_criteria[:end_date])
     if right_id == "12"
       films_with_sell_off_period = Film.where.not(sell_off_period: 0)
       films_with_sell_off_period.each do |film|
-        more_rights = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date >= ? OR end_date IS NULL)', search_criteria[:start_date], (Date.strptime(search_criteria[:end_date], "%m/%d/%y") - film.sell_off_period.months))
+        more_rights = film_rights.where('(start_date <= ? OR start_date IS NULL) AND (end_date_calc >= ? OR end_date_calc IS NULL)', search_criteria[:start_date], (Date.strptime(search_criteria[:end_date], "%m/%d/%y") - film.sell_off_period.months))
         result = (result | more_rights)
       end
     end
