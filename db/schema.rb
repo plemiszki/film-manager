@@ -370,7 +370,6 @@ ActiveRecord::Schema.define(version: 2021_07_05_222224) do
     t.integer "rental_days", default: 0
     t.string "tv_rating", default: ""
     t.string "contractual_obligations", default: ""
-    t.date "end_date_calc"
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
     t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"
