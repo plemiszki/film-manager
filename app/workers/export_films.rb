@@ -16,6 +16,7 @@ class ExportFilms
       'Licensor',
       'Date Signed',
       'Expiration',
+      'Auto Renew',
       'Label',
       'Production Year',
       'Synopsis',
@@ -67,9 +68,10 @@ class ExportFilms
 
       base_array = [
         { type: :String, value: film.title },
-        (film.licensor ? film.licensor.name : ''),
+        { type: :String, value: film.licensor ? film.licensor.name : '' },
         film.start_date ? film.start_date.strftime("%-m/%-d/%Y") : '',
         film.end_date ? film.end_date.strftime("%-m/%-d/%Y") : '',
+        (film.auto_renew && film.end_date_calc) ? film.end_date_calc.strftime("%-m/%-d/%Y") : '',
         film.proper_label_name,
         film.year,
         film.synopsis,
