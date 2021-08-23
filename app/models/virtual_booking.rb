@@ -8,6 +8,10 @@ class VirtualBooking < ActiveRecord::Base
   belongs_to :film
   belongs_to :venue
 
+  def url_if_present
+    (url.present? && url != "https://") ? url : nil
+  end
+
   def self.delete_converted!
     file_path = Rails.root.join("./virtual-bookings.xlsx").to_s
     xlsx = Roo::Spreadsheet.open(file_path)
