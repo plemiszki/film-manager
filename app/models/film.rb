@@ -62,6 +62,7 @@ class Film < ActiveRecord::Base
   has_many :alternate_subs, dependent: :destroy
   has_many :alternate_audios, dependent: :destroy
   has_many :virtual_bookings
+  has_many :virtual_bookings_with_urls, -> { where.not(url: 'https://') }, class_name: 'VirtualBooking'
   has_many :aliases, dependent: :destroy
 
   scope :features, -> { where(film_type: 'Feature') }
