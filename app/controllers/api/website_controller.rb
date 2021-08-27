@@ -14,7 +14,6 @@ class Api::WebsiteController < CyberController
     @in_theaters = InTheatersFilm.where(section: 'In Theaters').includes(:film).order(:order)
     @coming_soon = InTheatersFilm.where(section: 'Coming Soon').includes(:film).order(:order)
     @repertory = InTheatersFilm.where(section: 'Repertory').includes(:film).order(:order)
-    @virtual = InTheatersFilm.where(section: 'Virtual').includes(:film).order(:order)
     render 'bookings.json.jbuilder'
   end
 
