@@ -47,8 +47,8 @@ describe 'dvd_customer_details', type: :feature do
     expect(find('input[data-field="country"]').value).to eq 'Country'
     expect(find('input[data-field="nickname"]').value).to eq 'nickname'
     expect(find('textarea[data-field="notes"]').value).to eq 'notes'
-    expect(find('input[data-field="consignment"]').checked?).to eq false
-    expect(find('input[data-field="includeInTitleReport"]').checked?).to eq false
+    expect(find('input[data-field="consignment"]', visible: false).checked?).to eq false
+    expect(find('input[data-field="includeInTitleReport"]', visible: false).checked?).to eq false
   end
 
   it 'updates information about a non-consignment dvd customer' do
@@ -67,9 +67,9 @@ describe 'dvd_customer_details', type: :feature do
       state: 'NY',
       zip: '10001',
       country: 'New Country',
-      consignment: false,
+      consignment: { value: false, type: :switch },
       notes: 'new notes',
-      include_in_title_report: true,
+      include_in_title_report: { value: true, type: :switch },
       nickname: 'new nickname'
     }
     fill_out_form(info)
@@ -93,9 +93,9 @@ describe 'dvd_customer_details', type: :feature do
       state: 'NY',
       zip: '10001',
       country: 'New Country',
-      consignment: true,
+      consignment: { value: true, type: :switch },
       notes: 'new notes',
-      include_in_title_report: true,
+      include_in_title_report: { value: true, type: :switch },
       nickname: 'new nickname'
     }
     fill_out_form(info)

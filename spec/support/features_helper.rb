@@ -28,6 +28,10 @@ def fill_out_form(data)
     if value.class != Hash
       field = find("[data-field=\"#{key}\"]")
       field.set(value)
+    elsif value[:type] == :switch
+      field = find("[data-field=\"#{key}\"]", visible: false)
+      oval_div = field.sibling('.oval')
+      oval_div.click unless field.checked? == value[:value]
     elsif value[:type] == :select_modal
       field = find("[data-field=\"#{key}\"]")
       div_index = field.path.split('/')[-2].match(/DIV\[(?<index>\d)\]/)[:index].to_i
