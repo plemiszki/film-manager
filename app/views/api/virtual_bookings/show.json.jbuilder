@@ -10,6 +10,8 @@ json.virtualBooking do
   json.terms @virtual_booking.terms || ""
   json.url @virtual_booking.url || ""
   json.host @virtual_booking.host
+  json.deduction dollarify(number_with_precision(@virtual_booking.deduction, precision: 2, delimiter: ','))
+  json.boxOffice dollarify(number_with_precision(@virtual_booking.box_office, precision: 2, delimiter: ','))
 end
 json.films @films do |film|
   json.id film.id
