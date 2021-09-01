@@ -125,7 +125,7 @@ class DvdCustomerDetails extends React.Component {
                 <input className={ Details.errorClass(this.state.errors, FM.errors.discount) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.discount || "" } data-field="discount" />
                 { Details.renderFieldError(this.state.errors, FM.errors.discount) }
               </div>
-              { Details.renderCheckbox.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'consignment' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'consignment' }) }
             </div>
             <div className={ "row" + (this.state.dvdCustomer.consignment ? " hidden" : "") }>
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'invoicesEmail' }) }
@@ -136,7 +136,7 @@ class DvdCustomerDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'creditMemoEmail', columnHeader: 'Credit Memos Email' }) }
             </div>
             <hr />
-            <p>Billing Address:</p>
+            <p>Billing Address</p>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
@@ -177,16 +177,14 @@ class DvdCustomerDetails extends React.Component {
               </div>
             </div>
             <hr />
-            <div className="row checkboxes-only">
-              { Details.renderCheckbox.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'includeInTitleReport', columnHeader: 'Include as Column in New DVD Titles Sales Report' }) }
-            </div>
             <div className="row">
-              <div className="col-xs-9">
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'includeInTitleReport', columnHeader: 'Include in New Titles Report' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'nickname' }) }
+              <div className="col-xs-6">
                 <h2>Notes</h2>
                 <textarea rows="5" className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.notes || "" } data-field="notes" />
                 { Details.renderFieldError(this.state.errors, []) }
               </div>
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'nickname' }) }
             </div>
             { this.renderButtons() }
             { Common.renderSpinner(this.state.fetching) }
