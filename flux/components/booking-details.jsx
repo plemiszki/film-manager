@@ -407,6 +407,7 @@ class BookingDetails extends React.Component {
     return {
       thing: "booking",
       errorsArray: this.state.errors,
+      allErrors: FM.errors,
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: function(newThing, key, value) {
         if (key == "terms") {
@@ -604,13 +605,11 @@ class BookingDetails extends React.Component {
             </div>
             <hr />
             <div className="row">
-              <div className="col-xs-3">
-                <input id="terms-change-weekly" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.booking.termsChange || false } data-field="termsChange" /><label className="checkbox" htmlFor="terms-change-weekly">Terms Change Weekly</label>
-              </div>
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'booking', property: 'termsChange', columnHeader: 'Terms Change Weekly' }) }
               { this.renderTermsColumn() }
             </div>
             <hr />
-            <h3>Billing Address:</h3>
+            <h3>Billing Address</h3>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
@@ -651,7 +650,7 @@ class BookingDetails extends React.Component {
               </div>
             </div>
             <hr />
-            <h3>Shipping Address:</h3>
+            <h3>Shipping Address</h3>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Name</h2>
@@ -692,7 +691,7 @@ class BookingDetails extends React.Component {
               </div>
             </div>
             <hr />
-            <h3>Notes:</h3>
+            <h3>Notes</h3>
             <div className="row">
               <div className="col-xs-12">
                 <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.notes || "" } data-field="notes" />
@@ -701,7 +700,7 @@ class BookingDetails extends React.Component {
             </div>
             <hr />
             { this.renderConfirmationSection() }
-            <h3>Screening Materials:</h3>
+            <h3>Screening Materials</h3>
               <div className="row">
                 <div className="col-xs-3">
                   <h2>Materials Sent</h2>
@@ -720,18 +719,14 @@ class BookingDetails extends React.Component {
                 </div>
               </div>
             <hr />
-            <h3>Box Office:</h3>
+            <h3>Box Office</h3>
             <div className="row">
-              <div className="col-xs-3">
-                <input id="box-office-received" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.booking.boxOfficeReceived || false } data-field="boxOfficeReceived" /><label className="checkbox" htmlFor="box-office-received">Box Office Received</label>
-              </div>
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'booking', property: 'boxOfficeReceived' }) }
               { this.renderBoxOfficeSection() }
-              <div className="col-xs-6">
-                <input id="exclude-from-requests" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.booking.excludeFromBoRequests || false } data-field="excludeFromBoRequests" /><label className="checkbox" htmlFor="exclude-from-requests">Exclude From Automated Box Office Requests</label>
-              </div>
+              { Details.renderSwitch.bind(this)({ columnWidth: 4, entity: 'booking', property: 'excludeFromBoRequests', columnHeader: 'Exclude From Automated Box Office Requests' }) }
             </div>
             <hr />
-            <h3>Invoices:</h3>
+            <h3>Invoices</h3>
             { this.renderImportedInvoicesSection() }
             <div className="row">
               <div className="col-xs-12">
@@ -776,7 +771,7 @@ class BookingDetails extends React.Component {
             <hr />
             <div className="row">
               <div className="col-xs-6">
-                <h3>Payments:</h3>
+                <h3>Payments</h3>
                 <ul className="payments-list">
                   { this.state.payments.map((payment) => {
                     return(
@@ -787,7 +782,7 @@ class BookingDetails extends React.Component {
                 <a className={ 'blue-outline-button small' } onClick={ this.clickAddPayment.bind(this) }>Add Payment</a>
               </div>
               <div className="col-xs-6">
-                <h3>Calculations:</h3>
+                <h3>Calculations</h3>
                 { this.renderCalculations() }
               </div>
             </div>
@@ -909,7 +904,7 @@ class BookingDetails extends React.Component {
     if (this.state.booking.bookingConfirmationSent) {
       return(
         <div>
-          <h3>Booking Confirmation:</h3>
+          <h3>Booking Confirmation</h3>
           <div className="row">
             <div className="col-xs-3">
               <h2>Booking Confirmation Sent</h2>
@@ -924,7 +919,7 @@ class BookingDetails extends React.Component {
       if (this.state.bookingSaved.email) {
         return(
           <div>
-            <h3>Booking Confirmation:</h3>
+            <h3>Booking Confirmation</h3>
             <div className="row">
               <div className="col-xs-12">
                 <a className={ "orange-button confirmation-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSendConfirmation.bind(this) }>
