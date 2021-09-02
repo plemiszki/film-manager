@@ -29,6 +29,8 @@ describe 'virtual_booking_details', type: :feature do
     expect(find('input[data-field="terms"]').value).to eq('50%')
     expect(find('input[data-field="url"]').value).to eq('https://www.someurl.com')
     expect(find('input[data-field="deduction"]').value).to eq('$50.00')
+    expect(find('input[data-field="boxOffice"]').value).to eq('$500.00')
+    expect(find('input[data-field="boxOfficeReceived"]', visible: false).checked?).to eq(false)
   end
 
   it 'updates information about the virtual_booking' do
@@ -44,6 +46,8 @@ describe 'virtual_booking_details', type: :feature do
       url: 'https://www.hippothemovie.com',
       host: { value: 'Venue', type: :select },
       deduction: 100,
+      box_office: 750,
+      box_office_received: { value: true, type: :switch },
     }
     fill_out_form(new_info)
     save_and_wait
@@ -58,7 +62,8 @@ describe 'virtual_booking_details', type: :feature do
         host: 'Venue'
       },
       component_data: {
-        deduction: '$100.00'
+        deduction: '$100.00',
+        box_office: '$750.00'
       }
     })
   end

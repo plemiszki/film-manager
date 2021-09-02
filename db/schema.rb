@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_01_182206) do
+ActiveRecord::Schema.define(version: 2021_09_02_214035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -760,6 +760,7 @@ ActiveRecord::Schema.define(version: 2021_09_01_182206) do
     t.integer "host", default: 0
     t.decimal "deduction", precision: 8, scale: 2, default: "0.0"
     t.decimal "box_office", precision: 8, scale: 2, default: "0.0"
+    t.boolean "box_office_received", default: false
   end
 
   create_table "weekly_box_offices", id: :serial, force: :cascade do |t|

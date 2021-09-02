@@ -12,6 +12,8 @@ FactoryBot.define do
     url { 'https://www.someurl.com' }
     host { 'FM' }
     deduction { 50 }
+    box_office { 500 }
+    box_office_received { false }
   end
 
 end

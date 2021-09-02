@@ -63,7 +63,7 @@ class VirtualBookingDetails extends React.Component {
         id: window.location.pathname.split("/")[2],
         directory: window.location.pathname.split("/")[1],
         entityName: 'virtualBooking',
-        entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.virtualBooking, fields: ['deduction'] })
+        entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.virtualBooking, fields: ['deduction', 'boxOffice'] })
       }).then(() => {
         this.setState({
           fetching: false,
@@ -100,6 +100,12 @@ class VirtualBookingDetails extends React.Component {
           <div className="row">
             { Details.renderField.bind(this)({ columnWidth: 8, entity: 'virtualBooking', property: 'url' }) }
             { Details.renderDropDown.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'host', columnHeader: 'Hosted By', options: [{ id: 'FM', text: 'FM' }, { id: 'Venue', text: 'Venue' }], optionDisplayProperty: 'text' }) }
+          </div>
+          <hr className="divider" />
+          <h3>Box Office</h3>
+          <div className="row">
+            { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'boxOfficeReceived' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'boxOffice' }) }
           </div>
           <div>
             <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
