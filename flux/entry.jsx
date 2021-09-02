@@ -36,6 +36,7 @@ import ReturnDetails from './components/return-details.jsx'
 import RoyaltyReportDetails from './components/royalty-report-details.jsx'
 import RoyaltyReportsIndex from './components/reports-index.jsx'
 import VenueDetails from './components/venue-details.jsx'
+import VirtualBookingDetails from './components/virtual-booking-details.jsx'
 
 $(document).ready(function() {
   ReactModal.setAppElement(document.body);
@@ -1217,33 +1218,8 @@ $(document).ready(function() {
   if (document.querySelector('#virtual-booking-details')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
-        <SimpleDetails
-          csrfToken={ true }
+        <VirtualBookingDetails
           context={ MyContext }
-          entityName='virtualBooking'
-          fetchData={ ['films', 'venues'] }
-          initialEntity={ { filmId: '', venueId: '' } }
-          fields={ [[
-            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' },
-            { columnWidth: 6, property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label' },
-            { columnWidth: 3, property: 'shippingCity', columnHeader: 'City' },
-            { columnWidth: 2, property: 'shippingState', columnHeader: 'State' },
-            { columnWidth: 2, property: 'startDate' },
-            { columnWidth: 2, property: 'endDate' },
-            { columnWidth: 3, property: 'terms' },
-            { columnWidth: 8, property: 'url' },
-            { columnWidth: 2,
-              entity: 'virtualBooking',
-              property: 'host',
-              type: 'dropdown',
-              columnHeader: 'Hosted By',
-              options: [
-                { id: 'FM', text: 'FM' },
-                { id: 'Venue', text: 'Venue' }
-              ],
-              optionDisplayProperty: 'text'
-            }
-          ]] }
         />
       </Provider>,
       document.querySelector('#virtual-booking-details')
