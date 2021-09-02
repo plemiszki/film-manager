@@ -55,7 +55,7 @@ class Api::VirtualBookingsController < AdminController
   private
 
   def virtual_booking_params
-    params[:virtual_booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :shipping_city, :shipping_state, :terms, :url, :host)
+    params[:virtual_booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :shipping_city, :shipping_state, :terms, :url, :host, :deduction)
   end
 
 end

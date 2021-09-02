@@ -28,6 +28,7 @@ describe 'virtual_booking_details', type: :feature do
     expect(find('input[data-field="endDate"]').value).to eq((Date.today + 1.day).strftime('%-m/%-d/%y'))
     expect(find('input[data-field="terms"]').value).to eq('50%')
     expect(find('input[data-field="url"]').value).to eq('https://www.someurl.com')
+    expect(find('input[data-field="deduction"]').value).to eq('$50.00')
   end
 
   it 'updates information about the virtual_booking' do
@@ -41,7 +42,8 @@ describe 'virtual_booking_details', type: :feature do
       shipping_state: 'MA',
       terms: '100%',
       url: 'https://www.hippothemovie.com',
-      host: { value: 'Venue', type: :select }
+      host: { value: 'Venue', type: :select },
+      deduction: 100,
     }
     fill_out_form(new_info)
     save_and_wait
@@ -54,6 +56,9 @@ describe 'virtual_booking_details', type: :feature do
         start_date: Date.parse('1/1/2020'),
         end_date: Date.parse('1/2/2020'),
         host: 'Venue'
+      },
+      component_data: {
+        deduction: '$100.00'
       }
     })
   end

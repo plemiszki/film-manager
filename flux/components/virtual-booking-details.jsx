@@ -63,7 +63,7 @@ class VirtualBookingDetails extends React.Component {
         id: window.location.pathname.split("/")[2],
         directory: window.location.pathname.split("/")[1],
         entityName: 'virtualBooking',
-        entity: this.state.virtualBooking
+        entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.virtualBooking, fields: ['deduction'] })
       }).then(() => {
         this.setState({
           fetching: false,

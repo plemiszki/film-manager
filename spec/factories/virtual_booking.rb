@@ -11,6 +11,7 @@ FactoryBot.define do
     shipping_state { 'NY' }
     url { 'https://www.someurl.com' }
     host { 'FM' }
+    deduction { 50 }
   end
 
 end
