@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_02_214035) do
+ActiveRecord::Schema.define(version: 2021_09_03_172715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -516,6 +516,7 @@ ActiveRecord::Schema.define(version: 2021_09_02_214035) do
     t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.date "date"
     t.string "notes"
+    t.string "booking_type", default: "Booking"
   end
 
   create_table "purchase_order_items", id: :serial, force: :cascade do |t|
@@ -761,6 +762,8 @@ ActiveRecord::Schema.define(version: 2021_09_02_214035) do
     t.decimal "deduction", precision: 8, scale: 2, default: "0.0"
     t.decimal "box_office", precision: 8, scale: 2, default: "0.0"
     t.boolean "box_office_received", default: false
+    t.string "email", default: ""
+    t.date "report_sent_date"
   end
 
   create_table "weekly_box_offices", id: :serial, force: :cascade do |t|

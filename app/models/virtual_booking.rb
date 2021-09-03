@@ -8,6 +8,7 @@ class VirtualBooking < ActiveRecord::Base
 
   belongs_to :film
   belongs_to :venue
+  has_many :payments, as: :booking, dependent: :destroy
 
   def url_if_present
     (url.present? && url != "https://") ? url : nil

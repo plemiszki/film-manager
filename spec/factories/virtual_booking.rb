@@ -14,6 +14,7 @@ FactoryBot.define do
     deduction { 50 }
     box_office { 500 }
     box_office_received { false }
+    email { 'someone@venue.com' }
   end
 
 end

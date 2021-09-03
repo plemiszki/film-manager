@@ -4,6 +4,6 @@ class Payment < ActiveRecord::Base
   validates_numericality_of :amount
   validates_date :date, allow_blank: false
 
-  belongs_to :booking
+  belongs_to :booking, polymorphic: true
 
 end

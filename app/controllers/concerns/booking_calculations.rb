@@ -5,14 +5,15 @@ module BookingCalculations
     total_gross = calculate_total_gross(booking)
     valid, our_share = calculate_our_share(booking, total_gross)
     received = calculate_received(booking)
-    terms = booking.terms.downcase
+    advance = booking.respond_to?(:advance) ? booking.advance : 0
+    shipping_fee = booking.respond_to?(:shipping_fee) ? booking.shipping_fee : 0
     {
       valid: valid,
       total_gross: total_gross,
       our_share: our_share,
       received: received,
       owed: (our_share - received),
-      overage: our_share - booking.advance - booking.shipping_fee
+      overage: (our_share - advance - shipping_fee)
     }
   end
 
@@ -60,13 +61,13 @@ module BookingCalculations
       match_data = terms.match(/^\$(?<flat>[\d\.]+) vs (?<percentage>[\d\.]+)%$/)
       flat = match_data[:flat].to_f
       percentage = match_data[:percentage].to_f * 0.01 * gross
-      our_share = [flat, percentage].max + booking.shipping_fee
+      our_share = [flat, percentage].max + (booking.respond_to?(:shipping_fee) ? booking.shipping_fee : 0)
     elsif terms.match(/^[\d\.]+%$/)
       valid = true
-      our_share = (terms.sub('%', '').to_f * 0.01 * gross) + booking.shipping_fee
+      our_share = (terms.sub('%', '').to_f * 0.01 * gross) + (booking.respond_to?(:shipping_fee) ? booking.shipping_fee : 0)
     elsif terms.match(/^\$[\d\.]+$/)
       valid = true
-      our_share = terms.sub('$', '').to_f + booking.shipping_fee
+      our_share = terms.sub('$', '').to_f + (booking.respond_to?(:shipping_fee) ? booking.shipping_fee : 0)
     else
       our_share = 0.0
       valid = false

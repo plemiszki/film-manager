@@ -31,6 +31,7 @@ describe 'virtual_booking_details', type: :feature do
     expect(find('input[data-field="deduction"]').value).to eq('$50.00')
     expect(find('input[data-field="boxOffice"]').value).to eq('$500.00')
     expect(find('input[data-field="boxOfficeReceived"]', visible: false).checked?).to eq(false)
+    expect(find('input[data-field="email"]').value).to eq('someone@venue.com')
   end
 
   it 'updates information about the virtual_booking' do
@@ -48,6 +49,7 @@ describe 'virtual_booking_details', type: :feature do
       deduction: 100,
       box_office: 750,
       box_office_received: { value: true, type: :switch },
+      email: 'someonenew@venue.com'
     }
     fill_out_form(new_info)
     save_and_wait

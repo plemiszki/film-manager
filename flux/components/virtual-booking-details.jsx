@@ -16,9 +16,18 @@ class VirtualBookingDetails extends React.Component {
       fetching: true,
       virtualBooking: {},
       virtualBookingSaved: {},
+      calculations: {
+        totalGross: "$0.00",
+        ourShare: "$0.00",
+        received: "$0.00",
+        owed: "$0.00",
+        overage: "$0.00"
+      },
       films: [],
       venues: [],
       errors: [],
+      payments: [],
+      invoices: [],
       deleteModalOpen: false
     };
   }
@@ -35,6 +44,7 @@ class VirtualBookingDetails extends React.Component {
         virtualBookingSaved: HandyTools.deepCopy(this.props.virtualBooking),
         films: this.props.films,
         venues: this.props.venues,
+        calculations: this.props.calculations,
         changesToSave: false
       }, () => {
         HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
@@ -69,6 +79,7 @@ class VirtualBookingDetails extends React.Component {
           fetching: false,
           virtualBooking: this.props.virtualBooking,
           virtualBookingSaved: HandyTools.deepCopy(this.props.virtualBooking),
+          calculations: this.props.calculations,
           changesToSave: false
         });
       }, () => {
@@ -94,12 +105,20 @@ class VirtualBookingDetails extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'endDate' }) }
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'shippingCity', columnHeader: 'City' }) }
             { Details.renderField.bind(this)({ columnWidth: 1, entity: 'virtualBooking', property: 'shippingState', columnHeader: 'State' }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'terms' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'deduction' }) }
+          </div>
+          <hr className="divider" />
+          <div className="row">
+            { Details.renderField.bind(this)({ columnWidth: 8, entity: 'virtualBooking', property: 'url', columnHeader: 'URL' }) }
+            { Details.renderDropDown.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'host', columnHeader: 'Hosted By', options: [{ id: 'FM', text: 'FM' }, { id: 'Venue', text: 'Venue' }], optionDisplayProperty: 'text' }) }
           </div>
           <div className="row">
-            { Details.renderField.bind(this)({ columnWidth: 8, entity: 'virtualBooking', property: 'url' }) }
-            { Details.renderDropDown.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'host', columnHeader: 'Hosted By', options: [{ id: 'FM', text: 'FM' }, { id: 'Venue', text: 'Venue' }], optionDisplayProperty: 'text' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'email' }) }
+            <div className="col-xs-3">
+              <h2 style={ this.state.virtualBookingSaved.termsValid ? {} : { color: "red" } }>Terms</h2>
+              <input className={ Details.errorClass(this.state.errors, FM.errors.terms) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.virtualBooking.terms || "" } data-entity="virtualBooking" data-field="terms" />
+              { Details.renderFieldError(this.state.errors, FM.errors.terms) }
+            </div>
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'deduction' }) }
           </div>
           <hr className="divider" />
           <h3>Box Office</h3>
@@ -107,6 +126,25 @@ class VirtualBookingDetails extends React.Component {
             { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'boxOfficeReceived' }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'boxOffice' }) }
           </div>
+          <hr className="divider" />
+          <div className="row">
+            <div className="col-xs-6">
+              <h3>Payments</h3>
+              <ul className="payments-list">
+                { this.state.payments.map((payment) => {
+                  return(
+                    <li key={ payment.id }>{ payment.date } - { payment.amount }{ payment.notes && " (" + payment.notes + ")" }<div className="x-button" onClick={ this.clickDeletePayment.bind(this) } data-id={ payment.id }></div></li>
+                  );
+                }) }
+              </ul>
+              <a className={ 'blue-outline-button small' } onClick={ () => {} }>Add Payment</a>
+            </div>
+            <div className="col-xs-6">
+              <h3>Calculations</h3>
+              { this.renderCalculations() }
+            </div>
+          </div>
+          <hr className="divider" style={ { marginTop: 30 } } />
           <div>
             <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
               { Details.saveButtonText.call(this) }
@@ -127,6 +165,31 @@ class VirtualBookingDetails extends React.Component {
         </Modal>
       </div>
     );
+  }
+
+  renderCalculations() {
+    if (this.state.virtualBookingSaved.termsValid) {
+      return(
+        <div>
+          <h2>Total Gross</h2>
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.totalGross } readOnly={ true } data-field="totalGross" />
+          { Details.renderFieldError(this.state.errors, []) }
+          <h2>Our Share</h2>
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.ourShare } readOnly={ true } data-field="ourShare" />
+          { Details.renderFieldError(this.state.errors, []) }
+          <h2>Received</h2>
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.received } readOnly={ true } data-field="received" />
+          { Details.renderFieldError(this.state.errors, []) }
+          <h2>Owed</h2>
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.owed } readOnly={ true } data-field="owed" />
+          { Details.renderFieldError(this.state.errors, []) }
+        </div>
+      );
+    } else {
+      return(
+        <div style={ { color: 'red' } }>Terms are not valid.</div>
+      );
+    }
   }
 }
 

@@ -15,7 +15,7 @@ class Booking < ActiveRecord::Base
 
   has_many :weekly_terms, -> { order(:order) }
   has_many :weekly_box_offices, -> { order(:order) }
-  has_many :payments, dependent: :destroy
+  has_many :payments, as: :booking, dependent: :destroy
   has_many :invoices, dependent: :destroy
 
   def booker_id_or_old_booker_id

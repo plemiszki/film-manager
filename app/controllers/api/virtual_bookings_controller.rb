@@ -1,6 +1,7 @@
 class Api::VirtualBookingsController < AdminController
 
   include SearchIndex
+  include BookingCalculations
 
   def index
     @virtual_bookings = perform_search(model: 'VirtualBooking', associations: ['film', 'venue'])
@@ -29,6 +30,7 @@ class Api::VirtualBookingsController < AdminController
 
   def show
     @virtual_booking = VirtualBooking.find(params[:id])
+    @calculations = booking_calculations(@virtual_booking)
     @films = Film.all
     @venues = Venue.all
     render 'show', formats: [:json], handlers: [:jbuilder]
@@ -37,6 +39,7 @@ class Api::VirtualBookingsController < AdminController
   def update
     @virtual_booking = VirtualBooking.find(params[:id])
     if @virtual_booking.update(virtual_booking_params)
+      @calculations = booking_calculations(@virtual_booking)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @virtual_booking.errors.full_messages, status: 422
@@ -55,7 +58,7 @@ class Api::VirtualBookingsController < AdminController
   private
 
   def virtual_booking_params
-    params[:virtual_booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :shipping_city, :shipping_state, :terms, :url, :host, :deduction, :box_office, :box_office_received)
+    params[:virtual_booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :shipping_city, :shipping_state, :terms, :url, :host, :deduction, :box_office, :box_office_received, :email)
   end
 
 end
