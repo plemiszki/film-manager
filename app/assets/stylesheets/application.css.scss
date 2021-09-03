@@ -60,3 +60,7 @@ $imgpath: 'handy-components/images';
 @import 'me/film-rights-new';
 @import 'me/calendar';
 @import 'me/codes';
+
+.blue-button:not(.disabled) {
+  background-color: $button-color !important;
+}

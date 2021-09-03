@@ -325,12 +325,12 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="instagramLink"]').value).to eq 'https://www.instagram.com/wilbywonderful'
     expect(find('input[data-field="rentalUrl"]').value).to eq 'https://www.filmmovement.com/rentals/wilbywonderful'
     expect(find('input[data-field="imdbId"]').value).to eq 'tt2328696'
-    expect(find('input[data-field="active"]').checked?).to eq true
-    expect(find('input[data-field="eduPage"]').checked?).to eq true
-    expect(find('input[data-field="videoPage"]').checked?).to eq true
-    expect(find('input[data-field="dayAndDate"]').checked?).to eq true
-    expect(find('input[data-field="certifiedFresh"]').checked?).to eq true
-    expect(find('input[data-field="criticsPick"]').checked?).to eq true
+    expect(find('input[data-field="active"]', visible: false).checked?).to eq true
+    expect(find('input[data-field="eduPage"]', visible: false).checked?).to eq true
+    expect(find('input[data-field="videoPage"]', visible: false).checked?).to eq true
+    expect(find('input[data-field="dayAndDate"]', visible: false).checked?).to eq true
+    expect(find('input[data-field="certifiedFresh"]', visible: false).checked?).to eq true
+    expect(find('input[data-field="criticsPick"]', visible: false).checked?).to eq true
     expect(find('input[data-field="rentalDays"]').value).to eq '3'
     expect(find('input[data-field="rentalPrice"]').value).to eq '$10.00'
     expect(find('input[data-field="tvRating"]').value).to eq 'R'
@@ -349,12 +349,12 @@ describe 'film_details', type: :feature do
       twitter_link: 'https://twitter.com/vilbyvonderful',
       instagram_link: 'https://www.instagram.com/vilbyvonderful',
       imdb_id: 'tt20736',
-      active: false,
-      edu_page: false,
-      video_page: false,
-      day_and_date: false,
-      certified_fresh: false,
-      critics_pick: false,
+      active: { value: false, type: :switch },
+      edu_page: { value: false, type: :switch },
+      video_page: { value: false, type: :switch },
+      day_and_date: { value: false, type: :switch },
+      certified_fresh: { value: false, type: :switch },
+      critics_pick: { value: false, type: :switch },
       rental_url: 'https://www.filmmovement.com/rentals/vilbyvonderful',
       rental_days: 4,
       rental_price: 20,
@@ -752,18 +752,18 @@ describe 'film_details', type: :feature do
   it 'displays information about statements' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Statements').click
-    expect(find('input[data-field="exportReports"]').checked?).to eq true
-    expect(find('input[data-field="sendReports"]').checked?).to eq true
-    expect(find('input[data-field="ignoreSageId"]').checked?).to eq true
+    expect(find('input[data-field="exportReports"]', visible: false).checked?).to eq true
+    expect(find('input[data-field="sendReports"]', visible: false).checked?).to eq true
+    expect(find('input[data-field="ignoreSageId"]', visible: false).checked?).to eq true
   end
 
   it 'updates information about statements' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Statements').click
     new_info = {
-      send_reports: false,
-      export_reports: false,
-      ignore_sage_id: false
+      send_reports: { value: false, type: :switch },
+      export_reports: { value: false, type: :switch },
+      ignore_sage_id: { value: false, type: :switch }
     }
     fill_out_form(new_info)
     save_and_wait

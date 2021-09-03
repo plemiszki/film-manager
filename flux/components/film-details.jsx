@@ -860,39 +860,6 @@ class FilmDetails extends React.Component {
     window.location = `/${directory}/${id}`;
   }
 
-  changeCheckbox(property, e) {
-    var film = this.state.film;
-    var filmErrors = this.state.filmErrors;
-    film[property] = e.target.checked;
-    if (property === "reserve" && e.target.checked === false) {
-      film.reservePercentage = 0;
-      FM.errors.reservePercentage.forEach((message) => {
-        HandyTools.removeFromArray(filmErrors, message);
-      });
-      film.reserveQuarters = 0;
-      FM.errors.reserveQuarters.forEach((message) => {
-        HandyTools.removeFromArray(filmErrors, message);
-      });
-    } else if (property === "autoRenew" && e.target.checked === false) {
-      film.autoRenewTerm = 0;
-      FM.errors.autoRenewTerm.forEach((message) => {
-        HandyTools.removeFromArray(filmErrors, message);
-      });
-      film.autoRenewDaysNotice = 0;
-      FM.errors.autoRenewDaysNotice.forEach((message) => {
-        HandyTools.removeFromArray(filmErrors, message);
-      });
-    }
-    this.setState({
-      film: film,
-      filmErrors: filmErrors,
-      justSaved: false
-    }, () => {
-      var changesToSave = this.changeFieldArgs().changesFunction.call();
-      this.setState({changesToSave: changesToSave});
-    });
-  }
-
   clickRightsHeader(property) {
     this.setState({
       rightsSortBy: property
@@ -1010,6 +977,26 @@ class FilmDetails extends React.Component {
           } else {
             newEntity.grPercentage = "0";
           }
+        }
+        if (key == 'reserve' && value == false) {
+          newEntity.reservePercentage = 0;
+          FM.errors.reservePercentage.forEach((message) => {
+            HandyTools.removeFromArray(this.state.filmErrors, message);
+          });
+          newEntity.reserveQuarters = 0;
+          FM.errors.reserveQuarters.forEach((message) => {
+            HandyTools.removeFromArray(this.state.filmErrors, message);
+          });
+        }
+        if (key == 'autoRenew' && value == false) {
+          newEntity.autoRenewTerm = 0;
+          FM.errors.autoRenewTerm.forEach((message) => {
+            HandyTools.removeFromArray(this.state.filmErrors, message);
+          });
+          newEntity.autoRenewDaysNotice = 0;
+          FM.errors.autoRenewDaysNotice.forEach((message) => {
+            HandyTools.removeFromArray(this.state.filmErrors, message);
+          });
         }
         return newEntity;
       },
@@ -1305,7 +1292,7 @@ class FilmDetails extends React.Component {
       return(
         <div>
           <hr />
-          <h3>Sublicensed Rights:</h3>
+          <h3>Sublicensed Rights</h3>
           <div className="row">
             <div className="col-xs-12">
               <table className="fm-admin-table no-hover">
@@ -1357,7 +1344,7 @@ class FilmDetails extends React.Component {
       return(
         <div>
           <hr />
-          <h3>Screening Formats:</h3>
+          <h3>Screening Formats</h3>
           <div className="row">
             <div className="col-xs-6">
               <ul className="standard-list screening-formats-list">
@@ -1389,7 +1376,7 @@ class FilmDetails extends React.Component {
             </div>
           </div>
           <hr />
-          <h3>Bookings:</h3>
+          <h3>Bookings</h3>
           <ul className="bookings-count-list clearfix">
             <li>Theatrical: { this.state.film.theatricalCount }</li>
             <li>Festival: { this.state.film.festivalCount }</li>
@@ -1442,13 +1429,13 @@ class FilmDetails extends React.Component {
     } else if (this.state.tab === "Statements") {
       return(
         <div>
-          <hr className="smaller-margin" />
-          <div className="row row-of-checkboxes">
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'exportReports' }) }
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'sendReports', hidden: !this.state.film.exportReports }) }
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'ignoreSageId', columnHeader: 'Ignore Sage ID on Import' }) }
-          </div>
           <hr />
+          <div className="row">
+            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'exportReports' }) }
+            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'sendReports', hidden: !this.state.film.exportReports }) }
+            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'ignoreSageId', columnHeader: 'Ignore Sage ID on Import' }) }
+          </div>
+          <hr style={ { marginTop: 30 } } />
           <div className="row">
             <div className="col-xs-6">
               <h3>Crossed Films</h3>
@@ -1534,7 +1521,7 @@ class FilmDetails extends React.Component {
           <hr />
           <div className="row">
             <div className="col-xs-6">
-              <h3>Countries:</h3>
+              <h3>Countries</h3>
               <ul className="standard-list reorderable countries-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'countries' }></li>
                 { this.state.filmCountries.map((filmCountry, index) => {
@@ -1549,7 +1536,7 @@ class FilmDetails extends React.Component {
               <a className="blue-outline-button small" onClick={ this.clickAddCountry.bind(this) }>Add Country</a>
             </div>
             <div className="col-xs-6">
-              <h3>Languages:</h3>
+              <h3>Languages</h3>
               <ul className="standard-list reorderable languages-list">
                 <li className="drop-zone" data-index="-1" data-section="languages"></li>
                 { this.state.filmLanguages.map((filmLanguage, index) => {
@@ -1567,7 +1554,7 @@ class FilmDetails extends React.Component {
           <hr />
           <div className="row">
             <div className="col-xs-6">
-              <h3>Cast:</h3>
+              <h3>Cast</h3>
               <ul className="standard-list reorderable actors-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'cast' }></li>
                 { this.state.actors.map((actor, index) => {
@@ -1582,7 +1569,7 @@ class FilmDetails extends React.Component {
               <a className="blue-outline-button small" onClick={ this.clickAddActor.bind(this) }>Add Actor</a>
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
-              <h3>Release Dates:</h3>
+              <h3>Release Dates</h3>
               <h2>Theatrical Release</h2>
               <input className={ Details.errorClass(this.state.filmErrors, FM.errors.theatricalRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.theatricalRelease || "" } data-field="theatricalRelease" readOnly={ !FM.user.hasAdminAccess } />
               { Details.renderFieldError(this.state.filmErrors, FM.errors.theatricalRelease) }
@@ -1606,7 +1593,7 @@ class FilmDetails extends React.Component {
           <hr />
           <div className={ "row" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
             <div className="col-xs-12">
-              <h3>Schedule:</h3>
+              <h3>Schedule</h3>
               <ul className="standard-list schedule">
                 { this.state.schedule.map((entry, index) => {
                   return(
@@ -1632,17 +1619,17 @@ class FilmDetails extends React.Component {
       } else {
         return(
           <div>
-            <hr className="smaller-margin" />
-            <div className="row row-of-checkboxes">
-              { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
-              { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
-              { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
-              { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
-            </div>
             <hr />
             <div className="row">
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
+            </div>
+            <hr style={ { marginTop: 30 } } />
+            <div className="row">
               <div className="col-xs-12">
-                <h3>Laurels:</h3>
+                <h3>Laurels</h3>
                 <ul className="standard-list reorderable laurels-list">
                   <li className="drop-zone" data-index="-1" data-section="laurels"></li>
                   { this.state.laurels.map((laurel, index) => {
@@ -1656,15 +1643,15 @@ class FilmDetails extends React.Component {
                 </ul>
                 <a className="blue-outline-button small" onClick={ this.clickAddLaurel.bind(this) }>Add Laurel</a>
                 <div className="row row-of-checkboxes badge-checkboxes">
-                  { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
-                  { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
+                  { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
+                  { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
                 </div>
               </div>
             </div>
-            <hr />
+            <hr style={ { marginTop: 30 } } />
             <div className="row">
               <div className="col-xs-12 quotes-list">
-                <h3 className="quotes-header">Quotes:</h3>
+                <h3 className="quotes-header">Quotes</h3>
                 <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
                 { this.state.quotes.map((quote, index) => {
                   return(
@@ -1683,7 +1670,7 @@ class FilmDetails extends React.Component {
             <hr />
             <div className="row">
               <div className="col-xs-6">
-                <h3>Genres:</h3>
+                <h3>Genres</h3>
                 <ul className="standard-list reorderable genres-list">
                   <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
                   { this.state.filmGenres.map((filmGenre, index) => {
@@ -1698,7 +1685,7 @@ class FilmDetails extends React.Component {
                 <a className="blue-outline-button small" onClick={ this.clickAddGenre.bind(this) }>Add Genre</a>
               </div>
               <div className="col-xs-6">
-                <h3>Topics:</h3>
+                <h3>Topics</h3>
                 <ul className="standard-list topics-list">
                   { this.state.filmTopics.map((filmTopic) => {
                     return(
@@ -1712,7 +1699,7 @@ class FilmDetails extends React.Component {
             <hr />
             <div className="row">
               <div className="col-xs-4">
-                <h3>Alternate Lengths:</h3>
+                <h3>Alternate Lengths</h3>
                 <ul className="standard-list alternate-lengths-list">
                   { HandyTools.sortArrayOfObjects(this.state.alternateLengths, 'length').map((alternateLength) => {
                     return(
@@ -1723,7 +1710,7 @@ class FilmDetails extends React.Component {
                 <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newAltLengthModalOpen', true) }>Add Length</a>
               </div>
               <div className="col-xs-4">
-                <h3>Alternate Audio Tracks:</h3>
+                <h3>Alternate Audio Tracks</h3>
                 <ul className="standard-list alternate-audios-list">
                   { HandyTools.alphabetizeArrayOfObjects(this.state.alternateAudios, 'languageName').map((alternateAudio) => {
                     return(
@@ -1734,7 +1721,7 @@ class FilmDetails extends React.Component {
                 <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateAudioModalOpen', true) }>Add Audio Track</a>
               </div>
               <div className="col-xs-4">
-                <h3>Alternate Subtitles:</h3>
+                <h3>Alternate Subtitles</h3>
                 <ul className="standard-list alternate-subtitles-list">
                   { HandyTools.alphabetizeArrayOfObjects(this.state.alternateSubtitles, 'languageName').map((alternateSubtitle) => {
                     return(
@@ -1748,7 +1735,7 @@ class FilmDetails extends React.Component {
             <hr />
             <div className="row">
               <div className="col-xs-12">
-                <h3>Related Films:</h3>
+                <h3>Related Films</h3>
                 <ul className="standard-list related-films-list">
                   { this.state.relatedFilms.map((relatedFilm) => {
                     return(
@@ -1762,7 +1749,7 @@ class FilmDetails extends React.Component {
             <hr />
             <div className="row">
               <div className="col-xs-12">
-                <h3>Digital Retailers:</h3>
+                <h3>Digital Retailers</h3>
                 <table className="fm-admin-table digital-retailers-table">
                   <thead>
                     <tr>
@@ -1956,7 +1943,7 @@ class FilmDetails extends React.Component {
           </div>
         </div>
         <hr />
-        <h3>Licensed Rights:</h3>
+        <h3>Licensed Rights</h3>
         <div className="row">
           <div className="col-xs-12">
             <table className="fm-admin-table">
@@ -1999,7 +1986,7 @@ class FilmDetails extends React.Component {
         </div>
         <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
           <hr />
-          <h3>Revenue Splits:</h3>
+          <h3>Revenue Splits</h3>
           <div className="row">
             <div className="col-xs-12 percentage-column">
               { FilmsStore.revenuePercentages().map((revenuePercentage, index) => {
@@ -2016,9 +2003,7 @@ class FilmDetails extends React.Component {
           </div>
           <hr />
           <div className={ "row reserve-section" + (this.state.film.reserve ? "" : " no-reserve") }>
-            <div className="col-xs-3">
-              <input id="returns-reserve" className="checkbox" type="checkbox" checked={ this.state.film.reserve } onChange={ this.changeCheckbox.bind(this, 'reserve') } disabled={ !FM.user.hasAdminAccess } /><label className="checkbox" htmlFor="reserve-returns">Reserve Against Returns</label>
-            </div>
+            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'reserve', columnHeader: 'Reserve Against Returns' }) }
             <div className={ `col-xs-2${this.state.film.reserve ? '' : ' hidden'}` }>
               <h2>Reserve %</h2>
               <input className={Details.errorClass(this.state.filmErrors, FM.errors.reservePercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reservePercentage} data-field="reservePercentage" disabled={ !this.state.film.reserve } readOnly={ !FM.user.hasAdminAccess } />
@@ -2033,9 +2018,7 @@ class FilmDetails extends React.Component {
           </div>
           <hr />
           <div className={ "row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew") }>
-            <div className="col-xs-3">
-              <input id="auto-renew" className="checkbox" type="checkbox" checked={ this.state.film.autoRenew } onChange={ this.changeCheckbox.bind(this, 'autoRenew') } disabled={ !FM.user.hasAdminAccess } /><label className="checkbox">Auto-Renew</label>
-            </div>
+            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'autoRenew', columnHeader: 'Auto-Renew' }) }
             <div className={ `col-xs-2${this.state.film.autoRenew ? '' : ' hidden'}` }>
               <h2>Term (Months)</h2>
               <input className={ Details.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.autoRenewTerm } data-field="autoRenewTerm" readOnly={ !FM.user.hasAdminAccess } />
