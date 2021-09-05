@@ -15,6 +15,7 @@ json.virtualBooking do
   json.boxOfficeReceived @virtual_booking.box_office_received
   json.email @virtual_booking.email
   json.termsValid @calculations[:valid]
+  json.reportSentDate @virtual_booking.report_sent_date.present? ? @virtual_booking.report_sent_date.strftime("%-m/%-d/%y") : '(Not Sent)'
 end
 json.films @films do |film|
   json.id film.id

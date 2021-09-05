@@ -24,6 +24,7 @@ describe 'settings_details', type: :feature do
     expect(find('textarea[data-field="shippingTermsEmailText"]').value).to eq 'shipping terms email text'
     expect(find('textarea[data-field="allBookingInvoicesEmailText"]').value).to eq 'all booking invoices email text'
     expect(find('textarea[data-field="shippingTermsEmailText"]').value).to eq 'shipping terms email text'
+    expect(find('textarea[data-field="virtualBookingReportText"]').value).to eq 'virtual booking report text'
   end
 
   it 'updates information about the settings' do
@@ -37,7 +38,8 @@ describe 'settings_details', type: :feature do
       unpaid_non_overage_booking_invoice_email_text: 'new unpaid non-overage booking invoice email text',
       booking_invoice_payment_info_email_text: 'new booking invoice payment info email text',
       shipping_terms_email_text: 'new shipping terms email text',
-      all_booking_invoices_email_text: 'new all booking invoices email text'
+      all_booking_invoices_email_text: 'new all booking invoices email text',
+      virtual_booking_report_text: 'virtual booking report text'
     }
     fill_out_form(new_info)
     save_and_wait

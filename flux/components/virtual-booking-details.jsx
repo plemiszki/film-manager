@@ -91,6 +91,10 @@ class VirtualBookingDetails extends React.Component {
     });
   }
 
+  clickSendReport() {
+    console.log('send report');
+  }
+
   render() {
     return (
       <div id="virtual-booking-details" className="component details-component">
@@ -142,6 +146,17 @@ class VirtualBookingDetails extends React.Component {
             <div className="col-xs-6">
               <h3>Calculations</h3>
               { this.renderCalculations() }
+            </div>
+          </div>
+          <hr className="divider" style={ { marginTop: 30 } } />
+          <h3>Report</h3>
+          <div className="row">
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'reportSentDate', columnHeader: 'Sent Date', readOnly: true }) }
+            <div className="col-xs-9">
+              <h2>&nbsp;</h2>
+              <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } style={ { paddingTop: 14, paddingBottom: 14 } } onClick={ this.clickSendReport.bind(this) }>
+                { this.state.changesToSave ? "Save to Send" : (this.state.virtualBooking.reportSentDate ? "Send Another Report" : "Send Report") }
+              </a>
             </div>
           </div>
           <hr className="divider" style={ { marginTop: 30 } } />

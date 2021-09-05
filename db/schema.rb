@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_03_172715) do
+ActiveRecord::Schema.define(version: 2021_09_05_002025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -661,6 +661,7 @@ ActiveRecord::Schema.define(version: 2021_09_03_172715) do
     t.integer "next_credit_memo_number", default: 1
     t.string "credit_memo_email_text", default: ""
     t.integer "box_office_reminders_user_id"
+    t.string "virtual_booking_report_text", default: ""
   end
 
   create_table "shipping_addresses", id: :serial, force: :cascade do |t|
@@ -764,6 +765,7 @@ ActiveRecord::Schema.define(version: 2021_09_03_172715) do
     t.boolean "box_office_received", default: false
     t.string "email", default: ""
     t.date "report_sent_date"
+    t.date "report_sent"
   end
 
   create_table "weekly_box_offices", id: :serial, force: :cascade do |t|

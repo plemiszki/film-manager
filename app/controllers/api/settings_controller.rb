@@ -30,7 +30,8 @@ class Api::SettingsController < AdminController
       :booking_invoice_payment_info_email_text,
       :shipping_terms_email_text,
       :all_booking_invoices_email_text,
-      :box_office_reminders_user_id
+      :box_office_reminders_user_id,
+      :virtual_booking_report_text
     )
   end
 

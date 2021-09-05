@@ -12,6 +12,7 @@ FactoryBot.define do
     booking_invoice_payment_info_email_text { 'booking invoice payment info email text' }
     shipping_terms_email_text { 'shipping terms email text' }
     all_booking_invoices_email_text { 'all booking invoices email text' }
+    virtual_booking_report_text { 'virtual booking report text' }
   end
 
 end
