@@ -89,4 +89,10 @@ describe 'virtual_booking_details', type: :feature do
     expect(VirtualBooking.find_by_id(@virtual_booking.id)).to be(nil)
   end
 
+  it 'starts the send email job' do
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    find('.orange-button', text: 'Send Report').click
+    expect(page).to have_content('Sending Report')
+  end
+
 end
