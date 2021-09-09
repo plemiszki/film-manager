@@ -46,7 +46,7 @@ class SendBookingInvoice
     attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r"), File.open(Rails.root.join('app', 'workers', 'Film Movement W9.pdf'), "r")]
     message_params = {
       from: current_user.email,
-      to: email,
+      to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : email),
       cc: current_user.email,
       subject: subject,
       text: text,

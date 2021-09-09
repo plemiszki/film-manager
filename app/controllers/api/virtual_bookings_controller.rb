@@ -55,6 +55,19 @@ class Api::VirtualBookingsController < AdminController
     end
   end
 
+  def send_report
+    virtual_booking = VirtualBooking.find(params[:id])
+    deduction = virtual_booking.deduction
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "send virtual booking report", first_line: "Sending Report")
+    SendVirtualBookingReport.perform_async(0,
+      virtual_booking_id: virtual_booking.id,
+      time_started: time_started,
+      current_user_id: current_user.id
+    )
+    render json: { job: job.render_json }
+  end
+
   private
 
   def virtual_booking_params

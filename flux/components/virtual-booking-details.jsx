@@ -5,7 +5,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
+import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class VirtualBookingDetails extends React.Component {
@@ -45,7 +45,9 @@ class VirtualBookingDetails extends React.Component {
         films: this.props.films,
         venues: this.props.venues,
         calculations: this.props.calculations,
-        changesToSave: false
+        changesToSave: false,
+        job: this.props.job,
+        jobModalOpen: !!this.props.job
       }, () => {
         HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
@@ -92,7 +94,19 @@ class VirtualBookingDetails extends React.Component {
   }
 
   clickSendReport() {
-    console.log('send report');
+    this.setState({
+      fetching: true
+    });
+    this.props.sendRequest({
+      url: `/api/virtual_bookings/${this.state.virtualBooking.id}/send_report`,
+      method: 'post'
+    }).then(() => {
+      this.setState({
+        job: this.props.job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
   }
 
   render() {
@@ -155,7 +169,7 @@ class VirtualBookingDetails extends React.Component {
             <div className="col-xs-9">
               <h2>&nbsp;</h2>
               <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } style={ { paddingTop: 14, paddingBottom: 14 } } onClick={ this.clickSendReport.bind(this) }>
-                { this.state.changesToSave ? "Save to Send" : (this.state.virtualBooking.reportSentDate ? "Send Another Report" : "Send Report") }
+                { this.state.changesToSave ? "Save to Send" : (this.state.virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
               </a>
             </div>
           </div>
@@ -178,6 +192,7 @@ class VirtualBookingDetails extends React.Component {
             closeModal={ Common.closeModals.bind(this) }
           />
         </Modal>
+        { Common.renderJobModal.call(this, this.state.job) }
       </div>
     );
   }
@@ -198,6 +213,9 @@ class VirtualBookingDetails extends React.Component {
           <h2>Owed</h2>
           <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.owed } readOnly={ true } data-field="owed" />
           { Details.renderFieldError(this.state.errors, []) }
+          <h2>Venue Share</h2>
+          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.venueShare } readOnly={ true } data-field="venueShare" />
+          { Details.renderFieldError(this.state.errors, []) }
         </div>
       );
     } else {
@@ -206,6 +224,10 @@ class VirtualBookingDetails extends React.Component {
       );
     }
   }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this);
+  }
 }
 
 const mapStateToProps = (reducers) => {
@@ -213,7 +235,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
+  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(VirtualBookingDetails);

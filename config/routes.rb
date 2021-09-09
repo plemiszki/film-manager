@@ -68,6 +68,7 @@ Rails.application.routes.draw do
     post '/bookings/copy' => 'bookings#copy'
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     resources :virtual_bookings, only: [:index, :new, :create, :show, :update, :destroy]
+    post '/virtual_bookings/:id/send_report' => '/api/virtual_bookings#send_report'
     resources :bookers, only: [:index, :show, :create, :update, :destroy]
     resources :booker_venues, only: [:create, :destroy]
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]
@@ -107,7 +108,7 @@ Rails.application.routes.draw do
     resources :returns, only: [:index, :new, :create, :show, :update, :destroy]
     post '/returns/:id/send_credit_memo' => '/api/returns#send_credit_memo'
     resources :return_items, only: [:create, :destroy]
-    
+
     resources :weekly_terms, only: [:create, :destroy]
     resources :weekly_box_offices, only: [:create, :destroy]
     resources :payments, only: [:create, :destroy]

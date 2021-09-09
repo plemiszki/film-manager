@@ -10,8 +10,8 @@ json.virtualBooking do
   json.terms @virtual_booking.terms || ""
   json.url @virtual_booking.url || ""
   json.host @virtual_booking.host
-  json.deduction dollarify(number_with_precision(@virtual_booking.deduction, precision: 2, delimiter: ','))
-  json.boxOffice dollarify(number_with_precision(@virtual_booking.box_office, precision: 2, delimiter: ','))
+  json.deduction dollarify(@virtual_booking.deduction)
+  json.boxOffice dollarify(@virtual_booking.box_office)
   json.boxOfficeReceived @virtual_booking.box_office_received
   json.email @virtual_booking.email
   json.termsValid @calculations[:valid]
@@ -26,9 +26,10 @@ json.venues @venues do |venue|
   json.label venue.label
 end
 json.calculations do
-  json.totalGross dollarify(number_with_precision(@calculations[:total_gross], precision: 2, delimiter: ','))
-  json.ourShare dollarify(number_with_precision(@calculations[:our_share], precision: 2, delimiter: ','))
-  json.received dollarify(number_with_precision(@calculations[:received], precision: 2, delimiter: ','))
-  json.owed dollarify(number_with_precision(@calculations[:owed], precision: 2, delimiter: ','))
-  json.overage dollarify(number_with_precision(@calculations[:overage], precision: 2, delimiter: ','))
+  json.totalGross dollarify(@calculations[:total_gross])
+  json.ourShare dollarify(@calculations[:our_share])
+  json.received dollarify(@calculations[:received])
+  json.owed dollarify(@calculations[:owed])
+  json.overage dollarify(@calculations[:overage])
+  json.venueShare dollarify(@calculations[:venue_share])
 end
