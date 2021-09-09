@@ -16,8 +16,8 @@ class Api::PaymentsController < AdminController
   def destroy
     @payment = Payment.find(params[:id])
     @payment.destroy
-    @payments = Payment.where(booking_id: @payment.booking_id)
-    @calculations = booking_calculations(Booking.find(@payment.booking_id))
+    @payments = Payment.where(booking_id: @payment.booking_id, booking_type: @payment.booking_type)
+    @calculations = booking_calculations(@payment.booking)
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 

@@ -86,6 +86,19 @@ describe 'virtual_booking_details', type: :feature do
     end
   end
 
+  it 'deletes payments' do
+    create(:virtual_booking_payment)
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    within('.payments-list') do
+      find('.circle-x-button').click
+    end
+    wait_for_ajax
+    expect(Payment.count).to eq(0)
+    within('.payments-list') do
+      expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
+    end
+  end
+
   it 'deletes the virtual_booking' do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     delete_button = find('.delete-button')

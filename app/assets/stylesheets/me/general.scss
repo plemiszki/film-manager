@@ -6,6 +6,13 @@ html {
   background-image: asset-url('gray-x.png');
 }
 
+.no-column-padding {
+  .col-xs-12 {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+}
+
 .spacer {
   height: 103px;
 }

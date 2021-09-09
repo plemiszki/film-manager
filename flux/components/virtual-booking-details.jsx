@@ -67,8 +67,21 @@ class VirtualBookingDetails extends React.Component {
     return !HandyTools.objectsAreEqual(this.state.virtualBooking, this.state.virtualBookingSaved);
   }
 
-  clickDeletePayment() {
-    console.log('delete payment');
+  clickDeletePayment(e) {
+    this.setState({
+      fetching: true
+    });
+    this.props.deleteEntity({
+      directory: 'payments',
+      id: e.target.dataset.id,
+      callback: (response) => {
+        this.setState({
+          fetching: false,
+          payments: response.payments,
+          calculations: response.calculations
+        });
+      }
+    })
   }
 
   clickSave() {
@@ -230,22 +243,12 @@ class VirtualBookingDetails extends React.Component {
   renderCalculations() {
     if (this.state.virtualBookingSaved.termsValid) {
       return(
-        <div>
-          <h2>Total Gross</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.totalGross } readOnly={ true } data-field="totalGross" />
-          { Details.renderFieldError(this.state.errors, []) }
-          <h2>Our Share</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.ourShare } readOnly={ true } data-field="ourShare" />
-          { Details.renderFieldError(this.state.errors, []) }
-          <h2>Received</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.received } readOnly={ true } data-field="received" />
-          { Details.renderFieldError(this.state.errors, []) }
-          <h2>Owed</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.owed } readOnly={ true } data-field="owed" />
-          { Details.renderFieldError(this.state.errors, []) }
-          <h2>Venue Share</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.venueShare } readOnly={ true } data-field="venueShare" />
-          { Details.renderFieldError(this.state.errors, []) }
+        <div className="no-column-padding">
+          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'totalGross', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'venueShare', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'ourShare', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'received', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'owed', readOnly: true }) }
         </div>
       );
     } else {
