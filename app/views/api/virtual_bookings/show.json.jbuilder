@@ -17,6 +17,12 @@ json.virtualBooking do
   json.termsValid @calculations[:valid]
   json.reportSentDate @virtual_booking.report_sent_date.present? ? @virtual_booking.report_sent_date.strftime("%-m/%-d/%y") : '(Not Sent)'
 end
+json.payments @virtual_booking.payments do |payment|
+  json.id payment.id
+  json.amount dollarify(payment.amount)
+  json.date payment.date.strftime("%-m/%-d/%y")
+  json.notes payment.notes
+end
 json.films @films do |film|
   json.id film.id
   json.title film.title

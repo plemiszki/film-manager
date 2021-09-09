@@ -42,6 +42,7 @@ class VirtualBookingDetails extends React.Component {
         fetching: false,
         virtualBooking: this.props.virtualBooking,
         virtualBookingSaved: HandyTools.deepCopy(this.props.virtualBooking),
+        payments: this.props.payments,
         films: this.props.films,
         venues: this.props.venues,
         calculations: this.props.calculations,
@@ -64,6 +65,10 @@ class VirtualBookingDetails extends React.Component {
 
   checkForChanges() {
     return !HandyTools.objectsAreEqual(this.state.virtualBooking, this.state.virtualBookingSaved);
+  }
+
+  clickDeletePayment() {
+    console.log('delete payment');
   }
 
   clickSave() {
@@ -148,13 +153,38 @@ class VirtualBookingDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h3>Payments</h3>
-              <ul className="payments-list">
-                { this.state.payments.map((payment) => {
-                  return(
-                    <li key={ payment.id }>{ payment.date } - { payment.amount }{ payment.notes && " (" + payment.notes + ")" }<div className="x-button" onClick={ this.clickDeletePayment.bind(this) } data-id={ payment.id }></div></li>
-                  );
-                }) }
-              </ul>
+              <>
+                <ul className="payments-list">
+                  { this.state.payments.map((payment) => {
+                    return(
+                      <li key={ payment.id }>{ payment.date } - { payment.amount }{ payment.notes && " (" + payment.notes + ")" }<div className="circle-x-button" onClick={ this.clickDeletePayment.bind(this) } data-id={ payment.id }></div></li>
+                    );
+                  }) }
+                </ul>
+                <style jsx>{`
+                  ul {
+                    border: 1px solid #E4E9ED;
+                    border-radius: 5px;
+                    padding: 15px;
+                    margin-bottom: 15px;
+                  }
+                  li {
+                    position: relative;
+                  }
+                  li:not(:last-of-type) {
+                    margin-bottom: 15px;
+                  }
+                  .circle-x-button {
+                    display: inline-block;
+                    position: absolute;
+                    right: 0;
+                    background-size: contain;
+                    width: 17px;
+                    height: 17px;
+                    cursor: pointer;
+                  }
+                `}</style>
+              </>
               <a className={ 'blue-outline-button small' } onClick={ () => {} }>Add Payment</a>
             </div>
             <div className="col-xs-6">

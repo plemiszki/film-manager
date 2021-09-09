@@ -302,7 +302,6 @@ describe 'booking_details', type: :feature do
   end
 
   it 'displays payments' do
-    create(:booking_invoice)
     create(:payment)
     visit booking_path(@booking, as: $admin_user)
     within('.payments-list') do

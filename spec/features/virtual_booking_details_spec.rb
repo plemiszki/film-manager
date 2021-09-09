@@ -34,6 +34,14 @@ describe 'virtual_booking_details', type: :feature do
     expect(find('input[data-field="email"]').value).to eq('someone@venue.com')
   end
 
+  it 'validates information about the virtual_booking' do
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    clear_form
+    save_and_wait
+    expect(page).to have_content("Start date is not a valid date")
+    expect(page).to have_content("End date is not a valid date")
+  end
+
   it 'updates information about the virtual_booking' do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     new_info = {
@@ -70,12 +78,12 @@ describe 'virtual_booking_details', type: :feature do
     })
   end
 
-  it 'validates information about the virtual_booking' do
+  it 'displays payments' do
+    create(:virtual_booking_payment)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    clear_form
-    save_and_wait
-    expect(page).to have_content("Start date is not a valid date")
-    expect(page).to have_content("End date is not a valid date")
+    within('.payments-list') do
+      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
+    end
   end
 
   it 'deletes the virtual_booking' do
