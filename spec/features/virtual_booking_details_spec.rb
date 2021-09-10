@@ -86,6 +86,33 @@ describe 'virtual_booking_details', type: :feature do
     end
   end
 
+  it 'validates payments' do
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    find('.blue-outline-button', text: 'Add Payment').click
+    fill_out_and_submit_modal({}, :input)
+    wait_for_ajax
+    within('.admin-modal') do
+      expect(page).to have_content('Amount is not a number')
+    end
+  end
+
+  it 'adds payments' do
+    create(:virtual_booking)
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    find('.blue-outline-button', text: 'Add Payment').click
+    info = {
+      date: Date.today.strftime('%-m/%-d/%y'),
+      amount: 20,
+      notes: 'note about payment'
+    }
+    fill_out_and_submit_modal(info, :input)
+    wait_for_ajax
+    verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
+    within('.payments-list') do
+      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $20.00")
+    end
+  end
+
   it 'deletes payments' do
     create(:virtual_booking_payment)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)

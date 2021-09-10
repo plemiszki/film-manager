@@ -5,8 +5,8 @@ class Api::PaymentsController < AdminController
   def create
     @payment = Payment.new(payment_params)
     if @payment.save
-      @payments = Payment.where(booking_id: @payment.booking_id)
-      @calculations = booking_calculations(Booking.find(@payment.booking_id))
+      @payments = Payment.where(booking_id: @payment.booking_id, booking_type: @payment.booking_type)
+      @calculations = booking_calculations(@payment.booking)
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @payment.errors.full_messages, status: 422
@@ -24,7 +24,7 @@ class Api::PaymentsController < AdminController
   private
 
   def payment_params
-    params.require(:payment).permit(:booking_id, :date, :amount, :notes)
+    params.require(:payment).permit(:booking_id, :booking_type, :date, :amount, :notes)
   end
 
 end

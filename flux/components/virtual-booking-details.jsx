@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
+import NewEntity from './new-entity.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
@@ -65,6 +66,21 @@ class VirtualBookingDetails extends React.Component {
 
   checkForChanges() {
     return !HandyTools.objectsAreEqual(this.state.virtualBooking, this.state.virtualBookingSaved);
+  }
+
+  clickAddPayment() {
+    this.setState({
+      newPaymentModalOpen: true
+    });
+  }
+
+  updatePayments(props) {
+    console.log(props);
+    this.setState({
+      newPaymentModalOpen: false,
+      payments: props.payments,
+      calculations: props.calculations
+    });
   }
 
   clickDeletePayment(e) {
@@ -198,7 +214,7 @@ class VirtualBookingDetails extends React.Component {
                   }
                 `}</style>
               </>
-              <a className={ 'blue-outline-button small' } onClick={ () => {} }>Add Payment</a>
+              <a className={ 'blue-outline-button small' } onClick={ this.clickAddPayment.bind(this) }>Add Payment</a>
             </div>
             <div className="col-xs-6">
               <h3>Calculations</h3>
@@ -228,6 +244,9 @@ class VirtualBookingDetails extends React.Component {
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
+        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>
+          <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
+        </Modal>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete
             entityName="virtualBooking"

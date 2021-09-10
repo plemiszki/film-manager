@@ -63,7 +63,12 @@ class NewEntity extends React.Component {
       if (this.props.redirectAfterCreate) {
         window.location.href = `/${directory}/${this.props[this.props.entityName].id}`;
       } else {
-        this.props.callback(this.props[entityNamePlural]);
+        if (this.props.callback) {
+          this.props.callback(this.props[entityNamePlural]);
+        }
+        if (this.props.callbackFullProps) {
+          this.props.callbackFullProps(this.props);
+        }
       }
     }, () => {
       this.setState({
@@ -234,6 +239,14 @@ class NewEntity extends React.Component {
         return([
           <div key="1" className="row">
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'merchandiseType', property: 'name' }) }
+          </div>
+        ]);
+      case 'payment':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'payment', property: 'date' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'payment', property: 'amount' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'payment', property: 'notes' }) }
           </div>
         ]);
       case 'purchaseOrder':
