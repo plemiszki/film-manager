@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_05_002025) do
+ActiveRecord::Schema.define(version: 2021_09_12_011049) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -451,6 +451,7 @@ ActiveRecord::Schema.define(version: 2021_09_05_002025) do
     t.integer "customer_id"
     t.integer "booking_id"
     t.integer "num"
+    t.string "booking_type", default: "Booking"
     t.index ["booking_id"], name: "index_invoices_on_booking_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
   end

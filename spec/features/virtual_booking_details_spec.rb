@@ -9,7 +9,7 @@ describe 'virtual_booking_details', type: :feature do
     create(:film, title: 'Another Film')
     create(:venue)
     create(:venue, label: 'Another Venue')
-    @virtual_booking = create(:virtual_booking)
+    @virtual_booking = create(:virtual_booking) # host FM
   end
 
   it 'is gated' do
@@ -78,7 +78,34 @@ describe 'virtual_booking_details', type: :feature do
     })
   end
 
+  it 'displays invoices' do
+    @virtual_booking.update(host: 'Venue')
+    create(:virtual_booking_invoice)
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    within('.invoices-table') do
+      expect(page).to have_content('1B')
+    end
+  end
+
+  it 'deletes invoices' do
+    @virtual_booking.update(host: 'Venue')
+    create(:virtual_booking_invoice)
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    within('.invoices-table') do
+      find('div.delete-invoice').click
+    end
+    within('.confirm-delete') do
+      find('.red-button').click
+    end
+    wait_for_ajax
+    expect(Invoice.count).to eq(0)
+    within('.invoices-table') do
+      expect(page).to have_no_content('1B')
+    end
+  end
+
   it 'displays payments' do
+    @virtual_booking.update(host: 'Venue')
     create(:virtual_booking_payment)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     within('.payments-list') do
@@ -87,6 +114,7 @@ describe 'virtual_booking_details', type: :feature do
   end
 
   it 'validates payments' do
+    @virtual_booking.update(host: 'Venue')
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     find('.blue-outline-button', text: 'Add Payment').click
     fill_out_and_submit_modal({}, :input)
@@ -97,6 +125,7 @@ describe 'virtual_booking_details', type: :feature do
   end
 
   it 'adds payments' do
+    @virtual_booking.update(host: 'Venue')
     create(:virtual_booking)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     find('.blue-outline-button', text: 'Add Payment').click
@@ -114,6 +143,7 @@ describe 'virtual_booking_details', type: :feature do
   end
 
   it 'deletes payments' do
+    @virtual_booking.update(host: 'Venue')
     create(:virtual_booking_payment)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     within('.payments-list') do

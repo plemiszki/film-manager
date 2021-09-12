@@ -17,12 +17,6 @@ json.virtualBooking do
   json.termsValid @calculations[:valid]
   json.reportSentDate @virtual_booking.report_sent_date.present? ? @virtual_booking.report_sent_date.strftime("%-m/%-d/%y") : '(Not Sent)'
 end
-json.payments @virtual_booking.payments do |payment|
-  json.id payment.id
-  json.amount dollarify(payment.amount)
-  json.date payment.date.strftime("%-m/%-d/%y")
-  json.notes payment.notes
-end
 json.films @films do |film|
   json.id film.id
   json.title film.title
@@ -30,6 +24,25 @@ end
 json.venues @venues do |venue|
   json.id venue.id
   json.label venue.label
+end
+json.invoices @virtual_booking.invoices do |invoice|
+  json.id invoice.id
+  json.sentDate invoice.sent_date.strftime("%-m/%-d/%y")
+  json.number invoice.number
+  json.total dollarify(invoice.total)
+  json.rows invoice.invoice_rows do |row|
+    json.label row.item_label
+    json.amount dollarify(row.total_price)
+  end
+  json.payments invoice.invoice_payments do |payment|
+    json.id payment.payment_id
+  end
+end
+json.payments @virtual_booking.payments do |payment|
+  json.id payment.id
+  json.amount dollarify(payment.amount)
+  json.date payment.date.strftime("%-m/%-d/%y")
+  json.notes payment.notes
 end
 json.calculations do
   json.totalGross dollarify(@calculations[:total_gross])

@@ -43,6 +43,10 @@ FactoryBot.define do
       shipping_zip { '87106' }
       shipping_country { 'USA' }
       booking_id { 1 }
+
+      factory :virtual_booking_invoice do
+        booking_type { 'VirtualBooking' }
+      end
     end
 
   end

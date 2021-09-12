@@ -43,9 +43,10 @@ class VirtualBookingDetails extends React.Component {
         fetching: false,
         virtualBooking: this.props.virtualBooking,
         virtualBookingSaved: HandyTools.deepCopy(this.props.virtualBooking),
-        payments: this.props.payments,
         films: this.props.films,
         venues: this.props.venues,
+        invoices: this.props.invoices,
+        payments: this.props.payments,
         calculations: this.props.calculations,
         changesToSave: false,
         job: this.props.job,
@@ -68,6 +69,69 @@ class VirtualBookingDetails extends React.Component {
     return !HandyTools.objectsAreEqual(this.state.virtualBooking, this.state.virtualBookingSaved);
   }
 
+  clickInvoice(id, e) {
+    if (e.target.tagName === 'IMG') {
+      // var invoice = InvoicesStore.find(id) || BookingsStore.findInvoice(id);
+      // var rows = invoice.rows;
+      // var oldAdvance;
+      // var oldOverage;
+      // var oldShipFee;
+      // rows.forEach(function(row) {
+      //   if (row.label === 'Advance') {
+      //     oldAdvance = row.amount;
+      //   } else if (row.label.slice(0,7) === 'Overage') {
+      //     oldOverage = row.amount;
+      //   } else if (row.label === 'Shipping Fee') {
+      //     oldShipFee = row.amount;
+      //   }
+      // });
+      // var payments = invoice.payments;
+      // var paymentsObj = {};
+      // payments.forEach((payment) => {
+      //   paymentsObj[payment.id] = true;
+      // });
+      // this.setState({
+      //   newInvoiceModalOpen: true,
+      //   oldInvoiceAdvance: oldAdvance,
+      //   oldInvoiceOverage: oldOverage,
+      //   oldInvoiceShipFee: oldShipFee,
+      //   newInvoiceAdvance: !!oldAdvance,
+      //   newInvoiceOverage: !!oldOverage,
+      //   newInvoiceShipFee: !!oldShipFee,
+      //   resendInvoiceId: invoice.number,
+      //   invoicePayments: paymentsObj
+      // });
+    } else if (e.target.tagName === 'DIV' && e.target.classList.contains('delete-invoice')) {
+      this.setState({
+        deleteInvoiceId: id,
+        deleteInvoiceModalOpen: true
+      });
+    } else {
+      window.location.pathname = `/invoices/${id}`;
+    }
+  }
+
+  confirmInvoiceDelete() {
+    this.setState({
+      fetching: true,
+      deleteInvoiceModalOpen: false
+    });
+    this.props.deleteEntity({
+      directory: 'invoices',
+      id: this.state.deleteInvoiceId,
+      callback: (response) => {
+        this.setState({
+          fetching: false,
+          invoices: response.invoices,
+        });
+      }
+    });
+  }
+
+  clickAddInvoice() {
+
+  }
+
   clickAddPayment() {
     this.setState({
       newPaymentModalOpen: true
@@ -75,7 +139,6 @@ class VirtualBookingDetails extends React.Component {
   }
 
   updatePayments(props) {
-    console.log(props);
     this.setState({
       newPaymentModalOpen: false,
       payments: props.payments,
@@ -178,8 +241,104 @@ class VirtualBookingDetails extends React.Component {
             { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'boxOfficeReceived' }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'boxOffice' }) }
           </div>
+          { this.renderPaymentsSection() }
+          { this.renderInvoicesSection() }
+          { this.renderReportSection() }
+          <hr className="divider" style={ { marginTop: 30 } } />
+          <div>
+            <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+              { Details.saveButtonText.call(this) }
+            </a>
+            <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
+              Delete
+            </a>
+          </div>
+          { Common.renderSpinner(this.state.fetching) }
+          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+        </div>
+        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>
+          <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
+        </Modal>
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete
+            entityName="virtualBooking"
+            confirmDelete={ Details.clickDelete.bind(this) }
+            closeModal={ Common.closeModals.bind(this) }
+          />
+        </Modal>
+        <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete
+            entityName="invoice"
+            confirmDelete={ this.confirmInvoiceDelete.bind(this) }
+            closeModal={ Common.closeModals.bind(this) }
+          />
+        </Modal>
+        { Common.renderJobModal.call(this, this.state.job) }
+      </div>
+    );
+  }
+
+  renderInvoicesSection() {
+    if (this.state.virtualBooking.host == 'Venue') {
+      return(
+        <>
           <hr className="divider" />
+          <h3>Invoices</h3>
           <div className="row">
+            <div className="col-xs-12">
+              <table className="fm-admin-table invoices-table">
+                <thead>
+                  <tr>
+                    <th>Sent</th>
+                    <th>Number</th>
+                    <th>Total</th>
+                    <th className="button">Edit</th>
+                    <th className="button">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                  { this.state.invoices.map((invoice, index) => {
+                    return(
+                      <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id) }>
+                        <td className="indent">
+                          { invoice.sentDate }
+                        </td>
+                        <td>
+                          { invoice.number }
+                        </td>
+                        <td>
+                          { invoice.total }
+                        </td>
+                        <td className="button">
+                          <img src={ Images.edit } />
+                        </td>
+                        <td className="button">
+                          <div className="delete-invoice"></div>
+                        </td>
+                      </tr>
+                    );
+                  }) }
+                </tbody>
+              </table>
+              <a className='blue-outline-button small' onClick={ this.clickAddInvoice.bind(this) }>Add Invoice</a>
+            </div>
+          </div>
+        </>
+      );
+    }
+  }
+
+  renderPaymentsSection() {
+    if (this.state.virtualBooking.host == 'Venue') {
+      return(
+        <>
+          <hr className="divider" style={ { marginTop: 30 } } />
+          <div className="row">
+            <div className="col-xs-6">
+              <h3>Calculations</h3>
+              { this.renderCalculations() }
+            </div>
             <div className="col-xs-6">
               <h3>Payments</h3>
               <>
@@ -216,63 +375,67 @@ class VirtualBookingDetails extends React.Component {
               </>
               <a className={ 'blue-outline-button small' } onClick={ this.clickAddPayment.bind(this) }>Add Payment</a>
             </div>
+          </div>
+        </>
+      );
+    } else {
+      return(
+        <div className="col-xs-6"></div>
+      );
+    }
+  }
+
+  renderReportSection() {
+    if (this.state.virtualBooking.host == 'FM') {
+      return(
+        <>
+          <hr className="divider" style={ { marginTop: 30 } } />
+          <div className="row">
             <div className="col-xs-6">
               <h3>Calculations</h3>
               { this.renderCalculations() }
             </div>
-          </div>
-          <hr className="divider" style={ { marginTop: 30 } } />
-          <h3>Report</h3>
-          <div className="row">
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'reportSentDate', columnHeader: 'Sent Date', readOnly: true }) }
-            <div className="col-xs-9">
-              <h2>&nbsp;</h2>
-              <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } style={ { paddingTop: 14, paddingBottom: 14 } } onClick={ this.clickSendReport.bind(this) }>
-                { this.state.changesToSave ? "Save to Send" : (this.state.virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
-              </a>
+            <div className="col-xs-6">
+              <h3>Report</h3>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'reportSentDate', columnHeader: 'Sent Date', readOnly: true }) }
+              <div className="col-xs-6">
+                <h2>&nbsp;</h2>
+                <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } style={ { paddingTop: 14, paddingBottom: 14 } } onClick={ this.clickSendReport.bind(this) }>
+                  { this.state.changesToSave ? "Save to Send" : (this.state.virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
+                </a>
+              </div>
             </div>
           </div>
-          <hr className="divider" style={ { marginTop: 30 } } />
-          <div>
-            <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-              { Details.saveButtonText.call(this) }
-            </a>
-            <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-              Delete
-            </a>
-          </div>
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-        </div>
-        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>
-          <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
-        </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="virtualBooking"
-            confirmDelete={ Details.clickDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
-        { Common.renderJobModal.call(this, this.state.job) }
-      </div>
-    );
+        </>
+      );
+    }
   }
 
   renderCalculations() {
-    if (this.state.virtualBookingSaved.termsValid) {
+    let { virtualBooking, virtualBookingSaved } = this.state;
+    if (virtualBookingSaved.termsValid) {
       return(
         <div className="no-column-padding">
           { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'totalGross', readOnly: true }) }
-          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'venueShare', readOnly: true }) }
-          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'ourShare', readOnly: true }) }
-          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'received', readOnly: true }) }
-          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'owed', readOnly: true }) }
+          { virtualBooking.host == 'FM' ? Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'venueShare', readOnly: true }) : null }
+          { this.renderVenueHostCalculations() }
         </div>
       );
     } else {
       return(
         <div style={ { color: 'red' } }>Terms are not valid.</div>
+      );
+    }
+  }
+
+  renderVenueHostCalculations() {
+    if (this.state.virtualBooking.host == 'Venue') {
+      return(
+        <>
+          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'ourShare', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'received', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'owed', readOnly: true }) }
+        </>
       );
     }
   }

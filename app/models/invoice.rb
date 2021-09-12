@@ -11,7 +11,7 @@ class Invoice < ActiveRecord::Base
   has_many :invoice_rows, -> { order('invoice_rows.id') }, dependent: :destroy
   has_many :invoice_payments, -> { order('invoice_payments.id') }, dependent: :destroy
   belongs_to :customer, class_name: 'DvdCustomer'
-  belongs_to :booking
+  belongs_to :booking, polymorphic: true
 
   def self.fill_num_column!
     self.all.each do |invoice|

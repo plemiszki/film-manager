@@ -1,6 +1,7 @@
 FactoryBot.define do
 
   factory :virtual_booking do
+
     film_id { 1 }
     venue_id { 1 }
     date_added { Date.today }
@@ -15,6 +16,7 @@ FactoryBot.define do
     box_office { 500 }
     box_office_received { false }
     email { 'someone@venue.com' }
+
   end
 
 end

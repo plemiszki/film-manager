@@ -1,3 +1,32 @@
+.booking-details, #virtual-booking-details {
+
+  .invoices-table {
+    line-height: 0;
+    margin-bottom: 20px;
+
+    th.button {
+      width: 80px;
+    }
+    td.button {
+      width: 80px;
+
+      img {
+        height: 17px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .delete-invoice {
+    display: inline-block;
+    background-image: asset-url('gray-x.png');
+    background-size: contain;
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+  }
+}
+
 .booking-details {
 
   a.jump-link {
@@ -62,32 +91,8 @@
     }
   }
 
-  .delete-invoice {
-    display: inline-block;
-    background-image: asset-url('gray-x.png');
-    background-size: contain;
-    width: 17px;
-    height: 17px;
-    cursor: pointer;
-  }
-
   a.blue-outline-button {
     margin-bottom: 30px;
-  }
-
-  .invoices-table {
-    line-height: 0;
-    th.button {
-      width: 80px;
-    }
-    td.button {
-      width: 80px;
-
-      img {
-        height: 17px;
-        cursor: pointer;
-      }
-    }
   }
 }
 
