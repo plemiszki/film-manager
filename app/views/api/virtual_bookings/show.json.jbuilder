@@ -16,6 +16,13 @@ json.virtualBooking do
   json.email @virtual_booking.email
   json.termsValid @calculations[:valid]
   json.reportSentDate @virtual_booking.report_sent_date.present? ? @virtual_booking.report_sent_date.strftime("%-m/%-d/%y") : '(Not Sent)'
+  json.billingName @virtual_booking.billing_name
+  json.billingAddress1 @virtual_booking.billing_address1
+  json.billingAddress2 @virtual_booking.billing_address2
+  json.billingCity @virtual_booking.billing_city
+  json.billingState @virtual_booking.billing_state
+  json.billingZip @virtual_booking.billing_zip
+  json.billingCountry @virtual_booking.billing_country
 end
 json.films @films do |film|
   json.id film.id

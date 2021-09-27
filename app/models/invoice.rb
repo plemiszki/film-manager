@@ -13,6 +13,8 @@ class Invoice < ActiveRecord::Base
   belongs_to :customer, class_name: 'DvdCustomer'
   belongs_to :booking, polymorphic: true
 
+  alias_attribute :rows, :invoice_rows
+
   def self.fill_num_column!
     self.all.each do |invoice|
       invoice.update(num: invoice.number[0..-2])

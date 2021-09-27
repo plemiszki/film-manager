@@ -5,6 +5,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
 import NewEntity from './new-entity.jsx'
+import NewInvoice from './new-invoice.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
@@ -129,7 +130,9 @@ class VirtualBookingDetails extends React.Component {
   }
 
   clickAddInvoice() {
-
+    this.setState({
+      newInvoiceModalOpen: true
+    });
   }
 
   clickAddPayment() {
@@ -206,6 +209,31 @@ class VirtualBookingDetails extends React.Component {
     });
   }
 
+  sendInvoiceCallback(invoices) {
+    this.setState({
+      newInvoiceModalOpen: false,
+      invoices
+    });
+  }
+
+  generateInvoiceRows() {
+    return [{
+      label: `Amount Due - ${this.state.calculations.ourShare}`,
+      amount: HandyTools.removeFinanceSymbols(this.state.calculations.ourShare),
+      active: true,
+      sufficient: true
+    }];
+  }
+
+  calculateNewInvoiceModalHeight() {
+    const rows = 1 + this.state.payments.length;
+    const padding = 36;
+    const border = 1;
+    const buttonHeight = 47;
+    const rowHeight = 54;
+    return (rowHeight * rows) + (padding * 2) + (border * 2) + buttonHeight;
+  }
+
   render() {
     return (
       <div id="virtual-booking-details" className="component details-component">
@@ -235,6 +263,7 @@ class VirtualBookingDetails extends React.Component {
             </div>
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'deduction' }) }
           </div>
+          { this.renderBillingAddressSection() }
           <hr className="divider" />
           <h3>Box Office</h3>
           <div className="row">
@@ -256,6 +285,14 @@ class VirtualBookingDetails extends React.Component {
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
+        <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700, height: this.calculateNewInvoiceModalHeight() }) }>
+          <NewInvoice
+            context={ this.props.context }
+            rows={ this.generateInvoiceRows() }
+            payments={ this.state.payments }
+            callback={ this.sendInvoiceCallback.bind(this) }
+          />
+        </Modal>
         <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>
           <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
         </Modal>
@@ -276,6 +313,28 @@ class VirtualBookingDetails extends React.Component {
         { Common.renderJobModal.call(this, this.state.job) }
       </div>
     );
+  }
+
+  renderBillingAddressSection() {
+    if (this.state.virtualBooking.host == 'Venue') {
+      return(
+        <>
+          <hr className="divider" />
+          <h3>Billing Address</h3>
+          <div className="row">
+            { Details.renderField.call(this, { columnWidth: 4, entity: 'virtualBooking', property: 'billingName', columnHeader: 'Name' }) }
+            { Details.renderField.call(this, { columnWidth: 4, entity: 'virtualBooking', property: 'billingAddress1', columnHeader: 'Address 1' }) }
+            { Details.renderField.call(this, { columnWidth: 4, entity: 'virtualBooking', property: 'billingAddress2', columnHeader: 'Address 2' }) }
+          </div>
+          <div className="row">
+            { Details.renderField.call(this, { columnWidth: 3, entity: 'virtualBooking', property: 'billingCity', columnHeader: 'City' }) }
+            { Details.renderField.call(this, { columnWidth: 1, entity: 'virtualBooking', property: 'billingState', columnHeader: 'State' }) }
+            { Details.renderField.call(this, { columnWidth: 2, entity: 'virtualBooking', property: 'billingZip', columnHeader: 'Zip' }) }
+            { Details.renderField.call(this, { columnWidth: 2, entity: 'virtualBooking', property: 'billingCountry', columnHeader: 'Country' }) }
+          </div>
+        </>
+      );
+    }
   }
 
   renderInvoicesSection() {

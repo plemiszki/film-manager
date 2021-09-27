@@ -17,7 +17,7 @@ describe 'virtual_booking_details', type: :feature do
     expect(page).to have_content 'Please sign in to continue.'
   end
 
-  it 'displays information about the virtual_booking' do
+  it 'displays information about a virtual_booking hosted by FM' do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     wait_for_ajax
     expect(find('input[data-field="filmId"]').value).to eq('Wilby Wonderful')
@@ -32,6 +32,19 @@ describe 'virtual_booking_details', type: :feature do
     expect(find('input[data-field="boxOffice"]').value).to eq('$500.00')
     expect(find('input[data-field="boxOfficeReceived"]', visible: false).checked?).to eq(false)
     expect(find('input[data-field="email"]').value).to eq('someone@venue.com')
+  end
+
+  it 'displays information about a virtual_booking hosted by a venue' do
+    @virtual_booking.update(host: 'Venue')
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    wait_for_ajax
+    expect(find('input[data-field="billingName"]').value).to eq('Some Venue')
+    expect(find('input[data-field="billingAddress1"]').value).to eq('6 Sherman Bridge Road')
+    expect(find('input[data-field="billingAddress2"]').value).to eq('Apt 2')
+    expect(find('input[data-field="billingCity"]').value).to eq('Wayland')
+    expect(find('input[data-field="billingState"]').value).to eq('MA')
+    expect(find('input[data-field="billingZip"]').value).to eq('01778')
+    expect(find('input[data-field="billingCountry"]').value).to eq('USA')
   end
 
   it 'validates information about the virtual_booking' do

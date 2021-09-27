@@ -2,7 +2,7 @@
   "name": "film-manager",
   "scripts": {
     "heroku-postbuild": "webpack --mode production",
-    "start": "webpack --watch"
+    "dev": "webpack --watch"
   },
   "dependencies": {
     "@babel/core": "7.4.0",

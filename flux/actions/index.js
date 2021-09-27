@@ -6,12 +6,17 @@ export function sendRequest(args) {
   if (data) {
     data = HandyTools.convertObjectKeysToUnderscore(data);
   }
+  let ajaxArgs = {
+    method: method.toUpperCase(),
+    url,
+    data
+  }
+  if (args.json) {
+    ajaxArgs.contentType = 'application/json';
+    ajaxArgs.data = JSON.stringify(data);
+  }
   return (dispatch) => {
-    return $.ajax({
-      method: method.toUpperCase(),
-      url,
-      data
-    }).then(
+    return $.ajax(ajaxArgs).then(
       (response) => {
         let obj = Object.assign(response, { type: 'SEND_REQUEST' });
         dispatch(obj);

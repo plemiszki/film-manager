@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_12_011049) do
+ActiveRecord::Schema.define(version: 2021_09_26_140839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -767,6 +767,13 @@ ActiveRecord::Schema.define(version: 2021_09_12_011049) do
     t.string "email", default: ""
     t.date "report_sent_date"
     t.date "report_sent"
+    t.string "billing_name", default: ""
+    t.string "billing_address1", default: ""
+    t.string "billing_address2", default: ""
+    t.string "billing_city", default: ""
+    t.string "billing_state", default: ""
+    t.string "billing_zip", default: ""
+    t.string "billing_country", default: ""
   end
 
   create_table "weekly_box_offices", id: :serial, force: :cascade do |t|

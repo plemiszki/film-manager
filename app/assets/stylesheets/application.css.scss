@@ -13,8 +13,8 @@
  *= require_self
  */
 
-$highlight-color: #01647C;
 $button-color: #01647C;
+$highlight-color: #0385a4;
 $imgpath: 'handy-components/images';
 
 @import 'bootstrap-sprockets';
@@ -63,4 +63,8 @@ $imgpath: 'handy-components/images';
 
 .blue-button:not(.disabled) {
   background-color: $button-color !important;
+}
+
+.blue-button:not(.disabled):hover {
+  background-color: $highlight-color !important;
 }
