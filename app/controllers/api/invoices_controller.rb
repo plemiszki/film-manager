@@ -68,7 +68,15 @@ class Api::InvoicesController < AdminController
         InvoicePayment.create!(invoice_id: invoice.id, payment_id: payment_id, amount: payment.amount, date: payment.date, notes: payment.notes)
       end
     end
-    # SendBookingInvoice.perform_async(invoice.id, current_user.id, booking.email, params[:advance], params[:overage], (params[:advance] && booking.booking_type.strip != "Theatrical"))
+
+    SendBookingInvoice.perform_async(0,
+      invoice_id: invoice.id,
+      user_id: current_user.id,
+      email: booking.email,
+      overage: params[:overage],
+      shipping_terms: (params[:advance] && booking.booking_type.strip != "Theatrical")
+    )
+
     settings = Setting.first
     settings.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1)
     @invoices = booking.invoices.includes(:invoice_rows)

@@ -249,9 +249,11 @@ class Invoice < ActiveRecord::Base
       end
       string += "<tr>"
       if row.item_label == "Advance" || row.item_label[0..6] == "Overage"
-        gross = row.item_label[5..-1] if row.item_label[0..6] == "Overage"
         string += "<td class='big-margin'>#{booking.film.title}<br>#{booking.start_date.strftime("%-m/%-d/%y")} - #{booking.end_date.strftime("%-m/%-d/%y")}<br>#{booking.screenings} screening#{booking.screenings > 1 ? 's' : ''}<br>#{booking.terms + (row.item_label[0..6] == "Overage" ? " #{row.item_label[7..-1]}" : "")}<br>#{booking.format.name}<br>"
         string += "Premiere: #{booking.premiere}<br>" unless booking.premiere.empty?
+        string += '</td>'
+      elsif row.item_label.starts_with?('Amount Due - ')
+        string += "<td class='big-margin'>#{booking.film.title}<br>#{booking.start_date.strftime("%-m/%-d/%y")} - #{booking.end_date.strftime("%-m/%-d/%y")}<br>#{booking.terms}<br>Virtual<br>"
         string += '</td>'
       elsif row.item_label == "Shipping Fee"
         string += "<td class='big-margin'>#{row.item_label}</td>"
@@ -266,6 +268,8 @@ class Invoice < ActiveRecord::Base
       end
       if row.item_label == "Advance" || row.item_label[0..6] == "Overage"
         string += "<td class='big-margin'><br><br><br><br>#{dollarify(row.total_price.to_s)}</td>"
+      elsif row.item_label.starts_with?('Amount Due - ')
+        string += "<td class='big-margin'><br><br><br>#{dollarify(row.total_price.to_s)}</td>"
       elsif row.item_label == "Shipping Fee"
         string += "<td class='big-margin'>#{dollarify(row.total_price.to_s)}</td>"
       else
