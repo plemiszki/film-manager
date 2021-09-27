@@ -218,18 +218,22 @@ class Invoice < ActiveRecord::Base
     unless self.billing_country == 'USA'
       string += "#{self.billing_country}"
     end
-    string += '</div><div class="address-block">'
-    string += "<p>Ship To:</p>"
-    string += "#{self.shipping_name}<br />"
-    string += "#{self.shipping_address1}<br />"
-    unless self.shipping_address2.empty?
-      string += "#{self.shipping_address2}<br />"
+    string += '</div>'
+
+    if self.shipping_address1.present?
+      string += '<div class="address-block">'
+      string += '<p>Ship To:</p>'
+      string += "#{self.shipping_name}<br />"
+      string += "#{self.shipping_address1}<br />"
+      if self.shipping_address2.present?
+        string += "#{self.shipping_address2}<br />"
+      end
+      string += "#{self.shipping_city}, #{self.shipping_state} #{self.shipping_zip}<br />"
+      unless self.shipping_country == 'USA'
+        string += "#{self.shipping_country}"
+      end
+      string += '</div>'
     end
-    string += "#{self.shipping_city}, #{self.shipping_state} #{self.shipping_zip}<br />"
-    unless self.shipping_country == 'USA'
-      string += "#{self.shipping_country}"
-    end
-    string += "</div>"
 
     string += "<table>"
     if self.invoice_type == "dvd"
@@ -278,7 +282,7 @@ class Invoice < ActiveRecord::Base
     end
     string += "<tr class=\"total-row\"><td>Total (Net of all taxes and bank transfer expenses)</td><td></td><td>#{self.invoice_type == "dvd" ? "#{total_dvds}" : ""}</td><td>#{dollarify(self.total_minus_payments.to_s)}</td></tr>"
     string += "</table>"
-    unless self.notes.empty?
+    if self.notes.present?
       string += "<div class=\"notes\">"
       string += "<p>Notes:</p>"
       string += self.notes.gsub("\n", "<br />")
