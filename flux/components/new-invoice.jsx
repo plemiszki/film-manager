@@ -62,7 +62,7 @@ class NewInvoice extends React.Component {
   render() {
     return(
       <>
-        <div className="component admin-modal">
+        <div className="component admin-modal new-invoice">
           <div className="white-box">
             { this.renderRows() }
             <div className="button-container">

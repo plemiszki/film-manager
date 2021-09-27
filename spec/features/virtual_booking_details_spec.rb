@@ -100,6 +100,25 @@ describe 'virtual_booking_details', type: :feature do
     end
   end
 
+  it 'adds invoices' do
+    create(:setting)
+    @virtual_booking.update(host: 'Venue')
+    visit virtual_booking_path(@virtual_booking, as: $admin_user)
+    find('.blue-outline-button', text: 'Add Invoice').click
+    within('.new-invoice') do
+      find('.blue-button', text: 'Send Invoice').click
+    end
+    wait_for_ajax
+    expect(Invoice.count).to eq(1)
+    expect(Invoice.first.total).to eq(200)
+    expect(InvoiceRow.count).to eq(1)
+    expect(InvoiceRow.first.item_label).to eq('Amount Due - $200.00')
+    expect(InvoiceRow.first.total_price).to eq(200)
+    within('.invoices-table') do
+      expect(page).to have_content('1B')
+    end
+  end
+
   it 'deletes invoices' do
     @virtual_booking.update(host: 'Venue')
     create(:virtual_booking_invoice)
