@@ -18,14 +18,21 @@ class NewInvoice extends React.Component {
   }
 
   componentDidMount() {
+    const { editMode } = this.props;
     let result = [];
     this.props.rows.forEach((row) => {
+      if (editMode) {
+        row.sentAmount = 'asdf';
+      }
       result.push(row);
     });
     this.props.payments.forEach((payment) => {
       result.push({
+        payment: true,
         active: false,
-        label: `Payment (${payment.date}) - (${payment.amount})`
+        label: `Payment (${payment.date})`,
+        amount: payment.amount,
+        sentAmount: (editMode ? 'asdf' : undefined)
       });
     });
     this.setState({
@@ -52,14 +59,26 @@ class NewInvoice extends React.Component {
       data: {
         bookingId: this.props.virtualBooking.id,
         bookingType: 'virtualBooking',
-        rows: this.state.rows
+        rows: this.convertRowAmounts(this.state.rows)
       }
     }).then(() => {
       this.props.callback(this.props.invoices);
     });
   }
 
+  convertRowAmounts(rows) {
+    return rows.map((row) => {
+      row = Details.removeFinanceSymbolsFromEntity({ entity: row, fields: ['amount'] });
+      row = HandyTools.convertObjectKeysToUnderscore(row);
+      if (row.payment) {
+        row.amount = row.amount * -1;
+      }
+      return row;
+    });
+  }
+
   render() {
+    const { editMode } = this.props;
     return(
       <>
         <div className="component admin-modal new-invoice">
@@ -67,7 +86,7 @@ class NewInvoice extends React.Component {
             { this.renderRows() }
             <div className="button-container">
               <a className={ "btn blue-button" + this.renderDisabledButtonClass() } onClick={ this.clickSend.bind(this) }>
-                Send Invoice
+                { editMode ? 'Resend' : 'Send' } Invoice
               </a>
             </div>
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
@@ -84,7 +103,9 @@ class NewInvoice extends React.Component {
   }
 
   renderRows() {
+    const { editMode } = this.props;
     return this.state.rows.map((row, index) => {
+      const amount = (row.payment ? `(${row.amount})` : row.amount );
       return(
         <React.Fragment key={ index }>
           <div>
@@ -95,7 +116,7 @@ class NewInvoice extends React.Component {
               }) }
             </div>
             <p className={ row.active ? '' : 'disabled' }>
-              { row.label }
+              { row.label } - { editMode ? `${row.sentAmount} → ` : null }{ amount }
             </p>
           </div>
           <style jsx>{`

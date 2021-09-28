@@ -71,7 +71,15 @@ class VirtualBookingDetails extends React.Component {
   }
 
   clickInvoice(id, e) {
-    if (e.target.tagName === 'IMG') {
+    const target = e.target;
+    const clickedEdit = (target.tagName === 'IMG');
+    const clickedDelete = (target.tagName === 'DIV' && target.classList.contains('delete-invoice'));
+    if (clickedEdit) {
+      this.setState({
+        newInvoiceModalOpen: true,
+        editInvoiceMode: true,
+        editInvoiceIndex: id
+      });
       // var invoice = InvoicesStore.find(id) || BookingsStore.findInvoice(id);
       // var rows = invoice.rows;
       // var oldAdvance;
@@ -102,7 +110,7 @@ class VirtualBookingDetails extends React.Component {
       //   resendInvoiceId: invoice.number,
       //   invoicePayments: paymentsObj
       // });
-    } else if (e.target.tagName === 'DIV' && e.target.classList.contains('delete-invoice')) {
+    } else if (clickedDelete) {
       this.setState({
         deleteInvoiceId: id,
         deleteInvoiceModalOpen: true
@@ -217,9 +225,17 @@ class VirtualBookingDetails extends React.Component {
   }
 
   generateInvoiceRows() {
+    const { virtualBookingSaved } = this.state;
+    const film = HandyTools.pluckFromObjectsArray({
+      array: this.state.films,
+      property: 'id',
+      value: virtualBookingSaved.filmId
+    });
+    const filmTitle = film && film.title;
     return [{
-      label: `Amount Due - ${this.state.calculations.ourShare}`,
-      amount: HandyTools.removeFinanceSymbols(this.state.calculations.ourShare),
+      label: 'Amount Due',
+      labelExport: `${filmTitle}\n${virtualBookingSaved.startDate} - ${virtualBookingSaved.endDate}\n${virtualBookingSaved.terms} (Total Gross: ${this.state.calculations.totalGross})\nVirtual Screening`,
+      amount: this.state.calculations.ourShare,
       active: true,
       sufficient: true
     }];
@@ -291,6 +307,8 @@ class VirtualBookingDetails extends React.Component {
             rows={ this.generateInvoiceRows() }
             payments={ this.state.payments }
             callback={ this.sendInvoiceCallback.bind(this) }
+            editMode={ this.state.editInvoiceMode }
+            invoiceToEdit={ (this.state.editInvoiceMode && this.state.invoices[this.state.editInvoiceIndex]) || null }
           />
         </Modal>
         <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>

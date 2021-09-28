@@ -15,6 +15,9 @@ class Invoice < ActiveRecord::Base
 
   alias_attribute :rows, :invoice_rows
 
+  scope :bookings, -> { where(invoice_type: 'booking') }
+  scope :dvds, -> { where(invoice_type: 'dvd') }
+
   def self.fill_num_column!
     self.all.each do |invoice|
       invoice.update(num: invoice.number[0..-2])
@@ -248,33 +251,38 @@ class Invoice < ActiveRecord::Base
         string += '</table><div class="page-break"><table><tr><th>Item</th><th>Unit Price</th><th>Qty</th><th>Total Price</th></tr>'
       end
       string += "<tr>"
+
+      # item description
+      description_text = row.try(:item_label_export) || row.item_label
       if row.item_label == "Advance" || row.item_label[0..6] == "Overage"
         string += "<td class='big-margin'>#{booking.film.title}<br>#{booking.start_date.strftime("%-m/%-d/%y")} - #{booking.end_date.strftime("%-m/%-d/%y")}<br>#{booking.screenings} screening#{booking.screenings > 1 ? 's' : ''}<br>#{booking.terms + (row.item_label[0..6] == "Overage" ? " #{row.item_label[7..-1]}" : "")}<br>#{booking.format.name}<br>"
         string += "Premiere: #{booking.premiere}<br>" unless booking.premiere.empty?
         string += '</td>'
-      elsif row.item_label.starts_with?('Amount Due - ')
-        string += "<td class='big-margin'>#{booking.film.title}<br>#{booking.start_date.strftime("%-m/%-d/%y")} - #{booking.end_date.strftime("%-m/%-d/%y")}<br>#{booking.terms}<br>Virtual<br>"
-        string += '</td>'
       elsif row.item_label == "Shipping Fee"
         string += "<td class='big-margin'>#{row.item_label}</td>"
       else
-        string += "<td>#{row.item_label}</td>"
+        string += "<td>#{description_text.gsub("\n", '<br />')}</td>"
       end
+
+      # unit price and qty columns (for DVD invoices)
       if self.invoice_type == "dvd"
         total_dvds += row.item_qty
         string += "<td>#{dollarify(row.unit_price.to_s)}</td><td>#{row.item_qty}</td>"
       else
         string += "<td></td><td></td>"
       end
+
+      # total price column
+      break_tag_count = description_text.count("\n")
+      break_tags = ('<br />' * break_tag_count)
       if row.item_label == "Advance" || row.item_label[0..6] == "Overage"
         string += "<td class='big-margin'><br><br><br><br>#{dollarify(row.total_price.to_s)}</td>"
-      elsif row.item_label.starts_with?('Amount Due - ')
-        string += "<td class='big-margin'><br><br><br>#{dollarify(row.total_price.to_s)}</td>"
       elsif row.item_label == "Shipping Fee"
         string += "<td class='big-margin'>#{dollarify(row.total_price.to_s)}</td>"
       else
-        string += "<td>#{dollarify(row.total_price.to_s)}</td>"
+        string += "<td>#{break_tags}#{dollarify(row.total_price.to_s)}</td>"
       end
+
       string += "</tr>"
     end
     if self.invoice_type == 'booking'

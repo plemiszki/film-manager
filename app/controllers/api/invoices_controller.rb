@@ -51,10 +51,11 @@ class Api::InvoicesController < AdminController
     InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
 
     if params[:rows]
-      params.permit(rows: [:label, :amount])[:rows].each do |row|
+      params.permit(rows: [:label, :label_export, :amount])[:rows].each do |row|
         InvoiceRow.create!(
           invoice_id: invoice.id,
           item_label: row[:label],
+          item_label_export: row[:label_export],
           item_qty: 1,
           unit_price: row[:amount],
           total_price: row[:amount]
