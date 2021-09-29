@@ -18,21 +18,30 @@ class NewInvoice extends React.Component {
   }
 
   componentDidMount() {
-    const { editMode } = this.props;
+    const { editMode, invoiceToEdit } = this.props;
     let result = [];
     this.props.rows.forEach((row) => {
       if (editMode) {
-        row.sentAmount = 'asdf';
+        const sentRow = invoiceToEdit.rows.find(sentRow => sentRow.label === row.label);
+        if (sentRow) {
+          row.active = true;
+          row.sentAmount = sentRow.amount;
+        } else {
+          row.active = false;
+        }
       }
       result.push(row);
     });
     this.props.payments.forEach((payment) => {
+      let sentRow;
+      if (editMode) {
+        sentRow = invoiceToEdit.rows.find(sentRow => sentRow.label === `Payment (${payment.date})`);
+      }
       result.push({
         payment: true,
-        active: false,
+        active: editMode && sentRow ? true : false,
         label: `Payment (${payment.date})`,
-        amount: payment.amount,
-        sentAmount: (editMode ? 'asdf' : undefined)
+        amount: payment.amount
       });
     });
     this.setState({
@@ -48,26 +57,27 @@ class NewInvoice extends React.Component {
     });
   }
 
-  clickSend() {
+  clickSend(editMode) {
     this.setState({
       fetching: true
     });
     this.props.sendRequest({
-      url: '/api/invoices',
-      method: 'post',
+      url: `/api/invoices/${editMode ? this.props.invoiceToEdit.number : ''}`,
+      method: (editMode ? 'PATCH' : 'POST'),
       json: true,
       data: {
         bookingId: this.props.virtualBooking.id,
         bookingType: 'virtualBooking',
-        rows: this.convertRowAmounts(this.state.rows)
+        rows: this.convertAndFilterRows(this.state.rows)
       }
     }).then(() => {
       this.props.callback(this.props.invoices);
     });
   }
 
-  convertRowAmounts(rows) {
-    return rows.map((row) => {
+  convertAndFilterRows(rows) {
+    const activeRows = rows.filter(row => row.active);
+    return activeRows.map((row) => {
       row = Details.removeFinanceSymbolsFromEntity({ entity: row, fields: ['amount'] });
       row = HandyTools.convertObjectKeysToUnderscore(row);
       if (row.payment) {
@@ -85,7 +95,7 @@ class NewInvoice extends React.Component {
           <div className="white-box">
             { this.renderRows() }
             <div className="button-container">
-              <a className={ "btn blue-button" + this.renderDisabledButtonClass() } onClick={ this.clickSend.bind(this) }>
+              <a className={ "btn blue-button" + this.renderDisabledButtonClass() } onClick={ this.clickSend.bind(this, editMode) }>
                 { editMode ? 'Resend' : 'Send' } Invoice
               </a>
             </div>
@@ -116,7 +126,7 @@ class NewInvoice extends React.Component {
               }) }
             </div>
             <p className={ row.active ? '' : 'disabled' }>
-              { row.label } - { editMode ? `${row.sentAmount} → ` : null }{ amount }
+              { row.label } - { row.sentAmount ? `${row.sentAmount} → ` : null }{ amount }
             </p>
           </div>
           <style jsx>{`

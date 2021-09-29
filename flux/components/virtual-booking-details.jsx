@@ -70,7 +70,7 @@ class VirtualBookingDetails extends React.Component {
     return !HandyTools.objectsAreEqual(this.state.virtualBooking, this.state.virtualBookingSaved);
   }
 
-  clickInvoice(id, e) {
+  clickInvoice(id, index, e) {
     const target = e.target;
     const clickedEdit = (target.tagName === 'IMG');
     const clickedDelete = (target.tagName === 'DIV' && target.classList.contains('delete-invoice'));
@@ -78,7 +78,7 @@ class VirtualBookingDetails extends React.Component {
       this.setState({
         newInvoiceModalOpen: true,
         editInvoiceMode: true,
-        editInvoiceIndex: id
+        editInvoiceIndex: index
       });
       // var invoice = InvoicesStore.find(id) || BookingsStore.findInvoice(id);
       // var rows = invoice.rows;
@@ -139,7 +139,9 @@ class VirtualBookingDetails extends React.Component {
 
   clickAddInvoice() {
     this.setState({
-      newInvoiceModalOpen: true
+      newInvoiceModalOpen: true,
+      editInvoiceMode: false,
+      editInvoiceIndex: undefined
     });
   }
 
@@ -377,7 +379,7 @@ class VirtualBookingDetails extends React.Component {
                   <tr><td></td><td></td><td></td><td></td><td></td></tr>
                   { this.state.invoices.map((invoice, index) => {
                     return(
-                      <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id) }>
+                      <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id, index) }>
                         <td className="indent">
                           { invoice.sentDate }
                         </td>
