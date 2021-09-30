@@ -7,6 +7,7 @@ class Api::BookingsController < AdminController
     select bookings.id as booking_id, sum(total) as total_invoices
     from bookings
     join invoices on bookings.id = invoices.booking_id
+    where invoices.booking_type = 'Booking'
     group by bookings.id
   SQL
 
@@ -14,6 +15,7 @@ class Api::BookingsController < AdminController
     select bookings.id as booking_id, sum(amount) as total_payments
     from bookings
     join payments on bookings.id = payments.booking_id
+    where payments.booking_type = 'Booking'
     group by bookings.id
   SQL
 
