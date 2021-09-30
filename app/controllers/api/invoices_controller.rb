@@ -11,9 +11,7 @@ class Api::InvoicesController < AdminController
   end
 
   def create
-    booking = (is_virtual_booking? ? VirtualBooking.find(params[:booking_id]) : Booking.find(params[:booking_id]))
-    calculations = booking_calculations(booking)
-    total = get_total(params, booking, calculations)
+    booking, total = get_data
     new_invoice_data = {
       invoice_type: 'booking',
       sent_date: Date.today,
@@ -44,50 +42,20 @@ class Api::InvoicesController < AdminController
     end
 
     invoice = Invoice.create!(new_invoice_data)
+    create_invoice_rows_and_payments(invoice)
 
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == "true"
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
-
-    if params[:rows]
-      params.permit(rows: [:label, :label_export, :amount])[:rows].each do |row|
-        InvoiceRow.create!(
-          invoice_id: invoice.id,
-          item_label: row[:label],
-          item_label_export: row[:label_export],
-          item_qty: 1,
-          unit_price: row[:amount],
-          total_price: row[:amount]
-        )
-      end
-    end
-
-    if params[:payment_ids]
-      params[:payment_ids].each do |payment_id|
-        payment = Payment.find(payment_id)
-        InvoicePayment.create!(invoice_id: invoice.id, payment_id: payment_id, amount: payment.amount, date: payment.date, notes: payment.notes)
-      end
-    end
-
-    SendBookingInvoice.perform_async(0,
-      invoice_id: invoice.id,
-      user_id: current_user.id,
-      email: booking.email,
-      overage: params[:overage],
-      shipping_terms: (params[:advance] && booking.booking_type.strip != "Theatrical")
-    )
+    send_invoice(invoice, booking)
 
     settings = Setting.first
     settings.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1)
+
     @invoices = booking.invoices.includes(:invoice_rows)
     render 'booking', formats: [:json], handlers: [:jbuilder]
   end
 
   def update
+    booking, total = get_data
     invoice = Invoice.find_by_number(params[:id])
-    booking = (is_virtual_booking? ? VirtualBooking.find(params[:booking_id]) : Booking.find(params[:booking_id]))
-    calculations = booking_calculations(booking)
-    total = get_total(params, booking, calculations)
     updated_invoice_data = {
       billing_name: booking.billing_name,
       billing_address1: booking.billing_address1,
@@ -113,37 +81,10 @@ class Api::InvoicesController < AdminController
     invoice.update!(updated_invoice_data)
 
     invoice.invoice_rows.destroy_all
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == "true"
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
-    if params[:rows]
-      params.permit(rows: [:label, :label_export, :amount])[:rows].each do |row|
-        InvoiceRow.create!(
-          invoice_id: invoice.id,
-          item_label: row[:label],
-          item_label_export: row[:label_export],
-          item_qty: 1,
-          unit_price: row[:amount],
-          total_price: row[:amount]
-        )
-      end
-    end
+    invoice.invoice_payments.destroy_all
+    create_invoice_rows_and_payments(invoice)
 
-    InvoicePayment.where(invoice_id: invoice.id).destroy_all
-    if params[:payment_ids]
-      params[:payment_ids].each do |payment_id|
-        payment = Payment.find(payment_id)
-        InvoicePayment.create!(invoice_id: invoice.id, payment_id: payment_id, amount: payment.amount, date: payment.date, notes: payment.notes)
-      end
-    end
-
-    SendBookingInvoice.perform_async(0,
-      invoice_id: invoice.id,
-      user_id: current_user.id,
-      email: booking.email,
-      overage: params[:overage],
-      shipping_terms: (params[:advance] && booking.booking_type.strip != "Theatrical")
-    )
+    send_invoice(invoice, booking)
 
     @invoices = booking.invoices.includes(:invoice_rows)
     render 'booking', formats: [:json], handlers: [:jbuilder]
@@ -185,6 +126,13 @@ class Api::InvoicesController < AdminController
 
   private
 
+  def get_data
+    booking = (is_virtual_booking? ? VirtualBooking.find(params[:booking_id]) : Booking.find(params[:booking_id]))
+    calculations = booking_calculations(booking)
+    total = get_total(params, booking, calculations)
+    [booking, total]
+  end
+
   def is_virtual_booking?
     params[:booking_type] == 'virtualBooking'
   end
@@ -196,6 +144,40 @@ class Api::InvoicesController < AdminController
     total += calculations[:overage] if params[:overage] == "true"
     total += booking.shipping_fee if params[:ship_fee] == "true"
     total
+  end
+
+  def create_invoice_rows_and_payments(invoice)
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == "true"
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"
+    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"
+    if params[:rows]
+      params.permit(rows: [:label, :label_export, :amount])[:rows].each do |row|
+        InvoiceRow.create!(
+          invoice_id: invoice.id,
+          item_label: row[:label],
+          item_label_export: row[:label_export],
+          item_qty: 1,
+          unit_price: row[:amount],
+          total_price: row[:amount]
+        )
+      end
+    end
+    if params[:payment_ids]
+      params[:payment_ids].each do |payment_id|
+        payment = Payment.find(payment_id)
+        InvoicePayment.create!(invoice_id: invoice.id, payment_id: payment_id, amount: payment.amount, date: payment.date, notes: payment.notes)
+      end
+    end
+  end
+
+  def send_invoice(invoice, booking)
+    SendBookingInvoice.perform_async(0,
+      invoice_id: invoice.id,
+      user_id: current_user.id,
+      email: booking.email,
+      overage: params[:overage],
+      shipping_terms: (params[:advance] && booking.booking_type.strip != "Theatrical")
+    )
   end
 
 end
