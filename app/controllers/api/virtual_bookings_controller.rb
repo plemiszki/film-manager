@@ -4,7 +4,7 @@ class Api::VirtualBookingsController < AdminController
   include BookingCalculations
 
   def index
-    @virtual_bookings = perform_search(model: 'VirtualBooking', associations: ['film', 'venue'])
+    @virtual_bookings = perform_search(model: 'VirtualBooking', associations: ['film', 'venue', 'invoices'])
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 

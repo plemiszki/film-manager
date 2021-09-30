@@ -1177,9 +1177,9 @@ $(document).ready(function() {
             { name: 'city', dbName: 'shipping_city', width: 162 },
             { name: 'state', dbName: 'shipping_state', width: 162 },
             { name: 'boxOfficeReceived', header: 'BO Received', width: 162 },
-            { name: 'invoiceOrReportSent', header: 'Invoice/Report', width: 162 },
+            { name: 'invoiceOrReportSent', header: 'Invoice/Report', orderByDisabled: true, width: 162 },
             { name: 'host', width: 162 },
-            { name: 'hasUrl', width: 162 },
+            { name: 'hasUrl', orderByDisabled: true, width: 162 },
           ]}
           batchSize={ 50 }
           searchModalRows={ 4 }
