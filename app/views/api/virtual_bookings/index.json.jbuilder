@@ -7,6 +7,10 @@ json.virtualBookings @virtual_bookings do |booking|
   json.endDate booking.end_date.strftime("%-m/%-d/%y")
   json.city booking.shipping_city
   json.state booking.shipping_state
+  json.boxOfficeReceived booking.box_office_received ? 'Yes' : 'No'
+  json.invoiceOrReportSent (booking.report_sent_date.present? || booking.invoices.count > 1) ? 'Yes' : 'No'
+  json.host booking.host
+  json.hasUrl booking.url.present? ? 'Yes' : 'No'
 end
 json.pageNumbers @page_numbers
 json.morePages @more_pages
