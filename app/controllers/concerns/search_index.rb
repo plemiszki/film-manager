@@ -52,6 +52,7 @@ module SearchIndex
           info = values_hash[value]
           widgets_meeting_search_criteria = widgets_meeting_search_criteria
             .joins(info[:joins])
+            .where(info[:where])
             .group(info[:group])
             .having(info[:having])
         end

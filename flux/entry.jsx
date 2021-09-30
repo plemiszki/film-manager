@@ -1178,7 +1178,7 @@ $(document).ready(function() {
             { name: 'state', dbName: 'shipping_state', width: 162 },
             { name: 'boxOfficeReceived', header: 'BO Received', width: 162 },
             { name: 'invoiceOrReportSent', header: 'Invoice/Report', orderByDisabled: true, width: 162 },
-            { name: 'host', width: 162 },
+            { name: 'host', header: 'Hosted By', width: 162 },
             { name: 'hasUrl', orderByDisabled: true, width: 162 },
           ]}
           batchSize={ 50 }
@@ -1198,6 +1198,19 @@ $(document).ready(function() {
               { name: 'dateAdded', type: 'date range', columnWidth: 10 },
               { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
               { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
+              { name: 'boxOfficeReceived', columnHeader: 'BO Received', type: 'yes/no', columnWidth: 4 },
+              { name: 'invoiceOrReportSent', columnHeader: 'Invoice/Report', type: 'yes/no', columnWidth: 4 },
+              {
+                name: 'host',
+                type: 'static dropdown',
+                options: [
+                  { value: 'FM', text: 'FM' },
+                  { value: 'Venue', text: 'Venue' }
+                ],
+                columnHeader: 'Hosted By',
+                columnWidth: 4
+              },
+              { name: 'hasUrl', type: 'yes/no', dbName: 'url', columnWidth: 4 }
             ]}
           />
           <NewEntity

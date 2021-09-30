@@ -3,8 +3,44 @@ class Api::VirtualBookingsController < AdminController
   include SearchIndex
   include BookingCalculations
 
+  INVOICE_OR_REPORT_SENT_SUBQUERY = <<-SQL
+    select virtual_bookings.id as vb_id, count(invoices.id) as invoice_count
+    from virtual_bookings
+    join invoices on virtual_bookings.id = invoices.booking_id
+    where invoices.booking_type = 'VirtualBooking'
+    group by virtual_bookings.id
+    having count(invoices.id) > 0
+  SQL
+
   def index
-    @virtual_bookings = perform_search(model: 'VirtualBooking', associations: ['film', 'venue', 'invoices'])
+    if params[:search_criteria] && params[:search_criteria][:has_url]
+      if params[:search_criteria][:has_url][:value] == 'f'
+        params[:search_criteria][:has_url][:value] = ''
+      else
+        params[:search_criteria][:has_url].delete(:value)
+        params[:search_criteria][:has_url][:not] = ''
+      end
+    end
+    @virtual_bookings = perform_search(
+      model: 'VirtualBooking',
+      associations: ['film', 'venue', 'invoices'],
+      custom_queries: {
+        invoice_or_report_sent: {
+          true: {
+            joins: [
+              "left join(#{INVOICE_OR_REPORT_SENT_SUBQUERY}) as invoices_sent on virtual_bookings.id = invoices_sent.vb_id",
+            ],
+            where: '(host = 1 and invoice_count > 0) or (host = 0 and report_sent_date is not null)'
+          },
+          f: {
+            joins: [
+              "left join(#{INVOICE_OR_REPORT_SENT_SUBQUERY}) as invoices_sent on virtual_bookings.id = invoices_sent.vb_id",
+            ],
+            where: '(host = 1 and invoice_count = 0) or (host = 0 and report_sent_date is null)'
+          }
+        }
+      }
+    )
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
