@@ -103,7 +103,7 @@ class Api::InvoicesController < AdminController
     invoice.destroy
     booking = invoice.booking
     @invoices = booking.invoices
-    render 'index', formats: [:json], handlers: [:jbuilder]
+    render 'booking', formats: [:json], handlers: [:jbuilder]
   end
 
   def export_single

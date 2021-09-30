@@ -80,36 +80,6 @@ class VirtualBookingDetails extends React.Component {
         editInvoiceMode: true,
         editInvoiceIndex: index
       });
-      // var invoice = InvoicesStore.find(id) || BookingsStore.findInvoice(id);
-      // var rows = invoice.rows;
-      // var oldAdvance;
-      // var oldOverage;
-      // var oldShipFee;
-      // rows.forEach(function(row) {
-      //   if (row.label === 'Advance') {
-      //     oldAdvance = row.amount;
-      //   } else if (row.label.slice(0,7) === 'Overage') {
-      //     oldOverage = row.amount;
-      //   } else if (row.label === 'Shipping Fee') {
-      //     oldShipFee = row.amount;
-      //   }
-      // });
-      // var payments = invoice.payments;
-      // var paymentsObj = {};
-      // payments.forEach((payment) => {
-      //   paymentsObj[payment.id] = true;
-      // });
-      // this.setState({
-      //   newInvoiceModalOpen: true,
-      //   oldInvoiceAdvance: oldAdvance,
-      //   oldInvoiceOverage: oldOverage,
-      //   oldInvoiceShipFee: oldShipFee,
-      //   newInvoiceAdvance: !!oldAdvance,
-      //   newInvoiceOverage: !!oldOverage,
-      //   newInvoiceShipFee: !!oldShipFee,
-      //   resendInvoiceId: invoice.number,
-      //   invoicePayments: paymentsObj
-      // });
     } else if (clickedDelete) {
       this.setState({
         deleteInvoiceId: id,
