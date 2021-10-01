@@ -13,34 +13,7 @@ class Api::VirtualBookingsController < AdminController
   SQL
 
   def index
-    if params[:search_criteria] && params[:search_criteria][:has_url]
-      if params[:search_criteria][:has_url][:value] == 'f'
-        params[:search_criteria][:has_url][:value] = ''
-      else
-        params[:search_criteria][:has_url].delete(:value)
-        params[:search_criteria][:has_url][:not] = ''
-      end
-    end
-    @virtual_bookings = perform_search(
-      model: 'VirtualBooking',
-      associations: ['film', 'venue', 'invoices'],
-      custom_queries: {
-        invoice_or_report_sent: {
-          true: {
-            joins: [
-              "left join(#{INVOICE_OR_REPORT_SENT_SUBQUERY}) as invoices_sent on virtual_bookings.id = invoices_sent.vb_id",
-            ],
-            where: '(host = 1 and invoice_count > 0) or (host = 0 and report_sent_date is not null)'
-          },
-          f: {
-            joins: [
-              "left join(#{INVOICE_OR_REPORT_SENT_SUBQUERY}) as invoices_sent on virtual_bookings.id = invoices_sent.vb_id",
-            ],
-            where: '(host = 1 and invoice_count = 0) or (host = 0 and report_sent_date is null)'
-          }
-        }
-      }
-    )
+    @virtual_bookings = virtual_bookings_search
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
@@ -104,7 +77,53 @@ class Api::VirtualBookingsController < AdminController
     render json: { job: job.render_json }
   end
 
+  def export
+    virtual_booking_ids = virtual_bookings_search.to_a.pluck(:id)
+    time_started = Time.now.to_s
+    job = Job.create!(
+      job_id: time_started,
+      name: "export virtual bookings",
+      first_line: "Exporting Virtual Bookings",
+      second_line: true,
+      current_value: 0,
+      total_value: virtual_booking_ids.length
+    )
+    ExportVirtualBookings.perform_async(virtual_booking_ids, time_started)
+    render json: { job: job.render_json }
+  end
+
   private
+
+  def virtual_bookings_search
+    if params[:search_criteria] && params[:search_criteria][:has_url]
+      if params[:search_criteria][:has_url][:value] == 'f'
+        params[:search_criteria][:has_url][:value] = ''
+      else
+        params[:search_criteria][:has_url].delete(:value)
+        params[:search_criteria][:has_url][:not] = ''
+      end
+    end
+    perform_search(
+      model: 'VirtualBooking',
+      associations: ['film', 'venue', 'invoices'],
+      custom_queries: {
+        invoice_or_report_sent: {
+          true: {
+            joins: [
+              "left join(#{INVOICE_OR_REPORT_SENT_SUBQUERY}) as invoices_sent on virtual_bookings.id = invoices_sent.vb_id",
+            ],
+            where: '(host = 1 and invoice_count > 0) or (host = 0 and report_sent_date is not null)'
+          },
+          f: {
+            joins: [
+              "left join(#{INVOICE_OR_REPORT_SENT_SUBQUERY}) as invoices_sent on virtual_bookings.id = invoices_sent.vb_id",
+            ],
+            where: '(host = 1 and invoice_count = 0) or (host = 0 and report_sent_date is null)'
+          }
+        }
+      }
+    )
+  end
 
   def virtual_booking_params
     params[:virtual_booking].permit(

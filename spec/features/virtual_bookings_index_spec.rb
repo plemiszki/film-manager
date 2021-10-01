@@ -56,4 +56,10 @@ describe 'virtual_bookings_index', type: :feature do
     expect(page).to have_content 'End date is not a valid date'
   end
 
+  it 'starts the export job' do
+    visit virtual_bookings_path(as: $admin_user)
+    find('.export-button', text: 'Export').click
+    expect(page).to have_content('Exporting Virtual Bookings')
+  end
+
 end
