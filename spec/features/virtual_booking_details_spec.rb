@@ -112,7 +112,7 @@ describe 'virtual_booking_details', type: :feature do
     expect(Invoice.count).to eq(1)
     expect(Invoice.first.total).to eq(200)
     expect(InvoiceRow.count).to eq(1)
-    expect(InvoiceRow.first.item_label).to eq('Amount Due - $200.00')
+    expect(InvoiceRow.first.item_label).to eq('Amount Due')
     expect(InvoiceRow.first.total_price).to eq(200)
     within('.invoices-table') do
       expect(page).to have_content('1B')

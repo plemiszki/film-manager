@@ -11,7 +11,7 @@ class Api::InvoicesController < AdminController
   end
 
   def create
-    booking, total = get_data
+    booking, calculations, total = get_data
     new_invoice_data = {
       invoice_type: 'booking',
       sent_date: Date.today,
@@ -42,7 +42,7 @@ class Api::InvoicesController < AdminController
     end
 
     invoice = Invoice.create!(new_invoice_data)
-    create_invoice_rows_and_payments(invoice)
+    create_invoice_rows_and_payments(invoice, booking, calculations)
 
     send_invoice(invoice, booking)
 
@@ -54,7 +54,7 @@ class Api::InvoicesController < AdminController
   end
 
   def update
-    booking, total = get_data
+    booking, calculations, total = get_data
     invoice = Invoice.find_by_number(params[:id])
     updated_invoice_data = {
       billing_name: booking.billing_name,
@@ -82,7 +82,7 @@ class Api::InvoicesController < AdminController
 
     invoice.invoice_rows.destroy_all
     invoice.invoice_payments.destroy_all
-    create_invoice_rows_and_payments(invoice)
+    create_invoice_rows_and_payments(invoice, booking, calculations)
 
     send_invoice(invoice, booking)
 
@@ -130,7 +130,7 @@ class Api::InvoicesController < AdminController
     booking = (is_virtual_booking? ? VirtualBooking.find(params[:booking_id]) : Booking.find(params[:booking_id]))
     calculations = booking_calculations(booking)
     total = get_total(params, booking, calculations)
-    [booking, total]
+    [booking, calculations, total]
   end
 
   def is_virtual_booking?
@@ -146,7 +146,7 @@ class Api::InvoicesController < AdminController
     total
   end
 
-  def create_invoice_rows_and_payments(invoice)
+  def create_invoice_rows_and_payments(invoice, booking, calculations)
     InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == "true"
     InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == "true"
     InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == "true"

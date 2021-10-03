@@ -123,8 +123,11 @@ def search_index(criteria)
     key = key.to_s.camelize(:lower)
     field = find("div[data-test-field=#{key}]")
     within(field) do
-      checkbox = find('input[type="checkbox"]')
-      checkbox.set(true)
+      checkbox = find('input[type="checkbox"]', visible: false)
+      unless checkbox.checked?
+        switch = find('.oval')
+        switch.click
+      end
       case value[:type]
       when :select_modal
         find('.select-from-modal').click
