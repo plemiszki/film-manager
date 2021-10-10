@@ -67,6 +67,14 @@ class Film < ActiveRecord::Base
   scope :features, -> { where(film_type: 'Feature') }
   scope :shorts, -> { where(film_type: 'Short') }
 
+  scope :expired, -> { where('end_date <= CURRENT_DATE') }
+  scope :days_until_expired, -> (days) { where("end_date > CURRENT_DATE and end_date <= (CURRENT_DATE + #{days})") }
+
+  def sent_reminders_within(duration)
+    start_date_of_window = self.end_date - duration
+    expiration_reminders.select { |sent_date| sent_date >= start_date_of_window }
+  end
+
   def create_percentages
     unless film_type == 'Short'
       RevenueStream.all.each do |revenue_stream|
@@ -138,6 +146,46 @@ class Film < ActiveRecord::Base
         film_right.update(end_date_calc: film.auto_renew ? (film_right.end_date + film.auto_renew_term.months) : film_right.end_date)
       end
     end
+  end
+
+  def self.send_expiration_reminders!
+    six_month_films = Film.get_expiring_films_with_unsent_reminders(days: 180)
+    three_month_films = Film.get_expiring_films_with_unsent_reminders(days: 90)
+    if six_month_films.present? || three_month_films.present?
+      email_body = Film.add_to_email_body(timeframe: 'six', films: six_month_films) if six_month_films.present?
+      email_body = Film.add_to_email_body(email_body: email_body || '', timeframe: 'three', films: three_month_films) if three_month_films.present?
+      mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
+      message_params = {
+        from: 'michael@filmmovement.com',
+        to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : 'michael@filmmovement.com'),
+        bcc: 'plemiszki@gmail.com',
+        subject: "Expiration Reminders",
+        text: email_body
+      }
+      mg_client.send_message 'filmmovement.com', message_params
+      six_month_films.each do |film|
+        film.expiration_reminders << Date.today
+        film.save!
+      end
+      three_month_films.each do |film|
+        film.expiration_reminders << Date.today
+        film.save!
+      end
+    end
+  end
+
+  def self.get_expiring_films_with_unsent_reminders(days:)
+    Film.days_until_expired(days).select { |film| film.sent_reminders_within(days.days).empty? }
+  end
+
+  def self.add_to_email_body(email_body: nil, timeframe:, films:)
+    result = email_body || ''
+    result += "The following films will expire in #{timeframe} months:\n\n"
+    films.each do |film|
+      result += "#{film.title}\n"
+    end
+    result += "\n"
+    result
   end
 
 end
