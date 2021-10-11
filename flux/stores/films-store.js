@@ -159,7 +159,7 @@ FilmsStore.alternateLengths = function() {
 };
 
 FilmsStore.crossedFilms = function() {
-  return HandyTools.sortArrayOfObjects(_crossedFilms, 'title');
+  return HandyTools.alphabetizeArrayOfObjects(_crossedFilms, 'title');
 };
 
 FilmsStore.otherCrossedFilms = function() {
