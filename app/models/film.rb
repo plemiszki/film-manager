@@ -182,7 +182,7 @@ class Film < ActiveRecord::Base
     result = email_body || ''
     result += "The following films will expire in #{timeframe} months:\n\n"
     films.each do |film|
-      result += "#{film.title}\n"
+      result += "#{film.title} - (#{film.end_date.strftime("%D")})\n"
     end
     result += "\n"
     result
