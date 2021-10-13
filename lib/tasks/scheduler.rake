@@ -8,4 +8,5 @@ end
 
 task :expiration_reminders => :environment do
   Film.send_expiration_reminders!
+  SubRight.send_expiration_reminders!
 end

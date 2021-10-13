@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_10_173026) do
+ActiveRecord::Schema.define(version: 2021_10_13_025310) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -687,6 +687,7 @@ ActiveRecord::Schema.define(version: 2021_10_10_173026) do
     t.date "end_date", null: false
     t.boolean "exclusive", default: false
     t.integer "film_id", null: false
+    t.date "expiration_reminders", default: [], array: true
     t.index ["right_id"], name: "index_sub_rights_on_right_id"
     t.index ["sublicensor_id"], name: "index_sub_rights_on_sublicensor_id"
     t.index ["territory_id"], name: "index_sub_rights_on_territory_id"
