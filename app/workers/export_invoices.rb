@@ -177,7 +177,7 @@ class ExportInvoices
   end
 
   def get_gl_code(booking)
-    if booking.booking_type == 'Theatrical'
+    if booking.class == VirtualBooking || booking.booking_type == 'Theatrical'
       return '30100'
     elsif booking.booking_type == 'Festival'
       ['DVD', 'Blu-ray'].include?(booking.format.name) ? '30415' : '30410'
