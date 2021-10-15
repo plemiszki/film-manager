@@ -1360,7 +1360,7 @@ var ClientActions = {
           deduction: HandyTools.removeFinanceSymbols(booking.deduction),
           house_expense: HandyTools.removeFinanceSymbols(booking.houseExpense),
           terms_change: booking.termsChange,
-          terms: booking.terms,
+          terms: booking.terms.trim(),
           billing_name: booking.billingName,
           billing_address1: booking.billingAddress1,
           billing_address2: booking.billingAddress2,
