@@ -17,6 +17,11 @@ $button-color: #01647C;
 $highlight-color: #0385a4;
 $imgpath: 'handy-components/images';
 
+:root {
+  --button-color: #01647c;
+  --highlight-color: #0385a4;
+}
+
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
 @import 'library/nice-select';
