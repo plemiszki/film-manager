@@ -27,32 +27,7 @@ class Api::BookingsController < AdminController
   ]
 
   def index
-    if params[:search_criteria] && params[:search_criteria][:materials_sent]
-      if params[:search_criteria][:materials_sent][:value] == "f"
-        params[:search_criteria][:materials_sent][:value] = nil
-      else
-        params[:search_criteria][:materials_sent].delete(:value)
-        params[:search_criteria][:materials_sent][:not] = nil
-      end
-    end
-    @bookings = perform_search(
-      model: 'Booking',
-      associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices', 'invoices'],
-      custom_queries: {
-        balance_due: {
-          true: {
-            joins: BALANCE_DUE_JOINS,
-            group: :id,
-            having: 'sum(invoices_subquery.total_invoices) > sum(payments_subquery.total_payments)'
-          },
-          f: {
-            joins: BALANCE_DUE_JOINS,
-            group: :id,
-            having: 'sum(invoices_subquery.total_invoices) <= sum(payments_subquery.total_payments)'
-          }
-        }
-      }
-    )
+    get_bookings
     @calculations = {}
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
@@ -201,14 +176,44 @@ class Api::BookingsController < AdminController
   end
 
   def export
-    booking_ids = params[:booking_ids].to_a.map(&:to_i)
+    get_bookings
+    booking_ids = @bookings.map { |booking| booking.id }
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export bookings", first_line: "Exporting Bookings", second_line: true, current_value: 0, total_value: booking_ids.length)
     ExportBookings.perform_async(booking_ids, time_started)
-    render json: job.render_json
+    render json: { job: job.render_json }
   end
 
   private
+
+  def get_bookings
+    if params[:search_criteria] && params[:search_criteria][:materials_sent]
+      if params[:search_criteria][:materials_sent][:value] == "f"
+        params[:search_criteria][:materials_sent][:value] = nil
+      else
+        params[:search_criteria][:materials_sent].delete(:value)
+        params[:search_criteria][:materials_sent][:not] = nil
+      end
+    end
+    @bookings = perform_search(
+      model: 'Booking',
+      associations: ['film', 'venue', 'format', 'payments', 'weekly_box_offices', 'invoices'],
+      custom_queries: {
+        balance_due: {
+          true: {
+            joins: BALANCE_DUE_JOINS,
+            group: :id,
+            having: 'sum(invoices_subquery.total_invoices) > sum(payments_subquery.total_payments)'
+          },
+          f: {
+            joins: BALANCE_DUE_JOINS,
+            group: :id,
+            having: 'sum(invoices_subquery.total_invoices) <= sum(payments_subquery.total_payments)'
+          }
+        }
+      }
+    )
+  end
 
   def booking_params
     params[:booking].permit(:film_id, :venue_id, :date_added, :start_date, :end_date, :booking_type, :status, :screenings, :email, :booker_id, :format, :premiere, :advance, :shipping_fee, :deduction, :house_expense, :terms_change, :terms, :billing_name, :billing_address1, :billing_address2, :billing_city, :billing_state, :billing_zip, :billing_country, :shipping_name, :shipping_address1, :shipping_address2, :shipping_city, :shipping_state, :shipping_zip, :shipping_country, :materials_sent, :tracking_number, :shipping_notes, :box_office, :box_office_received, :format_id, :notes, :exclude_from_bo_requests)

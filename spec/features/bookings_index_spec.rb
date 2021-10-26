@@ -133,4 +133,10 @@ describe 'bookings_index', type: :feature do
     expect(page).to have_content('1/2/20').once
   end
 
+  it 'starts the export job' do
+    visit bookings_path(as: $admin_user)
+    find('.export-button', text: 'Export').click
+    expect(page).to have_content('Exporting Bookings')
+  end
+
 end

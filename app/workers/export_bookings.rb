@@ -106,7 +106,7 @@ class ExportBookings
     obj = bucket.object("#{time_started}/bookings.xlsx")
     obj.upload_file(file_path, acl:'public-read')
 
-    job.update!({ done: true, first_line: obj.public_url })
+    job.update!({ status: 'success', first_line: '', metadata: { url: obj.public_url }, errors_text: '' })
   end
 
 end

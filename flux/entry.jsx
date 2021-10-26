@@ -354,6 +354,7 @@ $(document).ready(function() {
           searchModalRows={ 4 }
           searchModalDimensions={ { width: 600 } }
           showNewButton={ true }
+          showExportButton={ true }
           newModalRows={ 3 }
           newModalDimensions={ { width: 1000 } }
           preserveSearchCriteria={ true }
