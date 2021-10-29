@@ -651,6 +651,47 @@ describe 'film_details', type: :feature do
     expect(page).to have_content('https://www.itunes.com/another_film')
   end
 
+  it 'displays educational streaming platforms' do
+    create(:edu_platform)
+    create(:edu_platform_film)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within('.edu-platforms-table') do
+      expect(page).to have_content('Kanopy')
+    end
+  end
+
+  it 'adds educational streaming platforms' do
+    create(:edu_platform)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Platform').click
+    fill_out_and_submit_modal({
+      edu_platform_id: { value: 1, type: :select },
+      url: 'https://www.kanopy.com/asdf'
+    }, :input)
+    expect(page).to have_no_css('.spinner')
+    expect(EduPlatformFilm.count).to eq(1)
+    expect(page).to have_content('Kanopy')
+    expect(page).to have_content('https://www.kanopy.com/asdf')
+  end
+
+  it 'validates new educational streaming platforms' do
+    create(:edu_platform)
+    create(:edu_platform_film)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    find('.blue-outline-button', text: 'Add Platform').click
+    fill_out_and_submit_modal({
+      edu_platform_id: { value: 1, type: :select },
+      url: ''
+    }, :input)
+    expect(page).to have_no_css('.spinner')
+    expect(EduPlatformFilm.count).to eq(1)
+    expect(page).to have_content "Url can't be blank"
+    expect(page).to have_content 'Edu platform has already been taken'
+  end
+
   # bookings tab
 
   it "displays the film's booking information" do

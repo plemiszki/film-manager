@@ -373,6 +373,9 @@ var FM = {
     digitalRetailerId: [
       'Digital retailer has already been taken'
     ],
+    eduPlatformId: [
+      'Edu platform has already been taken'
+    ],
     url: [
       "Url can't be blank"
     ],

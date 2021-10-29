@@ -24,6 +24,7 @@ import FilmRightsNew from './film-rights-new.jsx'
 import FilmRightsChangeDates from './film-rights-change-dates.jsx'
 import FormatsStore from '../stores/formats-store.js'
 import DigitalRetailersStore from '../stores/digital-retailers-store.js'
+import EduPlatformsStore from '../stores/edu-platforms-store.js'
 import JobStore from '../stores/job-store.js'
 import FilmRightsStore from '../stores/film-rights-store.js'
 import FilmRightsStore2 from '../stores/film-rights-store-2.js'
@@ -208,6 +209,7 @@ class FilmDetails extends React.Component {
       filmFormats: [],
       formats: [],
       digitalRetailerFilms: [],
+      eduPlatformFilms: [],
       schedule: [],
       artworkModalOpen: false,
       jobModalOpen: !!job.id,
@@ -238,6 +240,7 @@ class FilmDetails extends React.Component {
     this.errorsListener = FilmErrorsStore.addListener(this.getErrors.bind(this));
     this.formatsListener = FormatsStore.addListener(this.getFormats.bind(this));
     this.digitalRetailersListener = DigitalRetailersStore.addListener(this.getDigitalRetailers.bind(this));
+    this.eduPlatformsListener = EduPlatformsStore.addListener(this.getEduPlatforms.bind(this));
     this.crossedFilmsListener = CrossedFilmsStore.addListener(this.getCrossedFilms.bind(this));
     this.filmRights2Listener = FilmRightsStore2.addListener(this.getFilmRights2.bind(this));
     ClientActions.fetchFilm(window.location.pathname.split('/')[2]);
@@ -257,6 +260,7 @@ class FilmDetails extends React.Component {
     this.errorsListener.remove();
     this.formatsListener.remove();
     this.digitalRetailersListener.remove();
+    this.eduPlatformsListener.remove();
     this.jobListener.remove();
     this.crossedFilmsListener.remove();
     this.filmRights2Listener.remove();
@@ -403,6 +407,14 @@ class FilmDetails extends React.Component {
     this.setState({
       digitalRetailerFilms: DigitalRetailersStore.digitalRetailerFilms(),
       newDigitalRetailerModalOpen: false,
+      fetching: false
+    });
+  }
+
+  getEduPlatforms() {
+    this.setState({
+      eduPlatformFilms: EduPlatformsStore.eduPlatformFilms(),
+      newEduPlatformModalOpen: false,
       fetching: false
     });
   }
@@ -800,6 +812,12 @@ class FilmDetails extends React.Component {
     });
   }
 
+  clickAddEduPlatform() {
+    this.setState({
+      newEduPlatformModalOpen: true
+    });
+  }
+
   confirmDelete() {
     this.setState({
       fetching: true
@@ -838,6 +856,7 @@ class FilmDetails extends React.Component {
       newRightsModalOpen: false,
       formatsModalOpen: false,
       newDigitalRetailerModalOpen: false,
+      newEduPlatformModalOpen: false,
       artworkModalOpen: false,
       crossedFilmModalOpen: false,
       changeDatesModalOpen: false,
@@ -1017,6 +1036,13 @@ class FilmDetails extends React.Component {
     });
   }
 
+  updateEduPlatforms(eduPlatformFilms) {
+    this.setState({
+      newEduPlatformModalOpen: false,
+      eduPlatformFilms
+    });
+  }
+
   render() {
     let title = {
       'Short': 'Short',
@@ -1114,6 +1140,9 @@ class FilmDetails extends React.Component {
         </Modal>
         <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ DirectorModalStyles }>
           <NewThing thing="digitalRetailerFilm" initialObject={ { filmId: this.state.film.id, url: "", digitalRetailerId: "1" } } />
+        </Modal>
+        <Modal isOpen={ this.state.newEduPlatformModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+          <NewEntity entityName="eduPlatformFilm" fetchData={ ['eduPlatforms'] } initialEntity={ { filmId: this.state.film.id, url: "", eduPlatformId: "1" } } context={ this.props.context } callback={ this.updateEduPlatforms.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ CopyModalStyles }>
           <NewThing thing="film" copy={ true } initialObject={ { title: "", year: "", length: "", filmType: this.state.film.filmType, copyFrom: this.state.film.id } } />
@@ -1754,7 +1783,7 @@ class FilmDetails extends React.Component {
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Url</th>
+                      <th>URL</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1774,6 +1803,36 @@ class FilmDetails extends React.Component {
                   </tbody>
                 </table>
                 <a className="blue-outline-button small" onClick={ this.clickAddDigitalRetailer.bind(this) }>Add Digital Retailer</a>
+              </div>
+            </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-12">
+                <h3>Educational Streaming Platforms</h3>
+                <table className="fm-admin-table edu-platforms-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>URL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td><td></td></tr>
+                    { this.state.eduPlatformFilms.map((eduPlatformFilm, index) => {
+                      return(
+                        <tr key={ index } onClick={ this.redirect.bind(this, 'edu_platform_films', eduPlatformFilm.id) }>
+                          <td className="name-column">
+                            { eduPlatformFilm.name }
+                          </td>
+                          <td>
+                            { eduPlatformFilm.url }
+                          </td>
+                        </tr>
+                      );
+                    }) }
+                  </tbody>
+                </table>
+                <a className="blue-outline-button small" onClick={ this.clickAddEduPlatform.bind(this) }>Add Platform</a>
               </div>
             </div>
             <hr />

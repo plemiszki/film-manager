@@ -52,6 +52,8 @@ var ServerActions = {
       formats: response.formats,
       digitalRetailers: response.digitalRetailers,
       digitalRetailerFilms: response.digitalRetailerFilms,
+      eduPlatforms: response.eduPlatforms,
+      eduPlatformFilms: response.eduPlatformFilms,
       schedule: response.schedule,
       crossedFilms: response.crossedFilms,
       otherCrossedFilms: response.otherCrossedFilms,

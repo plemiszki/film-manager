@@ -228,6 +228,15 @@ json.digitalRetailerFilms @digital_retailer_films do |digital_retailer_film|
   json.name digital_retailer_film.digital_retailer.name
   json.url digital_retailer_film.url
 end
+json.eduPlatforms @edu_platforms do |edu_platform|
+  json.id edu_platform.id
+  json.name edu_platform.name
+end
+json.eduPlatformFilms @edu_platform_films do |edu_platform_film|
+  json.id edu_platform_film.id
+  json.name edu_platform_film.edu_platform.name
+  json.url edu_platform_film.url
+end
 json.schedule @schedule
 json.episodes @episodes do |episode|
   json.id episode.id

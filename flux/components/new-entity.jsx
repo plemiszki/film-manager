@@ -22,10 +22,11 @@ class NewEntity extends React.Component {
       fetching: !!this.props.fetchData,
       [this.props.entityName]: HandyTools.deepCopy(this.props.initialEntity),
       errors: [],
+      customers: [],
+      eduPlatforms: [],
       films: [],
-      venues: [],
       shippingAddresses: [],
-      customers: []
+      venues: []
     };
   }
 
@@ -109,6 +110,12 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'alias', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }) }
           </div>
         ]);
+      case 'alternateLength':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'alternateLength', property: 'length' }) }
+          </div>
+        ]);
       case 'booker':
         return([
           <div key="1" className="row">
@@ -179,6 +186,13 @@ class NewEntity extends React.Component {
         return([
           <div key="1" className="row">
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'eduPlatform', property: 'name' }) }
+          </div>
+        ]);
+      case 'eduPlatformFilm':
+        return([
+          <div key="1" className="row">
+            { Details.renderDropDown.bind(this)({ columnWidth: 4, entity: 'eduPlatformFilm', property: 'eduPlatformId', type: 'dropdown', columnHeader: 'Platform', options: this.state.eduPlatforms || [], optionDisplayProperty: 'name', maxOptions: 3 }) }
+            { Details.renderField.bind(this)({ columnWidth: 8, entity: 'eduPlatformFilm', property: 'url', columnHeader: 'URL' }) }
           </div>
         ]);
       case 'format':
@@ -324,12 +338,6 @@ class NewEntity extends React.Component {
                 <option value="Festival">Festival</option>
               </select>
             </div>
-          </div>
-        ]);
-      case 'alternateLength':
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'alternateLength', property: 'length' }) }
           </div>
         ]);
       case 'virtualBooking':

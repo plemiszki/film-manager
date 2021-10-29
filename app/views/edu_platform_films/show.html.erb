@@ -1,0 +1,10 @@
+<% if @edu_platform_film %>
+
+  <div id="edu-platform-film-details">replace me</div>
+  <a class="standard-link" href="<%= "/films/#{@edu_platform_film.film_id}?tab=marketing" %>">Back to Film</a>
+
+<% else %>
+
+  Educational streaming platform film not found.
+
+<% end %>

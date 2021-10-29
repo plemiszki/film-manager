@@ -352,6 +352,8 @@ class Api::FilmsController < AdminController
     @directors = Director.where(film_id: film.id)
     @digital_retailer_films = DigitalRetailerFilm.where(film_id: film.id).includes(:digital_retailer)
     @digital_retailers = DigitalRetailer.all
+    @edu_platform_films = EduPlatformFilm.where(film_id: film.id).includes(:edu_platform)
+    @edu_platforms = EduPlatform.all
     @schedule = create_schedule
     @sub_rights = film.sub_rights
     @crossed_films = film.crossed_films

@@ -824,6 +824,28 @@ $(document).ready(function() {
       document.querySelector('#edu-platform-details')
     );
   }
+  if ($('#edu-platform-film-details')[0]) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='eduPlatformFilm'
+          header="Educational Streaming Platform Film Details"
+          initialEntity={ { filmId: '', eduPlatformId: '', url: '' } }
+          fetchData={ ['films', 'eduPlatforms'] }
+          fields={ [
+            [
+              { columnWidth: 5, columnHeader: 'Platform', property: 'eduPlatformId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'eduPlatforms' },
+              { columnWidth: 7, columnHeader: 'URL', property: 'url' },
+            ]
+          ] }
+          deleteCallback={ function() { window.location.pathname = `/films/${this.state.eduPlatformFilm.filmId}` } }
+        />
+      </Provider>,
+      document.getElementById("edu-platform-film-details")
+    );
+  }
   if (document.querySelector('#formats-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>
