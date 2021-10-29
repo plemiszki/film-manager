@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   resources :formats, only: [:show]
   resources :territories, only: [:show]
   resources :digital_retailers, only: [:show]
+  resources :edu_platforms, only: [:show]
   resources :film_rights, only: [:show]
   resources :digital_retailer_films, only: [:show]
   get '/in_theaters' => 'in_theaters_films#index'
@@ -151,6 +152,8 @@ Rails.application.routes.draw do
     resources :film_rights, only: [:create, :show, :update, :destroy]
     resources :digital_retailers, only: [:index, :create, :show, :update, :destroy]
     resources :digital_retailer_films, only: [:create, :show, :update, :destroy]
+    resources :edu_platforms, only: [:index, :create, :show, :update, :destroy]
+    resources :edu_platform_films, only: [:create, :show, :update, :destroy]
     get '/rights_and_territories' => '/api/film_rights#rights_and_territories'
     get '/in_theaters' => '/api/in_theaters_films#index'
     post '/in_theaters' => '/api/in_theaters_films#create'

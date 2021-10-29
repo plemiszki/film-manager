@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_13_025310) do
+ActiveRecord::Schema.define(version: 2021_10_29_015506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -243,6 +243,21 @@ ActiveRecord::Schema.define(version: 2021_10_13_025310) do
     t.index ["dvd_type_id", "feature_film_id"], name: "index_dvds_on_dvd_type_id_and_feature_film_id", unique: true
     t.index ["dvd_type_id"], name: "index_dvds_on_dvd_type_id"
     t.index ["feature_film_id"], name: "index_dvds_on_feature_film_id"
+  end
+
+  create_table "edu_platform_films", force: :cascade do |t|
+    t.integer "edu_platform_id", null: false
+    t.integer "film_id", null: false
+    t.string "url", default: ""
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["edu_platform_id", "film_id"], name: "index_edu_platform_films_on_edu_platform_id_and_film_id", unique: true
+  end
+
+  create_table "edu_platforms", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "episodes", id: :serial, force: :cascade do |t|

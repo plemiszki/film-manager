@@ -787,6 +787,43 @@ $(document).ready(function() {
       document.querySelector('#dvd-customers-index')
     );
   }
+  if (document.querySelector('#edu-platforms-index')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <FullIndex
+          context={ MyContext }
+          entityName='eduPlatform'
+          header='Educational Streaming Platforms'
+          columns={ ['name'] }
+          modalRows={ 1 }
+          modalDimensions={ { width: 900 } }
+        >
+          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+        </FullIndex>
+      </Provider>,
+      document.querySelector('#edu-platforms-index')
+    );
+  }
+  if (document.querySelector('#edu-platform-details')) {
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          customDeletePath='/settings'
+          header='Educational Streaming Platform Details'
+          context={ MyContext }
+          entityName='eduPlatform'
+          initialEntity={ { name: '' } }
+          fields={ [
+            [
+              { columnWidth: 12, property: 'name' }
+            ]
+          ] }
+        />
+      </Provider>,
+      document.querySelector('#edu-platform-details')
+    );
+  }
   if (document.querySelector('#formats-index')) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>

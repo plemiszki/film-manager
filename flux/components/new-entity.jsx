@@ -175,6 +175,12 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'country' }) }
           </div>
         ]);
+      case 'eduPlatform':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'eduPlatform', property: 'name' }) }
+          </div>
+        ]);
       case 'format':
         return([
           <div key="1" className="row">
