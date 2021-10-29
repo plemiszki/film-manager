@@ -349,7 +349,7 @@ class NewEntity extends React.Component {
             }) }
           </div>,
           <div key="3" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'virtualBooking', property: 'url' }) }
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'virtualBooking', property: 'url', placeholder: 'https://...' }) }
           </div>
         ]);
     }

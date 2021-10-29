@@ -1227,7 +1227,7 @@ $(document).ready(function() {
               shippingCity: '',
               shippingState: '',
               terms: '',
-              url: 'https://',
+              url: '',
               host: 'FM'
             } }
           />
