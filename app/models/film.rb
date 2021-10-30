@@ -54,6 +54,8 @@ class Film < ActiveRecord::Base
   has_many :bookings
   has_many :digital_retailer_films
   has_many :digital_retailers, through: :digital_retailer_films
+  has_many :edu_platform_films
+  has_many :edu_platforms, through: :edu_platform_films
   has_many :sub_rights, dependent: :destroy
   has_many :crossed_films
   has_many :episodes

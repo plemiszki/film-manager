@@ -110,6 +110,10 @@ json.array!(@films) do |film|
     json.name digital_retailer_film.digital_retailer.name
     json.url digital_retailer_film.url
   end
+  json.edu_platform_links film.edu_platform_films do |edu_platform_film|
+    json.name edu_platform_film.edu_platform.name
+    json.url edu_platform_film.url
+  end
   json.episodes film.episodes do |episode|
     json.title episode.title
     json.season_number episode.season_number

@@ -1,7 +1,22 @@
 class Api::WebsiteController < CyberController
 
   def films
-    @films = Film.all.includes(:formats, :licensor, :countries, :languages, :genres, :topics, :directors, :actors, :laurels, :quotes, :related_films, dvds: [:dvd_type, :dvd_shorts], digital_retailer_films: [:digital_retailer], episodes: [:actors]).order(:id)
+    @films = Film.all.includes(
+      :actors,
+      :countries,
+      :directors,
+      :formats,
+      :genres,
+      :languages,
+      :laurels,
+      :licensor,
+      :quotes,
+      :related_films,
+      :topics,
+      digital_retailer_films: [:digital_retailer],
+      dvds: [:dvd_type, :dvd_shorts],
+      episodes: [:actors]
+    ).order(:id)
     render 'films.json.jbuilder'
   end
 
