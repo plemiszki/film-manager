@@ -160,7 +160,6 @@ class Film < ActiveRecord::Base
       message_params = {
         from: 'michael@filmmovement.com',
         to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : 'michael@filmmovement.com'),
-        bcc: 'plemiszki@gmail.com',
         subject: "Expiration Reminders",
         text: email_body
       }

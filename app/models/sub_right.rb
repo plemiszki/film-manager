@@ -25,7 +25,6 @@ class SubRight < ActiveRecord::Base
       message_params = {
         from: 'demetri@filmmovement.com',
         to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : 'demetri@filmmovement.com'),
-        bcc: 'plemiszki@gmail.com',
         subject: "Expiration Reminders",
         text: email_body
       }
