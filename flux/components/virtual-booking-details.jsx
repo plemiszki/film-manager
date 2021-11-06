@@ -331,7 +331,7 @@ class VirtualBookingDetails extends React.Component {
     if (this.state.virtualBooking.host == 'Venue') {
       return(
         <>
-          <hr className="divider" />
+          <hr className="divider" style={ { marginTop: 30 } } />
           <h3>Invoices</h3>
           <div className="row">
             <div className="col-xs-12">

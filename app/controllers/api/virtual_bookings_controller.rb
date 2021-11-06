@@ -29,6 +29,14 @@ class Api::VirtualBookingsController < AdminController
       venue = Venue.find(@virtual_booking.venue_id)
       @virtual_booking.shipping_city = venue.shipping_city
       @virtual_booking.shipping_state = venue.shipping_state
+      @virtual_booking.email = venue.email
+      @virtual_booking.billing_name = venue.billing_name
+      @virtual_booking.billing_address1 = venue.billing_address1
+      @virtual_booking.billing_address2 = venue.billing_address2
+      @virtual_booking.billing_city = venue.billing_city
+      @virtual_booking.billing_state = venue.billing_state
+      @virtual_booking.billing_zip = venue.billing_zip
+      @virtual_booking.billing_country = venue.billing_country
       @virtual_booking.save!
       @virtual_bookings = VirtualBooking.all.includes(:film, :venue).order('start_date DESC')
       render 'index', formats: [:json], handlers: [:jbuilder]
