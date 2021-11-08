@@ -1289,6 +1289,7 @@ $(document).ready(function() {
               url: '',
               host: 'FM'
             } }
+            redirectAfterCreate={ true }
           />
         </SearchIndex>
       </Provider>,

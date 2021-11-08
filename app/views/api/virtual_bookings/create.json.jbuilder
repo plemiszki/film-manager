@@ -1,1 +1,1 @@
-json.booking @booking
+json.virtualBooking @virtual_booking

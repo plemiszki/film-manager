@@ -39,7 +39,7 @@ class Api::VirtualBookingsController < AdminController
       @virtual_booking.billing_country = venue.billing_country
       @virtual_booking.save!
       @virtual_bookings = VirtualBooking.all.includes(:film, :venue).order('start_date DESC')
-      render 'index', formats: [:json], handlers: [:jbuilder]
+      render 'create', formats: [:json], handlers: [:jbuilder]
     else
       render json: @virtual_booking.errors.full_messages, status: 422
     end
