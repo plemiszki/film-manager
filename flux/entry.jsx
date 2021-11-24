@@ -506,9 +506,9 @@ $(document).ready(function() {
           header="Sublicensed Rights"
           entityName='subRight'
           columns={[
-            { name: 'film', dbName: 'film_id' },
-            { name: 'right', dbName: 'right_id', width: 200 },
-            { name: 'territory', dbName: 'territory_id', width: 250 },
+            { name: 'film', dbName: 'films.title' },
+            { name: 'right', dbName: 'rights.name', width: 200 },
+            { name: 'territory', dbName: 'territories.name', width: 250 },
             { name: 'startDate', width: 120 },
             { name: 'endDate', width: 120 },
             { name: 'exclusive', width: 80 },
