@@ -560,7 +560,14 @@ $(document).ready(function() {
     );
   }
   if ($('#calendar')[0]) {
-    ReactDOM.render(<Calendar />, document.getElementById("calendar"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <Calendar
+          context={ MyContext }
+        />
+      </Provider>,
+      document.getElementById("calendar")
+    );
   }
   if ($('#sub-right-details')[0]) {
     ReactDOM.render(

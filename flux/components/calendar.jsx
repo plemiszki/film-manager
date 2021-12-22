@@ -1,9 +1,11 @@
 import React from 'react'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import CalendarStore from '../stores/calendar-store.js'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import ChangeCase from 'change-case'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import HandyTools from 'handy-tools'
+import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class Calendar extends React.Component {
@@ -18,18 +20,20 @@ class Calendar extends React.Component {
   }
 
   componentDidMount() {
-    this.calendarListener = CalendarStore.addListener(this.getCalendar.bind(this));
-    ClientActions.fetchCalendar(this.state.year);
+    this.fetchData();
   }
 
-  componentWillUnmount() {
-    this.calendarListener.remove();
-  }
-
-  getCalendar() {
-    this.setState({
-      months: CalendarStore.months(),
-      fetching: false
+  fetchData() {
+    this.props.sendRequest({
+      url: '/api/calendar',
+      data: {
+        year: this.state.year,
+      }
+    }).then(() => {
+      this.setState({
+        fetching: false,
+        months: this.props.months
+      });
     });
   }
 
@@ -37,8 +41,8 @@ class Calendar extends React.Component {
     this.setState({
       year: this.state.year + 1,
       fetching: true,
-    }, function() {
-      ClientActions.fetchCalendar(this.state.year);
+    }, () => {
+      this.fetchData();
     });
   }
 
@@ -46,8 +50,8 @@ class Calendar extends React.Component {
     this.setState({
       year: this.state.year - 1,
       fetching: true,
-    }, function() {
-      ClientActions.fetchCalendar(this.state.year);
+    }, () => {
+      this.fetchData();
     });
   }
 
@@ -77,7 +81,7 @@ class Calendar extends React.Component {
                     return(
                       <tr key={ index }>
                         <td className="monthCell">
-                          { this.monthName(index) }
+                          { HandyTools.MONTHS[index] }
                         </td>
                         <td data-test="theatrical">
                           { this.state.months[index].theatricalReleases.map((theatricalRelease, index) => {
@@ -146,14 +150,14 @@ class Calendar extends React.Component {
       </div>
     );
   }
-
-  monthName(i) {
-    return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][i];
-  }
-
-  componentDidUpdate() {
-    $('.match-height-layout').matchHeight();
-  }
 }
 
-export default Calendar;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

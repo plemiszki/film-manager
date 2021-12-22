@@ -19,7 +19,6 @@ class NewInvoice extends React.Component {
 
   componentDidMount() {
     const { editMode, invoiceToEdit } = this.props;
-    console.log(invoiceToEdit);
     let result = [];
     this.props.rows.forEach((row) => {
       if (editMode) {

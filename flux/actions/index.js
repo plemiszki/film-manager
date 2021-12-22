@@ -3,6 +3,7 @@ import ChangeCase from 'change-case'
 
 export function sendRequest(args) {
   let { url, method, data } = args;
+  method = method || "get";
   if (data) {
     data = HandyTools.convertObjectKeysToUnderscore(data);
   }
