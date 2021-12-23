@@ -1,16 +1,15 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import ServerActions from '../actions/server-actions.js'
-import JobStore from '../stores/job-store.js'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class Catalog extends React.Component {
 
   constructor(props) {
     super(props)
-    var job = {
+    let job = {
       errors_text: ""
     };
     if ($('#job-id').length == 1) {
@@ -25,43 +24,44 @@ class Catalog extends React.Component {
   }
 
   componentDidMount() {
-    this.jobListener = JobStore.addListener(this.getJob.bind(this));
     if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
+      this.updateJobModal();
+    }
+  }
+
+  updateJobModal() {
+    this.props.sendRequest({
+      url: '/api/jobs/status_new',
+      data: {
+        id: this.state.job.id,
+        time: this.state.job.jobId
+      }
+    }).then(() => {
+      let { job } = this.props;
+      let interval = window.setInterval(() => {
+        this.props.sendRequest({
+          url: '/api/jobs/status_new',
           data: {
-            id: this.state.job.id,
-            time: this.state.job.jobId
-          },
-          success(response) {
-            ServerActions.receiveJob(response);
+            id: this.state.job.id
+          }
+        }).then(() => {
+          let job = this.props.job;
+          if (job.done) {
+            clearInterval(interval);
+            this.setState({
+              jobModalOpen: false,
+              job: job
+            }, () => {
+              window.location.href = job.firstLine;
+            });
+          } else {
+            this.setState({
+              job: job
+            });
           }
         })
-      }, 750)
-    }
-  }
-
-  componentWillUnmount() {
-    this.jobListener.remove();
-  }
-
-  getJob() {
-    var job = JobStore.job();
-    if (job.done) {
-      this.setState({
-        jobModalOpen: false,
-        job: job
-      }, () => {
-        window.location.href = job.firstLine;
-      });
-    } else {
-      this.setState({
-        jobModalOpen: true,
-        job: job
-      });
-    }
+      }, 1000);
+    });
   }
 
   render() {
@@ -71,24 +71,14 @@ class Catalog extends React.Component {
       </div>
     );
   }
-
-  componentDidUpdate() {
-    if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success: (response) => {
-            ServerActions.receiveJob(response);
-          }
-        })
-      }, 750)
-    }
-  }
 }
 
-export default Catalog;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Catalog);

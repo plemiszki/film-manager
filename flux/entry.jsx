@@ -598,7 +598,12 @@ $(document).ready(function() {
     );
   }
   if ($('#catalog')[0]) {
-    ReactDOM.render(<Catalog />, document.getElementById("catalog"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <Catalog context={ MyContext } />
+      </Provider>,
+      document.getElementById("catalog")
+    );
   }
   if ($('#convert-digital-sales')[0]) {
     ReactDOM.render(

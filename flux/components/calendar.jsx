@@ -1,12 +1,8 @@
 import React from 'react'
-import Modal from 'react-modal'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import ChangeCase from 'change-case'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import HandyTools from 'handy-tools'
 import { sendRequest } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class Calendar extends React.Component {
 
