@@ -1,12 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import BookersStore from '../stores/bookers-store.js'
-import BookerVenuesStore from '../stores/booker-venues-store.js'
-import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class BookerDetails extends React.Component {
@@ -28,48 +27,18 @@ class BookerDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.bookerListener = BookersStore.addListener(this.getBooker.bind(this));
-    this.bookerVenuesListener = BookerVenuesStore.addListener(this.getBookerVenues.bind(this));
-    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchBooker(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.bookersListener.remove();
-    this.bookerVenuesListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getBooker() {
-    this.setState({
-      booker: Tools.deepCopy(BookersStore.find(window.location.pathname.split("/")[2])),
-      bookerSaved: BookersStore.find(window.location.pathname.split("/")[2]),
-      bookerVenues: BookersStore.bookerVenues(),
-      venues: BookersStore.venues(),
-      fetching: false
-    }, () => {
+    this.props.fetchEntity({
+      directory: 'bookers',
+      id: window.location.pathname.split('/')[2]
+    }).then(() => {
+      const booker = this.props.booker;
       this.setState({
-        changesToSave: this.checkForChanges()
+        fetching: false,
+        booker,
+        bookerSaved: HandyTools.deepCopy(booker),
+        venues: this.props.venues,
+        bookerVenues: this.props.bookerVenues,
       });
-    });
-  }
-
-  getBookerVenues() {
-    this.setState({
-      bookerVenues: BookerVenuesStore.all(),
-      venues: BookerVenuesStore.venues(),
-      fetching: false
-    }, () => {
-      this.setState({
-        changesToSave: this.checkForChanges()
-      });
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      errors: ErrorsStore.all(),
-      fetching: false
     });
   }
 
@@ -84,57 +53,70 @@ class BookerDetails extends React.Component {
       venuesModalOpen: false,
       fetching: true
     });
-    ClientActions.createBookerVenue({ booker_id: this.state.booker.id, venue_id: e.target.dataset.id });
+    this.props.createEntity({
+      directory: 'booker_venues',
+      entityName: 'booker_venue',
+      entity: {
+        bookerId: this.state.booker.id,
+        venueId: e.target.dataset.id
+      }
+    }).then(() => {
+      this.setState({
+        fetching: false,
+        bookerVenues: this.props.bookerVenues
+      });
+    });
   }
 
   clickDeleteVenue(e) {
     this.setState({
-      venuesModalOpen: false,
       fetching: true
     });
-    ClientActions.deleteBookerVenue(e.target.dataset.id);
+    this.props.deleteEntity({
+      directory: 'booker_venues',
+      id: e.target.dataset.id,
+      callback: (response) => {
+        this.setState({
+          fetching: false,
+          bookerVenues: response.bookerVenues
+        });
+      }
+    });
   }
 
   clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
-      }, () => {
-        ClientActions.updateBooker(this.state.booker);
-      });
-    }
-  }
-
-  clickDelete() {
-    this.setState({
-      deleteModalOpen: true
-    });
-  }
-
-  confirmDelete() {
     this.setState({
       fetching: true,
-      deleteModalOpen: false
-    }, () => {
-      ClientActions.deleteAndGoToIndex('bookers', this.state.booker.id);
-    });
-  }
-
-  closeModal() {
-    this.setState({
-      deleteModalOpen: false,
-      venuesModalOpen: false
+      justSaved: true
+    }, function() {
+      this.props.updateEntity({
+        id: window.location.pathname.split("/")[2],
+        directory: window.location.pathname.split("/")[1],
+        entityName: 'booker',
+        entity: this.state.booker
+      }).then(() => {
+        this.setState({
+          fetching: false,
+          booker: this.props.booker,
+          bookerSaved: HandyTools.deepCopy(this.props.booker),
+          changesToSave: false
+        });
+      }, () => {
+        this.setState({
+          fetching: false,
+          errors: this.props.errors
+        });
+      });
     });
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.booker, this.state.bookerSaved);
+    return !HandyTools.objectsAreEqual(this.state.booker, this.state.bookerSaved);
   }
 
   changeFieldArgs() {
     return {
-      thing: "booker",
+      allErrors: Errors,
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this)
     }
@@ -147,21 +129,9 @@ class BookerDetails extends React.Component {
           <h1>Booker Details</h1>
           <div className="white-box">
             <div className="row">
-              <div className="col-xs-4">
-                <h2>Name</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.name || "" } data-field="name" />
-                { Details.renderFieldError(this.state.errors, FM.errors.name) }
-              </div>
-              <div className="col-xs-4">
-                <h2>Email</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.email || "" } data-field="email" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-4">
-                <h2>Phone</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booker.phone || "" } data-field="phone" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'name' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'email' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'phone' }) }
             </div>
             <div className="row">
               <div className="col-xs-12">
@@ -181,38 +151,40 @@ class BookerDetails extends React.Component {
             { Common.renderSpinner(this.state.fetching) }
           </div>
         </div>
-        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.venues } property={ "name" } func={ this.selectVenue.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="booker" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete
+            entityName="booker"
+            confirmDelete={ Details.clickDelete.bind(this) }
+            closeModal={ Common.closeModals.bind(this) }
+          />
         </Modal>
       </div>
     );
   }
 
   renderButtons() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
-    }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
-          { buttonText }
+        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+          { Details.saveButtonText.call(this) }
         </a>
-        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete Booker
+        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
+          Delete
         </a>
       </div>
-    )
-  }
-
-  componentDidUpdate() {
-    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    $('.match-height-layout').matchHeight();
+    );
   }
 }
 
-export default BookerDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BookerDetails);

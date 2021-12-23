@@ -1,8 +1,8 @@
-json.bookers @bookers do |booker|
-  json.id booker.id
-  json.name booker.name
-  json.email booker.email
-  json.phone booker.phone
+json.booker do
+  json.id @booker.id
+  json.name @booker.name
+  json.email @booker.email
+  json.phone @booker.phone
 end
 json.bookerVenues @booker_venues do |booker_venue|
   json.id booker_venue.id

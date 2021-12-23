@@ -464,7 +464,14 @@ $(document).ready(function() {
     );
   }
   if ($('#booker-details')[0]) {
-    ReactDOM.render(<BookerDetails />, document.getElementById("booker-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <BookerDetails
+          context={ MyContext }
+        />
+      </Provider>,
+      document.getElementById("booker-details")
+    );
   }
   if ($('#in-theaters-index')[0]) {
     ReactDOM.render(<InTheatersIndex />, document.getElementById("in-theaters-index"));
