@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import HandyTools from 'handy-tools'
 import { sendRequest } from '../actions/index'
+import { Common } from 'handy-components'
 
 class Calendar extends React.Component {
 
