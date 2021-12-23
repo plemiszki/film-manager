@@ -2,7 +2,7 @@ import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
 
 export function sendRequest(args) {
-  let { url, method, data } = args;
+  let { url, method, data, responseKey } = args;
   method = method || "get";
   if (data) {
     data = HandyTools.convertObjectKeysToUnderscore(data);
@@ -19,6 +19,9 @@ export function sendRequest(args) {
   return (dispatch) => {
     return $.ajax(ajaxArgs).then(
       (response) => {
+        if (responseKey) {
+          response = { [responseKey]: response }
+        }
         let obj = Object.assign(response, { type: 'SEND_REQUEST' });
         dispatch(obj);
       }

@@ -207,22 +207,22 @@ class ConvertSalesData
         invoice_row_index += 1
       end
 
-      file_path = "#{job_folder}/sales.xlsx"
-      FileUtils.mv doc.path, file_path
-      doc.cleanup
-
-      job.update({ first_line: "Uploading to AWS", second_line: false })
-      s3 = Aws::S3::Resource.new(
-        credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
-        region: 'us-east-1'
-      )
-      bucket = s3.bucket(ENV['S3_BUCKET'])
-      obj = bucket.object("#{time_started}/sales.xlsx")
-      obj.upload_file(file_path, acl:'public-read')
-
       if unknown_films.present?
         job.update!({ done: true, errors_text: unknown_films.sort.uniq.to_json })
       else
+        job.update({ first_line: "Saving New Speadsheet", second_line: false })
+        file_path = "#{job_folder}/sales.xlsx"
+        FileUtils.mv doc.path, file_path
+        doc.cleanup
+
+        job.update({ first_line: "Uploading to AWS", second_line: false })
+        s3 = Aws::S3::Resource.new(
+          credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
+          region: 'us-east-1'
+        )
+        bucket = s3.bucket(ENV['S3_BUCKET'])
+        obj = bucket.object("#{time_started}/sales.xlsx")
+        obj.upload_file(file_path, acl:'public-read')
         job.update!({ done: true, first_line: obj.public_url })
       end
     rescue

@@ -5,7 +5,7 @@ import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
-import { createEntity } from '../actions/index.js'
+import { sendRequest, fetchEntities, createEntity } from '../actions/index.js'
 import JobStore from '../stores/job-store.js'
 import FilmsStore from '../stores/films-store.js'
 import { Common, ConfirmDelete, Details, Index, ModalSelect, ModalSelectStyles } from 'handy-components'
@@ -34,69 +34,72 @@ class ConvertDigitalSales extends React.Component {
   }
 
   componentDidMount() {
-    this.jobListener = JobStore.addListener(this.getJob.bind(this));
-    this.filmsListener = FilmsStore.addListener(this.getFilms.bind(this));
     if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success(response) {
-            ServerActions.receiveJob(response);
-          }
-        });
-      }, 750);
+      this.updateJobModal();
     }
   }
 
-  componentWillUnmount() {
-    this.jobListener.remove();
-    this.filmsListener.remove();
-  }
-
-  getJob() {
-    var job = JobStore.job();
-    if (job.done) {
-      this.setState({
-        jobModalOpen: false,
-        job: job,
-        errorsModalOpen: job.errorsText == "Unable to import spreadsheet"
-      }, () => {
-        if (job.errorsText) {
-          if (!this.state.errorsModalOpen) {
+  updateJobModal() {
+    this.props.sendRequest({
+      url: '/api/jobs/status_new',
+      data: {
+        id: this.state.job.id,
+        time: this.state.job.jobId
+      }
+    }).then(() => {
+      let { job } = this.props;
+      let interval = window.setInterval(() => {
+        this.props.sendRequest({
+          url: '/api/jobs/status_new',
+          data: {
+            id: this.state.job.id
+          }
+        }).then(() => {
+          let job = this.props.job;
+          if (job.done) {
+            clearInterval(interval);
             this.setState({
-              errors: JSON.parse(job.errorsText),
-              fetching: true
+              jobModalOpen: false,
+              job: job,
+              errorsModalOpen: job.errorsText == "Unable to import spreadsheet"
             }, () => {
-              ClientActions.fetchFilms('all');
+              if (job.errorsText) {
+                if (!this.state.errorsModalOpen) {
+                  this.setState({
+                    errors: JSON.parse(job.errorsText),
+                    fetching: true
+                  }, () => {
+                    this.props.sendRequest({
+                      url: '/api/films',
+                      data: {
+                        filmType: 'all'
+                      },
+                      responseKey: 'films'
+                    }).then(() => {
+                      this.setState({
+                        films: this.props.films,
+                        fetching: false
+                      });
+                    });
+                  });
+                }
+              } else {
+                window.location.href = job.firstLine;
+              }
+            });
+          } else {
+            this.setState({
+              job: job
             });
           }
-        } else {
-          window.location.href = job.firstLine;
-        }
-      });
-    } else {
-      this.setState({
-        jobModalOpen: true,
-        job: job
-      });
-    }
+        })
+      }, 1000);
+    });
   }
 
   modalCloseAndRefresh() {
     this.setState({
       errorsModalOpen: false
-    });
-  }
-
-  getFilms() {
-    this.setState({
-      fetching: false,
-      films: FilmsStore.all()
     });
   }
 
@@ -193,25 +196,6 @@ class ConvertDigitalSales extends React.Component {
       );
     }
   }
-
-  componentDidUpdate() {
-    if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success: (response) => {
-            ServerActions.receiveJob(response);
-          }
-        })
-      }, 750)
-    }
-    $('.match-height-layout').matchHeight();
-  }
 }
 
 const mapStateToProps = (reducers, props) => {
@@ -219,7 +203,7 @@ const mapStateToProps = (reducers, props) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ createEntity }, dispatch);
+  return bindActionCreators({ sendRequest, fetchEntities, createEntity }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConvertDigitalSales);
