@@ -24,7 +24,7 @@ class GenerateAndSendCreditMemo
     current_user = User.find(current_user_id)
     email_text = "#{Setting.first.credit_memo_email_text}\n\nKind Regards,\n\n#{current_user.email_signature}"
     dvd_customer = credit_memo.customer
-    recipient_email_address = (ENV['CREDIT_MEMO_TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : (dvd_customer.credit_memo_email.presence || dvd_customer.invoices_email))
+    recipient_email_address = (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : (dvd_customer.credit_memo_email.presence || dvd_customer.invoices_email))
     message_params = {
       from: current_user.email,
       to: recipient_email_address,

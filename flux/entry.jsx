@@ -146,7 +146,14 @@ $(document).ready(function() {
     );
   }
   if ($('#purchase-order-details')[0]) {
-    ReactDOM.render(<PurchaseOrderDetails />, document.getElementById("purchase-order-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <PurchaseOrderDetails
+          context={ MyContext }
+        />
+      </Provider>,
+      document.getElementById("purchase-order-details")
+    );
   }
   if ($('#shipping-address-details')[0]) {
     ReactDOM.render(

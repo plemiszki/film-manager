@@ -90,7 +90,7 @@ class NewEntity extends React.Component {
 
   render() {
     return(
-      <div className="component admin-modal">
+      <div className="new-entity component admin-modal">
         <form className="white-box">
           { this.renderFields() }
           <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.props.buttonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` } onClick={ this.clickAdd.bind(this) } />
@@ -293,6 +293,26 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 5, entity: 'return', type: 'modal', property: 'customerId', columnHeader: 'Customer', optionsArrayName: 'customers', optionDisplayProperty: 'name' }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'return', property: 'date' }) }
             { Details.renderField.bind(this)({ columnWidth: 4, entity: 'return', property: 'number' }) }
+          </div>
+        ]);
+      case 'shippingAddress':
+        const { shippingAddress } = this.state;
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'shippingAddress', property: 'label' }) }
+          </div>,
+          <div key="2" className="row">
+            <div className="col-xs-12">
+              <div className="address-container">
+                <p>{ shippingAddress.name }</p>
+                <p>{ shippingAddress.address1 }</p>
+                { shippingAddress.address2 && <p>{ shippingAddress.address2 }</p> }
+                <p>{ shippingAddress.city }, { shippingAddress.state } { shippingAddress.zip }</p>
+                <p>{ shippingAddress.country }</p>
+                <br />
+                <p>{ shippingAddress.customerInfo }</p>
+              </div>
+            </div>
           </div>
         ]);
       case 'sublicensor':

@@ -1,14 +1,14 @@
 class Api::ShippingAddressesController < AdminController
 
   def index
-    @shipping_addresses = ShippingAddress.all
+    @shipping_addresses = ShippingAddress.all.order(:label)
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   def create
     @shipping_address = ShippingAddress.new(shipping_address_params)
     if @shipping_address.save
-      @shipping_addresses = ShippingAddress.all
+      @shipping_addresses = ShippingAddress.all.order(:label)
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
       render json: @shipping_address.errors.full_messages, status: 422

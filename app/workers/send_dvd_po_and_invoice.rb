@@ -17,7 +17,7 @@ class SendDvdPoAndInvoice
       attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]
       message_params = {
         from: current_user.email,
-        to: dvd_customer.invoices_email,
+        to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : dvd_customer.invoices_email),
         cc: current_user.email,
         subject: "Invoice for PO #{purchase_order.number}",
         text: "#{Setting.first.dvd_invoice_email_text.strip}\n\nKind Regards,\n\n#{current_user.email_signature}",
@@ -36,7 +36,7 @@ class SendDvdPoAndInvoice
       attachments = [File.open("#{pathname}/#{source_doc}_worderline.txt", "r"), File.open("#{pathname}/#{source_doc}_worder.txt", "r")]
       message_params = {
         from: current_user.email,
-        to: 'fulfillment@theadsgroup.com',
+        to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : 'fulfillment@theadsgroup.com'),
         cc: current_user.email,
         subject: "Film Movement Sales Order #{source_doc}",
         text: "Please see attached shipping files.",

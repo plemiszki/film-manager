@@ -89,7 +89,7 @@ describe 'purchase_order_details_spec', type: :feature do
     find('.blue-outline-button', text: 'Save Shipping Address').click
     within('.admin-modal') do
       find('input[data-field="label"]').set('Saved Address')
-      find('.orange-button', text: 'Add Shipping Address').click
+      find('input.btn').click
     end
     expect(page).to have_no_css('.spinner')
     expect(ShippingAddress.last.attributes).to include(
@@ -146,7 +146,7 @@ describe 'purchase_order_details_spec', type: :feature do
 
   it 'deletes the purchase order' do
     visit purchase_order_path(@purchase_order, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Purchase Order')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

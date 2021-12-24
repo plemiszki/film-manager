@@ -1,3 +1,20 @@
+.new-entity { // new shipping address text
+
+  .address-container {
+    height: calc(22px * 7);
+    margin-bottom: 30px;
+
+    p {
+      line-height: 22px;
+      font-size: 16px;
+
+      &:last-of-type {
+        font-style: italic;
+      }
+    }
+  }
+}
+
 #new-thing.component {
   margin-bottom: 0 !important;
   height: 100%;

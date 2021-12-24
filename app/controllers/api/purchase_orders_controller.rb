@@ -24,8 +24,8 @@ class Api::PurchaseOrdersController < AdminController
   end
 
   def show
-    @purchase_orders = PurchaseOrder.where(id: params[:id])
-    @shipping_addresses = ShippingAddress.all
+    @purchase_order = PurchaseOrder.find(params[:id])
+    @shipping_addresses = ShippingAddress.all.includes(:dvd_customer).order(:label)
     get_data_for_items
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
@@ -62,7 +62,6 @@ class Api::PurchaseOrdersController < AdminController
   def update
     @purchase_order = PurchaseOrder.find(params[:id])
     if @purchase_order.update(purchase_order_params)
-      @purchase_orders = PurchaseOrder.where(id: params[:id])
       @shipping_addresses = ShippingAddress.all
       get_data_for_items
       render 'show', formats: [:json], handlers: [:jbuilder]

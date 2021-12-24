@@ -2,7 +2,7 @@ module PurchaseOrderItems
   extend ActiveSupport::Concern
 
   def get_data_for_items
-    @items = @purchase_orders[0].purchase_order_items.map do |item|
+    @items = @purchase_order.purchase_order_items.map do |item|
       result = {}
       result[:id] = item.id
       result[:item_type] = item.item_type
@@ -35,13 +35,13 @@ module PurchaseOrderItems
       giftbox[:label] = giftbox["name"]
       giftbox
     end
-    @other_items = (other_dvds + other_giftboxes)
+    @other_items = (other_dvds + other_giftboxes).sort_by { |item| item[:label] }
     @items.each do |item|
       other_item_to_delete = @other_items.select { |other_item| other_item['id'] == item[:item_id] && other_item[:item_type] == item[:item_type] }.first
       @other_items.delete(other_item_to_delete)
     end
-    @dvd_customers = DvdCustomer.all
-    @selected_dvd_customer = (@purchase_orders[0].customer_id == 0 ? nil : @dvd_customers.find(@purchase_orders[0].customer_id))
+    @dvd_customers = DvdCustomer.all.order(:name)
+    @selected_dvd_customer = (@purchase_order.customer_id == 0 ? nil : @dvd_customers.find(@purchase_order.customer_id))
   end
 
 end
