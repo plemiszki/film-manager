@@ -88,7 +88,12 @@ $(document).ready(function() {
     ReactDOM.render(<GiftBoxDetails />, document.getElementById("giftbox-details"));
   }
   if ($('#dvd-customer-details')[0]) {
-    ReactDOM.render(<DvdCustomerDetails />, document.getElementById("dvd-customer-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <DvdCustomerDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("dvd-customer-details")
+    );
   }
   if ($('#dvd-details')[0]) {
     ReactDOM.render(<DvdDetails />, document.getElementById("dvd-details"));
