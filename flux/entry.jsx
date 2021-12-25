@@ -20,7 +20,6 @@ import DvdDetails from './components/dvd-details.jsx'
 import DvdReports from './components/dvd-reports.jsx'
 import EpisodeDetails from './components/episode-details.jsx'
 import FilmDetails from './components/film-details.jsx'
-import FilmRightDetails from './components/film-right-details.jsx'
 import FilmsIndex from './components/films-index.jsx'
 import FilmRightsNew from './components/film-rights-new.jsx'
 import GiftBoxDetails from './components/giftbox-details.jsx'
@@ -484,7 +483,28 @@ $(document).ready(function() {
     ReactDOM.render(<InTheatersIndex />, document.getElementById("in-theaters-index"));
   }
   if ($('#film-right-details')[0]) {
-    ReactDOM.render(<FilmRightDetails />, document.getElementById("film-right-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <SimpleDetails
+          csrfToken={ true }
+          context={ MyContext }
+          entityName='filmRight'
+          initialEntity={ { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '' } }
+          fetchData={ ['rights', 'territories'] }
+          fields={ [
+            [
+              { columnWidth: 3, columnHeader: 'Right', property: 'rightId', type: 'dropdown', optionsArrayName: 'rights', optionDisplayProperty: 'name' },
+              { columnWidth: 3, columnHeader: 'Territory', property: 'territoryId', type: 'dropdown', optionsArrayName: 'territories', optionDisplayProperty: 'name' },
+              { columnWidth: 2, property: 'startDate' },
+              { columnWidth: 2, property: 'endDate' },
+              { columnWidth: 2, property: 'exclusive', type: 'dropdown', boolean: true }
+            ]
+          ] }
+          deleteCallback={ function() { window.location.pathname = `/films/${this.state.filmRight.filmId}` } }
+        />
+      </Provider>,
+      document.getElementById("film-right-details")
+    );
   }
   if ($('#sublicensor-details')[0]) {
     ReactDOM.render(

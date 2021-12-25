@@ -24,7 +24,7 @@ describe 'film_right_details', type: :feature do
     expect(find('select[data-field="territoryId"]', visible: false).value).to eq '1'
     expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%-d/%y')
     expect(find('input[data-field="endDate"]').value).to eq (Date.today + 1.year).strftime('%-m/%-d/%y')
-    expect(find('select[data-field="exclusive"]', visible: false).value).to eq 'Yes'
+    expect(find('select[data-field="exclusive"]', visible: false).value).to eq 't'
   end
 
   it 'updates information about the film right' do
@@ -34,7 +34,7 @@ describe 'film_right_details', type: :feature do
       territory_id: { value: 2, type: :select },
       start_date: '12/1/20',
       end_date: '12/15/30',
-      exclusive: { value: 'No', type: :select }
+      exclusive: { value: 'f', type: :select }
     }
     fill_out_form(new_info)
     save_and_wait
@@ -60,7 +60,7 @@ describe 'film_right_details', type: :feature do
 
   it 'deletes the film right' do
     visit film_right_path(@film_right, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Right')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

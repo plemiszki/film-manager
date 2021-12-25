@@ -1,7 +1,7 @@
 class Api::FilmRightsController < AdminController
 
   def show
-    @film_rights = FilmRight.where(id: params[:id]).includes(:film)
+    @film_right = FilmRight.find(params[:id])
     @territories = Territory.all
     @rights = Right.all
     render 'show', formats: [:json], handlers: [:jbuilder]
@@ -39,7 +39,6 @@ class Api::FilmRightsController < AdminController
   def update
     @film_right = FilmRight.find(params[:id])
     if @film_right.update(film_right_params)
-      @film_rights = FilmRight.where(id: params[:id]).includes(:film)
       @territories = Territory.all
       @rights = Right.all
       render 'show', formats: [:json], handlers: [:jbuilder]
