@@ -4,6 +4,8 @@ class DvdShort < ActiveRecord::Base
   validates :dvd_id, uniqueness: { scope: :short_id }
 
   belongs_to :dvd
+  belongs_to :film, foreign_key: :short_id
+
   has_many(
     :shorts,
     class_name: "Film",

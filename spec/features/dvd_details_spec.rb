@@ -51,7 +51,7 @@ describe 'dvd_details', type: :feature do
       preBookDate: '1/1/10',
       retailDate: '2/1/10',
       price: '$19.95',
-      repressing: true,
+      repressing: { value: true, type: :switch },
       discs: 2,
       soundConfig: 'stereo',
       specialFeatures: 'making of documentary'
@@ -81,9 +81,25 @@ describe 'dvd_details', type: :feature do
     expect(find('.fm-admin-table')).to have_content('A Short Film')
   end
 
+  it 'deletes shorts' do
+    @another_short = create(:film, film_type: 'Short', title: 'Another Short Film')
+    create(:dvd_short, short_id: @short.id)
+    create(:dvd_short, short_id: @another_short.id)
+    visit dvd_path(@dvd, as: $admin_user)
+    within('.fm-admin-table') do
+      find_all('.x-button').first.click
+    end
+    wait_for_ajax
+    expect(DvdShort.count).to eq(1)
+    within('.fm-admin-table') do
+      expect(page).to have_no_content("A Short Film")
+      expect(page).to have_content("Another Short Film")
+    end
+  end
+
   it 'deletes the dvd' do
     visit dvd_path(@dvd, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete DVD')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

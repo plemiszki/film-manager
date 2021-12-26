@@ -96,7 +96,12 @@ $(document).ready(function() {
     );
   }
   if ($('#dvd-details')[0]) {
-    ReactDOM.render(<DvdDetails />, document.getElementById("dvd-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <DvdDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("dvd-details")
+    );
   }
   if ($('#purchase-orders-index')[0]) {
     ReactDOM.render(

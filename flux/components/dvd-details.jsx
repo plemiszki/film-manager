@@ -1,11 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
-import ClientActions from '../actions/client-actions.js'
-import DvdsStore from '../stores/dvds-store.js'
-import ErrorsStore from '../stores/errors-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class DvdDetails extends React.Component {
@@ -23,6 +23,7 @@ class DvdDetails extends React.Component {
       shorts: [],
       otherShorts: [],
       errors: [],
+      dvdTypes: [],
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -31,82 +32,104 @@ class DvdDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.dvdListener = DvdsStore.addListener(this.getDvd.bind(this));
-    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchDvd(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.dvdListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getDvd() {
-    this.setState({
-      dvd: Tools.deepCopy(DvdsStore.find(window.location.pathname.split("/")[2])),
-      dvdSaved: DvdsStore.find(window.location.pathname.split("/")[2]),
-      shorts: DvdsStore.shorts(),
-      otherShorts: DvdsStore.otherShorts(),
-      fetching: false
-    }, () => {
+    this.props.fetchEntity({
+      id: window.location.pathname.split('/')[2],
+      directory: window.location.pathname.split('/')[1],
+      entityName: 'dvd'
+    }, 'dvd').then(() => {
+      const { dvd, shorts, otherShorts, dvdTypes } = this.props;
       this.setState({
-        changesToSave: this.checkForChanges()
+        fetching: false,
+        dvd,
+        dvdSaved: HandyTools.deepCopy(dvd),
+        shorts,
+        otherShorts,
+        dvdTypes
+      }, () => {
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      errors: ErrorsStore.all(),
-      fetching: false
-    });
-  }
-
-  clickAddShort() {
-    this.setState({
-      shortsModalOpen: true
     });
   }
 
   clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
-      }, () => {
-        ClientActions.updateDvd(this.state.dvd);
-      });
-    }
-  }
-
-  clickAddShortButton() {
     this.setState({
-      shortsModalOpen: true
+      fetching: true,
+      justSaved: true
+    }, function() {
+      this.props.updateEntity({
+        id: window.location.pathname.split("/")[2],
+        directory: window.location.pathname.split("/")[1],
+        entityName: 'dvd',
+        entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.dvd, fields: ['price'] })
+      }).then(() => {
+        const { dvd } = this.props;
+        this.setState({
+          fetching: false,
+          dvd,
+          dvdSaved: HandyTools.deepCopy(dvd),
+          changesToSave: false
+        });
+      }, () => {
+        this.setState({
+          fetching: false,
+          errors: this.props.errors
+        });
+      });
     });
   }
 
-  clickShortButton(option, event) {
-    var shortId = event.target.dataset.id;
+  selectShort(option, event) {
+    const shortId = event.target.dataset.id;
     this.setState({
       fetching: true,
       shortsModalOpen: false
-    }, () => {
-      ClientActions.createDvdShort(this.state.dvd.id, shortId);
+    });
+    this.props.createEntity({
+      directory: 'dvd_shorts',
+      entityName: 'dvdShort',
+      entity: {
+        dvdId: this.state.dvd.id,
+        shortId
+      }
+    }).then(() => {
+      const { shorts, otherShorts } = this.props;
+      this.setState({
+        fetching: false,
+        shorts,
+        otherShorts
+      });
     });
   }
 
-  clickXButton(event) {
-    var id = event.target.dataset.id;
+  clickX(event) {
+    const dvdShortId = event.target.dataset.id;
     this.setState({
       fetching: true
-    }, () => {
-      ClientActions.deleteDvdShort(this.state.dvd.id, id);
+    });
+    this.props.deleteEntity({
+      directory: 'dvd_shorts',
+      id: dvdShortId,
+      callback: (response) => {
+        this.setState({
+          fetching: false,
+          shorts: response.shorts,
+          otherShorts: response.otherShorts
+        });
+      }
     });
   }
 
-  clickDelete() {
+  confirmDelete() {
     this.setState({
-      deleteModalOpen: true
+      fetching: true,
+      deleteModalOpen: false
+    });
+    this.props.deleteEntity({
+      directory: 'dvds',
+      id: this.state.dvd.id,
+      callback: (response) => {
+        window.location.pathname = `/films/${this.state.dvd.featureFilmId}`;
+      }
     });
   }
 
@@ -120,22 +143,6 @@ class DvdDetails extends React.Component {
     alert('HTML copied to clipboard');
   }
 
-  confirmDelete() {
-    this.setState({
-      fetching: true,
-      deleteModalOpen: false
-    }, () => {
-      ClientActions.deleteDvd(this.state.dvd);
-    });
-  }
-
-  closeModal() {
-    this.setState({
-      deleteModalOpen: false,
-      shortsModalOpen: false
-    });
-  }
-
   checkForChanges() {
     return !Tools.objectsAreEqual(this.state.dvd, this.state.dvdSaved);
   }
@@ -144,7 +151,8 @@ class DvdDetails extends React.Component {
     return {
       thing: "dvd",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges.bind(this)
+      changesFunction: this.checkForChanges.bind(this),
+      allErrors: FM.errors
     }
   }
 
@@ -155,73 +163,24 @@ class DvdDetails extends React.Component {
           <h1>DVD Details</h1>
           <div className="white-box">
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Title</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.title || "" } readOnly={ true } />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-3">
-                <h2>DVD Type</h2>
-                  <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="dvdTypeId" value={ this.state.dvd.dvdTypeId }>
-                    { DvdsStore.types().map((type, index) => {
-                      return(
-                        <option key={ index } value={ type.id }>{ type.name }</option>
-                      );
-                    }) }
-                  </select>
-                { Details.renderFieldError(this.state.errors, FM.errors.dvdTypeId) }
-              </div>
-              <div className="col-xs-3">
-                <h2>UPC</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.upc || "" } data-field="upc" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvd', property: 'title', readOnly: true }) }
+              { Details.renderDropDown.bind(this)({ columnWidth: 3, entity: 'dvd', property: 'dvdTypeId', columnHeader: 'DVD Type', options: this.state.dvdTypes, optionDisplayProperty: 'name' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvd', property: 'upc', columnHeader: 'UPC' }) }
             </div>
             <div className="row">
-              <div className="col-xs-2">
-                <h2>PreBook Date</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.preBookDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.preBookDate || "" } data-field="preBookDate" />
-                { Details.renderFieldError(this.state.errors, FM.errors.preBookDate) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Retail Date</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.retailDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.retailDate || "" } data-field="retailDate" />
-                { Details.renderFieldError(this.state.errors, FM.errors.retailDate) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Price</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.price) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.price || "" } data-field="price" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Stock</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.stock } readOnly={ true } data-field="stock" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <input id="repressing" className="checkbox" type="checkbox" onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) } checked={ this.state.dvd.repressing || false } data-field="repressing" /><label className="checkbox">Repressing</label>
-              </div>
-              <div className="col-xs-2">
-                <h2>Units Shipped</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.unitsShipped } readOnly={ true } data-field="unitsShipped" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'preBookDate' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'retailDate' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'price' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'unitsShipped', readOnly: true }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'stock', readOnly: true }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'repressing' }) }
             </div>
             <div className="row">
-              <div className="col-xs-1">
-                <h2>Discs</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.discs) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.discs || "" } data-field="discs" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-5">
-                <h2>Sound Configuration</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.soundConfig || "" } data-field="soundConfig" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'dvd', property: 'discs' }) }
+              { Details.renderField.bind(this)({ columnWidth: 5, entity: 'dvd', property: 'soundConfig', columnHeader: 'Sound Configuration' }) }
               <div className="col-xs-6">
                 <h2>Special Features</h2>
                 <textarea rows="5" className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.specialFeatures || "" } data-field="specialFeatures" />
-                { Details.renderFieldError(this.state.errors, []) }
               </div>
             </div>
             <table className="fm-admin-table">
@@ -239,54 +198,53 @@ class DvdDetails extends React.Component {
                         <div onClick={ FM.redirect.bind(this, "films", short.id) }>
                           { short.title }
                         </div>
-                        <div className="x-button" onClick={ this.clickXButton.bind(this) } data-id={ short.id }></div>
+                        <div className="x-button" onClick={ this.clickX.bind(this) } data-id={ short.id }></div>
                       </td>
                     </tr>
                   );
                 }) }
               </tbody>
             </table>
-            <a className="blue-outline-button small" onClick={ this.clickAddShortButton.bind(this) }>Add Short</a>
+            <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'shortsModalOpen', true) }>Add Short</a>
             { this.renderButtons() }
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="dvd" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete
+            entityName="dvd"
+            confirmDelete={ this.confirmDelete.bind(this) }
+            closeModal={ Common.closeModals.bind(this) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.shortsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.otherShorts } property={ "title" } func={ this.clickShortButton.bind(this) } />
+        <Modal isOpen={ this.state.shortsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+          <ModalSelect options={ this.state.otherShorts } property={ "title" } func={ this.selectShort.bind(this) } />
         </Modal>
       </div>
     );
   }
 
   renderButtons() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
-    }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
-          { buttonText }
+        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+          { Details.saveButtonText.call(this) }
         </a>
-        <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete DVD
-        </a>
-        <a className={ "html orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.getHTML.bind(this) }>
-          Email HTML
+        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
+          Delete
         </a>
       </div>
     );
   }
-
-  componentDidUpdate() {
-    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    $('.match-height-layout').matchHeight();
-  }
 }
 
-export default DvdDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DvdDetails);

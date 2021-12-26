@@ -84,21 +84,6 @@ class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  getPurchaseOrders() {
-    this.setState({
-      purchaseOrder: Tools.deepCopy(PurchaseOrdersStore.find(window.location.pathname.split("/")[2])),
-      purchaseOrderSaved: PurchaseOrdersStore.find(window.location.pathname.split("/")[2]),
-      shippingAddresses: PurchaseOrdersStore.shippingAddresses(),
-      items: PurchaseOrdersStore.items(),
-      otherItems: PurchaseOrdersStore.otherItems(),
-      fetching: false
-    }, () => {
-      this.setState({
-        changesToSave: this.checkForChanges()
-      });
-    });
-  }
-
   clickSave() {
     this.setState({
       fetching: true,

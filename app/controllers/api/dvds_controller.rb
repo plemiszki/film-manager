@@ -1,10 +1,10 @@
 class Api::DvdsController < AdminController
 
   def show
-    @dvds = Dvd.where(id: params[:id])
+    @dvd = Dvd.find(params[:id])
     @dvd_types = DvdType.all
-    @shorts = @dvds[0].shorts
-    @other_shorts = Film.where(film_type: 'Short') - @shorts
+    @dvd_shorts = @dvd.dvd_shorts.includes(:film)
+    @other_shorts = Film.shorts - @dvd_shorts.map(&:film)
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
@@ -20,10 +20,9 @@ class Api::DvdsController < AdminController
   def update
     @dvd = Dvd.find(params[:id])
     if @dvd.update(dvd_params)
-      @dvds = Dvd.where(id: params[:id])
       @dvd_types = DvdType.all
-      @shorts = @dvds[0].shorts
-      @other_shorts = Film.where(film_type: 'Short') - @shorts
+      @dvd_shorts = @dvd.dvd_shorts.includes(:film)
+      @other_shorts = Film.shorts - @dvd_shorts.map(&:film)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @dvd.errors.full_messages, status: 422
