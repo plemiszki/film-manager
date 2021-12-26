@@ -658,7 +658,12 @@ $(document).ready(function() {
     );
   }
   if ($('#episode-details')[0]) {
-    ReactDOM.render(<EpisodeDetails />, document.getElementById("episode-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <EpisodeDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("episode-details")
+    );
   }
   if ($('#merchandise-item-details')[0]) {
     ReactDOM.render(

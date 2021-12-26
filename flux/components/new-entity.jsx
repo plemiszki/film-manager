@@ -103,6 +103,13 @@ class NewEntity extends React.Component {
 
   renderFields() {
     switch (this.props.entityName) {
+      case 'actor':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'actor', property: 'firstName' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'actor', property: 'lastName' }) }
+          </div>
+        ]);
       case 'alias':
         return([
           <div key="1" className="row">

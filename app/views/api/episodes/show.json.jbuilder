@@ -5,6 +5,7 @@ json.episode do
   json.episodeNumber @episode.episode_number.to_s
   json.synopsis @episode.synopsis
   json.length @episode.length.to_s
+  json.filmId @episode.film_id.to_s
 end
 json.actors @actors do |actor|
   json.id actor.id

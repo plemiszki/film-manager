@@ -80,7 +80,7 @@ describe 'episode_details', type: :feature do
 
   it 'deletes the episode' do
     visit episode_path(@episode, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Episode')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click
