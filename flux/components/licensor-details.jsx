@@ -1,10 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import LicensorsStore from '../stores/licensors-store.js'
-import ErrorsStore from '../stores/errors-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class LicensorDetails extends React.Component {
@@ -15,6 +15,7 @@ class LicensorDetails extends React.Component {
       fetching: true,
       licensor: {},
       licensorSaved: {},
+      films: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -23,67 +24,50 @@ class LicensorDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.licensorListener = LicensorsStore.addListener(this.getLicensor.bind(this));
-    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchLicensor(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.licensorListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getLicensor() {
-    this.setState({
-      licensor: Tools.deepCopy(LicensorsStore.find(window.location.pathname.split("/")[2])),
-      licensorSaved: LicensorsStore.find(window.location.pathname.split("/")[2]),
-      fetching: false
-    }, () => {
+    this.props.fetchEntity({
+      id: window.location.pathname.split('/')[2],
+      directory: window.location.pathname.split('/')[1],
+      entityName: 'licensor'
+    }, 'licensor').then(() => {
+      const { licensor, films } = this.props;
       this.setState({
-        changesToSave: this.checkForChanges()
+        fetching: false,
+        licensor,
+        licensorSaved: HandyTools.deepCopy(licensor),
+        films
       });
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      errors: ErrorsStore.all(),
-      fetching: false
     });
   }
 
   clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
+    this.setState({
+      fetching: true,
+      justSaved: true
+    }, function() {
+      this.props.updateEntity({
+        id: window.location.pathname.split("/")[2],
+        directory: window.location.pathname.split("/")[1],
+        entityName: 'licensor',
+        entity: this.state.licensor
+      }).then(() => {
+        const { licensor } = this.props;
+        this.setState({
+          fetching: false,
+          licensor,
+          licensorSaved: HandyTools.deepCopy(licensor),
+          changesToSave: false
+        });
       }, () => {
-        ClientActions.updateLicensor(this.state.licensor);
+        this.setState({
+          fetching: false,
+          errors: this.props.errors
+        });
       });
-    }
+    });
   }
 
   redirect(id) {
     window.location.pathname = "films/" + id;
-  }
-
-  clickDelete() {
-    this.setState({
-      deleteModalOpen: true
-    });
-  }
-
-  confirmDelete() {
-    this.setState({
-      fetching: true,
-      deleteModalOpen: false
-    }, () => {
-      ClientActions.deleteLicensor(this.state.licensor.id);
-    });
-  }
-
-  closeModal() {
-    this.setState({ deleteModalOpen: false });
   }
 
   checkForChanges() {
@@ -94,7 +78,8 @@ class LicensorDetails extends React.Component {
     return {
       thing: "licensor",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges.bind(this)
+      changesFunction: this.checkForChanges.bind(this),
+      allErrors: FM.errors
     }
   }
 
@@ -105,16 +90,8 @@ class LicensorDetails extends React.Component {
           <h1>Licensor Details</h1>
           <div id="licensor-profile-box" className="white-box">
             <div className="row">
-              <div className="col-xs-12 col-sm-6">
-                <h2>Name</h2>
-                <input className={ Details.errorClass(this.state.errors, ["Name can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.name || "" } data-field="name" />
-                { Details.renderFieldError(this.state.errors, ["Name can't be blank"]) }
-              </div>
-              <div className="col-xs-12 col-sm-6">
-                <h2>Royalty Emails</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.email) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.email || "" } data-field="email" />
-                { Details.renderFieldError(this.state.errors, FM.errors.email) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'name' }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'email', columnHeader: 'Royalty Emails' }) }
             </div>
             <div className="row">
               <div className="col-xs-12 col-sm-12">
@@ -132,7 +109,7 @@ class LicensorDetails extends React.Component {
                   </thead>
                   <tbody>
                     <tr><td></td></tr>
-                    { LicensorsStore.films().map((film, index) => {
+                    { this.state.films.map((film, index) => {
                       return(
                         <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
                           <td className="name-column">
@@ -150,34 +127,37 @@ class LicensorDetails extends React.Component {
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="licensor" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete
+            entityName="licensor"
+            confirmDelete={ Details.clickDelete.bind(this) }
+            closeModal={ Common.closeModals.bind(this) }
+          />
         </Modal>
       </div>
     );
   }
 
   renderButtons() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
-    }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
-          { buttonText }
+        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+          { Details.saveButtonText.call(this) }
         </a>
-        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete Licensor
+        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
+          Delete
         </a>
       </div>
-    )
-  }
-
-  componentDidUpdate() {
-    $('.match-height-layout').matchHeight();
+    );
   }
 }
 
-export default LicensorDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LicensorDetails);

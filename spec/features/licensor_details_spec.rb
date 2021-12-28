@@ -39,7 +39,7 @@ describe 'licensor_details', type: :feature do
 
   it 'deletes the licensor' do
     visit licensor_path(@licensor, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Licensor')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

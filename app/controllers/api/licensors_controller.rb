@@ -6,7 +6,7 @@ class Api::LicensorsController < AdminController
   end
 
   def show
-    @licensors = Licensor.where(id: params[:id])
+    @licensor = Licensor.find(params[:id])
     @films = Film.where(licensor_id: params[:id]).order(:title)
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
@@ -14,7 +14,6 @@ class Api::LicensorsController < AdminController
   def create
     @licensor = Licensor.new(name: licensor_params[:name], email: "", address: "")
     if @licensor.save
-      @licensors = Licensor.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @licensor.errors.full_messages, status: 422
@@ -25,7 +24,6 @@ class Api::LicensorsController < AdminController
     @licensor = Licensor.find(params[:id])
     @films = Film.where(licensor_id: params[:id]).order(:title)
     if @licensor.update(licensor_params)
-      @licensors = Licensor.where(id: params[:id])
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @licensor.errors.full_messages, status: 422

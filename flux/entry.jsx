@@ -48,7 +48,12 @@ $(document).ready(function() {
     ReactDOM.render(<New />, document.getElementById("new-thing"));
   }
   if ($('#licensor-details')[0]) {
-    ReactDOM.render(<LicensorDetails />, document.getElementById("licensor-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <LicensorDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("licensor-details")
+    );
   }
   if ($('#films-index')[0]) {
     ReactDOM.render(<FilmsIndex filmType={ 'Feature' }/>, document.getElementById("films-index"));
