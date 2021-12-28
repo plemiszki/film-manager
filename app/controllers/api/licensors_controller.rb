@@ -14,7 +14,7 @@ class Api::LicensorsController < AdminController
   def create
     @licensor = Licensor.new(name: licensor_params[:name], email: "", address: "")
     if @licensor.save
-      render 'index', formats: [:json], handlers: [:jbuilder]
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @licensor.errors.full_messages, status: 422
     end

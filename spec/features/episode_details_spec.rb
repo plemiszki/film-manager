@@ -63,7 +63,7 @@ describe 'episode_details', type: :feature do
     fill_out_and_submit_modal({
       first_name: 'Julia',
       last_name: 'Roberts'
-    }, :orange_button)
+    }, :input)
     expect(page).to have_content('Julia Roberts')
   end
 

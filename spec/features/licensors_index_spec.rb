@@ -21,14 +21,13 @@ describe 'licensors_index', type: :feature do
   it 'adds new licensors' do
     visit licensors_path(as: $admin_user)
     find('.btn', text: 'Add Licensor').click
-    find('[data-field="name"]').set('New Licensor')
-    within('.admin-modal') do
-      find('.btn[value="Add Licensor"]').click
-    end
-    expect(find('.admin-table')).to have_content 'New Licensor'
+    fill_out_and_submit_modal({
+      name: 'New Licensor',
+    }, :input)
     expect(Licensor.last.attributes).to include(
       'name' => 'New Licensor'
     )
+    expect(page).to have_current_path("/licensors/#{Licensor.last.id}", ignore_query: true)
   end
 
   it 'validates new licensors properly' do

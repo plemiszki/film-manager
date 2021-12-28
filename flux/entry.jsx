@@ -1047,9 +1047,13 @@ $(document).ready(function() {
           entityName='licensor'
           columns={ ['name'] }
           modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
+          modalDimensions={ { width: 500 } }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity
+            context={ MyContext }
+            initialEntity={ { name: '' } }
+            redirectAfterCreate={ true }
+          />
         </FullIndex>
       </Provider>,
       document.querySelector('#licensors-index')
