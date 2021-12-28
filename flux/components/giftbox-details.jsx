@@ -1,28 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import GiftboxesStore from '../stores/giftboxes-store.js'
-import ErrorsStore from '../stores/errors-store.js'
 import ModalSelect from './modal-select.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
-
-const dvdsModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#FFFFFF',
-    margin: 'auto',
-    maxWidth: 540,
-    height: '90%',
-    border: 'solid 1px #5F5F5F',
-    borderRadius: '6px',
-    textAlign: 'center',
-    color: '#5F5F5F'
-  }
-}
 
 class GiftboxDetails extends React.Component {
 
@@ -32,7 +16,7 @@ class GiftboxDetails extends React.Component {
       fetching: true,
       giftbox: {},
       giftboxSaved: {},
-      dvds: [],
+      giftboxDvds: [],
       otherDvds: [],
       errors: [],
       changesToSave: false,
@@ -42,92 +26,90 @@ class GiftboxDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.giftboxListener = GiftboxesStore.addListener(this.getGiftbox.bind(this));
-    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchGiftbox(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.giftboxListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getGiftbox() {
-    this.setState({
-      giftbox: Tools.deepCopy(GiftboxesStore.find(window.location.pathname.split("/")[2])),
-      giftboxSaved: GiftboxesStore.find(window.location.pathname.split("/")[2]),
-      dvds: GiftboxesStore.dvds(),
-      otherDvds: GiftboxesStore.otherDvds(),
-      fetching: false
-    }, () => {
+    this.props.fetchEntity({
+      id: window.location.pathname.split('/')[2],
+      directory: window.location.pathname.split('/')[1],
+      entityName: 'giftbox'
+    }, 'giftbox').then(() => {
+      const { giftbox, giftboxDvds, otherDvds } = this.props;
       this.setState({
-        changesToSave: this.checkForChanges()
+        fetching: false,
+        giftbox,
+        giftboxSaved: HandyTools.deepCopy(giftbox),
+        giftboxDvds,
+        otherDvds
+      }, () => {
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      errors: ErrorsStore.all(),
-      fetching: false
-    });
-  }
-
-  clickAddDvdButton() {
-    this.setState({
-      dvdsModalOpen: true
     });
   }
 
   selectDvd(option, event) {
-    var dvdId = event.target.dataset.id;
+    const dvdId = event.target.dataset.id;
     this.setState({
       fetching: true,
       dvdsModalOpen: false
-    }, () => {
-      ClientActions.createGiftboxDvd(this.state.giftbox.id, dvdId);
+    });
+    this.props.createEntity({
+      directory: 'giftbox_dvds',
+      entityName: 'giftboxDvd',
+      entity: {
+        giftboxId: this.state.giftbox.id,
+        dvdId
+      }
+    }).then(() => {
+      const { giftboxDvds, otherDvds } = this.props;
+      this.setState({
+        fetching: false,
+        giftboxDvds,
+        otherDvds
+      });
     });
   }
 
   clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
-      }, () => {
-        ClientActions.updateGiftbox(this.state.giftbox);
-      });
-    }
-  }
-
-  clickXButton(event) {
-    var id = event.target.dataset.id;
-    this.setState({
-      fetching: true
-    }, () => {
-      ClientActions.deleteGiftboxDvd(this.state.giftbox.id, id);
-    });
-  }
-
-  clickDelete() {
-    this.setState({
-      deleteModalOpen: true
-    });
-  }
-
-  confirmDelete() {
     this.setState({
       fetching: true,
-      deleteModalOpen: false
-    }, () => {
-      ClientActions.deleteGiftbox(this.state.giftbox.id);
+      justSaved: true
+    }, function() {
+      this.props.updateEntity({
+        id: window.location.pathname.split("/")[2],
+        directory: window.location.pathname.split("/")[1],
+        entityName: 'giftbox',
+        entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.giftbox, fields: ['msrp'] })
+      }).then(() => {
+        const { giftbox } = this.props;
+        this.setState({
+          fetching: false,
+          giftbox,
+          giftboxSaved: HandyTools.deepCopy(giftbox),
+          changesToSave: false
+        });
+      }, () => {
+        this.setState({
+          fetching: false,
+          errors: this.props.errors
+        });
+      });
     });
   }
 
-  closeModal() {
+  clickX(event) {
+    const giftboxDvdId = event.target.dataset.id;
     this.setState({
-      deleteModalOpen: false,
-      dvdsModalOpen: false
+      fetching: true
+    });
+    this.props.deleteEntity({
+      directory: 'giftbox_dvds',
+      id: giftboxDvdId,
+      callback: (response) => {
+        const { giftboxDvds, otherDvds } = response;
+        this.setState({
+          fetching: false,
+          giftboxDvds,
+          otherDvds
+        });
+      }
     });
   }
 
@@ -139,51 +121,27 @@ class GiftboxDetails extends React.Component {
     return {
       thing: "giftbox",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges.bind(this)
+      changesFunction: this.checkForChanges.bind(this),
+      allErrors: FM.errors
     }
   }
 
   render() {
+    const { giftbox } = this.state;
     return(
       <div id="giftbox-details">
         <div className="component details-component">
           <h1>Gift Box Details</h1>
           <div id="giftbox-profile-box" className="white-box">
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Name</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.name) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.name || "" } data-field="name" />
-                { Details.renderFieldError(this.state.errors, FM.errors.name) }
-              </div>
-              <div className="col-xs-4">
-                <h2>UPC</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.upc) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.upc || "" } data-field="upc" />
-                { Details.renderFieldError(this.state.errors, FM.errors.upc) }
-              </div>
-              <div className="col-xs-2">
-                <h2>MSRP</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.msrp) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.msrp || "" } data-field="msrp" />
-                { Details.renderFieldError(this.state.errors, FM.errors.msrp) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'giftbox', property: 'name' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'giftbox', property: 'upc', columnHeader: 'UPC' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'giftbox', property: 'msrp', columnHeader: 'MSRP' }) }
             </div>
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Type</h2>
-                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="onDemand" value={ this.state.giftbox.onDemand } >
-                  <option value={ "no" }>Prepackaged</option>
-                  <option value={ "yes" }>Assemble on Demand</option>
-                </select>
-              </div>
-              <div className={ "col-xs-3" + (this.state.giftbox.onDemand === "yes" ? " hidden" : "") } >
-                <h2>Quantity</h2>
-                <input value={ this.state.giftbox.quantity === undefined ? "" : this.state.giftbox.quantity } readOnly={ true } data-field="quantity" />
-                { Details.renderFieldError([], []) }
-              </div>
-              <div className="col-xs-3">
-                <h2>Sage ID</h2>
-                <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.giftbox.sageId || "" } data-field="sageId" />
-                { Details.renderFieldError([], []) }
-              </div>
+              { Details.renderDropDown.bind(this)({ columnWidth: 2, entity: 'giftbox', property: 'onDemand', columnHeader: 'On Demand?', boolean: true }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'giftbox', property: 'sageId', columnHeader: 'Sage ID' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'giftbox', property: 'quantity', readOnly: true, hidden: giftbox.onDemand }) }
             </div>
             { this.renderButtons() }
             <hr />
@@ -195,29 +153,33 @@ class GiftboxDetails extends React.Component {
               </thead>
               <tbody>
                 <tr><td></td></tr>
-                { this.state.dvds.map((dvd, index) => {
+                { this.state.giftboxDvds.map((giftboxDvd, index) => {
                   return(
                     <tr key={ index }>
                       <td className="name-column">
-                        <div onClick={ FM.redirect.bind(this, "dvds", dvd.id) }>
-                          { dvd.title }
+                        <div onClick={ FM.redirect.bind(this, "giftboxDvds", giftboxDvd.dvdId) }>
+                          { giftboxDvd.title }
                         </div>
-                        <div className="x-button" onClick={ this.clickXButton.bind(this) } data-id={ dvd.id }></div>
+                        <div className="x-button" onClick={ this.clickX.bind(this) } data-id={ giftboxDvd.id }></div>
                       </td>
                     </tr>
                   );
                 }) }
               </tbody>
             </table>
-            <a className={ 'blue-outline-button small' } onClick={ this.clickAddDvdButton.bind(this) }>Add DVD</a>
+            <a className={ 'blue-outline-button small' } onClick={ Common.changeState.bind(this, 'dvdsModalOpen', true) }>Add DVD</a>
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="giftBox" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete
+            entityName="giftbox"
+            confirmDelete={ Details.clickDelete.bind(this) }
+            closeModal={ Common.closeModals.bind(this) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.dvdsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+        <Modal isOpen={ this.state.dvdsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherDvds } property={ "title" } func={ this.selectDvd.bind(this) } />
         </Modal>
       </div>
@@ -225,27 +187,25 @@ class GiftboxDetails extends React.Component {
   }
 
   renderButtons() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
-    }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave == false) } onClick={ this.clickSave.bind(this) }>
-          { buttonText }
+        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+          { Details.saveButtonText.call(this) }
         </a>
-        <a id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete Gift Box
+        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
+          Delete
         </a>
       </div>
     );
   }
-
-  componentDidUpdate() {
-    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    $('.match-height-layout').matchHeight();
-  }
 }
 
-export default GiftboxDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GiftboxDetails);

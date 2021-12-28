@@ -18,7 +18,7 @@ describe 'giftbox_details', type: :feature do
     expect(find('input[data-field="name"]').value).to eq('Beyond Borders')
     expect(find('input[data-field="upc"]').value).to eq('857692005017')
     expect(find('input[data-field="msrp"]').value).to eq('$39.95')
-    expect(find('select[data-field="onDemand"]', visible: false).value).to eq('no')
+    expect(find('select[data-field="onDemand"]', visible: false).value).to eq('f')
     expect(find('input[data-field="quantity"]').value).to eq('100')
     expect(find('input[data-field="sageId"]').value).to eq('BEYOND BORDERS')
   end
@@ -29,7 +29,7 @@ describe 'giftbox_details', type: :feature do
       name: 'new name',
       upc: 'new upc',
       msrp: 49.95,
-      on_demand: { value: 'yes', type: :select },
+      on_demand: { value: 't', type: :select },
       sage_id: 'new sage id'
     }
     fill_out_form(new_info)
@@ -53,7 +53,7 @@ describe 'giftbox_details', type: :feature do
 
   it 'deletes the giftbox' do
     visit giftbox_path(@giftbox, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Gift Box')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

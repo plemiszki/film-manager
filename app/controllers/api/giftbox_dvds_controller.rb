@@ -1,11 +1,11 @@
 class Api::GiftboxDvdsController < AdminController
 
   def create
-    @giftbox_dvd = GiftboxDvd.new(giftbox_dvd_params)
-    if @giftbox_dvd.save
-      @giftboxes = Giftbox.where(id: giftbox_dvd_params[:giftbox_id])
-      @dvds = @giftboxes[0].dvds
-      @other_dvds = Dvd.includes(:feature, :dvd_type) - @dvds
+    giftbox_dvd = GiftboxDvd.create(giftbox_dvd_params)
+    if giftbox_dvd.save
+      giftbox = giftbox_dvd.giftbox
+      @giftbox_dvds = giftbox.giftbox_dvds
+      @other_dvds = Dvd.all.includes(:feature, :dvd_type) - giftbox.dvds
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @giftbox_dvd.errors.full_messages, status: 422
@@ -13,11 +13,11 @@ class Api::GiftboxDvdsController < AdminController
   end
 
   def destroy
-    @giftbox_dvd = GiftboxDvd.where(giftbox_id: giftbox_dvd_params[:giftbox_id], dvd_id: giftbox_dvd_params[:dvd_id])[0]
-    if @giftbox_dvd.destroy
-      @giftboxes = Giftbox.where(id: giftbox_dvd_params[:giftbox_id])
-      @dvds = @giftboxes[0].dvds.includes(:feature)
-      @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
+    giftbox_dvd = GiftboxDvd.find(params[:id])
+    if giftbox_dvd.destroy
+      giftbox = giftbox_dvd.giftbox
+      @giftbox_dvds = giftbox.giftbox_dvds
+      @other_dvds = Dvd.all.includes(:feature, :dvd_type) - giftbox.dvds
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @giftbox_dvd.errors.full_messages, status: 422

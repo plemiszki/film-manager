@@ -6,9 +6,9 @@ class Api::GiftboxesController < AdminController
   end
 
   def show
-    @giftboxes = Giftbox.where(id: params[:id])
-    @dvds = @giftboxes[0].dvds.includes(:feature)
-    @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
+    @giftbox = Giftbox.find(params[:id])
+    @giftbox_dvds = @giftbox.giftbox_dvds
+    @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @giftbox.dvds
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 

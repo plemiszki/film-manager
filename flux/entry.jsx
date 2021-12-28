@@ -90,7 +90,12 @@ $(document).ready(function() {
     ReactDOM.render(<RoyaltyReportsIndex />, document.getElementById("reports-index"));
   }
   if ($('#giftbox-details')[0]) {
-    ReactDOM.render(<GiftBoxDetails />, document.getElementById("giftbox-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <GiftBoxDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("giftbox-details")
+    );
   }
   if ($('#dvd-customer-details')[0]) {
     ReactDOM.render(
