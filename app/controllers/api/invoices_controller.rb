@@ -91,10 +91,9 @@ class Api::InvoicesController < AdminController
   end
 
   def show
-    @invoices = Invoice.where(id: params[:id]).includes(booking: [:film, :venue])
-    invoice = @invoices.first
-    @rows = invoice.invoice_rows
-    @payments = invoice.invoice_payments if invoice.invoice_type == 'booking'
+    @invoice = Invoice.find(params[:id])
+    @rows = @invoice.invoice_rows
+    @payments = @invoice.invoice_payments if @invoice.invoice_type == 'booking'
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 

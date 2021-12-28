@@ -243,7 +243,12 @@ $(document).ready(function() {
     );
   }
   if ($('#invoice-details')[0]) {
-    ReactDOM.render(<InvoiceDetails />, document.getElementById("invoice-details"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <InvoiceDetails context={ MyContext } />
+      </Provider>,
+      document.getElementById("invoice-details")
+    );
   }
   if ($('#credit-memos-index')[0]) {
     ReactDOM.render(

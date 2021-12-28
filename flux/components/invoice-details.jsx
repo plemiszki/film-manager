@@ -1,9 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import InvoicesStore from '../stores/invoices-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class InvoiceDetails extends React.Component {
@@ -13,24 +14,30 @@ class InvoiceDetails extends React.Component {
     this.state = {
       fetching: true,
       invoice: {},
-      rows: []
+      rows: [],
+      payments: []
     };
   }
 
   componentDidMount() {
-    this.invoiceListener = InvoicesStore.addListener(this.getInvoice.bind(this));
-    ClientActions.fetchInvoice(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.invoiceListener.remove();
-  }
-
-  getInvoice() {
-    this.setState({
-      invoice: InvoicesStore.find(window.location.pathname.split("/")[2]),
-      rows: InvoicesStore.rows().concat(InvoicesStore.payments()),
-      fetching: false
+    this.props.fetchEntity({
+      id: window.location.pathname.split('/')[2],
+      directory: window.location.pathname.split('/')[1],
+      entityName: 'invoice'
+    }, 'invoice').then(() => {
+      const { invoice, rows, payments } = this.props;
+      const mappedPayments = payments.map((payment) => {
+        return {
+          label: 'Payment' + (payment.notes ? (' - ' + payment.notes) : '') + ' (' + payment.date + ')',
+          totalPrice: payment.amount
+        }
+      });
+      this.setState({
+        fetching: false,
+        invoice,
+        rows,
+        payments: mappedPayments
+      });
     });
   }
 
@@ -74,7 +81,7 @@ class InvoiceDetails extends React.Component {
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td><td></td></tr>
-                { this.state.rows.map(this.renderTableColumns.bind(this)) }
+                { (this.state.rows.concat(this.state.payments)).map(this.renderTableColumns.bind(this)) }
               </tbody>
             </table>
             <hr />
@@ -209,10 +216,14 @@ class InvoiceDetails extends React.Component {
       )
     }
   }
-
-  componentDidUpdate() {
-    $('.match-height-layout').matchHeight();
-  }
 }
 
-export default InvoiceDetails;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceDetails);
