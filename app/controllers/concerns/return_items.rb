@@ -2,7 +2,7 @@ module ReturnItems
   extend ActiveSupport::Concern
 
   def get_data_for_items
-    @items = @returns[0].return_items.map do |item|
+    @items = @return.return_items.map do |item|
       result = {}
       result[:id] = item.id
       result[:item_type] = item.item_type
@@ -34,7 +34,7 @@ module ReturnItems
       giftbox[:label] = giftbox["name"]
       giftbox
     end
-    @other_items = (other_dvds + other_giftboxes)
+    @other_items = (other_dvds + other_giftboxes).sort_by { |item| item[:label] }
     @items.each do |item|
       other_item_to_delete = @other_items.select { |other_item| other_item['id'] == item[:item_id] && other_item[:item_type] == item[:item_type] }.first
       @other_items.delete(other_item_to_delete)

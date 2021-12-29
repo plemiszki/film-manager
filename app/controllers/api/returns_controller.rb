@@ -14,8 +14,8 @@ class Api::ReturnsController < AdminController
   end
 
   def show
-    @returns = Return.where(id: params[:id])
-    @dvd_customers = DvdCustomer.all
+    @return = Return.find(params[:id])
+    @dvd_customers = DvdCustomer.all.order(:name)
     get_data_for_items
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
@@ -33,7 +33,7 @@ class Api::ReturnsController < AdminController
     @return = Return.find(params[:id])
     if @return.update(return_params)
       @returns = Return.where(id: params[:id])
-      @dvd_customers = DvdCustomer.all
+      @dvd_customers = DvdCustomer.all.order(:name)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @return.errors.full_messages, status: 422
@@ -61,7 +61,7 @@ class Api::ReturnsController < AdminController
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: 'send credit memo', first_line: 'Generating Credit Memo', second_line: false)
     GenerateAndSendCreditMemo.perform_async(time_started, params[:id], current_user.id)
-    render json: { job: job }
+    render json: { job: job.render_json }
   end
 
   private

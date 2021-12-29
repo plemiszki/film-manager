@@ -1,11 +1,11 @@
-json.returns @returns do |r|
-  json.id r.id
-  json.number r.number
-  json.customerId r.customer_id.to_s
-  json.date r.date
-  json.creditMemoId r.credit_memo.try(:id) || ''
-  json.creditMemoNumber r.credit_memo.try(:number) || ''
-  json.creditMemoDate r.credit_memo.try(:sent_date).try(:strftime, "%-m/%-d/%y") || ''
+json.return do
+  json.id @return.id
+  json.number @return.number
+  json.customerId @return.customer_id.to_s
+  json.date @return.date
+  json.creditMemoId @return.credit_memo.try(:id) || ''
+  json.creditMemoNumber @return.credit_memo.try(:number) || ''
+  json.creditMemoDate @return.credit_memo.try(:sent_date).try(:strftime, "%-m/%-d/%y") || ''
 end
 json.customers @dvd_customers do |customer|
   json.id customer.id

@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'support/features_helper'
+require 'sidekiq/testing'
 
 describe 'return_details', type: :feature do
 
@@ -54,7 +55,7 @@ describe 'return_details', type: :feature do
 
   it 'deletes the return' do
     visit return_path(@return, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Return')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click
@@ -83,6 +84,29 @@ describe 'return_details', type: :feature do
     find('.x-button').click
     expect(page).to have_no_css('.spinner')
     expect(@return.reload.return_items.length).to eq(0)
+  end
+
+  it 'starts the export job' do
+    create(:return_item)
+    visit return_path(@return, as: $admin_user)
+    wait_for_ajax
+    find('.orange-button', text: 'Generate and Send Credit Memo').click
+    expect(page).to have_content('Generating Credit Memo')
+  end
+
+  it 'generates the credit memo' do
+    create(:setting)
+    create(:return_item)
+    Sidekiq::Testing.inline! do
+      visit return_path(@return, as: $admin_user)
+      find('.orange-button', text: 'Generate and Send Credit Memo').click
+      expect(page).to have_no_css('.spinner', wait: 10)
+      expect(page).to have_content('Credit Memo Sent Successfully')
+      expect(page).to have_content("Credit Memo #{CreditMemo.last.number} was sent")
+      expect(CreditMemo.count).to eq(1)
+      expect(CreditMemoRow.count).to eq(1)
+      expect(CreditMemo.last.return_number).to eq(@return.number)
+    end
   end
 
 end
