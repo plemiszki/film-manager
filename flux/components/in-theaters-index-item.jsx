@@ -1,6 +1,9 @@
 import React from 'react'
 import ClientActions from '../actions/client-actions.js'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class InTheatersIndexItem extends React.Component {
@@ -58,11 +61,24 @@ class InTheatersIndexItem extends React.Component {
     var dropZoneIndex = e.target.dataset.index;
     $('.highlight').removeClass('highlight');
     var currentOrder = {};
-    this.props.films.forEach((film) => {
+    this.props.sectionFilms.forEach((film) => {
       currentOrder[film.order] = film.id;
     });
-    var newOrder = Tools.rearrangeFields(currentOrder, draggedIndex, dropZoneIndex);
-    ClientActions.rearrangeInTheatersFilms(newOrder);
+    const newOrder = Tools.rearrangeFields(currentOrder, draggedIndex, dropZoneIndex);
+    this.props.sendRequest({
+      url: '/api/in_theaters/rearrange',
+      method: 'post',
+      data: {
+        new_order: newOrder
+      }
+    }).then(() => {
+      const { inTheaters, comingSoon, repertory } = this.props;
+      this.props.updateFilms({
+        inTheaters,
+        comingSoon,
+        repertory
+      });
+    });
   }
 
   render() {
@@ -102,4 +118,12 @@ class InTheatersIndexItem extends React.Component {
   }
 }
 
-export default InTheatersIndexItem;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(InTheatersIndexItem);

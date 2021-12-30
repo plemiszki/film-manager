@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
@@ -7,20 +9,8 @@ import NewThing from './new-thing.jsx'
 import ModalSelect from './modal-select.jsx'
 import InTheatersIndexItem from './in-theaters-index-item.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
-
-const ModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 1000,
-    height: 351
-  }
-};
 
 class InTheatersIndex extends React.Component {
 
@@ -31,74 +21,95 @@ class InTheatersIndex extends React.Component {
       inTheaters: [],
       comingSoon: [],
       repertory: [],
-      modalOpen: false,
+      filmsModalOpen: false,
       films: []
     };
   }
 
   componentDidMount() {
-    this.Listener = InTheatersStore.addListener(this.getFilms.bind(this));
-    ClientActions.fetchInTheatersFilms();
-  }
-
-  componentWillUnmount() {
-    this.Listener.remove();
-  }
-
-  getFilms() {
-    this.setState({
-      fetching: false,
-      inTheaters: InTheatersStore.inTheaters(),
-      comingSoon: InTheatersStore.comingSoon(),
-      repertory: InTheatersStore.repertory(),
-      films: InTheatersStore.films(),
+    this.props.sendRequest({
+      url: '/api/in_theaters',
+    }).then(() => {
+      const { films, inTheaters, comingSoon, repertory } = this.props;
+      this.setState({
+        fetching: false,
+        inTheaters,
+        comingSoon,
+        repertory,
+        films
+      });
     });
   }
 
-  clickXButton(e) {
-    var id = e.target.dataset.id;
+  clickX(e) {
+    const id = e.target.dataset.id;
     this.setState({
       fetching: true
-    }, () => {
-      ClientActions.deleteInTheatersFilm(id);
     });
-  }
-
-  clickNew() {
-    this.setState({ modalOpen: true });
-  }
-
-  closeModal() {
-    this.setState({ modalOpen: false });
+    this.props.deleteEntity({
+      directory: 'in_theaters',
+      id,
+      callback: (response) => {
+        const { films, inTheaters, comingSoon, repertory } = response;
+        this.setState({
+          fetching: false,
+          inTheaters,
+          comingSoon,
+          repertory,
+          films
+        });
+      }
+    });
   }
 
   clickAddComingSoonFilm() {
     this.setState({
-      modalOpen: true,
+      filmsModalOpen: true,
       addSection: 'Coming Soon'
     });
   }
 
   clickAddInTheatersFilm() {
     this.setState({
-      modalOpen: true,
+      filmsModalOpen: true,
       addSection: 'In Theaters'
     });
   }
 
   clickAddRepertoryFilm() {
     this.setState({
-      modalOpen: true,
+      filmsModalOpen: true,
       addSection: 'Repertory'
     });
   }
 
   selectFilm(option, e) {
+    const filmId = e.target.dataset.id;
     this.setState({
-      modalOpen: false,
+      filmsModalOpen: false,
       fetching: true
     });
-    ClientActions.createInTheatersFilm({ filmId: e.target.dataset.id, section: this.state.addSection });
+    this.props.createEntity({
+      directory: 'in_theaters',
+      entityName: 'film',
+      entity: {
+        filmId,
+        section: this.state.addSection
+      }
+    }).then(() => {
+      const { films, inTheaters, comingSoon, repertory } = this.props;
+      this.setState({
+        fetching: false,
+        inTheaters,
+        comingSoon,
+        repertory,
+        films
+      });
+    });
+  }
+
+  updateFilms(obj) {
+    this.setState(obj);
   }
 
   render() {
@@ -116,7 +127,17 @@ class InTheatersIndex extends React.Component {
               <tr><td></td></tr>
               { this.state.inTheaters.map((film, index) => {
                 return(
-                  <InTheatersIndexItem key={ film.id } index={ index } film={ film } section={ 'in theaters' } clickXButton={ this.clickXButton.bind(this) } renderHandle={ this.state.inTheaters.length > 1 } films={ this.state.inTheaters } />
+                  <InTheatersIndexItem
+                    context={ this.props.context }
+                    key={ film.id }
+                    index={ index }
+                    film={ film }
+                    section={ 'in theaters' }
+                    clickXButton={ this.clickX.bind(this) }
+                    renderHandle={ this.state.inTheaters.length > 1 }
+                    sectionFilms={ this.state.inTheaters }
+                    updateFilms={ this.updateFilms.bind(this) }
+                  />
                 );
               }) }
             </tbody>
@@ -133,7 +154,17 @@ class InTheatersIndex extends React.Component {
               <tr><td></td></tr>
               { this.state.comingSoon.map((film, index) => {
                 return(
-                  <InTheatersIndexItem key={ film.id } index={ index } film={ film } section={ 'coming soon' } clickXButton={ this.clickXButton.bind(this) } renderHandle={ this.state.comingSoon.length > 1 } films={ this.state.comingSoon } />
+                  <InTheatersIndexItem
+                    context={ this.props.context }
+                    key={ film.id }
+                    index={ index }
+                    film={ film }
+                    section={ 'coming soon' }
+                    clickXButton={ this.clickX.bind(this) }
+                    renderHandle={ this.state.comingSoon.length > 1 }
+                    sectionFilms={ this.state.comingSoon }
+                    updateFilms={ this.updateFilms.bind(this) }
+                  />
                 );
               }) }
             </tbody>
@@ -150,7 +181,17 @@ class InTheatersIndex extends React.Component {
               <tr><td></td></tr>
               { this.state.repertory.map((film, index) => {
                 return(
-                  <InTheatersIndexItem key={ film.id } index={ index } film={ film } section={ 'repertory' } clickXButton={ this.clickXButton.bind(this) } renderHandle={ this.state.repertory.length > 1 } films={ this.state.repertory } />
+                  <InTheatersIndexItem
+                    context={ this.props.context }
+                    key={ film.id }
+                    index={ index }
+                    film={ film }
+                    section={ 'repertory' }
+                    clickXButton={ this.clickX.bind(this) }
+                    renderHandle={ this.state.repertory.length > 1 }
+                    sectionFilms={ this.state.repertory }
+                    updateFilms={ this.updateFilms.bind(this) }
+                  />
                 );
               }) }
             </tbody>
@@ -159,7 +200,7 @@ class InTheatersIndex extends React.Component {
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
-        <Modal isOpen={ this.state.modalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.films } property="title" func={ this.selectFilm.bind(this) } />
         </Modal>
       </div>
@@ -167,4 +208,12 @@ class InTheatersIndex extends React.Component {
   }
 }
 
-export default InTheatersIndex;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(InTheatersIndex);

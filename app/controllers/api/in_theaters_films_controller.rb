@@ -39,10 +39,10 @@ class Api::InTheatersFilmsController < AdminController
   end
 
   def index_data
-    @in_theaters = InTheatersFilm.where(section: 'In Theaters').includes(:film)
-    @coming_soon = InTheatersFilm.where(section: 'Coming Soon').includes(:film)
-    @repertory = InTheatersFilm.where(section: 'Repertory').includes(:film)
-    @films = Film.where.not(id: (@in_theaters.pluck(:film_id) + @coming_soon.pluck(:film_id) + @repertory.pluck(:film_id))).where(film_type: 'Feature')
+    @in_theaters = InTheatersFilm.where(section: 'In Theaters').includes(:film).order(:order)
+    @coming_soon = InTheatersFilm.where(section: 'Coming Soon').includes(:film).order(:order)
+    @repertory = InTheatersFilm.where(section: 'Repertory').includes(:film).order(:order)
+    @films = Film.where.not(id: (@in_theaters.pluck(:film_id) + @coming_soon.pluck(:film_id) + @repertory.pluck(:film_id))).where(film_type: 'Feature').order(:title)
   end
 
 end

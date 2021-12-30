@@ -510,7 +510,12 @@ $(document).ready(function() {
     );
   }
   if ($('#in-theaters-index')[0]) {
-    ReactDOM.render(<InTheatersIndex />, document.getElementById("in-theaters-index"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <InTheatersIndex context={ MyContext } />
+      </Provider>,
+      document.getElementById("in-theaters-index")
+    );
   }
   if ($('#film-right-details')[0]) {
     ReactDOM.render(
