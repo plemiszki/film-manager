@@ -3,7 +3,6 @@ class ExportDvdSales
   sidekiq_options retry: false
 
   def perform(time_started, start_date, end_date)
-    errors = []
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
@@ -61,7 +60,7 @@ class ExportDvdSales
     FileUtils.mv doc.path, file_path
     doc.cleanup
 
-    job.update({ first_line: "Uploading to AWS" })
+    job.update({ first_line: "Uploading to AWS", second_line: false })
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1'
@@ -69,7 +68,7 @@ class ExportDvdSales
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object("#{time_started}/sales.xlsx")
     obj.upload_file(file_path, acl:'public-read')
-    job.update!({ done: true, first_line: errors.empty? ? obj.public_url : "Errors Found", errors_text: errors.empty? ? "" : errors.uniq.join("\n") })
+    job.update!({ status: :success, metadata: { url: obj.public_url } })
   end
 
 end

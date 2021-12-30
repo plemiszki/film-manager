@@ -1,11 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import ServerActions from '../actions/server-actions.js'
-import DvdCustomersStore from '../stores/dvd-customers-store.js'
-import JobStore from '../stores/job-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const exportModalStyles = {
@@ -33,8 +32,11 @@ class DvdReports extends React.Component {
     };
     this.state = {
       fetching: true,
-      dvdCustomers: [],
+      customers: [],
       titleReportCustomers: [],
+      yearTotal: null,
+      monthTotals: [],
+      dvds: [],
       year: (new Date).getFullYear(),
       exportModalOpen: false,
       export: {
@@ -48,44 +50,27 @@ class DvdReports extends React.Component {
   }
 
   componentDidMount() {
-    this.customerListener = DvdCustomersStore.addListener(this.getCustomers.bind(this));
-    this.jobListener = JobStore.addListener(this.getJob.bind(this));
     $('#admin-right-column-content').css('padding', '30px 20px');
-    ClientActions.fetchDvdReports(this.state.year);
+    this.fetchReportData();
   }
 
-  componentWillUnmount() {
-    this.customerListener.remove();
-    this.jobListener.remove();
-  }
-
-  getCustomers() {
-    this.setState({
-      dvdCustomers: DvdCustomersStore.all(),
-      titleReportCustomers: DvdCustomersStore.titlesReport(),
-      fetching: false
+  fetchReportData() {
+    this.props.sendRequest({
+      url: '/api/dvd_reports',
+      data: {
+        year: this.state.year,
+      }
+    }).then(() => {
+      const { yearTotal, dvds, dvdCustomers, monthTotals, titleReportCustomers } = this.props;
+      this.setState({
+        fetching: false,
+        yearTotal,
+        customers: dvdCustomers,
+        dvds,
+        monthTotals,
+        titleReportCustomers
+      });
     });
-  }
-
-  getJob() {
-    var job = JobStore.job();
-    if (job.done) {
-      this.setState({
-        jobModalOpen: false,
-        errorsModalOpen: job.errorsText !== "",
-        job: job
-      }, () => {
-        if (job.errorsText === "") {
-          window.location.href = job.firstLine;
-        }
-      });
-    } else {
-      this.setState({
-        jobModalOpen: true,
-        job: job,
-        fetching: false
-      });
-    }
   }
 
   clickPrev() {
@@ -93,7 +78,7 @@ class DvdReports extends React.Component {
       year: (this.state.year -= 1),
       fetching: true
     }, () => {
-      ClientActions.fetchDvdReports(this.state.year);
+      this.fetchReportData();
     });
   }
 
@@ -102,13 +87,7 @@ class DvdReports extends React.Component {
       year: (this.state.year += 1),
       fetching: true
     }, () => {
-      ClientActions.fetchDvdReports(this.state.year);
-    });
-  }
-
-  openExportModal() {
-    this.setState({
-      exportModalOpen: true
+      this.fetchReportData();
     });
   }
 
@@ -117,13 +96,21 @@ class DvdReports extends React.Component {
       exportModalOpen: false,
       fetching: true
     });
-    ClientActions.exportDvdSales(this.state.export.startDate, this.state.export.endDate);
-  }
-
-  closeModal() {
-    this.setState({
-      exportModalOpen: false,
-    });
+    this.props.sendRequest({
+      url: '/api/dvd_reports/export',
+      method: 'POST',
+      data: {
+        start_date: this.state.export.startDate,
+        end_date: this.state.export.endDate
+      },
+    }).then(() => {
+      console.log(this.props);
+      this.setState({
+        jobModalOpen: true,
+        job: this.props.job,
+        fetching: false
+      });
+    })
   }
 
   modalCloseAndRefresh() {
@@ -140,7 +127,8 @@ class DvdReports extends React.Component {
     return {
       thing: "export",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges
+      changesFunction: this.checkForChanges,
+      allErrors: FM.errors
     }
   }
 
@@ -149,7 +137,7 @@ class DvdReports extends React.Component {
       <div id="dvd-reports">
         <div className="component">
           <div className="text-center">
-            <a className={"orange-button export-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.openExportModal.bind(this) }>Export</a>
+            <a className={"orange-button export-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'exportModalOpen', true) }>Export</a>
             <div className="clearfix">
               <a className={ "orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
               <h1>DVD Reports - { this.state.year }</h1>
@@ -167,9 +155,9 @@ class DvdReports extends React.Component {
                   </thead>
                   <tbody>
                     <tr><td></td></tr>
-                    { this.state.dvdCustomers.map((dvdCustomer, index) => {
+                    { this.state.customers.map((dvdCustomer, index) => {
                       return(
-                        <tr key={index}>
+                        <tr key={ index }>
                           <td className="name-column">
                             <div>{ dvdCustomer.name }</div>
                           </td>
@@ -203,10 +191,10 @@ class DvdReports extends React.Component {
                   </thead>
                   <tbody>
                     <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                    { DvdCustomersStore.all().map((dvdCustomer, index) => {
+                    { this.state.customers.map((dvdCustomer, index) => {
                       return(
-                        <tr key={index}>
-                          <td data-test={ `${dvdCustomer.nickname}-total` }className="bold">{ dvdCustomer.sales.total }</td>
+                        <tr key={ index }>
+                          <td data-test={ `${dvdCustomer.nickname}-total` } className="bold">{ dvdCustomer.sales.total }</td>
                           <td data-test={ `${dvdCustomer.nickname}-jan` }>{ dvdCustomer.sales[1] }</td>
                           <td data-test={ `${dvdCustomer.nickname}-feb` }>{ dvdCustomer.sales[2] }</td>
                           <td data-test={ `${dvdCustomer.nickname}-mar` }>{ dvdCustomer.sales[3] }</td>
@@ -223,8 +211,8 @@ class DvdReports extends React.Component {
                       );
                     }) }
                     <tr className="bold">
-                      <td data-test="year-total">{ DvdCustomersStore.yearTotal() }</td>
-                      { DvdCustomersStore.monthTotals().map((month, index) => {
+                      <td data-test="year-total">{ this.state.yearTotal }</td>
+                      { this.state.monthTotals.map((month, index) => {
                         const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
                         return(
                           <td key={ index } data-test={ `total-${months[index]}` }>{ month }</td>
@@ -251,7 +239,7 @@ class DvdReports extends React.Component {
                   </thead>
                   <tbody>
                     <tr><td></td></tr>
-                    { DvdCustomersStore.dvds().map((dvd, index) => {
+                    { this.state.dvds.map((dvd, index) => {
                       return(
                         <tr key={ index }>
                           <td className="name-column">
@@ -275,7 +263,7 @@ class DvdReports extends React.Component {
                   </thead>
                   <tbody>
                     <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                     { DvdCustomersStore.dvds().map((dvd, index) => {
+                     { this.state.dvds.map((dvd, index) => {
                       return(
                         <tr key={ index }>
                           <td>{ dvd.retailDate }</td>
@@ -293,7 +281,7 @@ class DvdReports extends React.Component {
             { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
           </div>
         </div>
-        <Modal isOpen={ this.state.exportModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ exportModalStyles }>
+        <Modal isOpen={ this.state.exportModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ exportModalStyles }>
           <div className="export-modal">
             <div className="row">
               <div className="col-xs-6">
@@ -319,41 +307,39 @@ class DvdReports extends React.Component {
   }
 
   renderDvdCustomerHeaders() {
-    return this.state.titleReportCustomers.map((customer, index) => {
-      return([
-        <th key={ index } className="units">{ customer.nickname || customer.name }</th>,
-        <th key={ `${index}-B`}></th>
-      ]);
+    return this.state.customers.map((customer, index) => {
+      if (customer.includeInTitleReport) {
+        return([
+          <th key={ index } className="units">{ customer.nickname || customer.name }</th>,
+            <th key={ `${index}-B`}></th>
+          ]);
+      }
     })
   }
 
   renderDvdCustomerData(dvd) {
-    return this.state.titleReportCustomers.map((customer, index) => {
-      return([
-        <td key={ index } className="units" data-test={ `${dvd.id}-${customer.nickname}-units` }>{ dvd.sales[index].units }</td>,
-        <td key={ `${index}-B`} data-test={ `${dvd.id}-${customer.nickname}-sales` }>{ dvd.sales[index].amount }</td>
-      ]);
+    return this.state.customers.map((customer, index) => {
+      if (customer.includeInTitleReport) {
+        const obj = dvd.sales.find(element => element.dvdCustomerId === customer.id);
+        return([
+          <td key={ index } className="units" data-test={ `${dvd.id}-${customer.nickname}-units` }>{ obj.units }</td>,
+          <td key={ `${index}-B`} data-test={ `${dvd.id}-${customer.nickname}-sales` }>{ obj.amount }</td>
+        ]);
+      }
     })
   }
 
   componentDidUpdate() {
-    $('.match-height-layout').matchHeight();
-    if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success: (response) => {
-            ServerActions.receiveJob(response);
-          }
-        })
-      }, 1500)
-    }
+    Common.updateJobModal.call(this);
   }
 }
 
-export default DvdReports;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DvdReports);

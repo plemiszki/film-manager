@@ -14,6 +14,8 @@ json.dvds @dvds do |dvd|
   json.type dvd.dvd_type.name
   json.retailDate dvd.retail_date.strftime("%m/%d/%Y")
   json.sales @title_report_dvd_customers do |customer|
+    json.name customer.name
+    json.dvdCustomerId customer.id
     json.units @dvd_units[dvd.id][customer.id]
     json.amount dollarify(number_with_precision(@dvd_sales[dvd.id][customer.id], precision: 2, delimiter: ','))
   end

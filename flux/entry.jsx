@@ -296,7 +296,12 @@ $(document).ready(function() {
     );
   }
   if ($('#dvd-reports')[0]) {
-    ReactDOM.render(<DvdReports />, document.getElementById("dvd-reports"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <DvdReports context={ MyContext } />
+      </Provider>,
+      document.getElementById("dvd-reports")
+    );
   }
   if ($('#returns-index')[0]) {
     ReactDOM.render(
