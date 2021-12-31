@@ -1043,6 +1043,13 @@ class FilmDetails extends React.Component {
     });
   }
 
+  newFilmRightsCallback(filmRights) {
+    this.setState({
+      newRightsModalOpen: false,
+      filmRights
+    });
+  }
+
   render() {
     let title = {
       'Short': 'Short',
@@ -1133,7 +1140,11 @@ class FilmDetails extends React.Component {
           <ModalSelect options={ this.state.formats } property={ "name" } func={ this.clickFormat.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
-          <FilmRightsNew filmId={ this.state.film.id } />
+          <FilmRightsNew
+            context={ this.props.context }
+            filmId={ this.state.film.id }
+            callback={ this.newFilmRightsCallback.bind(this) }
+          />
         </Modal>
         <Modal isOpen={ this.state.changeDatesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ChangeDatesModalStyles }>
           <FilmRightsChangeDates filmId={ this.state.film.id } updateChangedDates={ this.updateChangedDates.bind(this) } />

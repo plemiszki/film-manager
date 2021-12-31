@@ -599,6 +599,7 @@ $(document).ready(function() {
             ]}
           />
           <FilmRightsNew
+            context={ MyContext }
             initialEntity={ {} }
             sublicensorId={ sublicensorId }
           />

@@ -1,10 +1,13 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ErrorsStore from '../stores/errors-store.js'
 import FilmRightsStore from '../stores/film-rights-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class FilmRightsNew extends React.Component {
@@ -33,38 +36,26 @@ class FilmRightsNew extends React.Component {
 
   componentDidMount() {
     FM.setUpNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    this.rightsAndTerritoriesListener = FilmRightsStore.addListener(this.getRightsAndTerritories.bind(this));
-    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchRightsAndTerritories(this.props.sublicensorId);
-  }
-
-  componentWillUnmount() {
-    this.rightsAndTerritoriesListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getRightsAndTerritories() {
-    let newState = {
-      fetching: false,
-      territories: FilmRightsStore.territories(),
-      rights: FilmRightsStore.rights()
-    }
-    if (this.props.sublicensorId) {
-      let films = FilmRightsStore.films();
-      let filmRight = this.state.filmRight;
-      filmRight.filmId = films[0].id;
-      newState.films = films;
-      newState.filmRight = filmRight;
-    }
-    this.setState(newState, () => {
-      FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      errors: ErrorsStore.all(),
-      fetching: false
+    this.props.sendRequest({
+      url: '/api/rights_and_territories',
+      data: {
+        filmsToo: !!this.props.sublicensorId,
+      }
+    }).then(() => {
+      const { films, rights, territories } = this.props;
+      let newState = {
+        fetching: false,
+        films,
+        rights,
+        territories
+      };
+      if (this.props.sublicensorId) {
+        let filmRight = this.state.filmRight;
+        filmRight.filmId = films[0].id;
+        newState.films = films;
+        newState.filmRight = filmRight;
+      }
+      this.setState(newState);
     });
   }
 
@@ -87,10 +78,43 @@ class FilmRightsNew extends React.Component {
       this.setState({
         fetching: true
       }, () => {
+        const { filmRight, selectedRights, selectedTerritories } = this.state;
+        const { filmId, sublicensorId, startDate, endDate, exclusive } = filmRight;
         if (this.props.filmId) {
-          ClientActions.createFilmRights(this.state.filmRight, this.state.selectedRights, this.state.selectedTerritories);
+          this.props.sendRequest({
+            url: '/api/film_rights',
+            method: 'post',
+            data: {
+              filmRight: {
+                film_id: filmId,
+                start_date: startDate,
+                end_date: endDate,
+                exclusive: !!(exclusive === 'Yes')
+              },
+              rights: selectedRights,
+              territories: selectedTerritories
+            }
+          }).then(() => {
+            this.props.callback(this.props.filmRights);
+          });
         } else {
-          ClientActions.createSubRights(this.state.filmRight, this.state.selectedRights, this.state.selectedTerritories);
+          this.props.sendRequest({
+            url: '/api/sub_rights',
+            method: 'post',
+            data: {
+              subRight: {
+                film_id: filmId,
+                sublicensor_id: sublicensorId,
+                start_date: startDate,
+                end_date: endDate,
+                exclusive: !!(exclusive === 'Yes')
+              },
+              rights: selectedRights,
+              territories: selectedTerritories
+            }
+          }).then(() => {
+            window.location.pathname = `/sublicensors/${sublicensorId}`;
+          });
         }
       });
     }
@@ -246,10 +270,14 @@ class FilmRightsNew extends React.Component {
       );
     }
   }
-
-  componentDidUpdate() {
-    $('.match-height-layout').matchHeight();
-  }
 }
 
-export default FilmRightsNew;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilmRightsNew);
