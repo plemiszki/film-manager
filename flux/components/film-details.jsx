@@ -121,7 +121,7 @@ const ChangeDatesModalStyles = {
     background: '#F5F6F7',
     padding: 0,
     margin: 'auto',
-    maxWidth: 1000,
+    maxWidth: 500,
     height: 240
   }
 };
@@ -1147,7 +1147,11 @@ class FilmDetails extends React.Component {
           />
         </Modal>
         <Modal isOpen={ this.state.changeDatesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ChangeDatesModalStyles }>
-          <FilmRightsChangeDates filmId={ this.state.film.id } updateChangedDates={ this.updateChangedDates.bind(this) } />
+          <FilmRightsChangeDates
+            context={ this.props.context }
+            filmId={ this.state.film.id }
+            updateChangedDates={ this.updateChangedDates.bind(this) }
+          />
         </Modal>
         <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ DirectorModalStyles }>
           <NewThing thing="digitalRetailerFilm" initialObject={ { filmId: this.state.film.id, url: "", digitalRetailerId: "1" } } />
