@@ -9,9 +9,9 @@ RSpec.describe Api::FilmsController do
 
   context '#create' do
     it 'creates a film' do
-      post :create, params: { title: 'New Film', film_type: 'Feature', length: 90, year: 2002 }
+      post :create, params: { film: { title: 'New Film', film_type: 'Feature', length: 90, year: 2002 } }
       expect(Film.count).to eq(2)
-      expect(response).to render_template('api/films/index', formats: [:json], handlers: [:jbuilder])
+      expect(response).to render_template('api/films/create', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
   end
