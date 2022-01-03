@@ -33,12 +33,17 @@ export function sendRequest(args) {
   }
 }
 
-export function fetchEntities(input) {
-  let url = input.url || `/api/${input.directory}`;
+export function fetchEntities(args) {
+  let { data, url, directory } = args;
+  url = url || `/api/${directory}`;
+  if (data) {
+    data = HandyTools.convertObjectKeysToUnderscore(data);
+  }
   return (dispatch) => {
     return $.ajax({
       method: 'GET',
-      url
+      url,
+      data
     }).then(
       (response) => {
         let obj = Object.assign(response, { type: 'FETCH_ENTITIES' });

@@ -8,6 +8,9 @@ class Api::FilmsController < AdminController
     else
       @films = Film.where(film_type: params[:film_type]).includes(:alternate_lengths, alternate_subs: [:language], alternate_audios: [:language])
     end
+    @alternate_lengths = AlternateLength.all.pluck(:length).uniq
+    @alternate_audios = AlternateAudio.all.includes(:language).map { |audio| audio.language.name }.uniq
+    @alternate_subs = AlternateSub.all.includes(:language).map { |altsub| altsub.language.name }.uniq
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
@@ -17,10 +20,11 @@ class Api::FilmsController < AdminController
   end
 
   def create
-    @film = Film.new(title: params[:title], label_id: 1, days_statement_due: 30, film_type: params[:film_type], year: params[:year], length: params[:length])
+    @film = Film.new(film_params)
+    @film.label_id = Label.find_by_name("Film Movement").id
+    @film.days_statement_due = 30
     if @film.save
-      @films = Film.where(film_type: params[:film_type])
-      render 'index', formats: [:json], handlers: [:jbuilder]
+      render 'create', formats: [:json], handlers: [:jbuilder]
     else
       render json: @film.errors.full_messages, status: 422
     end
@@ -198,7 +202,7 @@ class Api::FilmsController < AdminController
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export films", first_line: "Exporting Metadata", second_line: true, current_value: 0, total_value: film_ids.length)
     ExportFilms.perform_async(film_ids, time_started, search_criteria.to_json)
-    render json: job.render_json
+    render json: { job: job.render_json }
   end
 
   def catalog

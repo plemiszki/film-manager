@@ -59,9 +59,9 @@ class Api::FilmRightsController < AdminController
   end
 
   def rights_and_territories
-    @rights = Right.all
-    @territories = Territory.all
-    @films = Film.all if params[:films_too]
+    @rights = Right.all.order(:order)
+    @territories = Territory.all.order(:name)
+    @films = Film.all if params[:films_too] == "true"
     render 'new', formats: [:json], handlers: [:jbuilder]
   end
 

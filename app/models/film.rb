@@ -25,7 +25,7 @@ class Film < ActiveRecord::Base
   end
 
   def title_valid
-    errors.add(:title, 'cannot contain /') if title.include?('/')
+    errors.add(:title, 'cannot contain /') if title.present? && title.include?('/')
   end
 
   after_create :create_percentages

@@ -56,19 +56,28 @@ $(document).ready(function() {
     );
   }
   if ($('#films-index')[0]) {
-    ReactDOM.render(<FilmsIndex filmType={ 'Feature' }/>, document.getElementById("films-index"));
-  }
-  if ($('#films-index-advanced')[0]) {
-    ReactDOM.render(<FilmsIndex filmType={ 'Feature' } advanced={ true } />, document.getElementById("films-index-advanced"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <FilmsIndex context={ MyContext } filmType="Feature" />
+      </Provider>,
+      document.getElementById("films-index")
+    );
   }
   if ($('#shorts-index')[0]) {
-    ReactDOM.render(<FilmsIndex filmType={ 'Short' }/>, document.getElementById("shorts-index"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <FilmsIndex context={ MyContext } filmType="Short" />
+      </Provider>,
+      document.getElementById("shorts-index")
+    );
   }
   if ($('#tv-series-index')[0]) {
-    ReactDOM.render(<FilmsIndex filmType={ 'TV Series' }/>, document.getElementById("tv-series-index"));
-  }
-  if ($('#shorts-index-advanced')[0]) {
-    ReactDOM.render(<FilmsIndex filmType={ 'Short' } advanced={ true } />, document.getElementById("shorts-index-advanced"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <FilmsIndex context={ MyContext } filmType="TV Series" />
+      </Provider>,
+      document.getElementById("tv-series-index")
+    );
   }
   if ($('#film-details')[0]) {
     ReactDOM.render(

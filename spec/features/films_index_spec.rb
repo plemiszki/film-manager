@@ -4,6 +4,7 @@ require 'support/features_helper'
 describe 'films_index', type: :feature do
 
   before(:each) do
+    create(:label)
     Film.create!(title: 'Wilby Wonderful', label_id: 1, year: 2002, length: 90, film_type: 'Feature')
     Film.create!(title: '12 Years', label_id: 1, year: 2002, length: 5, film_type: 'Short')
     Film.create!(title: 'The Adventures of Pete and Pete', label_id: 1, year: 1990, length: 200, film_type: 'TV Series')
@@ -22,28 +23,24 @@ describe 'films_index', type: :feature do
 
   it 'can add new feature films' do
     visit films_path(as: $admin_user)
+    info = {
+      title: 'New Film',
+      year: 2002,
+      length: 90
+    }
     find('.orange-button', text: 'Add Film').click
-    find('[data-field="title"]').set('New Film')
-    find('[data-field="year"]').set('2002')
-    find('[data-field="length"]').set('90')
-    within('.admin-modal') do
-      find('.orange-button', text: 'Add Film').click
-    end
-    expect(find('.fm-admin-table')).to have_content 'New Film'
-    expect(Film.last.attributes).to include(
-      'title' => 'New Film',
-      'length' => 90,
-      'year' => 2002,
-      'film_type' => 'Feature'
-    )
+    fill_out_and_submit_modal(info, :input)
+    expect(page).to have_current_path "/films/#{Film.last.id}", ignore_query: true
+    verify_db({
+      entity: Film.last,
+      data: info.merge({ film_type: 'Feature' })
+    })
   end
 
   it 'validates new films properly' do
     visit films_path(as: $admin_user)
     find('.orange-button', text: 'Add Film').click
-    within('.admin-modal') do
-      find('.orange-button', text: 'Add Film').click
-    end
+    fill_out_and_submit_modal({}, :input)
     expect(page).to have_content "Title can't be blank"
     expect(page).to have_content 'Year is not a number'
     expect(page).to have_content 'Length is not a number'
@@ -58,19 +55,17 @@ describe 'films_index', type: :feature do
   it 'can add new short films' do
     visit shorts_path(as: $admin_user)
     find('.orange-button', text: 'Add Short').click
-    find('[data-field="title"]').set('New Short')
-    find('[data-field="year"]').set('2002')
-    find('[data-field="length"]').set('5')
-    within('.admin-modal') do
-      find('.orange-button', text: 'Add Short').click
-    end
-    expect(find('.fm-admin-table')).to have_content 'New Short'
-    expect(Film.last.attributes).to include(
-      'title' => 'New Short',
-      'length' => 5,
-      'year' => 2002,
-      'film_type' => 'Short'
-    )
+    info = {
+      title: 'New Short',
+      year: 2002,
+      length: 5
+    }
+    fill_out_and_submit_modal(info, :input)
+    expect(page).to have_current_path "/films/#{Film.last.id}", ignore_query: true
+    verify_db({
+      entity: Film.last,
+      data: info.merge({ film_type: 'Short' })
+    })
   end
 
   it 'displays all tv series' do
@@ -82,19 +77,38 @@ describe 'films_index', type: :feature do
   it 'can add new tv series' do
     visit tv_series_index_path(as: $admin_user)
     find('.orange-button', text: 'Add TV Series').click
-    find('[data-field="title"]').set('New TV Series')
-    find('[data-field="year"]').set('2005')
-    find('[data-field="length"]').set('200')
-    within('.admin-modal') do
-      find('.orange-button', text: 'Add TV Series').click
+    info = {
+      title: 'New TV Series',
+      year: 2005,
+      length: 200
+    }
+    fill_out_and_submit_modal(info, :input)
+    expect(page).to have_current_path "/films/#{Film.last.id}", ignore_query: true
+    verify_db({
+      entity: Film.last,
+      data: info.merge({ film_type: 'TV Series' })
+    })
+  end
+
+  it 'starts the export all job' do
+    visit films_path(as: $admin_user)
+    find('.orange-button', text: 'Export All').click
+    expect(page).to have_content('Exporting Metadata')
+  end
+
+  it 'starts the export custom job' do
+    create(:right)
+    create(:territory)
+    visit films_path(as: $admin_user)
+    find('.orange-button', text: 'Export Custom').click
+    within('#film-rights-new') do
+      find('[data-field="startDate"').set('1/1/2000')
+      find('[data-field="endDate"').set('1/1/2000')
+      find('label', text: 'USA').click
+      find('.blue-outline-button', text: 'ALL', match: :first).click
+      find('.orange-button', text: 'Search').click
     end
-    expect(find('.fm-admin-table')).to have_content 'New TV Series'
-    expect(Film.last.attributes).to include(
-      'title' => 'New TV Series',
-      'length' => 200,
-      'year' => 2005,
-      'film_type' => 'TV Series'
-    )
+    expect(page).to have_content('Exporting Metadata')
   end
 
 end

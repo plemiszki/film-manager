@@ -202,6 +202,14 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 8, entity: 'eduPlatformFilm', property: 'url', columnHeader: 'URL' }) }
           </div>
         ]);
+      case 'film':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 8, entity: 'film', property: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'year' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'length', columnHeader: 'Length (minutes)' }) }
+          </div>
+        ]);
       case 'format':
         return([
           <div key="1" className="row">

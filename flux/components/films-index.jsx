@@ -1,27 +1,17 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import ClientActions from '../actions/client-actions.js'
 import ServerActions from '../actions/server-actions.js'
 import FilmsStore from '../stores/films-store.js'
-import NewThing from './new-thing.jsx'
+import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
 import JobStore from '../stores/job-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest, fetchEntities } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
-
-const ModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 1000,
-    height: 236
-  }
-};
 
 const FilterModalStyles = {
   overlay: {
@@ -36,7 +26,7 @@ const FilterModalStyles = {
   }
 };
 
-const newRightsModalStyles = {
+const NewRightsModalStyles = {
   overlay: {
     background: 'rgba(0, 0, 0, 0.50)'
   },
@@ -45,7 +35,7 @@ const newRightsModalStyles = {
     padding: 0,
     margin: 'auto',
     maxWidth: 1000,
-    height: 613
+    height: 598
   }
 };
 
@@ -75,18 +65,21 @@ class FilmsIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.filmsListener = FilmsStore.addListener(this.getFilms.bind(this));
-    this.jobListener = JobStore.addListener(this.getJob.bind(this));
-    if (this.props.advanced) {
-      ClientActions.fetchFilmsAdvanced(this.props.filmType);
-    } else {
-      ClientActions.fetchFilms(this.props.filmType);
-    }
-  }
-
-  componentWillUnmount() {
-    this.filmsListener.remove();
-    this.jobListener.remove();
+    this.props.fetchEntities({
+      directory: 'films',
+      data: {
+        filmType: this.props.filmType
+      }
+    }).then(() => {
+      const { films, alternateAudios, alternateSubs, alternateLengths } = this.props;
+      this.setState({
+        fetching: false,
+        films,
+        allAltAudios: alternateAudios,
+        allAltSubs: alternateSubs,
+        allAltLengths: alternateLengths
+      });
+    });
   }
 
   getFilms() {
@@ -143,6 +136,46 @@ class FilmsIndex extends React.Component {
 
   redirect(id) {
     window.location.pathname = "films/" + id;
+  }
+
+  clickExportAll() {
+    this.setState({
+      fetching: true
+    });
+    this.props.sendRequest({
+      url: '/api/films/export',
+      method: 'post',
+      data: {
+        filmType: this.props.filmType,
+        filmIds: this.state.films.map(film => film.id)
+      }
+    }).then(() => {
+      this.setState({
+        job: this.props.job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
+  }
+
+  clickExportCustom(searchCriteria) {
+    this.setState({
+      fetching: true
+    });
+    this.props.sendRequest({
+      url: '/api/films/export',
+      method: 'post',
+      data: {
+        filmType: this.props.filmType,
+        searchCriteria: HandyTools.convertObjectKeysToUnderscore(searchCriteria)
+      }
+    }).then(() => {
+      this.setState({
+        job: this.props.job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
   }
 
   clickExportMetadata(filmType, exportType, searchCriteria) {
@@ -260,16 +293,26 @@ class FilmsIndex extends React.Component {
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
-        <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ModalStyles }>
-          <NewThing thing={ 'film' } initialObject={ { title: "", filmType: this.props.filmType, labelId: 1, year: '' } } />
+        <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="film"
+            initialEntity={ { title: "", filmType: this.props.filmType, labelId: 1, year: "" } }
+            redirectAfterCreate={ true }
+          />
         </Modal>
-        <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ newRightsModalStyles }>
-          <FilmRightsNew search={ true } filmType={ this.props.filmType } availsExport={ this.clickExportMetadata.bind(this) } />
+        <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
+          <FilmRightsNew
+            context={ this.props.context }
+            search={ true }
+            filmType={ this.props.filmType }
+            availsExport={ this.clickExportCustom.bind(this) }
+          />
         </Modal>
         <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.updateFilter.bind(this) } contentLabel="Modal" style={ FilterModalStyles }>
           { this.renderFilter() }
         </Modal>
-        { FM.jobModal.call(this, this.state.job) }
+        { Common.renderJobModal.call(this, this.state.job) }
       </div>
     );
   }
@@ -289,7 +332,7 @@ class FilmsIndex extends React.Component {
     }[this.props.filmType];
     if (FM.user.hasAdminAccess & !this.props.advanced) {
       return(
-        <a className={ "orange-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'newFilmModalOpen', true) }>Add { buttonText }</a>
+        <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'newFilmModalOpen', true) }>Add { buttonText }</a>
       );
     }
   }
@@ -297,7 +340,7 @@ class FilmsIndex extends React.Component {
   renderExportMetadataButton() {
     if (this.props.filmType != 'TV Series') {
       return(
-        <a className={ "orange-button float-button metadata-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ function() { this.clickExportMetadata(this.props.filmType, 'all') }.bind(this) }>Export All</a>
+        <a className={ "btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExportAll.bind(this) }>Export All</a>
       );
     }
   }
@@ -305,7 +348,7 @@ class FilmsIndex extends React.Component {
   renderFilterButton() {
     if (this.props.filmType === 'Feature') {
       return(
-        <a className={ "orange-button float-button metadata-button" + Common.renderInactiveButtonClass(this.state.fetching) + (this.state.filterActive ? ' green' : '') } onClick={ Common.changeState.bind(this, 'filterModalOpen', true) }>Filter</a>
+        <a className={ "btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) + (this.state.filterActive ? ' green' : '') } onClick={ Common.changeState.bind(this, 'filterModalOpen', true) }>Filter</a>
       );
     }
   }
@@ -317,7 +360,7 @@ class FilmsIndex extends React.Component {
   renderCustomButton() {
     if (this.props.filmType != 'TV Series') {
       return(
-        <a className={ "orange-button float-button advanced-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'searchModalOpen', true) }>Export Custom</a>
+        <a className={ "btn orange-button float-button advanced-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'searchModalOpen', true) }>Export Custom</a>
       );
     }
   }
@@ -373,23 +416,16 @@ class FilmsIndex extends React.Component {
   }
 
   componentDidUpdate() {
-    $('.match-height-layout').matchHeight();
-    if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success: function(response) {
-            ServerActions.receiveJob(response);
-          }.bind(this)
-        })
-      }, 1500)
-    }
+    Common.updateJobModal.call(this);
   }
 }
 
-export default FilmsIndex;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest, fetchEntities }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilmsIndex);
