@@ -69,8 +69,7 @@ class ConvertDigitalSales extends React.Component {
                       url: '/api/films',
                       data: {
                         filmType: 'all'
-                      },
-                      responseKey: 'films'
+                      }
                     }).then(() => {
                       this.setState({
                         films: this.props.films,
@@ -100,16 +99,10 @@ class ConvertDigitalSales extends React.Component {
   }
 
   addAlias(e) {
-    let index = e.target.dataset.index;
+    const index = e.target.dataset.index;
     this.setState({
       currentTitle: this.state.errors[index],
       filmsModalOpen: true
-    });
-  }
-
-  closeModal() {
-    this.setState({
-      filmsModalOpen: false
     });
   }
 
@@ -185,7 +178,7 @@ class ConvertDigitalSales extends React.Component {
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
-          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
+          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
             <ModalSelect options={ this.state.films } property="title" func={ this.selectFilm.bind(this) } />
           </Modal>
         </div>
