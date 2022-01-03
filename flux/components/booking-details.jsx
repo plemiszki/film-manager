@@ -1,18 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { deleteEntity } from '../actions/index.js'
+import { sendRequest, fetchEntity, updateEntity, deleteEntity } from '../actions/index.js'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import BookingsStore from '../stores/bookings-store.js'
-import WeeklyTermsStore from '../stores/weekly-terms-store.js'
-import WeeklyBoxOfficesStore from '../stores/weekly-box-offices-store.js'
-import PaymentsStore from '../stores/payments-store.js'
-import CalculationsStore from '../stores/calculations-store.js'
-import InvoicesStore from '../stores/invoices-store.js'
-import ErrorsStore from '../stores/errors-store.js'
-import ModalSelect from './modal-select.jsx'
+import NewEntity from './new-entity.jsx'
 import NewThing from './new-thing.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
@@ -62,6 +54,8 @@ class BookingDetails extends React.Component {
       fetching: true,
       booking: {},
       bookingSaved: {},
+      films: [],
+      venues: [],
       users: [],
       weeklyTerms: [],
       weeklyBoxOffices: [],
@@ -98,111 +92,54 @@ class BookingDetails extends React.Component {
 
   componentDidMount() {
     FM.setUpNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    this.bookingListener = BookingsStore.addListener(this.getBooking.bind(this));
-    this.weeklyTermsListener = WeeklyTermsStore.addListener(this.getWeeklyTerms.bind(this));
-    this.weeklyBoxOfficesListener = WeeklyBoxOfficesStore.addListener(this.getWeeklyBoxOffices.bind(this));
-    this.paymentsListener = PaymentsStore.addListener(this.getPayments.bind(this));
-    this.calculationsListener = CalculationsStore.addListener(this.getCalculations.bind(this));
-    this.invoicesListener = InvoicesStore.addListener(this.getInvoices.bind(this));
-    this.errorsListener = ErrorsStore.addListener(this.getErrors.bind(this));
-    ClientActions.fetchBooking(window.location.pathname.split("/")[2]);
-  }
-
-  componentWillUnmount() {
-    this.bookingListener.remove();
-    this.weeklyTermsListener.remove();
-    this.weeklyBoxOfficesListener.remove();
-    this.paymentsListener.remove();
-    this.calculationsListener.remove();
-    this.invoicesListener.remove();
-    this.errorsListener.remove();
-  }
-
-  getBooking() {
-    this.setState({
-      booking: Tools.deepCopy(BookingsStore.find(window.location.pathname.split("/")[2])),
-      bookingSaved: BookingsStore.find(window.location.pathname.split("/")[2]),
-      users: BookingsStore.users(),
-      invoices: BookingsStore.invoices(),
-      formats: BookingsStore.formats(),
-      weeklyTerms: BookingsStore.weeklyTerms(),
-      weeklyBoxOffices: BookingsStore.weeklyBoxOffice(),
-      payments: BookingsStore.payments(),
-      fetching: false
-    }, () => {
+    this.props.fetchEntity({
+      directory: 'bookings',
+      id: window.location.pathname.split('/')[2]
+    }).then(() => {
+      const { booking, calculations, users, invoices, formats, weeklyTerms, weeklyBoxOffices, payments, films, venues } = this.props;
       this.setState({
-        changesToSave: this.checkForChanges()
+        fetching: false,
+        booking,
+        bookingSaved: HandyTools.deepCopy(booking),
+        calculations,
+        users,
+        invoices,
+        formats,
+        weeklyTerms,
+        weeklyBoxOffices,
+        payments,
+        films,
+        venues
+      }, () => {
+        FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
       });
-    });
-  }
-
-  getWeeklyTerms() {
-    this.setState({
-      weeklyTerms: WeeklyTermsStore.all(),
-      fetching: false,
-      newWeeklyTermsModalOpen: false
-    });
-  }
-
-  getWeeklyBoxOffices() {
-    this.setState({
-      weeklyBoxOffices: WeeklyBoxOfficesStore.all(),
-      fetching: false,
-      newWeeklyBoxOfficeModalOpen: false
-    });
-  }
-
-  getPayments() {
-    this.setState({
-      payments: PaymentsStore.all(),
-      fetching: false,
-      newPaymentModalOpen: false
-    });
-  }
-
-  getCalculations() {
-    this.setState({
-      calculations: CalculationsStore.object()
-    });
-  }
-
-  getInvoices() {
-    this.setState({
-      fetching: false,
-      invoices: InvoicesStore.all(),
-      newInvoiceAdvance: false,
-      newInvoiceOverage: false,
-      newInvoiceShipFee: false
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      errors: ErrorsStore.all(),
-      fetching: false
     });
   }
 
   clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
+    this.setState({
+      fetching: true,
+      justSaved: true
+    }, function() {
+      this.props.updateEntity({
+        id: window.location.pathname.split("/")[2],
+        directory: window.location.pathname.split("/")[1],
+        entityName: 'booking',
+        entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.booking, fields: ['advance', 'shippingFee', 'deduction', 'houseExpense', 'boxOffice'] })
+      }).then(() => {
+        const { booking } = this.props;
+        this.setState({
+          fetching: false,
+          booking,
+          bookingSaved: HandyTools.deepCopy(booking),
+          changesToSave: false
+        });
       }, () => {
-        ClientActions.updateBooking(this.state.booking);
+        this.setState({
+          fetching: false,
+          errors: this.props.errors
+        });
       });
-    }
-  }
-
-  clickDelete() {
-    this.setState({
-      deleteModalOpen: true
-    });
-  }
-
-  clickCopy() {
-    this.setState({
-      copyModalOpen: true
     });
   }
 
@@ -210,8 +147,10 @@ class BookingDetails extends React.Component {
     this.setState({
       fetching: true,
       deleteModalOpen: false
-    }, () => {
-      ClientActions.deleteAndGoToIndex('bookings', this.state.booking.id);
+    });
+    this.props.deleteEntity({
+      directory: 'bookings',
+      id: this.state.booking.id
     });
   }
 
@@ -235,61 +174,20 @@ class BookingDetails extends React.Component {
     });
   }
 
-  clickSelectFilmButton() {
-    this.setState({
-      filmsModalOpen: true
-    });
-  }
-
-  clickSelectFilm(option, event) {
-    var booking = this.state.booking;
-    booking.filmId = +event.target.dataset.id;
-    this.setState({
-      booking: booking,
-      filmsModalOpen: false,
-    }, () => {
-      this.setState({
-        changesToSave: this.checkForChanges()
-      })
-    });
-  }
-
-  clickSelectVenueButton() {
-    this.setState({
-      venuesModalOpen: true
-    });
-  }
-
-  clickSelectVenue(option, event) {
-    var booking = this.state.booking;
-    booking.venueId = +event.target.dataset.id;
-    this.setState({
-      booking: booking,
-      venuesModalOpen: false
-    }, () => {
-      this.setState({
-        changesToSave: this.checkForChanges()
-      })
-    });
-  }
-
-  clickAddWeek() {
-    this.setState({
-      newWeeklyTermsModalOpen: true
-    });
-  }
-
   clickDeleteWeek(e) {
     this.setState({
       fetching: true
     });
-    var id = e.target.dataset.id;
-    ClientActions.deleteWeeklyTerm(id);
-  }
-
-  clickAddWeeklyBoxOffice() {
-    this.setState({
-      newWeeklyBoxOfficeModalOpen: true
+    this.props.deleteEntity({
+      directory: 'weekly_terms',
+      id: e.target.dataset.id,
+      callback: (response) => {
+        const { weeklyTerms } = response;
+        this.setState({
+          fetching: false,
+          weeklyTerms
+        });
+      }
     });
   }
 
@@ -297,13 +195,17 @@ class BookingDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    var id = e.target.dataset.id;
-    ClientActions.deleteWeeklyBoxOffice(id);
-  }
-
-  clickAddPayment() {
-    this.setState({
-      newPaymentModalOpen: true
+    this.props.deleteEntity({
+      directory: 'weekly_box_offices',
+      id: e.target.dataset.id,
+      callback: (response) => {
+        const { weeklyBoxOffices, calculations } = response;
+        this.setState({
+          fetching: false,
+          weeklyBoxOffices,
+          calculations
+        });
+      }
     });
   }
 
@@ -311,29 +213,42 @@ class BookingDetails extends React.Component {
     this.setState({
       fetching: false
     });
-    var id = e.target.dataset.id;
-    ClientActions.deletePayment(id);
-  }
-
-  clickAddInvoice() {
-    this.setState({
-      newInvoiceModalOpen: true
+    this.props.deleteEntity({
+      directory: 'payments',
+      id: e.target.dataset.id,
+      callback: (response) => {
+        const { payments, calculations } = response;
+        this.setState({
+          fetching: false,
+          payments,
+          calculations
+        });
+      }
     });
   }
 
   clickSendConfirmation() {
-    if (this.state.changesToSave === false) {
+    const { booking } = this.state;
+    this.setState({
+      fetching: true
+    });
+    this.props.sendRequest({
+      url: `/api/bookings/${booking.id}/confirm`,
+      method: 'post'
+    }).then(() => {
+      const { booking } = this.props;
       this.setState({
-        fetching: true
+        fetching: false,
+        booking
       });
-      ClientActions.sendConfirmation(this.state.booking);
-    }
+    });
   }
 
   clickSendInvoice() {
+    const { booking, newInvoiceAdvance, newInvoiceOverage, newInvoiceShipFee } = this.state;
+    const paymentIds = this.getInvoicePaymentIds();
     if (this.state.newInvoiceAdvance || this.state.newInvoiceOverage || this.state.newInvoiceShipFee) {
       if (this.state.resendInvoiceId) {
-        ClientActions.resendInvoice(this.state.resendInvoiceId, this.state.booking.id, this.state.newInvoiceAdvance, this.state.newInvoiceOverage, this.state.newInvoiceShipFee, this.state.invoicePayments);
         this.setState({
           newInvoiceModalOpen: false,
           fetching: true,
@@ -342,14 +257,58 @@ class BookingDetails extends React.Component {
           oldInvoiceOverage: null,
           oldInvoiceShipFee: null
         });
+        this.props.sendRequest({
+          url: `/api/invoices/${this.state.resendInvoiceId}`,
+          method: 'patch',
+          data: {
+            bookingId: booking.id,
+            advance: newInvoiceAdvance,
+            overage: newInvoiceOverage,
+            shipFee: newInvoiceShipFee,
+            paymentIds
+          }
+        }).then(() => {
+          const { invoices } = this.props;
+          this.setState({
+            fetching: false,
+            invoices
+          });
+        });
       } else {
         this.setState({
           newInvoiceModalOpen: false,
           fetching: true
         });
-        ClientActions.sendInvoice(this.state.booking.id, this.state.newInvoiceAdvance, this.state.newInvoiceOverage, this.state.newInvoiceShipFee, this.state.invoicePayments);
+        this.props.sendRequest({
+          url: '/api/invoices',
+          method: 'post',
+          data: {
+            bookingId: booking.id,
+            advance: newInvoiceAdvance,
+            overage: newInvoiceOverage,
+            shipFee: newInvoiceShipFee
+          }
+        }).then(() => {
+          const { invoices } = this.props;
+          this.setState({
+            fetching: false,
+            invoices
+          });
+        });
       }
     }
+  }
+
+  getInvoicePaymentIds() {
+    const { invoicePayments } = this.state;
+    const paymentIds = Object.keys(invoicePayments);
+    let result = [];
+    for (let i = 0; i < paymentIds.length; i++) {
+      if (invoicePayments[paymentIds[i]]) {
+        result.push(paymentIds[i]);
+      }
+    }
+    return result;
   }
 
   newInvoiceAdvanceEnabled() {
@@ -452,12 +411,13 @@ class BookingDetails extends React.Component {
   }
 
   clickInvoice(id, e) {
+    const { invoices } = this.state;
     if (e.target.tagName === 'IMG') {
-      var invoice = InvoicesStore.find(id) || BookingsStore.findInvoice(id);
-      var rows = invoice.rows;
-      var oldAdvance;
-      var oldOverage;
-      var oldShipFee;
+      const invoice = invoices.find(invoice => invoice.id === id);
+      const rows = invoice.rows;
+      let oldAdvance;
+      let oldOverage;
+      let oldShipFee;
       rows.forEach(function(row) {
         if (row.label === 'Advance') {
           oldAdvance = row.amount;
@@ -467,8 +427,8 @@ class BookingDetails extends React.Component {
           oldShipFee = row.amount;
         }
       });
-      var payments = invoice.payments;
-      var paymentsObj = {};
+      const payments = invoice.payments;
+      let paymentsObj = {};
       payments.forEach((payment) => {
         paymentsObj[payment.id] = true;
       });
@@ -505,102 +465,56 @@ class BookingDetails extends React.Component {
           <h1>Booking Details</h1>
           <div className="white-box">
             <div className="row">
-              <div>
-                <div className="col-xs-5">
-                  <h2>Film</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly={ true } />
-                  <a className="jump-link" href={ `/films/${this.state.booking.filmId}` }>Jump to Film Details</a>
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
-                <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectFilmButton.bind(this) }></div>
-              </div>
-              <div>
-                <div className="col-xs-5">
-                  <h2>Venue</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findVenue(this.state.booking.venueId) ? BookingsStore.findVenue(this.state.booking.venueId).label : "" } data-field="venueId" readOnly={ true } />
-                  <a className="jump-link" href={ `/venues/${this.state.booking.venueId}` }>Jump to Venue Details</a>
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
-                <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectVenueButton.bind(this) }></div>
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label' }) }
             </div>
             <div className="row">
-              <div className="col-xs-2">
-                <h2>Start Date</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.startDate || "" } data-field="startDate" />
-                { Details.renderFieldError(this.state.errors, FM.errors.startDate) }
-              </div>
-              <div className="col-xs-2">
-                <h2>End Date</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.endDate || "" } data-field="endDate" />
-                { Details.renderFieldError(this.state.errors, FM.errors.endDate) }
-              </div>
-              <div className="col-xs-3">
-                <h2>Type</h2>
-                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="bookingType" value={ this.state.booking.bookingType }>
-                  <option value={ "Theatrical" }>Theatrical</option>
-                  <option value={ "Non-Theatrical" }>Non-Theatrical</option>
-                  <option value={ "Festival" }>Festival</option>
-                  <option value={ "Press/WOM" }>Press/WOM</option>
-                </select>
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-3">
-                <h2>Status</h2>
-                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="status" value={ this.state.booking.status }>
-                  <option value={ "Tentative" }>Tentative</option>
-                  <option value={ "Confirmed" }>Confirmed</option>
-                  <option value={ "Cancelled" }>Cancelled</option>
-                </select>
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Screenings</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.screenings || "" } data-field="screenings" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'startDate' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'endDate' }) }
+              { Details.renderDropDown.bind(this)({
+                columnWidth: 3,
+                entity: 'booking',
+                property: 'bookingType',
+                columnHeader: 'Type',
+                options: [
+                  { name: 'Theatrical', value: 'Theatrical' },
+                  { name: 'Non-Theatrical', value: 'Non-Theatrical' },
+                  { name: 'Festival', value: 'Festival' },
+                  { name: 'Press/WOM', value: 'Press/WOM' }
+                ],
+                optionDisplayProperty: 'name'
+              }) }
+              { Details.renderDropDown.bind(this)({
+                columnWidth: 3,
+                entity: 'booking',
+                property: 'status',
+                options: [
+                  { name: 'Tentative', value: 'Tentative' },
+                  { name: 'Confirmed', value: 'Confirmed' },
+                  { name: 'Cancelled', value: 'Cancelled' }
+                ],
+                optionDisplayProperty: 'name'
+              }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'screenings' }) }
             </div>
             <hr />
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Email</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.email || "" } data-field="email" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'email' }) }
               { this.renderBookedByField() }
-              <div className="col-xs-2">
-                <h2>Format</h2>
-                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="formatId" value={ this.state.booking.formatId }>
-                  { this.state.formats.map((format) => {
-                    return(
-                      <option key={ format.id } value={ format.id }>{ format.name }</option>
-                    );
-                  }) }
-                </select>
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderDropDown.bind(this)({
+                columnWidth: 2,
+                entity: 'booking',
+                property: 'formatId',
+                columnHeader: 'Format',
+                options: this.state.formats,
+                optionDisplayProperty: 'name'
+              }) }
             </div>
             <div className="row">
-              <div className="col-xs-4">
-                <h2>Premiere</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.premiere || "" } data-field="premiere" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Advance</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.advance) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.advance || "" } data-field="advance" />
-                { Details.renderFieldError(this.state.errors, FM.errors.advance) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Shipping Fee</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.shippingFee) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.shippingFee || "" } data-field="shippingFee" />
-                { Details.renderFieldError(this.state.errors, FM.errors.shippingFee) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Deduction</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.deduction) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.deduction || "" } data-field="deduction" />
-                { Details.renderFieldError(this.state.errors, FM.errors.deduction) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'premiere' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'advance' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'shippingFee' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'deduction' }) }
               { this.renderHouseExpense() }
             </div>
             <hr />
@@ -611,84 +525,28 @@ class BookingDetails extends React.Component {
             <hr />
             <h3>Billing Address</h3>
             <div className="row">
-              <div className="col-xs-4">
-                <h2>Name</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingName || ""} data-field="billingName" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-4">
-                <h2>Address 1</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingAddress1 || ""} data-field="billingAddress1" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-4">
-                <h2>Address 2</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingAddress2 || ""} data-field="billingAddress2" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'billingName', columnHeader: 'Name' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'billingAddress1', columnHeader: 'Address 1' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'billingAddress2', columnHeader: 'Address 2' }) }
             </div>
             <div className="row">
-              <div className="col-xs-3">
-                <h2>City</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingCity || ""} data-field="billingCity" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-1">
-                <h2>State</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingState || ""} data-field="billingState" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-2">
-                <h2>Zip</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.billingZip || ""} data-field="billingZip" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Country</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.billingCountry || "" } data-field="billingCountry" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'billingCity', columnHeader: 'City' }) }
+              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'booking', property: 'billingState', columnHeader: 'State' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'billingZip', columnHeader: 'Zip' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'billingCountry', columnHeader: 'Country' }) }
             </div>
             <hr />
             <h3>Shipping Address</h3>
             <div className="row">
-              <div className="col-xs-4">
-                <h2>Name</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingName || ""} data-field="shippingName" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-4">
-                <h2>Address 1</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingAddress1 || ""} data-field="shippingAddress1" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-4">
-                <h2>Address 2</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingAddress2 || ""} data-field="shippingAddress2" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'shippingName', columnHeader: 'Name' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'shippingAddress1', columnHeader: 'Address 1' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'shippingAddress2', columnHeader: 'Address 2' }) }
             </div>
             <div className="row">
-              <div className="col-xs-3">
-                <h2>City</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingCity || ""} data-field="shippingCity" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-1">
-                <h2>State</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingState || ""} data-field="shippingState" />
-                {Details.renderFieldError(this.state.errors, [])}
-              </div>
-              <div className="col-xs-2">
-                <h2>Zip</h2>
-                <input className={Details.errorClass(this.state.errors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.booking.shippingZip || ""} data-field="shippingZip" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Country</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.shippingCountry || "" } data-field="shippingCountry" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'shippingCity', columnHeader: 'City' }) }
+              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'booking', property: 'shippingState', columnHeader: 'State' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'shippingZip', columnHeader: 'Zip' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'shippingCountry', columnHeader: 'Country' }) }
             </div>
             <hr />
             <h3>Notes</h3>
@@ -701,23 +559,11 @@ class BookingDetails extends React.Component {
             <hr />
             { this.renderConfirmationSection() }
             <h3>Screening Materials</h3>
-              <div className="row">
-                <div className="col-xs-3">
-                  <h2>Materials Sent</h2>
-                  <input className={ Details.errorClass(this.state.errors, FM.errors.materialsSent) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.materialsSent || "" } data-field="materialsSent" />
-                  { Details.renderFieldError(this.state.errors, FM.errors.materialsSent) }
-                </div>
-                <div className="col-xs-3">
-                  <h2>Tracking Number</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.trackingNumber || "" } data-field="trackingNumber" />
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
-                <div className="col-xs-6">
-                  <h2>Shipping Notes</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.shippingNotes || "" } data-field="shippingNotes" />
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
-              </div>
+            <div className="row">
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'materialsSent' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'trackingNumber' }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'shippingNotes' }) }
+            </div>
             <hr />
             <h3>Box Office</h3>
             <div className="row">
@@ -765,7 +611,7 @@ class BookingDetails extends React.Component {
                     }) }
                   </tbody>
                 </table>
-                <a className='blue-outline-button small' onClick={ this.clickAddInvoice.bind(this) }>Add Invoice</a>
+                <a className='blue-outline-button small' onClick={ Common.changeState.bind(this, 'newInvoiceModalOpen', true) }>Add Invoice</a>
               </div>
             </div>
             <hr />
@@ -779,7 +625,7 @@ class BookingDetails extends React.Component {
                     );
                   }) }
                 </ul>
-                <a className={ 'blue-outline-button small' } onClick={ this.clickAddPayment.bind(this) }>Add Payment</a>
+                <a className={ 'blue-outline-button small' } onClick={ Common.changeState.bind(this, 'newPaymentModalOpen', true) }>Add Payment</a>
               </div>
               <div className="col-xs-6">
                 <h3>Calculations</h3>
@@ -798,29 +644,89 @@ class BookingDetails extends React.Component {
         <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete entityName="invoice" confirmDelete={ this.confirmDeleteInvoice.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
-          <NewThing thing="booking" copyFrom={ this.state.booking.id } initialObject={ { copyFrom: this.state.booking.id } } />
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+          <NewThing
+            context={ this.props.context }
+            thing="booking"
+            copyFrom={ this.state.booking.id }
+            initialObject={ { copyFrom: this.state.booking.id, filmId: this.state.booking.filmId } }
+            films={ this.state.films }
+          />
         </Modal>
-        <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
+        <Modal isOpen={ this.state.newWeeklyTermsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="weeklyTerm"
+            initialEntity={ { bookingId: this.state.booking.id } }
+            callback={ response => this.setState({ weeklyTerms: response, newWeeklyTermsModalOpen: false }) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ BookingsStore.venues() } property={ "label" } func={ this.clickSelectVenue.bind(this) } />
+        <Modal isOpen={ this.state.newWeeklyBoxOfficeModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="weeklyBoxOffice"
+            initialEntity={ { bookingId: this.state.booking.id } }
+            callbackFullProps={ response => this.setState({ weeklyBoxOffices: response.weeklyBoxOffices, calculations: response.calculations, newWeeklyBoxOfficeModalOpen: false }) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.newWeeklyTermsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
-          <NewThing thing="weeklyTerm" initialObject={ { bookingId: this.state.booking.id } } />
-        </Modal>
-        <Modal isOpen={ this.state.newWeeklyBoxOfficeModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
-          <NewThing thing="weeklyBoxOffice" initialObject={ { bookingId: this.state.booking.id } } />
-        </Modal>
-        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ WeeklyTermStyles }>
-          <NewThing thing="payment" initialObject={ { bookingId: this.state.booking.id, date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } } />
+        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="payment"
+            initialEntity={ { bookingId: this.state.booking.id, date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } }
+            callbackFullProps={ response => this.setState({ payments: response.payments, calculations: response.calculations, newPaymentModalOpen: false }) }
+          />
         </Modal>
         <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewInvoiceStyles }>
           <div className="new-invoice-modal">
-            <div><input id="advance-checkbox" className="checkbox" type="checkbox" onChange={ this.changeAdvanceCheckbox.bind(this) } checked={ this.state.newInvoiceAdvance } disabled={ !this.newInvoiceAdvanceEnabled() } /><label className={ "checkbox" + (this.newInvoiceAdvanceEnabled() ? "" : " disabled") } htmlFor="advance-checkbox">Advance - { (this.state.resendInvoiceId && this.state.oldInvoiceAdvance) ? (this.state.oldInvoiceAdvance + ' →') : '' } { this.state.bookingSaved.advance }</label></div>
-            <div><input id="overage-checkbox" className="checkbox" type="checkbox" onChange={ this.changeOverageCheckbox.bind(this) } checked={ this.state.newInvoiceOverage } disabled={ !this.newInvoiceOverageEnabled() } /><label className={ "checkbox" + (this.newInvoiceOverageEnabled() ? "" : " disabled") } htmlFor="overage-checkbox">Overage - { (this.state.resendInvoiceId && this.state.oldInvoiceOverage) ? (this.state.oldInvoiceOverage + ' →') : '' } { this.state.calculations.overage }</label></div>
-            <div><input id="shipfee-checkbox" className="checkbox" type="checkbox" onChange={ this.changeShipFeeCheckbox.bind(this) } checked={ this.state.newInvoiceShipFee } disabled={ !this.newInvoiceShipFeeEnabled() } /><label className={ "checkbox" + (this.newInvoiceShipFeeEnabled() ? "" : " disabled") } htmlFor="shipfee-checkbox">Shipping Fee - { (this.state.resendInvoiceId && this.state.oldInvoiceShipFee) ? (this.state.oldInvoiceShipFee + ' →') : '' } { this.state.bookingSaved.shippingFee }</label></div>
+            <div>
+              <input
+                id="advance-checkbox"
+                className="checkbox"
+                type="checkbox"
+                onChange={ this.changeAdvanceCheckbox.bind(this) }
+                checked={ this.state.newInvoiceAdvance }
+                disabled={ !this.newInvoiceAdvanceEnabled() }
+              />
+              <label
+                className={ "checkbox" + (this.newInvoiceAdvanceEnabled() ? "" : " disabled") }
+                htmlFor="advance-checkbox"
+              >
+                Advance - { (this.state.resendInvoiceId && this.state.oldInvoiceAdvance) ? (this.state.oldInvoiceAdvance + ' →') : '' } { this.state.bookingSaved.advance }
+              </label>
+            </div>
+            <div>
+              <input
+                id="overage-checkbox"
+                className="checkbox"
+                type="checkbox"
+                onChange={ this.changeOverageCheckbox.bind(this) }
+                checked={ this.state.newInvoiceOverage }
+                disabled={ !this.newInvoiceOverageEnabled() }
+              />
+              <label
+                className={ "checkbox" + (this.newInvoiceOverageEnabled() ? "" : " disabled") }
+                htmlFor="overage-checkbox"
+              >
+                Overage - { (this.state.resendInvoiceId && this.state.oldInvoiceOverage) ? (this.state.oldInvoiceOverage + ' →') : '' } { this.state.calculations.overage }
+              </label>
+            </div>
+            <div>
+              <input
+                id="shipfee-checkbox"
+                className="checkbox"
+                type="checkbox"
+                onChange={ this.changeShipFeeCheckbox.bind(this) }
+                checked={ this.state.newInvoiceShipFee }
+                disabled={ !this.newInvoiceShipFeeEnabled() }
+              />
+              <label
+                className={ "checkbox" + (this.newInvoiceShipFeeEnabled() ? "" : " disabled") }
+                htmlFor="shipfee-checkbox"
+              >
+                Shipping Fee - { (this.state.resendInvoiceId && this.state.oldInvoiceShipFee) ? (this.state.oldInvoiceShipFee + ' →') : '' } { this.state.bookingSaved.shippingFee }
+              </label>
+            </div>
             { this.state.payments.map((payment, index) => {
               return(
                 <div key={ index }><input id={ `payment-${payment.id}` } className="checkbox" type="checkbox" onChange={ this.changePaymentCheckbox.bind(this) } checked={ this.state.invoicePayments[payment.id] || false } data-id={ payment.id } /><label className="checkbox" htmlFor={ `payment-${payment.id}` }>Payment ({ payment.date }) - ({ payment.amount })</label></div>
@@ -841,18 +747,10 @@ class BookingDetails extends React.Component {
     if (this.state.bookingSaved.termsValid) {
       return(
         <div>
-          <h2>Total Gross</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.totalGross } readOnly={ true } data-field="totalGross" />
-          { Details.renderFieldError(this.state.errors, []) }
-          <h2>Our Share</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.ourShare } readOnly={ true } data-field="ourShare" />
-          { Details.renderFieldError(this.state.errors, []) }
-          <h2>Received</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.received } readOnly={ true } data-field="received" />
-          { Details.renderFieldError(this.state.errors, []) }
-          <h2>Owed</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.calculations.owed } readOnly={ true } data-field="owed" />
-          { Details.renderFieldError(this.state.errors, []) }
+          { Details.renderField.bind(this)({ entity: 'calculations', property: 'totalGross', readOnly: true }) }
+          { Details.renderField.bind(this)({ entity: 'calculations', property: 'ourShare', readOnly: true }) }
+          { Details.renderField.bind(this)({ entity: 'calculations', property: 'received', readOnly: true }) }
+          { Details.renderField.bind(this)({ entity: 'calculations', property: 'owed', readOnly: true }) }
         </div>
       );
     } else {
@@ -874,7 +772,7 @@ class BookingDetails extends React.Component {
               );
             }) }
           </ul>
-          <a className="blue-outline-button small" onClick={ this.clickAddWeek.bind(this) }>Add Week</a>
+          <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newWeeklyTermsModalOpen', true) }>Add Week</a>
         </div>
       );
     } else {
@@ -891,11 +789,9 @@ class BookingDetails extends React.Component {
   renderHouseExpense() {
     if (!this.state.booking.termsChange && this.state.booking.terms === "90/10") {
       return(
-        <div className="col-xs-2">
-          <h2>House Expense</h2>
-          <input className={ Details.errorClass(this.state.errors, FM.errors.houseExpense) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.houseExpense || "" } data-field="houseExpense" />
-          { Details.renderFieldError(this.state.errors, FM.errors.houseExpense) }
-        </div>
+        <>
+          { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'houseExpense' }) }
+        </>
       );
     }
   }
@@ -906,11 +802,7 @@ class BookingDetails extends React.Component {
         <div>
           <h3>Booking Confirmation</h3>
           <div className="row">
-            <div className="col-xs-3">
-              <h2>Booking Confirmation Sent</h2>
-              <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.bookingConfirmationSent || "" } data-field="bookingConfirmationSent" readOnly={ true } />
-              { Details.renderFieldError(this.state.errors, []) }
-            </div>
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'bookingConfirmationSent', readOnly: true }) }
           </div>
           <hr />
         </div>
@@ -922,7 +814,7 @@ class BookingDetails extends React.Component {
             <h3>Booking Confirmation</h3>
             <div className="row">
               <div className="col-xs-12">
-                <a className={ "orange-button confirmation-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSendConfirmation.bind(this) }>
+                <a className={ "btn orange-button confirmation-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSendConfirmation.bind(this) }>
                   { this.state.changesToSave ? "Save to Send" : "Send Booking Confirmation" }
                 </a>
               </div>
@@ -937,25 +829,22 @@ class BookingDetails extends React.Component {
   renderBookedByField() {
     if (JSON.stringify(this.state.booking) == "{}" || this.state.booking.pastBooker) {
       return(
-        <div className="col-xs-3">
-          <h2>Booked By</h2>
-          <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.pastBooker || "" } data-field="pastBooker" readOnly={ true } />
-          { Details.renderFieldError(this.state.errors, []) }
-        </div>
+        <>
+          { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'pastBooker', columnHeader: 'Booked By', readOnly: true }) }
+        </>
       );
     } else {
       return(
-        <div className="col-xs-3">
-          <h2>Booked By</h2>
-          <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="bookerId" value={ this.state.booking.bookerId }>
-            { BookingsStore.bookers().map(function(user) {
-              return(
-                <option key={ user.id } value={ user.id }>{ user.name }</option>
-              );
-            }) }
-          </select>
-          { Details.renderFieldError(this.state.errors, []) }
-        </div>
+        <>
+          { Details.renderDropDown.bind(this)({
+            columnWidth: 3,
+            entity: 'booking',
+            property: 'bookerId',
+            columnHeader: 'Booked By',
+            options: this.state.users,
+            optionDisplayProperty: 'name'
+          }) }
+        </>
       );
     }
   }
@@ -972,16 +861,14 @@ class BookingDetails extends React.Component {
               );
             }) }
           </ul>
-          <a className="blue-outline-button small" onClick={ this.clickAddWeeklyBoxOffice.bind(this) }>Add Weekly Box Office</a>
+          <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newWeeklyBoxOfficeModalOpen', true) }>Add Weekly Box Office</a>
         </div>
       );
     } else {
       return(
-        <div className="col-xs-3">
-          <h2>Box Office</h2>
-          <input className={ Details.errorClass(this.state.errors, FM.errors.boxOffice) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.boxOffice || "" } data-field="boxOffice" />
-          { Details.renderFieldError(this.state.errors, FM.errors.boxOffice) }
-        </div>
+        <>
+          { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'boxOffice' }) }
+        </>
       );
     }
   }
@@ -990,55 +877,29 @@ class BookingDetails extends React.Component {
     if (this.state.booking.importedAdvanceInvoiceSent || this.state.booking.importedAdvanceInvoiceNumber || this.state.booking.importedOverageInvoiceSent || this.state.booking.importedOverageInvoiceNumber) {
       return(
         <div className="row">
-          <div className="col-xs-3">
-            <h2>Advance Invoice Sent</h2>
-            <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedAdvanceInvoiceSent || "" } data-field="importedAdvanceInvoiceSent" readOnly={ true } />
-            { Details.renderFieldError(this.state.errors, []) }
-          </div>
-          <div className="col-xs-3">
-            <h2>Advance Invoice Number</h2>
-            <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedAdvanceInvoiceNumber || "" } data-field="importedAdvanceInvoiceNumber" readOnly={ true } />
-            { Details.renderFieldError(this.state.errors, []) }
-          </div>
-          <div className="col-xs-3">
-            <h2>Overage Invoice Sent</h2>
-            <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedOverageInvoiceSent || "" } data-field="importedOverageInvoiceSent" readOnly={ true } />
-            { Details.renderFieldError(this.state.errors, []) }
-          </div>
-          <div className="col-xs-3">
-            <h2>Overage Invoice Number</h2>
-            <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.importedOverageInvoiceNumber || "" } data-field="importedOverageInvoiceNumber" readOnly={ true } />
-            { Details.renderFieldError(this.state.errors, []) }
-          </div>
+          { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'importedAdvanceInvoiceSent', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'importedAdvanceInvoiceNumber', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'importedOverageInvoiceSent', readOnly: true }) }
+          { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'importedOverageInvoiceNumber', readOnly: true }) }
         </div>
       );
     }
   }
 
   renderButtons() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
-    }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
-          { buttonText }
+        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+          { Details.saveButtonText.call(this) }
         </a>
-        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete Booking
+        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
+          Delete
         </a>
-        <a className={ "float-button orange-button copy-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
+        <a className={ "btn float-button orange-button copy-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'copyModalOpen', true) }>
           Copy Booking
         </a>
       </div>
     );
-  }
-
-  componentDidUpdate() {
-    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
-    $('.match-height-layout').matchHeight();
   }
 }
 
@@ -1047,7 +908,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ deleteEntity }, dispatch);
+  return bindActionCreators({ sendRequest, fetchEntity, updateEntity, deleteEntity }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookingDetails);

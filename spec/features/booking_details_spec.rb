@@ -155,7 +155,7 @@ describe 'booking_details', type: :feature do
     find('.blue-outline-button', text: /\AAdd Week\z/).click
     fill_out_and_submit_modal({
       terms: '20%'
-    }, :orange_button)
+    }, :input)
     wait_for_ajax
     within('.weekly-terms') do
       expect(page).to have_content('20%')
@@ -166,7 +166,7 @@ describe 'booking_details', type: :feature do
     @booking.update(terms_change: true)
     visit booking_path(@booking, as: $admin_user)
     find('.blue-outline-button', text: /\AAdd Week\z/).click
-    fill_out_and_submit_modal({}, :orange_button)
+    fill_out_and_submit_modal({}, :input)
     wait_for_ajax
     within('.admin-modal') do
       expect(page).to have_content("Terms can't be blank")
@@ -205,7 +205,7 @@ describe 'booking_details', type: :feature do
     find('.blue-outline-button', text: 'Add Weekly Box Office').click
     fill_out_and_submit_modal({
       amount: '500'
-    }, :orange_button)
+    }, :input)
     wait_for_ajax
     within('.weekly-box-offices') do
       expect(page).to have_content('Week 1 - $500.00')
@@ -216,12 +216,12 @@ describe 'booking_details', type: :feature do
     @booking.update(terms_change: true)
     visit booking_path(@booking, as: $admin_user)
     find('.blue-outline-button', text: 'Add Weekly Box Office').click
-    fill_out_and_submit_modal({}, :orange_button)
+    fill_out_and_submit_modal({}, :input)
     wait_for_ajax
     within('.admin-modal') do
       expect(page).to have_content("Amount can't be blank")
     end
-    fill_out_and_submit_modal({ amount: 'asdf' }, :orange_button)
+    fill_out_and_submit_modal({ amount: 'asdf' }, :input)
     wait_for_ajax
     within('.admin-modal') do
       expect(page).to have_content("Amount is not a number")
@@ -317,7 +317,7 @@ describe 'booking_details', type: :feature do
       amount: 20,
       notes: 'note about payment'
     }
-    fill_out_and_submit_modal(info, :orange_button)
+    fill_out_and_submit_modal(info, :input)
     wait_for_ajax
     verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
     within('.payments-list') do
@@ -328,7 +328,7 @@ describe 'booking_details', type: :feature do
   it 'validates payments' do
     visit booking_path(@booking, as: $admin_user)
     find('.blue-outline-button', text: 'Add Payment').click
-    fill_out_and_submit_modal({}, :orange_button)
+    fill_out_and_submit_modal({}, :input)
     wait_for_ajax
     within('.admin-modal') do
       expect(page).to have_content('Amount is not a number')
@@ -424,7 +424,7 @@ describe 'booking_details', type: :feature do
 
   it 'deletes bookings' do
     visit booking_path(@booking, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Booking')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

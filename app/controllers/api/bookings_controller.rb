@@ -44,8 +44,8 @@ class Api::BookingsController < AdminController
   end
 
   def show
-    @bookings = Booking.where(id: params[:id]).includes(:invoices)
-    @invoices = @bookings.first.invoices.includes(:invoice_rows)
+    @booking = Booking.find(params[:id])
+    @invoices = @booking.invoices.includes(:invoice_rows)
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
     @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])
     @payments = Payment.where(booking_id: params[:id])
@@ -53,7 +53,7 @@ class Api::BookingsController < AdminController
     @venues = Venue.all
     @users = User.all
     @formats = Format.all
-    @calculations = booking_calculations(@bookings.first)
+    @calculations = booking_calculations(@booking)
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
@@ -137,13 +137,12 @@ class Api::BookingsController < AdminController
   def update
     @booking = Booking.find(params[:id])
     if @booking.update(booking_params)
-      @bookings = Booking.where(id: params[:id]).includes(:invoices)
-      @invoices = @bookings.first.invoices
+      @invoices = @booking.invoices
       @films = Film.all
       @venues = Venue.all
       @users = User.all
       @formats = Format.all
-      @calculations = booking_calculations(@bookings.first)
+      @calculations = booking_calculations(@booking)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render json: @booking.errors.full_messages, status: 422
@@ -151,27 +150,27 @@ class Api::BookingsController < AdminController
   end
 
   def destroy
-    @bookings = Booking.find(params[:id])
-    if @bookings.destroy
-      render json: @bookings, status: 200
+    @booking = Booking.find(params[:id])
+    if @booking.destroy
+      render json: @booking, status: 200
     else
-      render json: @bookings.errors.full_messages, status: 422
+      render json: @booking.errors.full_messages, status: 422
     end
   end
 
   def send_confirmation
-    @bookings = Booking.where(id: params[:id]).includes(:film)
-    email_text = get_email_text(@bookings.first)
+    @booking = Booking.find(params[:id])
+    email_text = get_email_text(@booking)
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
     message_params =  { from: current_user.email,
-                        to: @bookings.first.email,
+                        to: @booking.email,
                         cc: current_user.email,
                         subject: "Your Film Movement Booking Confirmation",
                         text: email_text
                       }
     mg_client.send_message 'filmmovement.com', message_params if Rails.env.production?
-    @bookings.first.update(booking_confirmation_sent: Date.today)
-    @calculations = booking_calculations(@bookings.first)
+    @booking.update(booking_confirmation_sent: Date.today)
+    @calculations = booking_calculations(@booking)
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 

@@ -4,8 +4,8 @@ class Api::WeeklyTermsController < AdminController
   include BookingCalculations
 
   def create
-    current_length = WeeklyTerm.where(booking_id: weekly_terms_params[:booking_id]).length
-    @weekly_term = WeeklyTerm.new(booking_id: weekly_terms_params[:booking_id], order: current_length, terms: weekly_terms_params[:terms])
+    current_length = WeeklyTerm.where(booking_id: weekly_term_params[:booking_id]).length
+    @weekly_term = WeeklyTerm.new(booking_id: weekly_term_params[:booking_id], order: current_length, terms: weekly_term_params[:terms])
     if @weekly_term.save
       @weekly_terms = WeeklyTerm.where(booking_id: @weekly_term.booking_id)
       @calculations = booking_calculations(Booking.find(@weekly_term.booking_id))
@@ -26,8 +26,8 @@ class Api::WeeklyTermsController < AdminController
 
   private
 
-  def weekly_terms_params
-    params[:weekly_terms].permit(:booking_id, :order, :terms)
+  def weekly_term_params
+    params[:weekly_term].permit(:booking_id, :order, :terms)
   end
 
 end

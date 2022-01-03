@@ -222,7 +222,7 @@ class VirtualBookingDetails extends React.Component {
   }
 
   render() {
-    return (
+    return(
       <div id="virtual-booking-details" className="component details-component">
         <h1>Virtual Booking Details</h1>
         <div className="white-box">

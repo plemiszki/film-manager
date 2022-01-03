@@ -393,6 +393,18 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'virtualBooking', property: 'url', placeholder: 'https://...' }) }
           </div>
         ]);
+      case 'weeklyBoxOffice':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'weeklyBoxOffice', property: 'amount' }) }
+          </div>
+        ]);
+      case 'weeklyTerm':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'weeklyTerm', property: 'terms' }) }
+          </div>,
+        ]);
     }
   }
 }

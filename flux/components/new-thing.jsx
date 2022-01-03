@@ -363,19 +363,21 @@ class NewThing extends React.Component {
   }
 
   renderCopyBookingFields() {
-    if (this.props.thing === "booking" && this.props.copyFrom) {
+    const { films, initialObject, copyFrom, thing } = this.props;
+    if (thing === "booking" && copyFrom) {
+      const film = films.find(film => film.id === initialObject.filmId);
       return(
         <div>
           <div className="row">
             <div className="col-xs-11">
               <h2>Film</h2>
-              <input className={ Details.errorClass(this.state.errors, FM.errors.film) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ BookingsStore.findFilm(this.state.booking.filmId) ? BookingsStore.findFilm(this.state.booking.filmId).title : "" } data-field="filmId" readOnly={ true } />
+              <input className={ Details.errorClass(this.state.errors, FM.errors.film) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ film ? film.title : "" } data-field="filmId" readOnly={ true } />
               { Details.renderFieldError(this.state.errors, FM.errors.film) }
             </div>
             <div className="col-xs-1 select-from-modal" onClick={ this.clickSelectFilmButton.bind(this) } />
           </div>
           <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ this.handleModalClose.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-            <ModalSelect options={ BookingsStore.films() } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
+            <ModalSelect options={ films } property={ "title" } func={ this.clickSelectFilm.bind(this) } />
           </Modal>
         </div>
       );
