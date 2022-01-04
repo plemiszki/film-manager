@@ -227,14 +227,19 @@ class ImportSageData
         report.calculate!
       end
 
-      job.update!({ done: true, first_line: "Import Complete", errors_text: errors.join("\n") })
+      if errors.present?
+        job.update!({ status: :failed, first_line: "Import Complete", errors_text: errors.join("\n") })
+      else
+        job.update!({ status: :success, first_line: "Import Complete", metadata: { showSuccessMessageModal: true } })
+      end
+
       unless Rails.env == 'test'
         p '---------------------------'
         p 'FINISHED SAGE IMPORT'
         p '---------------------------'
       end
     rescue
-      job.update!({ done: true, errors_text: "Unable to import spreadsheet" })
+      job.update!({ status: :failed, errors_text: "Unable to import spreadsheet" })
     end
   end
 

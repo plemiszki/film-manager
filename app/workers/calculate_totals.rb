@@ -30,7 +30,7 @@ class CalculateTotals
     errors << "Total Due: $#{number_with_delimiter(sprintf("%.2f", total_due.to_f), delimiter: ",")} :)"
     errors << "Total Being Sent: $#{number_with_delimiter(sprintf("%.2f", total_due_to_send.to_f), delimiter: ",")} :)"
     errors << "Total Reserves: $#{number_with_delimiter(sprintf("%.2f", total_reserves.to_f), delimiter: ",")} :)"
-    job.update!({ done: true, first_line: 'Calculations Complete', errors_text: errors.join("\n") })
+    job.update!({ status: :success, metadata: { useErrorsModalOnSuccess: true }, first_line: 'Calculations Complete', second_line: false, errors_text: errors.join("\n") })
   end
 
 end

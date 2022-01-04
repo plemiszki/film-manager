@@ -9,4 +9,5 @@ json.job do
   json.name @job.name
   json.done @job.done
   json.killed @job.killed
+  json.status @job.status
 end

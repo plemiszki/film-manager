@@ -30,6 +30,10 @@ class ErrorCheck
       end
       job.update({ current_value: job.current_value + 1 })
     end
-    job.update!({ done: true, first_line: errors.empty? ? "No Errors Found" : "Errors Found", errors_text: errors.empty? ? "" : errors.join("\n") })
+    if errors.present?
+      job.update!({ status: :failed, first_line: "Errors Found", errors_text: errors.join("\n") })
+    else
+      job.update!({ status: :success, first_line: "No Errors Found", metadata: { showSuccessMessageModal: true } })
+    end
   end
 end

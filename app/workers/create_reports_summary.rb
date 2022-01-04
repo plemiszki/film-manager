@@ -40,6 +40,7 @@ class CreateReportsSummary
       job.update({ current_value: job.current_value + 1 })
     end
 
+    job.update({ first_line: 'Saving Spreadsheet', second_line: false })
     file_path = "#{job_folder}/Reports Summary.xlsx"
     FileUtils.mv doc.path, file_path
     doc.cleanup
@@ -53,7 +54,7 @@ class CreateReportsSummary
     obj = bucket.object("#{time_started}/Reports Summary.xlsx")
     obj.upload_file(file_path, acl:'public-read')
 
-    job.update!({ done: true, first_line: obj.public_url })
+    job.update!({ status: :success, metadata: { url: obj.public_url } })
   end
 
 end

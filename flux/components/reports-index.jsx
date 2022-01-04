@@ -1,12 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import ServerActions from '../actions/server-actions.js'
-import ReportsStore from '../stores/reports-store.js'
-import FileStore from '../stores/file-store.js'
-import JobStore from '../stores/job-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { sendRequest, fetchEntities, fetchEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const importModalStyles = {
@@ -65,11 +63,6 @@ class ReportsIndex extends React.Component {
     let job = {
       errorsText: ""
     };
-    if ($('#sage-import-id').length == 1) {
-      job.id = $('#sage-import-id')[0].innerHTML;
-      job.secondLine = false;
-      job.firstLine = "Importing Q" + $('#sage-import-quarter')[0].innerHTML + " " + $('#sage-import-label')[0].innerHTML;
-    }
     this.state = {
       fetching: true,
       sortBy: "title",
@@ -88,58 +81,45 @@ class ReportsIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.reportsListener = ReportsStore.addListener(this.getReports.bind(this));
-    this.fileListener = FileStore.addListener(this.fileDone);
-    this.jobListener = JobStore.addListener(this.getJob.bind(this));
-    FM.resetNiceSelect('select', (e) => { this.setState({ daysDue: e.target.value }); });
+    HandyTools.setUpNiceSelect({ selector: 'select', func: (e) => { this.setState({ daysDue: e.target.value }) } });
     $('#upload-form-sage #user_file').on('change', this.pickFile.bind(this));
-    ClientActions.fetchReports(this.state.quarter, this.state.year);
+    this.fetchReports();
+    let jobId = null;
     if (FM.params.job_id) {
-      ClientActions.fetchJob(FM.params.job_id);
+      jobId = FM.params.job_id;
+    } else if ($('#sage-import-id').length == 1) {
+      jobId = $('#sage-import-id')[0].innerHTML;
     }
-  }
-
-  componentWillUnmount() {
-    this.reportsListener.remove();
-    this.fileListener.remove();
-  }
-
-  getReports() {
-    this.setState({
-      reports: ReportsStore.all(),
-      errors: ReportsStore.errors(),
-      errorsModalOpen: ReportsStore.errors().length > 0,
-      fetching: false
-    });
-  }
-
-  getJob() {
-    var job = JobStore.job();
-    if (job.done || job.firstLine.slice(0, 5) === "Done!") {
-      if (job.name === "export all" || job.name === 'summary') {
+    if (jobId) {
+      this.props.fetchEntity({
+        id: jobId,
+        directory: 'jobs',
+        entityName: 'job'
+      }).then(() => {
+        const { job } = this.props;
         this.setState({
-          jobModalOpen: false,
-          job: job
-        }, () => {
-          window.location.href = job.firstLine;
+          job,
+          jobModalOpen: true
         });
-      } else {
-        this.setState({
-          jobModalOpen: false,
-          errorsModalOpen: job.errorsText !== "",
-          noErrorsModalOpen: job.errorsText === "",
-          sendModalOpen: false,
-          job: job
-        });
-      }
-    } else {
-      this.setState({
-        jobModalOpen: true,
-        sendModalOpen: false,
-        job: job,
-        fetching: false
       });
     }
+  }
+
+  fetchReports() {
+    const { quarter, year } = this.state;
+    this.props.fetchEntities({
+      directory: 'royalty_reports',
+      data: {
+        quarter,
+        year
+      }
+    }).then(() => {
+      const { reports } = this.props;
+      this.setState({
+        fetching: false,
+        reports
+      });
+    });
   }
 
   clickPrev() {
@@ -153,8 +133,8 @@ class ReportsIndex extends React.Component {
       quarter: newQuarter,
       year: newYear,
       fetching: true
-    }, function() {
-      ClientActions.fetchReports(this.state.quarter, this.state.year);
+    }, () => {
+      this.fetchReports();
     });
   }
 
@@ -170,13 +150,7 @@ class ReportsIndex extends React.Component {
       year: newYear,
       fetching: true
     }, () => {
-      ClientActions.fetchReports(this.state.quarter, this.state.year);
-    });
-  }
-
-  clickImport() {
-    this.setState({
-      importModalOpen: true
+      this.fetchReports();
     });
   }
 
@@ -198,54 +172,122 @@ class ReportsIndex extends React.Component {
     this.setState({
       importModalOpen: false,
       fetching: true
-    }, function() {
+    }, () => {
       $('#upload-form-sage #submit-button-sage').click();
     });
   }
 
-  clickExport(e) {
+  clickExport() {
+    const { quarter, year, daysDue } = this.state;
     this.setState({
       fetching: true
     });
-    ClientActions.exportAll(this.state.daysDue, this.state.quarter, this.state.year);
-  }
-
-  clickSend(e) {
-    this.setState({
-      sendModalOpen: true
+    this.props.sendRequest({
+      url: '/api/royalty_reports/export_all',
+      method: 'post',
+      data: {
+        quarter,
+        year,
+        daysDue
+      }
+    }).then(() => {
+      const { job } = this.props;
+      this.setState({
+        job,
+        fetching: false,
+        jobModalOpen: true
+      });
     });
   }
 
-  clickErrorCheck(e) {
-    this.setState({
-      fetching: true,
-      jobFirstLine: "Checking For Errors"
-    });
-    ClientActions.errorCheck(this.state.quarter, this.state.year);
-  }
-
-  clickTotals(e) {
-    this.setState({
-      fetching: true,
-      jobFirstLine: 'Calculating Totals'
-    });
-    ClientActions.statementTotals(this.state.quarter, this.state.year, this.state.daysDue);
-  }
-
-  clickSummary(e) {
+  clickErrorCheck() {
+    const { quarter, year } = this.state;
     this.setState({
       fetching: true,
-      jobFirstLine: 'Creating Summary'
     });
-    ClientActions.reportsSummary(this.state.quarter, this.state.year, this.state.daysDue);
+    this.props.sendRequest({
+      url: '/api/royalty_reports/error_check',
+      method: 'post',
+      data: {
+        quarter,
+        year
+      }
+    }).then(() => {
+      const { job } = this.props;
+      this.setState({
+        job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
   }
 
-  clickConfirmSend(e) {
+  clickTotals() {
+    const { quarter, year, daysDue } = this.state;
     this.setState({
       fetching: true,
-      jobFirstLine: "Exporting Reports"
     });
-    ClientActions.sendAll(this.state.daysDue, this.state.quarter, this.state.year);
+    this.props.sendRequest({
+      url: '/api/royalty_reports/totals',
+      method: 'post',
+      data: {
+        quarter,
+        year,
+        daysDue
+      }
+    }).then(() => {
+      const { job } = this.props;
+      this.setState({
+        job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
+  }
+
+  clickSummary() {
+    const { quarter, year, daysDue } = this.state;
+    this.setState({
+      fetching: true,
+    });
+    this.props.sendRequest({
+      url: '/api/royalty_reports/summary',
+      data: {
+        quarter,
+        year,
+        daysDue
+      }
+    }).then(() => {
+      const { job } = this.props;
+      this.setState({
+        job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
+  }
+
+  clickConfirmSend() {
+    const { quarter, year, daysDue } = this.state;
+    this.setState({
+      fetching: true,
+    });
+    this.props.sendRequest({
+      url: '/api/royalty_reports/send_all',
+      method: 'post',
+      data: {
+        quarter,
+        year,
+        daysDue
+      }
+    }).then(() => {
+      const { job } = this.props;
+      this.setState({
+        job,
+        fetching: false,
+        jobModalOpen: true
+      });
+    });
   }
 
   clickTitle(e) {
@@ -265,22 +307,6 @@ class ReportsIndex extends React.Component {
       fetching: false,
     });
     window.location.pathname = 'api/royalty_reports/zip';
-  }
-
-  closeModal() {
-    this.setState({
-      importModalOpen: false,
-      sendModalOpen: false
-    });
-  }
-
-  modalCloseAndRefresh() {
-    this.setState({
-      errorsModalOpen: false,
-      noErrorsModalOpen: false
-    }, () => {
-      ClientActions.fetchReports(this.state.quarter, this.state.year);
-    });
   }
 
   redirect(id) {
@@ -319,12 +345,12 @@ class ReportsIndex extends React.Component {
         <div id="reports-index" className="component">
           <div className="clearfix">
             <h1>Statements - Q{ this.state.quarter }, { this.state.year }</h1>
-            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickSend.bind(this) }>Send All</a>
+            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ Common.changeState.bind(this, 'sendModalOpen', true) }>Send All</a>
             <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickExport.bind(this) }>Export All</a>
             <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickSummary.bind(this) }>Summary</a>
             <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickTotals.bind(this) }>Totals</a>
             <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickErrorCheck.bind(this) }>Error Check</a>
-            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickImport.bind(this) }>Import</a>
+            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'importModalOpen', true) }>Import</a>
             <a className={ "btn orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
             <a className={ "btn orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           </div>
@@ -371,19 +397,17 @@ class ReportsIndex extends React.Component {
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
-        <Modal isOpen={ this.state.importModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ importModalStyles }>
+        <Modal isOpen={ this.state.importModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ importModalStyles }>
           <div className="import-file">
             <h1>Import File</h1>
             <a className="orange-button" onClick={ this.clickImportRevenue.bind(this) }>Import Revenue</a>
             <a className="orange-button" onClick={ this.clickImportExpenses.bind(this) }>Import Expenses</a>
           </div>
         </Modal>
-        <Modal isOpen={this.state.sendModalOpen} onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ sendModalStyles }>
+        <Modal isOpen={this.state.sendModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ sendModalStyles }>
           { this.renderSendModalHeader() }
         </Modal>
-        { FM.jobModal.call(this, this.state.job) }
-        { FM.jobErrorsModal.call(this) }
-        { FM.jobNoErrorsModal.call(this) }
+        { Common.renderJobModal.call(this, this.state.job) }
       </div>
     );
   }
@@ -400,14 +424,14 @@ class ReportsIndex extends React.Component {
         <div className="send-modal">
           <h1>Send all { unsent } reports now&#63;</h1>
           <a className="orange-button" onClick={ this.clickConfirmSend.bind(this) }>Yes</a>
-          <a className="orange-button" onClick={ this.closeModal.bind(this) }>No</a>
+          <a className="orange-button" onClick={ Common.closeModals.bind(this) }>No</a>
         </div>
       )
     } else if (unsent === 0) {
       return(
         <div className="send-modal">
           <h1>All reports have been sent.</h1>
-          <a className="orange-button" onClick={ this.closeModal.bind(this) }>OK</a>
+          <a className="orange-button" onClick={ Common.closeModals.bind(this) }>OK</a>
         </div>
       )
     } else {
@@ -415,30 +439,23 @@ class ReportsIndex extends React.Component {
         <div className="send-modal">
           <h1>Send remaining { unsent } { HandyTools.pluralize('report', unsent) } now&#63;</h1>
           <a className="orange-button" onClick={ this.clickConfirmSend.bind(this) }>Yes</a>
-          <a className="orange-button" onClick={ this.closeModal.bind(this) }>No</a>
+          <a className="orange-button" onClick={ Common.closeModals.bind(this) }>No</a>
         </div>
       )
     }
   }
 
   componentDidUpdate() {
-    FM.resetNiceSelect('select', (e) => { this.setState({ daysDue: e.target.value }); });
-    if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success: (response) => {
-            ServerActions.receiveJob(response);
-          }
-        });
-      }, 1500)
-    }
+    Common.updateJobModal.call(this);
   }
 }
 
-export default ReportsIndex;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest, fetchEntities, fetchEntity }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportsIndex);

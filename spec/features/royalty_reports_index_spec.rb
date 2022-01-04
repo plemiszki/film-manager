@@ -9,6 +9,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:licensor)
     @proper_quarter, @proper_year = get_proper_quarter(Date.today)
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
+    sleep 0.15
   end
 
   it 'is gated' do
@@ -21,6 +22,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:film, title: 'Another Film', days_statement_due: 60)
     create(:royalty_report, film_id: 2, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'Wilby Wonderful'
     expect(page).to have_content 'Another Film'
     expect(page).to have_content 'Hippo Entertainment'

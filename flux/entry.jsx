@@ -96,7 +96,12 @@ $(document).ready(function() {
     );
   }
   if ($('#reports-index')[0]) {
-    ReactDOM.render(<RoyaltyReportsIndex />, document.getElementById("reports-index"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <RoyaltyReportsIndex context={ MyContext } />
+      </Provider>,
+      document.getElementById("reports-index")
+    );
   }
   if ($('#giftbox-details')[0]) {
     ReactDOM.render(
