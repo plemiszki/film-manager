@@ -465,8 +465,8 @@ class BookingDetails extends React.Component {
           <h1>Booking Details</h1>
           <div className="white-box">
             <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label' }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title', linkText: 'Jump to Film', linkUrl: `/films/${this.state.booking.filmId}` }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label', linkText: 'Jump to Venue', linkUrl: `/venues/${this.state.booking.venueId}` }) }
             </div>
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'startDate' }) }
