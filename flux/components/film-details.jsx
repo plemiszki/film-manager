@@ -1023,9 +1023,10 @@ class FilmDetails extends React.Component {
     }
   }
 
-  updateChangedDates() {
+  updateChangedDates(filmRights) {
     this.setState({
-      changeDatesModalOpen: false
+      changeDatesModalOpen: false,
+      filmRights
     });
   }
 
