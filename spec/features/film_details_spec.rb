@@ -910,7 +910,7 @@ describe 'film_details', type: :feature do
       year: 1999,
       length: 120
     }
-    fill_out_and_submit_modal(new_film_data, :orange_button)
+    fill_out_and_submit_modal(new_film_data, :input)
     expect(page).to have_no_css('.spinner')
     verify_db({
       entity: Film.last,

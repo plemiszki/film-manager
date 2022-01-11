@@ -113,7 +113,7 @@ class Api::FilmsController < AdminController
           new_percentage.update!(value: percentage.value)
         end
       end
-      render json: film.id
+      render json: { film: { id: film.id } }
     else
       render json: film.errors.full_messages, status: 422
     end

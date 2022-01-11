@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import { sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index.js'
-import NewThing from './new-thing.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
 import FilmRightsChangeDates from './film-rights-change-dates.jsx'
 import { Common, Details, Index, ConfirmDelete, ModalSelect } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import NewEntity from './new-entity.jsx'
+import CopyEntity from './copy-entity.jsx'
 import ChangeCase from 'change-case'
 
 const NewRightsModalStyles = {
@@ -730,7 +730,11 @@ class FilmDetails extends React.Component {
           />
         </Modal>
         <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 900 }, 1) }>
-          <NewThing thing="film" copy={ true } initialObject={ { title: "", year: "", length: "", filmType: this.state.film.filmType, copyFrom: this.state.film.id } } />
+          <CopyEntity
+            context={ this.props.context }
+            entityName="film"
+            initialEntity={ { title: "", year: "", length: "", filmType: film.filmType, copyFrom: film.id } }
+          />
         </Modal>
         <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ArtworkModalStyles }>
           <h1 className="my-modal-header">Update artwork for all films now?</h1>

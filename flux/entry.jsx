@@ -44,9 +44,6 @@ $(document).ready(function() {
   if ($('#current-user-dropdown')[0]) {
     ReactDOM.render(<CurrentUserDropDown />, document.getElementById("current-user-dropdown"));
   }
-  if ($('#new-thing')[0]) {
-    ReactDOM.render(<New />, document.getElementById("new-thing"));
-  }
   if ($('#licensor-details')[0]) {
     ReactDOM.render(
       <Provider context={ MyContext } store={ store }>

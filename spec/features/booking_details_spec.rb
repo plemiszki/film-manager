@@ -384,7 +384,7 @@ describe 'booking_details', type: :feature do
     find('.copy-button').click
     fill_out_and_submit_modal({
       film_id: { value: 'Another Film', type: :select_modal }
-    }, :orange_button)
+    }, :input)
     wait_for_ajax
     expect(page).to have_current_path("/bookings/2", ignore_query: true)
     expect(Booking.count).to eq(2)

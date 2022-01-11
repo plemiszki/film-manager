@@ -5,7 +5,7 @@ import { sendRequest, fetchEntity, updateEntity, deleteEntity } from '../actions
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
 import NewEntity from './new-entity.jsx'
-import NewThing from './new-thing.jsx'
+import CopyEntity from './copy-entity.jsx'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -645,11 +645,10 @@ class BookingDetails extends React.Component {
           <ConfirmDelete entityName="invoice" confirmDelete={ this.confirmDeleteInvoice.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
-          <NewThing
+          <CopyEntity
             context={ this.props.context }
-            thing="booking"
-            copyFrom={ this.state.booking.id }
-            initialObject={ { copyFrom: this.state.booking.id, filmId: this.state.booking.filmId } }
+            entityName="booking"
+            initialEntity={ { copyFrom: this.state.booking.id, filmId: this.state.booking.filmId } }
             films={ this.state.films }
           />
         </Modal>
