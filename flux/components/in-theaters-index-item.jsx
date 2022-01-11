@@ -1,5 +1,4 @@
 import React from 'react'
-import ClientActions from '../actions/client-actions.js'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'

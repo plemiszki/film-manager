@@ -3,12 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import ServerActions from '../actions/server-actions.js'
-import FilmsStore from '../stores/films-store.js'
 import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
-import JobStore from '../stores/job-store.js'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import { sendRequest, fetchEntities } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
@@ -82,58 +78,6 @@ class FilmsIndex extends React.Component {
     });
   }
 
-  getFilms() {
-    let films = FilmsStore.all();
-    let allAltLengths = [];
-    let allAltAudios = [];
-    let allAltSubs = [];
-    films.forEach((film) => {
-      film.alternateLengths.forEach((length) => {
-        if (allAltLengths.indexOf(length) === -1) {
-          allAltLengths.push(length);
-        }
-      });
-      film.alternateAudios.forEach((audio) => {
-        if (allAltAudios.indexOf(audio) === -1) {
-          allAltAudios.push(audio);
-        }
-      });
-      film.alternateSubs.forEach((sub) => {
-        if (allAltSubs.indexOf(sub) === -1) {
-          allAltSubs.push(sub);
-        }
-      });
-    });
-    this.setState({
-      fetching: false,
-      films,
-      newFilmModalOpen: false,
-      allAltLengths: allAltLengths.sort(),
-      allAltAudios: allAltAudios.sort(),
-      allAltSubs: allAltSubs.sort()
-    });
-  }
-
-  getJob() {
-    var job = JobStore.job();
-    if (job.done) {
-      this.setState({
-        jobModalOpen: false,
-        searchModalOpen: false,
-        job: job
-      }, () => {
-        window.location.href = job.firstLine;
-      });
-    } else {
-      this.setState({
-        jobModalOpen: true,
-        searchModalOpen: false,
-        job: job,
-        fetching: false
-      });
-    }
-  }
-
   redirect(id) {
     window.location.pathname = "films/" + id;
   }
@@ -176,22 +120,6 @@ class FilmsIndex extends React.Component {
         jobModalOpen: true
       });
     });
-  }
-
-  clickExportMetadata(filmType, exportType, searchCriteria) {
-    if (!this.state.fetching) {
-      this.setState({
-        fetching: true,
-        searchModalOpen: false
-      });
-      if (exportType == 'all') {
-        var filmIds = this.state.films.map((film) => {
-          return film.id;
-        });
-        var searchCriteria = {};
-      }
-      ClientActions.exportFilms(filmType, filmIds, searchCriteria);
-    }
   }
 
   clickFilterCheckBox(e) {
