@@ -15,19 +15,29 @@ class NewEntity extends React.Component {
   constructor(props) {
     super(props);
 
-    entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    directory = ChangeCase.snakeCase(entityNamePlural);
+    const { entityName, fetchData, initialEntity, passData } = this.props;
 
-    this.state = {
-      fetching: !!this.props.fetchData,
-      [this.props.entityName]: HandyTools.deepCopy(this.props.initialEntity),
-      errors: [],
-      customers: [],
-      eduPlatforms: [],
-      films: [],
-      shippingAddresses: [],
-      venues: []
-    };
+    entityNamePlural = this.props.entityNamePlural || `${entityName}s`;
+    directory = ChangeCase.snakeCase(entityNamePlural);
+    let state_obj = {
+      fetching: !!fetchData,
+      [entityName]: HandyTools.deepCopy(initialEntity),
+      errors: []
+    }
+
+    if (passData) {
+      Object.keys(passData).forEach((arrayName) => {
+        state_obj[arrayName] = passData[arrayName];
+      });
+    }
+
+    if (fetchData) {
+      fetchData.forEach((arrayName) => {
+        state_obj[arrayName] = [];
+      });
+    }
+
+    this.state = state_obj;
   }
 
   componentDidMount() {
@@ -65,10 +75,10 @@ class NewEntity extends React.Component {
         window.location.href = `/${directory}/${this.props[this.props.entityName].id}`;
       } else {
         if (this.props.callback) {
-          this.props.callback(this.props[entityNamePlural]);
+          this.props.callback(this.props[entityNamePlural], entityNamePlural);
         }
         if (this.props.callbackFullProps) {
-          this.props.callbackFullProps(this.props);
+          this.props.callbackFullProps(this.props, entityNamePlural);
         }
       }
     }, () => {
@@ -163,6 +173,28 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'digitalRetailer', property: 'name' }) }
           </div>
         ]);
+      case 'digitalRetailerFilm':
+        return([
+          <div key="1" className="row">
+            { Details.renderDropDown.bind(this)({
+              columnWidth: 4,
+              entity: 'digitalRetailerFilm',
+              property: 'digitalRetailerId',
+              options: this.state.digitalRetailers,
+              optionDisplayProperty: 'name',
+              columnHeader: 'Company',
+              maxOptions: 3
+            }) }
+            { Details.renderField.bind(this)({ columnWidth: 8, entity: 'digitalRetailerFilm', property: 'url', columnHeader: 'URL' }) }
+          </div>
+        ]);
+      case 'director':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'director', property: 'firstName' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'director', property: 'lastName' }) }
+          </div>
+        ]);
       case 'dvdCustomer':
         return([
           <div key="1" className="row">
@@ -189,6 +221,12 @@ class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvdCustomer', property: 'country' }) }
           </div>
         ]);
+      case 'dvd':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'dvd', property: 'dvdTypeId', type: 'modal', options: this.state.dvdTypes, optionDisplayProperty: 'name', columnHeader: 'DVD Type' }) }
+          </div>
+        ]);
       case 'eduPlatform':
         return([
           <div key="1" className="row">
@@ -200,6 +238,15 @@ class NewEntity extends React.Component {
           <div key="1" className="row">
             { Details.renderDropDown.bind(this)({ columnWidth: 4, entity: 'eduPlatformFilm', property: 'eduPlatformId', type: 'dropdown', columnHeader: 'Platform', options: this.state.eduPlatforms || [], optionDisplayProperty: 'name', maxOptions: 3 }) }
             { Details.renderField.bind(this)({ columnWidth: 8, entity: 'eduPlatformFilm', property: 'url', columnHeader: 'URL' }) }
+          </div>
+        ]);
+      case 'episode':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'episode', property: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'episode', property: 'length' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'episode', property: 'seasonNumber' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'episode', property: 'episodeNumber' }) }
           </div>
         ]);
       case 'film':
@@ -235,6 +282,16 @@ class NewEntity extends React.Component {
         return([
           <div key="1" className="row">
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'language', property: 'name' }) }
+          </div>
+        ]);
+      case 'laurel':
+        return([
+          <div key="1" className="row">
+            { Details.renderDropDown.bind(this)({ columnWidth: 4, entity: 'laurel', property: 'result', options: [{ value: 'Official Selection' }, { value: 'Nominated' }, { value: 'Winner' }], optionDisplayProperty: 'value' }) }
+            { Details.renderField.bind(this)({ columnWidth: 8, entity: 'laurel', property: 'awardName', columnHeader: 'Award Name (Optional)' }) }
+          </div>,
+          <div key="2" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'laurel', property: 'festival' }) }
           </div>
         ]);
       case 'licensor':
@@ -300,6 +357,21 @@ class NewEntity extends React.Component {
           <div key="2" className="row">
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'number' }) }
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'orderDate' }) }
+          </div>
+        ]);
+      case 'quote':
+        return([
+          <div key="1" className="row">
+            { Details.renderTextBox.bind(this)({
+              columnWidth: 12,
+              rows: 5,
+              entity: 'quote',
+              property: 'text'
+            }) }
+          </div>,
+          <div key="2" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'quote', property: 'author' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'quote', property: 'publication' }) }
           </div>
         ]);
       case 'return':

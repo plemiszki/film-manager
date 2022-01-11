@@ -3,102 +3,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import ClientActions from '../actions/client-actions.js'
-import ServerActions from '../actions/server-actions.js'
-import { createEntity, deleteEntity } from '../actions/index.js'
-import FilmsStore from '../stores/films-store.js'
-import FilmErrorsStore from '../stores/film-errors-store.js'
-import CountriesStore from '../stores/countries-store.js'
-import LanguagesStore from '../stores/languages-store.js'
-import GenresStore from '../stores/genres-store.js'
-import TopicsStore from '../stores/topics-store.js'
-import QuotesStore from '../stores/quotes-store.js'
-import LaurelsStore from '../stores/laurels-store.js'
-import DirectorsStore from '../stores/directors-store.js'
-import CrossedFilmsStore from '../stores/crossed-films-store.js'
-import ActorsStore from '../stores/actors-store.js'
-import RelatedFilmsStore from '../stores/related-films-store.js'
+import { sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index.js'
 import NewThing from './new-thing.jsx'
-import ModalSelect from './modal-select.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
 import FilmRightsChangeDates from './film-rights-change-dates.jsx'
-import FormatsStore from '../stores/formats-store.js'
-import DigitalRetailersStore from '../stores/digital-retailers-store.js'
-import EduPlatformsStore from '../stores/edu-platforms-store.js'
-import JobStore from '../stores/job-store.js'
-import FilmRightsStore from '../stores/film-rights-store.js'
-import FilmRightsStore2 from '../stores/film-rights-store-2.js'
-import { Common, Details, Index, ConfirmDelete } from 'handy-components'
+import { Common, Details, Index, ConfirmDelete, ModalSelect } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import NewEntity from './new-entity.jsx'
-
-const LicensorModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#FFFFFF',
-    margin: 'auto',
-    maxWidth: 540,
-    height: '90%',
-    border: 'solid 1px #5F5F5F',
-    borderRadius: '6px',
-    textAlign: 'center',
-    color: '#5F5F5F'
-  }
-};
-
-const DvdModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 1000,
-    height: 376
-  }
-};
-
-const QuoteModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 1000,
-    height: 420
-  }
-};
-
-const LaurelModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 1000,
-    height: 360
-  }
-};
-
-const DirectorModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 1000,
-    height: 250
-  }
-};
+import ChangeCase from 'change-case'
 
 const NewRightsModalStyles = {
   overlay: {
@@ -139,306 +51,189 @@ const ArtworkModalStyles = {
   }
 };
 
-const CopyModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 1000,
-    height: 236
-  }
-};
-
-const AltLengthModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 500,
-    height: 236
-  }
-};
-
 class FilmDetails extends React.Component {
 
   constructor(props) {
     super(props)
-    var job = {
+    let job = {
       errors_text: ""
     };
     this.state = {
-      fetching: true,
-      film: {},
-      filmSaved: {},
-      filmErrors: [],
-      percentages: {},
-      percentagesSaved: {},
-      percentageErrors: {},
-      reports: [],
-      dvds: [],
+      actors: [],
+      alternateAudios: [],
+      alternateLengths: [],
+      alternateSubs: [],
+      artworkModalOpen: false,
+      audioLanguages: [],
       bookings:[],
       changesToSave: false,
-      justSaved: false,
-      tab: (FM.params.tab ? HandyTools.capitalize(FM.params.tab) : 'General'),
-      filmRights: [],
-      filmCountries: [],
-      filmLanguages: [],
-      filmGenres: [],
-      filmTopics: [],
       countries: [],
-      languages: [],
-      genres: [],
-      topics: [],
-      quotes: [],
-      laurels: [],
-      relatedFilms: [],
-      otherFilms: [],
-      actors: [],
+      crossedFilms: [],
+      dealTemplates: [],
+      digitalRetailers: [],
+      digitalRetailerFilms: [],
       directors: [],
+      dvds: [],
+      dvdTypes: [],
+      eduPlatforms: [],
+      eduPlatformFilms: [],
+      episodes: [],
+      errors: [],
+      fetching: true,
+      film: {},
+      filmCountries: [],
+      filmFormats: [],
+      filmGenres: [],
+      filmLanguages: [],
+      filmRevenuePercentages: [],
+      filmRights: [],
+      filmSaved: {},
+      filmTopics: [],
+      formats: [],
+      genres: [],
+      job: job,
+      jobModalOpen: !!job.id,
+      justSaved: false,
+      labels: [],
+      languages: [],
+      laurels: [],
+      licensors: [],
+      newRightsModalOpen: false,
+      otherCrossedFilms: [],
+      otherFilms: [],
+      percentageErrors: {},
+      percentageObject: {},
+      percentageObjectSaved: {},
+      quotes: [],
+      relatedFilms: [],
+      reports: [],
+      revenueStreams: [],
+      rights: [],
+      rightsSortBy: 'name',
+      schedule: [],
       searchText: '',
       sortBy: 'startDate',
-      newRightsModalOpen: false,
-      rightsSortBy: 'name',
+      subRights: [],
       subRightsSortBy: 'sublicensorName',
-      filmFormats: [],
-      formats: [],
-      digitalRetailerFilms: [],
-      eduPlatformFilms: [],
-      schedule: [],
-      artworkModalOpen: false,
-      jobModalOpen: !!job.id,
-      job: job,
-      crossedFilms: [],
-      otherCrossedFilms: [],
-      episodes: [],
-      alternateLengths: [],
-      alternateAudios: [],
-      alternateSubtitles: [],
       subtitleLanguages: [],
-      audioLanguages: []
+      tab: (FM.params.tab ? HandyTools.capitalize(FM.params.tab) : 'General'),
+      topics: [],
+      virtualBookings: [],
     };
   }
 
   componentDidMount() {
-    this.filmListener = FilmsStore.addListener(this.getFilm.bind(this));
-    this.jobListener = JobStore.addListener(this.getJob.bind(this));
-    this.countriesListener = CountriesStore.addListener(this.getCountries.bind(this));
-    this.languagesListener = LanguagesStore.addListener(this.getLanguages.bind(this));
-    this.genresListener = GenresStore.addListener(this.getGenres.bind(this));
-    this.topicsListener = TopicsStore.addListener(this.getTopics.bind(this));
-    this.quotesListener = QuotesStore.addListener(this.getQuotes.bind(this));
-    this.laurelsListener = LaurelsStore.addListener(this.getLaurels.bind(this));
-    this.directorsListener = DirectorsStore.addListener(this.getDirectors.bind(this));
-    this.actorsListener = ActorsStore.addListener(this.getActors.bind(this));
-    this.relatedFilmsListener = RelatedFilmsStore.addListener(this.getRelatedFilms.bind(this));
-    this.errorsListener = FilmErrorsStore.addListener(this.getErrors.bind(this));
-    this.formatsListener = FormatsStore.addListener(this.getFormats.bind(this));
-    this.digitalRetailersListener = DigitalRetailersStore.addListener(this.getDigitalRetailers.bind(this));
-    this.eduPlatformsListener = EduPlatformsStore.addListener(this.getEduPlatforms.bind(this));
-    this.crossedFilmsListener = CrossedFilmsStore.addListener(this.getCrossedFilms.bind(this));
-    this.filmRights2Listener = FilmRightsStore2.addListener(this.getFilmRights2.bind(this));
-    ClientActions.fetchFilm(window.location.pathname.split('/')[2]);
-  }
-
-  componentWillUnmount() {
-    this.filmListener.remove();
-    this.countriesListener.remove();
-    this.languagesListener.remove();
-    this.genresListener.remove();
-    this.topicsListener.remove();
-    this.quotesListener.remove();
-    this.laurelsListener.remove();
-    this.directorsListener.remove();
-    this.actorsListener.remove();
-    this.relatedFilmsListener.remove();
-    this.errorsListener.remove();
-    this.formatsListener.remove();
-    this.digitalRetailersListener.remove();
-    this.eduPlatformsListener.remove();
-    this.jobListener.remove();
-    this.crossedFilmsListener.remove();
-    this.filmRights2Listener.remove();
-  }
-
-  getFilm() {
-    this.setState({
-      film: Tools.deepCopy(FilmsStore.find(window.location.pathname.split('/')[2])),
-      filmSaved: FilmsStore.find(window.location.pathname.split('/')[2]),
-      percentages: Tools.deepCopy(FilmsStore.percentages()),
-      percentagesSaved: FilmsStore.percentages(),
-      reports: FilmsStore.reports(),
-      dvds: FilmsStore.dvds(),
-      bookings: FilmsStore.bookings(),
-      schedule: FilmsStore.schedule(),
-      crossedFilms: FilmsStore.crossedFilms(),
-      otherCrossedFilms: FilmsStore.otherCrossedFilms(),
-      episodes: FilmsStore.episodes(),
-      filmRights: FilmsStore.rights(),
-      fetching: false,
-      alternateAudios: FilmsStore.alternateAudios(),
-      alternateLengths: FilmsStore.alternateLengths(),
-      alternateSubtitles: FilmsStore.alternateSubtitles(),
-      audioLanguages: FilmsStore.audioLanguages(),
-      subtitleLanguages: FilmsStore.subtitleLanguages()
-    }, () => {
+    this.props.fetchEntity({
+      id: window.location.pathname.split('/')[2],
+      directory: window.location.pathname.split('/')[1],
+      entityName: 'film'
+    }).then(() => {
+      const {
+        actors,
+        alternateAudios,
+        alternateLengths,
+        alternateSubs,
+        audioLanguages,
+        bookings,
+        countries,
+        crossedFilms,
+        dealTemplates,
+        digitalRetailers,
+        digitalRetailerFilms,
+        directors,
+        dvds,
+        dvdTypes,
+        eduPlatforms,
+        eduPlatformFilms,
+        episodes,
+        film,
+        filmCountries,
+        filmFormats,
+        filmGenres,
+        filmLanguages,
+        filmRevenuePercentages,
+        filmRights,
+        filmTopics,
+        formats,
+        genres,
+        labels,
+        languages,
+        laurels,
+        licensors,
+        otherCrossedFilms,
+        otherFilms,
+        relatedFilms,
+        reports,
+        revenueStreams,
+        schedule,
+        subRights,
+        subtitleLanguages,
+        topics,
+        quotes,
+        virtualBookings,
+      } = this.props;
       this.setState({
-        changesToSave: this.checkForChanges()
+        actors,
+        alternateAudios,
+        alternateLengths,
+        alternateSubs,
+        audioLanguages,
+        bookings,
+        crossedFilms,
+        countries,
+        dealTemplates,
+        digitalRetailers,
+        digitalRetailerFilms,
+        directors,
+        dvds,
+        dvdTypes,
+        eduPlatforms,
+        eduPlatformFilms,
+        episodes,
+        film,
+        filmCountries,
+        filmFormats,
+        filmGenres,
+        filmLanguages,
+        filmRevenuePercentages,
+        filmRights,
+        filmSaved: HandyTools.deepCopy(film),
+        filmTopics,
+        formats,
+        genres,
+        labels,
+        languages,
+        laurels,
+        licensors,
+        otherCrossedFilms,
+        otherFilms,
+        relatedFilms,
+        reports,
+        revenueStreams,
+        schedule,
+        subRights,
+        subtitleLanguages,
+        topics,
+        quotes,
+        virtualBookings,
+      }, () => {
+        this.updatePercentageObject();
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
     });
   }
 
-  getFilmRights2() {
-    this.setState({
-      newRightsModalOpen: false,
-      changeDatesModalOpen: false,
-      filmRights: FilmRightsStore2.filmRights()
+  updatePercentageObject() {
+    let percentageObject = {};
+    const { filmRevenuePercentages } = this.state;
+    filmRevenuePercentages.forEach((filmRevenuePercentage) => {
+      percentageObject[filmRevenuePercentage.id] = filmRevenuePercentage.value;
     });
-  }
-
-  getFormats() {
     this.setState({
-      fetching: false,
-      filmFormats: FormatsStore.filmFormats(),
-      formats: FormatsStore.all(),
-      formatsModalOpen: false
-    });
-  }
-
-  getCountries() {
-    this.setState({
-      fetching: false,
-      filmCountries: CountriesStore.filmCountries(),
-      countries: CountriesStore.all(),
-      countriesModalOpen: false
-    });
-  }
-
-  getLanguages() {
-    this.setState({
-      fetching: false,
-      filmLanguages: LanguagesStore.filmLanguages(),
-      languages: LanguagesStore.all(),
-      languagesModalOpen: false
-    });
-  }
-
-  getGenres() {
-    this.setState({
-      filmGenres: GenresStore.filmGenres(),
-      genres: GenresStore.all(),
-      genresModalOpen: false,
+      percentageObject,
+      percentageObjectSaved: HandyTools.deepCopy(percentageObject),
       fetching: false
     });
-  }
-
-  getTopics() {
-    this.setState({
-      filmTopics: TopicsStore.filmTopics(),
-      topics: TopicsStore.all(),
-      topicsModalOpen: false,
-      fetching: false
-    });
-  }
-
-  getQuotes() {
-    this.setState({
-      quotes: QuotesStore.all(),
-      quoteModalOpen: false
-    });
-  }
-
-  getLaurels() {
-    this.setState({
-      laurels: LaurelsStore.all(),
-      laurelModalOpen: false,
-      fetching: false
-    });
-  }
-
-  getRelatedFilms() {
-    this.setState({
-      relatedFilms: RelatedFilmsStore.all(),
-      otherFilms: RelatedFilmsStore.otherFilms(),
-      relatedFilmsModalOpen: false,
-      fetching: false
-    });
-  }
-
-  getDirectors() {
-    this.setState({
-      directors: DirectorsStore.all(),
-      directorModalOpen: false,
-      fetching: false
-    });
-  }
-
-  getCrossedFilms() {
-    this.setState({
-      crossedFilms: CrossedFilmsStore.all(),
-      otherCrossedFilms: CrossedFilmsStore.otherCrossedFilms(),
-      crossedFilmModalOpen: false,
-      fetching: false
-    });
-  }
-
-  getActors() {
-    this.setState({
-      actors: ActorsStore.all(),
-      actorModalOpen: false,
-      fetching: false
-    });
-  }
-
-  getErrors() {
-    this.setState({
-      filmErrors: FilmErrorsStore.filmErrors(),
-      percentageErrors: FilmErrorsStore.percentageErrors(),
-      fetching: false
-    });
-  }
-
-  getDigitalRetailers() {
-    this.setState({
-      digitalRetailerFilms: DigitalRetailersStore.digitalRetailerFilms(),
-      newDigitalRetailerModalOpen: false,
-      fetching: false
-    });
-  }
-
-  getEduPlatforms() {
-    this.setState({
-      eduPlatformFilms: EduPlatformsStore.eduPlatformFilms(),
-      newEduPlatformModalOpen: false,
-      fetching: false
-    });
-  }
-
-  getJob() {
-    let job = JobStore.job();
-    if (job.done) {
-      var film = this.state.film;
-      film.artworkUrl = job.firstLine;
-      var filmSaved = this.state.filmSaved;
-      filmSaved.artworkUrl = job.firstLine;
-      this.setState({
-        film: film,
-        filmSaved: filmSaved,
-        jobModalOpen: false,
-        job: job
-      });
-    } else {
-      this.setState({
-        jobModalOpen: true,
-        job: job,
-        fetching: false
-      });
-    }
   }
 
   mouseDownHandle(e) {
@@ -473,6 +268,7 @@ class FilmDetails extends React.Component {
   }
 
   dropHandler(e, ui) {
+    const filmId = this.state.film.id;
     let draggedIndex = ui.draggable[0].dataset.index;
     let dropZoneIndex = e.target.dataset.index;
     let currentOrder = {};
@@ -499,6 +295,7 @@ class FilmDetails extends React.Component {
       case 'genres':
         entityArray = 'filmGenres';
         directory = 'film_genres'
+        break
       case 'directors':
         entityArray = 'directors';
         directory = 'directors'
@@ -506,201 +303,100 @@ class FilmDetails extends React.Component {
     this.state[entityArray].forEach((entity) => {
       currentOrder[entity.order] = entity.id;
     });
-    let newOrder = HandyTools.rearrangeFields(currentOrder, draggedIndex, dropZoneIndex);
-    ClientActions.rearrangeFilmEntities(this.state.film.id, directory || entityArray, newOrder);
+    let newOrder = HandyTools.rearrangeFields({ currentOrder, draggedIndex, dropZoneIndex });
+    let data;
+    directory = directory || entityArray;
+    if (directory == 'actors') {
+      data = {
+        new_order: newOrder,
+        actorable_id: filmId,
+        actorable_type: 'Film'
+      };
+    } else {
+      data = {
+        new_order: newOrder,
+        film_id: filmId
+      };
+    }
+    this.setState({
+      fetching: true
+    });
+    this.props.sendRequest({
+      url: `/api/${directory}/rearrange`,
+      method: 'patch',
+      data,
+    }).then(() => {
+      this.setState({
+        fetching: false,
+        [entityArray]: this.props[entityArray]
+      });
+    });
+  }
+
+  changeFieldArgs() {
+    const { errors } = this.state;
+    return {
+      allErrors: FM.errors,
+      thing: "film",
+      errorsArray: errors,
+      beforeSave: (newEntity, key, value) => {
+        if (key == "dealTypeId") {
+          if (value <= 4) {
+            newEntity.grPercentage = "";
+            FM.removeFieldError(errors, "grPercentage")
+          } else {
+            newEntity.grPercentage = "0";
+          }
+        }
+        if (key == 'reserve' && value == false) {
+          newEntity.reservePercentage = 0;
+          FM.errors.reservePercentage.forEach((message) => {
+            HandyTools.removeFromArray(errors, message);
+          });
+          newEntity.reserveQuarters = 0;
+          FM.errors.reserveQuarters.forEach((message) => {
+            HandyTools.removeFromArray(errors, message);
+          });
+        }
+        if (key == 'autoRenew' && value == false) {
+          newEntity.autoRenewTerm = 0;
+          FM.errors.autoRenewTerm.forEach((message) => {
+            HandyTools.removeFromArray(errors, message);
+          });
+          newEntity.autoRenewDaysNotice = 0;
+          FM.errors.autoRenewDaysNotice.forEach((message) => {
+            HandyTools.removeFromArray(errors, message);
+          });
+        }
+        return newEntity;
+      },
+      changesFunction: this.checkForChanges.bind(this)
+    }
+  }
+
+  checkForChanges() {
+    const { film, filmSaved, percentageObject, percentageObjectSaved } = this.state;
+    if (Tools.objectsAreEqual(film, filmSaved) == false) {
+      return true;
+    } else {
+      return !Tools.objectsAreEqual(percentageObject, percentageObjectSaved);
+    }
   }
 
   clickTab(e) {
-    var tab = e.target.innerText;
+    const tab = e.target.innerText;
     if (this.state.tab !== tab) {
       $('select').niceSelect('destroy');
       this.setState({
-        tab: tab
-      });
-    }
-  }
-
-  clickSave() {
-    if (this.state.changesToSave) {
-      this.setState({
-        fetching: true,
-        justSaved: true
+        tab
       }, () => {
-        ClientActions.updateFilm(this.state.film, this.state.percentages);
+        FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
       });
     }
   }
 
-  clickDelete() {
-    this.setState({
-      deleteModalOpen: true
-    });
-  }
-
-  clickCopy() {
-    this.setState({
-      copyModalOpen: true
-    });
-  }
-
-  clickAddFormat() {
-    this.setState({
-      formatsModalOpen: true
-    });
-  }
-
-  clickFormat(option, e) {
-    ClientActions.createFilmFormat({ filmId: this.state.film.id, formatId: e.target.dataset.id })
-  }
-
-  clickDeleteFormat(e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.deleteFilmFormat(e.target.dataset.id);
-  }
-
-  clickAddCountry() {
-    this.setState({
-      countriesModalOpen: true
-    });
-  }
-
-  clickCountry(option, e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.createFilmCountry({ film_id: this.state.film.id, country_id: e.target.dataset.id })
-  }
-
-  clickDeleteCountry(e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.deleteFilmCountry(e.target.dataset.id);
-  }
-
-  clickAddLanguage() {
-    this.setState({
-      languagesModalOpen: true
-    });
-  }
-
-  clickLanguage(option, e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.createFilmLanguage({ film_id: this.state.film.id, language_id: e.target.dataset.id })
-  }
-
-  clickAlternateAudio(option, e) {
-    Common.closeModals.call(this);
-    this.setState({
-      fetching: true
-    });
-    let languageId = e.target.dataset.id;
-    this.props.createEntity({
-      directory: 'alternate_audios',
-      entityName: 'alternate_audio',
-      entity: {
-        filmId: this.state.film.id,
-        languageId
-      }
-    }).then(() => {
-      this.setState({
-        fetching: false,
-        alternateAudios: this.props.alternateAudios,
-        audioLanguages: this.props.audioLanguages
-      });
-    });
-  }
-
-  clickAlternateSubtitle(option, e) {
-    Common.closeModals.call(this);
-    this.setState({
-      fetching: true
-    });
-    let languageId = e.target.dataset.id;
-    this.props.createEntity({
-      directory: 'alternate_subs',
-      entityName: 'alternate_sub',
-      entity: {
-        filmId: this.state.film.id,
-        languageId
-      }
-    }).then(() => {
-      this.setState({
-        fetching: false,
-        alternateSubtitles: this.props.alternateSubs,
-        subtitleLanguages: this.props.subtitleLanguages
-      });
-    });
-  }
-
-  clickDeleteLanguage(e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.deleteFilmLanguage(e.target.dataset.id);
-  }
-
-  clickAddGenre() {
-    this.setState({
-      genresModalOpen: true
-    });
-  }
-
-  clickGenre(option, e) {
-    this.setState({
-      fetching: true
-    })
-    ClientActions.createFilmGenre({ film_id: this.state.film.id, genre_id: e.target.dataset.id })
-  }
-
-  clickDeleteGenre(e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.deleteFilmGenre(e.target.dataset.id);
-  }
-
-  clickAddTopic() {
-    this.setState({
-      topicsModalOpen: true
-    });
-  }
-
-  clickTopic(option, e) {
-    this.setState({
-      fetching: false
-    });
-    ClientActions.createFilmTopic({ film_id: this.state.film.id, topic_id: e.target.dataset.id })
-  }
-
-  clickDeleteTopic(e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.deleteFilmTopic(e.target.dataset.id);
-  }
-
-  clickSelectLicensorButton() {
-    this.setState({
-      licensorModalOpen: true
-    });
-  }
-
-  clickLicensorButton(event) {
-    var film = this.state.film;
-    film.licensorId = event.target.dataset.id;
-    this.setState({
-      film: film,
-      licensorModalOpen: false
-    }, () => {
-      this.setState({
-        changesToSave: this.checkForChanges()
-      });
-    });
+  redirect(directory, id) {
+    window.location = `/${directory}/${id}`;
   }
 
   clickQuote(e) {
@@ -709,252 +405,118 @@ class FilmDetails extends React.Component {
     }
   }
 
-  clickAddQuote() {
+  clickSave() {
     this.setState({
-      quoteModalOpen: true
+      fetching: true,
+      justSaved: true
+    }, () => {
+      const { film, percentageObject } = this.state;
+      this.props.updateEntity({
+        id: window.location.pathname.split("/")[2],
+        directory: window.location.pathname.split("/")[1],
+        entityName: 'film',
+        entity: Details.removeFinanceSymbolsFromEntity({ entity: film, fields: ['mg', 'expenseCap', 'eAndO', 'rentalPrice'] }),
+        additionalData: {
+          percentages: percentageObject
+        }
+      }).then(() => {
+        const { film, filmRevenuePercentages } = this.props;
+        this.setState({
+          changesToSave: false,
+          film,
+          filmSaved: HandyTools.deepCopy(film),
+          filmRevenuePercentages
+        }, () => {
+          this.updatePercentageObject();
+        });
+      }, () => {
+        const { film, percentages } = this.props;
+        this.setState({
+          fetching: false,
+          errors: film,
+          percentageErrors: percentages
+        });
+      });
     });
   }
 
-  clickAddLaurel() {
-    this.setState({
-      laurelModalOpen: true
-    });
-  }
-
-  clickAddRelatedFilm() {
-    this.setState({
-      relatedFilmsModalOpen: true
-    });
-  }
-
-  clickAddDirector() {
-    this.setState({
-      directorModalOpen: true
-    });
-  }
-
-  clickAddCrossedFilm() {
-    this.setState({
-      crossedFilmModalOpen: true
-    });
-  }
-
-  clickAddActor() {
-    this.setState({
-      actorModalOpen: true
-    });
-  }
-
-  clickAddDVDButton() {
-    this.setState({
-      dvdModalOpen: true
-    });
-  }
-
-  clickAddEpisode() {
-    this.setState({
-      episodeModalOpen: true
-    });
-  }
-
-  clickDeleteLaurel(e) {
+  selectEntityToCreate(args, option) {
+    const { directory, entityName, key, otherArrays } = args;
+    const entityNamePlural = ChangeCase.camelCase(directory);
+    const { id } = this.state.film;
     this.setState({
       fetching: true
     });
-    ClientActions.deleteLaurel(e.target.dataset.id);
+    this.props.createEntity({
+      directory,
+      entityName,
+      entity: {
+        filmId: id,
+        [key]: option.id
+      }
+    }).then(() => {
+      let obj = {
+        fetching: false,
+        [entityNamePlural]: this.props[entityNamePlural]
+      }
+      otherArrays && otherArrays.forEach((arrayName) => {
+        obj[arrayName] = this.props[arrayName];
+      });
+      this.setState(obj);
+      Common.closeModals.call(this);
+    });
   }
 
-  clickDeleteDirector(e) {
+  deleteFromList(args, e) {
+    const { directory, otherArrays } = args;
+    const { id } = e.target.dataset;
+    const entityNamePlural = ChangeCase.camelCase(directory);
     this.setState({
       fetching: true
     });
-    ClientActions.deleteDirector(e.target.dataset.id);
-  }
-
-  clickDeleteCrossedFilm(e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.deleteCrossedFilm(e.target.dataset.id);
-  }
-
-  clickDeleteActor(e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.deleteActor(e.target.dataset.id);
-  }
-
-  clickDeleteRelatedFilm(e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.deleteRelatedFilm(e.target.dataset.id);
-  }
-
-  clickRelatedFilm(option, e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.createRelatedFilm({ filmId: this.state.film.id, otherFilmId: e.target.dataset.id });
-  }
-
-  clickCrossedFilm(option, e) {
-    this.setState({
-      fetching: true
-    });
-    ClientActions.createCrossedFilm({ filmId: this.state.film.id, crossedFilmId: e.target.dataset.id });
-  }
-
-  clickAddDigitalRetailer() {
-    this.setState({
-      newDigitalRetailerModalOpen: true
-    });
-  }
-
-  clickAddEduPlatform() {
-    this.setState({
-      newEduPlatformModalOpen: true
+    this.props.deleteEntity({
+      directory,
+      id,
+      callback: (response) => {
+        let obj = {
+          fetching: false,
+          [entityNamePlural]: response[entityNamePlural]
+        }
+        otherArrays && otherArrays.forEach((arrayName) => {
+          obj[arrayName] = response[arrayName];
+        });
+        this.setState(obj);
+      }
     });
   }
 
   confirmDelete() {
     this.setState({
-      fetching: true
-    }, () => {
-      ClientActions.deleteFilm(this.state.film.id);
+      fetching: true,
+      deleteModalOpen: false
     });
-  }
-
-  clickAddRight() {
-    this.setState({
-      newRightsModalOpen: true
-    });
-  }
-
-  clickChangeRightsDates() {
-    this.setState({
-      changeDatesModalOpen: true
-    });
-  }
-
-  closeModal() {
-    this.setState({
-      deleteModalOpen: false,
-      licensorModalOpen: false,
-      dvdModalOpen: false,
-      episodeModalOpen: false,
-      countriesModalOpen: false,
-      languagesModalOpen: false,
-      genresModalOpen: false,
-      topicsModalOpen: false,
-      quoteModalOpen: false,
-      laurelModalOpen: false,
-      directorModalOpen: false,
-      actorModalOpen: false,
-      relatedFilmsModalOpen: false,
-      newRightsModalOpen: false,
-      formatsModalOpen: false,
-      newDigitalRetailerModalOpen: false,
-      newEduPlatformModalOpen: false,
-      artworkModalOpen: false,
-      crossedFilmModalOpen: false,
-      changeDatesModalOpen: false,
-      copyModalOpen: false,
-      newAltLengthModalOpen: false,
-      newAltAudioModalOpen: false,
-      newAltSubModalOpen: false
-    });
-  }
-
-  checkForChanges() {
-    if (Tools.objectsAreEqual(this.state.film, this.state.filmSaved) == false) {
-      return true;
-    } else {
-      return !Tools.objectsAreEqual(this.state.percentages, this.state.percentagesSaved);
-    }
-  }
-
-  redirect(directory, id) {
-    window.location = `/${directory}/${id}`;
-  }
-
-  clickRightsHeader(property) {
-    this.setState({
-      rightsSortBy: property
-    });
-  }
-
-  clickSubRightsHeader(property) {
-    this.setState({
-      subRightsSortBy: property
-    });
-  }
-
-  clickArtwork() {
-    this.setState({
-      artworkModalOpen: true
-    });
-  }
-
-  clickDeleteAltLength(e) {
-    let id = e.target.dataset.id;
-    this.setState({
-      fetching: true
-    });
+    const { id } = this.state.film;
     this.props.deleteEntity({
-      directory: 'alternate_lengths',
-      id,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          alternateLengths: response.alternateLengths
-        });
-      }
-    });
-  }
-
-  clickDeleteAltSub(e) {
-    let id = e.target.dataset.id;
-    this.setState({
-      fetching: true
-    });
-    this.props.deleteEntity({
-      directory: 'alternate_subs',
-      id,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          alternateSubtitles: response.alternateSubs,
-          subtitleLanguages: response.subtitleLanguages
-        });
-      }
-    });
-  }
-
-  clickDeleteAltAudio(e) {
-    let id = e.target.dataset.id;
-    this.setState({
-      fetching: true
-    });
-    this.props.deleteEntity({
-      directory: 'alternate_audios',
-      id,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          alternateAudios: response.alternateAudios,
-          audioLanguages: response.audioLanguages
-        });
-      }
+      directory: 'films',
+      id
     });
   }
 
   confirmUpdateArtwork() {
-    this.setState({
-      artworkModalOpen: false
+    this.props.sendRequest({
+      url: '/api/films/update_artwork',
+      method: 'post',
+      data: {
+        triggerId: this.state.film.id
+      }
+    }).then(() => {
+      const { job } = this.props;
+      this.setState({
+        job,
+        artworkModalOpen: false,
+        jobModalOpen: true
+      });
     });
-    ClientActions.updateArtwork(this.state.film.id);
   }
 
   rightsSort(object) {
@@ -983,64 +545,10 @@ class FilmDetails extends React.Component {
     }
   }
 
-  changeFieldArgs(errors) {
-    return {
-      allErrors: FM.errors,
-      thing: "film",
-      errorsArray: errors || this.state.filmErrors,
-      beforeSave: (newEntity, key, value) => {
-        if (key == "dealTypeId") {
-          if (value <= 4) {
-            newEntity.grPercentage = "";
-            FM.removeFieldError(this.state.filmErrors, "grPercentage")
-          } else {
-            newEntity.grPercentage = "0";
-          }
-        }
-        if (key == 'reserve' && value == false) {
-          newEntity.reservePercentage = 0;
-          FM.errors.reservePercentage.forEach((message) => {
-            HandyTools.removeFromArray(this.state.filmErrors, message);
-          });
-          newEntity.reserveQuarters = 0;
-          FM.errors.reserveQuarters.forEach((message) => {
-            HandyTools.removeFromArray(this.state.filmErrors, message);
-          });
-        }
-        if (key == 'autoRenew' && value == false) {
-          newEntity.autoRenewTerm = 0;
-          FM.errors.autoRenewTerm.forEach((message) => {
-            HandyTools.removeFromArray(this.state.filmErrors, message);
-          });
-          newEntity.autoRenewDaysNotice = 0;
-          FM.errors.autoRenewDaysNotice.forEach((message) => {
-            HandyTools.removeFromArray(this.state.filmErrors, message);
-          });
-        }
-        return newEntity;
-      },
-      changesFunction: this.checkForChanges.bind(this)
-    }
-  }
-
   updateChangedDates(filmRights) {
     this.setState({
       changeDatesModalOpen: false,
       filmRights
-    });
-  }
-
-  updateAlternateLengths(alternateLengths) {
-    this.setState({
-      newAltLengthModalOpen: false,
-      alternateLengths
-    });
-  }
-
-  updateEduPlatforms(eduPlatformFilms) {
-    this.setState({
-      newEduPlatformModalOpen: false,
-      eduPlatformFilms
     });
   }
 
@@ -1051,7 +559,34 @@ class FilmDetails extends React.Component {
     });
   }
 
+  createCallback(response, entityNamePlural) {
+    this.setState({
+      [entityNamePlural]: response
+    }, () => {
+      Common.closeModals.call(this);
+    });
+  }
+
+  changePercentageField(e) {
+    const filmRevenuePercentageId = e.target.dataset.id;
+    const value = e.target.value;
+    const { percentageObject, percentageErrors } = this.state;
+    percentageObject[filmRevenuePercentageId] = value;
+    if (percentageErrors[filmRevenuePercentageId]) {
+      delete percentageErrors[filmRevenuePercentageId];
+    }
+    this.setState({
+      percentageObject
+    }, () => {
+      const changesToSave = this.changeFieldArgs().changesFunction.call();
+      this.setState({
+        changesToSave
+      });
+    });
+  }
+
   render() {
+    const { dvds, dvdTypes, film, licensors } = this.state;
     let title = {
       'Short': 'Short',
       'Feature': 'Film',
@@ -1064,116 +599,150 @@ class FilmDetails extends React.Component {
         <div className="white-box">
           <div className="row">
             <div className="col-xs-1">
-              <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ this.state.film.artworkUrl ? { 'backgroundImage': `url(${this.state.film.artworkUrl})` } : {} } onClick={ this.clickArtwork.bind(this) }></div>
+              <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ this.state.film.artworkUrl ? { 'backgroundImage': `url(${this.state.film.artworkUrl})` } : {} } onClick={ Common.changeState.bind(this, 'artworkModalOpen', true) }></div>
             </div>
-            <div className="col-xs-9">
-              <h2>Title</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.title) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.title || ""} data-field="title" />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.title) }
-            </div>
-            <div className="col-xs-2">
-              <h2>Type</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.filmType || ""} readOnly={ true } />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
+            { Details.renderField.bind(this)({ columnWidth: 9, entity: 'film', property: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'filmType', readOnly: true, columnHeader: 'Type' }) }
           </div>
           { this.renderTab(this.state.tab) }
           { this.renderButtons() }
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
-        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="film" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        <Modal isOpen={ this.state.crossedFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.otherCrossedFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'crossed_films', entityName: 'crossedFilm', key: 'crossedFilmId', otherArrays: ['otherCrossedFilms'] }) } />
         </Modal>
-        <Modal isOpen={this.state.licensorModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ LicensorModalStyles }>
-          <ul className="licensor-modal-list">
-            <li onClick={this.clickLicensorButton.bind(this)} data-id={null}>(None)</li>
-            { FilmsStore.licensors().map((licensor, index) => {
-              return(
-                <li key={index} onClick={this.clickLicensorButton.bind(this)} data-id={licensor.id}>{licensor.name}</li>
-              );
-            }) }
-          </ul>
+        <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.countries } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_countries', entityName: 'filmCountry', key: 'countryId', otherArrays: ['countries'] }) } />
         </Modal>
-        <Modal isOpen={this.state.episodeModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ DirectorModalStyles }>
-          <NewThing thing="episode" initialObject={ { filmId: this.state.film.id, title: '', length: '', episodeNumber: '', seasonNumber: '' } } />
+        <Modal isOpen={ this.state.languagesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.languages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_languages', entityName: 'filmLanguage', key: 'languageId', otherArrays: ['languages'] }) } />
         </Modal>
-        <Modal isOpen={this.state.dvdModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ DvdModalStyles }>
-          <NewThing thing="dvd" initialObject={{featureFilmId: this.state.film.id, dvdTypeId: (this.state.film.id && this.state.dvds.length < 6) ? FilmsStore.dvdTypes()[0].id : 1}} />
+        <Modal isOpen={ this.state.alternateAudioModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.audioLanguages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_audios', entityName: 'alternateAudio', key: 'languageId', otherArrays: ['audioLanguages'] }) } />
         </Modal>
-        <Modal isOpen={this.state.quoteModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ QuoteModalStyles }>
-          <NewThing thing="quote" initialObject={{ filmId: this.state.film.id, text: "", author: "", publication: "" }} />
+        <Modal isOpen={ this.state.alternateSubsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.subtitleLanguages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_subs', entityName: 'alternateSub', key: 'languageId', otherArrays: ['subtitleLanguages'] }) } />
         </Modal>
-        <Modal isOpen={this.state.laurelModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ LaurelModalStyles }>
-          <NewThing thing="laurel" initialObject={{ filmId: this.state.film.id, result: "Official Selection", awardName: "", festival: "" }} />
+        <Modal isOpen={ this.state.genresModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.genres } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_genres', entityName: 'filmGenre', key: 'genreId', otherArrays: ['genres'] }) } />
         </Modal>
-        <Modal isOpen={this.state.directorModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ DirectorModalStyles }>
-          <NewThing thing="director" initialObject={{ filmId: this.state.film.id, firstName: "", lastName: "" }} />
+        <Modal isOpen={ this.state.topicsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.topics } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_topics', entityName: 'filmTopic', key: 'topicId', otherArrays: ['topics'] }) } />
         </Modal>
-        <Modal isOpen={this.state.crossedFilmModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.otherCrossedFilms } property={ "title" } func={ this.clickCrossedFilm.bind(this) } />
+        <Modal isOpen={ this.state.relatedFilmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.otherFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'related_films', entityName: 'relatedFilm', key: 'otherFilmId', otherArrays: ['otherFilms'] }) } />
         </Modal>
-        <Modal isOpen={this.state.actorModalOpen} onRequestClose={this.closeModal.bind(this)} contentLabel="Modal" style={ DirectorModalStyles }>
-          <NewThing thing="actor" initialObject={{ actorableId: this.state.film.id, actorableType: 'Film', firstName: "", lastName: "" }} />
+        <Modal isOpen={ this.state.formatsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+          <ModalSelect options={ this.state.formats } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) } />
         </Modal>
-        <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.countries } property={ "name" } func={ this.clickCountry.bind(this) } />
+        <Modal isOpen={ this.state.episodeModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="episode"
+            initialEntity={ { filmId: film.id, title: '', length: '', episodeNumber: '', seasonNumber: '' } }
+            redirectAfterCreate={ true }
+          />
         </Modal>
-        <Modal isOpen={ this.state.languagesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.languages } property={ "name" } func={ this.clickLanguage.bind(this) } />
+        <Modal isOpen={ this.state.dvdModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="dvd"
+            initialEntity={ { featureFilmId: film.id, dvdTypeId: (film.id && dvds.length < 6) ? dvdTypes[0].id : 1 } }
+            passData={
+              { dvdTypes }
+            }
+            buttonText="Add DVD"
+            redirectAfterCreate={ true }
+          />
         </Modal>
-        <Modal isOpen={ this.state.alternateAudioModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state.audioLanguages, 'name') } property="name" func={ this.clickAlternateAudio.bind(this) } />
+        <Modal isOpen={ this.state.quoteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750, height: 428 }) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="quote"
+            initialEntity={ { filmId: film.id, text: "", author: "", publication: "" } }
+            callback={ this.createCallback.bind(this) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.alternateSubtitleModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ HandyTools.alphabetizeArrayOfObjects(this.state.subtitleLanguages, 'name') } property="name" func={ this.clickAlternateSubtitle.bind(this) } />
+        <Modal isOpen={this.state.laurelModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 2) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="laurel"
+            initialEntity={ { filmId: film.id, result: "Official Selection", awardName: "", festival: "" } }
+            callback={ this.createCallback.bind(this) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.genresModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.genres } property="name" func={ this.clickGenre.bind(this) } />
+        <Modal isOpen={ this.state.directorModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="director"
+            initialEntity={ { filmId: film.id, firstName: "", lastName: "" } }
+            callback={ this.createCallback.bind(this) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.topicsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.topics } property={ "name" } func={ this.clickTopic.bind(this) } />
+        <Modal isOpen={ this.state.actorModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="actor"
+            initialEntity={ { actorableId: film.id, actorableType: 'Film', firstName: "", lastName: "" } }
+            callback={ this.createCallback.bind(this) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.relatedFilmsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.otherFilms } property={ "title" } func={ this.clickRelatedFilm.bind(this) } />
+        <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="digitalRetailerFilm"
+            initialEntity={ { filmId: film.id, url: '', digitalRetailerId: '1' } }
+            fetchData={ ['digitalRetailers'] }
+            callback={ this.createCallback.bind(this) }
+            buttonText={ 'Add Digital Retailer' }
+          />
         </Modal>
-        <Modal isOpen={ this.state.formatsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.formats } property={ "name" } func={ this.clickFormat.bind(this) } />
+        <Modal isOpen={ this.state.newEduPlatformModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="eduPlatformFilm"
+            initialEntity={ { filmId: this.state.film.id, url: "", eduPlatformId: "1" } }
+            fetchData={ ['eduPlatforms'] }
+            callback={ this.createCallback.bind(this) }
+          />
         </Modal>
-        <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
+        <Modal isOpen={ this.state.newAltLengthModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="alternateLength"
+            initialEntity={ { length: "", filmId: this.state.film.id } }
+            callback={ this.createCallback.bind(this) }
+          />
+        </Modal>
+        <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
           <FilmRightsNew
             context={ this.props.context }
             filmId={ this.state.film.id }
             callback={ this.newFilmRightsCallback.bind(this) }
           />
         </Modal>
-        <Modal isOpen={ this.state.changeDatesModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ChangeDatesModalStyles }>
+        <Modal isOpen={ this.state.changeDatesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ChangeDatesModalStyles }>
           <FilmRightsChangeDates
             context={ this.props.context }
             filmId={ this.state.film.id }
             updateChangedDates={ this.updateChangedDates.bind(this) }
           />
         </Modal>
-        <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ DirectorModalStyles }>
-          <NewThing thing="digitalRetailerFilm" initialObject={ { filmId: this.state.film.id, url: "", digitalRetailerId: "1" } } />
-        </Modal>
-        <Modal isOpen={ this.state.newEduPlatformModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
-          <NewEntity entityName="eduPlatformFilm" fetchData={ ['eduPlatforms'] } initialEntity={ { filmId: this.state.film.id, url: "", eduPlatformId: "1" } } context={ this.props.context } callback={ this.updateEduPlatforms.bind(this) } />
-        </Modal>
-        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ CopyModalStyles }>
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 900 }, 1) }>
           <NewThing thing="film" copy={ true } initialObject={ { title: "", year: "", length: "", filmType: this.state.film.filmType, copyFrom: this.state.film.id } } />
         </Modal>
-        <Modal isOpen={ this.state.newAltLengthModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
-          <NewEntity entityName="alternateLength" initialEntity={ { length: "", filmId: this.state.film.id } } context={ this.props.context } callback={ this.updateAlternateLengths.bind(this) } />
-        </Modal>
-        <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ArtworkModalStyles }>
+        <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ArtworkModalStyles }>
           <h1 className="my-modal-header">Update artwork for all films now?</h1>
           <div className="text-center">
             <div className="orange-button small margin" onClick={ this.confirmUpdateArtwork.bind(this) }>Yes</div>
-            <div className="cancel-button small" onClick={ this.closeModal.bind(this) }>No</div>
+            <div className="cancel-button small" onClick={ Common.closeModals.bind(this) }>No</div>
           </div>
         </Modal>
-        { FM.jobModal.call(this, this.state.job) }
+        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+          <ConfirmDelete entityName="film" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+        </Modal>
+        { Common.renderJobModal.call(this, this.state.job) }
       </div>
     );
   }
@@ -1208,34 +777,16 @@ class FilmDetails extends React.Component {
   }
 
   renderTab(tab) {
+    const { actors, alternateAudios, alternateLengths, alternateSubs, crossedFilms, directors, filmCountries, filmFormats, filmGenres, filmLanguages, filmTopics, labels, laurels, quotes, schedule, subRights } = this.state;
     if (tab === "Contract") {
       return(
         <div>
           <hr />
           <div className="row">
-            <div className="col-xs-4">
-              <h2>Licensor</h2>
-              <input className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.licensorId ? FilmsStore.findLicensor(this.state.film.licensorId).name : "(None)"} data-field="licensorId" readOnly={true} />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className={ `col-xs-1 icons${FM.user.hasAdminAccess ? '' : ' hidden'}` }>
-              <img src={ Images.openModal } onClick={ this.clickSelectLicensorButton.bind(this) } />
-            </div>
-            <div className="col-xs-2">
-              <h2>Start Date</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.startDate || "" } data-field="startDate" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.startDate) }
-            </div>
-            <div className="col-xs-2">
-              <h2>End Date</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.endDate || "" } data-field="endDate" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.endDate) }
-            </div>
-            <div className="col-xs-3">
-              <h2>Sage ID</h2>
-              <input className={ Details.errorClass([], []) } onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sageId || ""} data-field="sageId" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError([], []) }
-            </div>
+            { Details.renderField.bind(this)({ columnWidth: 5, entity: 'film', property: 'licensorId', type: 'modal', optionDisplayProperty: 'name', columnHeader: 'Licensor' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'startDate', readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'endDate', readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'sageId', columnHeader: 'Sage ID', readOnly: !FM.user.hasAdminAccess }) }
           </div>
           { this.renderRoyaltyFields() }
           <hr />
@@ -1272,7 +823,7 @@ class FilmDetails extends React.Component {
               }) }
             </tbody>
           </table>
-          <a className="blue-outline-button small" onClick={ this.clickAddEpisode.bind(this) }>Add Episode</a>
+          <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'episodeModalOpen', true) }>Add Episode</a>
           <hr />
         </div>
       );
@@ -1299,7 +850,7 @@ class FilmDetails extends React.Component {
               }) }
             </tbody>
           </table>
-          <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ this.clickAddDVDButton.bind(this) }>Add DVD</a>
+          <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ Common.changeState.bind(this, 'dvdModalOpen', true) }>Add DVD</a>
           <hr />
         </div>
       );
@@ -1343,17 +894,17 @@ class FilmDetails extends React.Component {
               <table className="fm-admin-table no-hover">
                 <thead>
                   <tr>
-                    <th><div className={ this.state.subRightsSortBy === 'sublicensor' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'sublicensorName') }>Sublicensor</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'rightName') }>Right</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'territory') }>Territory</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'startDate') }>Start Date</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'endDate') }>End Date</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickSubRightsHeader.bind(this, 'exclusive') }>Exclusive</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'sublicensorName' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'sublicensorName') }>Sublicensor</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'rightName' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'rightName') }>Right</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'territory') }>Territory</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'startDate') }>Start Date</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'endDate') }>End Date</div></th>
+                    <th><div className={ this.state.subRightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'exclusive') }>Exclusive</div></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                  { _.orderBy(FilmsStore.subRights(), [this.subRightsSort.bind(this), this.subRightsSortSecond.bind(this)]).map((subRight, index) => {
+                  { _.orderBy(subRights, [this.subRightsSort.bind(this), this.subRightsSortSecond.bind(this)]).map((subRight, index) => {
                     return(
                       <tr key={ index }>
                         <td className="indent">
@@ -1385,7 +936,7 @@ class FilmDetails extends React.Component {
         </div>
       );
     } else if (this.state.tab === "Bookings") {
-      var filteredBookings = this.state.bookings.filterSearchText(this.state.searchText, this.state.sortBy);
+      var filteredBookings = this.state.bookings.concat(this.state.virtualBookings).filterSearchText(this.state.searchText, this.state.sortBy);
       return(
         <div>
           <hr />
@@ -1393,32 +944,22 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <ul className="standard-list screening-formats-list">
-                { this.state.filmFormats.map((filmFormat) => {
+                { HandyTools.alphabetizeArrayOfObjects(filmFormats, 'format').map((filmFormat) => {
                   return(
-                    <li key={ filmFormat.id }>{ filmFormat.format }<div className="x-button" onClick={ this.clickDeleteFormat.bind(this) } data-id={ filmFormat.id }></div></li>
+                    <li key={ filmFormat.id }>
+                      { filmFormat.format }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_formats', otherArrays: ['formats'] }) } data-id={ filmFormat.id }></div>
+                    </li>
                   );
                 }) }
               </ul>
-              <a className={ 'blue-outline-button small' } onClick={ this.clickAddFormat.bind(this) }>Add Format</a>
+              <a className={ 'blue-outline-button small' } onClick={ Common.changeState.bind(this, 'formatsModalOpen', true) }>Add Format</a>
             </div>
           </div>
           <hr />
           <div className="row">
-            <div className="col-xs-2">
-              <h2>Rating</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.rating || "" } data-field="rating" />
-              { Details.renderFieldError(this.state.filmErrors,[]) }
-            </div>
-            <div className="col-xs-2">
-              <h2>Aspect Ratio</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.aspectRatio || "" } data-field="aspectRatio" />
-              { Details.renderFieldError(this.state.filmErrors,[]) }
-            </div>
-            <div className="col-xs-4">
-              <h2>Sound Configuration</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.soundConfig || "" } data-field="soundConfig" />
-              { Details.renderFieldError(this.state.filmErrors,[]) }
-            </div>
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'rating' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'aspectRatio' }) }
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'film', property: 'soundConfig' }) }
           </div>
           <hr />
           <h3>Bookings</h3>
@@ -1485,13 +1026,15 @@ class FilmDetails extends React.Component {
             <div className="col-xs-6">
               <h3>Crossed Films</h3>
               <ul className="standard-list crossed-films-list">
-                { this.state.crossedFilms.map((crossedFilm) => {
+                { crossedFilms.map((crossedFilm) => {
                   return(
-                    <li key={ crossedFilm.id }>{ crossedFilm.title }<div className="x-button" onClick={ this.clickDeleteCrossedFilm.bind(this) } data-id={ crossedFilm.id }></div></li>
+                    <li key={ crossedFilm.id }>
+                      { crossedFilm.title }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'crossed_films', otherArrays: ['otherCrossedFilms'] }) } data-id={ crossedFilm.id }></div>
+                    </li>
                   );
                 }) }
               </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddCrossedFilm.bind(this) }>Add Film</a>
+              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'crossedFilmModalOpen', true) }>Add Film</a>
             </div>
           </div>
           <hr />
@@ -1530,38 +1073,22 @@ class FilmDetails extends React.Component {
               <h2>Director(s):</h2>
               <ul className="standard-list reorderable directors-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'directors' }></li>
-                { this.state.directors.map((director, index) => {
+                { HandyTools.sortArrayOfObjects(directors, 'order').map((director, index) => {
                   return(
                     <div key={ director.id }>
-                      <li data-id={ director.id } data-index={ index } data-section="directors">{ director.firstName } { director.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteDirector.bind(this) } data-id={ director.id }></div></li>
+                      <li data-id={ director.id } data-index={ index } data-section="directors">
+                        { director.firstName } { director.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'directors' }) } data-id={ director.id }></div>
+                      </li>
                       <li className="drop-zone" data-index={ index } data-section="directors"></li>
                     </div>
                   );
                 }) }
               </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddDirector.bind(this) }>Add Director</a>
+              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'directorModalOpen', true) }>Add Director</a>
             </div>
-            <div className="col-xs-2">
-              <h2>Label</h2>
-              <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="labelId" value={ this.state.film.labelId }>
-                { FilmsStore.labels().map((label, index) => {
-                  return(
-                    <option key={ index } value={ label.id }>{ label.name }</option>
-                  );
-                }) }
-              </select>
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className="col-xs-2">
-              <h2>Year</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.year) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.year || "" } data-field="year" />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.year) }
-            </div>
-            <div className="col-xs-2">
-              <h2>Length (minutes)</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.length || "" } data-field="length" />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.length) }
-            </div>
+            { Details.renderDropDown.bind(this)({ columnWidth: 2, entity: 'film', property: 'labelId', columnHeader: 'Label', options: labels, optionDisplayProperty: 'name', optionSortProperty: 'id' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'year' }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'length', columnHeader: 'Length (minutes)' }) }
           </div>
           <hr />
           <div className="row">
@@ -1569,31 +1096,35 @@ class FilmDetails extends React.Component {
               <h3>Countries</h3>
               <ul className="standard-list reorderable countries-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'countries' }></li>
-                { this.state.filmCountries.map((filmCountry, index) => {
+                { HandyTools.sortArrayOfObjects(filmCountries, 'order').map((filmCountry, index) => {
                   return(
                     <div key={ filmCountry.id }>
-                      <li data-id={ filmCountry.id } data-index={ index } data-section="countries">{ filmCountry.country }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteCountry.bind(this) } data-id={ filmCountry.id }></div></li>
+                      <li data-id={ filmCountry.id } data-index={ index } data-section="countries">
+                        { filmCountry.country }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_countries', otherArrays: ['countries'] }) } data-id={ filmCountry.id }></div>
+                      </li>
                       <li className="drop-zone" data-index={ index } data-section="countries"></li>
                     </div>
                   );
                 }) }
               </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddCountry.bind(this) }>Add Country</a>
+              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'countriesModalOpen', true) }>Add Country</a>
             </div>
             <div className="col-xs-6">
               <h3>Languages</h3>
               <ul className="standard-list reorderable languages-list">
                 <li className="drop-zone" data-index="-1" data-section="languages"></li>
-                { this.state.filmLanguages.map((filmLanguage, index) => {
+                { HandyTools.sortArrayOfObjects(filmLanguages, 'order').map((filmLanguage, index) => {
                   return(
                     <div key={ filmLanguage.id }>
-                      <li data-index={ index } data-section="languages">{ filmLanguage.language }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteLanguage.bind(this) } data-id={ filmLanguage.id }></div></li>
+                      <li data-index={ index } data-section="languages">
+                        { filmLanguage.language }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_languages', otherArrays: ['languages'] }) } data-id={ filmLanguage.id }></div>
+                      </li>
                       <li className="drop-zone" data-index={ index } data-section="languages"></li>
                     </div>
                   );
                 }) }
               </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddLanguage.bind(this) }>Add Language</a>
+              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'languagesModalOpen', true) }>Add Language</a>
             </div>
           </div>
           <hr />
@@ -1602,37 +1133,29 @@ class FilmDetails extends React.Component {
               <h3>Cast</h3>
               <ul className="standard-list reorderable actors-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'cast' }></li>
-                { this.state.actors.map((actor, index) => {
+                { HandyTools.sortArrayOfObjects(actors, 'order').map((actor, index) => {
                   return(
                     <div key={ actor.id }>
-                      <li data-index={ index } data-section="cast">{ actor.firstName } { actor.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteActor.bind(this) } data-id={ actor.id }></div></li>
+                      <li data-index={ index } data-section="cast">
+                        { actor.firstName } { actor.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'actors' }) } data-id={ actor.id }></div>
+                      </li>
                       <li className="drop-zone" data-index={ index } data-section="cast"></li>
                     </div>
                   );
                 }) }
               </ul>
-              <a className="blue-outline-button small" onClick={ this.clickAddActor.bind(this) }>Add Actor</a>
+              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'actorModalOpen', true) }>Add Actor</a>
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <h3>Release Dates</h3>
-              <h2>Theatrical Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.theatricalRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.theatricalRelease || "" } data-field="theatricalRelease" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.theatricalRelease) }
-              <h2>SVOD Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.svodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.svodRelease || "" } data-field="svodRelease" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.svodRelease) }
-              <h2>TVOD/EST Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.tvodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.tvodRelease || "" } data-field="tvodRelease" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.tvodRelease) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'theatricalRelease', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'svodRelease', columnHeader: 'SVOD Release', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'tvodRelease', columnHeader: 'TVOD/EST Release', readOnly: !FM.user.hasAdminAccess }) }
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <div style={ { width: '100%', height: '47px' } }></div>
-              <h2>AVOD Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.avodRelease) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.avodRelease || "" } data-field="avodRelease" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.avodRelease) }
-              <h2>Club Release</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.clubDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.clubDate || "" } data-field="clubDate" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.clubDate) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'avodRelease', columnHeader: 'AVOD Release', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'clubDate', readOnly: !FM.user.hasAdminAccess }) }
             </div>
           </div>
           <hr />
@@ -1640,7 +1163,7 @@ class FilmDetails extends React.Component {
             <div className="col-xs-12">
               <h3>Schedule</h3>
               <ul className="standard-list schedule">
-                { this.state.schedule.map((entry, index) => {
+                { schedule.map((entry, index) => {
                   return(
                     <li key={ index } className={ entry.tentative ? 'tentative' : '' }>{ entry.label } - { entry.date + (entry.tentative ? ' (?)' : '') }</li>
                   );
@@ -1677,16 +1200,18 @@ class FilmDetails extends React.Component {
                 <h3>Laurels</h3>
                 <ul className="standard-list reorderable laurels-list">
                   <li className="drop-zone" data-index="-1" data-section="laurels"></li>
-                  { this.state.laurels.map((laurel, index) => {
+                  { HandyTools.sortArrayOfObjects(laurels, 'order').map((laurel, index) => {
                     return(
                       <div key={ laurel.id }>
-                        <li data-index={ index } data-section="laurels">{ laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteLaurel.bind(this) } data-id={ laurel.id }></div></li>
+                        <li data-index={ index } data-section="laurels">
+                          { laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'laurels' }) } data-id={ laurel.id }></div>
+                        </li>
                         <li className="drop-zone" data-index={ index } data-section="laurels"></li>
                       </div>
                     );
                   }) }
                 </ul>
-                <a className="blue-outline-button small" onClick={ this.clickAddLaurel.bind(this) }>Add Laurel</a>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'laurelModalOpen', true) }>Add Laurel</a>
                 <div className="row row-of-checkboxes badge-checkboxes">
                   { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
                   { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
@@ -1698,7 +1223,7 @@ class FilmDetails extends React.Component {
               <div className="col-xs-12 quotes-list">
                 <h3 className="quotes-header">Quotes</h3>
                 <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
-                { this.state.quotes.map((quote, index) => {
+                { HandyTools.sortArrayOfObjects(quotes, 'order').map((quote, index) => {
                   return(
                     <div key={ quote.id } className="quote-container">
                       { this.renderQuote(quote, index) }
@@ -1709,7 +1234,7 @@ class FilmDetails extends React.Component {
             </div>
             <div className="row">
               <div className="col-xs-12">
-                <a className="blue-outline-button small" onClick={ this.clickAddQuote.bind(this) }>Add Quote</a>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'quoteModalOpen', true) }>Add Quote</a>
               </div>
             </div>
             <hr />
@@ -1718,27 +1243,31 @@ class FilmDetails extends React.Component {
                 <h3>Genres</h3>
                 <ul className="standard-list reorderable genres-list">
                   <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
-                  { this.state.filmGenres.map((filmGenre, index) => {
+                  { HandyTools.sortArrayOfObjects(filmGenres, 'order').map((filmGenre, index) => {
                     return(
                       <div key={ filmGenre.id }>
-                        <li data-index={ index } data-section="genres">{ filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.clickDeleteGenre.bind(this) } data-id={ filmGenre.id }></div></li>
+                        <li data-index={ index } data-section="genres">
+                          { filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_genres', otherArrays: ['genres'] }) } data-id={ filmGenre.id }></div>
+                        </li>
                         <li className="drop-zone" data-index={ index } data-section="genres"></li>
                       </div>
                     );
                   }) }
                 </ul>
-                <a className="blue-outline-button small" onClick={ this.clickAddGenre.bind(this) }>Add Genre</a>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'genresModalOpen', true) }>Add Genre</a>
               </div>
               <div className="col-xs-6">
                 <h3>Topics</h3>
                 <ul className="standard-list topics-list">
-                  { this.state.filmTopics.map((filmTopic) => {
+                  { HandyTools.alphabetizeArrayOfObjects(filmTopics, 'topic').map((filmTopic) => {
                     return(
-                      <li key={ filmTopic.id }>{ filmTopic.topic }<div className="x-button" onClick={ this.clickDeleteTopic.bind(this) } data-id={ filmTopic.id }></div></li>
+                      <li key={ filmTopic.id }>
+                        { filmTopic.topic }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_topics', otherArrays: ['topics'] }) } data-id={ filmTopic.id }></div>
+                      </li>
                     );
                   }) }
                 </ul>
-                <a className="blue-outline-button small" onClick={ this.clickAddTopic.bind(this) }>Add Topic</a>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'topicsModalOpen', true) }>Add Topic</a>
               </div>
             </div>
             <hr />
@@ -1746,9 +1275,11 @@ class FilmDetails extends React.Component {
               <div className="col-xs-4">
                 <h3>Alternate Lengths</h3>
                 <ul className="standard-list alternate-lengths-list">
-                  { HandyTools.sortArrayOfObjects(this.state.alternateLengths, 'length').map((alternateLength) => {
+                  { HandyTools.sortArrayOfObjects(alternateLengths, 'length').map((alternateLength) => {
                     return(
-                      <li key={ alternateLength.id }>{ alternateLength.length }<div className="x-button" onClick={ this.clickDeleteAltLength.bind(this) } data-id={ alternateLength.id }></div></li>
+                      <li key={ alternateLength.id }>
+                        { alternateLength.length }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_lengths' }) } data-id={ alternateLength.id }></div>
+                      </li>
                     );
                   }) }
                 </ul>
@@ -1757,9 +1288,11 @@ class FilmDetails extends React.Component {
               <div className="col-xs-4">
                 <h3>Alternate Audio Tracks</h3>
                 <ul className="standard-list alternate-audios-list">
-                  { HandyTools.alphabetizeArrayOfObjects(this.state.alternateAudios, 'languageName').map((alternateAudio) => {
+                  { HandyTools.alphabetizeArrayOfObjects(alternateAudios, 'languageName').map((alternateAudio) => {
                     return(
-                      <li key={ alternateAudio.id }>{ alternateAudio.languageName }<div className="x-button" onClick={ this.clickDeleteAltAudio.bind(this) } data-id={ alternateAudio.id }></div></li>
+                      <li key={ alternateAudio.id }>
+                        { alternateAudio.languageName }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_audios', otherArrays: ['audioLanguages'] }) } data-id={ alternateAudio.id }></div>
+                      </li>
                     );
                   }) }
                 </ul>
@@ -1768,13 +1301,15 @@ class FilmDetails extends React.Component {
               <div className="col-xs-4">
                 <h3>Alternate Subtitles</h3>
                 <ul className="standard-list alternate-subtitles-list">
-                  { HandyTools.alphabetizeArrayOfObjects(this.state.alternateSubtitles, 'languageName').map((alternateSubtitle) => {
+                  { HandyTools.alphabetizeArrayOfObjects(alternateSubs, 'languageName').map((alternateSub) => {
                     return(
-                      <li key={ alternateSubtitle.id }>{ alternateSubtitle.languageName }<div className="x-button" onClick={ this.clickDeleteAltSub.bind(this) } data-id={ alternateSubtitle.id }></div></li>
+                      <li key={ alternateSub.id }>
+                        { alternateSub.languageName }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_subs', otherArrays: ['subtitleLanguages'] }) } data-id={ alternateSub.id }></div>
+                      </li>
                     );
                   }) }
                 </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateSubtitleModalOpen', true) }>Add Subtitles</a>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateSubsModalOpen', true) }>Add Subtitles</a>
               </div>
             </div>
             <hr />
@@ -1784,11 +1319,13 @@ class FilmDetails extends React.Component {
                 <ul className="standard-list related-films-list">
                   { this.state.relatedFilms.map((relatedFilm) => {
                     return(
-                      <li key={ relatedFilm.id }>{ relatedFilm.title }<div className="x-button" onClick={ this.clickDeleteRelatedFilm.bind(this) } data-id={ relatedFilm.id }></div></li>
+                      <li key={ relatedFilm.id }>
+                        { relatedFilm.title }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'related_films', otherArrays: ['otherFilms'] }) } data-id={ relatedFilm.id }></div>
+                      </li>
                     );
                   }) }
                 </ul>
-                <a className="blue-outline-button small" onClick={ this.clickAddRelatedFilm.bind(this) }>Add Related Film</a>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'relatedFilmsModalOpen', true) }>Add Related Film</a>
               </div>
             </div>
             <hr />
@@ -1818,7 +1355,7 @@ class FilmDetails extends React.Component {
                     }) }
                   </tbody>
                 </table>
-                <a className="blue-outline-button small" onClick={ this.clickAddDigitalRetailer.bind(this) }>Add Digital Retailer</a>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newDigitalRetailerModalOpen', true) }>Add Digital Retailer</a>
               </div>
             </div>
             <hr />
@@ -1848,57 +1385,25 @@ class FilmDetails extends React.Component {
                     }) }
                   </tbody>
                 </table>
-                <a className="blue-outline-button small" onClick={ this.clickAddEduPlatform.bind(this) }>Add Platform</a>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newEduPlatformModalOpen', true) }>Add Platform</a>
               </div>
             </div>
             <hr />
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Film Movement Plus Link</h2>
-                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.fmPlusUrl || "" } data-field="fmPlusUrl" />
-                { Details.renderFieldError(this.state.filmErrors, []) }
-              </div>
-              <div className="col-xs-6">
-                <h2>Standalone Site</h2>
-                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.standaloneSite || "" } data-field="standaloneSite" />
-                { Details.renderFieldError(this.state.filmErrors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'fmPlusUrl', columnHeader: 'Film Movement Plus Link' }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'standaloneSite' }) }
             </div>
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Vimeo Trailer Link</h2>
-                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vimeoTrailer || "" } data-field="vimeoTrailer" />
-                { Details.renderFieldError(this.state.filmErrors, []) }
-              </div>
-              <div className="col-xs-6">
-                <h2>YouTube Trailer Link</h2>
-                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.youtubeTrailer || "" } data-field="youtubeTrailer" />
-                { Details.renderFieldError(this.state.filmErrors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'vimeoTrailer', columnHeader: 'Vimeo Trailer Link' }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'youtubeTrailer', columnHeader: 'YouTube Trailer Link' }) }
             </div>
             <div className="row">
-              <div className="col-xs-6">
-                <h2>ProRes Trailer Link</h2>
-                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.proresTrailer || "" } data-field="proresTrailer" />
-                { Details.renderFieldError(this.state.filmErrors, []) }
-              </div>
-              <div className="col-xs-6">
-                <h2>Facebook Link</h2>
-                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.facebookLink || "" } data-field="facebookLink" />
-                { Details.renderFieldError(this.state.filmErrors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'proresTrailer', columnHeader: 'ProRes Trailer Link' }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'facebookLink' }) }
             </div>
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Twitter Link</h2>
-                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.twitterLink || "" } data-field="twitterLink" />
-                { Details.renderFieldError(this.state.filmErrors, []) }
-              </div>
-              <div className="col-xs-6">
-                <h2>Instagram Link</h2>
-                <input className={ Details.errorClass(this.state.filmErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.instagramLink || "" } data-field="instagramLink" />
-                { Details.renderFieldError(this.state.filmErrors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'twitterLink' }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'instagramLink' }) }
             </div>
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'rentalUrl' }) }
@@ -1910,49 +1415,29 @@ class FilmDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
             </div>
           </div>
-        )
+        );
       }
     } else if (this.state.tab === "Synopses") {
       return(
         <div>
           <hr />
           <div className="row">
-            <div className="col-xs-12">
-              <h2>Synopsis</h2>
-              <textarea rows="8" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.synopsis || "" } data-field="synopsis" />
-              { this.characterCount.call(this, 'synopsis') }
-            </div>
+            { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
           </div>
           <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
-            <div className="col-xs-12">
-              <h2>Synopsis - 500 characters</h2>
-              <textarea rows="8" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.vodSynopsis || "" } data-field="vodSynopsis" />
-              { this.characterCount.call(this, 'vodSynopsis') }
-            </div>
+            { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 500 characters', characterCount: true }) }
           </div>
           <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
-            <div className="col-xs-12">
-              <h2>Synopsis - 240 characters</h2>
-              <textarea rows="4" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.shortSynopsis || "" } data-field="shortSynopsis" />
-              { this.characterCount.call(this, 'shortSynopsis') }
-            </div>
+            { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'shortSynopsis', rows: 4, columnHeader: 'Synopsis - 240 characters', characterCount: true }) }
           </div>
           <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
-            <div className="col-xs-12">
-              <h2>Synopsis - 150 characters</h2>
-              <textarea rows="2" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.logline || "" } data-field="logline" />
-              { this.characterCount.call(this, 'logline') }
-            </div>
+            { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'logline', rows: 2, columnHeader: 'Synopsis - 150 characters', characterCount: true }) }
           </div>
           <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
-            <div className="col-xs-12">
-              <h2>Institutional Synopsis</h2>
-              <textarea rows="8" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.institutionalSynopsis || "" } data-field="institutionalSynopsis" />
-              { this.characterCount.call(this, 'institutionalSynopsis') }
-            </div>
+            { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'institutionalSynopsis', rows: 8, characterCount: true }) }
           </div>
         </div>
-      )
+      );
     } else {
       return(
         <div>
@@ -1961,60 +1446,24 @@ class FilmDetails extends React.Component {
     }
   }
 
-  characterCount(field) {
-    let count = this.state.film[field] ? this.state.film[field].length : 0;
-    return(
-      <div className="character-count">({ count } characters)</div>
-    );
-  }
-
   renderRoyaltyFields() {
+    const { dealTemplates, film, filmRevenuePercentages, filmRights, percentageErrors, percentageObject, revenueStreams } = this.state;
     return(
       <div>
-        <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
+        <div className={ film.filmType == 'Short' ? 'hidden' : '' }>
           <div className="row">
-            { this.renderDealTypeMenu() }
-            <div className={ "col-xs-1" + ((this.state.film.dealTypeId != "5" && this.state.film.dealTypeId != "6") ? " hidden" : "") }>
-              <h2>GR %</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.grPercentage) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.grPercentage || "" } data-field="grPercentage" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            { this.renderStatementsDueMenu() }
-            <div className="col-xs-3">
-              <h2>MG</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.mg)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.mg || ""} data-field="mg" readOnly={ !FM.user.hasAdminAccess } />
-              {Details.renderFieldError(this.state.filmErrors, FM.errors.mg)}
-            </div>
-            <div className={ "col-xs-3" + (this.state.film.filmType === "Short" ? " hidden" : "") }>
-              <h2>E & O</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.eAndO)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.eAndO || ""} data-field="eAndO" readOnly={ !FM.user.hasAdminAccess } />
-              {Details.renderFieldError(this.state.filmErrors, FM.errors.eAndO)}
-            </div>
-            <div className="col-xs-3">
-              <h2>Expense Cap</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.expenseCap)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.expenseCap || ""} data-field="expenseCap" readOnly={ !FM.user.hasAdminAccess } />
-              {Details.renderFieldError(this.state.filmErrors, FM.errors.expenseCap)}
-            </div>
-            <div className="col-xs-3">
-              <h2>DVD Sell Off Period (Months)</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.sellOffPeriod)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.sellOffPeriod} data-field="sellOffPeriod" readOnly={ !FM.user.hasAdminAccess } />
-              {Details.renderFieldError(this.state.filmErrors, FM.errors.sellOffPeriod)}
-            </div>
-            <div className="col-xs-3">
-              <h2>Delivery Acceptance Date</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.acceptDelivery) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.acceptDelivery } data-field="acceptDelivery" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, FM.errors.acceptDelivery) }
-            </div>
+            { Details.renderDropDown.bind(this)({ columnWidth: 5, entity: 'film', property: 'dealTypeId', columnHeader: 'Deal Type', options: dealTemplates, optionDisplayProperty: 'name', readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 1, entity: 'film', property: 'grPercentage', columnHeader: 'GR %', readOnly: !FM.user.hasAdminAccess, hidden: film.dealTypeId != "5" && film.dealTypeId != "6" }) }
+            { Details.renderDropDown.bind(this)({ columnWidth: 3, entity: 'film', property: 'daysStatementDue', columnHeader: 'Statements Due', options: [{ value: 30, text: '30 Days' }, { value: 45, text: '45 Days' }, { value: 60, text: '60 Days' }], optionDisplayProperty: 'value', readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'mg', columnHeader: 'MG', readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'eAndO', columnHeader: 'E & O', readOnly: !FM.user.hasAdminAccess, hidden: film.filmType === "Short" }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'expenseCap', readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'sellOffPeriod', columnHeader: 'DVD Sell Off Period (Months)', readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'acceptDelivery', columnHeader: 'Delivery Acceptance Date', readOnly: !FM.user.hasAdminAccess }) }
           </div>
           <div className="row">
-            <div className="col-xs-6">
-              <h2>Royalty Notes</h2>
-              <textarea rows="3" className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.royaltyNotes || ""} data-field="royaltyNotes" readOnly={ !FM.user.hasAdminAccess } />
-            </div>
-            <div className="col-xs-6">
-              <h2>Contractual Obligations</h2>
-              <textarea rows="3" className={Details.errorClass(this.state.filmErrors, [])} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.contractualObligations || ""} data-field="contractualObligations" readOnly={ !FM.user.hasAdminAccess } />
-            </div>
+            { Details.renderTextBox.bind(this)({ columnWidth: 6, entity: 'film', property: 'royaltyNotes', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderTextBox.bind(this)({ columnWidth: 6, entity: 'film', property: 'contractualObligations', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
           </div>
         </div>
         <hr />
@@ -2024,16 +1473,16 @@ class FilmDetails extends React.Component {
             <table className="fm-admin-table">
               <thead>
                 <tr>
-                  <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'name') }>Right</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'territory') }>Territory</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'startDate') } >Start Date</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'endDate') }>End Date</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ this.clickRightsHeader.bind(this, 'exclusive') }>Exclusive</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'name') }>Right</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'territory') }>Territory</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'startDate') } >Start Date</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'endDate') }>End Date</div></th>
+                  <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'exclusive') }>Exclusive</div></th>
                 </tr>
               </thead>
               <tbody>
                 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-                { _.orderBy(this.state.filmRights, [this.rightsSort.bind(this), this.rightsSortSecond.bind(this)]).map((right, index) => {
+                { _.orderBy(filmRights, [this.rightsSort.bind(this), this.rightsSortSecond.bind(this)]).map((right, index) => {
                   return(
                     <tr key={ index } onClick={ this.redirect.bind(this, 'film_rights', right.id) }>
                       <td className="indent">
@@ -2064,46 +1513,38 @@ class FilmDetails extends React.Component {
           <h3>Revenue Splits</h3>
           <div className="row">
             <div className="col-xs-12 percentage-column">
-              { FilmsStore.revenuePercentages().map((revenuePercentage, index) => {
-                var properErrorsArray = this.state.percentageErrors[revenuePercentage.id] ? this.state.percentageErrors[revenuePercentage.id] : [];
+              { filmRevenuePercentages.map((revenuePercentage, index) => {
+                const properErrorsArray = percentageErrors[revenuePercentage.id] ? percentageErrors[revenuePercentage.id] : [];
+                const revenueStream = revenueStreams.find(stream => stream.id == revenuePercentage.revenueStreamId);
                 return(
                   <div className="revenue-percentage" key={ index }>
-                    <h2>{FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).nickname || FilmsStore.findRevenueStream(revenuePercentage.revenueStreamId).name} %</h2>
-                    <input className={Details.errorClass(properErrorsArray, FM.errors.value)} onChange={FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray))} value={this.state.percentages[revenuePercentage.id] || ""} data-thing="percentages" data-field={revenuePercentage.id} readOnly={ !FM.user.hasAdminAccess } />
+                    <h2>{ revenueStream.nickname || revenueStream.name } %</h2>
+                    <input
+                      className={ Details.errorClass(properErrorsArray, FM.errors.value) }
+                      onChange={ this.changePercentageField.bind(this) }
+                      value={ percentageObject[revenuePercentage.id] ? percentageObject[revenuePercentage.id] : '' }
+                      data-id={ revenuePercentage.id }
+                      data-field={ revenuePercentage.id }
+                      readOnly={ !FM.user.hasAdminAccess }
+                    />
                     { Details.renderFieldError([], []) }
                   </div>
-                )
+                );
               }) }
             </div>
           </div>
           <hr />
           <div className={ "row reserve-section" + (this.state.film.reserve ? "" : " no-reserve") }>
             { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'reserve', columnHeader: 'Reserve Against Returns' }) }
-            <div className={ `col-xs-2${this.state.film.reserve ? '' : ' hidden'}` }>
-              <h2>Reserve %</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.reservePercentage)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reservePercentage} data-field="reservePercentage" disabled={ !this.state.film.reserve } readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className={ `col-xs-2${this.state.film.reserve ? '' : ' hidden'}` }>
-              <h2># of Quarters</h2>
-              <input className={Details.errorClass(this.state.filmErrors, FM.errors.reserveQuarters)} onChange={FM.changeField.bind(this, this.changeFieldArgs())} value={this.state.film.reserveQuarters} data-field="reserveQuarters" disabled={ !this.state.film.reserve } readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reservePercentage', columnHeader: 'Reserve %', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reserveQuarters', columnHeader: '# of Quarters', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
             <div className={ `spacer${this.state.film.reserve ? ' hidden' : ''}` }></div>
           </div>
           <hr />
           <div className={ "row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew") }>
             { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'autoRenew', columnHeader: 'Auto-Renew' }) }
-            <div className={ `col-xs-2${this.state.film.autoRenew ? '' : ' hidden'}` }>
-              <h2>Term (Months)</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.autoRenewTerm) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.autoRenewTerm } data-field="autoRenewTerm" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
-            <div className={ `col-xs-2${this.state.film.autoRenew ? '' : ' hidden'}` }>
-              <h2>Days Notice</h2>
-              <input className={ Details.errorClass(this.state.filmErrors, FM.errors.autoRenewDaysNotice) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.film.autoRenewDaysNotice } data-field="autoRenewDaysNotice" readOnly={ !FM.user.hasAdminAccess } />
-              { Details.renderFieldError(this.state.filmErrors, []) }
-            </div>
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewTerm', columnHeader: 'Term (Months)', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewDaysNotice', columnHeader: 'Days Notice', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
             <div className={ `spacer${this.state.film.autoRenew ? ' hidden' : ''}` }></div>
           </div>
         </div>
@@ -2111,75 +1552,20 @@ class FilmDetails extends React.Component {
     );
   }
 
-  renderDealTypeMenu() {
-    if (FM.user.hasAdminAccess) {
-      return(
-        <div className="col-xs-5">
-          <h2>Deal Type</h2>
-            <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="dealTypeId" value={ this.state.film.dealTypeId }>
-              { FilmsStore.dealTemplates().map((dealTemplate, index) => {
-                return(
-                  <option key={ index } value={ dealTemplate.id }>{ dealTemplate.name }</option>
-                );
-              }) }
-            </select>
-          { Details.renderFieldError(this.state.filmErrors, []) }
-        </div>
-      );
-    } else {
-      return(
-        <div className="col-xs-5">
-          <h2>Deal Type</h2>
-          <input className={ Details.errorClass(this.state.filmErrors, []) } value={ this.state.film.dealTypeId ? HandyTools.findObjectInArrayById(FilmsStore.dealTemplates(), this.state.film.dealTypeId).name : '' } readOnly={ true } />
-          { Details.renderFieldError(this.state.filmErrors, []) }
-        </div>
-      );
-    }
-  }
-
-  renderStatementsDueMenu() {
-    if (FM.user.hasAdminAccess) {
-      return(
-        <div className={"col-xs-3" + ((this.state.film.dealTypeId === "5" || this.state.film.dealTypeId === "6") ? "" : " col-xs-offset-1")}>
-          <h2>Statements Due</h2>
-          <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="daysStatementDue" value={ this.state.film.daysStatementDue }>
-            <option value="30">30 Days</option>
-            <option value="45">45 Days</option>
-            <option value="60">60 Days</option>
-          </select>
-          { Details.renderFieldError([], []) }
-        </div>
-      );
-    } else {
-      return(
-        <div className={"col-xs-3" + ((this.state.film.dealTypeId === "5" || this.state.film.dealTypeId === "6") ? "" : " col-xs-offset-1")}>
-          <h2>Statements Due</h2>
-          <input className={ Details.errorClass(this.state.filmErrors, []) } value={ this.state.film.dealTypeId ? `${this.state.film.daysStatementDue} Days` : '' } readOnly={ true } />
-          { Details.renderFieldError([], []) }
-        </div>
-      );
-    }
-  }
-
   renderRightsButtons() {
     if (FM.user.hasAdminAccess) {
       return([
-        <a key={ 1 } className="blue-outline-button small m-right" onClick={ this.clickAddRight.bind(this) }>Add Rights</a>,
-        <a key={ 2 } className="blue-outline-button small float-button" onClick={ this.clickChangeRightsDates.bind(this) }>Change All Dates</a>
+        <a key={ 1 } className="blue-outline-button small m-right" onClick={ Common.changeState.bind(this, 'newRightsModalOpen', true) }>Add Rights</a>,
+        <a key={ 2 } className="blue-outline-button small float-button" onClick={ Common.changeState.bind(this, 'changeDatesModalOpen', true) }>Change All Dates</a>
       ]);
     }
   }
 
   renderButtons() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
-    }
     return(
       <div>
-        <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || (this.state.changesToSave == false)) } onClick={ this.clickSave.bind(this) }>
-          { buttonText }
+        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+          { Details.saveButtonText.call(this) }
         </a>
         { this.renderErrorGuide() }
         { this.renderCopyAndDeleteButtons() }
@@ -2190,10 +1576,10 @@ class FilmDetails extends React.Component {
   renderCopyAndDeleteButtons() {
     if (FM.user.hasAdminAccess) {
       return([
-        <a key={ 2 } id="delete" className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete Film
+        <a key={ 1 } className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
+          Delete
         </a>,
-        <a key={ 1 } className={ "float-button orange-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopy.bind(this) }>
+        <a key={ 2 } style={ { marginRight: 30 } } className={ "btn float-button orange-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'copyModalOpen', true) }>
           Copy Film
         </a>
       ]);
@@ -2215,7 +1601,8 @@ class FilmDetails extends React.Component {
   }
 
   renderErrorGuide() {
-    if (this.state.filmErrors.length > 0 || this.percentageErrorsExist()) {
+    const { errors } = this.state;
+    if (errors.length > 0 || this.percentageErrorsExist()) {
       var tabs = {
         contract: [
           FM.errors.grPercentage,
@@ -2238,11 +1625,11 @@ class FilmDetails extends React.Component {
           FM.errors.clubDate
         ]
       }
-      var result = [];
+      let result = [];
       if (this.percentageErrorsExist()) {
         result.push("Contract Tab");
       }
-      this.state.filmErrors.forEach(function(error) {
+      errors.forEach((error) => {
         if (result.indexOf("Contract Tab") === -1) {
           tabs.contract.forEach((errorsArray) => {
             if (errorsArray.indexOf(error) > -1) {
@@ -2258,7 +1645,7 @@ class FilmDetails extends React.Component {
           });
         }
       });
-      var string = (result.length > 0 ? ("(" + result.join(", ") + ")") : "");
+      const string = (result.length > 0 ? ("(" + result.join(", ") + ")") : "");
       return(
         <div className="error-guide">
           { "Not saved. There were errors. " + string }
@@ -2285,7 +1672,6 @@ class FilmDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     $("li:not('drop-zone'), div.quote").draggable({
       cursor: '-webkit-grabbing',
       handle: '.handle',
@@ -2299,22 +1685,13 @@ class FilmDetails extends React.Component {
       out: this.dragOutHandler,
       drop: this.dropHandler.bind(this)
     });
-    $('.match-height-layout').matchHeight();
-    if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success: (response) => {
-            ServerActions.receiveJob(response);
-          }
-        })
-      }, 1500)
-    }
+    Common.updateJobModal.call(this, { successCallback: this.artworkUpdateCallback.bind(this) });
+  }
+
+  artworkUpdateCallback(job) {
+    let { film } = this.state;
+    film.artworkUrl = job.metadata.newImage;
+    this.setState({ film });
   }
 }
 
@@ -2323,7 +1700,7 @@ const mapStateToProps = (reducers) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ createEntity, deleteEntity }, dispatch);
+  return bindActionCreators({ sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilmDetails);

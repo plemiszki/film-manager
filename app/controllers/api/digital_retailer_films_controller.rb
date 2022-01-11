@@ -1,5 +1,10 @@
 class Api::DigitalRetailerFilmsController < AdminController
 
+  def new
+    @digital_retailers = DigitalRetailer.all.order(:name)
+    render 'index', formats: [:json], handlers: [:jbuilder]
+  end
+
   def create
     @digital_retailer_film = DigitalRetailerFilm.new(digital_retailer_film_params)
     if @digital_retailer_film.save

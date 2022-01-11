@@ -13,14 +13,14 @@ class Api::FilmRightsController < AdminController
       params[:territories].each do |territory_id|
         @film_right = FilmRight.find_by({ film_id: params[:film_right][:film_id], right_id: right_id, territory_id: territory_id })
         if @film_right
-          if @film_right.update({ start_date: params[:film_right][:start_date], end_date: params[:film_right][:end_date], exclusive: params[:film_right][:exclusive] })
+          if @film_right.update!({ start_date: params[:film_right][:start_date], end_date: params[:film_right][:end_date], exclusive: params[:film_right][:exclusive] })
           else
             error = true
             break
           end
         else
           @film_right = FilmRight.new({ film_id: params[:film_right][:film_id], right_id: right_id, territory_id: territory_id, start_date: params[:film_right][:start_date], end_date: params[:film_right][:end_date], exclusive: params[:film_right][:exclusive] })
-          if @film_right.save
+          if @film_right.save!
           else
             error = true
             break

@@ -424,6 +424,12 @@ var FM = {
     ],
     formatId: [
       "Format can't be blank"
+    ],
+    rentalPrice: [
+      "Rental price is not a number"
+    ],
+    rentalDays: [
+      "Rental days is not a number"
     ]
   },
 

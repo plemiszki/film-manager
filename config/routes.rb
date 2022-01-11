@@ -153,7 +153,7 @@ Rails.application.routes.draw do
     patch '/film_rights/change_dates' => '/api/film_rights#change_dates'
     resources :film_rights, only: [:create, :show, :update, :destroy]
     resources :digital_retailers, only: [:index, :create, :show, :update, :destroy]
-    resources :digital_retailer_films, only: [:create, :show, :update, :destroy]
+    resources :digital_retailer_films, only: [:new, :create, :show, :update, :destroy]
     resources :edu_platforms, only: [:index, :create, :show, :update, :destroy]
     resources :edu_platform_films, only: [:new, :create, :show, :update, :destroy]
     get '/rights_and_territories' => '/api/film_rights#rights_and_territories'

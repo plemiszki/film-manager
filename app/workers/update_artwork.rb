@@ -18,7 +18,15 @@ class UpdateArtwork
       end
       job.update({ current_value: film_index + 1 })
     end
-    job.update!({ done: true, first_line: new_url })
+
+    job.update!({
+      status: :success,
+      first_line: 'All Artwork Updated',
+      metadata: {
+        new_image: new_url,
+        showSuccessMessageModal: true
+      }
+    })
   end
 
 end

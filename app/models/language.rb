@@ -4,6 +4,7 @@ class Language < ActiveRecord::Base
 
   has_many :film_languages, dependent: :destroy
   has_many :films, through: :film_languages
+  has_many :alternate_audios, dependent: :destroy
 
   CODES = {
     cantonese: 'zh',

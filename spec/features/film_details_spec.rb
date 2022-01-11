@@ -108,7 +108,7 @@ describe 'film_details', type: :feature do
     fill_out_and_submit_modal({
       first_name: 'Johnny',
       last_name: 'Depp'
-    }, :orange_button)
+    }, :input)
     expect(Director.last.attributes).to include(
       'first_name' => 'Johnny',
       'last_name' => 'Depp'
@@ -166,7 +166,7 @@ describe 'film_details', type: :feature do
     fill_out_and_submit_modal({
       first_name: 'Robert',
       last_name: 'DeNiro'
-    }, :orange_button)
+    }, :input)
     expect(Actor.last.attributes).to include(
       'first_name' => 'Robert',
       'last_name' => 'DeNiro'
@@ -199,8 +199,8 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="sellOffPeriod"]').value).to eq '6'
     expect(find('input[data-field="acceptDelivery"]').value).to eq '4/1/20'
     expect(find('textarea[data-field="royaltyNotes"]').value).to eq 'royalty notes'
-    expect(find('input[data-thing="percentages"][data-field="1"]').value).to eq '0.0'
-    expect(find('input[data-thing="percentages"][data-field="2"]').value).to eq '0.0'
+    expect(find('input[data-id="1"]').value).to eq '0.0'
+    expect(find('input[data-id="2"]').value).to eq '0.0'
   end
 
   it 'displays the licensed rights' do
@@ -213,11 +213,11 @@ describe 'film_details', type: :feature do
   it 'updates contract information' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Contract').click
-    change_modal_select_field('licensorId', 'Frog Productions')
     fill_out_form({
       start_date: '1/1/2020',
       end_date: '1/1/2021',
       sage_id: 'NEW SAGE ID',
+      licensor_id: { value: 'Frog Productions', type: :select_modal },
       deal_type_id: { value: 2, type: :select },
       days_statement_due: { value: 60, type: :select },
       mg: '$100,000',
@@ -303,7 +303,7 @@ describe 'film_details', type: :feature do
       logline: 'New Logline',
       institutional_synopsis: 'New Institutional Synopsis'
     })
-    find('.orange-button', text: 'Save').click
+    find('.blue-button', text: 'Save').click
     expect(page).not_to have_selector('.spinner')
     expect(@film.reload.attributes).to include(
       'synopsis' => 'New Synopsis',
@@ -391,7 +391,7 @@ describe 'film_details', type: :feature do
       award_name: 'Best Film',
       festival: 'Academy Awards'
     }
-    fill_out_and_submit_modal(laurel_info, :orange_button)
+    fill_out_and_submit_modal(laurel_info, :input)
     expect(Laurel.count).to eq(1)
     expect(page).to have_content('Nominated - Best Film - Academy Awards')
   end
@@ -428,7 +428,7 @@ describe 'film_details', type: :feature do
       author: 'Peter Biskind',
       publication: 'Rolling Stone'
     }
-    fill_out_and_submit_modal(quote_info, :orange_button)
+    fill_out_and_submit_modal(quote_info, :input)
     expect(Quote.count).to eq(1)
     expect(page).to have_content('"I thought I died and went to heaven."')
     expect(page).to have_content('Peter Biskind, Rolling Stone')
@@ -648,7 +648,7 @@ describe 'film_details', type: :feature do
     fill_out_and_submit_modal({
       digital_retailer_id: { value: 1, type: :select },
       url: 'https://www.itunes.com/another_film'
-    }, :orange_button)
+    }, :input)
     expect(page).to have_no_css('.spinner')
     expect(DigitalRetailerFilm.count).to eq(1)
     expect(page).to have_content('iTunes')
@@ -785,10 +785,12 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'DVDs').click
     find('.blue-outline-button', text: 'Add DVD').click
-    within('#new-thing') do
-      find('.orange-button', text: 'Add DVD').click
-    end
-    expect(page).to have_content('DVD Details')
+    info = {
+      dvd_type_id: { value: 'Club', type: :select_modal },
+    }
+    fill_out_and_submit_modal(info, :input)
+    wait_for_ajax
+    expect(current_path).to eq("/dvds/#{Dvd.last.id}")
     expect(@film.dvds.count).to eq(2)
   end
 
@@ -888,7 +890,7 @@ describe 'film_details', type: :feature do
       season_number: 1,
       episode_number: 2
     }
-    fill_out_and_submit_modal(info, :orange_button)
+    fill_out_and_submit_modal(info, :input)
     expect(page).to have_no_css('.spinner')
     expect(current_path).to eq("/episodes/#{Episode.last.id}")
     verify_db_and_component({
@@ -919,7 +921,7 @@ describe 'film_details', type: :feature do
 
   it 'deletes the film' do
     visit film_path(@film, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Film')
+    delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do
       find('.red-button').click

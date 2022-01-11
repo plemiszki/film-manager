@@ -1,69 +1,69 @@
-json.films @films do |film|
-  json.id film.id
-  json.title film.title
-  json.filmType film.film_type
-  json.startDate film.start_date ? film.start_date.strftime("%-m/%-d/%y") : ""
-  json.endDate film.end_date ? film.end_date.strftime("%-m/%-d/%y") : ""
-  json.licensorId film.licensor_id || ""
-  json.dealTypeId film.deal_type_id.to_s
-  json.daysStatementDue film.days_statement_due.to_s
-  json.grPercentage film.gr_percentage.to_s || ""
-  json.expenseCap '$' + number_with_precision(film.expense_cap, precision: 2, delimiter: ',')
-  json.mg '$' + number_with_precision(film.mg, precision: 2, delimiter: ',')
-  json.eAndO '$' + number_with_precision(film.e_and_o, precision: 2, delimiter: ',')
-  json.sageId film.sage_id || ""
-  json.royaltyNotes film.royalty_notes || ""
-  json.reserve film.reserve
-  json.reservePercentage film.reserve_percentage
-  json.reserveQuarters film.reserve_quarters
-  json.exportReports film.export_reports
-  json.sendReports film.send_reports
-  json.active film.active
-  json.dayAndDate film.day_and_date
-  json.sellOffPeriod film.sell_off_period
-  json.autoRenew film.auto_renew
-  json.autoRenewTerm film.auto_renew_term.to_s
-  json.autoRenewDaysNotice film.auto_renew_days_notice.to_s
-  json.year film.year.to_s || ""
-  json.length film.length.to_s || ""
-  json.synopsis film.synopsis || ""
-  json.shortSynopsis film.short_synopsis || ""
-  json.vodSynopsis film.vod_synopsis || ""
-  json.logline film.logline || ""
-  json.institutionalSynopsis film.institutional_synopsis || ""
-  json.vimeoTrailer film.vimeo_trailer || ""
-  json.youtubeTrailer film.youtube_trailer || ""
-  json.proresTrailer film.prores_trailer || ""
-  json.standaloneSite film.standalone_site || ""
-  json.facebookLink film.facebook_link || ""
-  json.twitterLink film.twitter_link || ""
-  json.instagramLink film.instagram_link || ""
-  json.labelId film.label_id.to_s
-  json.clubDate film.club_date ? film.club_date.strftime("%-m/%-d/%y") : ""
-  json.ignoreSageId film.ignore_sage_id
+json.film do
+  json.id @film.id
+  json.title @film.title
+  json.filmType @film.film_type
+  json.startDate @film.start_date ? @film.start_date.strftime("%-m/%-d/%y") : ""
+  json.endDate @film.end_date ? @film.end_date.strftime("%-m/%-d/%y") : ""
+  json.licensorId @film.licensor_id || ""
+  json.dealTypeId @film.deal_type_id.to_s
+  json.daysStatementDue @film.days_statement_due.to_s
+  json.grPercentage @film.gr_percentage.to_s || ""
+  json.expenseCap '$' + number_with_precision(@film.expense_cap, precision: 2, delimiter: ',')
+  json.mg '$' + number_with_precision(@film.mg, precision: 2, delimiter: ',')
+  json.eAndO '$' + number_with_precision(@film.e_and_o, precision: 2, delimiter: ',')
+  json.sageId @film.sage_id || ""
+  json.royaltyNotes @film.royalty_notes || ""
+  json.reserve @film.reserve
+  json.reservePercentage @film.reserve_percentage
+  json.reserveQuarters @film.reserve_quarters
+  json.exportReports @film.export_reports
+  json.sendReports @film.send_reports
+  json.active @film.active
+  json.dayAndDate @film.day_and_date
+  json.sellOffPeriod @film.sell_off_period.to_s
+  json.autoRenew @film.auto_renew
+  json.autoRenewTerm @film.auto_renew_term.to_s
+  json.autoRenewDaysNotice @film.auto_renew_days_notice.to_s
+  json.year @film.year.to_s || ""
+  json.length @film.length.to_s || ""
+  json.synopsis @film.synopsis || ""
+  json.shortSynopsis @film.short_synopsis || ""
+  json.vodSynopsis @film.vod_synopsis || ""
+  json.logline @film.logline || ""
+  json.institutionalSynopsis @film.institutional_synopsis || ""
+  json.vimeoTrailer @film.vimeo_trailer || ""
+  json.youtubeTrailer @film.youtube_trailer || ""
+  json.proresTrailer @film.prores_trailer || ""
+  json.standaloneSite @film.standalone_site || ""
+  json.facebookLink @film.facebook_link || ""
+  json.twitterLink @film.twitter_link || ""
+  json.instagramLink @film.instagram_link || ""
+  json.labelId @film.label_id.to_s
+  json.clubDate @film.club_date ? @film.club_date.strftime("%-m/%-d/%y") : ""
+  json.ignoreSageId @film.ignore_sage_id
   json.theatricalCount @bookings.where(booking_type: 'Theatrical').count
   json.festivalCount @bookings.where(booking_type: 'Festival').count
   json.nonTheatricalCount @bookings.where(booking_type: 'Non-Theatrical').count
-  json.avodRelease film.avod_release ? (film.avod_release.strftime("%-m/%-d/%y") + (film.avod_tentative ? '?' : '')) : ""
-  json.svodRelease film.svod_release ? (film.svod_release.strftime("%-m/%-d/%y") + (film.svod_tentative ? '?' : '')) : ""
-  json.tvodRelease film.tvod_release ? (film.tvod_release.strftime("%-m/%-d/%y") + (film.tvod_tentative ? '?' : '')) : ""
-  json.theatricalRelease film.theatrical_release ? (film.theatrical_release.strftime("%-m/%-d/%y") + (film.theatrical_tentative ? '?' : '')) : ""
-  json.eduPage film.edu_page
-  json.videoPage film.video_page
-  json.artworkUrl film.artwork_url || ""
-  json.fmPlusUrl film.fm_plus_url
-  json.aspectRatio film.aspect_ratio
-  json.rating film.rating
-  json.soundConfig film.sound_config
-  json.certifiedFresh film.certified_fresh
-  json.criticsPick film.critics_pick
-  json.imdbId film.imdb_id
-  json.acceptDelivery film.accept_delivery ? film.accept_delivery.strftime("%-m/%-d/%y") : ""
-  json.rentalUrl film.rental_url
-  json.rentalPrice '$' + number_with_precision(film.rental_price, precision: 2, delimiter: ',')
-  json.rentalDays film.rental_days.to_s
-  json.tvRating film.tv_rating
-  json.contractualObligations film.contractual_obligations
+  json.avodRelease @film.avod_release ? (@film.avod_release.strftime("%-m/%-d/%y") + (@film.avod_tentative ? '?' : '')) : ""
+  json.svodRelease @film.svod_release ? (@film.svod_release.strftime("%-m/%-d/%y") + (@film.svod_tentative ? '?' : '')) : ""
+  json.tvodRelease @film.tvod_release ? (@film.tvod_release.strftime("%-m/%-d/%y") + (@film.tvod_tentative ? '?' : '')) : ""
+  json.theatricalRelease @film.theatrical_release ? (@film.theatrical_release.strftime("%-m/%-d/%y") + (@film.theatrical_tentative ? '?' : '')) : ""
+  json.eduPage @film.edu_page
+  json.videoPage @film.video_page
+  json.artworkUrl @film.artwork_url || ""
+  json.fmPlusUrl @film.fm_plus_url
+  json.aspectRatio @film.aspect_ratio
+  json.rating @film.rating
+  json.soundConfig @film.sound_config
+  json.certifiedFresh @film.certified_fresh
+  json.criticsPick @film.critics_pick
+  json.imdbId @film.imdb_id
+  json.acceptDelivery @film.accept_delivery ? @film.accept_delivery.strftime("%-m/%-d/%y") : ""
+  json.rentalUrl @film.rental_url
+  json.rentalPrice '$' + number_with_precision(@film.rental_price, precision: 2, delimiter: ',')
+  json.rentalDays @film.rental_days.to_s
+  json.tvRating @film.tv_rating
+  json.contractualObligations @film.contractual_obligations
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
@@ -94,7 +94,7 @@ json.reports @reports do |report|
   json.year report.year
   json.quarter report.quarter
 end
-json.rights @rights do |right|
+json.filmRights @rights do |right|
   json.id right.id
   json.name right.right.name
   json.order right.right.order
@@ -218,6 +218,7 @@ json.virtualBookings @virtual_bookings do |booking|
   json.id booking.id
   json.venue booking.venue.label
   json.startDate booking.start_date.strftime("%-m/%-d/%y")
+  json.type 'Virtual'
 end
 json.digitalRetailers @digital_retailers do |digital_retailer|
   json.id digital_retailer.id
@@ -248,7 +249,7 @@ json.alternateLengths @alternate_lengths do |alternate_length|
   json.id alternate_length.id
   json.length alternate_length.length
 end
-json.alternateSubtitles @alternate_subs do |alternate_sub|
+json.alternateSubs @alternate_subs do |alternate_sub|
   json.id alternate_sub.id
   json.languageName alternate_sub.language.name
 end

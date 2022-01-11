@@ -11,7 +11,7 @@ class Api::DvdsController < AdminController
   def create
     @dvd = Dvd.new(dvd_params)
     if @dvd.save
-      render json: @dvd
+      render json: { dvd: @dvd.render_json }
     else
       render json: @dvd.errors.full_messages, status: 422
     end

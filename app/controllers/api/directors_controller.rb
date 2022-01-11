@@ -5,7 +5,7 @@ class Api::DirectorsController < AdminController
   def create
     @director = Director.new(director_params.merge({ order: Director.where(film_id: director_params[:film_id]).count }))
     if @director.save
-      @directors = Director.where(film_id: @director.film_id)
+      @directors = Director.where(film_id: @director.film_id).order(:order)
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
       render json: @director.errors.full_messages, status: 422
@@ -16,7 +16,7 @@ class Api::DirectorsController < AdminController
     @director = Director.find(params[:id])
     @director.destroy
     reorder(Director.where(film_id: @director.film_id).order(:order))
-    @directors = Director.where(film_id: @director.film_id)
+    @directors = Director.where(film_id: @director.film_id).order(:order)
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
@@ -25,7 +25,7 @@ class Api::DirectorsController < AdminController
       director = Director.find(id)
       director.update(order: index)
     end
-    @directors = Director.where(film_id: params[:film_id])
+    @directors = Director.where(film_id: params[:film_id]).order(:order)
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
