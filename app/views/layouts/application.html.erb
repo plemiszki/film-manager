@@ -8,11 +8,7 @@
     <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width">
   </head>
-  <% if controller_name == "sessions" %>
-    <body>
-      <%= yield %>
-    </body>
-  <% else %>
+  <% if signed_in? %>
     <body>
       <div id="current-user">
         <span id="id"><%= current_user ? current_user.id : "" %></span>
@@ -72,6 +68,10 @@
           </div>
         </div>
       </div>
+    </body>
+  <% else %>
+    <body style="padding: 30px">
+      <%= yield %>
     </body>
   <% end %>
   <% if current_page?(:controller => '/royalty_reports', :action => 'index') %>

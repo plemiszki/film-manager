@@ -7,9 +7,14 @@ describe 'calendar', type: :feature do
     create(:label)
   end
 
-  it 'is gated' do
+  it 'is not gated' do
     visit calendar_path
-    expect(page).to have_content 'Please sign in to continue.'
+    expect(page).to have_no_content 'Please sign in to continue.'
+  end
+
+  it 'displays nav bar when signed in' do
+    visit calendar_path(as: $admin_user)
+    expect(page).to have_selector '#admin-sidebar'
   end
 
   it 'displays the current year' do
