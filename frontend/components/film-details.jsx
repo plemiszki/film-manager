@@ -1158,7 +1158,7 @@ class FilmDetails extends React.Component {
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <div style={ { width: '100%', height: '47px' } }></div>
-              { Details.renderField.bind(this)({ entity: 'film', property: 'fmPlusRelease', columnHeader: 'FM+ Release', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'fmPlusRelease', columnHeader: 'FM Plus Release', readOnly: !FM.user.hasAdminAccess }) }
               <div className={ film.filmType == 'Short' ? ' hidden' : '' }>
                 { Details.renderField.bind(this)({ entity: 'film', property: 'avodRelease', columnHeader: 'AVOD Release', readOnly: !FM.user.hasAdminAccess }) }
                 { Details.renderField.bind(this)({ entity: 'film', property: 'clubDate', readOnly: !FM.user.hasAdminAccess }) }
@@ -1172,7 +1172,7 @@ class FilmDetails extends React.Component {
               <ul className="standard-list schedule">
                 { schedule.map((entry, index) => {
                   return(
-                    <li key={ index } className={ entry.tentative ? 'tentative' : '' }>{ entry.label } - { entry.date + (entry.tentative ? ' (?)' : '') }</li>
+                    <li key={ index } className={ entry.tentative ? 'tentative' : '' }>{ entry.label } - { entry.date_string + (entry.tentative ? ' (?)' : '') }</li>
                   );
                 }) }
               </ul>

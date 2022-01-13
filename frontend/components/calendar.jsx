@@ -58,19 +58,20 @@ class Calendar extends React.Component {
         <div className="component">
           <div className="clearfix">
             <h1>Calendar - { this.state.year }</h1>
-            <a className={ "orange-button float-button small margin" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
-            <a className={ "orange-button float-button small" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
+            <a className={ "orange-button float-button small" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
+            <a className={ "orange-button float-button small margin" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           </div>
           <div className="white-box">
             <table>
               <thead>
                 <tr>
                   <th></th>
-                  <th>Theatrical Releases</th>
-                  <th>DVD Releases</th>
-                  <th>TVOD/EST Releases</th>
-                  <th>SVOD Releases</th>
-                  <th>Club Release</th>
+                  <th>Theatrical</th>
+                  <th>DVD</th>
+                  <th>TVOD/EST</th>
+                  <th>SVOD</th>
+                  <th>FM+</th>
+                  <th>Club</th>
                 </tr>
               </thead>
               <tbody>
@@ -119,6 +120,17 @@ class Calendar extends React.Component {
                                 <div key={ index } className={ "film" + (svodRelease.tentative ? ' tentative' : '') }>
                                   { svodRelease.title }<br />
                                   { svodRelease.date }
+                                </div>
+                              );
+                            })
+                          }
+                        </td>
+                        <td data-test="fm-plus">
+                          { this.state.months[index].fmPlusReleases.map((fmPlusRelease, index) => {
+                              return(
+                                <div key={ index } className={ "film" }>
+                                  { fmPlusRelease.title }<br />
+                                  { fmPlusRelease.date }
                                 </div>
                               );
                             })

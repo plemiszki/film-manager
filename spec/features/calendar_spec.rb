@@ -63,6 +63,14 @@ describe 'calendar', type: :feature do
     end
   end
 
+  it 'displays FM+ releases' do
+    create(:film, fm_plus_release: Date.parse("1/1/#{Date.today.year}"))
+    visit calendar_path(as: $admin_user)
+    within all('td[data-test="fm-plus"]')[0] do
+      expect(page).to have_content('Wilby Wonderful')
+    end
+  end
+
   it 'displays dvd releases' do
     create(:film)
     create(:dvd, retail_date: Date.parse("1/1/#{Date.today.year}"))

@@ -376,23 +376,26 @@ class Api::FilmsController < AdminController
   def create_schedule
     result = []
     if @film.theatrical_release
-      result << { label: 'Theatrical', date: @film.theatrical_release.strftime("%-m/%-d/%y"), tentative: @film.theatrical_tentative }
+      result << { label: 'Theatrical', date_string: @film.theatrical_release.strftime("%-m/%-d/%y"), date: @film.theatrical_release, tentative: @film.theatrical_tentative }
     end
     if @film.avod_release
-      result << { label: 'AVOD', date: @film.avod_release.strftime("%-m/%-d/%y"), tentative: @film.avod_tentative }
+      result << { label: 'AVOD', date_string: @film.avod_release.strftime("%-m/%-d/%y"), date: @film.avod_release, tentative: @film.avod_tentative }
     end
     if @film.svod_release
-      result << { label: 'SVOD', date: @film.svod_release.strftime("%-m/%-d/%y"), tentative: @film.svod_tentative }
+      result << { label: 'SVOD', date_string: @film.svod_release.strftime("%-m/%-d/%y"), date: @film.svod_release, tentative: @film.svod_tentative }
     end
     if @film.tvod_release
-      result << { label: 'TVOD/EST', date: @film.tvod_release.strftime("%-m/%-d/%y"), tentative: @film.tvod_tentative }
+      result << { label: 'TVOD/EST', date_string: @film.tvod_release.strftime("%-m/%-d/%y"), date: @film.tvod_release, tentative: @film.tvod_tentative }
+    end
+    if @film.fm_plus_release
+      result << { label: 'FM Plus', date_string: @film.fm_plus_release.strftime("%-m/%-d/%y"), date: @film.fm_plus_release, tentative: @film.fm_plus_tentative }
     end
     if @film.club_date
-      result << { label: 'Club', date: @film.club_date.strftime("%-m/%-d/%y") }
+      result << { label: 'Club', date: @film.club_date, date_string: @film.club_date.strftime("%-m/%-d/%y") }
     end
     @dvds.each do |dvd|
       if dvd.retail_date
-        result << { label: "#{dvd.dvd_type.name} DVD", date: dvd.retail_date.strftime("%-m/%-d/%y") }
+        result << { label: "#{dvd.dvd_type.name} DVD", date: dvd.retail_date, date_string: dvd.retail_date.strftime("%-m/%-d/%y") }
       end
     end
     result.sort_by { |element| element[:date] }

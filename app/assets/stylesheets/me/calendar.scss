@@ -3,13 +3,14 @@
   .orange-button {
     min-width: 100px;
 
-    &:last-of-type {
+    .margin {
       margin-right: 20px;
     }
   }
 
   table {
     border: solid 1px gray;
+    width: 100%;
 
     th {
       font-family: 'TeachableSans-SemiBold';
@@ -19,7 +20,7 @@
     th, td {
       border: solid 1px gray;
       text-align: center;
-      width: 12.5%;
+      width: 14.29%;
     }
 
     td {

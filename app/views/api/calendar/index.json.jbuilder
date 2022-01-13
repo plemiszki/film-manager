@@ -4,4 +4,5 @@ json.months @months do |month|
   json.svodReleases month[:svod_releases]
   json.theatricalReleases month[:theatrical_releases]
   json.clubReleases month[:club_releases]
+  json.fmPlusReleases month[:fm_plus_releases]
 end
