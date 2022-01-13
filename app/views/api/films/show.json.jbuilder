@@ -48,6 +48,7 @@ json.film do
   json.svodRelease @film.svod_release ? (@film.svod_release.strftime("%-m/%-d/%y") + (@film.svod_tentative ? '?' : '')) : ""
   json.tvodRelease @film.tvod_release ? (@film.tvod_release.strftime("%-m/%-d/%y") + (@film.tvod_tentative ? '?' : '')) : ""
   json.theatricalRelease @film.theatrical_release ? (@film.theatrical_release.strftime("%-m/%-d/%y") + (@film.theatrical_tentative ? '?' : '')) : ""
+  json.fmPlusRelease @film.fm_plus_release ? (@film.fm_plus_release.strftime("%-m/%-d/%y") + (@film.fm_plus_tentative ? '?' : '')) : ""
   json.eduPage @film.edu_page
   json.videoPage @film.video_page
   json.artworkUrl @film.artwork_url || ""

@@ -781,7 +781,7 @@ class FilmDetails extends React.Component {
   }
 
   renderTab(tab) {
-    const { actors, alternateAudios, alternateLengths, alternateSubs, crossedFilms, directors, filmCountries, filmFormats, filmGenres, filmLanguages, filmTopics, labels, laurels, quotes, schedule, subRights } = this.state;
+    const { actors, alternateAudios, alternateLengths, alternateSubs, crossedFilms, directors, film, filmCountries, filmFormats, filmGenres, filmLanguages, filmTopics, labels, laurels, quotes, schedule, subRights } = this.state;
     if (tab === "Contract") {
       return(
         <div>
@@ -1158,12 +1158,15 @@ class FilmDetails extends React.Component {
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
               <div style={ { width: '100%', height: '47px' } }></div>
-              { Details.renderField.bind(this)({ entity: 'film', property: 'avodRelease', columnHeader: 'AVOD Release', readOnly: !FM.user.hasAdminAccess }) }
-              { Details.renderField.bind(this)({ entity: 'film', property: 'clubDate', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'fmPlusRelease', columnHeader: 'FM+ Release', readOnly: !FM.user.hasAdminAccess }) }
+              <div className={ film.filmType == 'Short' ? ' hidden' : '' }>
+                { Details.renderField.bind(this)({ entity: 'film', property: 'avodRelease', columnHeader: 'AVOD Release', readOnly: !FM.user.hasAdminAccess }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'clubDate', readOnly: !FM.user.hasAdminAccess }) }
+              </div>
             </div>
           </div>
           <hr />
-          <div className={ "row" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
+          <div className="row">
             <div className="col-xs-12">
               <h3>Schedule</h3>
               <ul className="standard-list schedule">

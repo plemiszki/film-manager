@@ -29,6 +29,7 @@ describe 'film_details', type: :feature do
       svod_release: '1/1/2003',
       tvod_release: '2/1/2003',
       avod_release: '3/1/2003',
+      fm_plus_release: '4/1/2003',
       synopsis: 'Synopsis',
       vod_synopsis: 'VOD Synopsis',
       short_synopsis: 'Short Synopsis',
@@ -75,6 +76,7 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="svodRelease"]').value).to eq '1/1/03'
     expect(find('input[data-field="tvodRelease"]').value).to eq '2/1/03'
     expect(find('input[data-field="avodRelease"]').value).to eq '3/1/03'
+    expect(find('input[data-field="fmPlusRelease"]').value).to eq '4/1/03'
   end
 
   it 'updates general information about the film' do

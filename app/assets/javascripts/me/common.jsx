@@ -391,6 +391,9 @@ var FM = {
     theatricalRelease: [
       "Theatrical release is not a valid date"
     ],
+    fmPlusRelease: [
+      "Fm plus release is not a valid date"
+    ],
     rightId: [
       "Film has already been taken",
       "Sublicensor has already been taken"
