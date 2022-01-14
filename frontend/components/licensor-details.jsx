@@ -85,22 +85,19 @@ class LicensorDetails extends React.Component {
 
   render() {
     return(
-      <div id="licensor-profile">
+      <div className="licensor-details">
         <div className="component">
           <h1>Licensor Details</h1>
-          <div id="licensor-profile-box" className="white-box">
+          <div className="white-box">
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'name' }) }
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'email', columnHeader: 'Royalty Emails' }) }
             </div>
             <div className="row">
-              <div className="col-xs-12 col-sm-12">
-                <h2>Address</h2>
-                <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.licensor.address || "" } data-field="address" />
-              </div>
+              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'licensor', property: 'address', rows: 5 }) }
             </div>
             <div className="row">
-              <div className="col-xs-12 col-sm-12">
+              <div className="col-xs-12">
                 <table className="fm-admin-table">
                   <thead>
                     <tr>
