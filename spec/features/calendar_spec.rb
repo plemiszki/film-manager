@@ -52,14 +52,6 @@ describe 'calendar', type: :feature do
     end
   end
 
-  it 'displays svod releases' do
-    create(:film, svod_release: Date.parse("1/1/#{Date.today.year}"))
-    visit calendar_path(as: $admin_user)
-    within all('td[data-test="svod"]')[0] do
-      expect(page).to have_content('Wilby Wonderful')
-    end
-  end
-
   it 'displays club releases' do
     create(:film, club_date: Date.parse("1/1/#{Date.today.year}"))
     visit calendar_path(as: $admin_user)

@@ -69,7 +69,6 @@ class Calendar extends React.Component {
                   <th>Theatrical</th>
                   <th>DVD</th>
                   <th>TVOD/EST</th>
-                  <th>SVOD</th>
                   <th>FM+</th>
                   <th>Club</th>
                 </tr>
@@ -109,17 +108,6 @@ class Calendar extends React.Component {
                                 <div key={ index } className={ "film" + (tvodRelease.tentative ? ' tentative' : '') }>
                                   { tvodRelease.title }<br />
                                   { tvodRelease.date }
-                                </div>
-                              );
-                            })
-                          }
-                        </td>
-                        <td data-test="svod">
-                          { this.state.months[index].svodReleases.map((svodRelease, index) => {
-                              return(
-                                <div key={ index } className={ "film" + (svodRelease.tentative ? ' tentative' : '') }>
-                                  { svodRelease.title }<br />
-                                  { svodRelease.date }
                                 </div>
                               );
                             })
