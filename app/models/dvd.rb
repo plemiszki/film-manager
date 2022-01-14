@@ -16,6 +16,7 @@ class Dvd < ActiveRecord::Base
   )
 
   has_many :dvd_shorts
+  has_many :giftbox_dvds, dependent: :destroy
 
   has_many(
     :shorts,
