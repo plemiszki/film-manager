@@ -283,35 +283,23 @@ describe 'film_details', type: :feature do
     expect(@film.reload.film_rights.pluck(:end_date).uniq).to eq([Date.parse('4/4/2044')])
   end
 
-  # synopses tab
+  # educational tab
 
-  it 'displays the synopses' do
+  it 'displays the film\'s educational information' do
     visit film_path(@film, as: $admin_user)
-    find('div.tab', text: 'Synopses').click
-    expect(find('textarea[data-field="synopsis"]').value).to eq 'Synopsis'
-    expect(find('textarea[data-field="vodSynopsis"]').value).to eq 'VOD Synopsis'
-    expect(find('textarea[data-field="shortSynopsis"]').value).to eq 'Short Synopsis'
-    expect(find('textarea[data-field="logline"]').value).to eq 'Logline'
+    find('div.tab', text: 'Educational').click
     expect(find('textarea[data-field="institutionalSynopsis"]').value).to eq 'Institutional Synopsis'
   end
 
-  it 'updates the synopses' do
+  it 'updates the film\'s educational information' do
     visit film_path(@film, as: $admin_user)
-    find('div.tab', text: 'Synopses').click
+    find('div.tab', text: 'Educational').click
     fill_out_form({
-      synopsis: 'New Synopsis',
-      short_synopsis: 'New Short Synopsis',
-      vod_synopsis: 'New VOD Synopsis',
-      logline: 'New Logline',
       institutional_synopsis: 'New Institutional Synopsis'
     })
     find('.blue-button', text: 'Save').click
     expect(page).not_to have_selector('.spinner')
     expect(@film.reload.attributes).to include(
-      'synopsis' => 'New Synopsis',
-      'short_synopsis' => 'New Short Synopsis',
-      'vod_synopsis' => 'New VOD Synopsis',
-      'logline' => 'New Logline',
       'institutional_synopsis' => 'New Institutional Synopsis'
     )
   end
@@ -321,6 +309,10 @@ describe 'film_details', type: :feature do
   it "displays the film's marketing information" do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
+    expect(find('textarea[data-field="synopsis"]').value).to eq 'Synopsis'
+    expect(find('textarea[data-field="vodSynopsis"]').value).to eq 'VOD Synopsis'
+    expect(find('textarea[data-field="shortSynopsis"]').value).to eq 'Short Synopsis'
+    expect(find('textarea[data-field="logline"]').value).to eq 'Logline'
     expect(find('input[data-field="fmPlusUrl"]').value).to eq 'https://www.filmmovementplus.com/wilbywonderful'
     expect(find('input[data-field="standaloneSite"]').value).to eq 'https://www.wilbywonderful.com'
     expect(find('input[data-field="vimeoTrailer"]').value).to eq 'http://vimeo.com/68840880'
@@ -346,6 +338,10 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
     new_info = {
+      synopsis: 'New Synopsis',
+      short_synopsis: 'New Short Synopsis',
+      vod_synopsis: 'New VOD Synopsis',
+      logline: 'New Logline',
       fm_plus_url: 'https://www.filmmovementplus.com/vilbyvonderful',
       standalone_site: 'https://www.vilbyvonderful.com',
       vimeo_trailer: 'http://vimeo.com/1',
@@ -476,7 +472,7 @@ describe 'film_details', type: :feature do
     create(:topic)
     create(:film_topic)
     visit film_path(@film, as: $admin_user)
-    find('div.tab', text: 'Marketing').click
+    find('div.tab', text: 'Educational').click
     within('.topics-list') do
       expect(page).to have_content('Latino')
     end
@@ -485,7 +481,7 @@ describe 'film_details', type: :feature do
   it 'adds topics' do
     create(:topic)
     visit film_path(@film, as: $admin_user)
-    find('div.tab', text: 'Marketing').click
+    find('div.tab', text: 'Educational').click
     find('.blue-outline-button', text: 'Add Topic').click
     select_from_modal('Latino')
     expect(page).to have_no_css('.spinner')
@@ -499,7 +495,7 @@ describe 'film_details', type: :feature do
     create(:topic)
     create(:film_topic)
     visit film_path(@film, as: $admin_user)
-    find('div.tab', text: 'Marketing').click
+    find('div.tab', text: 'Educational').click
     within('.topics-list') do
       find('.x-button').click
     end
@@ -661,7 +657,7 @@ describe 'film_details', type: :feature do
     create(:edu_platform)
     create(:edu_platform_film)
     visit film_path(@film, as: $admin_user)
-    find('div.tab', text: 'Marketing').click
+    find('div.tab', text: 'Educational').click
     within('.edu-platforms-table') do
       expect(page).to have_content('Kanopy')
     end
@@ -670,7 +666,7 @@ describe 'film_details', type: :feature do
   it 'adds educational streaming platforms' do
     create(:edu_platform)
     visit film_path(@film, as: $admin_user)
-    find('div.tab', text: 'Marketing').click
+    find('div.tab', text: 'Educational').click
     find('.blue-outline-button', text: 'Add Platform').click
     fill_out_and_submit_modal({
       edu_platform_id: { value: 1, type: :select },
@@ -686,7 +682,7 @@ describe 'film_details', type: :feature do
     create(:edu_platform)
     create(:edu_platform_film)
     visit film_path(@film, as: $admin_user)
-    find('div.tab', text: 'Marketing').click
+    find('div.tab', text: 'Educational').click
     find('.blue-outline-button', text: 'Add Platform').click
     fill_out_and_submit_modal({
       edu_platform_id: { value: 1, type: :select },
