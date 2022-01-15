@@ -289,19 +289,73 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
     expect(find('textarea[data-field="institutionalSynopsis"]').value).to eq 'Institutional Synopsis'
+    expect(find('input[data-field="msrpPreStreet"]').value).to eq '$150.00'
+    expect(find('input[data-field="msrpPostStreet"]').value).to eq '$24.95'
+    expect(find('input[data-field="pprPreStreet"]').value).to eq '$350.00'
+    expect(find('input[data-field="pprPostStreet"]').value).to eq '$200.00'
+    expect(find('input[data-field="drlPreStreet"]').value).to eq '$499.00'
+    expect(find('input[data-field="drlPostStreet"]').value).to eq '$699.00'
+    expect(find('input[data-field="pprDrlPreStreet"]').value).to eq '$599.00'
+    expect(find('input[data-field="pprDrlPostStreet"]').value).to eq '$799.00'
   end
 
   it 'updates the film\'s educational information' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
-    fill_out_form({
-      institutional_synopsis: 'New Institutional Synopsis'
-    })
+    new_info = {
+      institutional_synopsis: 'New Institutional Synopsis',
+      msrp_pre_street: '$1.00',
+      msrp_post_street: '$2.00',
+      ppr_pre_street: '$3.00',
+      ppr_post_street: '$4.00',
+      drl_pre_street: '$5.00',
+      drl_post_street: '$6.00',
+      ppr_drl_pre_street: '$7.00',
+      ppr_drl_post_street: '$8.00',
+    }
+    fill_out_form(new_info)
     find('.blue-button', text: 'Save').click
     expect(page).not_to have_selector('.spinner')
-    expect(@film.reload.attributes).to include(
-      'institutional_synopsis' => 'New Institutional Synopsis'
-    )
+    verify_db_and_component({
+      entity: @film,
+      data: new_info,
+      db_data: {
+        msrp_pre_street: 1,
+        msrp_post_street: 2,
+        ppr_pre_street: 3,
+        ppr_post_street: 4,
+        drl_pre_street: 5,
+        drl_post_street: 6,
+        ppr_drl_pre_street: 7,
+        ppr_drl_post_street: 8,
+      }
+    })
+  end
+
+  it 'validates the film\'s educational information' do
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Educational').click
+    new_info = {
+      msrp_pre_street: '',
+      msrp_post_street: '',
+      ppr_pre_street: '',
+      ppr_post_street: '',
+      drl_pre_street: '',
+      drl_post_street: '',
+      ppr_drl_pre_street: '',
+      ppr_drl_post_street: '',
+    }
+    fill_out_form(new_info)
+    find('.blue-button', text: 'Save').click
+    expect(page).not_to have_selector('.spinner')
+    expect(page).to have_content('Msrp pre street is not a number')
+    expect(page).to have_content('Msrp post street is not a number')
+    expect(page).to have_content('Ppr pre street is not a number')
+    expect(page).to have_content('Ppr post street is not a number')
+    expect(page).to have_content('Drl pre street is not a number')
+    expect(page).to have_content('Drl post street is not a number')
+    expect(page).to have_content('Ppr drl pre street is not a number')
+    expect(page).to have_content('Ppr drl post street is not a number')
   end
 
   # marketing tab

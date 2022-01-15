@@ -65,6 +65,14 @@ json.film do
   json.rentalDays @film.rental_days.to_s
   json.tvRating @film.tv_rating
   json.contractualObligations @film.contractual_obligations
+  json.msrpPreStreet '$' + number_with_precision(@film.msrp_pre_street, precision: 2, delimiter: ',')
+  json.msrpPostStreet '$' + number_with_precision(@film.msrp_post_street, precision: 2, delimiter: ',')
+  json.pprPreStreet '$' + number_with_precision(@film.ppr_pre_street, precision: 2, delimiter: ',')
+  json.pprPostStreet '$' + number_with_precision(@film.ppr_post_street, precision: 2, delimiter: ',')
+  json.drlPreStreet '$' + number_with_precision(@film.drl_pre_street, precision: 2, delimiter: ',')
+  json.drlPostStreet '$' + number_with_precision(@film.drl_post_street, precision: 2, delimiter: ',')
+  json.pprDrlPreStreet '$' + number_with_precision(@film.ppr_drl_pre_street, precision: 2, delimiter: ',')
+  json.pprDrlPostStreet '$' + number_with_precision(@film.ppr_drl_post_street, precision: 2, delimiter: ',')
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

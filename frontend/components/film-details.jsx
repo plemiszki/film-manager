@@ -415,7 +415,23 @@ class FilmDetails extends React.Component {
         id: window.location.pathname.split("/")[2],
         directory: window.location.pathname.split("/")[1],
         entityName: 'film',
-        entity: Details.removeFinanceSymbolsFromEntity({ entity: film, fields: ['mg', 'expenseCap', 'eAndO', 'rentalPrice'] }),
+        entity: Details.removeFinanceSymbolsFromEntity({
+          entity: film,
+          fields: [
+            'mg',
+            'expenseCap',
+            'eAndO',
+            'rentalPrice',
+            'msrpPreStreet',
+            'msrpPostStreet',
+            'pprPreStreet',
+            'pprPostStreet',
+            'drlPreStreet',
+            'drlPostStreet',
+            'pprDrlPreStreet',
+            'pprDrlPostStreet'
+          ]
+        }),
         additionalData: {
           percentages: percentageObject
         }
@@ -1409,6 +1425,20 @@ class FilmDetails extends React.Component {
                 }) }
               </ul>
               <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'topicsModalOpen', true) }>Add Topic</a>
+            </div>
+            <div className="col-xs-3">
+              <h3>Educational Pricing</h3>
+              { Details.renderField.bind(this)({ entity: 'film', property: 'msrpPreStreet', columnHeader: 'SRP Pre-Street' }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'pprPreStreet', columnHeader: 'PPR Pre-Street' }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'drlPreStreet', columnHeader: 'DRL Pre-Street' }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPreStreet', columnHeader: 'PPR + DRL Pre-Street' }) }
+            </div>
+            <div className="col-xs-3">
+              <div style={ { width: '100%', height: '47px' } }></div>
+              { Details.renderField.bind(this)({ entity: 'film', property: 'msrpPostStreet', columnHeader: 'SRP Post-Street' }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'pprPostStreet', columnHeader: 'PPR Post-Street' }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'drlPostStreet', columnHeader: 'DRL Post-Street' }) }
+              { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPostStreet', columnHeader: 'PPR + DRL Post-Street' }) }
             </div>
           </div>
           <hr />

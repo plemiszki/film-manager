@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_13_145557) do
+ActiveRecord::Schema.define(version: 2022_01_15_020423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -388,6 +388,14 @@ ActiveRecord::Schema.define(version: 2022_01_13_145557) do
     t.date "expiration_reminders", default: [], array: true
     t.date "fm_plus_release"
     t.boolean "fm_plus_tentative", default: false
+    t.decimal "msrp_pre_street", precision: 5, scale: 2, default: "0.0"
+    t.decimal "msrp_post_street", precision: 5, scale: 2, default: "0.0"
+    t.decimal "ppr_pre_street", precision: 5, scale: 2, default: "0.0"
+    t.decimal "ppr_post_street", precision: 5, scale: 2, default: "0.0"
+    t.decimal "drl_pre_street", precision: 5, scale: 2, default: "0.0"
+    t.decimal "drl_post_street", precision: 5, scale: 2, default: "0.0"
+    t.decimal "ppr_drl_pre_street", precision: 5, scale: 2, default: "0.0"
+    t.decimal "ppr_drl_post_street", precision: 5, scale: 2, default: "0.0"
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
     t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"

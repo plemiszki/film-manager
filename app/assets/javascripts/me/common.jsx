@@ -433,7 +433,39 @@ var FM = {
     ],
     rentalDays: [
       "Rental days is not a number"
-    ]
+    ],
+    msrpPreStreet: [
+      "Msrp pre street is not a number",
+      "Msrp pre street must be greater than or equal to 0",
+    ],
+    msrpPostStreet: [
+      "Msrp post street is not a number",
+      "Msrp post street must be greater than or equal to 0",
+    ],
+    pprPreStreet: [
+      "Ppr pre street is not a number",
+      "Ppr pre street must be greater than or equal to 0",
+    ],
+    pprPostStreet: [
+      "Ppr post street is not a number",
+      "Ppr post street must be greater than or equal to 0",
+    ],
+    drlPreStreet: [
+      "Drl pre street is not a number",
+      "Drl pre street must be greater than or equal to 0",
+    ],
+    drlPostStreet: [
+      "Drl post street is not a number",
+      "Drl post street must be greater than or equal to 0",
+    ],
+    pprDrlPreStreet: [
+      "Ppr drl pre street is not a number",
+      "Ppr drl pre street must be greater than or equal to 0",
+    ],
+    pprDrlPostStreet: [
+      "Ppr drl post street is not a number",
+      "Ppr drl post street must be greater than or equal to 0",
+    ],
   },
 
   canIDrop: function($e) {
