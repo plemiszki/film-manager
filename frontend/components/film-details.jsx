@@ -467,6 +467,8 @@ class FilmDetails extends React.Component {
       if (tentative) {
         film[tentativeAttribute] = true;
         film[attribute] = releaseDate.slice(0, -1);
+      } else {
+        film[tentativeAttribute] = false;
       }
     });
     return film;

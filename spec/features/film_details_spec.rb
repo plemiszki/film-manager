@@ -89,7 +89,8 @@ describe 'film_details', type: :feature do
       theatrical_release: '12/1/2020',
       svod_release: '1/1/2021',
       avod_release: '2/1/2021',
-      tvod_release: '3/1/2021'
+      tvod_release: '3/1/2021?',
+      fm_plus_release: '4/1/2021',
     })
     save_and_wait
     expect(@film.reload.attributes).to include(
@@ -100,7 +101,9 @@ describe 'film_details', type: :feature do
       'theatrical_release' => Date.parse('1/12/2020'),
       'svod_release' => Date.parse('1/1/2021'),
       'avod_release' => Date.parse('1/2/2021'),
-      'tvod_release' => Date.parse('1/3/2021')
+      'tvod_release' => Date.parse('1/3/2021'),
+      'tvod_tentative' => true,
+      'fm_plus_release' => Date.parse('1/4/2021'),
     )
   end
 
