@@ -13,9 +13,10 @@ class Api::WebsiteController < CyberController
       :quotes,
       :related_films,
       :topics,
+      :edu_platforms,
       digital_retailer_films: [:digital_retailer],
       dvds: [:dvd_type, :dvd_shorts],
-      episodes: [:actors]
+      episodes: [:actors],
     ).order(:id)
     render 'films.json.jbuilder'
   end
