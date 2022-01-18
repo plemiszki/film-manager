@@ -411,6 +411,7 @@ class FilmDetails extends React.Component {
       justSaved: true
     }, () => {
       const { film, percentageObject } = this.state;
+      const filmWithTentative = this.extractTentativeReleaseDates(film);
       this.props.updateEntity({
         id: window.location.pathname.split("/")[2],
         directory: window.location.pathname.split("/")[1],
@@ -436,12 +437,13 @@ class FilmDetails extends React.Component {
           percentages: percentageObject
         }
       }).then(() => {
-        const { film, filmRevenuePercentages } = this.props;
+        const { film, filmRevenuePercentages, schedule } = this.props;
         this.setState({
           changesToSave: false,
           film,
           filmSaved: HandyTools.deepCopy(film),
-          filmRevenuePercentages
+          filmRevenuePercentages,
+          schedule
         }, () => {
           this.updatePercentageObject();
         });
@@ -454,6 +456,20 @@ class FilmDetails extends React.Component {
         });
       });
     });
+  }
+
+  extractTentativeReleaseDates(film) {
+    const attributes = ['avodRelease', 'svodRelease', 'tvodRelease', 'fmPlusRelease', 'theatricalRelease'];
+    attributes.forEach((attribute) => {
+      const tentativeAttribute = attribute.slice(0, -7) + 'Tentative';
+      let releaseDate = film[attribute];
+      const tentative = releaseDate.charAt(releaseDate.length - 1) === '?';
+      if (tentative) {
+        film[tentativeAttribute] = true;
+        film[attribute] = releaseDate.slice(0, -1);
+      }
+    });
+    return film;
   }
 
   selectEntityToCreate(args, option) {
