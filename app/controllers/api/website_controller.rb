@@ -21,11 +21,6 @@ class Api::WebsiteController < CyberController
     render 'films.json.jbuilder'
   end
 
-  def gift_boxes
-    @gift_boxes = Giftbox.where(on_demand: false).includes(:dvds)
-    render 'gift_boxes.json.jbuilder'
-  end
-
   def bookings
     @in_theaters = InTheatersFilm.where(section: 'In Theaters').includes(:film).order(:order)
     @coming_soon = InTheatersFilm.where(section: 'Coming Soon').includes(:film).order(:order)

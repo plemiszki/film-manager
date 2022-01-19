@@ -166,7 +166,6 @@ Rails.application.routes.draw do
     resources :merchandise_items, only: [:index, :new, :create, :show, :update, :destroy]
 
     get '/website/films' => '/api/website#films'
-    get '/website/gift_boxes' => '/api/website#gift_boxes'
     get '/website/bookings' => '/api/website#bookings'
     get '/website/merchandise' => '/api/website#merchandise'
 
