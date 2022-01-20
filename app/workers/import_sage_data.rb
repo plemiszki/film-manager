@@ -91,7 +91,7 @@ class ImportSageData
             film = dvd.feature
             report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
             if report.nil? && film.ignore_sage_id
-              errors << "\"#{film.title}\" is included in \"#{giftbox.name}\" but has \"Ignore Sage ID\" enabled."
+              errors << "\"#{film.title}\" is included in \"#{giftbox.name}\" but has \"Ignore Sage ID on Import\" enabled."
               next
             end
             if label == "revenue"
