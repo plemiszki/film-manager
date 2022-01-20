@@ -16,8 +16,8 @@ class Api::JobsController < AdminController
   end
 
   def show
-    @job = Job.find(params[:id])
-    render 'show', formats: [:json], handlers: [:jbuilder]
+    job = Job.find(params[:id])
+    render json: { job: job.render_json }
   end
 
   def update

@@ -450,7 +450,14 @@ class ReportsIndex extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.updateJobModal.call(this);
+    Common.updateJobModal.call(this, { ensureCallback: this.importCallback.bind(this) });
+  }
+
+  importCallback() {
+    this.setState({
+      fetching: true
+    });
+    this.fetchReports();
   }
 }
 

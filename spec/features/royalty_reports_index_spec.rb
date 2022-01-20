@@ -30,13 +30,15 @@ describe 'royalty_reports_index', type: :feature do
 
   it 'imports revenue' do
     create_revenue_streams
-    create(:expenses_recouped_from_top_film)
+    film = create(:expenses_recouped_from_top_film)
+    film.film_revenue_percentages.update_all(value: 50)
     Sidekiq::Testing.inline! do
       visit royalty_reports_path(as: $admin_user, no_jobs: true)
       wait_for_ajax
       find('.btn', text: 'Import').click
       find('.orange-button', text: 'Import Revenue').click
       find('form input[type="file"]', visible: false).set('spec/support/revenue.xlsx')
+      expect(page).to have_content 'Import Complete'
     end
   end
 
