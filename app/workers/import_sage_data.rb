@@ -6,7 +6,7 @@ class ImportSageData
 
   REVENUE_STREAM_IDS = Hash[*RevenueStream.all.map { |stream| [stream.name, stream.id] }.flatten]
 
-  def perform(year, quarter, time_started, label, original_filename)
+  def perform(year, quarter, time_started, label, original_filename, use_tmp = true)
     unless Rails.env == 'test'
       p '---------------------------'
       p 'STARTING SAGE IMPORT'
@@ -49,7 +49,7 @@ class ImportSageData
     end
 
     require 'roo'
-    file_path = Rails.env == 'test' ? Rails.root.join("./#{original_filename}").to_s : Rails.root.join("tmp/#{time_started}/#{original_filename}").to_s
+    file_path = use_tmp ? Rails.root.join("tmp/#{time_started}/#{original_filename}").to_s : Rails.root.join("./#{original_filename}").to_s
     begin
       xlsx = Roo::Spreadsheet.open(file_path)
       sheet = xlsx.sheet(0)

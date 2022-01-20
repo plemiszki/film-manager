@@ -217,6 +217,27 @@ def dollarify(input)
   end
 end
 
+def create_revenue_streams
+  [
+    'Theatrical',
+    'Non-Theatrical',
+    'Video',
+    'Commercial Video',
+    'VOD',
+    'SVOD',
+    'TVOD',
+    'AVOD',
+    'FVOD',
+    'Other Internet',
+    'Hotels, Ships, Airlines',
+    'Television',
+    'FM Subscription',
+    'Jewish Festivals'
+  ].each_with_index do |name, index|
+    create(:revenue_stream, name: name, order: index)
+  end
+end
+
 private
 
 def get_value(value)

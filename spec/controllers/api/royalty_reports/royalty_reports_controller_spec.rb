@@ -742,8 +742,8 @@ RSpec.describe Api::RoyaltyReportsController do
       end
       q1_report.calculate!
 
-      ImportSageData.perform_async(2019, 2, time_started, 'revenue', '/spec/support/revenue.xlsx')
-      ImportSageData.perform_async(2019, 2, time_started, 'expenses', '/spec/support/expenses.xlsx')
+      ImportSageData.perform_async(2019, 2, time_started, 'revenue', '/spec/support/revenue.xlsx', false)
+      ImportSageData.perform_async(2019, 2, time_started, 'expenses', '/spec/support/expenses.xlsx', false)
       ImportSageData.drain
 
       # new reports are created

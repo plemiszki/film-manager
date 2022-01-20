@@ -158,14 +158,18 @@ class ReportsIndex extends React.Component {
     $('#upload-form-sage #quarter').val(this.state.quarter);
     $('#upload-form-sage #year').val(this.state.year);
     $('#upload-form-sage #label').val('revenue');
-    $('#upload-form-sage #user_file').click();
+    if (document.getElementById('env').innerHTML !== 'test') {
+      $('#upload-form-sage #user_file').click();
+    }
   }
 
   clickImportExpenses() {
     $('#upload-form-sage #quarter').val(this.state.quarter);
     $('#upload-form-sage #year').val(this.state.year);
     $('#upload-form-sage #label').val('expenses');
-    $('#upload-form-sage #user_file').click();
+    if (document.getElementById('env').innerHTML !== 'test') {
+      $('#upload-form-sage #user_file').click();
+    }
   }
 
   pickFile() {

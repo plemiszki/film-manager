@@ -3,5 +3,8 @@
   <div id="sage-import-label" class="hidden"><%= flash[:label].capitalize %></div>
   <div id="sage-import-quarter" class="hidden"><%= flash[:quarter] %></div>
 <% end %>
-<div id="jobs-index"></div>
+<% unless request.query_parameters[:no_jobs] %>
+  <div id="jobs-index"></div>
+<% end %>
 <div id="reports-index">replace me</div>
+<div id="env" class="hidden"><%= Rails.env %></div>

@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'support/features_helper'
+require 'sidekiq/testing'
 
 describe 'royalty_reports_index', type: :feature do
 
@@ -8,8 +9,6 @@ describe 'royalty_reports_index', type: :feature do
     create(:label)
     create(:licensor)
     @proper_quarter, @proper_year = get_proper_quarter(Date.today)
-    create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
-    sleep 0.15
   end
 
   it 'is gated' do
@@ -20,19 +19,33 @@ describe 'royalty_reports_index', type: :feature do
   it 'displays all reports' do
     create(:film, licensor_id: 1, days_statement_due: 30)
     create(:film, title: 'Another Film', days_statement_due: 60)
+    create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     create(:royalty_report, film_id: 2, quarter: @proper_quarter, year: @proper_year)
-    visit royalty_reports_path(as: $admin_user)
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
     expect(page).to have_content 'Wilby Wonderful'
     expect(page).to have_content 'Another Film'
     expect(page).to have_content 'Hippo Entertainment'
   end
 
+  it 'imports revenue' do
+    create_revenue_streams
+    create(:expenses_recouped_from_top_film)
+    Sidekiq::Testing.inline! do
+      visit royalty_reports_path(as: $admin_user, no_jobs: true)
+      wait_for_ajax
+      find('.btn', text: 'Import').click
+      find('.orange-button', text: 'Import Revenue').click
+      find('form input[type="file"]', visible: false).set('spec/support/revenue.xlsx')
+    end
+  end
+
   it "filters reports by when they're due" do
     create(:film, licensor_id: 1, days_statement_due: 30)
     create(:film, title: 'Another Film', days_statement_due: 60)
+    create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     create(:royalty_report, film_id: 2, quarter: @proper_quarter, year: @proper_year)
-    visit royalty_reports_path(as: $admin_user)
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
     click_nice_select_option('#days-filter', '30 days')
     expect(page).to have_content 'Wilby Wonderful'
@@ -42,7 +55,8 @@ describe 'royalty_reports_index', type: :feature do
   it 'starts calculate totals job' do
     create(:film, licensor_id: 1, days_statement_due: 30)
     create(:film, title: 'Another Film', days_statement_due: 60)
-    visit royalty_reports_path(as: $admin_user)
+    create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
     find('.btn', text: 'Totals').click
     expect(page).to have_content 'Calculating Totals'
@@ -51,7 +65,8 @@ describe 'royalty_reports_index', type: :feature do
   it 'starts create report summary job' do
     create(:film, licensor_id: 1, days_statement_due: 30)
     create(:film, title: 'Another Film', days_statement_due: 60)
-    visit royalty_reports_path(as: $admin_user)
+    create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
     find('.btn', text: 'Summary').click
     expect(page).to have_content 'Creating Summary'
@@ -60,7 +75,8 @@ describe 'royalty_reports_index', type: :feature do
   it 'starts error check job' do
     create(:film, licensor_id: 1, days_statement_due: 30)
     create(:film, title: 'Another Film', days_statement_due: 60)
-    visit royalty_reports_path(as: $admin_user)
+    create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
     find('.btn', text: 'Error Check').click
     expect(page).to have_content 'Checking For Errors'
@@ -69,7 +85,8 @@ describe 'royalty_reports_index', type: :feature do
   it 'starts export all reports job' do
     create(:film, licensor_id: 1, days_statement_due: 30)
     create(:film, title: 'Another Film', days_statement_due: 60)
-    visit royalty_reports_path(as: $admin_user)
+    create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
     click_nice_select_option('#days-filter', '30 days')
     find('.btn', text: 'Export All').click
@@ -79,7 +96,8 @@ describe 'royalty_reports_index', type: :feature do
   it 'starts export and send reports job' do
     create(:film, licensor_id: 1, days_statement_due: 30)
     create(:film, title: 'Another Film', days_statement_due: 60)
-    visit royalty_reports_path(as: $admin_user)
+    create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
     click_nice_select_option('#days-filter', '30 days')
     find('.btn', text: 'Send All').click
