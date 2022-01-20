@@ -90,6 +90,10 @@ class ImportSageData
           dvds.each do |dvd|
             film = dvd.feature
             report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
+            if report.nil? && film.ignore_sage_id
+              errors << "\"#{film.title}\" is included in \"#{giftbox.name}\" but has \"Ignore Sage ID\" enabled."
+              next
+            end
             if label == "revenue"
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Video'])
               stream.current_revenue += amount
