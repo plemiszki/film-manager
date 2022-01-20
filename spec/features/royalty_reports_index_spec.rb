@@ -39,6 +39,22 @@ describe 'royalty_reports_index', type: :feature do
       find('.orange-button', text: 'Import Revenue').click
       find('form input[type="file"]', visible: false).set('spec/support/revenue.xlsx')
       expect(page).to have_content 'Import Complete'
+      expect(RoyaltyReport.count).to eq(1)
+    end
+  end
+
+  it 'imports expenses' do
+    create_revenue_streams
+    film = create(:expenses_recouped_from_top_film)
+    film.film_revenue_percentages.update_all(value: 50)
+    Sidekiq::Testing.inline! do
+      visit royalty_reports_path(as: $admin_user, no_jobs: true)
+      wait_for_ajax
+      find('.btn', text: 'Import').click
+      find('.orange-button', text: 'Import Expenses').click
+      find('form input[type="file"]', visible: false).set('spec/support/expenses.xlsx')
+      expect(page).to have_content 'Import Complete'
+      expect(RoyaltyReport.count).to eq(1)
     end
   end
 
