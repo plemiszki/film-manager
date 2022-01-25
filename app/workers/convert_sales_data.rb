@@ -208,7 +208,7 @@ class ConvertSalesData
       end
 
       if unknown_films.present?
-        job.update!({ done: true, errors_text: unknown_films.sort.uniq.to_json })
+        job.update!({ status: :failed, errors_text: unknown_films.sort.uniq.to_json })
       else
         job.update({ first_line: "Saving New Speadsheet", second_line: false })
         file_path = "#{job_folder}/sales.xlsx"
@@ -223,10 +223,10 @@ class ConvertSalesData
         bucket = s3.bucket(ENV['S3_BUCKET'])
         obj = bucket.object("#{time_started}/sales.xlsx")
         obj.upload_file(file_path, acl:'public-read')
-        job.update!({ done: true, first_line: obj.public_url })
+        job.update!({ status: :success, metadata: { url: obj.public_url } })
       end
     rescue
-      job.update!({ done: true, errors_text: "Unable to import spreadsheet" })
+      job.update!({ status: :failed, errors_text: "Unable to import spreadsheet" })
     end
   end
 

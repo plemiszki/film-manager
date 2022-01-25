@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import HandyTools from 'handy-tools'
-import { sendRequest, fetchEntities, createEntity } from '../actions/index.js'
+import { sendRequest, fetchEntity, fetchEntities, createEntity } from '../actions/index.js'
 import { Common, ConfirmDelete, Details, Index, ModalSelect, ModalSelectStyles } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -11,18 +11,7 @@ class ConvertDigitalSales extends React.Component {
 
   constructor(props) {
     super(props)
-    var job = {
-      errors_text: ""
-    };
-    if ($('#job-id').length == 1) {
-      job.id = $('#job-id')[0].innerHTML;
-      job.secondLine = false;
-      job.firstLine = "Importing Sales Report";
-    }
     this.state = {
-      jobModalOpen: !!job.id,
-      errorsModalOpen: false,
-      job: job,
       errors: [],
       films: [],
       currentTitle: ''
@@ -30,66 +19,32 @@ class ConvertDigitalSales extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.jobModalOpen) {
-      this.updateJobModal();
-    }
-  }
-
-  updateJobModal() {
-    this.props.sendRequest({
-      url: '/api/jobs/status_new',
-      data: {
-        id: this.state.job.id,
-        time: this.state.job.jobId
-      }
-    }).then(() => {
-      let { job } = this.props;
-      let interval = window.setInterval(() => {
+    if ($('#job-id').length == 1) {
+      const jobId = $('#job-id')[0].innerHTML;
+      this.props.fetchEntity({
+        directory: 'jobs',
+        id: jobId
+      }).then(() => {
+        const { job } = this.props;
+        this.setState({
+          job,
+          jobModalOpen: true,
+          fetching: true,
+        });
         this.props.sendRequest({
-          url: '/api/jobs/status_new',
+          url: '/api/films',
           data: {
-            id: this.state.job.id
+            filmType: 'all'
           }
         }).then(() => {
-          let job = this.props.job;
-          if (job.done) {
-            clearInterval(interval);
-            this.setState({
-              jobModalOpen: false,
-              job: job,
-              errorsModalOpen: job.errorsText == "Unable to import spreadsheet"
-            }, () => {
-              if (job.errorsText) {
-                if (!this.state.errorsModalOpen) {
-                  this.setState({
-                    errors: JSON.parse(job.errorsText),
-                    fetching: true
-                  }, () => {
-                    this.props.sendRequest({
-                      url: '/api/films',
-                      data: {
-                        filmType: 'all'
-                      }
-                    }).then(() => {
-                      this.setState({
-                        films: this.props.films,
-                        fetching: false
-                      });
-                    });
-                  });
-                }
-              } else {
-                window.location.href = job.firstLine;
-              }
-            });
-          } else {
-            this.setState({
-              job: job
-            });
-          }
-        })
-      }, 1000);
-    });
+          const { films } = this.props;
+          this.setState({
+            films,
+            fetching: false
+          });
+        });
+      });
+    }
   }
 
   modalCloseAndRefresh() {
@@ -120,6 +75,7 @@ class ConvertDigitalSales extends React.Component {
         text: this.state.currentTitle
       }
     }).then(() => {
+      let job = this.state.job;
       let errors = HandyTools.deepCopy(this.state.errors);
       HandyTools.removeFromArray(errors, this.state.currentTitle);
       this.setState({
@@ -130,60 +86,80 @@ class ConvertDigitalSales extends React.Component {
   }
 
   render() {
-    if (this.state.job.errorsText == "Unable to import spreadsheet") {
-      return(
-        <div>
-          { FM.jobErrorsModal.call(this) }
-        </div>
-      );
-    } else if (this.state.errors.length === 0) {
-      return(
-        <div>
-          { FM.jobModal.call(this, this.state.job) }
-        </div>
-      );
-    } else {
-      return(
-        <div className="component">
-          <h1 style={ { width: '100%', textAlign: 'center' } }>There are unrecognized films in this sales report.</h1>
-          <p className="text-center m-bottom">Please create aliases for the below titles, then re-upload the sales report.</p>
-          <div className="white-box">
-            <div className="row">
-              <div className="col-xs-12">
-                <table className="admin-table no-links no-cursor">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td></tr>
-                    { this.state.errors.map((error, index) => {
-                      return(
-                        <tr key={ index }>
-                          <td>
-                            { error }
-                          </td>
-                          <td style={ { textDecoration: 'underline' } }>
-                            <span style={ { cursor: 'pointer' } } onClick={ this.addAlias.bind(this) } data-index={ index }>Add Alias</span>
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+    const { job } = this.state;
+    if (job) {
+      const { status } = job;
+      if (status === 'running' || status === 'success') {
+        return(
+          <div>
+            { Common.renderJobModal.call(this, job) }
           </div>
-          <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
-            <ModalSelect options={ this.state.films } property="title" func={ this.selectFilm.bind(this) } />
-          </Modal>
-        </div>
-      );
+        );
+      } else if (status === 'failed') {
+        if (job.errorsText === 'Unable to import spreadsheet') {
+          return(
+            <div>
+              { Common.renderJobModal.call(this, job) }
+            </div>
+          );
+        } else {
+          return(
+            <div className="component">
+              <h1 style={ { width: '100%', textAlign: 'center' } }>There are unrecognized films in this sales report.</h1>
+              <p className="text-center m-bottom">Please create aliases for the below titles, then re-upload the sales report.</p>
+              <div className="white-box">
+                <div className="row">
+                  <div className="col-xs-12">
+                    <table className="admin-table no-links no-cursor">
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td></td><td></td></tr>
+                        { this.state.errors.map((error, index) => {
+                          return(
+                            <tr key={ index }>
+                              <td>
+                                { error }
+                              </td>
+                              <td style={ { textDecoration: 'underline' } }>
+                                <span style={ { cursor: 'pointer' } } onClick={ this.addAlias.bind(this) } data-index={ index }>Add Alias</span>
+                              </td>
+                            </tr>
+                          );
+                        }) }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                { Common.renderSpinner(this.state.fetching) }
+                { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+              </div>
+              <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
+                <ModalSelect options={ this.state.films } property="title" func={ this.selectFilm.bind(this) } />
+              </Modal>
+            </div>
+          );
+        }
+      }
+    } else {
+      return null;
     }
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this, {
+      failureCallback: (job) => {
+        if (job.errorsText !== 'Unable to import spreadsheet') {
+          this.setState({
+            errors: JSON.parse(job.errorsText)
+          });
+        }
+      }
+    });
   }
 }
 
@@ -192,7 +168,7 @@ const mapStateToProps = (reducers, props) => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest, fetchEntities, createEntity }, dispatch);
+  return bindActionCreators({ sendRequest, fetchEntity, fetchEntities, createEntity }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConvertDigitalSales);
