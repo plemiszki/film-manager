@@ -19,11 +19,11 @@ class ConvertDigitalSales extends React.Component {
   }
 
   componentDidMount() {
-    if ($('#job-id').length == 1) {
-      const jobId = $('#job-id')[0].innerHTML;
+    const jobIdDiv = document.getElementById('job-id');
+    if (jobIdDiv) {
       this.props.fetchEntity({
         directory: 'jobs',
-        id: jobId
+        id: jobIdDiv.innerHTML,
       }).then(() => {
         const { job } = this.props;
         this.setState({

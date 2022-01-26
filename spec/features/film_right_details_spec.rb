@@ -20,6 +20,7 @@ describe 'film_right_details', type: :feature do
 
   it 'displays information about the film right' do
     visit film_right_path(@film_right, as: $admin_user)
+    wait_for_ajax
     expect(find('select[data-field="rightId"]', visible: false).value).to eq '1'
     expect(find('select[data-field="territoryId"]', visible: false).value).to eq '1'
     expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%-d/%y')

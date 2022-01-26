@@ -79,7 +79,7 @@ class ExportCatalog
     obj = bucket.object("#{time_started}/catalog.docx")
     obj.upload_file("#{Rails.root}/tmp/#{time_started}/catalog.docx", acl:'public-read')
 
-    job.update!({ done: true, first_line: obj.public_url })
+    job.update!({ status: :success, metadata: { url: obj.public_url } })
   end
 
 end
