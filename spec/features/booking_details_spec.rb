@@ -295,10 +295,10 @@ describe 'booking_details', type: :feature do
       find('.red-button').click
     end
     wait_for_ajax
-    expect(Invoice.count).to eq(0)
     within('.invoices-table') do
       expect(page).to have_no_content('1B')
     end
+    expect(Invoice.count).to eq(0)
   end
 
   it 'displays payments' do

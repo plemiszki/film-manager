@@ -11,7 +11,7 @@ class ExportUncrossedReports
 
     reports.each do |report|
       return if Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
-      return if job.reload.killed
+      return if job.reload.status = :killed
       p '---------------------------'
       p "#{report.film.title} (#{jid})"
       p '---------------------------'

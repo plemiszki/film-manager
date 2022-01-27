@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_27_034637) do
+ActiveRecord::Schema.define(version: 2022_01_27_130005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -499,7 +499,6 @@ ActiveRecord::Schema.define(version: 2022_01_27_034637) do
     t.integer "total_value", default: 0
     t.string "errors_text", default: ""
     t.string "name"
-    t.boolean "killed", default: false
     t.jsonb "metadata"
     t.integer "status", default: 0
   end

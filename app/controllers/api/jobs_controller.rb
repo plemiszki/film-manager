@@ -1,7 +1,7 @@
 class Api::JobsController < AdminController
 
   def index
-    @jobs = Job.where(name: 'export all', status: :running, killed: false)
+    @jobs = Job.where(name: 'export all', status: :running)
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
@@ -13,14 +13,14 @@ class Api::JobsController < AdminController
   def update
     job = Job.find(params[:id])
     job.update(job_params)
-    @jobs = Job.where(name: 'export all', status: :running, killed: false)
+    @jobs = Job.where(name: 'export all', status: :running)
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
   private
 
   def job_params
-    params[:job].permit(:killed)
+    params[:job].permit(:status)
   end
 
 end

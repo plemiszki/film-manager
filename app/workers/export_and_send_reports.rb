@@ -10,7 +10,7 @@ class ExportAndSendReports
     crossed_films_hash = {}
     reports.each do |report|
       return if Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
-      return if job.reload.killed
+      return if job.reload.status = :killed
       film = report.film
       if (days_due == "all" || film.days_statement_due == days_due.to_i)
         licensor = film.licensor

@@ -35,7 +35,7 @@ class JobsIndex extends React.Component {
   killJob(e) {
     let id = e.target.dataset.id;
     let job = HandyTools.deepCopy(HandyTools.findObjectInArrayById(this.state.jobs, id));
-    job.killed = true;
+    job.status = 'killed';
     this.setState({
       fetching: true
     });

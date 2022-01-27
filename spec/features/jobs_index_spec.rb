@@ -26,7 +26,7 @@ describe 'jobs_index', type: :feature do
   end
 
   it 'does not display killed jobs' do
-    create(:job, killed: true)
+    create(:job, status: :killed)
     visit royalty_reports_path(as: $admin_user)
     wait_for_ajax
     expect(page).to have_no_css('#jobs-index')
@@ -41,7 +41,7 @@ describe 'jobs_index', type: :feature do
     end
     expect(page).to have_no_css('.spinner')
     expect(page).to have_no_css('#jobs-index')
-    expect(Job.last.attributes['killed']).to be(true)
+    expect(Job.last.attributes['status']).to eq('killed')
   end
 
 end
