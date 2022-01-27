@@ -1,15 +1,5 @@
 class Api::JobsController < AdminController
 
-  def status
-    job = params[:id] ? Job.find(params[:id]) : Job.find_by_job_id(params[:time])
-    render json: job.render_json
-  end
-
-  def status_new
-    job = params[:id] ? Job.find(params[:id]) : Job.find_by_job_id(params[:time])
-    render json: { job: job.render_json }
-  end
-
   def index
     @jobs = Job.where(name: 'export all', done: false, killed: false)
     render 'index', formats: [:json], handlers: [:jbuilder]
