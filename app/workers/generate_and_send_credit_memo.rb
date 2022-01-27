@@ -34,7 +34,16 @@ class GenerateAndSendCreditMemo
       attachment: [File.open(path, "r")]
     }
     mg_client.send_message 'filmmovement.com', message_params
-    job.update!({ status: :success, first_line: 'Credit Memo Sent Successfully', metadata: { credit_memo_id: credit_memo.id, credit_memo_date: credit_memo.sent_date, credit_memo_number: credit_memo.number } })
+    job.update!({
+      status: :success,
+      first_line: 'Credit Memo Sent Successfully',
+      metadata: {
+        credit_memo_id: credit_memo.id,
+        credit_memo_date: credit_memo.sent_date,
+        credit_memo_number: credit_memo.number,
+        show_success_message_modal: true,
+      }
+    })
 
   rescue => error
 

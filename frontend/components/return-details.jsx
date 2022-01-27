@@ -38,7 +38,6 @@ class ReturnDetails extends React.Component {
       justSaved: false,
       deleteModalOpen: false,
       jobModalOpen: false,
-      noErrorsModalOpen: false,
       job: {
         errors_text: ''
       },
@@ -273,8 +272,7 @@ class ReturnDetails extends React.Component {
             </div>
           </div>
         </Modal>
-        { FM.jobModal.call(this, this.state.job) }
-        { FM.jobNoErrorsModal.call(this) }
+        { Common.renderJobModal.call(this, this.state.job) }
       </div>
     );
   }
@@ -315,38 +313,19 @@ class ReturnDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.state.jobModalOpen) {
-      window.setTimeout(() => {
-        $.ajax({
-          url: '/api/jobs/status',
-          method: 'GET',
-          data: {
-            id: this.state.job.id,
-            time: this.state.job.job_id
-          },
-          success: (response) => {
-            let newState = {
-              job: response
-            };
-            if (response.status === 'failed' || response.status === 'success') {
-              newState.jobModalOpen = false;
-              newState.noErrorsModalOpen = true;
-              if (response.status === 'success') {
-                let r = this.state.return;
-                r.creditMemoId = response.metadata.creditMemoId
-                r.creditMemoNumber = response.metadata.creditMemoNumber
-                r.creditMemoDate = response.metadata.creditMemoDate
-                newState.return = r;
-              }
-            } else {
-              newState.jobModalOpen = true;
-              newState.noErrorsModalOpen = false;
-            }
-            this.setState(newState);
-          }
+    Common.updateJobModal.call(this, {
+      successCallback: () => {
+        const { creditMemoId, creditMemoNumber, creditMemoDate } = this.state.job.metadata;
+        let r = this.state.return;
+        r.creditMemoId = creditMemoId;
+        r.creditMemoNumber = creditMemoNumber;
+        r.creditMemoDate = creditMemoDate;
+        this.setState({
+          return: r,
+          returnSaved: HandyTools.deepCopy(r),
         });
-      }, 1500)
-    }
+      }
+    });
   }
 }
 
