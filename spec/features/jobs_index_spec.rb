@@ -19,7 +19,7 @@ describe 'jobs_index', type: :feature do
   end
 
   it 'does not display completed jobs' do
-    create(:job, done: true)
+    create(:job, status: :success)
     visit royalty_reports_path(as: $admin_user)
     wait_for_ajax
     expect(page).to have_no_css('#jobs-index')

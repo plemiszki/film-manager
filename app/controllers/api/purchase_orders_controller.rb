@@ -6,7 +6,7 @@ class Api::PurchaseOrdersController < AdminController
   def check_jobs
     jobs = Job.where(name: "import inventory").order(:id)
     last_job = jobs.last
-    active_job = last_job && last_job.done == false ? last_job : nil
+    active_job = last_job && last_job.not_done? ? last_job : nil
     render json: {
       needToUpdate: jobs.empty? || DateTime.parse(last_job.job_id).to_date.past?,
       job: active_job

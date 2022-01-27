@@ -8,7 +8,7 @@ FactoryBot.define do
     current_value { 0 }
     total_value { 100 }
     errors_text { '' }
-    done { false }
+    status { :running }
     killed { false }
   end
 
