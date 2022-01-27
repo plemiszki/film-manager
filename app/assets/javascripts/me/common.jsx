@@ -466,6 +466,38 @@ var FM = {
       "Ppr drl post street is not a number",
       "Ppr drl post street must be greater than or equal to 0",
     ],
+    msrpPreStreetMember: [
+      "Msrp pre street member is not a number",
+      "Msrp pre street member must be greater than or equal to 0",
+    ],
+    msrpPostStreetMember: [
+      "Msrp post street member is not a number",
+      "Msrp post street member must be greater than or equal to 0",
+    ],
+    pprPreStreetMember: [
+      "Ppr pre street member is not a number",
+      "Ppr pre street member must be greater than or equal to 0",
+    ],
+    pprPostStreetMember: [
+      "Ppr post street member is not a number",
+      "Ppr post street member must be greater than or equal to 0",
+    ],
+    drlPreStreetMember: [
+      "Drl pre street member is not a number",
+      "Drl pre street member must be greater than or equal to 0",
+    ],
+    drlPostStreetMember: [
+      "Drl post street member is not a number",
+      "Drl post street member must be greater than or equal to 0",
+    ],
+    pprDrlPreStreetMember: [
+      "Ppr drl pre street member is not a number",
+      "Ppr drl pre street member must be greater than or equal to 0",
+    ],
+    pprDrlPostStreetMember: [
+      "Ppr drl post street member is not a number",
+      "Ppr drl post street member must be greater than or equal to 0",
+    ],
   },
 
   canIDrop: function($e) {

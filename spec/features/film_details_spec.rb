@@ -292,14 +292,26 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
     expect(find('textarea[data-field="institutionalSynopsis"]').value).to eq 'Institutional Synopsis'
+
     expect(find('input[data-field="msrpPreStreet"]').value).to eq '$150.00'
-    expect(find('input[data-field="msrpPostStreet"]').value).to eq '$24.95'
     expect(find('input[data-field="pprPreStreet"]').value).to eq '$350.00'
-    expect(find('input[data-field="pprPostStreet"]').value).to eq '$200.00'
     expect(find('input[data-field="drlPreStreet"]').value).to eq '$499.00'
-    expect(find('input[data-field="drlPostStreet"]').value).to eq '$699.00'
     expect(find('input[data-field="pprDrlPreStreet"]').value).to eq '$599.00'
-    expect(find('input[data-field="pprDrlPostStreet"]').value).to eq '$799.00'
+
+    expect(find('input[data-field="msrpPreStreetMember"]').value).to eq '$100.00'
+    expect(find('input[data-field="pprPreStreetMember"]').value).to eq '$300.00'
+    expect(find('input[data-field="drlPreStreetMember"]').value).to eq '$450.00'
+    expect(find('input[data-field="pprDrlPreStreetMember"]').value).to eq '$550.00'
+
+    expect(find('input[data-field="msrpPostStreet"]').value).to eq '$24.95'
+    expect(find('input[data-field="pprPostStreet"]').value).to eq '$200.00'
+    expect(find('input[data-field="drlPostStreet"]').value).to eq '$499.00'
+    expect(find('input[data-field="pprDrlPostStreet"]').value).to eq '$599.00'
+
+    expect(find('input[data-field="msrpPostStreetMember"]').value).to eq '$24.95'
+    expect(find('input[data-field="pprPostStreetMember"]').value).to eq '$150.00'
+    expect(find('input[data-field="drlPostStreetMember"]').value).to eq '$450.00'
+    expect(find('input[data-field="pprDrlPostStreetMember"]').value).to eq '$550.00'
   end
 
   it 'updates the film\'s educational information' do
@@ -308,13 +320,21 @@ describe 'film_details', type: :feature do
     new_info = {
       institutional_synopsis: 'New Institutional Synopsis',
       msrp_pre_street: '$1.00',
-      msrp_post_street: '$2.00',
-      ppr_pre_street: '$3.00',
-      ppr_post_street: '$4.00',
-      drl_pre_street: '$5.00',
-      drl_post_street: '$6.00',
-      ppr_drl_pre_street: '$7.00',
-      ppr_drl_post_street: '$8.00',
+      ppr_pre_street: '$2.00',
+      drl_pre_street: '$3.00',
+      ppr_drl_pre_street: '$4.00',
+      msrp_pre_street_member: '$5.00',
+      ppr_pre_street_member: '$6.00',
+      drl_pre_street_member: '$7.00',
+      ppr_drl_pre_street_member: '$8.00',
+      msrp_post_street: '$9.00',
+      ppr_post_street: '$10.00',
+      drl_post_street: '$11.00',
+      ppr_drl_post_street: '$12.00',
+      msrp_post_street_member: '$13.00',
+      ppr_post_street_member: '$14.00',
+      drl_post_street_member: '$15.00',
+      ppr_drl_post_street_member: '$16.00',
     }
     fill_out_form(new_info)
     find('.blue-button', text: 'Save').click
@@ -324,13 +344,21 @@ describe 'film_details', type: :feature do
       data: new_info,
       db_data: {
         msrp_pre_street: 1,
-        msrp_post_street: 2,
-        ppr_pre_street: 3,
-        ppr_post_street: 4,
-        drl_pre_street: 5,
-        drl_post_street: 6,
-        ppr_drl_pre_street: 7,
-        ppr_drl_post_street: 8,
+        ppr_pre_street: 2,
+        drl_pre_street: 3,
+        ppr_drl_pre_street: 4,
+        msrp_pre_street_member: 5,
+        ppr_pre_street_member: 6,
+        drl_pre_street_member: 7,
+        ppr_drl_pre_street_member: 8,
+        msrp_post_street: 9,
+        ppr_post_street: 10,
+        drl_post_street: 11,
+        ppr_drl_post_street: 12,
+        msrp_post_street_member: 13,
+        ppr_post_street_member: 14,
+        drl_post_street_member: 15,
+        ppr_drl_post_street_member: 16,
       }
     })
   end

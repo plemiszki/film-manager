@@ -34,14 +34,26 @@ FactoryBot.define do
     rental_url { 'https://www.filmmovement.com/rentals/wilbywonderful' }
     rental_days { 3 }
     rental_price { 10 }
+
     msrp_pre_street { 150 }
-    msrp_post_street { 24.95 }
     ppr_pre_street { 350 }
-    ppr_post_street { 200 }
     drl_pre_street { 499 }
-    drl_post_street { 699 }
     ppr_drl_pre_street { 599 }
-    ppr_drl_post_street { 799 }
+
+    msrp_pre_street_member { 100 }
+    ppr_pre_street_member { 300 }
+    drl_pre_street_member { 450 }
+    ppr_drl_pre_street_member { 550 }
+
+    msrp_post_street { 24.95 }
+    ppr_post_street { 200 }
+    drl_post_street { 499 }
+    ppr_drl_post_street { 599 }
+
+    msrp_post_street_member { 24.95 }
+    ppr_post_street_member { 150 }
+    drl_post_street_member { 450 }
+    ppr_drl_post_street_member { 550 }
 
     factory :no_expenses_recouped_film do
       title { 'No Expenses Recouped' }

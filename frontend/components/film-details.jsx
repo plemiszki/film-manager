@@ -424,13 +424,21 @@ class FilmDetails extends React.Component {
             'eAndO',
             'rentalPrice',
             'msrpPreStreet',
-            'msrpPostStreet',
             'pprPreStreet',
-            'pprPostStreet',
             'drlPreStreet',
-            'drlPostStreet',
             'pprDrlPreStreet',
-            'pprDrlPostStreet'
+            'msrpPostStreet',
+            'pprPostStreet',
+            'drlPostStreet',
+            'pprDrlPostStreet',
+            'msrpPreStreetMember',
+            'pprPreStreetMember',
+            'drlPreStreetMember',
+            'pprDrlPreStreetMember',
+            'msrpPostStreetMember',
+            'pprPostStreetMember',
+            'drlPostStreetMember',
+            'pprDrlPostStreetMember',
           ]
         }),
         additionalData: {
@@ -1425,72 +1433,114 @@ class FilmDetails extends React.Component {
       }
     } else if (this.state.tab === "Educational") {
       return(
-        <div>
-          <hr />
-          <div className={ 'row' + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
-            { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'institutionalSynopsis', rows: 8, characterCount: true }) }
-          </div>
-          <div className="row">
-            <div className="col-xs-6">
-              <h3>Topics</h3>
-              <ul className="standard-list topics-list">
-                { HandyTools.alphabetizeArrayOfObjects(filmTopics, 'topic').map((filmTopic) => {
-                  return(
-                    <li key={ filmTopic.id }>
-                      { filmTopic.topic }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_topics', otherArrays: ['topics'] }) } data-id={ filmTopic.id }></div>
-                    </li>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'topicsModalOpen', true) }>Add Topic</a>
+        <>
+          <div>
+            <hr />
+            <div className="row">
+              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'institutionalSynopsis', rows: 8, characterCount: true }) }
             </div>
-            <div className="col-xs-3">
-              <h3>Educational Pricing</h3>
-              { Details.renderField.bind(this)({ entity: 'film', property: 'msrpPreStreet', columnHeader: 'SRP Pre-Street' }) }
-              { Details.renderField.bind(this)({ entity: 'film', property: 'pprPreStreet', columnHeader: 'PPR Pre-Street' }) }
-              { Details.renderField.bind(this)({ entity: 'film', property: 'drlPreStreet', columnHeader: 'DRL Pre-Street' }) }
-              { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPreStreet', columnHeader: 'PPR + DRL Pre-Street' }) }
-            </div>
-            <div className="col-xs-3">
-              <div style={ { width: '100%', height: '47px' } }></div>
-              { Details.renderField.bind(this)({ entity: 'film', property: 'msrpPostStreet', columnHeader: 'SRP Post-Street' }) }
-              { Details.renderField.bind(this)({ entity: 'film', property: 'pprPostStreet', columnHeader: 'PPR Post-Street' }) }
-              { Details.renderField.bind(this)({ entity: 'film', property: 'drlPostStreet', columnHeader: 'DRL Post-Street' }) }
-              { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPostStreet', columnHeader: 'PPR + DRL Post-Street' }) }
-            </div>
-          </div>
-          <hr />
-          <div className="row">
-            <div className="col-xs-12">
-              <h3>Educational Streaming Platforms</h3>
-              <table className="fm-admin-table edu-platforms-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>URL</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td></td><td></td></tr>
-                  { this.state.eduPlatformFilms.map((eduPlatformFilm, index) => {
+            <hr />
+            <div className="row">
+              <div className="col-xs-2">
+                <h3>Pricing</h3>
+                <div className="edu-subheader-container">
+                  <p>Pre-Street</p>
+                  <p>Non-Member</p>
+                </div>
+                { Details.renderField.bind(this)({ entity: 'film', property: 'msrpPreStreet', columnHeader: 'SRP' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'pprPreStreet', columnHeader: 'PPR' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'drlPreStreet', columnHeader: 'DRL' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPreStreet', columnHeader: 'PPR + DRL' }) }
+              </div>
+              <div className="col-xs-2">
+                <div style={ { width: '100%', height: '47px' } }></div>
+                <div className="edu-subheader-container">
+                  <p>Pre-Street</p>
+                  <p>Member</p>
+                </div>
+                { Details.renderField.bind(this)({ entity: 'film', property: 'msrpPreStreetMember', columnHeader: 'SRP' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'pprPreStreetMember', columnHeader: 'PPR' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'drlPreStreetMember', columnHeader: 'DRL' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPreStreetMember', columnHeader: 'PPR + DRL' }) }
+              </div>
+              <div className="col-xs-2">
+                <div style={ { width: '100%', height: '47px' } }></div>
+                <div className="edu-subheader-container">
+                  <p>Post-Street</p>
+                  <p>Non-Member</p>
+                </div>
+                { Details.renderField.bind(this)({ entity: 'film', property: 'msrpPostStreet', columnHeader: 'SRP' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'pprPostStreet', columnHeader: 'PPR' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'drlPostStreet', columnHeader: 'DRL' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPostStreet', columnHeader: 'PPR + DRL' }) }
+              </div>
+              <div className="col-xs-2">
+                <div style={ { width: '100%', height: '47px' } }></div>
+                <div className="edu-subheader-container">
+                  <p>Post-Street</p>
+                  <p>Member</p>
+                </div>
+                { Details.renderField.bind(this)({ entity: 'film', property: 'msrpPostStreetMember', columnHeader: 'SRP' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'pprPostStreetMember', columnHeader: 'PPR' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'drlPostStreetMember', columnHeader: 'DRL' }) }
+                { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPostStreetMember', columnHeader: 'PPR + DRL' }) }
+              </div>
+              <div className="col-xs-4">
+                <h3>Topics</h3>
+                <ul className="standard-list topics-list">
+                  { HandyTools.alphabetizeArrayOfObjects(filmTopics, 'topic').map((filmTopic) => {
                     return(
-                      <tr key={ index } onClick={ this.redirect.bind(this, 'edu_platform_films', eduPlatformFilm.id) }>
-                        <td className="name-column">
-                          { eduPlatformFilm.name }
-                        </td>
-                        <td>
-                          { eduPlatformFilm.url }
-                        </td>
-                      </tr>
+                      <li key={ filmTopic.id }>
+                        { filmTopic.topic }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_topics', otherArrays: ['topics'] }) } data-id={ filmTopic.id }></div>
+                      </li>
                     );
                   }) }
-                </tbody>
-              </table>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newEduPlatformModalOpen', true) }>Add Platform</a>
+                </ul>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'topicsModalOpen', true) }>Add Topic</a>
+              </div>
             </div>
+            <hr />
+            <div className="row">
+              <div className="col-xs-12">
+                <h3>Educational Streaming Platforms</h3>
+                <table className="fm-admin-table edu-platforms-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>URL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td></td><td></td></tr>
+                    { this.state.eduPlatformFilms.map((eduPlatformFilm, index) => {
+                      return(
+                        <tr key={ index } onClick={ this.redirect.bind(this, 'edu_platform_films', eduPlatformFilm.id) }>
+                          <td className="name-column">
+                            { eduPlatformFilm.name }
+                          </td>
+                          <td>
+                            { eduPlatformFilm.url }
+                          </td>
+                        </tr>
+                      );
+                    }) }
+                  </tbody>
+                </table>
+                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newEduPlatformModalOpen', true) }>Add Platform</a>
+              </div>
+            </div>
+            <hr />
           </div>
-          <hr />
-        </div>
+          <style jsx>{`
+            .edu-subheader-container {
+              margin-top: -10px;
+              font-family: 'TeachableSans-Medium';
+              font-size: 12px;
+              font-style: italic;
+              margin-bottom: 20px;
+            }
+          `}</style>
+        </>
       );
     } else {
       return(

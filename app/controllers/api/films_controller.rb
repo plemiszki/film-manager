@@ -321,7 +321,15 @@ class Api::FilmsController < AdminController
       :drl_pre_street,
       :drl_post_street,
       :ppr_drl_pre_street,
-      :ppr_drl_post_street
+      :ppr_drl_post_street,
+      :msrp_pre_street_member,
+      :msrp_post_street_member,
+      :ppr_pre_street_member,
+      :ppr_post_street_member,
+      :drl_pre_street_member,
+      :drl_post_street_member,
+      :ppr_drl_pre_street_member,
+      :ppr_drl_post_street_member,
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

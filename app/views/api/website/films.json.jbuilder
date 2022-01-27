@@ -42,6 +42,14 @@ json.array!(@films) do |film|
   json.drl_post_street dollarify(film.drl_post_street)
   json.ppr_drl_pre_street dollarify(film.ppr_drl_pre_street)
   json.ppr_drl_post_street dollarify(film.ppr_drl_post_street)
+  json.msrp_pre_street_member dollarify(film.msrp_pre_street_member)
+  json.msrp_post_street_member dollarify(film.msrp_post_street_member)
+  json.ppr_pre_street_member dollarify(film.ppr_pre_street_member)
+  json.ppr_post_street_member dollarify(film.ppr_post_street_member)
+  json.drl_pre_street_member dollarify(film.drl_pre_street_member)
+  json.drl_post_street_member dollarify(film.drl_post_street_member)
+  json.ppr_drl_pre_street_member dollarify(film.ppr_drl_pre_street_member)
+  json.ppr_drl_post_street_member dollarify(film.ppr_drl_post_street_member)
   json.screening_formats film.formats do |format|
     json.id format.id
     json.name format.name
