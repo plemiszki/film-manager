@@ -126,32 +126,8 @@ class ReportDetails extends React.Component {
           job: this.props.job,
           jobModalOpen: true
         });
-        this.waitAndCheckJob();
       });
     });
-  }
-
-  waitAndCheckJob() {
-    window.setTimeout(() => {
-      this.props.fetchEntity({
-        directory: 'jobs',
-        id: this.state.job.id
-      }).then(() => {
-        const job = this.props.job;
-        this.setState({
-          job
-        })
-        if (job.done) {
-          this.setState({
-            jobModalOpen: false
-          }, () => {
-            window.location.href = job.firstLine;
-          });
-        } else {
-          this.waitAndCheckJob();
-        }
-      })
-    }, 1500)
   }
 
   checkForChanges() {
@@ -414,7 +390,7 @@ class ReportDetails extends React.Component {
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
-        { FM.jobModal.call(this, this.state.job) }
+        { Common.renderJobModal.call(this, this.state.job) }
       </div>
     );
   }
@@ -523,7 +499,7 @@ class ReportDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    $('.match-height-row').matchHeight();
+    Common.updateJobModal.call(this);
   }
 }
 

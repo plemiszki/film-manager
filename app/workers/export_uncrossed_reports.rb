@@ -37,6 +37,6 @@ class ExportUncrossedReports
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object("#{time_started}/statements.zip")
     obj.upload_file(Rails.root.join('tmp', time_started, 'statements.zip'), acl:'public-read')
-    job.update!({ done: true, first_line: obj.public_url })
+    job.update!({ status: :success, metadata: { url: obj.public_url } })
   end
 end
