@@ -234,6 +234,9 @@ class DvdDetails extends React.Component {
         <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
           Delete
         </a>
+        <a className={ "html orange-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.getHTML.bind(this) }>
+          Email HTML
+        </a>
       </div>
     );
   }
