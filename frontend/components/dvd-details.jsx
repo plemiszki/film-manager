@@ -195,7 +195,7 @@ class DvdDetails extends React.Component {
                   return(
                     <tr key={ index }>
                       <td className="name-column">
-                        <div onClick={ FM.redirect.bind(this, "films", short.id) }>
+                        <div onClick={ FM.redirect.bind(this, "films", short.filmId) }>
                           { short.title }
                         </div>
                         <div className="x-button" onClick={ this.clickX.bind(this) } data-id={ short.id }></div>
