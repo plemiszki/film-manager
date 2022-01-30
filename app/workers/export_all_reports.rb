@@ -21,7 +21,7 @@ class ExportAllReports
     crossed_films_done = []
     reports.each do |report|
       return if Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
-      return if job.reload.status = :killed
+      return if job.reload.status == :killed
       if days_due == "all" || report.film.days_statement_due == days_due.to_i
         film = report.film
         films = nil
