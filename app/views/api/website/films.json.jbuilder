@@ -35,7 +35,6 @@ json.array!(@films) do |film|
   json.rental_days film.rental_days
   json.rental_price film.rental_price
   json.msrp_pre_street dollarify(film.msrp_pre_street)
-  json.msrp_post_street dollarify(film.msrp_post_street)
   json.ppr_pre_street dollarify(film.ppr_pre_street)
   json.ppr_post_street dollarify(film.ppr_post_street)
   json.drl_pre_street dollarify(film.drl_pre_street)
@@ -43,7 +42,6 @@ json.array!(@films) do |film|
   json.ppr_drl_pre_street dollarify(film.ppr_drl_pre_street)
   json.ppr_drl_post_street dollarify(film.ppr_drl_post_street)
   json.msrp_pre_street_member dollarify(film.msrp_pre_street_member)
-  json.msrp_post_street_member dollarify(film.msrp_post_street_member)
   json.ppr_pre_street_member dollarify(film.ppr_pre_street_member)
   json.ppr_post_street_member dollarify(film.ppr_post_street_member)
   json.drl_pre_street_member dollarify(film.drl_pre_street_member)

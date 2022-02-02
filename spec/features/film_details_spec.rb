@@ -303,12 +303,10 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="drlPreStreetMember"]').value).to eq '$450.00'
     expect(find('input[data-field="pprDrlPreStreetMember"]').value).to eq '$550.00'
 
-    expect(find('input[data-field="msrpPostStreet"]').value).to eq '$24.95'
     expect(find('input[data-field="pprPostStreet"]').value).to eq '$200.00'
     expect(find('input[data-field="drlPostStreet"]').value).to eq '$499.00'
     expect(find('input[data-field="pprDrlPostStreet"]').value).to eq '$599.00'
 
-    expect(find('input[data-field="msrpPostStreetMember"]').value).to eq '$24.95'
     expect(find('input[data-field="pprPostStreetMember"]').value).to eq '$150.00'
     expect(find('input[data-field="drlPostStreetMember"]').value).to eq '$450.00'
     expect(find('input[data-field="pprDrlPostStreetMember"]').value).to eq '$550.00'
@@ -327,11 +325,9 @@ describe 'film_details', type: :feature do
       ppr_pre_street_member: '$6.00',
       drl_pre_street_member: '$7.00',
       ppr_drl_pre_street_member: '$8.00',
-      msrp_post_street: '$9.00',
       ppr_post_street: '$10.00',
       drl_post_street: '$11.00',
       ppr_drl_post_street: '$12.00',
-      msrp_post_street_member: '$13.00',
       ppr_post_street_member: '$14.00',
       drl_post_street_member: '$15.00',
       ppr_drl_post_street_member: '$16.00',
@@ -351,11 +347,9 @@ describe 'film_details', type: :feature do
         ppr_pre_street_member: 6,
         drl_pre_street_member: 7,
         ppr_drl_pre_street_member: 8,
-        msrp_post_street: 9,
         ppr_post_street: 10,
         drl_post_street: 11,
         ppr_drl_post_street: 12,
-        msrp_post_street_member: 13,
         ppr_post_street_member: 14,
         drl_post_street_member: 15,
         ppr_drl_post_street_member: 16,
@@ -368,25 +362,37 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Educational').click
     new_info = {
       msrp_pre_street: '',
-      msrp_post_street: '',
       ppr_pre_street: '',
       ppr_post_street: '',
       drl_pre_street: '',
+      msrp_pre_street_member: '',
+      ppr_pre_street_member: '',
+      ppr_post_street_member: '',
+      drl_pre_street_member: '',
       drl_post_street: '',
       ppr_drl_pre_street: '',
       ppr_drl_post_street: '',
+      drl_post_street_member: '',
+      ppr_drl_pre_street_member: '',
+      ppr_drl_post_street_member: '',
     }
     fill_out_form(new_info)
     find('.blue-button', text: 'Save').click
     expect(page).not_to have_selector('.spinner')
     expect(page).to have_content('Msrp pre street is not a number')
-    expect(page).to have_content('Msrp post street is not a number')
     expect(page).to have_content('Ppr pre street is not a number')
     expect(page).to have_content('Ppr post street is not a number')
     expect(page).to have_content('Drl pre street is not a number')
     expect(page).to have_content('Drl post street is not a number')
     expect(page).to have_content('Ppr drl pre street is not a number')
     expect(page).to have_content('Ppr drl post street is not a number')
+    expect(page).to have_content('Msrp pre street member is not a number')
+    expect(page).to have_content('Ppr pre street member is not a number')
+    expect(page).to have_content('Ppr post street member is not a number')
+    expect(page).to have_content('Drl pre street member is not a number')
+    expect(page).to have_content('Drl post street member is not a number')
+    expect(page).to have_content('Ppr drl pre street member is not a number')
+    expect(page).to have_content('Ppr drl post street member is not a number')
   end
 
   # marketing tab

@@ -6,8 +6,8 @@ class Film < ActiveRecord::Base
   validate :gr_percentage_tenth_decimal
   validates_numericality_of :year, :length
   validates_numericality_of :mg, :expense_cap, :e_and_o, :reserve_quarters, :auto_renew_days_notice, :auto_renew_term,
-    :sell_off_period, :rental_price, :rental_days, :msrp_pre_street, :msrp_post_street, :ppr_pre_street, :ppr_post_street,
-    :drl_pre_street, :drl_post_street, :ppr_drl_pre_street, :ppr_drl_post_street, :msrp_pre_street_member, :msrp_post_street_member,
+    :sell_off_period, :rental_price, :rental_days, :msrp_pre_street, :ppr_pre_street, :ppr_post_street,
+    :drl_pre_street, :drl_post_street, :ppr_drl_pre_street, :ppr_drl_post_street, :msrp_pre_street_member,
     :ppr_pre_street_member, :ppr_post_street_member, :drl_pre_street_member, :drl_post_street_member, :ppr_drl_pre_street_member,
     :ppr_drl_post_street_member, greater_than_or_equal_to: 0
   validates_numericality_of :reserve_percentage, greater_than_or_equal_to: 0, less_than_or_equal_to: 100

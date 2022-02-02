@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_27_130005) do
+ActiveRecord::Schema.define(version: 2022_02_02_185618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -389,7 +389,6 @@ ActiveRecord::Schema.define(version: 2022_01_27_130005) do
     t.date "fm_plus_release"
     t.boolean "fm_plus_tentative", default: false
     t.decimal "msrp_pre_street", precision: 5, scale: 2, default: "0.0"
-    t.decimal "msrp_post_street", precision: 5, scale: 2, default: "0.0"
     t.decimal "ppr_pre_street", precision: 5, scale: 2, default: "0.0"
     t.decimal "ppr_post_street", precision: 5, scale: 2, default: "0.0"
     t.decimal "drl_pre_street", precision: 5, scale: 2, default: "0.0"
@@ -397,7 +396,6 @@ ActiveRecord::Schema.define(version: 2022_01_27_130005) do
     t.decimal "ppr_drl_pre_street", precision: 5, scale: 2, default: "0.0"
     t.decimal "ppr_drl_post_street", precision: 5, scale: 2, default: "0.0"
     t.decimal "msrp_pre_street_member", precision: 5, scale: 2, default: "0.0"
-    t.decimal "msrp_post_street_member", precision: 5, scale: 2, default: "0.0"
     t.decimal "ppr_pre_street_member", precision: 5, scale: 2, default: "0.0"
     t.decimal "ppr_post_street_member", precision: 5, scale: 2, default: "0.0"
     t.decimal "drl_pre_street_member", precision: 5, scale: 2, default: "0.0"

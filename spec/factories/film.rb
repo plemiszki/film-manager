@@ -45,12 +45,10 @@ FactoryBot.define do
     drl_pre_street_member { 450 }
     ppr_drl_pre_street_member { 550 }
 
-    msrp_post_street { 24.95 }
     ppr_post_street { 200 }
     drl_post_street { 499 }
     ppr_drl_post_street { 599 }
 
-    msrp_post_street_member { 24.95 }
     ppr_post_street_member { 150 }
     drl_post_street_member { 450 }
     ppr_drl_post_street_member { 550 }
