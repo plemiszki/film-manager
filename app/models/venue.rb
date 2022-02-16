@@ -4,6 +4,7 @@ class Venue < ActiveRecord::Base
   validates :label, uniqueness: true
 
   has_many :bookings
+  has_many :virtual_bookings
 
   def self.trim_labels!
     Venue.all.each do |venue|

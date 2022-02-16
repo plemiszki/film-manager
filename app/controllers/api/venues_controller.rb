@@ -44,7 +44,7 @@ class Api::VenuesController < AdminController
 
   def destroy
     @venue = Venue.find(params[:id])
-    if @venue.bookings.present?
+    if @venue.bookings.present? || @venue.virtual_bookings.present?
       render json: { message: 'This venue cannot be deleted because there are bookings associated with it.', memo: 'To delete this venue, please first delete the associated bookings.' }, status: 422
     else
       @venue.destroy
