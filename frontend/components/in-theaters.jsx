@@ -46,16 +46,15 @@ class InTheatersIndex extends React.Component {
     this.props.deleteEntity({
       directory: 'in_theaters',
       id,
-      callback: (response) => {
-        const { films, inTheaters, comingSoon, repertory } = response;
-        this.setState({
-          fetching: false,
-          inTheaters,
-          comingSoon,
-          repertory,
-          films
-        });
-      }
+    }).then(() => {
+      const { films, inTheaters, comingSoon, repertory } = this.props;
+      this.setState({
+        fetching: false,
+        inTheaters,
+        comingSoon,
+        repertory,
+        films
+      });
     });
   }
 

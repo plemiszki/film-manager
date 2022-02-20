@@ -99,12 +99,12 @@ class EpisodeDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'actors',
       id: actorId,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          actors: response.actors
-        });
-      }
+    }).then(() => {
+      const { actors } = this.props;
+      this.setState({
+        fetching: false,
+        actors,
+      });
     });
   }
 
@@ -117,9 +117,8 @@ class EpisodeDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'episodes',
       id: episode.id,
-      callback: (response) => {
-        window.location.pathname = `/films/${episode.filmId}`;
-      }
+    }).then(() => {
+      window.location.pathname = `/films/${episode.filmId}`;
     });
   }
 

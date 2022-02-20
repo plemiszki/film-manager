@@ -97,12 +97,12 @@ class VirtualBookingDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'invoices',
       id: this.state.deleteInvoiceId,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          invoices: response.invoices,
-        });
-      }
+    }).then(() => {
+      const { invoices } = this.props;
+      this.setState({
+        fetching: false,
+        invoices,
+      });
     });
   }
 
@@ -135,13 +135,13 @@ class VirtualBookingDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'payments',
       id: e.target.dataset.id,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          payments: response.payments,
-          calculations: response.calculations
-        });
-      }
+    }).then(() => {
+      const { payments, calculations } = this.props;
+      this.setState({
+        fetching: false,
+        payments,
+        calculations,
+      });
     })
   }
 

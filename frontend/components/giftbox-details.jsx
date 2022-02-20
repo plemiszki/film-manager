@@ -94,22 +94,21 @@ class GiftboxDetails extends React.Component {
     });
   }
 
-  clickX(event) {
-    const giftboxDvdId = event.target.dataset.id;
+  clickX(e) {
+    const giftboxDvdId = e.target.dataset.id;
     this.setState({
       fetching: true
     });
     this.props.deleteEntity({
       directory: 'giftbox_dvds',
       id: giftboxDvdId,
-      callback: (response) => {
-        const { giftboxDvds, otherDvds } = response;
-        this.setState({
-          fetching: false,
-          giftboxDvds,
-          otherDvds
-        });
-      }
+    }).then(() => {
+      const { giftboxDvds, otherDvds } = this.props;
+      this.setState({
+        fetching: false,
+        giftboxDvds,
+        otherDvds,
+      });
     });
   }
 

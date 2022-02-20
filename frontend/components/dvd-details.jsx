@@ -101,21 +101,21 @@ class DvdDetails extends React.Component {
     });
   }
 
-  clickX(event) {
-    const dvdShortId = event.target.dataset.id;
+  clickX(e) {
+    const dvdShortId = e.target.dataset.id;
     this.setState({
       fetching: true
     });
     this.props.deleteEntity({
       directory: 'dvd_shorts',
       id: dvdShortId,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          shorts: response.shorts,
-          otherShorts: response.otherShorts
-        });
-      }
+    }).then(() => {
+      const { shorts, otherShorts } = this.props;
+      this.setState({
+        fetching: false,
+        shorts,
+        otherShorts,
+      });
     });
   }
 
@@ -127,9 +127,8 @@ class DvdDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'dvds',
       id: this.state.dvd.id,
-      callback: (response) => {
-        window.location.pathname = `/films/${this.state.dvd.featureFilmId}`;
-      }
+    }).then(() => {
+      window.location.pathname = `/films/${this.state.dvd.featureFilmId}`;
     });
   }
 

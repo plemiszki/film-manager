@@ -75,12 +75,12 @@ class BookerDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'booker_venues',
       id: e.target.dataset.id,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          bookerVenues: response.bookerVenues
-        });
-      }
+    }).then(() => {
+      const { bookerVenues } = this.props;
+      this.setState({
+        fetching: false,
+        bookerVenues,
+      });
     });
   }
 

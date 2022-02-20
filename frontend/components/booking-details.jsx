@@ -150,7 +150,8 @@ class BookingDetails extends React.Component {
     });
     this.props.deleteEntity({
       directory: 'bookings',
-      id: this.state.booking.id
+      id: this.state.booking.id,
+      redirectToIndex: true,
     });
   }
 
@@ -165,11 +166,11 @@ class BookingDetails extends React.Component {
       this.props.deleteEntity({
         directory: 'invoices',
         id: this.state.deleteInvoiceId,
-        callback: (response) => {
-          this.setState({
-            invoices: response.invoices
-          });
-        }
+      }).then(() => {
+        const { invoices } = this.props;
+        this.setState({
+          invoices,
+        });
       });
     });
   }
@@ -181,13 +182,12 @@ class BookingDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'weekly_terms',
       id: e.target.dataset.id,
-      callback: (response) => {
-        const { weeklyTerms } = response;
-        this.setState({
-          fetching: false,
-          weeklyTerms
-        });
-      }
+    }).then(() => {
+      const { weeklyTerms } = this.props;
+      this.setState({
+        fetching: false,
+        weeklyTerms,
+      });
     });
   }
 
@@ -198,14 +198,13 @@ class BookingDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'weekly_box_offices',
       id: e.target.dataset.id,
-      callback: (response) => {
-        const { weeklyBoxOffices, calculations } = response;
-        this.setState({
-          fetching: false,
-          weeklyBoxOffices,
-          calculations
-        });
-      }
+    }).then(() => {
+      const { weeklyBoxOffices, calculations } = this.props;
+      this.setState({
+        fetching: false,
+        weeklyBoxOffices,
+        calculations,
+      });
     });
   }
 
@@ -216,14 +215,13 @@ class BookingDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'payments',
       id: e.target.dataset.id,
-      callback: (response) => {
-        const { payments, calculations } = response;
-        this.setState({
-          fetching: false,
-          payments,
-          calculations
-        });
-      }
+    }).then(() => {
+      const { payments, calculations } = this.props;
+      this.setState({
+        fetching: false,
+        payments,
+        calculations,
+      });
     });
   }
 

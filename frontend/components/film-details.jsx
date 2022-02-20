@@ -517,16 +517,15 @@ class FilmDetails extends React.Component {
     this.props.deleteEntity({
       directory,
       id,
-      callback: (response) => {
-        let obj = {
-          fetching: false,
-          [entityNamePlural]: response[entityNamePlural]
-        }
-        otherArrays && otherArrays.forEach((arrayName) => {
-          obj[arrayName] = response[arrayName];
-        });
-        this.setState(obj);
+    }).then(() => {
+      let obj = {
+        fetching: false,
+        [entityNamePlural]: this.props[entityNamePlural]
       }
+      otherArrays && otherArrays.forEach((arrayName) => {
+        obj[arrayName] = this.props[arrayName];
+      });
+      this.setState(obj);
     });
   }
 
@@ -538,7 +537,8 @@ class FilmDetails extends React.Component {
     const { id } = this.state.film;
     this.props.deleteEntity({
       directory: 'films',
-      id
+      id,
+      redirectToIndex: true,
     });
   }
 

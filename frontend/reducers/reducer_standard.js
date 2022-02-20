@@ -6,6 +6,7 @@ export default function(state = {}, action) {
   case 'CREATE_ENTITY':
   case 'FETCH_ENTITY':
   case 'UPDATE_ENTITY':
+  case 'DELETE_ENTITY':
   case 'EXPORT_UNCROSSED_REPORTS':
     delete action["type"]
     return Object.assign({}, state, action);

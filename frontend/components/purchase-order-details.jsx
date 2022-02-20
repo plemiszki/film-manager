@@ -220,13 +220,13 @@ class PurchaseOrderDetails extends React.Component {
     this.props.deleteEntity({
       directory: 'purchase_order_items',
       id: e.target.dataset.id,
-      callback: (response) => {
-        this.setState({
-          fetching: false,
-          items: response.items,
-          otherItems: response.otherItems
-        });
-      }
+    }).then(() => {
+      const { items, otherItems } = this.props;
+      this.setState({
+        fetching: false,
+        items,
+        otherItems,
+      });
     });
   }
 

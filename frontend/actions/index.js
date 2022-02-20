@@ -138,13 +138,14 @@ export function deleteEntity(args) {
   return (dispatch) => {
     return $.ajax({
       method: 'DELETE',
-      url: `/api/${directory}/${id}`
+      url: `/api/${directory}/${id}`,
     }).then(
       (response) => {
-        if (callback) {
-          callback.call({}, response);
-        } else {
+        if (args.redirectToIndex) {
           window.location.pathname = `/${directory}`;
+        } else {
+          let obj = Object.assign(response, { type: 'DELETE_ENTITY' });
+          dispatch(obj);
         }
       },
       (response) => {

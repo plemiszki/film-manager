@@ -116,6 +116,7 @@ class VenueDetails extends React.Component {
       this.props.deleteEntity({
         id: window.location.pathname.split('/')[2],
         directory: 'venues',
+        redirectToIndex: true,
       }).then(() => {}, () => {
         this.setState({
           messageModalOpen: true,

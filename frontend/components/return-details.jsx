@@ -138,21 +138,20 @@ class ReturnDetails extends React.Component {
     });
   }
 
-  clickX(event) {
+  clickX(e) {
     this.setState({
       fetching: true
     });
     this.props.deleteEntity({
       directory: 'return_items',
-      id: event.target.dataset.id,
-      callback: (response) => {
-        const { items, otherItems } = response;
-        this.setState({
-          fetching: false,
-          items,
-          otherItems
-        });
-      }
+      id: e.target.dataset.id,
+    }).then(() => {
+      const { items, otherItems } = this.props;
+      this.setState({
+        fetching: false,
+        items,
+        otherItems,
+      });
     });
   }
 
