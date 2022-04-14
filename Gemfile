@@ -9,7 +9,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'jbuilder'
 
-gem 'aws-sdk'
+gem 'aws-sdk-s3'
 gem 'bootstrap-sass'
 gem 'caracal', '1.2.0'
 gem 'clearance', '~> 2.5'
