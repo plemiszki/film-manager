@@ -317,7 +317,8 @@ GEM
       unf_ext
     unf_ext (0.0.8.1)
     unix_utils (0.0.15)
-    validates_timeliness (4.1.1)
+    validates_timeliness (6.0.0.beta2)
+      activemodel (>= 6.0.0, < 7)
       timeliness (>= 0.3.10, < 1)
     web-console (2.3.0)
       activemodel (>= 4.0)
@@ -341,6 +342,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
@@ -378,14 +380,14 @@ DEPENDENCIES
   textacular
   timeliness
   uglifier (= 4.2.0)
-  validates_timeliness (~> 4.0)
+  validates_timeliness (= 6.0.0.beta2)
   web-console (~> 2.0)
   wicked_pdf
   wkhtmltopdf-binary
   xlsx_writer
 
 RUBY VERSION
-   ruby 2.7.4p191
+   ruby 3.0.2p107
 
 BUNDLED WITH
    2.3.7

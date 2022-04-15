@@ -766,7 +766,9 @@ RSpec.describe Api::RoyaltyReportsController do
         expect(stream.current_revenue).to eq([0, 0, 35_393.95, 0, 0, 0, 708.10, 143.81, 0, 4167.93, 252.54, 0, 0, 0][index])
         expect(stream.current_expense).to eq([0, 9, 16.31, 0, 0, 0, 0, 0, 0, 75, 0, 0, 0, 0][index])
         expect(stream.current_difference).to eq([0, -9, 35_377.64, 0, 0, 0, 708.10, 143.81, 0, 4092.93, 252.54, 0, 0, 0][index])
-        expect(stream.current_licensor_share).to eq([0, -4.5, 17688.82, 0, 0, 0, 354.05, 71.9, 0, 2046.46, 126.27, 0, 0, 0].map(&:to_d)[index])
+        expect(stream.current_licensor_share).to eq(
+          [0, -4.5, 17_688.82, 0, 0, 0, 354.05, 71.9, 0, 2046.46, 126.27, 0, 0, 0].map { |value| value.to_d.round(2) }[index]
+        )
         expect(stream.cume_revenue).to eq(100 + index)
         expect(stream.joined_revenue).to eq(stream.current_revenue + stream.cume_revenue)
       end
