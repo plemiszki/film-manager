@@ -27,10 +27,10 @@ describe 'formats_index', type: :feature do
     end
     info = { name: 'Digibeta' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Format.last,
       data: info
-    })
+    )
     within('#formats-index') do
       expect(page).to have_content('Digibeta')
     end

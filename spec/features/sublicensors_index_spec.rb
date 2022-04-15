@@ -24,10 +24,10 @@ describe 'sublicensors_index', type: :feature do
       name: 'Fandor'
     }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Sublicensor.last,
       data: info
-    })
+    )
     expect(page).to have_content 'Fandor'
   end
 

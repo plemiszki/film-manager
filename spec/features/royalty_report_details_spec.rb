@@ -109,10 +109,10 @@ describe 'royalty_report_details', type: :feature do
     }
     fill_out_form(data)
     save_and_wait
-    verify_db({
+    verify_db(
       entity: @royalty_report,
       data: data
-    })
+    )
     @royalty_report.royalty_revenue_streams.each_with_index do |royalty_revenue_stream, index|
       expect(royalty_revenue_stream.current_revenue).to eq((index + 1) * 100)
       expect(royalty_revenue_stream.current_expense).to eq((index + 1) * 10)

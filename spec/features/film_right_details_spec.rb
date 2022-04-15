@@ -39,11 +39,11 @@ describe 'film_right_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @film_right,
       data: new_info,
       db_data: { exclusive: false, start_date: Date.parse('20/12/1'), end_date: Date.parse('30/12/15') }
-    })
+    )
   end
 
   it 'validates information about the film right' do

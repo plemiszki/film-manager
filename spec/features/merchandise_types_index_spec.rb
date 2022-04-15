@@ -27,10 +27,10 @@ describe 'merchandise_types_index', type: :feature do
     end
     info = { name: 'Poster' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: MerchandiseType.last,
       data: info
-    })
+    )
     within('#merchandise-types-index') do
       expect(page).to have_content('Poster')
     end

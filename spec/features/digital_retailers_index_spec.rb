@@ -27,10 +27,10 @@ describe 'digital_retailers_index', type: :feature do
     end
     info = { name: 'Kanopy' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: DigitalRetailer.last,
       data: info
-    })
+    )
     within('#digital-retailers-index') do
       expect(page).to have_content('Kanopy')
     end

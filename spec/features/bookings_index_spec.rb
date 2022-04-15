@@ -45,10 +45,10 @@ describe 'bookings_index', type: :feature do
       booker_id: { value: 2, type: :select }
     }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Booking.last,
       data: info.merge({ film_id: 1, venue_id: 1, start_date: Date.today, end_date: Date.today + 1.day })
-    })
+    )
     expect(page).to have_current_path "/bookings/1", ignore_query: true
   end
 

@@ -335,7 +335,7 @@ describe 'film_details', type: :feature do
     fill_out_form(new_info)
     find('.blue-button', text: 'Save').click
     expect(page).not_to have_selector('.spinner')
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @film,
       data: new_info,
       db_data: {
@@ -353,8 +353,8 @@ describe 'film_details', type: :feature do
         ppr_post_street_member: 14,
         drl_post_street_member: 15,
         ppr_drl_post_street_member: 16,
-      }
-    })
+      },
+    )
   end
 
   it 'validates the film\'s educational information' do
@@ -455,11 +455,11 @@ describe 'film_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @film,
       data: new_info,
       component_data: { rental_price: '$20.00' }
-    })
+    )
   end
 
   it 'displays laurels' do
@@ -805,10 +805,10 @@ describe 'film_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @film,
       data: new_info
-    })
+    )
   end
 
   it "displays the film's screening formats" do
@@ -903,7 +903,7 @@ describe 'film_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @film,
       data: {
         export_reports: false,
@@ -912,7 +912,7 @@ describe 'film_details', type: :feature do
       db_data: {
         send_reports: false
       }
-    })
+    )
   end
 
   it 'displays crossed films' do
@@ -982,10 +982,10 @@ describe 'film_details', type: :feature do
     fill_out_and_submit_modal(info, :input)
     expect(page).to have_no_css('.spinner')
     expect(current_path).to eq("/episodes/#{Episode.last.id}")
-    verify_db_and_component({
+    verify_db_and_component(
       entity: Episode.last,
       data: info
-    })
+    )
   end
 
   # bottom buttons
@@ -1001,10 +1001,10 @@ describe 'film_details', type: :feature do
     }
     fill_out_and_submit_modal(new_film_data, :input)
     expect(page).to have_no_css('.spinner')
-    verify_db({
+    verify_db(
       entity: Film.last,
       data: new_film_data
-    })
+    )
     expect(page).to have_current_path("/films/#{Film.last.id}", ignore_query: true)
   end
 

@@ -38,10 +38,10 @@ describe 'virtual_bookings_index', type: :feature do
       host: { value: 'Venue', type: :select }
     }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: VirtualBooking.last,
       data: info.merge({ film_id: 2, venue_id: 2, date_added: Date.today, start_date: Date.today, end_date: Date.today + 1, host: 'Venue' })
-    })
+    )
     expect(page).to have_current_path "/virtual_bookings/1", ignore_query: true
   end
 

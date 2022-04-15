@@ -42,11 +42,11 @@ describe 'merchandise_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @merchandise_item,
       data: new_info,
       db_data: { price: 20, film_id: 2 }
-    })
+    )
   end
 
   it 'validates information about the merchandise item' do

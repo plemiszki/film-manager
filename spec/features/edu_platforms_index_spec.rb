@@ -27,10 +27,10 @@ describe 'edu_platforms_index', type: :feature do
     end
     info = { name: 'Test' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: EduPlatform.last,
       data: info
-    })
+    )
     within('#edu-platforms-index') do
       expect(page).to have_content('Test')
     end

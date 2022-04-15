@@ -27,10 +27,10 @@ describe 'languages_index', type: :feature do
     end
     info = { name: 'Spanish' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Language.last,
       data: info
-    })
+    )
     within('#languages-index') do
       expect(page).to have_content('Spanish')
     end

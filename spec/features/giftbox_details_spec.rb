@@ -34,12 +34,12 @@ describe 'giftbox_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @giftbox,
       data: new_info,
       db_data: { on_demand: true },
       component_data: { msrp: '$49.95' }
-    })
+    )
   end
 
   it 'validates information about the giftbox' do

@@ -43,11 +43,11 @@ describe 'sub_right_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @sub_right,
       data: new_info,
       db_data: { film_id: 2, exclusive: true, start_date: Date.parse('20/12/1'), end_date: Date.parse('30/12/15') }
-    })
+    )
   end
 
   it 'validates information about the sublicensed right' do

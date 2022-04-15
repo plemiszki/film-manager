@@ -74,7 +74,7 @@ describe 'virtual_booking_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @virtual_booking,
       data: new_info,
       db_data: {
@@ -88,7 +88,7 @@ describe 'virtual_booking_details', type: :feature do
         deduction: '$100.00',
         box_office: '$750.00'
       }
-    })
+    )
   end
 
   it 'displays invoices' do

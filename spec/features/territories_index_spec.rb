@@ -27,10 +27,10 @@ describe 'territories_index', type: :feature do
     end
     info = { name: 'Canada' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Territory.last,
       data: info
-    })
+    )
     within('#territories-index') do
       expect(page).to have_content('Canada')
     end

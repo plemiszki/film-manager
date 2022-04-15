@@ -27,10 +27,10 @@ describe 'genres_index', type: :feature do
     end
     info = { name: 'Drama' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Genre.last,
       data: info
-    })
+    )
     within('#genres-index') do
       expect(page).to have_content('Drama')
     end

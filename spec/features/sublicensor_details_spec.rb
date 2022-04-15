@@ -32,11 +32,11 @@ describe 'sublicensor_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @sublicensor,
       data: new_info,
       db_data: { w8: false }
-    })
+    )
   end
 
   it 'validates information about the sublicensor' do

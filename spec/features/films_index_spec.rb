@@ -31,10 +31,10 @@ describe 'films_index', type: :feature do
     find('.orange-button', text: 'Add Film').click
     fill_out_and_submit_modal(info, :input)
     expect(page).to have_current_path "/films/#{Film.last.id}", ignore_query: true
-    verify_db({
+    verify_db(
       entity: Film.last,
       data: info.merge({ film_type: 'Feature' })
-    })
+    )
   end
 
   it 'validates new films properly' do
@@ -62,10 +62,10 @@ describe 'films_index', type: :feature do
     }
     fill_out_and_submit_modal(info, :input)
     expect(page).to have_current_path "/films/#{Film.last.id}", ignore_query: true
-    verify_db({
+    verify_db(
       entity: Film.last,
       data: info.merge({ film_type: 'Short' })
-    })
+    )
   end
 
   it 'displays all tv series' do
@@ -84,10 +84,10 @@ describe 'films_index', type: :feature do
     }
     fill_out_and_submit_modal(info, :input)
     expect(page).to have_current_path "/films/#{Film.last.id}", ignore_query: true
-    verify_db({
+    verify_db(
       entity: Film.last,
       data: info.merge({ film_type: 'TV Series' })
-    })
+    )
   end
 
   it 'starts the export all job' do

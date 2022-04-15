@@ -26,10 +26,10 @@ describe 'merchandise_type_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @merchandise_type,
       data: new_info
-    })
+    )
   end
 
   it 'validates information about the merchandise_type' do

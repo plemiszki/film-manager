@@ -27,10 +27,10 @@ describe 'countries_index', type: :feature do
     end
     info = { name: 'Spain' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Country.last,
       data: info
-    })
+    )
     within('#countries-index') do
       expect(page).to have_content('Spain')
     end

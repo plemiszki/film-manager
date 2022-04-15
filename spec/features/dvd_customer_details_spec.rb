@@ -74,11 +74,11 @@ describe 'dvd_customer_details', type: :feature do
     }
     fill_out_form(info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @dvd_customer,
       data: info,
-      component_data: { discount: '25.0' }
-    })
+      component_data: { discount: '25.0' },
+    )
   end
 
   it 'updates information about a consignment dvd customer' do
@@ -100,11 +100,11 @@ describe 'dvd_customer_details', type: :feature do
     }
     fill_out_form(info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @dvd_customer,
       data: info,
-      component_data: { discount: '25.0' }
-    })
+      component_data: { discount: '25.0' },
+    )
   end
 
   it 'validates information about a dvd customer' do

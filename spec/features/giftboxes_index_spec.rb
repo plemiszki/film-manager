@@ -25,10 +25,10 @@ describe 'giftboxes_index', type: :feature do
       upc: '857692005024'
     }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Giftbox.last,
       data: info
-    })
+    )
     expect(page).to have_content('Faces of Israel')
   end
 

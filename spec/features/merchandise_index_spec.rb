@@ -37,7 +37,7 @@ describe 'merchandise_index', type: :feature do
       film_id: { type: :select_modal, value: 'Wilby Wonderful' }
     }, :input)
     expect(find('.admin-table')).to have_content 'Wilby Wonderful Shirt'
-    verify_db({
+    verify_db(
       entity: MerchandiseItem.last,
       data: {
         name: 'Wilby Wonderful Shirt',
@@ -48,7 +48,7 @@ describe 'merchandise_index', type: :feature do
         inventory: 20,
         film_id: 1
       }
-    })
+    )
   end
 
   it 'validates merchandise' do

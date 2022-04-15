@@ -27,10 +27,10 @@ describe 'topics_index', type: :feature do
     end
     info = { name: 'LGBT' }
     fill_out_and_submit_modal(info, :input)
-    verify_db({
+    verify_db(
       entity: Topic.last,
       data: info
-    })
+    )
     within('#topics-index') do
       expect(page).to have_content('LGBT')
     end

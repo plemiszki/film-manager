@@ -99,7 +99,7 @@ describe 'booking_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @booking,
       data: new_info,
       db_data: {
@@ -122,8 +122,8 @@ describe 'booking_details', type: :feature do
         shipping_fee: '$15.00',
         deduction: '$25.00',
         box_office: '$2,000.00'
-      }
-    })
+      },
+    )
   end
 
   it 'validates information about the booking' do
@@ -388,7 +388,7 @@ describe 'booking_details', type: :feature do
     wait_for_ajax
     expect(page).to have_current_path("/bookings/2", ignore_query: true)
     expect(Booking.count).to eq(2)
-    verify_db({
+    verify_db(
       entity: Booking.last,
       data: {
         film_id: 2,
@@ -419,7 +419,7 @@ describe 'booking_details', type: :feature do
         notes: 'some notes',
         terms: '50%'
       }
-    })
+    )
   end
 
   it 'deletes bookings' do

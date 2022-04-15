@@ -43,10 +43,10 @@ describe 'settings_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @settings,
       data: new_info
-    })
+    )
   end
 
 end

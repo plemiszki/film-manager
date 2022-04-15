@@ -31,13 +31,13 @@ describe 'digital_retailer_film_details', type: :feature do
     }
     fill_out_form(new_info)
     save_and_wait
-    verify_db_and_component({
+    verify_db_and_component(
       entity: @digital_retailer_film,
       data: new_info,
       db_data: {
         digital_retailer_id: 2
-      }
-    })
+      },
+    )
   end
 
   it 'validates information about the digital retailer film' do

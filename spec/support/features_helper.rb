@@ -73,7 +73,7 @@ end
 def verify_db_and_component(entity:, data:, db_data: {}, component_data: {})
   db_data = data.merge(db_data)
   component_data = data.merge(component_data)
-  verify_db({ entity: entity, data: db_data })
+  verify_db(entity: entity, data: db_data)
   component_data.each do |key, value|
     field = find("[data-field=\"#{key.to_s.camelize(:lower)}\"]", visible: :all)
     if field['type'] == 'checkbox'
