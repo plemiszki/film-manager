@@ -783,6 +783,9 @@ $(document).ready(function() {
           columns={ ['name', 'email', 'phone'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '', email: '', phone: '' } } />
         </FullIndex>
@@ -800,6 +803,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -833,6 +839,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -878,6 +887,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalDimensions={ { width: 1000, height: 680 } }
           header="DVD Customers"
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
         </FullIndex>
@@ -895,6 +907,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -953,6 +968,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -987,6 +1005,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -1021,6 +1042,9 @@ $(document).ready(function() {
           columns={ ['name', 'quantity'] }
           modalRows={ 2 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '', upc: '' } } />
         </FullIndex>
@@ -1037,6 +1061,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -1070,6 +1097,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 500 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity
             context={ MyContext }
@@ -1091,6 +1121,9 @@ $(document).ready(function() {
           columns={ ['name', 'type', 'size', 'price'] }
           modalRows={ 4 }
           modalDimensions={ { width: 800 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity
             context={ MyContext }
@@ -1111,6 +1144,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -1159,6 +1195,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -1192,6 +1231,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
@@ -1225,6 +1267,9 @@ $(document).ready(function() {
           columns={ ['name', 'title'] }
           modalRows={ 3 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: "", email: "", password: "" } } />
         </FullIndex>
@@ -1308,6 +1353,9 @@ $(document).ready(function() {
           columns={ ['name'] }
           modalRows={ 1 }
           modalDimensions={ { width: 900 } }
+          includeNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         >
           <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
         </FullIndex>
