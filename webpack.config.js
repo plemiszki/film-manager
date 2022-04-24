@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   mode: 'development',
   context: __dirname,
@@ -21,6 +23,11 @@ module.exports = {
   },
   devtool: 'source-maps',
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    alias: {
+      react: path.resolve('./node_modules/react'),
+      'react-dom': path.resolve('./node_modules/react-dom'),
+      'react-redux': path.resolve('./node_modules/react-redux'),
+    }
   }
 };
