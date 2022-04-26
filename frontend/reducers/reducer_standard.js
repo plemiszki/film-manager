@@ -8,17 +8,9 @@ export default function(state = {}, action) {
   case 'UPDATE_ENTITY':
   case 'DELETE_ENTITY':
   case 'EXPORT_UNCROSSED_REPORTS':
+  case 'ERRORS':
     delete action["type"]
     return Object.assign({}, state, action);
-  case 'ERRORS':
-    if (action.errors && action.errors.responseJSON) {
-      return Object.assign({}, state, {
-        errors: action.errors.responseJSON
-      });
-    } else {
-      delete action["type"]
-      return Object.assign({}, state, action);
-    }
   default:
     return state;
   }

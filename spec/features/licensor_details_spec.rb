@@ -37,6 +37,17 @@ describe 'licensor_details', type: :feature do
     )
   end
 
+  it 'validates information about the licensor' do
+    visit licensor_path(@licensor, as: $admin_user)
+    fill_out_form({
+      name: '',
+      email: '',
+      address: ''
+    })
+    save_and_wait
+    expect(page).to have_content("Name can't be blank")
+  end
+
   it 'deletes the licensor' do
     visit licensor_path(@licensor, as: $admin_user)
     delete_button = find('.delete-button', text: 'Delete')
