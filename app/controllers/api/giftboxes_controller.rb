@@ -18,7 +18,7 @@ class Api::GiftboxesController < AdminController
       @giftboxes = Giftbox.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @giftbox.errors.full_messages, status: 422
+      render_errors(@giftbox)
     end
   end
 
@@ -30,7 +30,7 @@ class Api::GiftboxesController < AdminController
       @other_dvds = Dvd.all.includes(:feature, :dvd_type) - @dvds
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @giftbox.errors.full_messages, status: 422
+      render_errors(@giftbox)
     end
   end
 
@@ -39,7 +39,7 @@ class Api::GiftboxesController < AdminController
     if @giftbox.destroy
       render json: @giftbox, status: 200
     else
-      render json: @giftbox.errors.full_messages, status: 422
+      render_errors(@giftbox)
     end
   end
 

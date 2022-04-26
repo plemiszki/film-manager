@@ -44,7 +44,7 @@ describe 'user_details', type: :feature do
     clear_form
     save_and_wait
     expect(page).to have_content("Name can't be blank")
-    expect(page).to have_content("Email can't be blank")
+    expect(page).to have_content("Email is invalid")
   end
 
   it 'deletes the user, if admin' do

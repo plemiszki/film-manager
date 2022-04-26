@@ -26,7 +26,7 @@ class Api::FilmsController < AdminController
     if @film.save
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @film.errors.full_messages, status: 422
+      render_errors(@film)
     end
   end
 
@@ -45,7 +45,7 @@ class Api::FilmsController < AdminController
         end
         unless @film.update(film_params)
           error_present = true
-          errors[:film] = @film.errors.full_messages
+          errors[:film] = { errors: @film.errors.as_json(full_messages: true) }
         end
         FilmRevenuePercentage.where(film_id: params[:id]).each do |revenue_percentage|
           unless revenue_percentage.update(value: params[:percentages][revenue_percentage.id.to_s])
@@ -73,7 +73,7 @@ class Api::FilmsController < AdminController
       RelatedFilm.where(other_film_id: @film.id).destroy_all
       render json: @film, status: 200
     else
-      render json: @film.errors.full_messages, status: 422
+      render_errors(@film)
     end
   end
 

@@ -12,7 +12,7 @@ class Api::SettingsController < AdminController
       @users = User.box_office_reminder_senders
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @settings.errors.full_messages, status: 422
+      render_errors(@settings)
     end
   end
 

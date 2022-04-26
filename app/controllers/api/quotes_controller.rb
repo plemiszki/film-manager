@@ -14,7 +14,7 @@ class Api::QuotesController < AdminController
       @quotes = Quote.where(film_id: quote_params[:film_id]).order(:order)
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @quote.errors.full_messages, status: 422
+      render_errors(@quote)
     end
   end
 
@@ -23,7 +23,7 @@ class Api::QuotesController < AdminController
     if @quote.update(quote_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @quote.errors.full_messages, status: 422
+      render_errors(@quote)
     end
   end
 

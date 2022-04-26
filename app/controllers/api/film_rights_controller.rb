@@ -29,7 +29,7 @@ class Api::FilmRightsController < AdminController
       end
     end
     if error
-      render json: @film_right.errors.full_messages, status: 422
+      render_errors(@film_right)
     else
       @film_rights = FilmRight.where(film_id: params[:film_right][:film_id]).includes(:film)
       render 'create', formats: [:json], handlers: [:jbuilder]
@@ -43,7 +43,7 @@ class Api::FilmRightsController < AdminController
       @rights = Right.all
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @film_right.errors.full_messages, status: 422
+      render_errors(@film_right)
     end
   end
 
@@ -54,7 +54,7 @@ class Api::FilmRightsController < AdminController
       render json: @film_right, status: 200
     else
       @film_right.errors.add(:base, "Right has been sublicensed")
-      render json: @film_right.errors.full_messages, status: 422
+      render_errors(@film_right)
     end
   end
 

@@ -41,7 +41,7 @@ class Api::VirtualBookingsController < AdminController
       @virtual_bookings = VirtualBooking.all.includes(:film, :venue).order('start_date DESC')
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @virtual_booking.errors.full_messages, status: 422
+      render_errors(@virtual_booking)
     end
   end
 
@@ -59,7 +59,7 @@ class Api::VirtualBookingsController < AdminController
       @calculations = booking_calculations(@virtual_booking)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @virtual_booking.errors.full_messages, status: 422
+      render_errors(@virtual_booking)
     end
   end
 
@@ -68,7 +68,7 @@ class Api::VirtualBookingsController < AdminController
     if @virtual_booking.destroy
       render json: @virtual_booking, status: 200
     else
-      render json: @virtual_booking.errors.full_messages, status: 422
+      render_errors(@virtual_booking)
     end
   end
 

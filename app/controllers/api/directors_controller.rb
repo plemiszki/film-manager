@@ -8,7 +8,7 @@ class Api::DirectorsController < AdminController
       @directors = Director.where(film_id: @director.film_id).order(:order)
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @director.errors.full_messages, status: 422
+      render_errors(@director)
     end
   end
 

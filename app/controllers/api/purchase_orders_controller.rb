@@ -55,7 +55,7 @@ class Api::PurchaseOrdersController < AdminController
     if @purchase_order.save
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @purchase_order.errors.full_messages, status: 422
+      render_errors(@purchase_order)
     end
   end
 
@@ -66,7 +66,7 @@ class Api::PurchaseOrdersController < AdminController
       get_data_for_items
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @purchase_order.errors.full_messages, status: 422
+      render_errors(@purchase_order)
     end
   end
 
@@ -75,7 +75,7 @@ class Api::PurchaseOrdersController < AdminController
     if @purchase_order.destroy
       render json: @purchase_order, status: 200
     else
-      render json: @purchase_order.errors.full_messages, status: 422
+      render_errors(@purchase_order)
     end
   end
 

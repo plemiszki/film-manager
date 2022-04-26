@@ -12,7 +12,7 @@ class Api::EduPlatformFilmsController < AdminController
       @edu_platforms = EduPlatform.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @edu_platform_film.errors.full_messages, status: 422
+      render_errors(@edu_platform_film)
     end
   end
 
@@ -28,7 +28,7 @@ class Api::EduPlatformFilmsController < AdminController
       @edu_platforms = EduPlatform.select(:id, :name).order(:name)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @edu_platform_film.errors.full_messages, status: 422
+      render_errors(@edu_platform_film)
     end
   end
 

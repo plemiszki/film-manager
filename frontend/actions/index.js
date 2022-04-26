@@ -80,10 +80,11 @@ export function createEntity(args) {
         let obj = Object.assign(response, { type: 'CREATE_ENTITY' });
         dispatch(obj);
       },
-      (response) => dispatch({
-        type: 'ERRORS',
-        errors: response
-      })
+      (response) => {
+        let responseJSON = response.responseJSON;
+        let obj = Object.assign(responseJSON, { type: 'ERRORS' });
+        dispatch(obj);
+      }
     );
   }
 }

@@ -243,11 +243,7 @@ class VirtualBookingDetails extends React.Component {
           </div>
           <div className="row">
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'email' }) }
-            <div className="col-xs-3">
-              <h2 style={ this.state.virtualBookingSaved.termsValid ? {} : { color: "red" } }>Terms</h2>
-              <input className={ Details.errorClass(this.state.errors, FM.errors.terms) } onChange={ Details.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.virtualBooking.terms || "" } data-entity="virtualBooking" data-field="terms" />
-              { Details.renderFieldError(this.state.errors, FM.errors.terms) }
-            </div>
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'terms', redHeader: !this.state.virtualBookingSaved.termsValid }) }
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'deduction' }) }
           </div>
           { this.renderBillingAddressSection() }

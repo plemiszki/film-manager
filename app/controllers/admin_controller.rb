@@ -1,5 +1,7 @@
 class AdminController < ApplicationController
 
+  include RenderErrors
+
   before_action :require_login
 
   # Prevent CSRF attacks by raising an exception.

@@ -16,7 +16,7 @@ class Api::MerchandiseTypesController < AdminController
       @merchandise_types = MerchandiseType.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @merchandise_type.errors.full_messages, status: 422
+      render_errors(@merchandise_type)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::MerchandiseTypesController < AdminController
     if @merchandise_type.update(merchandise_type_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @merchandise_type.errors.full_messages, status: 422
+      render_errors(@merchandise_type)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::MerchandiseTypesController < AdminController
     if @merchandise_type.destroy
       render json: @merchandise_type, status: 200
     else
-      render json: @merchandise_type.errors.full_messages, status: 422
+      render_errors(@merchandise_type)
     end
   end
 

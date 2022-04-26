@@ -18,7 +18,7 @@ class Api::BookersController < AdminController
       @bookers = Booker.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @booker.errors.full_messages, status: 422
+      render_errors(@booker)
     end
   end
 
@@ -29,7 +29,7 @@ class Api::BookersController < AdminController
       @venues = Venue.where.not(id: @booker_venues.pluck(:venue_id))
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @booker.errors.full_messages, status: 422
+      render_errors(@booker)
     end
   end
 
@@ -38,7 +38,7 @@ class Api::BookersController < AdminController
     if @booker.destroy
       render json: @booker, status: 200
     else
-      render json: @booker.errors.full_messages, status: 422
+      render_errors(@booker)
     end
   end
 

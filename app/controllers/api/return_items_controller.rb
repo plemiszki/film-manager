@@ -13,7 +13,7 @@ class Api::ReturnItemsController < AdminController
       get_data_for_items
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @return_item.errors.full_messages, status: 422
+      render_errors(@return_item)
     end
   end
 

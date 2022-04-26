@@ -34,7 +34,7 @@ class Api::RoyaltyReportsController < AdminController
         @report = RoyaltyReport.find(params[:id])
         unless @report.update(report_params)
           @error_present = true
-          errors[:reportErrors] = @report.errors.full_messages
+          errors[:reportErrors] = { errors: @report.errors.as_json(full_messages: true) }
         end
         RoyaltyRevenueStream.where(royalty_report_id: params[:id]).each do |royalty_revenue_stream|
           unless royalty_revenue_stream.update(revenue_stream_params(royalty_revenue_stream.id))

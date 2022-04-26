@@ -16,7 +16,7 @@ class Api::GenresController < AdminController
       @genres = Genre.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @genre.errors.full_messages, status: 422
+      render_errors(@genre)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::GenresController < AdminController
     if @genre.update(genre_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @genre.errors.full_messages, status: 422
+      render_errors(@genre)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::GenresController < AdminController
     if @genre.destroy
       render json: @genre, status: 200
     else
-      render json: @genre.errors.full_messages, status: 422
+      render_errors(@genre)
     end
   end
 

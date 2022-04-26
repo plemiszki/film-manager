@@ -11,7 +11,7 @@ class Api::ShippingAddressesController < AdminController
       @shipping_addresses = ShippingAddress.all.order(:label)
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @shipping_address.errors.full_messages, status: 422
+      render_errors(@shipping_address)
     end
   end
 
@@ -28,7 +28,7 @@ class Api::ShippingAddressesController < AdminController
       @dvd_customers = DvdCustomer.all
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @shipping_address.errors.full_messages, status: 422
+      render_errors(@shipping_address)
     end
   end
 
@@ -37,7 +37,7 @@ class Api::ShippingAddressesController < AdminController
     if @shipping_address.destroy
       render json: @shipping_address, status: 200
     else
-      render json: @shipping_address.errors.full_messages, status: 422
+      render_errors(@shipping_address)
     end
   end
 
