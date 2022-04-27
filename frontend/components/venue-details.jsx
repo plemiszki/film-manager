@@ -190,14 +190,16 @@ class VenueDetails extends React.Component {
           <div id="venue-profile-box" className="white-box">
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'venue', property: 'label' }) }
-              <div className="col-xs-3">
-                <h2>Type</h2>
-                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="venueType" value={ this.state.venue.venueType }>
-                  <option value={ "Theater" }>{ "Theater" }</option>
-                  <option value={ "Non-Theatrical" }>{ "Non-Theatrical" }</option>
-                  <option value={ "Festival" }>{ "Festival" }</option>
-                </select>
-              </div>
+              { Details.renderDropDown.bind(this)({
+                columnWidth: 3,
+                entity: 'venue',
+                property: 'venueType',
+                options: [
+                  { value: 'Theater', text: 'Theater' },
+                  { value: 'Non-Theatrical', text: 'Non-Theatrical' },
+                  { value: 'Festival', text: 'Festival' },
+                ]
+              }) }
               { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'sageId', columnHeader: 'Sage ID' }) }
             </div>
             <div className="row">
