@@ -42,7 +42,7 @@ class PurchaseOrderDetails extends React.Component {
     this.state = {
       fetching: true,
       purchaseOrder: {
-        customerId: 0,
+        customerId: '0',
         sendInvoice: true
       },
       purchaseOrderSaved: {
@@ -436,7 +436,7 @@ class PurchaseOrderDetails extends React.Component {
               zip: purchaseOrder.zip,
               country: purchaseOrder.country,
               customerId: purchaseOrder.customerId,
-              customerInfo: purchaseOrder.customerId ? `Customer: ${customer.name}` : "No DVD Customer"
+              customerInfo: purchaseOrder.customerId !== '0' ? `Customer: ${customer.name}` : "No DVD Customer"
             } }
             callback={ this.addShippingAddressCallback.bind(this) }
           />
