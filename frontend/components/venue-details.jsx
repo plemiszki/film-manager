@@ -189,11 +189,7 @@ class VenueDetails extends React.Component {
           <h1>Venue Details</h1>
           <div id="venue-profile-box" className="white-box">
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Label</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.label) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.label || "" } data-field="label" />
-                { Details.renderFieldError(this.state.errors, FM.errors.label) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'venue', property: 'label' }) }
               <div className="col-xs-3">
                 <h2>Type</h2>
                 <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="venueType" value={ this.state.venue.venueType }>
@@ -202,72 +198,28 @@ class VenueDetails extends React.Component {
                   <option value={ "Festival" }>{ "Festival" }</option>
                 </select>
               </div>
-              <div className="col-xs-3">
-                <h2>Sage ID</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.sageId) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.sageId || "" } data-field="sageId" />
-                { Details.renderFieldError(this.state.errors, FM.errors.sageId) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'sageId', columnHeader: 'Sage ID' }) }
             </div>
             <div className="row">
-              <div className="col-xs-3">
-                <h2>Contact Name</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.contactName || "" } data-field="contactName" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-3">
-                <h2>Email</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.email || "" } data-field="email" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-3">
-                <h2>Phone</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.phone || "" } data-field="phone" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'contactName' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'email' }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'phone' }) }
             </div>
             <hr />
             <div className="address-block">
               <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'billing' }) } } />
               <h3>Billing Address:</h3>
               <div className="row">
-                <div className="col-xs-4">
-                  <h2>Name</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingName || ""} data-field="billingName" />
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
-                <div className="col-xs-4">
-                  <h2>Address 1</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingAddress1 || ""} data-field="billingAddress1" />
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
-                <div className="col-xs-4">
-                  <h2>Address 2</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingAddress2 || ""} data-field="billingAddress2" />
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingName', columnHeader: 'Name' }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingAddress1', columnHeader: 'Address 1' }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingAddress2', columnHeader: 'Address 2' }) }
               </div>
             </div>
             <div className="row">
-              <div className="col-xs-3">
-                <h2>City</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingCity || ""} data-field="billingCity" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-1">
-                <h2>State</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingState || ""} data-field="billingState" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Zip</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.billingZip || ""} data-field="billingZip" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Country</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.billingCountry || "" } data-field="billingCountry" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'billingCity', columnHeader: 'City' }) }
+              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'venue', property: 'billingState', columnHeader: 'State' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingZip', columnHeader: 'Zip' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingCountry', columnHeader: 'Country' }) }
               <div className="col-xs-4">
                 <a className={ "orange-button copy-address-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress.bind(this) }>
                   Copy to Shipping Address
@@ -279,59 +231,23 @@ class VenueDetails extends React.Component {
               <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'shipping' }) } } />
               <h3>Shipping Address:</h3>
               <div className="row">
-                <div className="col-xs-4">
-                  <h2>Name</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingName || "" } data-field="shippingName" />
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
-                <div className="col-xs-4">
-                  <h2>Address 1</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingAddress1 || ""} data-field="shippingAddress1" />
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
-                <div className="col-xs-4">
-                  <h2>Address 2</h2>
-                  <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingAddress2 || ""} data-field="shippingAddress2" />
-                  { Details.renderFieldError(this.state.errors, []) }
-                </div>
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingName', columnHeader: 'Name' }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingAddress1', columnHeader: 'Address 1' }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingAddress2', columnHeader: 'Address 2' }) }
               </div>
             </div>
             <div className="row">
-              <div className="col-xs-3">
-                <h2>City</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingCity || ""} data-field="shippingCity" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-1">
-                <h2>State</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={this.state.venue.shippingState || ""} data-field="shippingState" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Zip</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingZip || "" } data-field="shippingZip" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Country</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.shippingCountry || "" } data-field="shippingCountry" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'shippingCity', columnHeader: 'City' }) }
+              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'venue', property: 'shippingState', columnHeader: 'State' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'shippingZip', columnHeader: 'Zip' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'shippingCountry', columnHeader: 'Country' }) }
             </div>
             <hr />
             <div className="row">
-              <div className="col-xs-12">
-                <h2>Website</h2>
-                <input className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.website || "" } data-field="website" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 12, entity: 'venue', property: 'website' }) }
             </div>
             <div className="row">
-              <div className="col-xs-12">
-                <h2>Notes</h2>
-                <textarea rows="5" className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.venue.notes || "" } data-field="notes" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'venue', property: 'notes', rows: 5 }) }
             </div>
             { this.renderButtons() }
             { Common.renderSpinner(this.state.fetching) }
@@ -425,7 +341,6 @@ class VenueDetails extends React.Component {
 
   componentDidUpdate() {
     FM.resetNiceSelect('select',  FM.changeField.bind(this, this.changeFieldArgs()) );
-    $('.match-height-layout').matchHeight();
   }
 }
 
