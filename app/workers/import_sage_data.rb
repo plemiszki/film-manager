@@ -59,26 +59,27 @@ class ImportSageData
       while index <= xlsx.last_row
         job.update!(current_value: index)
         columns = sheet.row(index)
+        job_id = columns[0].to_s
+        gl_code = columns[1].to_s
         found_film = false
         found_box_set = false
-        films = Film.where("film_type IN ('Feature', 'TV Series') AND ignore_sage_id = FALSE AND LOWER(films.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
+        films = Film.where("film_type IN ('Feature', 'TV Series') AND ignore_sage_id = FALSE AND LOWER(films.sage_id) = LOWER('#{job_id.gsub("'", "''")}')")
         if films.length > 0
           found_film = true
         else
-          films = Film.where("film_type IN ('Feature', 'TV Series') AND ignore_sage_id = FALSE AND LOWER(films.title) = LOWER('#{columns[0].gsub("'", "''")}')")
+          films = Film.where("film_type IN ('Feature', 'TV Series') AND ignore_sage_id = FALSE AND LOWER(films.title) = LOWER('#{job_id.gsub("'", "''")}')")
           if films.length > 0
             found_film = true
           else
-            giftboxes = Giftbox.where("LOWER(giftboxes.sage_id) = LOWER('#{columns[0].gsub("'", "''")}')")
+            giftboxes = Giftbox.where("LOWER(giftboxes.sage_id) = LOWER('#{job_id.gsub("'", "''")}')")
             if giftboxes.length > 0
-              code = columns[1]
-              if code.starts_with?('3') && code != '30200'
+              if gl_code.starts_with?('3') && gl_code != '30200'
                 errors << "Only video revenue is accepted from box set Sage IDs. (Row #{index})"
               else
                 found_box_set = true
               end
             else
-              errors << "Sage ID #{columns[0]} not found. (Row #{index})"
+              errors << "Sage ID #{job_id} not found. (Row #{index})"
             end
           end
         end
@@ -99,8 +100,7 @@ class ImportSageData
               stream.current_revenue += amount
               stream.save!
             else
-              gl = columns[1]
-              apply_expense(film, label, gl, report, amount, errors)
+              apply_expense(film, label, gl_code, report, amount, errors)
             end
           end
         end
@@ -108,10 +108,9 @@ class ImportSageData
         if found_film
           film = films[0]
           report = RoyaltyReport.find_by(film_id: film.id, quarter: quarter, year: year)
-          gl = columns[1]
 
           if label == "revenue"
-            case gl
+            case gl_code
             when "30100"
               stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Theatrical'])
               stream.current_revenue += columns[3]
@@ -214,10 +213,10 @@ class ImportSageData
             when nil
               errors << "GL Code is empty on line #{index}"
             else
-              errors << "GL Code #{columns[1]} not found."
+              errors << "GL Code #{gl_code} not found."
             end
           elsif label == "expenses"
-            apply_expense(film, label, gl, report, columns[3], errors)
+            apply_expense(film, label, gl_code, report, columns[3], errors)
           end
         end
 
