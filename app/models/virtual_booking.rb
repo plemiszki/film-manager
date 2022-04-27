@@ -2,7 +2,7 @@ class VirtualBooking < ActiveRecord::Base
 
   enum host: ['FM', 'Venue']
 
-  validates :film_id, :venue_id, :date_added, :start_date, :end_date, presence: true
+  validates :film_id, :venue_id, :date_added, presence: true
   validates_date :date_added, :start_date, :end_date
   validates_numericality_of :deduction, :box_office, :greater_than_or_equal_to => 0
 

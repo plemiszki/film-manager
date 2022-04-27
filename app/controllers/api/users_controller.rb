@@ -1,5 +1,7 @@
 class Api::UsersController < Clearance::UsersController
 
+  include RenderErrors
+
   def api_index
     @users = User.where.not(name: "Producer")
     render 'index', formats: [:json], handlers: [:jbuilder]
