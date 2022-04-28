@@ -4,15 +4,6 @@ class ExportAllReports
 
   def perform(days_due, quarter, year, time_started)
 
-    # require 'sidekiq/api'
-    # # how many workers are running?
-    # Sidekiq::Workers.new.size
-    # # cancel all of them!
-    # Sidekiq::Workers.new.each do |pid, tid, work|
-    #   job_id = work['payload']['jid']
-    #   Sidekiq.redis {|c| c.setex("cancelled-#{job_id}", 86400, 1) }
-    # end
-
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}/amount due")
     FileUtils.mkdir_p("#{job_folder}/no amount due")
@@ -20,13 +11,12 @@ class ExportAllReports
     reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: { export_reports: true })
     crossed_films_done = []
     reports.each do |report|
-      return if Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
-      return if job.reload.status == :killed
+      return if job.reload.status == "killed"
       if days_due == "all" || report.film.days_statement_due == days_due.to_i
         film = report.film
         films = nil
         p '---------------------------'
-        p "#{film.title} (#{jid})"
+        p "#{film.title}"
         p '---------------------------'
         if film.has_crossed_films?
           next if crossed_films_done.include?(film.id)
