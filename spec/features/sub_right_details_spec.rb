@@ -56,7 +56,7 @@ describe 'sub_right_details', type: :feature do
     clear_form
     fill_out_form({ territory_id: { value: 2, type: :select }})
     save_and_wait
-    expect(page).to have_content('Sublicensor has already been taken')
+    expect(page).to have_content('Right has already been taken')
     expect(page).to have_content('Start date is not a valid date')
     expect(page).to have_content('End date is not a valid date')
   end
