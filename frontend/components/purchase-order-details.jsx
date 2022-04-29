@@ -284,7 +284,7 @@ class PurchaseOrderDetails extends React.Component {
   }
 
   render() {
-    const { purchaseOrder, purchaseOrderSaved, errors } = this.state;
+    const { purchaseOrder, purchaseOrderSaved, dvdCustomers, errors } = this.state;
     const customer = this.getCustomerFromId(purchaseOrder.customerId);
     return(
       <div id="purchase-order-details">
@@ -312,18 +312,17 @@ class PurchaseOrderDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 1, entity: 'purchaseOrder', property: 'state', readOnly: !!purchaseOrder.shipDate }) }
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'purchaseOrder', property: 'zip', readOnly: !!purchaseOrder.shipDate }) }
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'purchaseOrder', property: 'country', readOnly: !!purchaseOrder.shipDate }) }
-              <div className="col-xs-4">
-                <h2>Customer</h2>
-                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="customerId" value={ purchaseOrder.customerId } disabled={ purchaseOrder.shipDate }>
-                  <option key={ 0 } value={ '0' }>(None)</option>
-                  { this.state.dvdCustomers.map((dvdCustomer, index) => {
-                    return(
-                      <option key={ index + 1 } value={ dvdCustomer.id }>{ dvdCustomer.name }</option>
-                    );
-                  }) }
-                </select>
-                { Details.renderFieldError(errors, []) }
-              </div>
+              { Details.renderDropDown.bind(this)({
+                columnWidth: 4,
+                entity: 'purchaseOrder',
+                property: 'customerId',
+                columnHeader: 'Customer',
+                options: dvdCustomers || [],
+                optionDisplayProperty: 'name',
+                optional: true,
+                noneValue: '0',
+                readOnly: !!purchaseOrder.shipDate,
+              }) }
             </div>
             { this.renderSaveShippingAddressButton() }
             <hr />
