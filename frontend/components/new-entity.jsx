@@ -22,7 +22,7 @@ class NewEntity extends React.Component {
     let state_obj = {
       fetching: !!fetchData,
       [entityName]: HandyTools.deepCopy(initialEntity),
-      errors: []
+      errors: {},
     }
 
     if (passData) {
