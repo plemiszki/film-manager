@@ -292,12 +292,14 @@ class PurchaseOrderDetails extends React.Component {
           <h1>Purchase Order Details</h1>
           <div className="white-box">
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Number</h2>
-                <input className={ Details.errorClass(errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.number || "" } data-field="number" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Details.renderFieldError(errors, FM.errors.number) }
-                <p className={ (purchaseOrder.duplicate && !purchaseOrder.shipDate) ? "" : "hidden"}>A PO with this number already exists</p>
-              </div>
+              { Details.renderField.bind(this)({
+                columnWidth: 6,
+                entity: 'purchaseOrder',
+                property: 'number',
+                warnIf: !purchaseOrder.shipDate && purchaseOrder.duplicate,
+                warning: 'A PO with this number already exists',
+                readOnly: !!purchaseOrder.shipDate,
+              }) }
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'orderDate', readOnly: !!purchaseOrder.shipDate }) }
             </div>
             <hr />
