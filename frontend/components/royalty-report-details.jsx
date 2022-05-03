@@ -350,6 +350,24 @@ class ReportDetails extends React.Component {
               <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedReserve || "") : (this.state.report.cumeReserve || "") } />
             </div>
           </div>
+          <div className={ "row" + (this.state.report.liquidatedReserve === "$0.00" ? " hidden" : "") }>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+            </div>
+            <div className={ "col-xs-2" + this.grClass() }>
+            </div>
+            <div className={ "col-xs-2" + this.expenseClass() }>
+            </div>
+            <div className={ "col-xs-2" + this.expenseClass() }>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">Liquidated Reserve</div>
+              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.liquidatedReserve || "") : "$0.00" } />
+            </div>
+          </div>
           <div className="row">
             <div className="col-xs-1">
             </div>
