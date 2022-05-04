@@ -65,7 +65,7 @@ RSpec.describe RoyaltyReport do
 
     expect(@third_report.current_total).to eq(0)
     expect(@third_report.current_reserve).to eq(0)
-    expect(@third_report.current_liquidated_reserve).to eq(100) # <--
+    expect(@third_report.current_liquidated_reserve).to eq(100)
 
     expect(@third_report.cume_total).to eq(200)
     expect(@third_report.cume_reserve).to eq(200)
@@ -85,11 +85,11 @@ RSpec.describe RoyaltyReport do
 
     expect(@fourth_report.current_total).to eq(0)
     expect(@fourth_report.current_reserve).to eq(0)
-    expect(@fourth_report.current_liquidated_reserve).to eq(100) # <--
+    expect(@fourth_report.current_liquidated_reserve).to eq(100)
 
     expect(@fourth_report.cume_total).to eq(200)
     expect(@fourth_report.cume_reserve).to eq(200)
-    expect(@fourth_report.cume_liquidated_reserve).to eq(100) # <--
+    expect(@fourth_report.cume_liquidated_reserve).to eq(100)
     expect(@fourth_report.amount_due).to eq(100) # <--
 
     expect(@fourth_report.joined_total).to eq(200)
@@ -110,7 +110,7 @@ RSpec.describe RoyaltyReport do
 
     expect(@fifth_report.cume_total).to eq(200)
     expect(@fifth_report.cume_reserve).to eq(200)
-    expect(@fifth_report.cume_liquidated_reserve).to eq(200) # <--
+    expect(@fifth_report.cume_liquidated_reserve).to eq(200)
     expect(@fifth_report.amount_due).to eq(200) # <--
 
     expect(@fifth_report.joined_total).to eq(200)

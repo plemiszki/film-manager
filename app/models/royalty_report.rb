@@ -189,7 +189,9 @@ class RoyaltyReport < ActiveRecord::Base
           end
           total_past_reserves = self.get_total_past_reserves
           self.cume_reserve = total_past_reserves.values.sum
-          self.joined_liquidated_reserve = total_past_reserves.values[0..(film.reserve_quarters * -1)].sum
+          self.current_liquidated_reserve = total_past_reserves.values[film.reserve_quarters * -1] || 0
+          self.cume_liquidated_reserve = total_past_reserves.values[0...(film.reserve_quarters * -1)].sum
+          self.joined_liquidated_reserve = self.current_liquidated_reserve + self.cume_liquidated_reserve
         end
       end
       # joined revenue and joined expenses will get updated when stream.update is called:
