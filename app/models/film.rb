@@ -168,6 +168,7 @@ class Film < ActiveRecord::Base
     report = RoyaltyReport.create!(film_id: id, deal_id: deal_type_id, quarter: quarter, year: year, mg: mg, e_and_o: e_and_o)
     report.create_empty_streams!
     report.transfer_and_calculate_from_previous_report!
+    report
   end
 
   def self.backfill_end_date_calc!
