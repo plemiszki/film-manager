@@ -62,7 +62,7 @@ class Film < ActiveRecord::Base
   belongs_to :label
   has_many :film_revenue_percentages, dependent: :destroy
   has_many :film_rights, dependent: :destroy
-  has_many :royalty_reports, dependent: :destroy
+  has_many :royalty_reports, -> { order(:year, :quarter) }, dependent: :destroy
   has_many :dvds, foreign_key: :feature_film_id, dependent: :destroy
   has_many :quotes, dependent: :destroy
   has_many :laurels, dependent: :destroy

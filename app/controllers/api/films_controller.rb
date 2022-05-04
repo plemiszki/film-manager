@@ -346,7 +346,7 @@ class Api::FilmsController < AdminController
     @templates = DealTemplate.all
     @licensors = Licensor.all
     @revenue_streams = RevenueStream.all.order(:order)
-    @reports = RoyaltyReport.where(film_id: params[:id])
+    @reports = RoyaltyReport.where(film_id: params[:id]).order(:year, :quarter)
     @film_revenue_percentages = FilmRevenuePercentage.where(film_id: params[:id]).includes(:revenue_stream).order('revenue_streams.order')
     @rights = FilmRight.where(film_id: params[:id]).includes(:right, :territory)
     @dvds = (@film.film_type.in?(['Feature', 'TV Series']) ? Dvd.where(feature_film_id: params[:id]) : Dvd.where(id: [DvdShort.where(short_id: params[:id]).includes(:dvd).map(&:dvd_id)]))
