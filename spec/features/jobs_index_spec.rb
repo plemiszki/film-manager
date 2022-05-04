@@ -35,7 +35,7 @@ describe 'jobs_index', type: :feature do
   it 'kills jobs' do
     create(:job)
     visit royalty_reports_path(as: $admin_user)
-    wait_for_ajax
+    sleep 2
     within all('#jobs-index')[1] do
       find('.blue-outline-button', text: 'Kill').click
     end

@@ -210,7 +210,7 @@ class BookingDetails extends React.Component {
 
   clickDeletePayment(e) {
     this.setState({
-      fetching: false
+      fetching: true
     });
     this.props.deleteEntity({
       directory: 'payments',
