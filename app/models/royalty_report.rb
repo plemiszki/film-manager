@@ -180,7 +180,7 @@ class RoyaltyReport < ActiveRecord::Base
 
     royalty_revenue_streams = RoyaltyRevenueStream.where(royalty_report_id: self.id).joins(:revenue_stream).order('revenue_streams.order')
     royalty_revenue_streams.each do |stream|
-      if stream.revenue_stream_id == revenue_stream_ids['Video'] && film.reserve && stream.current_revenue != 0
+      if stream.revenue_stream_id == revenue_stream_ids['Video'] && film.reserve
         unless self.year == 2017 && self.quarter == 1 # returns against reserves didn't start until Q2 2017
           if stream.current_revenue > 0
             self.current_reserve = stream.current_revenue * (film.reserve_percentage.fdiv(100))
@@ -189,7 +189,9 @@ class RoyaltyReport < ActiveRecord::Base
           end
           total_past_reserves = self.get_total_past_reserves
           self.cume_reserve = total_past_reserves.values.sum
-          self.liquidated_reserve = total_past_reserves.values[0..(film.reserve_quarters * -1)].sum
+          self.current_liquidated_reserve = total_past_reserves.values[film.reserve_quarters * -1] || 0
+          self.cume_liquidated_reserve = total_past_reserves.values[0...(film.reserve_quarters * -1)].sum
+          self.joined_liquidated_reserve = self.current_liquidated_reserve + self.cume_liquidated_reserve
         end
       end
       # joined revenue and joined expenses will get updated when stream.update is called:
@@ -306,10 +308,10 @@ class RoyaltyReport < ActiveRecord::Base
       self.current_share_minus_expenses = self.current_total - self.current_total_expenses
       self.joined_total_expenses = self.current_total_expenses + self.cume_total_expenses
       self.amount_due = self.cume_total - self.cume_total_expenses - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
-      self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.joined_reserve + self.liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.joined_reserve + self.joined_liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
     else
-      self.amount_due = self.cume_total - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
-      self.joined_amount_due = self.joined_total - self.joined_reserve + self.liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.amount_due         = self.cume_total   - self.cume_reserve   + self.cume_liquidated_reserve    - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due  = self.joined_total - self.joined_reserve + self.joined_liquidated_reserve  - self.e_and_o - self.mg - self.amount_paid
     end
     self.save!
   end
@@ -348,7 +350,7 @@ class RoyaltyReport < ActiveRecord::Base
         current_reserve: result.current_reserve + report.current_reserve,
         cume_reserve: result.cume_reserve + report.cume_reserve,
         joined_reserve: result.joined_reserve + report.joined_reserve,
-        liquidated_reserve: result.liquidated_reserve + report.liquidated_reserve
+        joined_liquidated_reserve: result.joined_liquidated_reserve + report.joined_liquidated_reserve
       })
       report_streams.each_with_index do |report_stream, index|
         stream = streams[index]
@@ -549,10 +551,10 @@ class RoyaltyReport < ActiveRecord::Base
       string +=     "<td>#{negafy(self.joined_reserve)}</td>"
       string +=   "</tr>"
     end
-    if self.liquidated_reserve > 0
+    if self.joined_liquidated_reserve > 0
       string +=   "<tr>"
       string +=     "<td>Liquidated Reserve</td>"
-      string +=     "<td>#{dollarify(self.liquidated_reserve)}</td>"
+      string +=     "<td>#{dollarify(self.joined_liquidated_reserve)}</td>"
       string +=   "</tr>"
     end
     string +=   "<tr>"

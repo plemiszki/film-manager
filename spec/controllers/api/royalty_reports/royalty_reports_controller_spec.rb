@@ -660,7 +660,7 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(report.cume_reserve).to eq(75)
       expect(report.joined_total).to eq(3150)
       expect(report.joined_reserve).to eq(150)
-      expect(report.liquidated_reserve).to eq(25)
+      expect(report.joined_liquidated_reserve).to eq(25)
       expect(report.amount_due).to eq(-1175)
       expect(report.joined_amount_due).to eq(525)
       expect(response.status).to eq(200)

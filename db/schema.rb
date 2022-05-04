@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_13_143230) do
+ActiveRecord::Schema.define(version: 2022_05_03_132648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -648,10 +648,12 @@ ActiveRecord::Schema.define(version: 2022_04_13_143230) do
     t.date "date_sent"
     t.decimal "current_reserve", precision: 8, scale: 2, default: "0.0"
     t.decimal "cume_reserve", precision: 8, scale: 2, default: "0.0"
-    t.decimal "liquidated_reserve", precision: 8, scale: 2, default: "0.0"
+    t.decimal "joined_liquidated_reserve", precision: 8, scale: 2, default: "0.0"
     t.decimal "joined_reserve", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal "cume_liquidated_reserve", precision: 8, scale: 2, default: "0.0"
+    t.decimal "current_liquidated_reserve", precision: 8, scale: 2, default: "0.0"
     t.index ["film_id"], name: "index_royalty_reports_on_film_id"
   end
 

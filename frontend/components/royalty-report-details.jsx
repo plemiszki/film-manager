@@ -217,7 +217,35 @@ class ReportDetails extends React.Component {
             </div>
             <div className="col-xs-2">
               <div className="label">Reserve Against Returns</div>
-              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentReserve || "" } />
+              <input
+                className={ Details.errorClass(this.state.reportErrors, []) }
+                onChange={ FM.changeField.bind(this, this.changeFieldArgs()) }
+                readOnly={ true }
+                value={ this.state.report.currentReserve || "" }
+              />
+            </div>
+          </div>
+          <div className={ "row" + (this.state.report.currentLiquidatedReserve === "$0.00" ? " hidden" : "") }>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+            </div>
+            <div className={ "col-xs-2" + this.grClass() }>
+            </div>
+            <div className={ "col-xs-2" + this.expenseClass() }>
+            </div>
+            <div className={ "col-xs-2" + this.expenseClass() }>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">Liquidated Reserve</div>
+              <input
+                className={ Details.errorClass(this.state.reportErrors, []) }
+                onChange={ FM.changeField.bind(this, this.changeFieldArgs()) }
+                readOnly={ true }
+                value={ this.state.report.currentLiquidatedReserve || "" }
+              />
             </div>
           </div>
           <div className={ "row" + this.dealType4Only() }>
@@ -348,6 +376,29 @@ class ReportDetails extends React.Component {
             <div className="col-xs-2">
               <div className="label">Reserve Against Returns</div>
               <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedReserve || "") : (this.state.report.cumeReserve || "") } />
+            </div>
+          </div>
+          <div className={ "row" + (this.state.report.joinedLiquidatedReserve === "$0.00" ? " hidden" : "") }>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+            </div>
+            <div className={ "col-xs-2" + this.grClass() }>
+            </div>
+            <div className={ "col-xs-2" + this.expenseClass() }>
+            </div>
+            <div className={ "col-xs-2" + this.expenseClass() }>
+            </div>
+            <div className="col-xs-1">
+            </div>
+            <div className="col-xs-2">
+              <div className="label">Liquidated Reserve</div>
+              <input
+                className={ Details.errorClass(this.state.reportErrors, []) }
+                onChange={ FM.changeField.bind(this, this.changeFieldArgs()) }
+                readOnly={ true }
+                value={ this.state.showJoined ? (this.state.report.joinedLiquidatedReserve || "") : (this.state.report.cumeLiquidatedReserve || "") }
+              />
             </div>
           </div>
           <div className="row">
