@@ -310,8 +310,8 @@ class RoyaltyReport < ActiveRecord::Base
       self.amount_due = self.cume_total - self.cume_total_expenses - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
       self.joined_amount_due = self.joined_total - self.current_total_expenses - self.cume_total_expenses - self.joined_reserve + self.joined_liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
     else
-      self.amount_due = self.cume_total - self.cume_reserve - self.e_and_o - self.mg - self.amount_paid
-      self.joined_amount_due = self.joined_total - self.joined_reserve + self.joined_liquidated_reserve - self.e_and_o - self.mg - self.amount_paid
+      self.amount_due         = self.cume_total   - self.cume_reserve   + self.cume_liquidated_reserve    - self.e_and_o - self.mg - self.amount_paid
+      self.joined_amount_due  = self.joined_total - self.joined_reserve + self.joined_liquidated_reserve  - self.e_and_o - self.mg - self.amount_paid
     end
     self.save!
   end
