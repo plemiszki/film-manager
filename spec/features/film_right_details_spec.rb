@@ -55,7 +55,7 @@ describe 'film_right_details', type: :feature do
       end_date: '1/1/20'
     })
     save_and_wait
-    expect(page).to have_content('Film has already been taken')
+    expect(page).to have_content('Right has already been taken')
     expect(page).to have_content("Start date can't be after end date")
   end
 
