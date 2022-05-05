@@ -30,7 +30,7 @@ class EpisodeDetails extends React.Component {
       episode: {},
       episodeSaved: {},
       actors: [],
-      errors: [],
+      errors: {},
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
@@ -141,33 +141,13 @@ class EpisodeDetails extends React.Component {
           <h1>Episode Details</h1>
           <div id="episode-profile-box" className="white-box">
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Title</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.title) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.title || "" } data-field="title" />
-                { Details.renderFieldError(this.state.errors, FM.errors.title) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Length</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.length) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.length || "" } data-field="length" />
-                { Details.renderFieldError(this.state.errors, FM.errors.length) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Season #</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.seasonNumber) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.seasonNumber || "" } data-field="seasonNumber" />
-                { Details.renderFieldError(this.state.errors, FM.errors.seasonNumber) }
-              </div>
-              <div className="col-xs-2">
-                <h2>Episode #</h2>
-                <input className={ Details.errorClass(this.state.errors, FM.errors.episodeNumber) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.episodeNumber || "" } data-field="episodeNumber" />
-                { Details.renderFieldError(this.state.errors, FM.errors.episodeNumber) }
-              </div>
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'episode', property: 'title' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'episode', property: 'length' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'episode', property: 'seasonNumber', columnHeader: 'Season #' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'episode', property: 'episodeNumber', columnHeader: 'Episode #' }) }
             </div>
             <div className="row">
-              <div className="col-xs-12">
-                <h2>Synopsis</h2>
-                <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.episode.synopsis || "" } data-field="synopsis" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'episode', property: 'synopsis', rows: 5 }) }
             </div>
             <hr />
             <div className="row">
