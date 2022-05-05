@@ -61,7 +61,7 @@ describe 'bookings_index', type: :feature do
     expect(page).to have_content 'Start date is not a valid date'
     expect(page).to have_content 'End date is not a valid date'
     expect(page).to have_content "Format can't be blank"
-    expect(page).to have_content "Booker is mandatory"
+    expect(page).to have_content "Booker can't be blank"
   end
 
   it 'performs advanced searches' do

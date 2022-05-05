@@ -146,8 +146,8 @@ class NewEntity extends React.Component {
         const statuses = [{ value: 'Confirmed' }, { value: 'Tentative' }];
         return([
           <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }) }
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', type: 'modal', optionDisplayProperty: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', type: 'modal', optionDisplayProperty: 'label' }) }
           </div>,
           <div key="2" className="row">
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'startDate' }) }
