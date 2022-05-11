@@ -2,6 +2,8 @@ class Api::FilmsController < AdminController
 
   include BookingCalculations
 
+  class UpdateError < RuntimeError; end
+
   def index
     if params[:film_type] == 'all'
       @films = Film.all.includes(:alternate_lengths, alternate_subs: [:language], alternate_audios: [:language])
@@ -39,21 +41,16 @@ class Api::FilmsController < AdminController
     begin
       ActiveRecord::Base.transaction do
         @film = Film.find(params[:id])
+        @film_revenue_percentages = @film.film_revenue_percentages
         @film.assign_attributes(film_params)
         if @film.reserve_percentage_changed? || @film.reserve_quarters_changed?
           recalculate_statements = true
         end
-        unless @film.update(film_params)
-          error_present = true
-          errors[:film] = { errors: @film.errors.as_json(full_messages: true) }
+        @film.update(film_params)
+        @film_revenue_percentages.each do |revenue_percentage|
+          revenue_percentage.update(value: params[:percentages][revenue_percentage.id.to_s])
         end
-        FilmRevenuePercentage.where(film_id: params[:id]).each do |revenue_percentage|
-          unless revenue_percentage.update(value: params[:percentages][revenue_percentage.id.to_s])
-            error_present = true
-            errors[:percentages][revenue_percentage.id] = revenue_percentage.errors.full_messages
-          end
-        end
-        fail if error_present
+        fail UpdateError if @film.errors.present? || @film_revenue_percentages.map(&:errors).any? { |errors| errors.present? }
         if recalculate_statements
           @film.royalty_reports.order(:year, :quarter).each do |report|
             report.calculate!
@@ -62,8 +59,16 @@ class Api::FilmsController < AdminController
         gather_data_for_show_view
         render 'show', formats: [:json], handlers: [:jbuilder]
       end
-    rescue
-      render json: errors, status: 422
+    rescue UpdateError
+      film_errors = @film.errors.as_json(full_messages: true)
+      percentage_errors = @film_revenue_percentages.map(&:errors).select { |errors| errors.present? }
+      percentage_errors_hashes = percentage_errors.map { |errors| { errors.instance_variable_get(:@base).id => errors.as_json(full_messages: true) } }
+      percentage_errors_hash = percentage_errors_hashes.reduce({}, &:merge)
+      render json: {
+        errors: { film: film_errors }
+          .merge(percentage_errors_hash)
+          .deep_transform_keys { |k| k.to_s.camelize(:lower) }
+      }, status: 422
     end
   end
 
