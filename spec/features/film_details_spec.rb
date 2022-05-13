@@ -990,6 +990,17 @@ describe 'film_details', type: :feature do
 
   # bottom buttons
 
+  it 'validates the film when copying' do
+    visit film_path(@film, as: $admin_user)
+    copy_button = find('.orange-button', text: 'Copy Film')
+    copy_button.click
+    fill_out_and_submit_modal({}, :input)
+    expect(page).to have_no_css('.spinner')
+    expect(page).to have_content("Title can't be blank")
+    expect(page).to have_content('Year is not a number')
+    expect(page).to have_content('Length is not a number')
+  end
+
   it 'copies the film' do
     visit film_path(@film, as: $admin_user)
     copy_button = find('.orange-button', text: 'Copy Film')
