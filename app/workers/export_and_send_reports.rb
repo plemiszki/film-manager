@@ -9,8 +9,7 @@ class ExportAndSendReports
     crossed_films_done = []
     crossed_films_hash = {}
     reports.each do |report|
-      return if Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
-      return if job.reload.status == :killed
+      return if job.reload.status == "killed"
       film = report.film
       if (days_due == "all" || film.days_statement_due == days_due.to_i)
         licensor = film.licensor
@@ -18,7 +17,7 @@ class ExportAndSendReports
           licensor_folder = "#{Rails.root}/tmp/#{time_started}/#{licensor.id}"
           FileUtils.mkdir_p(licensor_folder) unless File.exist?(licensor_folder)
           p '---------------------------'
-          p "#{film.title} (#{jid})"
+          p "#{film.title}"
           p '---------------------------'
           films = nil
           if film.has_crossed_films?

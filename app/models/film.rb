@@ -62,7 +62,7 @@ class Film < ActiveRecord::Base
   belongs_to :label
   has_many :film_revenue_percentages, dependent: :destroy
   has_many :film_rights, dependent: :destroy
-  has_many :royalty_reports, dependent: :destroy
+  has_many :royalty_reports, -> { order(:year, :quarter) }, dependent: :destroy
   has_many :dvds, foreign_key: :feature_film_id, dependent: :destroy
   has_many :quotes, dependent: :destroy
   has_many :laurels, dependent: :destroy
@@ -168,6 +168,7 @@ class Film < ActiveRecord::Base
     report = RoyaltyReport.create!(film_id: id, deal_id: deal_type_id, quarter: quarter, year: year, mg: mg, e_and_o: e_and_o)
     report.create_empty_streams!
     report.transfer_and_calculate_from_previous_report!
+    report
   end
 
   def self.backfill_end_date_calc!

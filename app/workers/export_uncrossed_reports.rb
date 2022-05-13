@@ -10,10 +10,9 @@ class ExportUncrossedReports
     reports = RoyaltyReport.includes(:film).where(id: report_ids)
 
     reports.each do |report|
-      return if Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
-      return if job.reload.status == :killed
+      return if job.reload.status == "killed"
       p '---------------------------'
-      p "#{report.film.title} (#{jid})"
+      p "#{report.film.title}"
       p '---------------------------'
       royalty_revenue_streams = report.royalty_revenue_streams
       report.export(directory: job_folder, royalty_revenue_streams: royalty_revenue_streams)

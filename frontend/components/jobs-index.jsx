@@ -21,7 +21,7 @@ class JobsIndex extends React.Component {
       directory: 'jobs'
     }).then(() => {
       this.setState({
-        jobs: this.props.jobs
+        jobs: this.props.jobs,
       });
     });
   }

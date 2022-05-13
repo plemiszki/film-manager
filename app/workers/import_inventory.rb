@@ -71,14 +71,12 @@ class ImportInventory
       end
       if errors.empty?
         job.update!({
-          done: true,
           status: "success",
           first_line: "Import complete.\nThere were no changes.",
           metadata: { showSuccessMessageModal: true }
         })
       else
         job.update!({
-          done: true,
           status: "success",
           first_line: "Stock Updated",
           errors_text: errors.join("\n"),
@@ -89,7 +87,7 @@ class ImportInventory
       p 'FINISHED INVENTORY IMPORT'
       p '---------------------------'
     rescue
-      job.update!({ done: true, first_line: "Oops. There were some errors.", errors_text: "Unable to import spreadsheet" })
+      job.update!({ status: :failed, first_line: "Oops. There were some errors.", errors_text: "Unable to import spreadsheet" })
     end
   end
 

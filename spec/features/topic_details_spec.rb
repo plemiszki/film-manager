@@ -15,6 +15,7 @@ describe 'topic_details', type: :feature do
 
   it 'displays information about the topic' do
     visit topic_path(@topic, as: $admin_user)
+    wait_for_ajax
     expect(find('input[data-field="name"]').value).to eq('Latino')
   end
 

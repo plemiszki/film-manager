@@ -16,6 +16,7 @@ describe 'quote_details', type: :feature do
 
   it 'displays information about the quote' do
     visit quote_path(@quote, as: $admin_user)
+    wait_for_ajax
     expect(find('textarea[data-field="text"]').value).to eq 'This is the greatest film in history.'
     expect(find('input[data-field="author"]').value).to eq 'Roger Ebert'
     expect(find('input[data-field="publication"]').value).to eq 'Chicago Sun'

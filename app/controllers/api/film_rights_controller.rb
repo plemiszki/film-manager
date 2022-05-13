@@ -73,9 +73,9 @@ class Api::FilmRightsController < AdminController
     if film_id
       if start_date || end_date
         test_film_right = FilmRight.new({
-          film_id: (Film.count + 1),
-          right_id: (Right.count + 1),
-          territory_id: (Territory.count + 1),
+          film_id: (Film.maximum(:id).next),
+          right_id: (Right.maximum(:id).next),
+          territory_id: (Territory.maximum(:id).next),
           start_date: start_date,
           end_date: end_date
         })

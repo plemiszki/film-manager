@@ -25,7 +25,9 @@ json.report do
   json.currentReserve dollarify(number_with_precision(@report.current_reserve, precision: 2, delimiter: ','))
   json.cumeReserve dollarify(number_with_precision(@report.cume_reserve, precision: 2, delimiter: ','))
   json.joinedReserve dollarify(number_with_precision(@report.joined_reserve, precision: 2, delimiter: ','))
-  json.liquidatedReserve dollarify(number_with_precision(@report.liquidated_reserve, precision: 2, delimiter: ','))
+  json.currentLiquidatedReserve dollarify(number_with_precision(@report.current_liquidated_reserve, precision: 2, delimiter: ','))
+  json.cumeLiquidatedReserve dollarify(number_with_precision(@report.cume_liquidated_reserve, precision: 2, delimiter: ','))
+  json.joinedLiquidatedReserve dollarify(number_with_precision(@report.joined_liquidated_reserve, precision: 2, delimiter: ','))
 end
 json.streams @streams do |stream|
   json.id stream.id
