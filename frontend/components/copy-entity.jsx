@@ -15,7 +15,7 @@ class CopyEntity extends React.Component {
     this.state = {
       fetching: false,
       [this.props.entityName]: this.props.initialEntity,
-      errors: [],
+      errors: {},
       films: this.props.films
     };
   }

@@ -337,6 +337,7 @@ class FilmDetails extends React.Component {
     const { errors } = this.state;
     return {
       allErrors: FM.errors,
+      defaultErrorsKey: 'film',
       thing: "film",
       errorsArray: errors,
       beforeSave: (newEntity, key, value) => {
@@ -454,11 +455,10 @@ class FilmDetails extends React.Component {
           this.updatePercentageObject();
         });
       }, () => {
-        const { film, percentages } = this.props;
+        const { errors } = this.props;
         this.setState({
           fetching: false,
-          errors: film,
-          percentageErrors: percentages
+          errors,
         });
       });
     });
@@ -1614,26 +1614,24 @@ class FilmDetails extends React.Component {
           <hr />
           <h3>Revenue Splits</h3>
           <div className="row">
-            <div className="col-xs-12 percentage-column">
-              { filmRevenuePercentages.map((revenuePercentage, index) => {
-                const properErrorsArray = percentageErrors[revenuePercentage.id] ? percentageErrors[revenuePercentage.id] : [];
-                const revenueStream = revenueStreams.find(stream => stream.id == revenuePercentage.revenueStreamId);
-                return(
-                  <div className="revenue-percentage" key={ index }>
-                    <h2>{ revenueStream.nickname || revenueStream.name } %</h2>
-                    <input
-                      className={ Details.errorClass(properErrorsArray, FM.errors.value) }
-                      onChange={ this.changePercentageField.bind(this) }
-                      value={ percentageObject[revenuePercentage.id] ? percentageObject[revenuePercentage.id] : '' }
-                      data-id={ revenuePercentage.id }
-                      data-field={ revenuePercentage.id }
-                      readOnly={ !FM.user.hasAdminAccess }
-                    />
-                    { Details.renderFieldError([], []) }
-                  </div>
-                );
-              }) }
-            </div>
+            { filmRevenuePercentages.map((revenuePercentage, index) => {
+              const properErrorsArray = percentageErrors[revenuePercentage.id] ? percentageErrors[revenuePercentage.id] : [];
+              const revenueStream = revenueStreams.find(stream => stream.id == revenuePercentage.revenueStreamId);
+              return(
+                <div key={ index }>
+                  { Details.renderField.bind(this)({
+                    columnWidth: 2,
+                    entity: 'percentageObject',
+                    property: revenuePercentage.id,
+                    errorsKey: revenuePercentage.id,
+                    errorsProperty: 'value',
+                    columnHeader: revenueStream.nickname || revenueStream.name,
+                    readOnly: !FM.user.hasAdminAccess,
+                    showFieldError: false,
+                  }) }
+                </div>
+              );
+            }) }
           </div>
           <hr />
           <div className={ "row reserve-section" + (this.state.film.reserve ? "" : " no-reserve") }>
@@ -1689,6 +1687,7 @@ class FilmDetails extends React.Component {
   }
 
   percentageErrorsExist() {
+    const { errors } = this.state;
     var keys = Object.keys(this.state.percentageErrors);
     var result = false;
     if (keys.length > 0) {

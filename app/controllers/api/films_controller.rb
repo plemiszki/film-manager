@@ -120,7 +120,7 @@ class Api::FilmsController < AdminController
       end
       render json: { film: { id: film.id } }
     else
-      render json: film.errors.full_messages, status: 422
+      render json: film.errors.full_messages, status: 422 #TODO <--
     end
   end
 
