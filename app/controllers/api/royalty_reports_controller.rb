@@ -36,6 +36,7 @@ class Api::RoyaltyReportsController < AdminController
       @streams = @report.royalty_revenue_streams
       @report.update(report_params)
       @streams.each do |royalty_revenue_stream|
+        next unless params[:streams] && params[:streams][royalty_revenue_stream.id.to_s].present?
         royalty_revenue_stream.update(revenue_stream_params(royalty_revenue_stream.id))
       end
       fail UpdateError if @report.errors.present? || @streams.map(&:errors).any? { |errors| errors.present? }
