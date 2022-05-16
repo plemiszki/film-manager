@@ -567,7 +567,7 @@ class RoyaltyReport < ActiveRecord::Base
     string +=   "</tr>"
     string += "</table></div></div>"
     string += "<div class=\"bottom-text\">"
-    string += "If there is an amount due to Licensor on this self, please send an invoice for the amount due along with current bank wire information if located outside the U.S., and current mailing address if located inside the U.S.<br>No payments will be made without this invoice and information."
+    string += "If there is an amount due to Licensor on this statement, please send an invoice for the amount due along with current bank wire information if located outside the U.S., and current mailing address if located inside the U.S.<br>No payments will be made without this invoice and information."
     string += "</div>"
     if @film.reserve
       string += "<div class=\"page-break\"></div>"
