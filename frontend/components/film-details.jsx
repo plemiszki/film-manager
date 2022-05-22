@@ -78,7 +78,7 @@ class FilmDetails extends React.Component {
       eduPlatforms: [],
       eduPlatformFilms: [],
       episodes: [],
-      errors: [],
+      errors: {},
       fetching: true,
       film: {},
       filmCountries: [],
@@ -342,7 +342,7 @@ class FilmDetails extends React.Component {
         if (key == "dealTypeId") {
           if (value <= 4) {
             newEntity.grPercentage = "";
-            FM.removeFieldError(errors, "grPercentage")
+            Details.removeFieldError(errors, "grPercentage");
           } else {
             newEntity.grPercentage = "0";
           }
@@ -389,7 +389,7 @@ class FilmDetails extends React.Component {
       this.setState({
         tab
       }, () => {
-        FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
+        HandyTools.resetNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     }
   }
@@ -1554,7 +1554,18 @@ class FilmDetails extends React.Component {
           <div className="row">
             { Details.renderDropDown.bind(this)({ columnWidth: 5, entity: 'film', property: 'dealTypeId', columnHeader: 'Deal Type', options: dealTemplates, optionDisplayProperty: 'name', readOnly: !FM.user.hasAdminAccess }) }
             { Details.renderField.bind(this)({ columnWidth: 1, entity: 'film', property: 'grPercentage', columnHeader: 'GR %', readOnly: !FM.user.hasAdminAccess, hidden: film.dealTypeId != "5" && film.dealTypeId != "6" }) }
-            { Details.renderDropDown.bind(this)({ columnWidth: 3, entity: 'film', property: 'daysStatementDue', columnHeader: 'Statements Due', options: [{ value: 30, text: '30 Days' }, { value: 45, text: '45 Days' }, { value: 60, text: '60 Days' }], readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderDropDown.bind(this)({
+              columnWidth: 3,
+              entity: 'film',
+              property: 'daysStatementDue',
+              columnHeader: 'Statements Due',
+              options: [
+                { value: 30, text: '30 Days' },
+                { value: 45, text: '45 Days' },
+                { value: 60, text: '60 Days' }
+              ],
+              readOnly: !FM.user.hasAdminAccess,
+            }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'mg', columnHeader: 'MG', readOnly: !FM.user.hasAdminAccess }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'eAndO', columnHeader: 'E & O', readOnly: !FM.user.hasAdminAccess, hidden: film.filmType === "Short" }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'expenseCap', readOnly: !FM.user.hasAdminAccess }) }

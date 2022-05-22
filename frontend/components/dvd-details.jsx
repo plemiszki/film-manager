@@ -175,10 +175,7 @@ class DvdDetails extends React.Component {
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 1, entity: 'dvd', property: 'discs' }) }
               { Details.renderField.bind(this)({ columnWidth: 5, entity: 'dvd', property: 'soundConfig', columnHeader: 'Sound Configuration' }) }
-              <div className="col-xs-6">
-                <h2>Special Features</h2>
-                <textarea rows="5" className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvd.specialFeatures || "" } data-field="specialFeatures" />
-              </div>
+              { Details.renderTextBox.bind(this)({ columnWidth: 6, entity: 'dvd', property: 'specialFeatures', rows: 5 }) }
             </div>
             <table className="fm-admin-table">
               <thead>

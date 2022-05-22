@@ -79,7 +79,7 @@ class PurchaseOrderDetails extends React.Component {
         items,
         otherItems
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -374,10 +374,7 @@ class PurchaseOrderDetails extends React.Component {
             { this.renderAddItemButton() }
             <hr />
             <div className="row">
-              <div className="col-xs-12">
-                <h2>Notes</h2>
-                <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.notes } data-field="notes" />
-              </div>
+              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5 }) }
             </div>
             <hr />
             <div className="row">
@@ -548,10 +545,6 @@ class PurchaseOrderDetails extends React.Component {
         </a>
       );
     }
-  }
-
-  componentDidUpdate() {
-    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
   }
 }
 

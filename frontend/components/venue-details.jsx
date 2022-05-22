@@ -50,10 +50,7 @@ class VenueDetails extends React.Component {
         bookings: this.props.bookings,
         fetching: false
       }, () => {
-        FM.setUpNiceSelect('select',  FM.changeField.bind(this, this.changeFieldArgs()) );
-        this.setState({
-          changesToSave: this.checkForChanges()
-        });
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -339,10 +336,6 @@ class VenueDetails extends React.Component {
         </a>
       </div>
     );
-  }
-
-  componentDidUpdate() {
-    FM.resetNiceSelect('select',  FM.changeField.bind(this, this.changeFieldArgs()) );
   }
 }
 

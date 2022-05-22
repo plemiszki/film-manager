@@ -32,7 +32,6 @@ class FilmRightsNew extends React.Component {
   }
 
   componentDidMount() {
-    FM.setUpNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     this.props.sendRequest({
       url: '/api/rights_and_territories',
       data: {
@@ -52,7 +51,9 @@ class FilmRightsNew extends React.Component {
         newState.films = films;
         newState.filmRight = filmRight;
       }
-      this.setState(newState);
+      this.setState(newState, () => {
+        HandyTools.setUpNiceSelect({ selector: '#film-rights-new select', func: Details.changeDropdownField.bind(this) });
+      });
     });
   }
 
@@ -235,15 +236,15 @@ class FilmRightsNew extends React.Component {
 
   renderExclusiveColumn() {
     if (!this.props.search) {
-      return (
-        <div className="col-xs-2">
-          <h2>Exclusive</h2>
-          <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="exclusive" value={ this.state.filmRight.exclusive }>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-          { Details.renderFieldError([], []) }
-        </div>
+      return(
+        <>
+          { Details.renderDropDown.bind(this)({
+            columnWidth: 2,
+            entity: 'filmRight',
+            property: 'exclusive',
+            boolean: true,
+          }) }
+        </>
       );
     }
   }
