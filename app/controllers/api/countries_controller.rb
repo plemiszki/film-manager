@@ -16,7 +16,7 @@ class Api::CountriesController < AdminController
       @countries = Country.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @country.errors.full_messages, status: 422
+      render_errors(@country)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::CountriesController < AdminController
     if @country.update(country_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @country.errors.full_messages, status: 422
+      render_errors(@country)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::CountriesController < AdminController
     if @country.destroy
       render json: @country, status: 200
     else
-      render json: @country.errors.full_messages, status: 422
+      render_errors(@country)
     end
   end
 

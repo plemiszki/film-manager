@@ -16,7 +16,7 @@ class Api::DvdCustomersController < AdminController
       @dvd_customers = DvdCustomer.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @dvd_customer.errors.full_messages, status: 422
+      render_errors(@dvd_customer)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::DvdCustomersController < AdminController
     if @dvd_customer.update(dvd_customer_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @dvd_customer.errors.full_messages, status: 422
+      render_errors(@dvd_customer)
     end
   end
 
@@ -35,7 +35,7 @@ class Api::DvdCustomersController < AdminController
       # TODO: delete all POs? invoices?
       render json: @dvd_customer, status: 200
     else
-      render json: @dvd_customer.errors.full_messages, status: 422
+      render_errors(@dvd_customer)
     end
   end
 

@@ -13,7 +13,7 @@ class Api::DvdsController < AdminController
     if @dvd.save
       render json: { dvd: @dvd.render_json }
     else
-      render json: @dvd.errors.full_messages, status: 422
+      render_errors(@dvd)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::DvdsController < AdminController
       @other_shorts = Film.shorts - @dvd_shorts.map(&:film)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @dvd.errors.full_messages, status: 422
+      render_errors(@dvd)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::DvdsController < AdminController
     if @dvd.destroy
       render json: @dvd, status: 200
     else
-      render json: @dvd.errors.full_messages, status: 422
+      render_errors(@dvd)
     end
   end
 

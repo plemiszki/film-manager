@@ -12,7 +12,7 @@ class Api::DigitalRetailerFilmsController < AdminController
       @digital_retailers = DigitalRetailer.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @digital_retailer_film.errors.full_messages, status: 422
+      render_errors(@digital_retailer_film)
     end
   end
 
@@ -28,7 +28,7 @@ class Api::DigitalRetailerFilmsController < AdminController
       @digital_retailers = DigitalRetailer.select(:id, :name).order(:name)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @digital_retailer_film.errors.full_messages, status: 422
+      render_errors(@digital_retailer_film)
     end
   end
 

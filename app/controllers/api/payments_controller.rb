@@ -9,7 +9,7 @@ class Api::PaymentsController < AdminController
       @calculations = booking_calculations(@payment.booking)
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @payment.errors.full_messages, status: 422
+      render_errors(@payment)
     end
   end
 

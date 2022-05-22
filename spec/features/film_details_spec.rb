@@ -204,8 +204,8 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="sellOffPeriod"]').value).to eq '6'
     expect(find('input[data-field="acceptDelivery"]').value).to eq '4/1/20'
     expect(find('textarea[data-field="royaltyNotes"]').value).to eq 'royalty notes'
-    expect(find('input[data-id="1"]').value).to eq '0.0'
-    expect(find('input[data-id="2"]').value).to eq '0.0'
+    expect(find('input[data-field="1"]').value).to eq '0.0'
+    expect(find('input[data-field="2"]').value).to eq '0.0'
   end
 
   it 'displays the licensed rights' do
@@ -989,6 +989,17 @@ describe 'film_details', type: :feature do
   end
 
   # bottom buttons
+
+  it 'validates the film when copying' do
+    visit film_path(@film, as: $admin_user)
+    copy_button = find('.orange-button', text: 'Copy Film')
+    copy_button.click
+    fill_out_and_submit_modal({}, :input)
+    expect(page).to have_no_css('.spinner')
+    expect(page).to have_content("Title can't be blank")
+    expect(page).to have_content('Year is not a number')
+    expect(page).to have_content('Length is not a number')
+  end
 
   it 'copies the film' do
     visit film_path(@film, as: $admin_user)

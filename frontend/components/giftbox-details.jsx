@@ -39,7 +39,7 @@ class GiftboxDetails extends React.Component {
         giftboxDvds,
         otherDvds
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -119,9 +119,7 @@ class GiftboxDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "giftbox",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
-      allErrors: FM.errors
     }
   }
 

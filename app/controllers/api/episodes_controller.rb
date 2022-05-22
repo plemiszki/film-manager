@@ -12,7 +12,7 @@ class Api::EpisodesController < AdminController
       @episodes = Episode.all
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @episode.errors.full_messages, status: 422
+      render_errors(@episode)
     end
   end
 
@@ -22,7 +22,7 @@ class Api::EpisodesController < AdminController
       @episodes = Episode.all
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @episode.errors.full_messages, status: 422
+      render_errors(@episode)
     end
   end
 

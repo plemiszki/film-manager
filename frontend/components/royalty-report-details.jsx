@@ -7,6 +7,13 @@ import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import { fetchEntity, updateEntity, exportUncrossedReports } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
+const NO_EXPENSES_DEAL_ID = 1;
+const EXPENSES_FROM_TOP_DEAL_ID = 2;
+const THEATRICAL_EXPENSES_FROM_TOP_DEAL_ID = 3;
+const EXPENSES_FROM_BOTTOM_DEAL_ID = 4;
+const GR_PERCENTAGE_DEAL_ID = 5;
+const GR_PERCENTAGE_THEATRICAL_DEAL_ID = 6;
+
 class ReportDetails extends React.Component {
 
   constructor(props) {
@@ -15,11 +22,9 @@ class ReportDetails extends React.Component {
       fetching: true,
       report: {},
       reportSaved: {},
-      reportErrors: [],
+      errors: {},
       streams: [],
       streamsSaved: [],
-      streamErrors: {},
-      reports: [],
       films: [],
       changesToSave: false,
       justSaved: false,
@@ -89,17 +94,17 @@ class ReportDetails extends React.Component {
           films: this.props.films
         });
       }, () => {
+        const { errors } = this.props;
         this.setState({
           fetching: false,
-          reportErrors: this.props.reportErrors,
-          streamErrors: this.props.streamErrors
+          errors,
         });
       });
     });
   }
 
   clickTitle(id) {
-    window.location.pathname = "films/" + id;
+    window.location.pathname = `films/${id}`;
   }
 
   clickToggle() {
@@ -147,295 +152,521 @@ class ReportDetails extends React.Component {
   }
 
   render() {
+    const { showJoined, report, streams } = this.state;
+    const { dealId } = report;
+    const crossedStatement = (report.id === 0);
+
+    const showExpenseColumn = [
+      EXPENSES_FROM_TOP_DEAL_ID,
+      THEATRICAL_EXPENSES_FROM_TOP_DEAL_ID,
+      GR_PERCENTAGE_DEAL_ID,
+      GR_PERCENTAGE_THEATRICAL_DEAL_ID,
+    ].includes(dealId);
+
+    const showGRColumn = [
+      GR_PERCENTAGE_DEAL_ID,
+      GR_PERCENTAGE_THEATRICAL_DEAL_ID,
+    ].includes(dealId);
+
+    console.log(this.state);
+
     return(
       <div className="component">
         { this.renderHeader() }
         <div className="white-box">
+
+          { /* Current Period */ }
           <h4>Current Period</h4>
-          { this.renderRowHeaders() }
+          { this.renderRowHeaders(showExpenseColumn, showGRColumn) }
           { this.state.streams.map((stream, index) => {
-            var properErrorsArray = this.state.streamErrors[stream.id] ? this.state.streamErrors[stream.id] : [];
+            const errorsKey = streams[index].id;
             return(
               <div key={ index } className="row">
                 <div className="col-xs-1 stream-name">
                   { stream.nickname }
                 </div>
-                <div className="col-xs-2">
-                  <input className={ Details.errorClass(properErrorsArray, FM.errors.currentRevenue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.currentRevenue } data-thing="streams" data-thingid={ index } data-field="currentRevenue" />
-                </div>
-                <div className={ "col-xs-2" + this.grClass() }>
-                  <input className={ Details.errorClass(properErrorsArray, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentGr } />
-                </div>
-                <div className={ "col-xs-2" + this.expenseClass() }>
-                  <input className={ Details.errorClass(properErrorsArray, FM.errors.currentExpense) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.currentExpense } data-thing="streams" data-thingid={ index } data-field="currentExpense" />
-                </div>
-                <div className={ "col-xs-2" + this.expenseClass() }>
-                  <input className={ Details.errorClass(properErrorsArray, []) } data-test="currentDiff" data-test-stream-id={ stream.id } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentDifference } />
-                </div>
-                <div className="col-xs-1">
-                  <input className={ Details.errorClass(properErrorsArray, FM.errors.licensorPercentage) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.licensorPercentage } data-thing="streams" data-thingid={ index } data-field="licensorPercentage" />
-                </div>
-                <div className="col-xs-2">
-                  <input className={ Details.errorClass(properErrorsArray, []) } data-test="currentNet" data-test-stream-id={ stream.id } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ stream.currentLicensorShare } />
-                </div>
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 2,
+                  entities: 'streams',
+                  entitiesIndex: index,
+                  property: 'currentRevenue',
+                  readOnly: crossedStatement,
+                  showErrorText: false,
+                  errorsKey,
+                }) }
+                { showGRColumn ? (
+                  <>
+                    { Details.renderField.bind(this)({
+                      hideHeader: true,
+                      columnWidth: 2,
+                      entities: 'streams',
+                      entitiesIndex: index,
+                      property: 'currentGr',
+                      readOnly: crossedStatement,
+                      showErrorText: false,
+                    }) }
+                  </>
+                ) : null }
+                { showExpenseColumn ? (
+                  <>
+                    { Details.renderField.bind(this)({
+                      hideHeader: true,
+                      columnWidth: 2,
+                      entities: 'streams',
+                      entitiesIndex: index,
+                      property: 'currentExpense',
+                      readOnly: crossedStatement,
+                      showErrorText: false,
+                      errorsKey,
+                    }) }
+                    { Details.renderField.bind(this)({
+                      hideHeader: true,
+                      columnWidth: 2,
+                      entities: 'streams',
+                      entitiesIndex: index,
+                      property: 'currentDifference',
+                      readOnly: true,
+                      showErrorText: false,
+                      errorsKey,
+                    }) }
+                  </>
+                ) : null }
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 1,
+                  entities: 'streams',
+                  entitiesIndex: index,
+                  property: 'licensorPercentage',
+                  readOnly: crossedStatement,
+                  showErrorText: false,
+                  errorsKey,
+                }) }
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 2,
+                  entities: 'streams',
+                  entitiesIndex: index,
+                  property: 'currentLicensorShare',
+                  readOnly: true,
+                  showErrorText: false,
+                  errorsKey,
+                }) }
               </div>
             )
           }) }
+
+          { /* Current Period Totals */ }
           <div className="row">
             <div className="col-xs-1 stream-name">
               Total
             </div>
-            <div className="col-xs-2">
-              <input data-test="current-total-revenue" className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotalRevenue || "" } />
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-              <input data-test="current-total-expenses" className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotalExpenses || "" } />
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">Total</div>
-              <input data-test="current-licensor-share" className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentTotal || "" } />
-            </div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              entity: 'report',
+              property: 'currentTotalRevenue',
+              readOnly: true,
+              showErrorText: false,
+            }) }
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <>
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 2,
+                  entity: 'report',
+                  property: 'currentTotalExpenses',
+                  readOnly: true,
+                  showErrorText: false,
+                }) }
+                <div className="col-xs-2"></div>
+              </>
+            ) : null }
+            <div className="col-xs-1"></div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              entity: 'report',
+              leftLabel: 'Total',
+              property: 'currentTotal',
+              readOnly: true,
+              showErrorText: false,
+            }) }
           </div>
-          <div className={ "row" + (this.state.report.currentReserve === "$0.00" ? " hidden" : "") }>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">Reserve Against Returns</div>
-              <input
-                className={ Details.errorClass(this.state.reportErrors, []) }
-                onChange={ FM.changeField.bind(this, this.changeFieldArgs()) }
-                readOnly={ true }
-                value={ this.state.report.currentReserve || "" }
-              />
-            </div>
+
+          { /* Current Reserve */ }
+          <div className={ "row" + (report.currentReserve === "$0.00" ? " hidden" : "") }>
+            <div className="col-xs-3"></div>
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <div className="col-xs-4"></div>
+            ) : null }
+            <div className="col-xs-1"></div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              leftLabel: 'Reserve Against Returns',
+              entity: 'report',
+              property: 'currentReserve',
+              readOnly: true,
+              showErrorText: false,
+            }) }
           </div>
-          <div className={ "row" + (this.state.report.currentLiquidatedReserve === "$0.00" ? " hidden" : "") }>
-            <div className="col-xs-1">
+
+          { /* Current Liquidated Reserve */ }
+          { report.currentLiquidatedReserve === "$0.00" ? null : (
+            <div className="row">
+              <div className="col-xs-3"></div>
+              { showGRColumn ? (
+                <div className="col-xs-2"></div>
+              ) : null }
+              { showExpenseColumn ? (
+                <div className="col-xs-4"></div>
+              ) : null }
+              <div className="col-xs-1"></div>
+              { Details.renderField.bind(this)({
+                hideHeader: true,
+                columnWidth: 2,
+                leftLabel: 'Liquidated Reserve',
+                entity: 'report',
+                property: 'currentLiquidatedReserve',
+                readOnly: true,
+                showErrorText: false,
+              }) }
             </div>
-            <div className="col-xs-2">
+          ) }
+
+          { /* Current Expenses (Deal 4 Only) */ }
+          { dealId === EXPENSES_FROM_BOTTOM_DEAL_ID ? (
+            <div className="row">
+              { Details.renderField.bind(this)({
+                hideHeader: true,
+                columnWidth: 2,
+                columnOffset: 4,
+                leftLabel: 'Current Expenses',
+                entity: 'report',
+                property: 'currentTotalExpenses',
+                readOnly: crossedStatement,
+                showErrorText: false,
+                errorsKey: 'report',
+              }) }
             </div>
-            <div className={ "col-xs-2" + this.grClass() }>
+          ) : null }
+
+          { /* Current Licensor Share (Deal 4 Only) */ }
+          { dealId === EXPENSES_FROM_BOTTOM_DEAL_ID ? (
+            <div className="row">
+              { Details.renderField.bind(this)({
+                hideHeader: true,
+                columnWidth: 2,
+                columnOffset: 4,
+                leftLabel: 'Current Licensor Share',
+                entity: 'report',
+                property: 'currentShareMinusExpenses',
+                readOnly: true,
+                showErrorText: false,
+              }) }
             </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">Liquidated Reserve</div>
-              <input
-                className={ Details.errorClass(this.state.reportErrors, []) }
-                onChange={ FM.changeField.bind(this, this.changeFieldArgs()) }
-                readOnly={ true }
-                value={ this.state.report.currentLiquidatedReserve || "" }
-              />
-            </div>
-          </div>
-          <div className={ "row" + this.dealType4Only() }>
-            <div className="col-xs-2 col-xs-offset-4">
-              <div className="label">Current Expenses</div>
-              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.currentTotalExpenses) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.currentTotalExpenses || "" } data-field="currentTotalExpenses" />
-            </div>
-          </div>
-          <div className={ "row" + this.dealType4Only() }>
-            <div className="col-xs-2 col-xs-offset-4">
-              <div className="label">Current Licensor Share</div>
-              <input onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.currentShareMinusExpenses || "" } />
-            </div>
-          </div>
+          ) : null }
+
           <hr />
+
+          { /* Cumulative Period */ }
           <h4>Cumulative</h4>
-          { this.renderRowHeaders() }
+          { this.renderRowHeaders(showExpenseColumn, showGRColumn) }
           { this.state.streams.map((stream, index) => {
-            var properErrorsArray = this.state.streamErrors[stream.id] ? this.state.streamErrors[stream.id] : [];
+            const errorsKey = streams[index].id;
             return(
               <div key={ index } className="row">
                 <div className="col-xs-1 stream-name">
                   { stream.nickname }
                 </div>
-                <div className="col-xs-2">
-                  <input className={ Details.errorClass(properErrorsArray, FM.errors.cumeRevenue) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? stream.joinedRevenue : stream.cumeRevenue } data-thing="streams" data-thingid={index} data-field="cumeRevenue" />
-                </div>
-                <div className={ "col-xs-2" + this.grClass() }>
-                  <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedGr : stream.cumeGr } />
-                </div>
-                <div className={ "col-xs-2" + this.expenseClass() }>
-                  <input className={ Details.errorClass(properErrorsArray, FM.errors.cumeExpense) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? stream.joinedExpense : stream.cumeExpense } data-thing="streams" data-thingid={index} data-field="cumeExpense" />
-                </div>
-                <div className={ "col-xs-2" + this.expenseClass() }>
-                  <input className={ Details.errorClass(this.state.reportErrors, []) } data-test="cumeDiff" data-test-stream-id={ stream.id } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedDifference : stream.cumeDifference } />
-                </div>
-                <div className="col-xs-1">
-                  <input className={ Details.errorClass(properErrorsArray, FM.errors.licensorPercentage) } onChange={ FM.changeField.bind(this, this.changeFieldArgs(properErrorsArray)) } readOnly={ this.state.report.id === 0 } value={ stream.licensorPercentage } data-thing="streams" data-thingid={ index } data-field="licensorPercentage" />
-                </div>
-                <div className="col-xs-2">
-                  <input className={ Details.errorClass(this.state.reportErrors, []) } data-test="cumeNet" data-test-stream-id={ stream.id } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? stream.joinedLicensorShare : stream.cumeLicensorShare } />
-                </div>
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 2,
+                  entities: 'streams',
+                  entitiesIndex: index,
+                  property: (showJoined ? 'joinedRevenue' : 'cumeRevenue'),
+                  readOnly: (crossedStatement || showJoined),
+                  showErrorText: false,
+                  errorsKey,
+                }) }
+                { showGRColumn ? (
+                  <>
+                    { Details.renderField.bind(this)({
+                      hideHeader: true,
+                      columnWidth: 2,
+                      entities: 'streams',
+                      entitiesIndex: index,
+                      property: (showJoined ? 'joinedGr' : 'cumeGr'),
+                      readOnly: true,
+                      showErrorText: false,
+                      errorsKey,
+                    }) }
+                  </>
+                ) : null }
+                { showExpenseColumn ? (
+                  <>
+                    { Details.renderField.bind(this)({
+                      hideHeader: true,
+                      columnWidth: 2,
+                      entities: 'streams',
+                      entitiesIndex: index,
+                      property: (showJoined ? 'joinedExpense' : 'cumeExpense'),
+                      readOnly: (crossedStatement || showJoined),
+                      showErrorText: false,
+                      errorsKey,
+                    }) }
+                    { Details.renderField.bind(this)({
+                      hideHeader: true,
+                      columnWidth: 2,
+                      entities: 'streams',
+                      entitiesIndex: index,
+                      property: (showJoined ? 'joinedDifference' : 'cumeDifference'),
+                      readOnly: true,
+                      showErrorText: false,
+                      errorsKey,
+                    }) }
+                  </>
+                ) : null }
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 1,
+                  entities: 'streams',
+                  entitiesIndex: index,
+                  property: 'licensorPercentage',
+                  readOnly: true,
+                  showErrorText: false,
+                  errorsKey,
+                }) }
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 2,
+                  entities: 'streams',
+                  entitiesIndex: index,
+                  property: (showJoined ? 'joinedLicensorShare' : 'cumeLicensorShare'),
+                  readOnly: true,
+                  showErrorText: false,
+                  errorsKey,
+                }) }
               </div>
             )
           }) }
+
+          { /* Cume Totals */ }
           <div className="row">
             <div className="col-xs-1 stream-name">
               Total
             </div>
-            <div className="col-xs-2">
-              <input data-test="cume-total-revenue" className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotalRevenue || "") : (this.state.report.cumeTotalRevenue || "") } />
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-              <input data-test="cume-total-expenses" className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "") } />
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">Total</div>
-              <input data-test="cume-licensor-share" className={ Details.errorClass(this.state.reportErrors, ["Title can't be blank"]) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedTotal || "") : (this.state.report.cumeTotal || "") } />
-            </div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              entity: 'report',
+              property: (showJoined ? 'joinedTotalRevenue' : 'cumeTotalRevenue'),
+              readOnly: true,
+              showErrorText: false,
+            }) }
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <>
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 2,
+                  entity: 'report',
+                  property: (showJoined ? 'joinedTotalExpenses' : 'cumeTotalExpenses'),
+                  readOnly: true,
+                  showErrorText: false,
+                }) }
+                <div className="col-xs-2"></div>
+              </>
+            ) : null }
+            <div className="col-xs-1"></div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              leftLabel: 'Total',
+              entity: 'report',
+              property: (showJoined ? 'joinedTotal' : 'cumeTotal'),
+              readOnly: true,
+              showErrorText: false,
+            }) }
           </div>
-          <div className={ "row" + this.dealType4Only() }>
-            <div className="col-xs-2 col-xs-offset-4">
-              <div className="label">Cumulative Expenses</div>
-              <input data-test="cume-total-expenses" className={ Details.errorClass(this.state.reportErrors, FM.errors.cumeTotalExpenses) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 || this.state.showJoined } value={ this.state.showJoined ? (this.state.report.joinedTotalExpenses || "") : (this.state.report.cumeTotalExpenses || "") } data-field="cumeTotalExpenses" />
+
+          { /* Cumulative Expenses, Expense Cap (Deal 4 only) */ }
+          { dealId === EXPENSES_FROM_BOTTOM_DEAL_ID ? (
+            <div className="row">
+              { Details.renderField.bind(this)({
+                hideHeader: true,
+                leftLabel: 'Cumulative Expenses',
+                columnWidth: 2,
+                columnOffset: 4,
+                entity: 'report',
+                property: (showJoined ? 'joinedTotalExpenses' : 'cumeTotalExpenses'),
+                readOnly: (showJoined || crossedStatement),
+                showErrorText: false,
+              }) }
+              { Details.renderField.bind(this)({
+                hideHeader: true,
+                columnWidth: 2,
+                columnOffset: 2,
+                leftLabel: 'Expense Cap',
+                entity: 'report',
+                property: 'expenseCap',
+                readOnly: true,
+                showErrorText: false,
+              }) }
             </div>
-            <div className="col-xs-2 col-xs-offset-2">
-              <div className="label">Expense Cap</div>
-                <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.expenseCap || "" } />
-              </div>
-          </div>
+          ) : null }
+
+          { /* Expense Cap, E & O */ }
           <div className="row">
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-              <div className="label">Expense Cap</div>
-              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.report.expenseCap || "" } />
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">E & O</div>
-              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.eAndO) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.eAndO || "" } data-field="eAndO" />
-            </div>
+            <div className="col-xs-3"></div>
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <>
+                { Details.renderField.bind(this)({
+                  hideHeader: true,
+                  columnWidth: 2,
+                  leftLabel: 'Expense Cap',
+                  entity: 'report',
+                  property: 'expenseCap',
+                  readOnly: true,
+                  showErrorText: false,
+                }) }
+                <div className="col-xs-2"></div>
+              </>
+            ) : null }
+            <div className="col-xs-1"></div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              leftLabel: 'E & O',
+              entity: 'report',
+              property: 'eAndO',
+              errorsKey: 'report',
+              readOnly: crossedStatement,
+              showErrorText: false,
+            }) }
           </div>
+
+          { /* MG */ }
           <div className="row">
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">MG</div>
-              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.mg) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.mg || "" } data-field="mg" />
-            </div>
+            <div className="col-xs-3"></div>
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <div className="col-xs-4"></div>
+            ) : null }
+            <div className="col-xs-1"></div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              leftLabel: 'MG',
+              entity: 'report',
+              property: 'mg',
+              errorsKey: 'report',
+              readOnly: crossedStatement,
+              showErrorText: false,
+            }) }
           </div>
+
+          { /* Reserve Against Returns */ }
           <div className={ "row" + (this.state.report.joinedReserve === "$0.00" ? " hidden" : "") }>
+            <div className="col-xs-3"></div>
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <div className="col-xs-4"></div>
+            ) : null }
             <div className="col-xs-1">
             </div>
-            <div className="col-xs-2">
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">Reserve Against Returns</div>
-              <input className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedReserve || "") : (this.state.report.cumeReserve || "") } />
-            </div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              leftLabel: 'Reserve Against Returns',
+              entity: 'report',
+              property: (showJoined ? 'joinedReserve' : 'cumeReserve'),
+              readOnly: true,
+              showErrorText: false,
+            }) }
           </div>
+
+          { /* Liquidated Reserve */ }
           <div className={ "row" + (this.state.report.joinedLiquidatedReserve === "$0.00" ? " hidden" : "") }>
+            <div className="col-xs-3"></div>
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <div className="col-xs-4"></div>
+            ) : null }
             <div className="col-xs-1">
             </div>
-            <div className="col-xs-2">
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">Liquidated Reserve</div>
-              <input
-                className={ Details.errorClass(this.state.reportErrors, []) }
-                onChange={ FM.changeField.bind(this, this.changeFieldArgs()) }
-                readOnly={ true }
-                value={ this.state.showJoined ? (this.state.report.joinedLiquidatedReserve || "") : (this.state.report.cumeLiquidatedReserve || "") }
-              />
-            </div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              leftLabel: 'Liquidated Reserve',
+              entity: 'report',
+              property: (showJoined ? 'joinedLiquidatedReserve' : 'cumeLiquidatedReserve'),
+              readOnly: true,
+              showErrorText: false,
+            }) }
           </div>
+
+          { /* Amount Paid */ }
           <div className="row">
+            <div className="col-xs-3"></div>
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <div className="col-xs-4"></div>
+            ) : null }
             <div className="col-xs-1">
             </div>
-            <div className="col-xs-2">
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">Amount Paid</div>
-              <input className={ Details.errorClass(this.state.reportErrors, FM.errors.amountPaid) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ this.state.report.id === 0 } value={ this.state.report.amountPaid || "" } data-field="amountPaid" />
-            </div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              leftLabel: 'Amount Paid',
+              entity: 'report',
+              property: 'amountPaid',
+              readOnly: crossedStatement,
+              showErrorText: false,
+              errorsKey: 'report',
+            }) }
           </div>
+
+          { /* Amount Due */ }
           <div className="row last-row">
+            <div className="col-xs-3"></div>
+            { showGRColumn ? (
+              <div className="col-xs-2"></div>
+            ) : null }
+            { showExpenseColumn ? (
+              <div className="col-xs-4"></div>
+            ) : null }
             <div className="col-xs-1">
             </div>
-            <div className="col-xs-2">
-            </div>
-            <div className={ "col-xs-2" + this.grClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className={ "col-xs-2" + this.expenseClass() }>
-            </div>
-            <div className="col-xs-1">
-            </div>
-            <div className="col-xs-2">
-              <div className="label">Amount Due</div>
-              <input data-test="amount-due" className={ Details.errorClass(this.state.reportErrors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } readOnly={ true } value={ this.state.showJoined ? (this.state.report.joinedAmountDue || "") : (this.state.report.amountDue || "") } />
-            </div>
+            { Details.renderField.bind(this)({
+              hideHeader: true,
+              columnWidth: 2,
+              leftLabel: 'Amount Due',
+              entity: 'report',
+              property: (showJoined ? 'joinedAmountDue' : 'amountDue'),
+              readOnly: true,
+              showErrorText: false,
+            }) }
           </div>
           { this.renderButtons() }
           { Common.renderSpinner(this.state.fetching) }
@@ -477,23 +708,28 @@ class ReportDetails extends React.Component {
     }
   }
 
-  renderRowHeaders() {
+  renderRowHeaders(showExpenseColumn, showGRColumn) {
     return(
       <div className="row headers">
-        <div className="col-xs-1">
-        </div>
+        <div className="col-xs-1"></div>
         <div className="col-xs-2">
           Revenue
         </div>
-        <div className={ "col-xs-2" + this.grClass() }>
-          { this.state.report.grPercentage }% Fee
-        </div>
-        <div className={ "col-xs-2" + this.expenseClass() }>
-          Expenses
-        </div>
-        <div className={ "col-xs-2" + this.expenseClass() }>
-          Difference
-        </div>
+        { showGRColumn ? (
+          <div className="col-xs-2">
+            { this.state.report.grPercentage }% Fee
+          </div>
+        ) : null }
+        { showExpenseColumn ? (
+          <>
+            <div className="col-xs-2">
+              Expenses
+            </div>
+            <div className="col-xs-2">
+              Difference
+            </div>
+          </>
+        ) : null }
         <div className="col-xs-1">
           %
         </div>
@@ -523,30 +759,6 @@ class ReportDetails extends React.Component {
         </a>
       </div>
     )
-  }
-
-  grClass() {
-    if (this.state.report.dealId >= 5) {
-      return "";
-    } else {
-      return " hidden"
-    }
-  }
-
-  expenseClass() {
-    if (this.state.report.dealId !== 1 && this.state.report.dealId !== 4) {
-      return "";
-    } else {
-      return " hidden"
-    }
-  }
-
-  dealType4Only() {
-    if (this.state.report.dealId == 4) {
-      return "";
-    } else {
-      return " hidden"
-    }
   }
 
   componentDidUpdate() {

@@ -11,7 +11,7 @@ class Api::PurchaseOrderItemsController < AdminController
       get_data_for_items
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @purchase_order_item.errors.full_messages, status: 422
+      render_errors(@purchase_order_item)
     end
   end
 

@@ -2,6 +2,8 @@ class Api::RoyaltyReportsController < AdminController
 
   include ActionView::Helpers::NumberHelper
 
+  class UpdateError < RuntimeError; end
+
   before_action :redirect_unless_super_admin
 
   def index
@@ -29,30 +31,31 @@ class Api::RoyaltyReportsController < AdminController
       reportErrors: [],
       streamErrors: {}
     }
-    begin
-      ActiveRecord::Base.transaction do
-        @report = RoyaltyReport.find(params[:id])
-        unless @report.update(report_params)
-          @error_present = true
-          errors[:reportErrors] = @report.errors.full_messages
-        end
-        RoyaltyRevenueStream.where(royalty_report_id: params[:id]).each do |royalty_revenue_stream|
-          unless royalty_revenue_stream.update(revenue_stream_params(royalty_revenue_stream.id))
-            @error_present = true
-            errors[:streamErrors][royalty_revenue_stream.id] = royalty_revenue_stream.errors.full_messages
-          end
-        end
-        fail if @error_present
-        @report.calculate!
-        recalculate_any_future_reports
-        @streams = @report.royalty_revenue_streams
-        @film = Film.find(@report.film_id)
-        @films = [@film]
-        render 'show', formats: [:json], handlers: [:jbuilder]
+    ActiveRecord::Base.transaction do
+      @report = RoyaltyReport.find(params[:id])
+      @streams = @report.royalty_revenue_streams
+      @report.update(report_params)
+      @streams.each do |royalty_revenue_stream|
+        next unless params[:streams] && params[:streams][royalty_revenue_stream.id.to_s].present?
+        royalty_revenue_stream.update(revenue_stream_params(royalty_revenue_stream.id))
       end
-    rescue
-      render json: errors, status: 422
+      fail UpdateError if @report.errors.present? || @streams.map(&:errors).any? { |errors| errors.present? }
+      @report.calculate!
+      recalculate_any_future_reports
+      @film = Film.find(@report.film_id)
+      @films = [@film]
+      render 'show', formats: [:json], handlers: [:jbuilder]
     end
+  rescue UpdateError
+    report_errors = @report.errors.as_json(full_messages: true)
+    stream_errors = @streams.map(&:errors).select { |errors| errors.present? }
+    stream_errors_hashes = stream_errors.map { |errors| { errors.instance_variable_get(:@base).id => errors.as_json(full_messages: true) } }
+    stream_errors_hash = stream_errors_hashes.reduce({}, &:merge)
+    render json: {
+      errors: { report: report_errors }
+        .merge(stream_errors_hash)
+        .deep_transform_keys { |k| k.to_s.camelize(:lower) }
+    }, status: 422
   end
 
   def import

@@ -1,7 +1,7 @@
 class FilmRight < ActiveRecord::Base
 
   validates :film_id, :right_id, :territory_id, presence: true
-  validates :film_id, uniqueness: { scope: [:right_id, :territory_id] }
+  validates :right_id, uniqueness: { scope: [:film_id, :territory_id] }
   validates_date :start_date, :end_date, allow_blank: true
   validate :end_date_after_start_date
 

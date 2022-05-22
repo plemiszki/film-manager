@@ -16,7 +16,7 @@ class DvdCustomerDetails extends React.Component {
       dvdCustomer: {},
       dvdCustomerSaved: {},
       films: [],
-      errors: [],
+      errors: {},
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false
@@ -73,21 +73,18 @@ class DvdCustomerDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "dvdCustomer",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: this.beforeSave.bind(this),
-      allErrors: FM.errors
     }
   }
 
   beforeSave(newThing, key, value) {
+    const { errors } = this.state;
     if (key === "consignment" && value === false) {
       newThing.invoicesEmail = "";
       newThing.sageId = "";
       newThing.paymentTerms = "";
-      FM.removeFieldError(this.state.errors, "invoicesEmail");
-      FM.removeFieldError(this.state.errors, "sageId");
-      FM.removeFieldError(this.state.errors, "paymentTerms");
+      Details.removeFieldErrors(errors, ['invoicesEmail', 'sageId', 'paymentTerms'])
     }
   }
 
@@ -127,11 +124,7 @@ class DvdCustomerDetails extends React.Component {
             <div className="row">
               { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'includeInTitleReport', columnHeader: 'Include in New Titles Report' }) }
               { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'nickname' }) }
-              <div className="col-xs-6">
-                <h2>Notes</h2>
-                <textarea rows="5" className={ Details.errorClass(this.state.errors, []) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.dvdCustomer.notes || "" } data-field="notes" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderTextBox.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'notes', rows: 5 }) }
             </div>
             { this.renderButtons() }
             { Common.renderSpinner(this.state.fetching) }

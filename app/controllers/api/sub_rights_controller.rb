@@ -44,7 +44,7 @@ class Api::SubRightsController < AdminController
       end
     end
     if error
-      render json: @sub_right.errors.full_messages, status: 422
+      render_errors(@sub_right)
     else
       render json: @sub_right
     end
@@ -59,7 +59,7 @@ class Api::SubRightsController < AdminController
       @films = Film.all
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @sub_right.errors.full_messages, status: 422
+      render_errors(@sub_right)
     end
   end
 
@@ -68,7 +68,7 @@ class Api::SubRightsController < AdminController
     if @sub_right.destroy
       render json: @sub_right, status: 200
     else
-      render json: @sub_right.errors.full_messages, status: 422
+      render_errors(@sub_right)
     end
   end
 

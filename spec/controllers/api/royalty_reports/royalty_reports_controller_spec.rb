@@ -74,7 +74,7 @@ RSpec.describe Api::RoyaltyReportsController do
       report = create(:no_expenses_recouped_royalty_report)
       report.create_empty_streams!
       post :update, params: { id: report.id, report: { mg: 'barf' } }
-      expect(JSON.parse(response.body)['reportErrors']).to include('Mg is not a number')
+      expect(JSON.parse(response.body)['errors']['report']['mg']).to include('Mg is not a number')
       expect(response.status).to eq(422)
     end
 
@@ -112,7 +112,7 @@ RSpec.describe Api::RoyaltyReportsController do
         streams[stream.id.to_s] = { current_revenue: 'poop' }
       end
       post :update, params: { id: report.id, report: {}, streams: streams }, as: :json
-      expect(JSON.parse(response.body)["streamErrors"][report.royalty_revenue_streams.first.id.to_s]).to include("Current revenue is not a number")
+      expect(JSON.parse(response.body)['errors'][report.royalty_revenue_streams.first.id.to_s]['currentRevenue']).to include("Current revenue is not a number")
       expect(response.status).to eq(422)
     end
 

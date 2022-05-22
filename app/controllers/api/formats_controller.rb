@@ -16,7 +16,7 @@ class Api::FormatsController < AdminController
       @formats = Format.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @format.errors.full_messages, status: 422
+      render_errors(@format)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::FormatsController < AdminController
     if @format.update(format_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @format.errors.full_messages, status: 422
+      render_errors(@format)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::FormatsController < AdminController
     if @format.destroy
       render json: @format, status: 200
     else
-      render json: @format.errors.full_messages, status: 422
+      render_errors(@format)
     end
   end
 

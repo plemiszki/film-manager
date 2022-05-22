@@ -10,7 +10,7 @@ class Api::RelatedFilmsController < AdminController
       @other_films = Film.where.not(id: ([@related_film.film_id] + @related_films.pluck(:other_film_id)))
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @related_film.errors.full_messages, status: 422
+      render_errors(@related_film)
     end
   end
 

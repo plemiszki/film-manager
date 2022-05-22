@@ -16,7 +16,7 @@ class Api::DigitalRetailersController < AdminController
       @digital_retailers = DigitalRetailer.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @digital_retailer.errors.full_messages, status: 422
+      render_errors(@digital_retailer)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::DigitalRetailersController < AdminController
     if @digital_retailer.update(digital_retailer_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @digital_retailer.errors.full_messages, status: 422
+      render_errors(@digital_retailer)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::DigitalRetailersController < AdminController
     if @digital_retailer.destroy
       render json: @digital_retailer, status: 200
     else
-      render json: @digital_retailer.errors.full_messages, status: 422
+      render_errors(@digital_retailer)
     end
   end
 

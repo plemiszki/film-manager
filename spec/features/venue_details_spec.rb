@@ -45,6 +45,7 @@ describe 'venue_details', type: :feature do
     visit venue_path(@venue, as: $admin_user)
     fill_out_form({
       label: 'New Label',
+      venue_type: { value: 'Festival', type: :select },
       sage_id: 'New Sage ID',
       website: 'newwebsite.com',
       contact_name: 'Joe Schmo',
@@ -69,6 +70,7 @@ describe 'venue_details', type: :feature do
     save_and_wait
     expect(@venue.reload.attributes).to include(
       'label' => 'New Label',
+      'venue_type' => 'Festival',
       'sage_id' => 'New Sage ID',
       'website' => 'newwebsite.com',
       'contact_name' => 'Joe Schmo',

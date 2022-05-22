@@ -16,7 +16,7 @@ class Api::EduPlatformsController < AdminController
       @edu_platforms = EduPlatform.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @edu_platform.errors.full_messages, status: 422
+      render_errors(@edu_platform)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::EduPlatformsController < AdminController
     if @edu_platform.update(edu_platform_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @edu_platform.errors.full_messages, status: 422
+      render_errors(@edu_platform)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::EduPlatformsController < AdminController
     if @edu_platform.destroy
       render json: @edu_platform, status: 200
     else
-      render json: @edu_platform.errors.full_messages, status: 422
+      render_errors(@edu_platform)
     end
   end
 

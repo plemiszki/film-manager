@@ -80,7 +80,7 @@ class Api::BookingsController < AdminController
       @booking.save!
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @booking.errors.full_messages, status: 422
+      render_errors(@booking)
     end
   end
 
@@ -145,7 +145,7 @@ class Api::BookingsController < AdminController
       @calculations = booking_calculations(@booking)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @booking.errors.full_messages, status: 422
+      render_errors(@booking)
     end
   end
 
@@ -154,7 +154,7 @@ class Api::BookingsController < AdminController
     if @booking.destroy
       render json: @booking, status: 200
     else
-      render json: @booking.errors.full_messages, status: 422
+      render_errors(@booking)
     end
   end
 

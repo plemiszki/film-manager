@@ -16,7 +16,7 @@ class Api::TopicsController < AdminController
       @topics = Topic.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @topic.errors.full_messages, status: 422
+      render_errors(@topic)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::TopicsController < AdminController
     if @topic.update(topic_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @topic.errors.full_messages, status: 422
+      render_errors(@topic)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::TopicsController < AdminController
     if @topic.destroy
       render json: @topic, status: 200
     else
-      render json: @topic.errors.full_messages, status: 422
+      render_errors(@topic)
     end
   end
 

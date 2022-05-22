@@ -9,7 +9,7 @@ class Api::ActorsController < AdminController
       @actors = Actor.where(actorable_id: @actor.actorable_id, actorable_type: @actor.actorable_type)
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @actor.errors.full_messages, status: 422
+      render_errors(@actor)
     end
   end
 

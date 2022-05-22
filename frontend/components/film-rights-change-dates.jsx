@@ -44,10 +44,7 @@ class FilmRightsChangeDates extends React.Component {
   }
 
   changeFieldArgs() {
-    return {
-      allErrors: FM.errors,
-      errorsArray: this.state.errors
-    }
+    return {}
   }
 
   render() {

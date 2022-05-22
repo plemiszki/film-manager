@@ -9,7 +9,7 @@ class Api::LaurelsController < AdminController
       @laurels = Laurel.where(film_id: @laurel.film_id).order(:order)
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @laurel.errors.full_messages, status: 422
+      render_errors(@laurel)
     end
   end
 

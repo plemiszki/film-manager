@@ -16,7 +16,7 @@ class Api::LicensorsController < AdminController
     if @licensor.save
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @licensor.errors.full_messages, status: 422
+      render_errors(@licensor)
     end
   end
 
@@ -26,7 +26,7 @@ class Api::LicensorsController < AdminController
     if @licensor.update(licensor_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @licensor.errors.full_messages, status: 422
+      render_errors(@licensor)
     end
   end
 
@@ -36,7 +36,7 @@ class Api::LicensorsController < AdminController
       Film.where(licensor_id: params[:id]).update_all(licensor_id: nil)
       render json: @licensor, status: 200
     else
-      render json: @licensor.errors.full_messages, status: 422
+      render_errors(@licensor)
     end
   end
 

@@ -60,7 +60,7 @@ class BookingDetails extends React.Component {
       weeklyTerms: [],
       weeklyBoxOffices: [],
       payments: [],
-      errors: [],
+      errors: {},
       formats: [],
       invoices: [],
       changesToSave: false,
@@ -91,7 +91,6 @@ class BookingDetails extends React.Component {
   }
 
   componentDidMount() {
-    FM.setUpNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
     this.props.fetchEntity({
       directory: 'bookings',
       id: window.location.pathname.split('/')[2]
@@ -111,7 +110,7 @@ class BookingDetails extends React.Component {
         films,
         venues
       }, () => {
-        FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -334,8 +333,7 @@ class BookingDetails extends React.Component {
   }
 
   closeModal() {
-    var errors = this.state.errors;
-    HandyTools.removeFromArray(errors, "Terms can't be blank");
+    const { errors } = this.state;
     this.setState({
       errors: errors,
       deleteModalOpen: false,
@@ -363,14 +361,12 @@ class BookingDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "booking",
-      errorsArray: this.state.errors,
-      allErrors: FM.errors,
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: function(newThing, key, value) {
         if (key == "terms") {
           if (value !== "90/10") {
             newThing.houseExpense = "$0.00";
-            FM.removeFieldError(this.state.errors, "houseExpense")
+            Details.removeFieldError(this.state.errors, "houseExpense");
           }
         }
       }
@@ -463,8 +459,8 @@ class BookingDetails extends React.Component {
           <h1>Booking Details</h1>
           <div className="white-box">
             <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title', linkText: 'Jump to Film', linkUrl: `/films/${this.state.booking.filmId}` }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label', linkText: 'Jump to Venue', linkUrl: `/venues/${this.state.booking.venueId}` }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', type: 'modal', optionDisplayProperty: 'title', linkText: 'Jump to Film', linkUrl: `/films/${this.state.booking.filmId}` }) }
+              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', type: 'modal', optionDisplayProperty: 'label', linkText: 'Jump to Venue', linkUrl: `/venues/${this.state.booking.venueId}` }) }
             </div>
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'startDate' }) }
@@ -549,10 +545,7 @@ class BookingDetails extends React.Component {
             <hr />
             <h3>Notes</h3>
             <div className="row">
-              <div className="col-xs-12">
-                <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.notes || "" } data-field="notes" />
-                { Details.renderFieldError(this.state.errors, []) }
-              </div>
+              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'booking', property: 'notes', rows: 5 }) }
             </div>
             <hr />
             { this.renderConfirmationSection() }
@@ -758,6 +751,7 @@ class BookingDetails extends React.Component {
   }
 
   renderTermsColumn() {
+    const { termsValid } = this.state.bookingSaved;
     if (this.state.booking.termsChange) {
       return(
         <div className="col-xs-6">
@@ -774,11 +768,9 @@ class BookingDetails extends React.Component {
       );
     } else {
       return(
-        <div className="col-xs-3">
-          <h2 style={ this.state.bookingSaved.termsValid ? {} : { color: "red" } }>Terms</h2>
-          <input className={ Details.errorClass(this.state.errors, FM.errors.terms) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.booking.terms || "" } data-field="terms" />
-          { Details.renderFieldError(this.state.errors, FM.errors.terms) }
-        </div>
+        <>
+          { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'terms', redHeader: !termsValid, warnIf: !termsValid, warning: 'Terms are not valid' }) }
+        </>
       );
     }
   }

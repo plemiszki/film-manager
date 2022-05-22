@@ -13,7 +13,7 @@ class Api::VenuesController < AdminController
     if @venue.save
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @venue.errors.full_messages, status: 422
+      render_errors(@venue)
     end
   end
 
@@ -38,7 +38,7 @@ class Api::VenuesController < AdminController
       end
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @venue.errors.full_messages, status: 422
+      render_errors(@venue)
     end
   end
 

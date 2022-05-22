@@ -20,7 +20,7 @@ class Api::TerritoriesController < AdminController
       @territories = Territory.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @territory.errors.full_messages, status: 422
+      render_errors(@territory)
     end
   end
 
@@ -29,7 +29,7 @@ class Api::TerritoriesController < AdminController
     if @territory.update(territory_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @territory.errors.full_messages, status: 422
+      render_errors(@territory)
     end
   end
 
@@ -38,7 +38,7 @@ class Api::TerritoriesController < AdminController
     if @territory.destroy
       render json: @territory, status: 200
     else
-      render json: @territory.errors.full_messages, status: 422
+      render_errors(@territory)
     end
   end
 

@@ -22,7 +22,7 @@ class Api::AliasesController < AdminController
       @aliases = Alias.all.includes(:film)
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @alias.errors.full_messages, status: 422
+      render_errors(@alias)
     end
   end
 
@@ -32,7 +32,7 @@ class Api::AliasesController < AdminController
       @films = Film.all
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @alias.errors.full_messages, status: 422
+      render_errors(@alias)
     end
   end
 

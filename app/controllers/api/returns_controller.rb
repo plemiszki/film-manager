@@ -25,7 +25,7 @@ class Api::ReturnsController < AdminController
     if @return.save
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @return.errors.full_messages, status: 422
+      render_errors(@return)
     end
   end
 
@@ -36,7 +36,7 @@ class Api::ReturnsController < AdminController
       @dvd_customers = DvdCustomer.all.order(:name)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @return.errors.full_messages, status: 422
+      render_errors(@return)
     end
   end
 
@@ -45,7 +45,7 @@ class Api::ReturnsController < AdminController
     if @return.destroy
       render json: @return, status: 200
     else
-      render json: @return.errors.full_messages, status: 422
+      render_errors(@return)
     end
   end
 

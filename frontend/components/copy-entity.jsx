@@ -15,7 +15,7 @@ class CopyEntity extends React.Component {
     this.state = {
       fetching: false,
       [this.props.entityName]: this.props.initialEntity,
-      errors: [],
+      errors: {},
       films: this.props.films
     };
   }
@@ -23,8 +23,6 @@ class CopyEntity extends React.Component {
   changeFieldArgs() {
     return {
       thing: this.props.entityName,
-      allErrors: FM.errors,
-      errorsArray: this.state.errors
     }
   }
 

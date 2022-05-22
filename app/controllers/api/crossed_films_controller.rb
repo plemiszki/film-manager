@@ -13,7 +13,7 @@ class Api::CrossedFilmsController < AdminController
       ).reject { |film| ([master_film.id] + @crossed_films.pluck(:crossed_film_id)).include?(film.id) || film.film_type == 'Short' }
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @crossed_film.errors.full_messages, status: 422
+      render_errors(@crossed_film)
     end
   end
 

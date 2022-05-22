@@ -2,6 +2,8 @@ class Api::FilmsController < AdminController
 
   include BookingCalculations
 
+  class UpdateError < RuntimeError; end
+
   def index
     if params[:film_type] == 'all'
       @films = Film.all.includes(:alternate_lengths, alternate_subs: [:language], alternate_audios: [:language])
@@ -26,7 +28,7 @@ class Api::FilmsController < AdminController
     if @film.save
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @film.errors.full_messages, status: 422
+      render_errors(@film)
     end
   end
 
@@ -36,35 +38,36 @@ class Api::FilmsController < AdminController
       film: [],
       percentages: {}
     }
-    begin
-      ActiveRecord::Base.transaction do
-        @film = Film.find(params[:id])
-        @film.assign_attributes(film_params)
-        if @film.reserve_percentage_changed? || @film.reserve_quarters_changed?
-          recalculate_statements = true
-        end
-        unless @film.update(film_params)
-          error_present = true
-          errors[:film] = @film.errors.full_messages
-        end
-        FilmRevenuePercentage.where(film_id: params[:id]).each do |revenue_percentage|
-          unless revenue_percentage.update(value: params[:percentages][revenue_percentage.id.to_s])
-            error_present = true
-            errors[:percentages][revenue_percentage.id] = revenue_percentage.errors.full_messages
-          end
-        end
-        fail if error_present
-        if recalculate_statements
-          @film.royalty_reports.order(:year, :quarter).each do |report|
-            report.calculate!
-          end
-        end
-        gather_data_for_show_view
-        render 'show', formats: [:json], handlers: [:jbuilder]
+    ActiveRecord::Base.transaction do
+      @film = Film.find(params[:id])
+      @film_revenue_percentages = @film.film_revenue_percentages
+      @film.assign_attributes(film_params)
+      if @film.reserve_percentage_changed? || @film.reserve_quarters_changed?
+        recalculate_statements = true
       end
-    rescue
-      render json: errors, status: 422
+      @film.update(film_params)
+      @film_revenue_percentages.each do |revenue_percentage|
+        revenue_percentage.update(value: params[:percentages][revenue_percentage.id.to_s])
+      end
+      fail UpdateError if @film.errors.present? || @film_revenue_percentages.map(&:errors).any? { |errors| errors.present? }
+      if recalculate_statements
+        @film.royalty_reports.order(:year, :quarter).each do |report|
+          report.calculate!
+        end
+      end
+      gather_data_for_show_view
+      render 'show', formats: [:json], handlers: [:jbuilder]
     end
+  rescue UpdateError
+    film_errors = @film.errors.as_json(full_messages: true)
+    percentage_errors = @film_revenue_percentages.map(&:errors).select { |errors| errors.present? }
+    percentage_errors_hashes = percentage_errors.map { |errors| { errors.instance_variable_get(:@base).id => errors.as_json(full_messages: true) } }
+    percentage_errors_hash = percentage_errors_hashes.reduce({}, &:merge)
+    render json: {
+      errors: { film: film_errors }
+        .merge(percentage_errors_hash)
+        .deep_transform_keys { |k| k.to_s.camelize(:lower) }
+    }, status: 422
   end
 
   def destroy
@@ -73,7 +76,7 @@ class Api::FilmsController < AdminController
       RelatedFilm.where(other_film_id: @film.id).destroy_all
       render json: @film, status: 200
     else
-      render json: @film.errors.full_messages, status: 422
+      render_errors(@film)
     end
   end
 
@@ -115,7 +118,7 @@ class Api::FilmsController < AdminController
       end
       render json: { film: { id: film.id } }
     else
-      render json: film.errors.full_messages, status: 422
+      render_errors(film)
     end
   end
 

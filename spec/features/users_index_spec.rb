@@ -37,7 +37,7 @@ describe 'users_index', type: :feature do
     find('.btn', text: 'Add User').click
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content "Name can't be blank"
-    expect(page).to have_content "Email can't be blank"
+    expect(page).to have_content "Email is invalid"
     expect(page).to have_content "Password can't be blank"
   end
 

@@ -1,5 +1,7 @@
 class Api::UsersController < Clearance::UsersController
 
+  include RenderErrors
+
   def api_index
     @users = User.where.not(name: "Producer")
     render 'index', formats: [:json], handlers: [:jbuilder]
@@ -16,7 +18,7 @@ class Api::UsersController < Clearance::UsersController
       @users = User.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @user.errors.full_messages, status: 422
+      render_errors(@user)
     end
   end
 
@@ -25,7 +27,7 @@ class Api::UsersController < Clearance::UsersController
     if @user.update(user_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @user.errors.full_messages, status: 422
+      render_errors(@user)
     end
   end
 

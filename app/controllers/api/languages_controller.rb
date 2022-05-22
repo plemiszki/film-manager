@@ -16,7 +16,7 @@ class Api::LanguagesController < AdminController
       @languages = Language.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @language.errors.full_messages, status: 422
+      render_errors(@language)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::LanguagesController < AdminController
     if @language.update(language_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @language.errors.full_messages, status: 422
+      render_errors(@language)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::LanguagesController < AdminController
     if @language.destroy
       render json: @language, status: 200
     else
-      render json: @language.errors.full_messages, status: 422
+      render_errors(@language)
     end
   end
 

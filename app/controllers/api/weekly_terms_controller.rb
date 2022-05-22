@@ -11,7 +11,7 @@ class Api::WeeklyTermsController < AdminController
       @calculations = booking_calculations(Booking.find(@weekly_term.booking_id))
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @weekly_term.errors.full_messages, status: 422
+      render_errors(@weekly_term)
     end
   end
 

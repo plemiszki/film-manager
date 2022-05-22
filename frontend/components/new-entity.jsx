@@ -22,7 +22,7 @@ class NewEntity extends React.Component {
     let state_obj = {
       fetching: !!fetchData,
       [entityName]: HandyTools.deepCopy(initialEntity),
-      errors: []
+      errors: {},
     }
 
     if (passData) {
@@ -41,7 +41,7 @@ class NewEntity extends React.Component {
   }
 
   componentDidMount() {
-    HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+    HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
     if (this.props.fetchData) {
       this.props.fetchDataForNew({ directory }).then(() => {
         let entity = HandyTools.deepCopy(this.state[this.props.entityName]);
@@ -51,11 +51,11 @@ class NewEntity extends React.Component {
         })
         obj[this.props.entityName] = entity;
         this.setState(obj, () => {
-          HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+          HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
         });
       });
     } else {
-      HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+      HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
     }
   }
 
@@ -92,10 +92,7 @@ class NewEntity extends React.Component {
   }
 
   changeFieldArgs() {
-    return {
-      allErrors: Errors,
-      errorsArray: this.state.errors
-    }
+    return {}
   }
 
   render() {
@@ -146,8 +143,8 @@ class NewEntity extends React.Component {
         const statuses = [{ value: 'Confirmed' }, { value: 'Tentative' }];
         return([
           <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }) }
-            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', errorsProperty: 'venue', type: 'modal', optionDisplayProperty: 'label' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'filmId', columnHeader: 'Film', type: 'modal', optionDisplayProperty: 'title' }) }
+            { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'venueId', columnHeader: 'Venue', type: 'modal', optionDisplayProperty: 'label' }) }
           </div>,
           <div key="2" className="row">
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'startDate' }) }

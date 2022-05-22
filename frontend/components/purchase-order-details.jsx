@@ -42,7 +42,7 @@ class PurchaseOrderDetails extends React.Component {
     this.state = {
       fetching: true,
       purchaseOrder: {
-        customerId: 0,
+        customerId: '0',
         sendInvoice: true
       },
       purchaseOrderSaved: {
@@ -79,7 +79,7 @@ class PurchaseOrderDetails extends React.Component {
         items,
         otherItems
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -237,8 +237,6 @@ class PurchaseOrderDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "purchaseOrder",
-      allErrors: Errors,
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: this.beforeSave
     }
@@ -284,7 +282,7 @@ class PurchaseOrderDetails extends React.Component {
   }
 
   render() {
-    const { purchaseOrder, purchaseOrderSaved, errors } = this.state;
+    const { purchaseOrder, purchaseOrderSaved, dvdCustomers, errors } = this.state;
     const customer = this.getCustomerFromId(purchaseOrder.customerId);
     return(
       <div id="purchase-order-details">
@@ -292,12 +290,14 @@ class PurchaseOrderDetails extends React.Component {
           <h1>Purchase Order Details</h1>
           <div className="white-box">
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Number</h2>
-                <input className={ Details.errorClass(errors, FM.errors.number) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.number || "" } data-field="number" readOnly={ this.state.purchaseOrder.shipDate ? "readOnly" : "" } />
-                { Details.renderFieldError(errors, FM.errors.number) }
-                <p className={ (purchaseOrder.duplicate && !purchaseOrder.shipDate) ? "" : "hidden"}>A PO with this number already exists</p>
-              </div>
+              { Details.renderField.bind(this)({
+                columnWidth: 6,
+                entity: 'purchaseOrder',
+                property: 'number',
+                warnIf: !purchaseOrder.shipDate && purchaseOrder.duplicate,
+                warning: 'A PO with this number already exists',
+                readOnly: !!purchaseOrder.shipDate,
+              }) }
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'orderDate', readOnly: !!purchaseOrder.shipDate }) }
             </div>
             <hr />
@@ -312,18 +312,17 @@ class PurchaseOrderDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 1, entity: 'purchaseOrder', property: 'state', readOnly: !!purchaseOrder.shipDate }) }
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'purchaseOrder', property: 'zip', readOnly: !!purchaseOrder.shipDate }) }
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'purchaseOrder', property: 'country', readOnly: !!purchaseOrder.shipDate }) }
-              <div className="col-xs-4">
-                <h2>Customer</h2>
-                <select onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="customerId" value={ purchaseOrder.customerId } disabled={ purchaseOrder.shipDate }>
-                  <option key={ 0 } value={ '0' }>(None)</option>
-                  { this.state.dvdCustomers.map((dvdCustomer, index) => {
-                    return(
-                      <option key={ index + 1 } value={ dvdCustomer.id }>{ dvdCustomer.name }</option>
-                    );
-                  }) }
-                </select>
-                { Details.renderFieldError(errors, []) }
-              </div>
+              { Details.renderDropDown.bind(this)({
+                columnWidth: 4,
+                entity: 'purchaseOrder',
+                property: 'customerId',
+                columnHeader: 'Customer',
+                options: dvdCustomers || [],
+                optionDisplayProperty: 'name',
+                optional: true,
+                noneValue: '0',
+                readOnly: !!purchaseOrder.shipDate,
+              }) }
             </div>
             { this.renderSaveShippingAddressButton() }
             <hr />
@@ -375,10 +374,7 @@ class PurchaseOrderDetails extends React.Component {
             { this.renderAddItemButton() }
             <hr />
             <div className="row">
-              <div className="col-xs-12">
-                <h2>Notes</h2>
-                <textarea rows="5" cols="20" onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.purchaseOrder.notes } data-field="notes" />
-              </div>
+              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5 }) }
             </div>
             <hr />
             <div className="row">
@@ -436,7 +432,7 @@ class PurchaseOrderDetails extends React.Component {
               zip: purchaseOrder.zip,
               country: purchaseOrder.country,
               customerId: purchaseOrder.customerId,
-              customerInfo: purchaseOrder.customerId ? `Customer: ${customer.name}` : "No DVD Customer"
+              customerInfo: purchaseOrder.customerId !== '0' ? `Customer: ${customer.name}` : "No DVD Customer"
             } }
             callback={ this.addShippingAddressCallback.bind(this) }
           />
@@ -549,10 +545,6 @@ class PurchaseOrderDetails extends React.Component {
         </a>
       );
     }
-  }
-
-  componentDidUpdate() {
-    FM.resetNiceSelect('select', FM.changeField.bind(this, this.changeFieldArgs()));
   }
 }
 

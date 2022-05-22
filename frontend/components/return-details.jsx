@@ -61,7 +61,7 @@ class ReturnDetails extends React.Component {
         otherItems,
         customers
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -178,9 +178,7 @@ class ReturnDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "return",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
-      allErrors: FM.errors
     }
   }
 

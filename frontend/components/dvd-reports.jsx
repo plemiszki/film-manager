@@ -126,9 +126,7 @@ class DvdReports extends React.Component {
   changeFieldArgs() {
     return {
       thing: "export",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges,
-      allErrors: FM.errors
     }
   }
 
@@ -284,14 +282,16 @@ class DvdReports extends React.Component {
         <Modal isOpen={ this.state.exportModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ exportModalStyles }>
           <div className="export-modal">
             <div className="row">
-              <div className="col-xs-6">
-                <h2>Start Date</h2>
-                <input value={ this.state.export.startDate } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="startDate" />
-              </div>
-              <div className="col-xs-6">
-                <h2>End Date</h2>
-                <input value={ this.state.export.endDate } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } data-field="endDate" />
-              </div>
+              { Details.renderField.bind(this)({
+                columnWidth: 6,
+                entity: 'export',
+                property: 'startDate'
+              }) }
+              { Details.renderField.bind(this)({
+                columnWidth: 6,
+                entity: 'export',
+                property: 'endDate'
+              }) }
             </div>
             <div className="row button-row">
               <div className="col-xs-12">

@@ -16,7 +16,7 @@ class Api::SublicensorsController < AdminController
       @sublicensors = Sublicensor.all
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @sublicensor.errors.full_messages, status: 422
+      render_errors(@sublicensor)
     end
   end
 
@@ -25,7 +25,7 @@ class Api::SublicensorsController < AdminController
     if @sublicensor.update(sublicensor_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @sublicensor.errors.full_messages, status: 422
+      render_errors(@sublicensor)
     end
   end
 
@@ -34,7 +34,7 @@ class Api::SublicensorsController < AdminController
     if @sublicensor.destroy
       render json: @sublicensor, status: 200
     else
-      render json: @sublicensor.errors.full_messages, status: 422
+      render_errors(@sublicensor)
     end
   end
 

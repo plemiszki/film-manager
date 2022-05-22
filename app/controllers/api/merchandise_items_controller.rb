@@ -17,7 +17,7 @@ class Api::MerchandiseItemsController < AdminController
       @merchandise_items, @merchandise_types, @films = fetch_data_for_index_view
       render 'index', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @merchandise_item.errors.full_messages, status: 422
+      render_errors(@merchandise_item)
     end
   end
 
@@ -35,7 +35,7 @@ class Api::MerchandiseItemsController < AdminController
       @merchandise_types = MerchandiseType.select(:id, :name)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render json: @merchandise_item.errors.full_messages, status: 422
+      render_errors(@merchandise_item)
     end
   end
 
@@ -44,7 +44,7 @@ class Api::MerchandiseItemsController < AdminController
     if @merchandise_item.destroy
       render json: @merchandise_item, status: 200
     else
-      render json: @merchandise_item.errors.full_messages, status: 422
+      render_errors(@merchandise_item)
     end
   end
 
