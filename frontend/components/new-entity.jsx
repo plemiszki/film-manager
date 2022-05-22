@@ -41,7 +41,7 @@ class NewEntity extends React.Component {
   }
 
   componentDidMount() {
-    HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+    HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
     if (this.props.fetchData) {
       this.props.fetchDataForNew({ directory }).then(() => {
         let entity = HandyTools.deepCopy(this.state[this.props.entityName]);
@@ -51,11 +51,11 @@ class NewEntity extends React.Component {
         })
         obj[this.props.entityName] = entity;
         this.setState(obj, () => {
-          HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+          HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
         });
       });
     } else {
-      HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+      HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
     }
   }
 

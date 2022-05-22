@@ -218,7 +218,7 @@ class FilmDetails extends React.Component {
         virtualBookings,
       }, () => {
         this.updatePercentageObject();
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }

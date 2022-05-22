@@ -31,10 +31,10 @@ describe 'royalty_report_details', type: :feature do
     wait_for_ajax
     find('#toggle').click
     0.upto(13) do |n|
-      expect(find("input[data-thing=\"streams\"][data-thingid=\"#{n}\"][data-field=\"currentRevenue\"]").value).to eq(dollarify(number_with_precision(n * 100, precision: 2, delimiter: ',')))
-      expect(find("input[data-thing=\"streams\"][data-thingid=\"#{n}\"][data-field=\"currentExpense\"]").value).to eq(dollarify(number_with_precision(n * 10, precision: 2, delimiter: ',')))
-      expect(find("input[data-thing=\"streams\"][data-thingid=\"#{n}\"][data-field=\"cumeRevenue\"]").value).to eq(dollarify(number_with_precision(n * 1000, precision: 2, delimiter: ',')))
-      expect(find("input[data-thing=\"streams\"][data-thingid=\"#{n}\"][data-field=\"cumeExpense\"]").value).to eq(dollarify(number_with_precision(n * 100, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentRevenue\"]").value).to eq(dollarify(number_with_precision(n * 100, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentExpense\"]").value).to eq(dollarify(number_with_precision(n * 10, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"cumeRevenue\"]").value).to eq(dollarify(number_with_precision(n * 1000, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"cumeExpense\"]").value).to eq(dollarify(number_with_precision(n * 100, precision: 2, delimiter: ',')))
     end
     expect(find("input[data-field=\"eAndO\"]").value).to eq('$2,000.00')
     expect(find("input[data-field=\"mg\"]").value).to eq('$500.00')
@@ -50,18 +50,18 @@ describe 'royalty_report_details', type: :feature do
       current_net = current_difference.fdiv(2)
       cume_difference = (n * 1000) - (n * 100)
       cume_net = cume_difference.fdiv(2)
-      expect(find("input[data-test-stream-id=\"#{n + 1}\"][data-test=\"currentDiff\"]").value).to eq(dollarify(number_with_precision(current_difference, precision: 2, delimiter: ',')))
-      expect(find("input[data-test-stream-id=\"#{n + 1}\"][data-test=\"currentNet\"]").value).to eq(dollarify(number_with_precision(current_net, precision: 2, delimiter: ',')))
-      expect(find("input[data-test-stream-id=\"#{n + 1}\"][data-test=\"cumeDiff\"]").value).to eq(dollarify(number_with_precision(cume_difference, precision: 2, delimiter: ',')))
-      expect(find("input[data-test-stream-id=\"#{n + 1}\"][data-test=\"cumeNet\"]").value).to eq(dollarify(number_with_precision(cume_net, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentDifference\"]").value).to eq(dollarify(number_with_precision(current_difference, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentLicensorShare\"]").value).to eq(dollarify(number_with_precision(current_net, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"cumeDifference\"]").value).to eq(dollarify(number_with_precision(cume_difference, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"cumeLicensorShare\"]").value).to eq(dollarify(number_with_precision(cume_net, precision: 2, delimiter: ',')))
     end
-    expect(find('input[data-test="current-total-revenue"]').value).to eq("$9,100.00")
-    expect(find('input[data-test="current-total-expenses"]').value).to eq("$910.00")
-    expect(find('input[data-test="current-licensor-share"]').value).to eq("$4,095.00")
-    expect(find('input[data-test="cume-total-revenue"]').value).to eq("$91,000.00")
-    expect(find('input[data-test="cume-total-expenses"]').value).to eq("$9,100.00")
-    expect(find('input[data-test="cume-licensor-share"]').value).to eq("$40,950.00")
-    expect(find('input[data-test="amount-due"]').value).to eq("$38,430.00")
+    expect(find('input[data-field="currentTotalRevenue"]').value).to eq("$9,100.00")
+    expect(find('input[data-field="currentTotalExpenses"]').value).to eq("$910.00")
+    expect(find('input[data-field="currentTotal"]').value).to eq("$4,095.00")
+    expect(find('input[data-field="cumeTotalRevenue"]').value).to eq("$91,000.00")
+    expect(find('input[data-field="cumeTotalExpenses"]').value).to eq("$9,100.00")
+    expect(find('input[data-field="cumeTotal"]').value).to eq("$40,950.00")
+    expect(find('input[data-field="amountDue"]').value).to eq("$38,430.00")
   end
 
   it 'calculates the report, including current period' do
@@ -72,13 +72,13 @@ describe 'royalty_report_details', type: :feature do
       current_net = current_difference.fdiv(2)
       cume_difference = (n * 1000) - (n * 100) + current_difference
       cume_net = cume_difference.fdiv(2)
-      expect(find("input[data-test-stream-id=\"#{n + 1}\"][data-test=\"cumeDiff\"]").value).to eq(dollarify(number_with_precision(cume_difference, precision: 2, delimiter: ',')))
-      expect(find("input[data-test-stream-id=\"#{n + 1}\"][data-test=\"cumeNet\"]").value).to eq(dollarify(number_with_precision(cume_net, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"joinedDifference\"]").value).to eq(dollarify(number_with_precision(cume_difference, precision: 2, delimiter: ',')))
+      expect(find("input[data-test-index=\"#{n}\"][data-field=\"joinedLicensorShare\"]").value).to eq(dollarify(number_with_precision(cume_net, precision: 2, delimiter: ',')))
     end
-    expect(find('input[data-test="cume-total-revenue"]').value).to eq("$100,100.00")
-    expect(find('input[data-test="cume-total-expenses"]').value).to eq("$10,010.00")
-    expect(find('input[data-test="cume-licensor-share"]').value).to eq("$45,045.00")
-    expect(find('input[data-test="amount-due"]').value).to eq("$42,525.00")
+    expect(find('input[data-field="joinedTotalRevenue"]').value).to eq("$100,100.00")
+    expect(find('input[data-field="joinedTotalExpenses"]').value).to eq("$10,010.00")
+    expect(find('input[data-field="joinedTotal"]').value).to eq("$45,045.00")
+    expect(find('input[data-field="joinedAmountDue"]').value).to eq("$42,525.00")
   end
 
   it 'validates stored values in the report' do
@@ -96,11 +96,11 @@ describe 'royalty_report_details', type: :feature do
     find('#toggle').click
     0.upto(13) do |n|
       x = n + 1
-      current_revenue_field = find("input[data-thingid=\"#{n}\"][data-field=\"currentRevenue\"]").set(x * 100)
-      current_expense_field = find("input[data-thingid=\"#{n}\"][data-field=\"currentExpense\"]").set(x * 10)
-      percentage_field = find("input[data-thingid=\"#{n}\"][data-field=\"licensorPercentage\"]", match: :first).set(x)
-      cume_revenue_field = find("input[data-thingid=\"#{n}\"][data-field=\"cumeRevenue\"]").set(x * 1_100)
-      cume_expense_field = find("input[data-thingid=\"#{n}\"][data-field=\"cumeExpense\"]").set(x * 1_000)
+      current_revenue_field = find("input[data-test-index=\"#{n}\"][data-field=\"currentRevenue\"]").set(x * 100)
+      current_expense_field = find("input[data-test-index=\"#{n}\"][data-field=\"currentExpense\"]").set(x * 10)
+      percentage_field = find("input[data-test-index=\"#{n}\"][data-field=\"licensorPercentage\"]", match: :first).set(x)
+      cume_revenue_field = find("input[data-test-index=\"#{n}\"][data-field=\"cumeRevenue\"]").set(x * 1_100)
+      cume_expense_field = find("input[data-test-index=\"#{n}\"][data-field=\"cumeExpense\"]").set(x * 1_000)
     end
     data = {
       mg: 11,

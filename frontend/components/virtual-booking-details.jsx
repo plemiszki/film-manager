@@ -52,7 +52,7 @@ class VirtualBookingDetails extends React.Component {
         job: this.props.job,
         jobModalOpen: !!this.props.job
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
