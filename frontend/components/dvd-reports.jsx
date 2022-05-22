@@ -126,9 +126,7 @@ class DvdReports extends React.Component {
   changeFieldArgs() {
     return {
       thing: "export",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges,
-      allErrors: FM.errors
     }
   }
 

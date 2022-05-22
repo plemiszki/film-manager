@@ -237,8 +237,6 @@ class PurchaseOrderDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "purchaseOrder",
-      allErrors: Errors,
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: this.beforeSave
     }

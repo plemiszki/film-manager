@@ -119,9 +119,7 @@ class GiftboxDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "giftbox",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
-      allErrors: FM.errors
     }
   }
 

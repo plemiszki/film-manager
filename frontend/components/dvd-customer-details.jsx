@@ -73,10 +73,8 @@ class DvdCustomerDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "dvdCustomer",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: this.beforeSave.bind(this),
-      allErrors: FM.errors
     }
   }
 

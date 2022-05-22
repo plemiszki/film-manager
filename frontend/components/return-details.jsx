@@ -178,9 +178,7 @@ class ReturnDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "return",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
-      allErrors: FM.errors
     }
   }
 

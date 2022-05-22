@@ -24,6 +24,7 @@ describe 'sublicensor_details', type: :feature do
 
   it 'updates information about the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
+    wait_for_ajax
     new_info = {
       name: 'Fandor',
       contact_name: 'Joe Schmo',
@@ -42,6 +43,7 @@ describe 'sublicensor_details', type: :feature do
 
   it 'validates information about the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
+    wait_for_ajax
     clear_form
     save_and_wait
     expect(page).to have_content "Name can't be blank"
@@ -54,6 +56,7 @@ describe 'sublicensor_details', type: :feature do
     create(:territory)
     create(:sub_right)
     visit sublicensor_path(@sublicensor, as: $admin_user)
+    wait_for_ajax
     within('.search-index') do
       expect(page).to have_content 'Wilby Wonderful'
     end
@@ -65,6 +68,7 @@ describe 'sublicensor_details', type: :feature do
     create(:right)
     create(:territory)
     visit sublicensor_path(@sublicensor, as: $admin_user)
+    wait_for_ajax
     find('.new-button', text: 'Add Rights').click
     within('#film-rights-new') do
       fill_out_form({
@@ -84,6 +88,7 @@ describe 'sublicensor_details', type: :feature do
 
   it 'deletes the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
+    wait_for_ajax
     delete_button = find('.delete-button', text: 'Delete')
     delete_button.click
     within('.confirm-delete') do

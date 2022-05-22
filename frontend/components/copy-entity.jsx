@@ -23,8 +23,6 @@ class CopyEntity extends React.Component {
   changeFieldArgs() {
     return {
       thing: this.props.entityName,
-      allErrors: FM.errors,
-      errorsArray: this.state.errors
     }
   }
 

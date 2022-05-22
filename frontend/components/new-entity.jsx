@@ -92,10 +92,7 @@ class NewEntity extends React.Component {
   }
 
   changeFieldArgs() {
-    return {
-      allErrors: Errors,
-      errorsArray: this.state.errors
-    }
+    return {}
   }
 
   render() {

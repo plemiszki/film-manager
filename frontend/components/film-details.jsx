@@ -336,10 +336,8 @@ class FilmDetails extends React.Component {
   changeFieldArgs() {
     const { errors } = this.state;
     return {
-      allErrors: FM.errors,
       defaultErrorsKey: 'film',
       thing: "film",
-      errorsArray: errors,
       beforeSave: (newEntity, key, value) => {
         if (key == "dealTypeId") {
           if (value <= 4) {

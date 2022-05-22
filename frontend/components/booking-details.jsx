@@ -361,8 +361,6 @@ class BookingDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "booking",
-      errorsArray: this.state.errors,
-      allErrors: FM.errors,
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: function(newThing, key, value) {
         if (key == "terms") {

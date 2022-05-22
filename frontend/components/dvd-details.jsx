@@ -149,9 +149,7 @@ class DvdDetails extends React.Component {
   changeFieldArgs() {
     return {
       thing: "dvd",
-      errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this),
-      allErrors: FM.errors
     }
   }
 

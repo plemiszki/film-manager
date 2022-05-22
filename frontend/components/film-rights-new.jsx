@@ -120,8 +120,6 @@ class FilmRightsNew extends React.Component {
   changeFieldArgs() {
     return {
       thing: 'filmRight',
-      errorsArray: this.state.errors,
-      allErrors: Errors
     }
   }
 
@@ -173,16 +171,16 @@ class FilmRightsNew extends React.Component {
         <div className="white-box">
           <div className="row">
             { this.renderFilmField.call(this) }
-            <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
-              <h2>Start Date</h2>
-              <input className={ Details.errorClass(this.state.errors, FM.errors.startDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.startDate || "" } data-field="startDate" />
-              { Details.renderFieldError([], []) }
-            </div>
-            <div className={ this.props.sublicensorId ? "col-xs-2" : "col-xs-4" }>
-              <h2>End Date</h2>
-              <input className={ Details.errorClass(this.state.errors, FM.errors.endDate) } onChange={ FM.changeField.bind(this, this.changeFieldArgs()) } value={ this.state.filmRight.endDate || "" } data-field="endDate" />
-              { Details.renderFieldError([], []) }
-            </div>
+            { Details.renderField.bind(this)({
+              columnWidth: (this.props.sublicensorId ? 2 : 4),
+              entity: 'filmRight',
+              property: 'startDate'
+            }) }
+            { Details.renderField.bind(this)({
+              columnWidth: (this.props.sublicensorId ? 2 : 4),
+              entity: 'filmRight',
+              property: 'endDate'
+            }) }
             { this.renderExclusiveColumn() }
           </div>
           <div className="row">
