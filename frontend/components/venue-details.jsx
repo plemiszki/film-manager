@@ -246,7 +246,7 @@ class VenueDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 12, entity: 'venue', property: 'website' }) }
             </div>
             <div className="row">
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'venue', property: 'notes', rows: 5 }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'venue', property: 'notes', rows: 5 }) }
             </div>
             { this.renderButtons() }
             { Common.renderSpinner(this.state.fetching) }

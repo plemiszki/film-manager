@@ -359,7 +359,8 @@ class NewEntity extends React.Component {
       case 'quote':
         return([
           <div key="1" className="row">
-            { Details.renderTextBox.bind(this)({
+            { Details.renderField.bind(this)({
+              type: 'textbox',
               columnWidth: 12,
               rows: 5,
               entity: 'quote',

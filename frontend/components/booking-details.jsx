@@ -545,7 +545,7 @@ class BookingDetails extends React.Component {
             <hr />
             <h3>Notes</h3>
             <div className="row">
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'booking', property: 'notes', rows: 5 }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'booking', property: 'notes', rows: 5, hideHeader: true }) }
             </div>
             <hr />
             { this.renderConfirmationSection() }

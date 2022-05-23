@@ -374,7 +374,7 @@ class PurchaseOrderDetails extends React.Component {
             { this.renderAddItemButton() }
             <hr />
             <div className="row">
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5 }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5 }) }
             </div>
             <hr />
             <div className="row">

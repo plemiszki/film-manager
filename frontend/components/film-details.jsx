@@ -1228,7 +1228,7 @@ class FilmDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
             </div>
             <div className="row">
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
             </div>
           </div>
         )
@@ -1244,10 +1244,10 @@ class FilmDetails extends React.Component {
             </div>
             <hr style={ { marginTop: 30 } } />
             <div className="row">
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 500 characters', characterCount: true }) }
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'shortSynopsis', rows: 4, columnHeader: 'Synopsis - 240 characters', characterCount: true }) }
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'logline', rows: 2, columnHeader: 'Synopsis - 150 characters', characterCount: true }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 500 characters', characterCount: true }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'shortSynopsis', rows: 4, columnHeader: 'Synopsis - 240 characters', characterCount: true }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'logline', rows: 2, columnHeader: 'Synopsis - 150 characters', characterCount: true }) }
             </div>
             <hr style={ { marginTop: 30 } } />
             <div className="row">
@@ -1433,7 +1433,7 @@ class FilmDetails extends React.Component {
           <div>
             <hr />
             <div className="row">
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'film', property: 'institutionalSynopsis', rows: 8, characterCount: true }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'institutionalSynopsis', rows: 8, characterCount: true }) }
             </div>
             <hr />
             <div className="row">
@@ -1573,8 +1573,8 @@ class FilmDetails extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'acceptDelivery', columnHeader: 'Delivery Acceptance Date', readOnly: !FM.user.hasAdminAccess }) }
           </div>
           <div className="row">
-            { Details.renderTextBox.bind(this)({ columnWidth: 6, entity: 'film', property: 'royaltyNotes', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderTextBox.bind(this)({ columnWidth: 6, entity: 'film', property: 'contractualObligations', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'royaltyNotes', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'contractualObligations', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
           </div>
         </div>
         <hr />

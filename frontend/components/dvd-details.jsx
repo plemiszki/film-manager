@@ -175,7 +175,7 @@ class DvdDetails extends React.Component {
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 1, entity: 'dvd', property: 'discs' }) }
               { Details.renderField.bind(this)({ columnWidth: 5, entity: 'dvd', property: 'soundConfig', columnHeader: 'Sound Configuration' }) }
-              { Details.renderTextBox.bind(this)({ columnWidth: 6, entity: 'dvd', property: 'specialFeatures', rows: 5 }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'dvd', property: 'specialFeatures', rows: 5 }) }
             </div>
             <table className="fm-admin-table">
               <thead>

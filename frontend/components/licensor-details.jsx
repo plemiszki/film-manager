@@ -91,7 +91,7 @@ class LicensorDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'email', columnHeader: 'Royalty Emails' }) }
             </div>
             <div className="row">
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'licensor', property: 'address', rows: 5 }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'licensor', property: 'address', rows: 5 }) }
             </div>
             <div className="row">
               <div className="col-xs-12">

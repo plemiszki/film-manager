@@ -124,7 +124,7 @@ class DvdCustomerDetails extends React.Component {
             <div className="row">
               { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'includeInTitleReport', columnHeader: 'Include in New Titles Report' }) }
               { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'nickname' }) }
-              { Details.renderTextBox.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'notes', rows: 5 }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'dvdCustomer', property: 'notes', rows: 5 }) }
             </div>
             { this.renderButtons() }
             { Common.renderSpinner(this.state.fetching) }

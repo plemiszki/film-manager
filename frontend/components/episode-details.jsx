@@ -147,7 +147,7 @@ class EpisodeDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'episode', property: 'episodeNumber', columnHeader: 'Episode #' }) }
             </div>
             <div className="row">
-              { Details.renderTextBox.bind(this)({ columnWidth: 12, entity: 'episode', property: 'synopsis', rows: 5 }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'episode', property: 'synopsis', rows: 5 }) }
             </div>
             <hr />
             <div className="row">
