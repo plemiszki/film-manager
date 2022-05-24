@@ -745,6 +745,9 @@ $(document).ready(function() {
           columns={ ['text', 'film'] }
           modalRows={ 1 }
           modalDimensions={ { width: 1000 } }
+          includeLinks={ true }
+          includeHover={ true }
+          includeNewButton={ true }
         >
           <NewEntity
             context={ MyContext }
@@ -1179,7 +1182,8 @@ $(document).ready(function() {
           entityName='shippingAddress'
           entityNamePlural='shippingAddresses'
           columns={ ['label', 'customer'] }
-          hideNewButton={ true }
+          includeLinks={ true }
+          includeHover={ true }
         />
       </Provider>,
       document.querySelector('#shipping-addresses-index')
