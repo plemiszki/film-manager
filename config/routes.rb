@@ -168,6 +168,7 @@ Rails.application.routes.draw do
     get '/website/merchandise' => '/api/website#merchandise'
 
     get '/justwatch' => 'external#justwatch'
+    get '/samsung' => 'external#samsung'
   end
 
   # Clearance ------------------------
