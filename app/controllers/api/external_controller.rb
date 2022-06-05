@@ -13,9 +13,8 @@ class Api::ExternalController < ApplicationController
   end
 
   def samsung
-    # @films = Film.where.not(fm_plus_url: '').order(:title).includes(:film_rights, :directors, :languages)
-    # render 'index', formats: [:json], handlers: [:jbuilder]
-    render json: { message: 'hi' }
+    @films = Film.features.not_expired.order(:title).includes(:directors, :actors, :languages, :countries)
+    render 'samsung', formats: [:json], handlers: [:jbuilder]
   end
 
   private

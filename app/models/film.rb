@@ -98,6 +98,7 @@ class Film < ActiveRecord::Base
   scope :shorts, -> { where(film_type: 'Short') }
 
   scope :expired, -> { where('end_date <= CURRENT_DATE') }
+  scope :not_expired, -> { where('CURRENT_DATE < end_date') }
   scope :days_until_expired, -> (days) { where("end_date > CURRENT_DATE and end_date <= (CURRENT_DATE + #{days})").order(:title) }
 
   def sent_reminders_within(duration)
