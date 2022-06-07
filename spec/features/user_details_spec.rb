@@ -21,6 +21,13 @@ describe 'user_details', type: :feature do
     expect(find('input[data-field="title"]').value).to eq 'Software Engineer'
     expect(find('textarea[data-field="emailSignature"]').value).to eq "Peter Lemiszki\nFILM MOVEMENT\n237 West 35th Street, Suite 303\nNew York, NY 10001\nP: 212.941.7645 x206\nF: 212.941.7812\nFilmmovement.com"
     expect(find('input[data-field="access"]').value).to eq 'super_admin'
+    expect(find('input[data-field="hasAutoRenewApproval"]', visible: false).checked?).to eq false
+  end
+
+  it 'displays a read-only switch for normal users' do
+    visit user_path($admin_user, as: @user)
+    wait_for_ajax
+    expect(find('input[data-field="hasAutoRenewApproval"]', visible: false).disabled?).to eq true
   end
 
   it 'updates information about the user' do
@@ -29,7 +36,8 @@ describe 'user_details', type: :feature do
       name: 'Johnny Mo',
       email: 'johnny@filmmovement.com',
       title: 'Jabroni',
-      email_signature: "Johnny Mo\nFILM MOVEMENT\n237 West 35th Street, Suite 303\nNew York, NY 10001\nP: 212.941.7645 x206\nF: 212.941.7812\nFilmmovement.com"
+      email_signature: "Johnny Mo\nFILM MOVEMENT\n237 West 35th Street, Suite 303\nNew York, NY 10001\nP: 212.941.7645 x206\nF: 212.941.7812\nFilmmovement.com",
+      has_auto_renew_approval: { value: true, type: :switch },
     }
     fill_out_form(new_info)
     save_and_wait
