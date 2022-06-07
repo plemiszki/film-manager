@@ -51,7 +51,7 @@ class Api::UsersController < Clearance::UsersController
   private
 
   def user_params
-    params[:user].permit(:name, :email, :password, :title, :email_signature, :access)
+    params[:user].permit(:name, :email, :password, :title, :email_signature, :has_auto_renew_approval)
   end
 
 end

@@ -1294,8 +1294,15 @@ $(document).ready(function() {
             { columnWidth: 4, property: 'email' },
             { columnWidth: 4, property: 'title' }
           ],[
-            { columnWidth: 10, property: 'emailSignature', type: 'textbox', rows: 8 },
-            { columnWidth: 2, property: 'access', readOnly: true }
+            { columnWidth: 8, property: 'emailSignature', type: 'textbox', rows: 8 },
+            { columnWidth: 2, property: 'access', readOnly: true },
+            {
+              columnWidth: 2,
+              type: 'switch',
+              property: 'hasAutoRenewApproval',
+              columnHeader: 'Auto-Renew Approval',
+              readOnly: !FM.user.hasSuperAdminAccess
+            },
           ]] }
           hideDeleteButton={ !FM.user.hasSuperAdminAccess }
         />

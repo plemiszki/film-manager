@@ -5,4 +5,5 @@ json.user do
   json.title @user.title || ""
   json.emailSignature @user.email_signature || ""
   json.access @user.access
+  json.hasAutoRenewApproval @user.has_auto_renew_approval
 end

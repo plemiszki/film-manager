@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_03_132648) do
+ActiveRecord::Schema.define(version: 2022_06_07_145817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -755,6 +755,7 @@ ActiveRecord::Schema.define(version: 2022_05_03_132648) do
     t.boolean "booker", default: false
     t.integer "access", default: 50
     t.boolean "inactive", default: false
+    t.boolean "has_auto_renew_approval", default: false
     t.index ["email"], name: "index_users_on_email"
     t.index ["remember_token"], name: "index_users_on_remember_token"
   end
