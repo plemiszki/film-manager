@@ -16,6 +16,11 @@ class Api::FilmsController < AdminController
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
+  def auto_renew
+    @films = Film.within_auto_renew_window.order(:title)
+    render 'auto_renew', formats: [:json], handlers: [:jbuilder]
+  end
+
   def show
     gather_data_for_show_view
     render 'show', formats: [:json], handlers: [:jbuilder]

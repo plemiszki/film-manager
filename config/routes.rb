@@ -57,6 +57,7 @@ Rails.application.routes.draw do
     patch '/users/:id' => '/api/users#api_update'
     delete '/users/:id' => '/api/users#api_destroy'
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
+    get '/films/auto_renew' => '/api/films#auto_renew'
     resources :films, only: [:index, :show, :create, :update, :destroy]
     post '/films/export' => '/api/films#export'
     post '/films/copy' => '/api/films#copy'
