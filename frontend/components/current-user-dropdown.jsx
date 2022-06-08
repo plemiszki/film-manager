@@ -45,6 +45,15 @@ class CurrentUserDropDown extends React.Component {
     this.setState({
       spinner: true
     });
+    this.props.sendRequest({
+      url: `/api/films/auto_renew/${film.id}`,
+    }).then(() => {
+      const { films } = this.props;
+      this.setState({
+        autoRenewFilms: films,
+        spinner: false,
+      })
+    });
   }
 
   render() {
