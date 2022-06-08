@@ -13,6 +13,7 @@ class CurrentUserDropDown extends React.Component {
     this.state = {
       autoRenewFilms: [],
       autoRenewModalOpen: false,
+      autoRenewModalPage: 1,
     };
   }
 
@@ -52,6 +53,7 @@ class CurrentUserDropDown extends React.Component {
       this.setState({
         autoRenewFilms: films,
         spinner: false,
+        autoRenewModalPage: 1,
       })
     });
   }
@@ -67,7 +69,22 @@ class CurrentUserDropDown extends React.Component {
       this.setState({
         autoRenewFilms: films,
         spinner: false,
+        autoRenewModalPage: 1,
       })
+    });
+  }
+
+  clickNextPage() {
+    const { autoRenewModalPage } = this.state;
+    this.setState({
+      autoRenewModalPage: autoRenewModalPage + 1,
+    });
+  }
+
+  clickPrevPage() {
+    const { autoRenewModalPage } = this.state;
+    this.setState({
+      autoRenewModalPage: autoRenewModalPage - 1,
     });
   }
 
@@ -163,7 +180,7 @@ class CurrentUserDropDown extends React.Component {
   }
 
   renderModal() {
-    const { autoRenewFilms, autoRenewModalOpen, spinner } = this.state;
+    const { autoRenewFilms, autoRenewModalOpen, spinner, autoRenewModalPage } = this.state;
 
     let modalStyles = {
       overlay: {
@@ -174,7 +191,7 @@ class CurrentUserDropDown extends React.Component {
         margin: 'auto',
         width: 1000,
         maxWidth: '90%',
-        height: 500,
+        height: 535.5,
         border: 'solid 1px black',
         borderRadius: '6px',
         color: 'black',
@@ -184,6 +201,9 @@ class CurrentUserDropDown extends React.Component {
     if (spinner) {
       modalStyles.content.overflow = 'hidden';
     }
+
+    const startIndex = 0 + ((autoRenewModalPage - 1) * 10);
+    const endIndex = startIndex + 10;
 
     return(
       <>
@@ -199,7 +219,7 @@ class CurrentUserDropDown extends React.Component {
               </tr>
             </thead>
             <tbody>
-              { autoRenewFilms.map((film, index) => {
+              { autoRenewFilms.slice(startIndex, endIndex).map((film, index) => {
                   const { title, endDate, autoRenewDaysNotice, autoRenewTerm } = film;
                   return(
                     <tr key={ index }>
@@ -217,6 +237,8 @@ class CurrentUserDropDown extends React.Component {
             </tbody>
           </table>
           <a className="btn orange-button renew-all" onClick={ () => { this.clickRenewAll() } }>Renew All</a>
+          { autoRenewFilms.slice(startIndex).length > 10 && (<a className="next-page page-nav" onClick={ this.clickNextPage.bind(this) }></a>) }
+          { autoRenewModalPage > 1 && (<a className="prev-page page-nav" onClick={ this.clickPrevPage.bind(this) }></a>) }
           { Common.renderSpinner(spinner) }
           { Common.renderGrayedOut(spinner, -36, -32, 5) }
         </Modal>
@@ -227,6 +249,7 @@ class CurrentUserDropDown extends React.Component {
           }
           th {
             font-size: 14px;
+            line-height: 30px;
             padding-bottom: 5px;
             border-bottom: solid 1px lightgray;
           }
@@ -253,9 +276,28 @@ class CurrentUserDropDown extends React.Component {
             padding: 8px 20px;
           }
           a.renew-all {
-            margin: auto;
             display: block;
+            position: absolute;
             width: 175px;
+            left: calc(50% - 87.5px);
+            bottom: 20px;
+          }
+          a.page-nav {
+            display: block;
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: url(${Images.arrow});
+            cursor: pointer;
+            bottom: 30px;
+          }
+          a.next-page {
+            left: 20px;
+            transform: rotate(90deg);
+          }
+          a.prev-page {
+            left: 50px;
+            transform: rotate(270deg);
           }
         `}</style>
       </>
