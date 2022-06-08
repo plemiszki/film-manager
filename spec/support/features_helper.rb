@@ -1,7 +1,7 @@
 RSpec.configure do |config|
 
   config.before(:each) do
-    $admin_user = create(:user, email: 'peter+features@filmmovement.com')
+    $admin_user = create(:user, email: 'peter+features@filmmovement.com', has_auto_renew_approval: true)
   end
 
 end

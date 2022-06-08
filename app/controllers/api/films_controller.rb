@@ -29,10 +29,10 @@ class Api::FilmsController < AdminController
   end
 
   def auto_renew_all
-    @films = Film.within_auto_renew_window.order(:title)
-    @films.each do |film|
+    Film.within_auto_renew_window.each do |film|
       film.auto_renew!
     end
+    @films = Film.within_auto_renew_window.order(:title)
     render 'auto_renew', formats: [:json], handlers: [:jbuilder]
   end
 

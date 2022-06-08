@@ -208,7 +208,7 @@ class CurrentUserDropDown extends React.Component {
     return(
       <>
         <Modal isOpen={ autoRenewModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ modalStyles }>
-          <table>
+          <table className="auto-renew-films">
             <thead>
               <tr>
                 <th>Title</th>
