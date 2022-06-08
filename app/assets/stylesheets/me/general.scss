@@ -108,16 +108,14 @@ body {
       padding: 0;
 
       #admin-navbar {
+        position: relative;
         background-color: white;
         height: 100px;
         padding-top: 35px;
+        padding-right: 35px;
 
         #current-user, #permissions {
           display: none;
-        }
-
-        #admin-navbar-menu {
-          margin-left: 90%;
         }
       }
 
