@@ -173,6 +173,16 @@ class Film < ActiveRecord::Base
     report
   end
 
+  def auto_renew!
+    new_end_date = end_date + auto_renew_term.months
+    ActiveRecord::Base.transaction do
+      update!(end_date: new_end_date)
+      film_rights.each do |film_right|
+        film_right.update!(end_date: new_end_date)
+      end
+    end
+  end
+
   def self.backfill_end_date_calc!
     Film.all.includes(:film_rights).each do |film|
       film.film_rights.each do |film_right|

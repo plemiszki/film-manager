@@ -23,14 +23,16 @@ class Api::FilmsController < AdminController
 
   def auto_renew_film
     film = Film.find(params[:id])
-    new_end_date = film.end_date + film.auto_renew_term.months
-    ActiveRecord::Base.transaction do
-      film.update!(end_date: new_end_date)
-      film.film_rights.each do |film_right|
-        film_right.update!(end_date: new_end_date)
-      end
-    end
+    film.auto_renew!
     @films = Film.within_auto_renew_window.order(:title)
+    render 'auto_renew', formats: [:json], handlers: [:jbuilder]
+  end
+
+  def auto_renew_all
+    @films = Film.within_auto_renew_window.order(:title)
+    @films.each do |film|
+      film.auto_renew!
+    end
     render 'auto_renew', formats: [:json], handlers: [:jbuilder]
   end
 

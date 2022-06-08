@@ -56,6 +56,21 @@ class CurrentUserDropDown extends React.Component {
     });
   }
 
+  clickRenewAll() {
+    this.setState({
+      spinner: true
+    });
+    this.props.sendRequest({
+      url: '/api/films/auto_renew/all',
+    }).then(() => {
+      const { films } = this.props;
+      this.setState({
+        autoRenewFilms: films,
+        spinner: false,
+      })
+    });
+  }
+
   render() {
     const { autoRenewFilms } = this.state;
     return(
@@ -193,7 +208,7 @@ class CurrentUserDropDown extends React.Component {
                       <td>{ autoRenewDaysNotice }</td>
                       <td>{ autoRenewTerm }</td>
                       <td className="text-center">
-                        <a className="btn orange-button" onClick={ this.clickRenew.bind(this, film) }>Renew Now</a>
+                        <a className="btn orange-button renew-single" onClick={ this.clickRenew.bind(this, film) }>Renew</a>
                       </td>
                     </tr>
                   );
@@ -201,12 +216,14 @@ class CurrentUserDropDown extends React.Component {
               }
             </tbody>
           </table>
+          <a className="btn orange-button renew-all" onClick={ () => { this.clickRenewAll() } }>Renew All</a>
           { Common.renderSpinner(spinner) }
           { Common.renderGrayedOut(spinner, -36, -32, 5) }
         </Modal>
         <style jsx>{`
           table {
             width: 100%;
+            margin-bottom: 30px;
           }
           th {
             font-size: 14px;
@@ -231,9 +248,14 @@ class CurrentUserDropDown extends React.Component {
           td {
             padding-top: 8px;
           }
-          a {
+          a.renew-single {
             display: inline;
             padding: 8px 20px;
+          }
+          a.renew-all {
+            margin: auto;
+            display: block;
+            width: 175px;
           }
         `}</style>
       </>
