@@ -141,7 +141,7 @@ class CurrentUserDropDown extends React.Component {
       content: {
         background: 'white',
         margin: 'auto',
-        width: 900,
+        width: 1000,
         maxWidth: '90%',
         height: 500,
         border: 'solid 1px black',
@@ -160,7 +160,7 @@ class CurrentUserDropDown extends React.Component {
                 <th>Title</th>
                 <th>End Date</th>
                 <th>Days Notice</th>
-                <th>Renew Term</th>
+                <th>Renewal Term</th>
                 <th></th>
               </tr>
             </thead>
@@ -173,7 +173,9 @@ class CurrentUserDropDown extends React.Component {
                       <td>{ endDate }</td>
                       <td>{ autoRenewDaysNotice }</td>
                       <td>{ autoRenewTerm }</td>
-                      <td></td>
+                      <td className="text-center">
+                        <a className="btn orange-button">Renew Now</a>
+                      </td>
                     </tr>
                   );
                 })
@@ -205,8 +207,15 @@ class CurrentUserDropDown extends React.Component {
           th:nth-of-type(5) {
             width: 15%;
           }
+          tbody tr:hover {
+            font-family: 'TeachableSans-ExtraBold';
+          }
           td {
             padding-top: 8px;
+          }
+          a {
+            display: inline;
+            padding: 8px 20px;
           }
         `}</style>
       </>
