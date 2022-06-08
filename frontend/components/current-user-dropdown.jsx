@@ -41,6 +41,12 @@ class CurrentUserDropDown extends React.Component {
     });
   }
 
+  clickRenew(film) {
+    this.setState({
+      spinner: true
+    });
+  }
+
   render() {
     const { autoRenewFilms } = this.state;
     return(
@@ -133,8 +139,9 @@ class CurrentUserDropDown extends React.Component {
   }
 
   renderModal() {
-    const { autoRenewFilms, autoRenewModalOpen } = this.state;
-    const modalStyles = {
+    const { autoRenewFilms, autoRenewModalOpen, spinner } = this.state;
+
+    let modalStyles = {
       overlay: {
         background: 'rgba(0, 0, 0, 0.50)'
       },
@@ -149,6 +156,9 @@ class CurrentUserDropDown extends React.Component {
         color: 'black',
         lineHeight: '30px'
       }
+    }
+    if (spinner) {
+      modalStyles.content.overflow = 'hidden';
     }
 
     return(
@@ -174,7 +184,7 @@ class CurrentUserDropDown extends React.Component {
                       <td>{ autoRenewDaysNotice }</td>
                       <td>{ autoRenewTerm }</td>
                       <td className="text-center">
-                        <a className="btn orange-button">Renew Now</a>
+                        <a className="btn orange-button" onClick={ this.clickRenew.bind(this, film) }>Renew Now</a>
                       </td>
                     </tr>
                   );
@@ -182,6 +192,8 @@ class CurrentUserDropDown extends React.Component {
               }
             </tbody>
           </table>
+          { Common.renderSpinner(spinner) }
+          { Common.renderGrayedOut(spinner, -36, -32, 5) }
         </Modal>
         <style jsx>{`
           table {
@@ -206,9 +218,6 @@ class CurrentUserDropDown extends React.Component {
           }
           th:nth-of-type(5) {
             width: 15%;
-          }
-          tbody tr:hover {
-            font-family: 'TeachableSans-ExtraBold';
           }
           td {
             padding-top: 8px;
