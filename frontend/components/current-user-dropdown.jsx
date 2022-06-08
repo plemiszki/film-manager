@@ -1,18 +1,52 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Common, ConfirmDelete, Details, Index } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
+import { sendRequest } from '../actions/index.js'
+import Modal from 'react-modal'
 
 class CurrentUserDropDown extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      autoRenewFilms: [],
+      autoRenewModalOpen: false,
+    };
+  }
+
+  componentDidMount() {
+    const { hasAutoRenewApproval } = this.props;
+    if (hasAutoRenewApproval) {
+      this.props.sendRequest({
+        url: `/api/films/auto_renew`,
+      }).then(() => {
+        const { films } = this.props;
+        this.setState({
+          autoRenewFilms: films,
+        })
+      });
+    }
+  }
 
   clickMyAccount() {
     window.location.pathname = "users/" + FM.user.id;
   }
 
+  clickIcon() {
+    const { autoRenewModalOpen } = this.state;
+    this.setState({
+      autoRenewModalOpen: !autoRenewModalOpen,
+    });
+  }
+
   render() {
+    const { autoRenewFilms } = this.state;
     return(
       <>
         <div className="current-user-dropdown">
-          <div className="icon"></div>
+          { !!autoRenewFilms.length && (<div className="icon" onClick={ this.clickIcon.bind(this) }></div>) }
           <div className="user-menu-container">
             <div className="hover-area">
               <div className="profile-pic"></div>
@@ -25,6 +59,7 @@ class CurrentUserDropDown extends React.Component {
               </ul>
             </div>
           </div>
+          { this.renderModal() }
         </div>
         <style jsx>{`
           .current-user-dropdown {
@@ -96,6 +131,95 @@ class CurrentUserDropDown extends React.Component {
       </>
     );
   }
+
+  renderModal() {
+    const { autoRenewFilms, autoRenewModalOpen } = this.state;
+    const modalStyles = {
+      overlay: {
+        background: 'rgba(0, 0, 0, 0.50)'
+      },
+      content: {
+        background: 'white',
+        margin: 'auto',
+        width: 900,
+        maxWidth: '90%',
+        height: 500,
+        border: 'solid 1px black',
+        borderRadius: '6px',
+        color: 'black',
+        lineHeight: '30px'
+      }
+    }
+
+    return(
+      <>
+        <Modal isOpen={ autoRenewModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ modalStyles }>
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>End Date</th>
+                <th>Days Notice</th>
+                <th>Renew Term</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              { autoRenewFilms.map((film, index) => {
+                  const { title, endDate, autoRenewDaysNotice, autoRenewTerm } = film;
+                  return(
+                    <tr key={ index }>
+                      <td>{ title }</td>
+                      <td>{ endDate }</td>
+                      <td>{ autoRenewDaysNotice }</td>
+                      <td>{ autoRenewTerm }</td>
+                      <td></td>
+                    </tr>
+                  );
+                })
+              }
+            </tbody>
+          </table>
+        </Modal>
+        <style jsx>{`
+          table {
+            width: 100%;
+          }
+          th {
+            font-size: 14px;
+            padding-bottom: 5px;
+            border-bottom: solid 1px lightgray;
+          }
+          th:nth-of-type(1) {
+            width: 40%;
+          }
+          th:nth-of-type(2) {
+            width: 15%;
+          }
+          th:nth-of-type(3) {
+            width: 15%;
+          }
+          th:nth-of-type(4) {
+            width: 15%;
+          }
+          th:nth-of-type(5) {
+            width: 15%;
+          }
+          td {
+            padding-top: 8px;
+          }
+        `}</style>
+      </>
+    );
+  }
 }
 
-export default CurrentUserDropDown;
+const mapStateToProps = (reducers) => {
+  return reducers.standardReducer;
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ sendRequest }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentUserDropDown);

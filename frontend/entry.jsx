@@ -38,11 +38,19 @@ import VenueDetails from './components/venue-details.jsx'
 import VirtualBookingDetails from './components/virtual-booking-details.jsx'
 
 $(document).ready(function() {
+
+  const currentUserInfo = document.getElementsByClassName("current-user")[0].dataset;
+
   ReactModal.setAppElement(document.body);
   const MyContext = React.createContext();
 
   if ($('#current-user-dropdown')[0]) {
-    ReactDOM.render(<CurrentUserDropDown />, document.getElementById("current-user-dropdown"));
+    ReactDOM.render(
+      <Provider context={ MyContext } store={ store }>
+        <CurrentUserDropDown context={ MyContext } hasAutoRenewApproval={ currentUserInfo.hasAutoRenewApproval === "true" } />
+      </Provider>,
+      document.getElementById("current-user-dropdown")
+    );
   }
   if ($('#licensor-details')[0]) {
     ReactDOM.render(

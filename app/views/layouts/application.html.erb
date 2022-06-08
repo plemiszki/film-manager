@@ -7,6 +7,9 @@
     <%= javascript_include_tag 'application' %>
     <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width">
+    <% if current_user %>
+      <meta class="current-user" data-has-auto-renew-approval="<%= current_user.has_auto_renew_approval %>">
+    <% end %>
   </head>
   <% if signed_in? %>
     <body>
