@@ -21,7 +21,7 @@ describe 'user_details', type: :feature do
     expect(find('input[data-field="title"]').value).to eq 'Software Engineer'
     expect(find('textarea[data-field="emailSignature"]').value).to eq "Peter Lemiszki\nFILM MOVEMENT\n237 West 35th Street, Suite 303\nNew York, NY 10001\nP: 212.941.7645 x206\nF: 212.941.7812\nFilmmovement.com"
     expect(find('input[data-field="access"]').value).to eq 'super_admin'
-    expect(find('input[data-field="hasAutoRenewApproval"]', visible: false).checked?).to eq false
+    expect(find('input[data-field="hasAutoRenewApproval"]', visible: false).checked?).to eq true
   end
 
   it 'displays a read-only switch for normal users' do
