@@ -24,6 +24,7 @@ json.film do
   json.autoRenew @film.auto_renew
   json.autoRenewTerm @film.auto_renew_term.to_s
   json.autoRenewDaysNotice @film.auto_renew_days_notice.to_s
+  json.autoRenewOptOut @film.auto_renew_opt_out
   json.year @film.year.to_s || ""
   json.length @film.length.to_s || ""
   json.synopsis @film.synopsis || ""

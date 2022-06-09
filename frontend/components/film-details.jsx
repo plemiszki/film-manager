@@ -342,30 +342,17 @@ class FilmDetails extends React.Component {
         if (key == "dealTypeId") {
           if (value <= 4) {
             newEntity.grPercentage = "";
-            Details.removeFieldError(errors, "grPercentage");
           } else {
             newEntity.grPercentage = "0";
           }
         }
         if (key == 'reserve' && value == false) {
           newEntity.reservePercentage = 0;
-          FM.errors.reservePercentage.forEach((message) => {
-            HandyTools.removeFromArray(errors, message);
-          });
           newEntity.reserveQuarters = 0;
-          FM.errors.reserveQuarters.forEach((message) => {
-            HandyTools.removeFromArray(errors, message);
-          });
         }
         if (key == 'autoRenew' && value == false) {
           newEntity.autoRenewTerm = 0;
-          FM.errors.autoRenewTerm.forEach((message) => {
-            HandyTools.removeFromArray(errors, message);
-          });
           newEntity.autoRenewDaysNotice = 0;
-          FM.errors.autoRenewDaysNotice.forEach((message) => {
-            HandyTools.removeFromArray(errors, message);
-          });
         }
         return newEntity;
       },
@@ -1654,6 +1641,7 @@ class FilmDetails extends React.Component {
             { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'autoRenew', columnHeader: 'Auto-Renew' }) }
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewTerm', columnHeader: 'Term (Months)', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewDaysNotice', columnHeader: 'Days Notice', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
+            { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewOptOut', columnHeader: 'Opt Out', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
             <div className={ `spacer${this.state.film.autoRenew ? ' hidden' : ''}` }></div>
           </div>
         </div>

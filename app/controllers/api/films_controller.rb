@@ -293,6 +293,7 @@ class Api::FilmsController < AdminController
       :auto_renew,
       :auto_renew_term,
       :auto_renew_days_notice,
+      :auto_renew_opt_out,
       :year,
       :length,
       :synopsis,

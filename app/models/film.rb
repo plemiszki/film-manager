@@ -100,7 +100,7 @@ class Film < ActiveRecord::Base
   scope :expired, -> { where('end_date <= CURRENT_DATE') }
   scope :not_expired, -> { where('CURRENT_DATE < end_date') }
   scope :days_until_expired, -> (days) { where("end_date > CURRENT_DATE and end_date <= (CURRENT_DATE + #{days})").order(:title) }
-  scope :within_auto_renew_window, -> { where("auto_renew = true and end_date < (CURRENT_DATE + auto_renew_days_notice)") }
+  scope :within_auto_renew_window, -> { where("auto_renew = true and auto_renew_opt_out = false and end_date < (CURRENT_DATE + auto_renew_days_notice)") }
 
   def sent_reminders_within(duration)
     start_date_of_window = self.end_date - duration

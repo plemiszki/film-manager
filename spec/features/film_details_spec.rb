@@ -231,8 +231,10 @@ describe 'film_details', type: :feature do
       sell_off_period: 12,
       accept_delivery: '3/3/2033',
       royalty_notes: 'new royalty notes',
+      auto_renew: { value: true, type: :switch },
+      auto_renew_opt_out: { value: true, type: :switch },
       '1': '50',
-      '2': '50'
+      '2': '50',
     })
     save_and_wait
     expect(@film.reload.attributes).to include(
@@ -247,7 +249,9 @@ describe 'film_details', type: :feature do
       'expense_cap' => BigDecimal(30_000),
       'sell_off_period' => 12,
       'accept_delivery' => Date.parse('3/3/2033'),
-      'royalty_notes' => 'new royalty notes'
+      'royalty_notes' => 'new royalty notes',
+      'auto_renew' => true,
+      'auto_renew_opt_out' => true,
     )
     expect(@film.film_revenue_percentages.pluck(:value).uniq).to eq([0.5e2])
   end
