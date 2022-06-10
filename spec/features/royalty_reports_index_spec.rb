@@ -28,7 +28,7 @@ describe 'royalty_reports_index', type: :feature do
     expect(page).to have_content 'Hippo Entertainment'
   end
 
-  it 'imports revenue' do
+  it 'imports revenue', :type => 'sidekiq' do
     create_revenue_streams
     film = create(:expenses_recouped_from_top_film)
     film.film_revenue_percentages.update_all(value: 50)
@@ -43,7 +43,7 @@ describe 'royalty_reports_index', type: :feature do
     end
   end
 
-  it 'imports expenses' do
+  it 'imports expenses', :type => 'sidekiq' do
     create_revenue_streams
     film = create(:expenses_recouped_from_top_film)
     film.film_revenue_percentages.update_all(value: 50)

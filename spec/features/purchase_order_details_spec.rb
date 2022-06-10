@@ -155,7 +155,7 @@ describe 'purchase_order_details_spec', type: :feature do
     expect(PurchaseOrder.find_by_id(@purchase_order.id)).to be(nil)
   end
 
-  it 'ships the purchase order' do
+  it 'ships the purchase order', :type => 'sidekiq' do
     create(:setting)
     Sidekiq::Testing.inline! do
       visit purchase_order_path(@purchase_order, as: $admin_user)

@@ -94,7 +94,7 @@ describe 'return_details', type: :feature do
     expect(page).to have_content('Generating Credit Memo')
   end
 
-  it 'generates the credit memo' do
+  it 'generates the credit memo', :type => 'sidekiq' do
     create(:setting)
     create(:return_item)
     Sidekiq::Testing.inline! do

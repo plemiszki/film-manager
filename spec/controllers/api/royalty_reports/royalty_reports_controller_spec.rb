@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'sidekiq/testing'
 require 'support/controllers_helper'
 
 RSpec.describe Api::RoyaltyReportsController do

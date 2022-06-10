@@ -290,7 +290,7 @@ GEM
       sentry-ruby-core (= 5.2.1)
     sentry-ruby-core (5.2.1)
       concurrent-ruby
-    sidekiq (6.4.1)
+    sidekiq (6.5.0)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
@@ -375,7 +375,7 @@ DEPENDENCIES
   sass-rails
   selenium-webdriver
   sentry-ruby
-  sidekiq
+  sidekiq (= 6.5.0)
   spring
   textacular
   timeliness
