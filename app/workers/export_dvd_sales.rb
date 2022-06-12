@@ -2,10 +2,13 @@ class ExportDvdSales
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  def perform(time_started, start_date, end_date)
-    job = Job.find_by_job_id(time_started)
-    job_folder = "#{Rails.root}/tmp/#{time_started}"
+  def perform(_, args = {})
+    job = Job.find_by_job_id(args["time_started"])
+    job_folder = "#{Rails.root}/tmp/#{args["time_started"]}"
     FileUtils.mkdir_p("#{job_folder}")
+
+    start_date = Date.strptime(args["start_date"], "%m/%d/%y")
+    end_date = Date.strptime(args["end_date"], "%m/%d/%y")
 
     require 'xlsx_writer'
     doc = XlsxWriter.new
@@ -66,7 +69,7 @@ class ExportDvdSales
       region: 'us-east-1'
     )
     bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object("#{time_started}/sales.xlsx")
+    obj = bucket.object("#{args["time_started"]}/sales.xlsx")
     obj.upload_file(file_path, acl:'public-read')
     job.update!({ status: :success, metadata: { url: obj.public_url } })
   end

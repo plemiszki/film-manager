@@ -77,11 +77,11 @@ class Api::VirtualBookingsController < AdminController
     deduction = virtual_booking.deduction
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "send virtual booking report", first_line: "Sending Report")
-    SendVirtualBookingReport.perform_async(0,
+    SendVirtualBookingReport.perform_async(0, {
       virtual_booking_id: virtual_booking.id,
       time_started: time_started,
-      current_user_id: current_user.id
-    )
+      current_user_id: current_user.id,
+    }.stringify_keys)
     render json: { job: job.render_json }
   end
 

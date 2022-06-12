@@ -170,13 +170,13 @@ class Api::InvoicesController < AdminController
   end
 
   def send_invoice(invoice, booking)
-    SendBookingInvoice.perform_async(0,
+    SendBookingInvoice.perform_async(0, {
       invoice_id: invoice.id,
       user_id: current_user.id,
       email: booking.email,
       overage: params[:overage],
-      shipping_terms: (params[:advance] && booking.booking_type.strip != "Theatrical")
-    )
+      shipping_terms: (params[:advance] && booking.booking_type.strip != "Theatrical"),
+    }.stringify_keys)
   end
 
 end
