@@ -25,6 +25,7 @@ RSpec.describe InvoicePayment do
     @invoice_payment.update(date: "2/28/20")
     expect(@invoice_payment.date.month).to be(2)
     expect(@invoice_payment.date.day).to be(28)
+    expect(@invoice_payment.errors.messages[:date]).to match_array([])
   end
 
 end
