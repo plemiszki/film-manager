@@ -48,6 +48,8 @@ RSpec.describe Film do
     expect(@film.start_date.day).to be(28)
     expect(@film.end_date.month).to be(3)
     expect(@film.end_date.day).to be(1)
+    expect(@film.errors.messages[:start_date]).to match_array([])
+    expect(@film.errors.messages[:end_date]).to match_array([])
   end
 
   it 'does not allow duplicate club dates' do

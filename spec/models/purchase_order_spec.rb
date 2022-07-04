@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'support/controllers_helper'
 
-RSpec.describe Return do
+RSpec.describe PurchaseOrder do
 
   before do
     @purchase_order = PurchaseOrder.new
@@ -26,6 +26,8 @@ RSpec.describe Return do
     expect(@purchase_order.order_date.day).to be(28)
     expect(@purchase_order.ship_date.month).to be(3)
     expect(@purchase_order.ship_date.day).to be(1)
+    expect(@purchase_order.errors.messages[:order_date]).to match_array([])
+    expect(@purchase_order.errors.messages[:ship_date]).to match_array([])
   end
 
 end

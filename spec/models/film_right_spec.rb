@@ -27,6 +27,8 @@ RSpec.describe FilmRight do
     expect(@film_right.start_date.day).to be(28)
     expect(@film_right.end_date.month).to be(3)
     expect(@film_right.end_date.day).to be(1)
+    expect(@film_right.errors.messages[:start_date]).to match_array([])
+    expect(@film_right.errors.messages[:end_date]).to match_array([])
   end
 
 end

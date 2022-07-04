@@ -22,6 +22,7 @@ RSpec.describe Payment do
     @payment.update(date: "2/28/20")
     expect(@payment.date.month).to be(2)
     expect(@payment.date.day).to be(28)
+    expect(@payment.errors.messages[:date]).to match_array([])
   end
 
 end

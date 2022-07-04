@@ -26,6 +26,8 @@ RSpec.describe Return do
     expect(@dvd.pre_book_date.day).to be(28)
     expect(@dvd.retail_date.month).to be(3)
     expect(@dvd.retail_date.day).to be(1)
+    expect(@dvd.errors.messages[:pre_book_date]).to match_array([])
+    expect(@dvd.errors.messages[:retail_date]).to match_array([])
   end
 
 end

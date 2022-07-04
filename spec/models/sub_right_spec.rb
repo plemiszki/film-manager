@@ -27,6 +27,8 @@ RSpec.describe SubRight do
     expect(@sub_right.start_date.day).to be(28)
     expect(@sub_right.end_date.month).to be(3)
     expect(@sub_right.end_date.day).to be(1)
+    expect(@sub_right.errors.messages[:start_date]).to match_array([])
+    expect(@sub_right.errors.messages[:end_date]).to match_array([])
   end
 
 end
