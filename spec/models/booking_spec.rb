@@ -9,9 +9,9 @@ RSpec.describe Booking do
 
   it 'does not allow empty date_added, start_date, or end_date fields' do
     @booking.valid?
-    expect(@booking.errors.messages[:date_added]).to eq ['is not a valid date']
-    expect(@booking.errors.messages[:start_date]).to eq ['is not a valid date']
-    expect(@booking.errors.messages[:end_date]).to eq ['is not a valid date']
+    expect(@booking.errors.messages[:date_added]).to eq ["can't be blank"]
+    expect(@booking.errors.messages[:start_date]).to eq ["can't be blank"]
+    expect(@booking.errors.messages[:end_date]).to eq ["can't be blank"]
   end
 
   it 'allows certain empty date fields' do

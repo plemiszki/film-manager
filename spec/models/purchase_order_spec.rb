@@ -9,7 +9,7 @@ RSpec.describe Return do
 
   it 'does not allow empty order dates' do
     @purchase_order.valid?
-    expect(@purchase_order.errors.messages[:order_date]).to eq ['is not a valid date']
+    expect(@purchase_order.errors.messages[:order_date]).to eq ["can't be blank"]
   end
 
   it 'does not allow invalid dates' do

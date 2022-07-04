@@ -12,7 +12,7 @@ RSpec.describe InvoicePayment do
 
   it 'does not allow empty dates' do
     @invoice_payment.valid?
-    expect(@invoice_payment.errors.messages[:date]).to eq ['is not a valid date']
+    expect(@invoice_payment.errors.messages[:date]).to eq ["can't be blank"]
   end
 
   it 'does not allow invalid dates' do

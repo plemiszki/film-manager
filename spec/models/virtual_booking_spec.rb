@@ -9,9 +9,9 @@ RSpec.describe VirtualBooking do
 
   it 'does not allow empty date fields' do
     @virtual_booking.valid?
-    expect(@virtual_booking.errors.messages[:date_added]).to eq ['is not a valid date']
-    expect(@virtual_booking.errors.messages[:start_date]).to eq ['is not a valid date']
-    expect(@virtual_booking.errors.messages[:end_date]).to eq ['is not a valid date']
+    expect(@virtual_booking.errors.messages[:date_added]).to eq ["can't be blank"]
+    expect(@virtual_booking.errors.messages[:start_date]).to eq ["can't be blank"]
+    expect(@virtual_booking.errors.messages[:end_date]).to eq ["can't be blank"]
   end
 
   it 'does not allow invalid dates' do

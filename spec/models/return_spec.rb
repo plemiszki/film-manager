@@ -11,7 +11,7 @@ RSpec.describe Return do
 
   it 'does not allow empty dates' do
     @return.valid?
-    expect(@return.errors.messages[:date]).to eq ['is not a valid date']
+    expect(@return.errors.messages[:date]).to eq ["can't be blank"]
   end
 
   it 'does not allow invalid dates' do

@@ -9,8 +9,8 @@ RSpec.describe SubRight do
 
   it 'does not allow empty start/end dates' do
     @sub_right.valid?
-    expect(@sub_right.errors.messages[:start_date]).to eq ['is not a valid date']
-    expect(@sub_right.errors.messages[:end_date]).to eq ['is not a valid date']
+    expect(@sub_right.errors.messages[:start_date]).to eq ["can't be blank"]
+    expect(@sub_right.errors.messages[:end_date]).to eq ["can't be blank"]
   end
 
   it 'does not allow invalid dates' do

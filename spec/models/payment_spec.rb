@@ -9,7 +9,7 @@ RSpec.describe Payment do
 
   it 'does not allow empty dates' do
     @payment.valid?
-    expect(@payment.errors.messages[:date]).to eq ['is not a valid date']
+    expect(@payment.errors.messages[:date]).to eq ["can't be blank"]
   end
 
   it 'does not allow invalid dates' do
