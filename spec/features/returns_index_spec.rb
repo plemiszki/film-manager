@@ -25,7 +25,7 @@ describe 'returns_index', type: :feature do
     find('.new-button').click
     fill_out_and_submit_modal({
       customer_id: { value: 'DVD Vendor', type: :select_modal },
-      date: Date.today,
+      date: Date.today.strftime("%-m/%-d/%y"),
       number: 'return order number'
     }, :input)
     new_return = Return.last
@@ -44,7 +44,7 @@ describe 'returns_index', type: :feature do
       customer_id: { value: 'DVD Vendor', type: :select_modal }
     }, :input)
     expect(page).to have_content "Number can't be blank"
-    expect(page).to have_content "Date is not a valid date"
+    expect(page).to have_content "Date can't be blank"
   end
 
   it 'starts the export job' do

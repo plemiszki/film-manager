@@ -51,8 +51,8 @@ describe 'virtual_bookings_index', type: :feature do
     fill_out_and_submit_modal({ url: '' }, :input)
     expect(page).to have_content "Film can't be blank"
     expect(page).to have_content "Venue can't be blank"
-    expect(page).to have_content 'Start date is not a valid date'
-    expect(page).to have_content 'End date is not a valid date'
+    expect(page).to have_content "Start date can't be blank"
+    expect(page).to have_content "End date can't be blank"
   end
 
   it 'starts the export job' do

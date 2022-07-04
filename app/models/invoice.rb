@@ -7,7 +7,7 @@ class Invoice < ActiveRecord::Base
 
   validates :invoice_type, :number, presence: true
   validates :number, uniqueness: true
-  validates_date :sent_date, allow_blank: true
+  validates :sent_date, date: { blank_ok: true }
 
   has_many :invoice_rows, -> { order('invoice_rows.id') }, dependent: :destroy
   has_many :invoice_payments, -> { order('invoice_payments.id') }, dependent: :destroy

@@ -34,7 +34,7 @@ class Film < ActiveRecord::Base
     :ppr_drl_post_street_member,
     greater_than_or_equal_to: 0,
     less_than: 100_000
-  validates_date :start_date,
+  validates :start_date,
     :end_date,
     :avod_release,
     :tvod_release,
@@ -43,7 +43,7 @@ class Film < ActiveRecord::Base
     :club_date,
     :theatrical_release,
     :accept_delivery,
-    allow_blank: true
+    date: { blank_ok: true }
   validates_uniqueness_of :club_date, allow_nil: true
 
   def gr_percentage_tenth_decimal

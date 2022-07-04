@@ -51,7 +51,7 @@ describe 'purchase_orders_index', type: :feature do
       number: ''
     }, :input)
     expect(page).to have_content "Number can't be blank"
-    expect(page).to have_content "Order date is not a valid date"
+    expect(page).to have_content "Order date can't be blank"
   end
 
 end

@@ -72,7 +72,7 @@ describe 'purchase_order_details_spec', type: :feature do
     clear_form
     save_and_wait
     expect(page).to have_content("Number can't be blank")
-    expect(page).to have_content "Order date is not a valid date"
+    expect(page).to have_content "Order date can't be blank"
   end
 
   it 'saves a shipping address' do

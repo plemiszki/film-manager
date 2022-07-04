@@ -51,8 +51,8 @@ describe 'virtual_booking_details', type: :feature do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     clear_form
     save_and_wait
-    expect(page).to have_content("Start date is not a valid date")
-    expect(page).to have_content("End date is not a valid date")
+    expect(page).to have_content("Start date can't be blank")
+    expect(page).to have_content("End date can't be blank")
   end
 
   it 'updates information about the virtual_booking' do

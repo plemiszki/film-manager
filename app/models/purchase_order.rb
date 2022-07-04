@@ -1,8 +1,8 @@
 class PurchaseOrder < ActiveRecord::Base
 
   validates :number, presence: true
-  validates_date :order_date
-  validates_date :ship_date, allow_blank: true
+  validates :order_date, date: true
+  validates :ship_date, date: { blank_ok: true }
 
   after_validation :set_month_and_year, on: [:create, :update]
 

@@ -24,7 +24,7 @@ describe 'return_details', type: :feature do
     expect(page).to have_content 'Return Details'
     expect(find('input[data-field="number"]').value).to eq '012345678'
     expect(find('select[data-field="customerId"]', visible: false).value).to eq '1'
-    expect(find('input[data-field="date"]').value).to eq Date.today.to_s
+    expect(find('input[data-field="date"]').value).to eq Date.today.strftime("%-m/%-d/%y")
   end
 
   it 'updates information about the return' do
@@ -32,13 +32,13 @@ describe 'return_details', type: :feature do
     fill_out_form({
       customerId: { value: 2, type: :select },
       number: 'new number',
-      date: '2020-01-01'
+      date: '1/30/2020'
     })
     save_and_wait
     expect(@return.reload.attributes).to include(
       'customer_id' => 2,
       'number' => 'new number',
-      'date' => Date.parse('2020-01-01')
+      'date' => Date.parse('2020-01-30')
     )
   end
 
@@ -50,7 +50,7 @@ describe 'return_details', type: :feature do
     })
     save_and_wait
     expect(page).to have_content("Number can't be blank")
-    expect(page).to have_content("Date is not a valid date")
+    expect(page).to have_content("Date can't be blank")
   end
 
   it 'deletes the return' do

@@ -130,8 +130,8 @@ describe 'booking_details', type: :feature do
     visit booking_path(@booking, as: $admin_user)
     clear_form
     save_and_wait
-    expect(page).to have_content('Start date is not a valid date')
-    expect(page).to have_content('End date is not a valid date')
+    expect(page).to have_content("Start date can't be blank")
+    expect(page).to have_content("End date can't be blank")
     expect(page).to have_content('Advance is not a number')
     expect(page).to have_content('Shipping fee is not a number')
     expect(page).to have_content('Deduction is not a number')
