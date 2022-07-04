@@ -1,7 +1,7 @@
 class Return < ActiveRecord::Base
 
-  validates :number, :date, :customer_id, presence: true
-  validates_date :date, allow_blank: false
+  validates :number, :customer_id, presence: true
+  validates_date :date
 
   has_many :return_items, -> { order(:order) }, dependent: :destroy
   has_many :items, through: :return_items

@@ -50,7 +50,7 @@ describe 'return_details', type: :feature do
     })
     save_and_wait
     expect(page).to have_content("Number can't be blank")
-    expect(page).to have_content("Date can't be blank")
+    expect(page).to have_content("Date is not a valid date")
   end
 
   it 'deletes the return' do

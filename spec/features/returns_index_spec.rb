@@ -44,7 +44,7 @@ describe 'returns_index', type: :feature do
       customer_id: { value: 'DVD Vendor', type: :select_modal }
     }, :input)
     expect(page).to have_content "Number can't be blank"
-    expect(page).to have_content "Date can't be blank"
+    expect(page).to have_content "Date is not a valid date"
   end
 
   it 'starts the export job' do
