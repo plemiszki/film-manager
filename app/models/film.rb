@@ -48,6 +48,7 @@ class Film < ActiveRecord::Base
     :accept_delivery,
     date: { blank_ok: true }
   validates_uniqueness_of :club_date, allow_nil: true
+  validate :end_date_not_before_start_date
 
   def gr_percentage_tenth_decimal
     if [5, 6].include?(deal_type_id)

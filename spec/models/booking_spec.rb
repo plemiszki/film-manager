@@ -44,4 +44,11 @@ RSpec.describe Booking do
     test_parse_all_date_fields(@booking)
   end
 
+  it 'does not allow end_date after start_date' do
+    @booking.start_date = Date.today
+    @booking.end_date = Date.today - 1.day
+    @booking.valid?
+    expect(@booking.errors.messages[:end_date]).to eq ['cannot be before start date']
+  end
+
 end

@@ -25,4 +25,11 @@ RSpec.describe SubRight do
     test_parse_all_date_fields(@sub_right)
   end
 
+  it 'does not allow end_date after start_date' do
+    @sub_right.start_date = Date.today
+    @sub_right.end_date = Date.today - 1.day
+    @sub_right.valid?
+    expect(@sub_right.errors.messages[:end_date]).to eq ['cannot be before start date']
+  end
+
 end

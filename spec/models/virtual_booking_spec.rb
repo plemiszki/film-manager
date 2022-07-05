@@ -28,4 +28,11 @@ RSpec.describe VirtualBooking do
     test_parse_all_date_fields(@virtual_booking)
   end
 
+  it 'does not allow end_date after start_date' do
+    @virtual_booking.start_date = Date.today
+    @virtual_booking.end_date = Date.today - 1.day
+    @virtual_booking.valid?
+    expect(@virtual_booking.errors.messages[:end_date]).to eq ['cannot be before start date']
+  end
+
 end

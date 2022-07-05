@@ -7,8 +7,8 @@ class Booking < ActiveRecord::Base
   validates_numericality_of :advance, :shipping_fee, :house_expense, :deduction, :box_office, :greater_than_or_equal_to => 0
   validates :date_added, :start_date, :end_date, date: true
   validates :materials_sent, :imported_advance_invoice_sent, :imported_overage_invoice_sent, :booking_confirmation_sent, date: { blank_ok: true }
-
   validate :booker_id_or_old_booker_id
+  validate :end_date_not_before_start_date
 
   belongs_to :film
   belongs_to :venue

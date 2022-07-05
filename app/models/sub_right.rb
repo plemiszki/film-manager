@@ -6,6 +6,7 @@ class SubRight < ActiveRecord::Base
   validates :sublicensor_id, :right_id, :territory_id, :film_id, presence: true
   validates :right_id, uniqueness: { scope: [:film_id, :territory_id, :sublicensor_id, :exclusive] }
   validates :start_date, :end_date, date: true
+  validate :end_date_not_before_start_date
 
   belongs_to :sublicensor
   belongs_to :right

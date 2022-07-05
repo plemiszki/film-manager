@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'support/controllers_helper'
+require 'support/models_helper'
 
 RSpec.describe Film do
 
@@ -52,6 +52,13 @@ RSpec.describe Film do
     @film.update(club_date: "3/1/20")
     @film.valid?
     expect(@film.errors.messages[:club_date]).to eq ['has already been taken']
+  end
+
+  it 'does not allow end_date after start_date' do
+    @film.start_date = Date.today
+    @film.end_date = Date.today - 1.day
+    @film.valid?
+    expect(@film.errors.messages[:end_date]).to eq ['cannot be before start date']
   end
 
 end

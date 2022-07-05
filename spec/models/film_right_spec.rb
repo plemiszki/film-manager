@@ -25,4 +25,11 @@ RSpec.describe FilmRight do
     test_parse_all_date_fields(@film_right)
   end
 
+  it 'does not allow end_date after start_date' do
+    @film_right.start_date = Date.today
+    @film_right.end_date = Date.today - 1.day
+    @film_right.valid?
+    expect(@film_right.errors.messages[:end_date]).to eq ['cannot be before start date']
+  end
+
 end
