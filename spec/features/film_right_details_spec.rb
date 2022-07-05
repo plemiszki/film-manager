@@ -56,7 +56,7 @@ describe 'film_right_details', type: :feature do
     })
     save_and_wait
     expect(page).to have_content('Right has already been taken')
-    expect(page).to have_content("Start date can't be after end date")
+    expect(page).to have_content("End date cannot be before start date")
   end
 
   it 'deletes the film right' do
