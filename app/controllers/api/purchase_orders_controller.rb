@@ -115,7 +115,7 @@ class Api::PurchaseOrdersController < AdminController
       @sales[:month_totals] = month_totals
       @sales[:year_total] = month_totals.values.reduce(:+)
     end
-    @dvds = Dvd.where(retail_date: (DateTime.parse("1/1/#{params[:year]}"))..DateTime.parse("31/12/#{params[:year]}")).includes(:dvd_type).includes(:feature).order(:retail_date)
+    @dvds = Dvd.where(retail_date: (DateTime.parse("1/1/#{params[:year]}"))..DateTime.parse("12/31/#{params[:year]}")).includes(:dvd_type).includes(:feature).order(:retail_date)
     @dvd_units = Hash.new { |hash, key| hash[key] = {} }
     @dvd_sales = Hash.new { |hash, key| hash[key] = {} }
     @dvds.each do |dvd|

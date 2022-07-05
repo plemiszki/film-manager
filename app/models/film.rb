@@ -1,5 +1,8 @@
 class Film < ActiveRecord::Base
 
+  include DateFieldYearsConverter
+  before_validation :convert_date_field_years
+
   validates :title, :label_id, :film_type, presence: true
   validates :title, uniqueness: { scope: :film_type }
   validate :title_valid

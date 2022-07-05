@@ -1,5 +1,8 @@
 class SubRight < ActiveRecord::Base
 
+  include DateFieldYearsConverter
+  before_validation :convert_date_field_years
+
   validates :sublicensor_id, :right_id, :territory_id, :film_id, presence: true
   validates :right_id, uniqueness: { scope: [:film_id, :territory_id, :sublicensor_id, :exclusive] }
   validates :start_date, :end_date, date: true

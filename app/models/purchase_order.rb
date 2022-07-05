@@ -1,5 +1,8 @@
 class PurchaseOrder < ActiveRecord::Base
 
+  include DateFieldYearsConverter
+  before_validation :convert_date_field_years
+
   validates :number, presence: true
   validates :order_date, date: true
   validates :ship_date, date: { blank_ok: true }

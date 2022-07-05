@@ -81,7 +81,7 @@ describe 'virtual_booking_details', type: :feature do
         film_id: 2,
         venue_id: 2,
         start_date: Date.parse('1/1/2020'),
-        end_date: Date.parse('1/2/2020'),
+        end_date: Date.parse('2/1/2020'),
         host: 'Venue'
       },
       component_data: {

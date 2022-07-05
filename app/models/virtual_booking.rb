@@ -2,6 +2,9 @@ class VirtualBooking < ActiveRecord::Base
 
   enum host: ['FM', 'Venue']
 
+  include DateFieldYearsConverter
+  before_validation :convert_date_field_years
+
   validates :film_id, :venue_id, presence: true
   validates :date_added, :start_date, :end_date, date: true
   validates_numericality_of :deduction, :box_office, :greater_than_or_equal_to => 0

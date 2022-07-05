@@ -8,19 +8,7 @@ describe 'dvd_details', type: :feature do
     @film = create(:film, title: 'Some Film')
     @short = create(:film, film_type: 'Short', title: 'A Short Film')
     create_dvd_types
-    @dvd = Dvd.create!(
-      feature_film_id: @film.id,
-      dvd_type_id: DvdType.first.id,
-      upc: '616892087410',
-      pre_book_date: Date.parse('1/1/2000'),
-      retail_date: Date.parse('1/2/2000'),
-      price: 24.95,
-      stock: 62,
-      units_shipped: 200,
-      discs: 1,
-      sound_config: 'mono',
-      special_features: 'director commentary'
-    )
+    @dvd = create(:dvd)
   end
 
   it 'is gated' do
@@ -34,7 +22,7 @@ describe 'dvd_details', type: :feature do
     expect(find('select[data-field="dvdTypeId"]', visible: false).value).to eq '1'
     expect(find('input[data-field="upc"]').value).to eq '616892087410'
     expect(find('input[data-field="preBookDate"]').value).to eq '1/1/00'
-    expect(find('input[data-field="retailDate"]').value).to eq '2/1/00'
+    expect(find('input[data-field="retailDate"]').value).to eq '1/2/00'
     expect(find('input[data-field="price"]').value).to eq '$24.95'
     expect(find('input[data-field="stock"]').value).to eq '62'
     expect(find('input[data-field="unitsShipped"]').value).to eq '200'

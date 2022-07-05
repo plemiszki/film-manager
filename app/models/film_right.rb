@@ -1,5 +1,8 @@
 class FilmRight < ActiveRecord::Base
 
+  include DateFieldYearsConverter
+  before_validation :convert_date_field_years
+
   validates :film_id, :right_id, :territory_id, presence: true
   validates :right_id, uniqueness: { scope: [:film_id, :territory_id] }
   validates :start_date, :end_date, date: { blank_ok: true }

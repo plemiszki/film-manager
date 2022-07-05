@@ -1,5 +1,8 @@
 class Booking < ActiveRecord::Base
 
+  include DateFieldYearsConverter
+  before_validation :convert_date_field_years
+
   validates :film_id, :venue_id, :booking_type, :status, :format_id, presence: true
   validates_numericality_of :advance, :shipping_fee, :house_expense, :deduction, :box_office, :greater_than_or_equal_to => 0
   validates :date_added, :start_date, :end_date, date: true

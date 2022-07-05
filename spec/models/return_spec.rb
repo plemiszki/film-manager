@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'support/controllers_helper'
+require 'support/models_helper'
 
 RSpec.describe Return do
 

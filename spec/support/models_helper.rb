@@ -2,7 +2,7 @@ def test_parse_all_date_fields(resource)
   fields = resource.attributes.keys
   date_fields = fields.select do |field|
     field_info = resource.type_for_attribute(field)
-    field_info.type == :date && !resource.send(field).is_a?(Array)
+    field_info.type == :date && !resource.send(field).is_a?(Array) # TODO: validate array columns
   end
   obj = {}
   date_fields.each_with_index do |field, index|

@@ -21,7 +21,7 @@ describe 'dvd_reports', type: :feature do
 
   it 'calculates report' do
     jan_date = Date.parse("1/1/#{Date.today.year}")
-    feb_date = Date.parse("1/2/#{Date.today.year}")
+    feb_date = Date.parse("2/1/#{Date.today.year}")
     settings = create(:setting)
     @aec_january_po = create(:purchase_order, customer_id: 1, order_date: jan_date, ship_date: jan_date, number: 'JAN-AEC')
     create(:purchase_order_item, purchase_order_id: @aec_january_po.id, item_id: @wilby_wonderful_dvd.id)
@@ -44,6 +44,7 @@ describe 'dvd_reports', type: :feature do
     Invoice.create_invoice_from_po(@midwest_february_po, { sent_date: feb_date })
     settings.update(next_dvd_invoice_number: settings.next_dvd_invoice_number + 1)
     visit dvd_reports_path(as: $admin_user)
+    wait_for_ajax
     within('.months-report') do
       expect(find('td[data-test="aec-jan"]')).to have_content('$39.66')
       expect(find('td[data-test="aec-feb"]')).to have_content('$89.26')

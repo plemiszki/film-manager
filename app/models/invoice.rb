@@ -5,6 +5,9 @@ class Invoice < ActiveRecord::Base
 
   include Dollarify
 
+  include DateFieldYearsConverter
+  before_validation :convert_date_field_years
+
   validates :invoice_type, :number, presence: true
   validates :number, uniqueness: true
   validates :sent_date, date: { blank_ok: true }

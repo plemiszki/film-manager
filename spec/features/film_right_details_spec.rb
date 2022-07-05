@@ -42,7 +42,7 @@ describe 'film_right_details', type: :feature do
     verify_db_and_component(
       entity: @film_right,
       data: new_info,
-      db_data: { exclusive: false, start_date: Date.parse('20/12/1'), end_date: Date.parse('30/12/15') }
+      db_data: { exclusive: false, start_date: Date.parse('12/1/20'), end_date: Date.parse('12/15/30') }
     )
   end
 
