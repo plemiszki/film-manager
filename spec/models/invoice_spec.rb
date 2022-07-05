@@ -19,10 +19,7 @@ RSpec.describe Invoice do
   end
 
   it 'parses dates using the US format' do
-    @invoice.update(sent_date: "2/28/20")
-    expect(@invoice.sent_date.month).to be(2)
-    expect(@invoice.sent_date.day).to be(28)
-    expect(@invoice.errors.messages[:sent_date]).to match_array([])
+    test_parse_all_date_fields(@invoice)
   end
 
 end

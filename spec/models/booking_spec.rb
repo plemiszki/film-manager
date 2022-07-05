@@ -41,13 +41,7 @@ RSpec.describe Booking do
   end
 
   it 'parses dates using the US format' do
-    @booking.update(start_date: "2/28/20", end_date: "3/1/20")
-    expect(@booking.start_date.month).to be(2)
-    expect(@booking.start_date.day).to be(28)
-    expect(@booking.end_date.month).to be(3)
-    expect(@booking.end_date.day).to be(1)
-    expect(@booking.errors.messages[:start_date]).to match_array([])
-    expect(@booking.errors.messages[:end_date]).to match_array([])
+    test_parse_all_date_fields(@booking)
   end
 
 end

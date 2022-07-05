@@ -21,10 +21,7 @@ RSpec.describe Return do
   end
 
   it 'parses dates using the US format' do
-    @return.update(date: "2/28/20")
-    expect(@return.date.month).to be(2)
-    expect(@return.date.day).to be(28)
-    expect(@return.errors.messages[:date]).to match_array([])
+    test_parse_all_date_fields(@return)
   end
 
 end

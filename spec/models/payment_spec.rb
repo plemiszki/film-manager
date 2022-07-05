@@ -19,10 +19,7 @@ RSpec.describe Payment do
   end
 
   it 'parses dates using the US format' do
-    @payment.update(date: "2/28/20")
-    expect(@payment.date.month).to be(2)
-    expect(@payment.date.day).to be(28)
-    expect(@payment.errors.messages[:date]).to match_array([])
+    test_parse_all_date_fields(@payment)
   end
 
 end

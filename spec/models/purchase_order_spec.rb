@@ -21,13 +21,7 @@ RSpec.describe PurchaseOrder do
   end
 
   it 'parses dates using the US format' do
-    @purchase_order.update(order_date: "2/28/20", ship_date: "3/1/20")
-    expect(@purchase_order.order_date.month).to be(2)
-    expect(@purchase_order.order_date.day).to be(28)
-    expect(@purchase_order.ship_date.month).to be(3)
-    expect(@purchase_order.ship_date.day).to be(1)
-    expect(@purchase_order.errors.messages[:order_date]).to match_array([])
-    expect(@purchase_order.errors.messages[:ship_date]).to match_array([])
+    test_parse_all_date_fields(@purchase_order)
   end
 
 end

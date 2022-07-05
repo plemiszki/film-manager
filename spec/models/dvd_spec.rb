@@ -21,13 +21,7 @@ RSpec.describe Return do
   end
 
   it 'parses dates using the US format' do
-    @dvd.update(pre_book_date: "2/28/20", retail_date: "3/1/20")
-    expect(@dvd.pre_book_date.month).to be(2)
-    expect(@dvd.pre_book_date.day).to be(28)
-    expect(@dvd.retail_date.month).to be(3)
-    expect(@dvd.retail_date.day).to be(1)
-    expect(@dvd.errors.messages[:pre_book_date]).to match_array([])
-    expect(@dvd.errors.messages[:retail_date]).to match_array([])
+    test_parse_all_date_fields(@dvd)
   end
 
 end
