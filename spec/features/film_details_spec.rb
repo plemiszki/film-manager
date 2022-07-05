@@ -277,17 +277,17 @@ describe 'film_details', type: :feature do
     within('#film-rights-change-dates') do
       fill_out_form({
         start_date: '3/3/2033',
-        end_date: '4/4/2044'
+        end_date: '4/4/2034'
       })
       find('.orange-button', text: 'Change All Dates').click
     end
     wait_for_ajax
     within('.fm-admin-table') do
       expect(page).to have_content('3/3/33')
-      expect(page).to have_content('4/4/44')
+      expect(page).to have_content('4/4/34')
     end
     expect(@film.reload.film_rights.pluck(:start_date).uniq).to eq([Date.parse('3/3/2033')])
-    expect(@film.reload.film_rights.pluck(:end_date).uniq).to eq([Date.parse('4/4/2044')])
+    expect(@film.reload.film_rights.pluck(:end_date).uniq).to eq([Date.parse('4/4/2034')])
   end
 
   # educational tab

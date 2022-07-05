@@ -12,7 +12,7 @@ module DateFieldYearsConverter
       next unless value.present?
       next if value.is_a?(Array) # TODO: convert array columns
       day, month, year = value.day, value.month, value.year
-      year += (year < 68 ? 2000 : 1000) if year.digits.length == 2
+      year += (year < 68 ? 2000 : 1900) if year.digits.length <= 2
       self.send("#{field}=", Date.parse("#{month}/#{day}/#{year}"))
     end
   

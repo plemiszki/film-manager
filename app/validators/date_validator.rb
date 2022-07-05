@@ -20,7 +20,7 @@ class DateValidator < ActiveModel::EachValidator
         end
       end
 
-      if date.present? && !(1950..2050).include?(date.year)
+      if date.present? && !(1990..2040).include?(date.year)
         record.errors.add attribute, "is out of range"
       end
   
