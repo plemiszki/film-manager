@@ -4,19 +4,24 @@ class DateValidator < ActiveModel::EachValidator
   
       value = record.attributes_before_type_cast[attribute.to_s]
   
-      unless value.present? || options[:blank_ok]
+      if !value.present? && !options[:blank_ok]
         record.errors.add attribute, "can't be blank"
         return
       end
+
+      date = value.is_a?(Date) ? value : nil
   
-      if value.present?
-        return if value.is_a?(Date)
-  
+      if value.present? && value.is_a?(String)  
         begin
-          Date.parse(value)
+          date = Date.parse(value)
         rescue Date::Error
           record.errors.add attribute, "is not a valid date"
+          return
         end
+      end
+
+      if date.present? && !(1950..2050).include?(date.year)
+        record.errors.add attribute, "is out of range"
       end
   
     end

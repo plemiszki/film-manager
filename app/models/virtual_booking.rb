@@ -7,6 +7,7 @@ class VirtualBooking < ActiveRecord::Base
 
   validates :film_id, :venue_id, presence: true
   validates :date_added, :start_date, :end_date, date: true
+  validates :report_sent_date, date: { blank_ok: true }
   validates_numericality_of :deduction, :box_office, :greater_than_or_equal_to => 0
 
   belongs_to :film

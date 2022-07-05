@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'support/controllers_helper'
+require 'support/models_helper'
 
-RSpec.describe Return do
+RSpec.describe Dvd do
 
   before do
     @dvd = Dvd.new

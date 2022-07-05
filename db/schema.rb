@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_09_183858) do
+ActiveRecord::Schema.define(version: 2022_07_05_034245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
-  create_table "actors", force: :cascade do |t|
+  create_table "actors", id: :serial, force: :cascade do |t|
     t.integer "actorable_id", null: false
     t.string "first_name"
     t.string "last_name", null: false
@@ -25,13 +25,13 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["actorable_id"], name: "index_actors_on_actorable_id"
   end
 
-  create_table "aliases", force: :cascade do |t|
+  create_table "aliases", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.string "text", null: false
     t.index ["film_id", "text"], name: "index_aliases_on_film_id_and_text", unique: true
   end
 
-  create_table "alternate_audios", force: :cascade do |t|
+  create_table "alternate_audios", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "language_id", null: false
     t.datetime "created_at", null: false
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["film_id", "language_id"], name: "index_alternate_audios_on_film_id_and_language_id", unique: true
   end
 
-  create_table "alternate_lengths", force: :cascade do |t|
+  create_table "alternate_lengths", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.string "length", null: false
     t.datetime "created_at", null: false
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["film_id", "length"], name: "index_alternate_lengths_on_film_id_and_length", unique: true
   end
 
-  create_table "alternate_subs", force: :cascade do |t|
+  create_table "alternate_subs", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "language_id", null: false
     t.datetime "created_at", null: false
@@ -55,18 +55,18 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["film_id", "language_id"], name: "index_alternate_subs_on_film_id_and_language_id", unique: true
   end
 
-  create_table "booker_venues", force: :cascade do |t|
+  create_table "booker_venues", id: :serial, force: :cascade do |t|
     t.integer "booker_id", null: false
     t.integer "venue_id", null: false
   end
 
-  create_table "bookers", force: :cascade do |t|
+  create_table "bookers", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "email"
     t.string "phone"
   end
 
-  create_table "bookings", force: :cascade do |t|
+  create_table "bookings", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "venue_id", null: false
     t.date "date_added", null: false
@@ -107,7 +107,6 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "shipping_notes", default: ""
     t.string "tracking_number", default: ""
     t.boolean "delivered", default: false
-    t.date "date_paid"
     t.decimal "house_expense", precision: 8, scale: 2, default: "0.0"
     t.string "notes", default: ""
     t.decimal "deduction", precision: 8, scale: 2, default: "0.0"
@@ -128,7 +127,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["venue_id"], name: "index_bookings_on_venue_id"
   end
 
-  create_table "countries", force: :cascade do |t|
+  create_table "countries", id: :serial, force: :cascade do |t|
     t.string "name", null: false
   end
 
@@ -159,23 +158,23 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["number"], name: "index_credit_memos_on_number", unique: true
   end
 
-  create_table "crossed_films", force: :cascade do |t|
+  create_table "crossed_films", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "crossed_film_id", null: false
     t.index ["film_id", "crossed_film_id"], name: "index_crossed_films_on_film_id_and_crossed_film_id", unique: true
   end
 
-  create_table "deal_templates", force: :cascade do |t|
+  create_table "deal_templates", id: :serial, force: :cascade do |t|
     t.string "name", null: false
   end
 
-  create_table "digital_retailer_films", force: :cascade do |t|
+  create_table "digital_retailer_films", id: :serial, force: :cascade do |t|
     t.integer "digital_retailer_id", null: false
     t.integer "film_id", null: false
     t.string "url", default: ""
   end
 
-  create_table "digital_retailers", force: :cascade do |t|
+  create_table "digital_retailers", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "billing_name", default: ""
     t.string "billing_address1", default: ""
@@ -187,7 +186,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "sage_id", default: ""
   end
 
-  create_table "directors", force: :cascade do |t|
+  create_table "directors", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.string "first_name"
     t.string "last_name", null: false
@@ -195,7 +194,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["film_id"], name: "index_directors_on_film_id"
   end
 
-  create_table "dvd_customers", force: :cascade do |t|
+  create_table "dvd_customers", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.decimal "discount", precision: 5, scale: 2
     t.boolean "consignment", null: false
@@ -216,17 +215,17 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "credit_memo_email", default: ""
   end
 
-  create_table "dvd_shorts", force: :cascade do |t|
+  create_table "dvd_shorts", id: :serial, force: :cascade do |t|
     t.integer "dvd_id", null: false
     t.integer "short_id", null: false
     t.index ["dvd_id", "short_id"], name: "index_dvd_shorts_on_dvd_id_and_short_id", unique: true
   end
 
-  create_table "dvd_types", force: :cascade do |t|
+  create_table "dvd_types", id: :serial, force: :cascade do |t|
     t.string "name", null: false
   end
 
-  create_table "dvds", force: :cascade do |t|
+  create_table "dvds", id: :serial, force: :cascade do |t|
     t.integer "dvd_type_id", null: false
     t.integer "feature_film_id", null: false
     t.decimal "price", precision: 5, scale: 2, default: "0.0"
@@ -260,7 +259,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "episodes", force: :cascade do |t|
+  create_table "episodes", id: :serial, force: :cascade do |t|
     t.string "title", null: false
     t.integer "episode_number", null: false
     t.integer "season_number", null: false
@@ -269,30 +268,30 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.integer "film_id", null: false
   end
 
-  create_table "film_countries", force: :cascade do |t|
+  create_table "film_countries", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "country_id", null: false
     t.integer "order"
   end
 
-  create_table "film_formats", force: :cascade do |t|
+  create_table "film_formats", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "format_id", null: false
   end
 
-  create_table "film_genres", force: :cascade do |t|
+  create_table "film_genres", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "genre_id", null: false
     t.integer "order"
   end
 
-  create_table "film_languages", force: :cascade do |t|
+  create_table "film_languages", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "language_id", null: false
     t.integer "order"
   end
 
-  create_table "film_revenue_percentages", force: :cascade do |t|
+  create_table "film_revenue_percentages", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "revenue_stream_id", null: false
     t.decimal "value", precision: 5, scale: 2, default: "0.0"
@@ -300,7 +299,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["revenue_stream_id"], name: "index_film_revenue_percentages_on_revenue_stream_id"
   end
 
-  create_table "film_rights", force: :cascade do |t|
+  create_table "film_rights", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "right_id", null: false
     t.integer "territory_id"
@@ -311,12 +310,12 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["right_id", "film_id", "territory_id"], name: "index_film_rights_on_right_id_and_film_id_and_territory_id", unique: true
   end
 
-  create_table "film_topics", force: :cascade do |t|
+  create_table "film_topics", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "topic_id", null: false
   end
 
-  create_table "films", force: :cascade do |t|
+  create_table "films", id: :serial, force: :cascade do |t|
     t.string "title", null: false
     t.integer "feature_id"
     t.integer "label_id", null: false
@@ -409,23 +408,23 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["licensor_id"], name: "index_films_on_licensor_id"
   end
 
-  create_table "formats", force: :cascade do |t|
+  create_table "formats", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.boolean "active", default: true
     t.index ["name"], name: "index_formats_on_name", unique: true
   end
 
-  create_table "genres", force: :cascade do |t|
+  create_table "genres", id: :serial, force: :cascade do |t|
     t.string "name", null: false
   end
 
-  create_table "giftbox_dvds", force: :cascade do |t|
+  create_table "giftbox_dvds", id: :serial, force: :cascade do |t|
     t.integer "dvd_id", null: false
     t.integer "giftbox_id", null: false
     t.index ["dvd_id", "giftbox_id"], name: "index_giftbox_dvds_on_dvd_id_and_giftbox_id", unique: true
   end
 
-  create_table "giftboxes", force: :cascade do |t|
+  create_table "giftboxes", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "upc", null: false
     t.decimal "msrp", precision: 5, scale: 2, default: "0.0"
@@ -434,13 +433,13 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "sage_id", default: ""
   end
 
-  create_table "in_theaters_films", force: :cascade do |t|
+  create_table "in_theaters_films", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "order", null: false
     t.text "section", null: false
   end
 
-  create_table "invoice_payments", force: :cascade do |t|
+  create_table "invoice_payments", id: :serial, force: :cascade do |t|
     t.integer "invoice_id", null: false
     t.integer "payment_id", null: false
     t.decimal "amount", precision: 8, scale: 2, default: "0.0"
@@ -448,7 +447,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.date "date", null: false
   end
 
-  create_table "invoice_rows", force: :cascade do |t|
+  create_table "invoice_rows", id: :serial, force: :cascade do |t|
     t.integer "invoice_id", null: false
     t.string "item_label", null: false
     t.decimal "unit_price", precision: 8, scale: 2, default: "0.0"
@@ -459,7 +458,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "item_label_export"
   end
 
-  create_table "invoices", force: :cascade do |t|
+  create_table "invoices", id: :serial, force: :cascade do |t|
     t.string "invoice_type", null: false
     t.date "sent_date"
     t.string "number", null: false
@@ -490,7 +489,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["number"], name: "index_invoices_on_number", unique: true
   end
 
-  create_table "jobs", force: :cascade do |t|
+  create_table "jobs", id: :serial, force: :cascade do |t|
     t.string "job_id", null: false
     t.string "first_line"
     t.boolean "second_line", default: false
@@ -502,15 +501,15 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.integer "status", default: 0
   end
 
-  create_table "labels", force: :cascade do |t|
+  create_table "labels", id: :serial, force: :cascade do |t|
     t.string "name", null: false
   end
 
-  create_table "languages", force: :cascade do |t|
+  create_table "languages", id: :serial, force: :cascade do |t|
     t.string "name", null: false
   end
 
-  create_table "laurels", force: :cascade do |t|
+  create_table "laurels", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.string "result", null: false
     t.string "award_name"
@@ -518,14 +517,14 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.integer "order", null: false
   end
 
-  create_table "licensors", force: :cascade do |t|
+  create_table "licensors", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "email"
     t.string "address"
     t.index ["name"], name: "index_licensors_on_name", unique: true
   end
 
-  create_table "merchandise_items", force: :cascade do |t|
+  create_table "merchandise_items", id: :serial, force: :cascade do |t|
     t.integer "merchandise_type_id", null: false
     t.string "name", null: false
     t.string "size", default: ""
@@ -535,16 +534,16 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.integer "film_id"
   end
 
-  create_table "merchandise_types", force: :cascade do |t|
+  create_table "merchandise_types", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.index ["name"], name: "index_merchandise_types_on_name", unique: true
   end
 
-  create_table "past_bookers", force: :cascade do |t|
+  create_table "past_bookers", id: :serial, force: :cascade do |t|
     t.string "name", null: false
   end
 
-  create_table "payments", force: :cascade do |t|
+  create_table "payments", id: :serial, force: :cascade do |t|
     t.integer "booking_id"
     t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.date "date"
@@ -552,7 +551,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "booking_type", default: "Booking"
   end
 
-  create_table "purchase_order_items", force: :cascade do |t|
+  create_table "purchase_order_items", id: :serial, force: :cascade do |t|
     t.integer "purchase_order_id", null: false
     t.string "item_type", null: false
     t.integer "item_id", null: false
@@ -560,7 +559,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.integer "qty", default: 0
   end
 
-  create_table "purchase_orders", force: :cascade do |t|
+  create_table "purchase_orders", id: :serial, force: :cascade do |t|
     t.string "number", null: false
     t.integer "customer_id", default: 0
     t.string "address1", default: ""
@@ -580,7 +579,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.boolean "reporting_only", default: false
   end
 
-  create_table "quotes", force: :cascade do |t|
+  create_table "quotes", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.string "text", null: false
     t.string "author"
@@ -588,13 +587,13 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.integer "order", null: false
   end
 
-  create_table "related_films", force: :cascade do |t|
+  create_table "related_films", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "other_film_id", null: false
     t.integer "order", null: false
   end
 
-  create_table "return_items", force: :cascade do |t|
+  create_table "return_items", id: :serial, force: :cascade do |t|
     t.integer "return_id", null: false
     t.string "item_type", null: false
     t.integer "item_id", null: false
@@ -605,7 +604,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["return_id"], name: "index_return_items_on_return_id"
   end
 
-  create_table "returns", force: :cascade do |t|
+  create_table "returns", id: :serial, force: :cascade do |t|
     t.string "number", null: false
     t.date "date", null: false
     t.integer "customer_id", null: false
@@ -614,18 +613,18 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["customer_id"], name: "index_returns_on_customer_id"
   end
 
-  create_table "revenue_streams", force: :cascade do |t|
+  create_table "revenue_streams", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.text "nickname"
     t.integer "order"
   end
 
-  create_table "rights", force: :cascade do |t|
+  create_table "rights", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.integer "order", null: false
   end
 
-  create_table "royalty_reports", force: :cascade do |t|
+  create_table "royalty_reports", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "year", null: false
     t.integer "quarter", null: false
@@ -658,7 +657,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["film_id"], name: "index_royalty_reports_on_film_id"
   end
 
-  create_table "royalty_revenue_streams", force: :cascade do |t|
+  create_table "royalty_revenue_streams", id: :serial, force: :cascade do |t|
     t.integer "royalty_report_id", null: false
     t.integer "revenue_stream_id", null: false
     t.decimal "current_revenue", precision: 8, scale: 2, default: "0.0"
@@ -681,7 +680,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["royalty_report_id"], name: "index_royalty_revenue_streams_on_royalty_report_id"
   end
 
-  create_table "settings", force: :cascade do |t|
+  create_table "settings", id: :serial, force: :cascade do |t|
     t.string "booking_confirmation_text", default: ""
     t.integer "next_booking_invoice_number", default: 1
     t.integer "next_dvd_invoice_number", default: 1
@@ -699,7 +698,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "virtual_booking_report_text", default: ""
   end
 
-  create_table "shipping_addresses", force: :cascade do |t|
+  create_table "shipping_addresses", id: :serial, force: :cascade do |t|
     t.string "label"
     t.string "address1"
     t.string "address2"
@@ -711,7 +710,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "name"
   end
 
-  create_table "sub_rights", force: :cascade do |t|
+  create_table "sub_rights", id: :serial, force: :cascade do |t|
     t.integer "right_id", null: false
     t.integer "sublicensor_id", null: false
     t.integer "territory_id", null: false
@@ -725,7 +724,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["territory_id"], name: "index_sub_rights_on_territory_id"
   end
 
-  create_table "sublicensors", force: :cascade do |t|
+  create_table "sublicensors", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "email", default: ""
     t.string "phone", default: ""
@@ -733,16 +732,16 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.boolean "w8", default: false
   end
 
-  create_table "territories", force: :cascade do |t|
+  create_table "territories", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.boolean "world", default: false
   end
 
-  create_table "topics", force: :cascade do |t|
+  create_table "topics", id: :serial, force: :cascade do |t|
     t.string "name", null: false
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "email", null: false
@@ -761,7 +760,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.index ["remember_token"], name: "index_users_on_remember_token"
   end
 
-  create_table "venues", force: :cascade do |t|
+  create_table "venues", id: :serial, force: :cascade do |t|
     t.string "label", null: false
     t.string "billing_name", default: ""
     t.string "billing_address1", default: ""
@@ -802,7 +801,6 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.boolean "box_office_received", default: false
     t.string "email", default: ""
     t.date "report_sent_date"
-    t.date "report_sent"
     t.string "billing_name", default: ""
     t.string "billing_address1", default: ""
     t.string "billing_address2", default: ""
@@ -812,14 +810,14 @@ ActiveRecord::Schema.define(version: 2022_06_09_183858) do
     t.string "billing_country", default: ""
   end
 
-  create_table "weekly_box_offices", force: :cascade do |t|
+  create_table "weekly_box_offices", id: :serial, force: :cascade do |t|
     t.integer "order", null: false
     t.integer "booking_id", null: false
     t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.index ["booking_id"], name: "index_weekly_box_offices_on_booking_id"
   end
 
-  create_table "weekly_terms", force: :cascade do |t|
+  create_table "weekly_terms", id: :serial, force: :cascade do |t|
     t.integer "booking_id", null: false
     t.string "terms", null: false
     t.integer "order", null: false
