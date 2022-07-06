@@ -17,7 +17,7 @@ module DateFieldYearsConverter
   end
 
   def end_date_not_before_start_date
-    if start_date.present? && end_date.presence < start_date
+    if start_date.present? && end_date.present? && end_date < start_date
       errors.add(:end_date, "cannot be before start date")
     end
   end
