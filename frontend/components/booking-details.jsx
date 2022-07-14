@@ -126,11 +126,12 @@ class BookingDetails extends React.Component {
         entityName: 'booking',
         entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.booking, fields: ['advance', 'shippingFee', 'deduction', 'houseExpense', 'boxOffice'] })
       }).then(() => {
-        const { booking } = this.props;
+        const { booking, calculations } = this.props;
         this.setState({
           fetching: false,
           booking,
           bookingSaved: HandyTools.deepCopy(booking),
+          calculations,
           changesToSave: false
         });
       }, () => {

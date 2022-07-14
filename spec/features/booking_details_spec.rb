@@ -124,6 +124,10 @@ describe 'booking_details', type: :feature do
         box_office: '$2,000.00'
       },
     )
+    expect(find('input[data-field="totalGross').value).to eq("$2,000.00")
+    expect(find('input[data-field="ourShare').value).to eq("$1,490.00")
+    expect(find('input[data-field="received').value).to eq("$0.00")
+    expect(find('input[data-field="owed').value).to eq("$1,490.00")
   end
 
   it 'validates information about the booking' do
