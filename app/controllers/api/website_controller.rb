@@ -18,19 +18,19 @@ class Api::WebsiteController < CyberController
       dvds: [:dvd_type, :dvd_shorts],
       episodes: [:actors],
     ).order(:id)
-    render 'films.json.jbuilder'
+    render 'films', formats: [:json], handlers: [:jbuilder]
   end
 
   def bookings
     @in_theaters = InTheatersFilm.where(section: 'In Theaters').includes(:film).order(:order)
     @coming_soon = InTheatersFilm.where(section: 'Coming Soon').includes(:film).order(:order)
     @repertory = InTheatersFilm.where(section: 'Repertory').includes(:film).order(:order)
-    render 'bookings.json.jbuilder'
+    render 'bookings', formats: [:json], handlers: [:jbuilder]
   end
 
   def merchandise
     @merchandise_items = MerchandiseItem.all.includes(:merchandise_type)
-    render 'merchandise.json.jbuilder'
+    render 'merchandise', formats: [:json], handlers: [:jbuilder]
   end
 
 end
