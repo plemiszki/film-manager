@@ -43,7 +43,10 @@ class ExportFilms
       'Auto Renew Days Notice',
       'TV Rating',
       'IMDB ID',
-      'FM Plus URL'
+      'FM Plus URL',
+      'Vimeo Trailer URL',
+      'YouTube Trailer URL',
+      'ProRes Trailer URL',
     ]
 
     if search_criteria != 'null'
@@ -98,6 +101,9 @@ class ExportFilms
         film.tv_rating,
         film.imdb_id,
         film.fm_plus_url,
+        film.vimeo_trailer,
+        film.youtube_trailer,
+        film.prores_trailer,
       ]
 
       if search_criteria != 'null'
