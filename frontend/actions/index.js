@@ -1,11 +1,11 @@
-import HandyTools from 'handy-tools'
 import ChangeCase from 'change-case'
+import { convertObjectKeysToUnderscore } from 'handy-components';
 
 export function sendRequest(args) {
   let { url, method, data, responseKey } = args;
   method = method || "get";
   if (data) {
-    data = HandyTools.convertObjectKeysToUnderscore(data);
+    data = convertObjectKeysToUnderscore(data);
   }
   let ajaxArgs = {
     method: method.toUpperCase(),
@@ -38,7 +38,7 @@ export function fetchEntities(args) {
   let { data, url, directory } = args;
   url = url || `/api/${directory}`;
   if (data) {
-    data = HandyTools.convertObjectKeysToUnderscore(data);
+    data = convertObjectKeysToUnderscore(data);
   }
   return (dispatch) => {
     return $.ajax({
@@ -74,7 +74,7 @@ export function createEntity(args) {
       method: 'POST',
       url: `/api/${args.directory}`,
       data: {
-        [HandyTools.convertToUnderscore(args.entityName)]: HandyTools.convertObjectKeysToUnderscore(args.entity)
+        [ChangeCase.snakeCase(args.entityName)]: convertObjectKeysToUnderscore(args.entity)
       }
     }).then(
       (response) => {
@@ -105,9 +105,9 @@ export function fetchEntity(args) {
 }
 
 export function updateEntity(args) {
-  let data = { [ChangeCase.snakeCase(args.entityName)]: HandyTools.convertObjectKeysToUnderscore(args.entity) };
+  let data = { [ChangeCase.snakeCase(args.entityName)]: convertObjectKeysToUnderscore(args.entity) };
   if (args.additionalData) {
-    data = Object.assign(data, HandyTools.convertObjectKeysToUnderscore(args.additionalData));
+    data = Object.assign(data, convertObjectKeysToUnderscore(args.additionalData));
   }
   return (dispatch) => {
     return $.ajax({

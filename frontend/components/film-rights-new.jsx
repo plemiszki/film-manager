@@ -1,11 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, setUpNiceSelect, Details } from 'handy-components'
 import { sendRequest } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class FilmRightsNew extends React.Component {
 
@@ -52,7 +49,7 @@ class FilmRightsNew extends React.Component {
         newState.filmRight = filmRight;
       }
       this.setState(newState, () => {
-        HandyTools.setUpNiceSelect({ selector: '#film-rights-new select', func: Details.changeDropdownField.bind(this) });
+        setUpNiceSelect({ selector: '#film-rights-new select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }

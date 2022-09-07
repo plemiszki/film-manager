@@ -2,8 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import ReactModal from 'react-modal'
-import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria } from 'handy-components'
-import HandyTools from 'handy-tools';
+import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria, todayDMY } from 'handy-components'
 import FM from '../app/assets/javascripts/me/common.jsx'
 
 import configureStore from './store/store';
@@ -435,7 +434,7 @@ $(document).ready(function() {
           <NewEntity
             context={ MyContext }
             fetchData={ ['films', 'venues', 'formats', 'users'] }
-            initialEntity={ { filmId: '', venueId: '', startDate: '', endDate: '', bookingType: 'Non-Theatrical', status: 'Tentative', formatId: '', terms: '', bookerId: '', dateAdded: HandyTools.todayDMY() } }
+            initialEntity={ { filmId: '', venueId: '', startDate: '', endDate: '', bookingType: 'Non-Theatrical', status: 'Tentative', formatId: '', terms: '', bookerId: '', dateAdded: todayDMY() } }
             redirectAfterCreate={ true }
           />
         </SearchIndex>
@@ -1449,7 +1448,7 @@ $(document).ready(function() {
             initialEntity={ {
               filmId: '',
               venueId: '',
-              dateAdded: HandyTools.todayDMY(),
+              dateAdded: todayDMY(),
               startDate: '',
               endDate: '',
               shippingCity: '',

@@ -2,11 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import { sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index.js'
 import FilmRightsNew from './film-rights-new.jsx'
 import FilmRightsChangeDates from './film-rights-change-dates.jsx'
-import { Common, Details, Index, ConfirmDelete, ModalSelect } from 'handy-components'
+import { Common, Details, capitalize, ConfirmDelete, ModalSelect, deepCopy, setUpNiceSelect, rearrangeFields, resetNiceSelect, alphabetizeArrayOfObjects, sortArrayOfObjects } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
@@ -116,7 +115,7 @@ class FilmDetails extends React.Component {
       subRights: [],
       subRightsSortBy: 'sublicensorName',
       subtitleLanguages: [],
-      tab: (FM.params.tab ? HandyTools.capitalize(FM.params.tab) : 'General'),
+      tab: (FM.params.tab ? capitalize(FM.params.tab) : 'General'),
       topics: [],
       virtualBookings: [],
     };
@@ -197,7 +196,7 @@ class FilmDetails extends React.Component {
         filmLanguages,
         filmRevenuePercentages,
         filmRights,
-        filmSaved: HandyTools.deepCopy(film),
+        filmSaved: deepCopy(film),
         filmTopics,
         formats,
         genres,
@@ -218,7 +217,7 @@ class FilmDetails extends React.Component {
         virtualBookings,
       }, () => {
         this.updatePercentageObject();
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -231,7 +230,7 @@ class FilmDetails extends React.Component {
     });
     this.setState({
       percentageObject,
-      percentageObjectSaved: HandyTools.deepCopy(percentageObject),
+      percentageObjectSaved: deepCopy(percentageObject),
       fetching: false
     });
   }
@@ -303,7 +302,7 @@ class FilmDetails extends React.Component {
     this.state[entityArray].forEach((entity) => {
       currentOrder[entity.order] = entity.id;
     });
-    let newOrder = HandyTools.rearrangeFields({ currentOrder, draggedIndex, dropZoneIndex });
+    let newOrder = rearrangeFields({ currentOrder, draggedIndex, dropZoneIndex });
     let data;
     directory = directory || entityArray;
     if (directory == 'actors') {
@@ -376,7 +375,7 @@ class FilmDetails extends React.Component {
       this.setState({
         tab
       }, () => {
-        HandyTools.resetNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        resetNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     }
   }
@@ -433,7 +432,7 @@ class FilmDetails extends React.Component {
         this.setState({
           changesToSave: false,
           film,
-          filmSaved: HandyTools.deepCopy(film),
+          filmSaved: deepCopy(film),
           filmRevenuePercentages,
           schedule
         }, () => {
@@ -973,7 +972,7 @@ class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <ul className="standard-list screening-formats-list">
-                { HandyTools.alphabetizeArrayOfObjects(filmFormats, 'format').map((filmFormat) => {
+                { alphabetizeArrayOfObjects(filmFormats, 'format').map((filmFormat) => {
                   return(
                     <li key={ filmFormat.id }>
                       { filmFormat.format }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_formats', otherArrays: ['formats'] }) } data-id={ filmFormat.id }></div>
@@ -1102,7 +1101,7 @@ class FilmDetails extends React.Component {
               <h2>Director(s):</h2>
               <ul className="standard-list reorderable directors-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'directors' }></li>
-                { HandyTools.sortArrayOfObjects(directors, 'order').map((director, index) => {
+                { sortArrayOfObjects(directors, 'order').map((director, index) => {
                   return(
                     <div key={ director.id }>
                       <li data-id={ director.id } data-index={ index } data-section="directors">
@@ -1125,7 +1124,7 @@ class FilmDetails extends React.Component {
               <h3>Countries</h3>
               <ul className="standard-list reorderable countries-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'countries' }></li>
-                { HandyTools.sortArrayOfObjects(filmCountries, 'order').map((filmCountry, index) => {
+                { sortArrayOfObjects(filmCountries, 'order').map((filmCountry, index) => {
                   return(
                     <div key={ filmCountry.id }>
                       <li data-id={ filmCountry.id } data-index={ index } data-section="countries">
@@ -1142,7 +1141,7 @@ class FilmDetails extends React.Component {
               <h3>Languages</h3>
               <ul className="standard-list reorderable languages-list">
                 <li className="drop-zone" data-index="-1" data-section="languages"></li>
-                { HandyTools.sortArrayOfObjects(filmLanguages, 'order').map((filmLanguage, index) => {
+                { sortArrayOfObjects(filmLanguages, 'order').map((filmLanguage, index) => {
                   return(
                     <div key={ filmLanguage.id }>
                       <li data-index={ index } data-section="languages">
@@ -1162,7 +1161,7 @@ class FilmDetails extends React.Component {
               <h3>Cast</h3>
               <ul className="standard-list reorderable actors-list">
                 <li className="drop-zone" data-index="-1" data-section={ 'cast' }></li>
-                { HandyTools.sortArrayOfObjects(actors, 'order').map((actor, index) => {
+                { sortArrayOfObjects(actors, 'order').map((actor, index) => {
                   return(
                     <div key={ actor.id }>
                       <li data-index={ index } data-section="cast">
@@ -1242,7 +1241,7 @@ class FilmDetails extends React.Component {
                 <h3>Laurels</h3>
                 <ul className="standard-list reorderable laurels-list">
                   <li className="drop-zone" data-index="-1" data-section="laurels"></li>
-                  { HandyTools.sortArrayOfObjects(laurels, 'order').map((laurel, index) => {
+                  { sortArrayOfObjects(laurels, 'order').map((laurel, index) => {
                     return(
                       <div key={ laurel.id }>
                         <li data-index={ index } data-section="laurels">
@@ -1265,7 +1264,7 @@ class FilmDetails extends React.Component {
               <div className="col-xs-12 quotes-list">
                 <h3 className="quotes-header">Quotes</h3>
                 <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
-                { HandyTools.sortArrayOfObjects(quotes, 'order').map((quote, index) => {
+                { sortArrayOfObjects(quotes, 'order').map((quote, index) => {
                   return(
                     <div key={ quote.id } className="quote-container">
                       { this.renderQuote(quote, index) }
@@ -1285,7 +1284,7 @@ class FilmDetails extends React.Component {
                 <h3>Genres</h3>
                 <ul className="standard-list reorderable genres-list">
                   <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
-                  { HandyTools.sortArrayOfObjects(filmGenres, 'order').map((filmGenre, index) => {
+                  { sortArrayOfObjects(filmGenres, 'order').map((filmGenre, index) => {
                     return(
                       <div key={ filmGenre.id }>
                         <li data-index={ index } data-section="genres">
@@ -1317,7 +1316,7 @@ class FilmDetails extends React.Component {
               <div className="col-xs-4">
                 <h3>Alternate Lengths</h3>
                 <ul className="standard-list alternate-lengths-list">
-                  { HandyTools.sortArrayOfObjects(alternateLengths, 'length').map((alternateLength) => {
+                  { sortArrayOfObjects(alternateLengths, 'length').map((alternateLength) => {
                     return(
                       <li key={ alternateLength.id }>
                         { alternateLength.length }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_lengths' }) } data-id={ alternateLength.id }></div>
@@ -1330,7 +1329,7 @@ class FilmDetails extends React.Component {
               <div className="col-xs-4">
                 <h3>Alternate Audio Tracks</h3>
                 <ul className="standard-list alternate-audios-list">
-                  { HandyTools.alphabetizeArrayOfObjects(alternateAudios, 'languageName').map((alternateAudio) => {
+                  { alphabetizeArrayOfObjects(alternateAudios, 'languageName').map((alternateAudio) => {
                     return(
                       <li key={ alternateAudio.id }>
                         { alternateAudio.languageName }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_audios', otherArrays: ['audioLanguages'] }) } data-id={ alternateAudio.id }></div>
@@ -1343,7 +1342,7 @@ class FilmDetails extends React.Component {
               <div className="col-xs-4">
                 <h3>Alternate Subtitles</h3>
                 <ul className="standard-list alternate-subtitles-list">
-                  { HandyTools.alphabetizeArrayOfObjects(alternateSubs, 'languageName').map((alternateSub) => {
+                  { alphabetizeArrayOfObjects(alternateSubs, 'languageName').map((alternateSub) => {
                     return(
                       <li key={ alternateSub.id }>
                         { alternateSub.languageName }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_subs', otherArrays: ['subtitleLanguages'] }) } data-id={ alternateSub.id }></div>
@@ -1471,7 +1470,7 @@ class FilmDetails extends React.Component {
               <div className="col-xs-4">
                 <h3>Topics</h3>
                 <ul className="standard-list topics-list">
-                  { HandyTools.alphabetizeArrayOfObjects(filmTopics, 'topic').map((filmTopic) => {
+                  { alphabetizeArrayOfObjects(filmTopics, 'topic').map((filmTopic) => {
                     return(
                       <li key={ filmTopic.id }>
                         { filmTopic.topic }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_topics', otherArrays: ['topics'] }) } data-id={ filmTopic.id }></div>

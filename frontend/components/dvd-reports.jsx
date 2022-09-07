@@ -2,8 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, stringifyDate, Details, ellipsis } from 'handy-components'
 import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -40,8 +39,8 @@ class DvdReports extends React.Component {
       year: (new Date).getFullYear(),
       exportModalOpen: false,
       export: {
-        startDate: HandyTools.stringifyDate(new Date),
-        endDate: HandyTools.stringifyDate(new Date)
+        startDate: stringifyDate(new Date),
+        endDate: stringifyDate(new Date)
       },
       errors: [],
       jobModalOpen: !!job.id,
@@ -104,7 +103,6 @@ class DvdReports extends React.Component {
         end_date: this.state.export.endDate
       },
     }).then(() => {
-      console.log(this.props);
       this.setState({
         jobModalOpen: true,
         job: this.props.job,
@@ -241,7 +239,7 @@ class DvdReports extends React.Component {
                       return(
                         <tr key={ index }>
                           <td className="name-column">
-                            <div>{ HandyTools.ellipsis(dvd.title, 25) + (dvd.type != "Retail" ? (" - " + dvd.type) : "") }</div>
+                            <div>{ ellipsis(dvd.title, 25) + (dvd.type != "Retail" ? (" - " + dvd.type) : "") }</div>
                           </td>
                         </tr>
                       );

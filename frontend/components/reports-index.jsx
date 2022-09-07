@@ -2,8 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, setUpNiceSelect, ellipsis, pluralize } from 'handy-components'
 import { sendRequest, fetchEntities, fetchEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -16,22 +15,6 @@ const importModalStyles = {
     margin: 'auto',
     maxWidth: 540,
     height: 175,
-    border: 'solid 1px #5F5F5F',
-    borderRadius: '6px',
-    textAlign: 'center',
-    color: '#5F5F5F'
-  }
-};
-
-const errorsModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#FFFFFF',
-    margin: 'auto',
-    maxWidth: 800,
-    height: 550,
     border: 'solid 1px #5F5F5F',
     borderRadius: '6px',
     textAlign: 'center',
@@ -81,7 +64,7 @@ class ReportsIndex extends React.Component {
   }
 
   componentDidMount() {
-    HandyTools.setUpNiceSelect({ selector: 'select', func: (e) => { this.setState({ daysDue: e.target.value }) } });
+    setUpNiceSelect({ selector: 'select', func: (e) => { this.setState({ daysDue: e.target.value }) } });
     $('#upload-form-sage #user_file').on('change', this.pickFile.bind(this));
     this.fetchReports();
     let jobId = null;
@@ -381,7 +364,7 @@ class ReportsIndex extends React.Component {
                   return(
                     <tr key={ index } onClick={ this.redirect.bind(this, report.id) }>
                       <td className="name-column">
-                        { HandyTools.ellipsis(report.title, 42) }
+                        { ellipsis(report.title, 42) }
                       </td>
                       <td>
                         { report.licensor }
@@ -441,7 +424,7 @@ class ReportsIndex extends React.Component {
     } else {
       return(
         <div className="send-modal">
-          <h1>Send remaining { unsent } { HandyTools.pluralize('report', unsent) } now&#63;</h1>
+          <h1>Send remaining { unsent } { pluralize('report', unsent) } now&#63;</h1>
           <a className="orange-button" onClick={ this.clickConfirmSend.bind(this) }>Yes</a>
           <a className="orange-button" onClick={ Common.closeModals.bind(this) }>No</a>
         </div>

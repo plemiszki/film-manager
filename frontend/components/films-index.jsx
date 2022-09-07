@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, convertObjectKeysToUnderscore, removeFromArray } from 'handy-components'
 import { sendRequest, fetchEntities } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -35,7 +34,7 @@ const NewRightsModalStyles = {
   }
 };
 
-class FilmsIndex extends React.Component {
+class FilmsIndex extends Component {
 
   constructor(props) {
     super(props)
@@ -111,7 +110,7 @@ class FilmsIndex extends React.Component {
       method: 'post',
       data: {
         filmType: this.props.filmType,
-        searchCriteria: HandyTools.convertObjectKeysToUnderscore(searchCriteria)
+        searchCriteria: convertObjectKeysToUnderscore(searchCriteria)
       }
     }).then(() => {
       this.setState({
@@ -143,7 +142,7 @@ class FilmsIndex extends React.Component {
     if (e.target.checked) {
       array.push(value);
     } else {
-      HandyTools.removeFromArray(array, value);
+      removeFromArray(array, value);
     }
     this.setState({
       [arrayName]: array

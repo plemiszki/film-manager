@@ -1,11 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, removeFinanceSymbols, Details } from 'handy-components'
 import { fetchEntity, updateEntity, exportUncrossedReports } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const NO_EXPENSES_DEAL_ID = 1;
 const EXPENSES_FROM_TOP_DEAL_ID = 2;
@@ -59,10 +56,10 @@ class ReportDetails extends React.Component {
     this.state.streams.forEach((stream) => {
       newStreams[stream.id] = {
         licensor_percentage: stream.licensorPercentage,
-        current_revenue: HandyTools.removeFinanceSymbols(stream.currentRevenue),
-        current_expense: HandyTools.removeFinanceSymbols(stream.currentExpense),
-        cume_revenue: HandyTools.removeFinanceSymbols(stream.cumeRevenue),
-        cume_expense: HandyTools.removeFinanceSymbols(stream.cumeExpense)
+        current_revenue: removeFinanceSymbols(stream.currentRevenue),
+        current_expense: removeFinanceSymbols(stream.currentExpense),
+        cume_revenue: removeFinanceSymbols(stream.cumeRevenue),
+        cume_expense: removeFinanceSymbols(stream.cumeExpense)
       }
     });
     this.setState({
@@ -74,11 +71,11 @@ class ReportDetails extends React.Component {
         directory: 'royalty_reports',
         entityName: 'report',
         entity: {
-          mg: HandyTools.removeFinanceSymbols(this.state.report.mg),
-          e_and_o: HandyTools.removeFinanceSymbols(this.state.report.eAndO),
-          amount_paid: HandyTools.removeFinanceSymbols(this.state.report.amountPaid),
-          current_total_expenses: HandyTools.removeFinanceSymbols(this.state.report.currentTotalExpenses),
-          cume_total_expenses: HandyTools.removeFinanceSymbols(this.state.report.cumeTotalExpenses)
+          mg: removeFinanceSymbols(this.state.report.mg),
+          e_and_o: removeFinanceSymbols(this.state.report.eAndO),
+          amount_paid: removeFinanceSymbols(this.state.report.amountPaid),
+          current_total_expenses: removeFinanceSymbols(this.state.report.currentTotalExpenses),
+          cume_total_expenses: removeFinanceSymbols(this.state.report.cumeTotalExpenses)
         },
         additionalData: {
           streams: newStreams
@@ -167,8 +164,6 @@ class ReportDetails extends React.Component {
       GR_PERCENTAGE_DEAL_ID,
       GR_PERCENTAGE_THEATRICAL_DEAL_ID,
     ].includes(dealId);
-
-    console.log(this.state);
 
     return(
       <div className="component">

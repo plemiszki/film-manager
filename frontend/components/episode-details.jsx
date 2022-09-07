@@ -2,24 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import NewEntity from './new-entity.jsx'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
-
-const DirectorModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 1000,
-    height: 250
-  }
-};
 
 class EpisodeDetails extends React.Component {
 
@@ -48,10 +33,10 @@ class EpisodeDetails extends React.Component {
       this.setState({
         fetching: false,
         episode,
-        episodeSaved: HandyTools.deepCopy(episode),
+        episodeSaved: deepCopy(episode),
         actors
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        setUpNiceSelect({ selector: 'select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
     });
   }
@@ -72,7 +57,7 @@ class EpisodeDetails extends React.Component {
         this.setState({
           fetching: false,
           episode,
-          episodeSaved: HandyTools.deepCopy(episode),
+          episodeSaved: deepCopy(episode),
           changesToSave: false
         });
       }, () => {

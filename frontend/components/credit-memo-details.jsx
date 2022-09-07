@@ -1,11 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common } from 'handy-components'
 import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class CreditMemoDetails extends React.Component {
 

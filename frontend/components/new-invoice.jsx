@@ -1,12 +1,8 @@
 import React from 'react'
-import Modal from 'react-modal'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import ChangeCase from 'change-case'
-import { Common, Details } from 'handy-components'
-import HandyTools from 'handy-tools'
+import { Common, Details, convertObjectKeysToUnderscore } from 'handy-components'
 import { createEntity, sendRequest } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class NewInvoice extends React.Component {
   constructor(props) {
@@ -79,7 +75,7 @@ class NewInvoice extends React.Component {
     const activeRows = rows.filter(row => row.active);
     return activeRows.map((row) => {
       row = Details.removeFinanceSymbolsFromEntity({ entity: row, fields: ['amount'] });
-      row = HandyTools.convertObjectKeysToUnderscore(row);
+      row = convertObjectKeysToUnderscore(row);
       if (row.payment) {
         row.amount = row.amount * -1;
       }

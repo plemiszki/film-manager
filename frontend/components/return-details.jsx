@@ -2,9 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -56,12 +55,12 @@ class ReturnDetails extends React.Component {
       this.setState({
         fetching: false,
         return: this.props.return,
-        returnSaved: HandyTools.deepCopy(this.props.return),
+        returnSaved: deepCopy(this.props.return),
         items,
         otherItems,
         customers
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -80,7 +79,7 @@ class ReturnDetails extends React.Component {
         this.setState({
           fetching: false,
           return: this.props.return,
-          returnSaved: HandyTools.deepCopy(this.props.return),
+          returnSaved: deepCopy(this.props.return),
           changesToSave: false
         });
       }, () => {
@@ -319,7 +318,7 @@ class ReturnDetails extends React.Component {
         r.creditMemoDate = creditMemoDate;
         this.setState({
           return: r,
-          returnSaved: HandyTools.deepCopy(r),
+          returnSaved: deepCopy(r),
         });
       }
     });

@@ -2,10 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import { sendRequest, fetchEntity, fetchEntities, createEntity } from '../actions/index.js'
-import { Common, ConfirmDelete, Details, Index, ModalSelect, ModalSelectStyles } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
+import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles } from 'handy-components'
 
 class ConvertDigitalSales extends React.Component {
 
@@ -75,9 +73,8 @@ class ConvertDigitalSales extends React.Component {
         text: this.state.currentTitle
       }
     }).then(() => {
-      let job = this.state.job;
-      let errors = HandyTools.deepCopy(this.state.errors);
-      HandyTools.removeFromArray(errors, this.state.currentTitle);
+      let errors = deepCopy(this.state.errors);
+      removeFromArray(errors, this.state.currentTitle);
       this.setState({
         errors,
         fetching: false

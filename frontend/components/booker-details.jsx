@@ -2,9 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, objectsAreEqual } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -35,7 +34,7 @@ class BookerDetails extends React.Component {
       this.setState({
         fetching: false,
         booker,
-        bookerSaved: HandyTools.deepCopy(booker),
+        bookerSaved: deepCopy(booker),
         venues: this.props.venues,
         bookerVenues: this.props.bookerVenues,
       });
@@ -98,7 +97,7 @@ class BookerDetails extends React.Component {
         this.setState({
           fetching: false,
           booker: this.props.booker,
-          bookerSaved: HandyTools.deepCopy(this.props.booker),
+          bookerSaved: deepCopy(this.props.booker),
           changesToSave: false
         });
       }, () => {
@@ -111,7 +110,7 @@ class BookerDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !HandyTools.objectsAreEqual(this.state.booker, this.state.bookerSaved);
+    return !objectsAreEqual(this.state.booker, this.state.bookerSaved);
   }
 
   changeFieldArgs() {

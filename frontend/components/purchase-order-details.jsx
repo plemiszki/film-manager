@@ -2,10 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import NewEntity from './new-entity.jsx'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -73,13 +72,13 @@ class PurchaseOrderDetails extends React.Component {
       this.setState({
         fetching: false,
         purchaseOrder,
-        purchaseOrderSaved: HandyTools.deepCopy(purchaseOrder),
+        purchaseOrderSaved: deepCopy(purchaseOrder),
         dvdCustomers,
         shippingAddresses,
         items,
         otherItems
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -98,7 +97,7 @@ class PurchaseOrderDetails extends React.Component {
         this.setState({
           fetching: false,
           purchaseOrder: this.props.purchaseOrder,
-          purchaseOrderSaved: HandyTools.deepCopy(this.props.purchaseOrder),
+          purchaseOrderSaved: deepCopy(this.props.purchaseOrder),
           changesToSave: false
         });
       }, () => {

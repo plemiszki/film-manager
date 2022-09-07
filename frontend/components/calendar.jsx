@@ -1,9 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import HandyTools from 'handy-tools'
 import { sendRequest } from '../actions/index'
-import { Common } from 'handy-components'
+import { Common, MONTHS } from 'handy-components'
 
 class Calendar extends React.Component {
 
@@ -78,7 +77,7 @@ class Calendar extends React.Component {
                     return(
                       <tr key={ index }>
                         <td className="monthCell">
-                          { HandyTools.MONTHS[index] }
+                          { MONTHS[index] }
                         </td>
                         <td data-test="theatrical">
                           { this.state.months[index].theatricalReleases.map((theatricalRelease, index) => {

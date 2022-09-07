@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import HandyTools from 'handy-tools'
 import { fetchEntity } from '../actions/index'
 import { Common } from 'handy-components'
 

@@ -2,8 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
-import { Common, ConfirmDelete, ModalMessage, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect } from 'handy-components'
 import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -50,7 +49,7 @@ class VenueDetails extends React.Component {
         bookings: this.props.bookings,
         fetching: false
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -146,7 +145,7 @@ class VenueDetails extends React.Component {
   }
 
   clickSplitAddress() {
-    try {
+    // try {
       var result = FM.splitAddress($('.shredder-modal textarea')[0].value);
       var venue = this.state.venue;
       venue[this.state.shredderModalAddress + "Name"] = result.name;
@@ -164,10 +163,10 @@ class VenueDetails extends React.Component {
           changesToSave: this.checkForChanges()
         });
       });
-    } catch(e) {
-      $('.shredder-modal textarea').addClass('error');
-      $('.shredder-modal .errorMessage').text(e);
-    }
+    // } catch(e) {
+    //   $('.shredder-modal textarea').addClass('error');
+    //   $('.shredder-modal .errorMessage').text(e);
+    // }
   }
 
   clearShredderError() {

@@ -1,10 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import HandyTools from 'handy-tools'
-import { Common, Index } from 'handy-components'
+import { Common, deepCopy } from 'handy-components'
 import { fetchEntities, updateEntity } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class JobsIndex extends React.Component {
 
@@ -28,13 +26,13 @@ class JobsIndex extends React.Component {
 
   goToJob(e) {
     let id = e.target.dataset.id;
-    let job = HandyTools.deepCopy(HandyTools.findObjectInArrayById(this.state.jobs, id));
     window.location = `/royalty_reports?job_id=${id}`;
   }
 
   killJob(e) {
-    let id = e.target.dataset.id;
-    let job = HandyTools.deepCopy(HandyTools.findObjectInArrayById(this.state.jobs, id));
+    const { jobs } = this.state;
+    const id = e.target.dataset.id;
+    let job = deepCopy(jobs.find(job => job.id == id));
     job.status = 'killed';
     this.setState({
       fetching: true

@@ -3,24 +3,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { sendRequest, fetchEntity, updateEntity, deleteEntity } from '../actions/index.js'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
-
-const WeeklyTermStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 700,
-    height: 240
-  }
-};
+import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect } from 'handy-components'
 
 const NewInvoiceStyles = {
   overlay: {
@@ -99,7 +84,7 @@ class BookingDetails extends React.Component {
       this.setState({
         fetching: false,
         booking,
-        bookingSaved: HandyTools.deepCopy(booking),
+        bookingSaved: deepCopy(booking),
         calculations,
         users,
         invoices,
@@ -110,7 +95,7 @@ class BookingDetails extends React.Component {
         films,
         venues
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -130,7 +115,7 @@ class BookingDetails extends React.Component {
         this.setState({
           fetching: false,
           booking,
-          bookingSaved: HandyTools.deepCopy(booking),
+          bookingSaved: deepCopy(booking),
           calculations,
           changesToSave: false
         });
@@ -664,7 +649,7 @@ class BookingDetails extends React.Component {
           <NewEntity
             context={ this.props.context }
             entityName="payment"
-            initialEntity={ { bookingId: this.state.booking.id, date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } }
+            initialEntity={ { bookingId: this.state.booking.id, date: stringifyDate(new Date), amount: "", notes: "" } }
             callbackFullProps={ response => this.setState({ payments: response.payments, calculations: response.calculations, newPaymentModalOpen: false }) }
           />
         </Modal>

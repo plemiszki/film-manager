@@ -2,9 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
@@ -35,11 +34,11 @@ class GiftboxDetails extends React.Component {
       this.setState({
         fetching: false,
         giftbox,
-        giftboxSaved: HandyTools.deepCopy(giftbox),
+        giftboxSaved: deepCopy(giftbox),
         giftboxDvds,
         otherDvds
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -82,7 +81,7 @@ class GiftboxDetails extends React.Component {
         this.setState({
           fetching: false,
           giftbox,
-          giftboxSaved: HandyTools.deepCopy(giftbox),
+          giftboxSaved: deepCopy(giftbox),
           changesToSave: false
         });
       }, () => {

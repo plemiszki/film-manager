@@ -3,10 +3,8 @@ import Modal from 'react-modal'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ChangeCase from 'change-case'
-import { Common, Details } from 'handy-components'
-import HandyTools from 'handy-tools'
+import { Common, Details, deepCopy, setUpNiceSelect, resetNiceSelect } from 'handy-components'
 import { createEntity, fetchDataForNew } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 let entityNamePlural;
 let directory;
@@ -21,7 +19,7 @@ class NewEntity extends React.Component {
     directory = ChangeCase.snakeCase(entityNamePlural);
     let state_obj = {
       fetching: !!fetchData,
-      [entityName]: HandyTools.deepCopy(initialEntity),
+      [entityName]: deepCopy(initialEntity),
       errors: {},
     }
 
@@ -41,27 +39,27 @@ class NewEntity extends React.Component {
   }
 
   componentDidMount() {
-    HandyTools.setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
+    setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
     if (this.props.fetchData) {
       this.props.fetchDataForNew({ directory }).then(() => {
-        let entity = HandyTools.deepCopy(this.state[this.props.entityName]);
+        let entity = deepCopy(this.state[this.props.entityName]);
         let obj = { fetching: false };
         this.props.fetchData.forEach((arrayName) => {
           obj[arrayName] = this.props[arrayName];
         })
         obj[this.props.entityName] = entity;
         this.setState(obj, () => {
-          HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
+          resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
         });
       });
     } else {
-      HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
+      resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
     }
   }
 
   clickAdd(e) {
     let entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
-    let directory = HandyTools.convertToUnderscore(entityNamePlural);
+    let directory = ChangeCase.snakeCase(entityNamePlural);
     e.preventDefault();
     this.setState({
       fetching: true
@@ -86,7 +84,7 @@ class NewEntity extends React.Component {
         fetching: false,
         errors: this.props.errors
       }, () => {
-        HandyTools.resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
+        resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
     });
   }

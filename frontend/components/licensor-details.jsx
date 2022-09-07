@@ -2,10 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class LicensorDetails extends React.Component {
 
@@ -33,7 +31,7 @@ class LicensorDetails extends React.Component {
       this.setState({
         fetching: false,
         licensor,
-        licensorSaved: HandyTools.deepCopy(licensor),
+        licensorSaved: deepCopy(licensor),
         films
       });
     });
@@ -54,7 +52,7 @@ class LicensorDetails extends React.Component {
         this.setState({
           fetching: false,
           licensor,
-          licensorSaved: HandyTools.deepCopy(licensor),
+          licensorSaved: deepCopy(licensor),
           changesToSave: false
         });
       }, () => {

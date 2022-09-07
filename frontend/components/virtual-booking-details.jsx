@@ -2,12 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import HandyTools from 'handy-tools'
 import NewEntity from './new-entity.jsx'
 import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual } from 'handy-components'
 import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 class VirtualBookingDetails extends React.Component {
 
@@ -42,7 +40,7 @@ class VirtualBookingDetails extends React.Component {
       this.setState({
         fetching: false,
         virtualBooking: this.props.virtualBooking,
-        virtualBookingSaved: HandyTools.deepCopy(this.props.virtualBooking),
+        virtualBookingSaved: deepCopy(this.props.virtualBooking),
         films: this.props.films,
         venues: this.props.venues,
         invoices: this.props.invoices,
@@ -52,7 +50,7 @@ class VirtualBookingDetails extends React.Component {
         job: this.props.job,
         jobModalOpen: !!this.props.job
       }, () => {
-        HandyTools.setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
+        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
     });
   }
@@ -64,7 +62,7 @@ class VirtualBookingDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !HandyTools.objectsAreEqual(this.state.virtualBooking, this.state.virtualBookingSaved);
+    return !objectsAreEqual(this.state.virtualBooking, this.state.virtualBookingSaved);
   }
 
   clickInvoice(id, index, e) {
@@ -157,7 +155,7 @@ class VirtualBookingDetails extends React.Component {
         this.setState({
           fetching: false,
           virtualBooking: this.props.virtualBooking,
-          virtualBookingSaved: HandyTools.deepCopy(this.props.virtualBooking),
+          virtualBookingSaved: deepCopy(this.props.virtualBooking),
           calculations: this.props.calculations,
           changesToSave: false
         });
@@ -195,7 +193,7 @@ class VirtualBookingDetails extends React.Component {
 
   generateInvoiceRows() {
     const { virtualBookingSaved } = this.state;
-    const film = HandyTools.pluckFromObjectsArray({
+    const film = pluckFromObjectsArray({
       array: this.state.films,
       property: 'id',
       value: virtualBookingSaved.filmId
@@ -277,7 +275,7 @@ class VirtualBookingDetails extends React.Component {
           />
         </Modal>
         <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>
-          <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: HandyTools.stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
+          <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete
