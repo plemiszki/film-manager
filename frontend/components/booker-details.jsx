@@ -1,13 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, objectsAreEqual } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
-class BookerDetails extends React.Component {
+export default class BookerDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -26,17 +23,14 @@ class BookerDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      directory: 'bookers',
-      id: window.location.pathname.split('/')[2]
-    }).then(() => {
-      const booker = this.props.booker;
+    fetchEntity().then((response) => {
+      const { booker, venues, bookerVenues } = response;
       this.setState({
         fetching: false,
         booker,
         bookerSaved: deepCopy(booker),
-        venues: this.props.venues,
-        bookerVenues: this.props.bookerVenues,
+        venues,
+        bookerVenues,
       });
     });
   }
@@ -52,17 +46,17 @@ class BookerDetails extends React.Component {
       venuesModalOpen: false,
       fetching: true
     });
-    this.props.createEntity({
+    createEntity({
       directory: 'booker_venues',
       entityName: 'booker_venue',
       entity: {
         bookerId: this.state.booker.id,
         venueId: e.target.dataset.id
       }
-    }).then(() => {
+    }).then((response) => {
       this.setState({
         fetching: false,
-        bookerVenues: this.props.bookerVenues
+        bookerVenues: response.bookerVenues
       });
     });
   }
@@ -71,11 +65,11 @@ class BookerDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'booker_venues',
       id: e.target.dataset.id,
-    }).then(() => {
-      const { bookerVenues } = this.props;
+    }).then((response) => {
+      const { bookerVenues } = response;
       this.setState({
         fetching: false,
         bookerVenues,
@@ -87,23 +81,23 @@ class BookerDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+    }, () => {
+      const { booker } = this.state;
+      updateEntity({
         entityName: 'booker',
-        entity: this.state.booker
-      }).then(() => {
+        entity: booker
+      }).then((response) => {
+        const { booker } = response;
         this.setState({
           fetching: false,
-          booker: this.props.booker,
-          bookerSaved: deepCopy(this.props.booker),
+          booker,
+          bookerSaved: deepCopy(booker),
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors: response.errors,
         });
       });
     });
@@ -175,13 +169,3 @@ class BookerDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BookerDetails);
