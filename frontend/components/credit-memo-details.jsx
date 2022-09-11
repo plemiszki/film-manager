@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Common } from 'handy-components'
-import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, fetchEntity } from 'handy-components'
 
-class CreditMemoDetails extends React.Component {
+export default class CreditMemoDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -16,14 +13,11 @@ class CreditMemoDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      directory: 'credit_memos',
-      id: window.location.pathname.split('/')[2]
-    }).then(() => {
+    fetchEntity().then((response) => {
       this.setState({
         fetching: false,
-        creditMemo: this.props.creditMemo,
-        rows: this.props.rows
+        creditMemo: response.creditMemo,
+        rows: response.rows
       });
     });
   }
@@ -116,13 +110,3 @@ class CreditMemoDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CreditMemoDetails);
