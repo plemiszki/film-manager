@@ -1,11 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, fetchEntity, updateEntity } from 'handy-components'
 
-class DvdCustomerDetails extends React.Component {
+export default class DvdCustomerDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -22,12 +19,8 @@ class DvdCustomerDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: this.props.entityName
-    }, 'dvdCustomer').then(() => {
-      const { dvdCustomer } = this.props;
+    fetchEntity().then((response) => {
+      const { dvdCustomer } = response;
       this.setState({
         fetching: false,
         dvdCustomer,
@@ -40,25 +33,23 @@ class DvdCustomerDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
+    }, () => {
       const { dvdCustomer } = this.state;
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+      updateEntity({
         entityName: 'dvdCustomer',
         entity: dvdCustomer
-      }).then(() => {
-        const { dvdCustomer} = this.props;
+      }).then((response) => {
+        const { dvdCustomer} = response;
         this.setState({
           fetching: false,
           dvdCustomer,
           dvdCustomerSaved: deepCopy(dvdCustomer),
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors: response.errors
         });
       });
     });
@@ -153,13 +144,3 @@ class DvdCustomerDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DvdCustomerDetails);
