@@ -1,13 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
-class DvdDetails extends React.Component {
+export default class DvdDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -31,12 +28,8 @@ class DvdDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: 'dvd'
-    }, 'dvd').then(() => {
-      const { dvd, shorts, otherShorts, dvdTypes } = this.props;
+    fetchEntity().then((response) => {
+      const { dvd, shorts, otherShorts, dvdTypes } = response;
       this.setState({
         fetching: false,
         dvd,
@@ -54,24 +47,22 @@ class DvdDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+    }, () => {
+      updateEntity({
         entityName: 'dvd',
         entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.dvd, fields: ['price'] })
-      }).then(() => {
-        const { dvd } = this.props;
+      }).then((response) => {
+        const { dvd } = response;
         this.setState({
           fetching: false,
           dvd,
           dvdSaved: deepCopy(dvd),
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors: response.errors
         });
       });
     });
@@ -83,15 +74,15 @@ class DvdDetails extends React.Component {
       fetching: true,
       shortsModalOpen: false
     });
-    this.props.createEntity({
+    createEntity({
       directory: 'dvd_shorts',
       entityName: 'dvdShort',
       entity: {
         dvdId: this.state.dvd.id,
         shortId
       }
-    }).then(() => {
-      const { shorts, otherShorts } = this.props;
+    }).then((response) => {
+      const { shorts, otherShorts } = response;
       this.setState({
         fetching: false,
         shorts,
@@ -105,11 +96,11 @@ class DvdDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'dvd_shorts',
       id: dvdShortId,
-    }).then(() => {
-      const { shorts, otherShorts } = this.props;
+    }).then((response) => {
+      const { shorts, otherShorts } = response;
       this.setState({
         fetching: false,
         shorts,
@@ -123,11 +114,12 @@ class DvdDetails extends React.Component {
       fetching: true,
       deleteModalOpen: false
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'dvds',
       id: this.state.dvd.id,
-    }).then(() => {
-      window.location.pathname = `/films/${this.state.dvd.featureFilmId}`;
+    }).then((response) => {
+      const dvd = response;
+      window.location.pathname = `/films/${dvd.feature_film_id}`;
     });
   }
 
@@ -234,13 +226,3 @@ class DvdDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DvdDetails);
