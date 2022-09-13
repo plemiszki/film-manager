@@ -1,9 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect } from 'handy-components'
-import { fetchEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ShredderModalStyles = {
@@ -22,7 +19,7 @@ const ShredderModalStyles = {
   }
 };
 
-class VenueDetails extends React.Component {
+export default class VenueDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -39,14 +36,12 @@ class VenueDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      directory: 'venues',
-      id: window.location.pathname.split('/')[2]
-    }).then(() => {
+    fetchEntity().then((response) => {
+      const { venue, bookings } = response;
       this.setState({
-        venue: this.props.venue,
-        venueSaved: Tools.deepCopy(this.props.venue),
-        bookings: this.props.bookings,
+        venue,
+        venueSaved: Tools.deepCopy(venue),
+        bookings,
         fetching: false
       }, () => {
         setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
@@ -77,22 +72,21 @@ class VenueDetails extends React.Component {
       fetching: true,
       justSaved: true
     }, () => {
-      this.props.updateEntity({
-        id: window.location.pathname.split('/')[2],
-        directory: 'venues',
+      updateEntity({
         entityName: 'venue',
         entity: this.state.venue
-      }).then(() => {
+      }).then((response) => {
+        const { venue } = response;
         this.setState({
           fetching: false,
           changesToSave: false,
-          venue: this.props.venue,
-          venueSaved: Tools.deepCopy(this.props.venue)
+          venue,
+          venueSaved: Tools.deepCopy(venue)
         });
-      }, () => {
+      }, (response) => {
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors: response.errors
         });
       });
     });
@@ -109,17 +103,17 @@ class VenueDetails extends React.Component {
       fetching: true,
       deleteModalOpen: false
     }, () => {
-      this.props.deleteEntity({
-        id: window.location.pathname.split('/')[2],
-        directory: 'venues',
-        redirectToIndex: true,
-      }).then(() => {}, () => {
-        this.setState({
-          messageModalOpen: true,
-          deleteError: this.props.deleteError,
-          fetching: false
-        })
-      })
+      deleteEntity().then(
+        () => {
+          window.location.pathname = '/venues';
+        }, (response) => {
+          this.setState({
+            messageModalOpen: true,
+            deleteError: response,
+            fetching: false
+          })
+        }
+      )
     });
   }
 
@@ -337,13 +331,3 @@ class VenueDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(VenueDetails);
