@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Common } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, fetchEntity } from 'handy-components'
 
-class InvoiceDetails extends React.Component {
+export default class InvoiceDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -17,12 +14,8 @@ class InvoiceDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: 'invoice'
-    }, 'invoice').then(() => {
-      const { invoice, rows, payments } = this.props;
+    fetchEntity().then((response) => {
+      const { invoice, rows, payments } = response;
       const mappedPayments = payments.map((payment) => {
         return {
           label: 'Payment' + (payment.notes ? (' - ' + payment.notes) : '') + ' (' + payment.date + ')',
@@ -214,13 +207,3 @@ class InvoiceDetails extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceDetails);

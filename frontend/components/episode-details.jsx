@@ -1,12 +1,9 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity } from 'handy-components'
 
-class EpisodeDetails extends React.Component {
+export default class EpisodeDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -24,12 +21,8 @@ class EpisodeDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: 'episode'
-    }, 'episode').then(() => {
-      const { episode, actors } = this.props;
+    fetchEntity().then((response) => {
+      const { episode, actors } = response;
       this.setState({
         fetching: false,
         episode,
@@ -45,25 +38,24 @@ class EpisodeDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
+    }, () => {
       const { episode } = this.state;
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+      updateEntity({
         entityName: 'episode',
         entity: episode
-      }).then(() => {
-        const { episode } = this.props;
+      }).then((response) => {
+        const { episode } = response;
         this.setState({
           fetching: false,
           episode,
           episodeSaved: deepCopy(episode),
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
+        const { errors } = response;
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors,
         });
       });
     });
@@ -77,15 +69,15 @@ class EpisodeDetails extends React.Component {
   }
 
   clickDeleteActor(e) {
-    const actorId = event.target.dataset.id;
+    const actorId = e.target.dataset.id;
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'actors',
       id: actorId,
-    }).then(() => {
-      const { actors } = this.props;
+    }).then((response) => {
+      const { actors } = response;
       this.setState({
         fetching: false,
         actors,
@@ -99,10 +91,7 @@ class EpisodeDetails extends React.Component {
       fetching: true,
       deleteModalOpen: false
     });
-    this.props.deleteEntity({
-      directory: 'episodes',
-      id: episode.id,
-    }).then(() => {
+    deleteEntity().then(() => {
       window.location.pathname = `/films/${episode.filmId}`;
     });
   }
@@ -190,13 +179,3 @@ class EpisodeDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(EpisodeDetails);

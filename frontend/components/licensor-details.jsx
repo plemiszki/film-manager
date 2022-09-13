@@ -1,11 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, fetchEntity, updateEntity } from 'handy-components'
 
-class LicensorDetails extends React.Component {
+export default class LicensorDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -22,12 +19,8 @@ class LicensorDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: 'licensor'
-    }, 'licensor').then(() => {
-      const { licensor, films } = this.props;
+    fetchEntity().then((response) => {
+      const { licensor, films } = response;
       this.setState({
         fetching: false,
         licensor,
@@ -41,24 +34,22 @@ class LicensorDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+    }, () => {
+      updateEntity({
         entityName: 'licensor',
         entity: this.state.licensor
-      }).then(() => {
-        const { licensor } = this.props;
+      }).then((response) => {
+        const { licensor } = response;
         this.setState({
           fetching: false,
           licensor,
           licensorSaved: deepCopy(licensor),
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors: response.errors
         });
       });
     });
@@ -143,13 +134,3 @@ class LicensorDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LicensorDetails);

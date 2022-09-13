@@ -1,13 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
-class GiftboxDetails extends React.Component {
+export default class GiftboxDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -25,12 +22,10 @@ class GiftboxDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
+    fetchEntity({
       entityName: 'giftbox'
-    }, 'giftbox').then(() => {
-      const { giftbox, giftboxDvds, otherDvds } = this.props;
+    }).then((response) => {
+      const { giftbox, giftboxDvds, otherDvds } = response;
       this.setState({
         fetching: false,
         giftbox,
@@ -49,15 +44,15 @@ class GiftboxDetails extends React.Component {
       fetching: true,
       dvdsModalOpen: false
     });
-    this.props.createEntity({
+    createEntity({
       directory: 'giftbox_dvds',
       entityName: 'giftboxDvd',
       entity: {
         giftboxId: this.state.giftbox.id,
         dvdId
       }
-    }).then(() => {
-      const { giftboxDvds, otherDvds } = this.props;
+    }).then((response) => {
+      const { giftboxDvds, otherDvds } = response;
       this.setState({
         fetching: false,
         giftboxDvds,
@@ -71,23 +66,21 @@ class GiftboxDetails extends React.Component {
       fetching: true,
       justSaved: true
     }, function() {
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+      updateEntity({
         entityName: 'giftbox',
         entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.giftbox, fields: ['msrp'] })
-      }).then(() => {
-        const { giftbox } = this.props;
+      }).then((response) => {
+        const { giftbox } = response;
         this.setState({
           fetching: false,
           giftbox,
           giftboxSaved: deepCopy(giftbox),
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors: response.errors
         });
       });
     });
@@ -98,11 +91,11 @@ class GiftboxDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'giftbox_dvds',
       id: giftboxDvdId,
-    }).then(() => {
-      const { giftboxDvds, otherDvds } = this.props;
+    }).then((response) => {
+      const { giftboxDvds, otherDvds } = response;
       this.setState({
         fetching: false,
         giftboxDvds,
@@ -195,13 +188,3 @@ class GiftboxDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GiftboxDetails);
