@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { sendRequest } from '../actions/index'
 import { Common, MONTHS } from 'handy-components'
 
-class Calendar extends React.Component {
+export default class Calendar extends React.Component {
 
   constructor(props) {
     super(props)
@@ -20,15 +17,12 @@ class Calendar extends React.Component {
   }
 
   fetchData() {
-    this.props.sendRequest({
-      url: '/api/calendar',
-      data: {
-        year: this.state.year,
-      }
-    }).then(() => {
+    fetch(`/api/calendar?${new URLSearchParams({
+      year: this.state.year,
+    })}`).then((response) => response.json()).then((response) => {
       this.setState({
         fetching: false,
-        months: this.props.months
+        months: response.months
       });
     });
   }
@@ -147,13 +141,3 @@ class Calendar extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Calendar);
