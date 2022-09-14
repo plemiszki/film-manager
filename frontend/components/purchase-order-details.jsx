@@ -1,11 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
@@ -34,7 +31,7 @@ const qtyModalStyles = {
   }
 };
 
-class PurchaseOrderDetails extends React.Component {
+export default class PurchaseOrderDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -63,12 +60,8 @@ class PurchaseOrderDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: this.props.entityName
-    }, 'purchaseOrder').then(() => {
-      let { shippingAddresses, dvdCustomers, purchaseOrder, items, otherItems } = this.props;
+    fetchEntity().then((response) => {
+      let { shippingAddresses, dvdCustomers, purchaseOrder, items, otherItems } = response;
       this.setState({
         fetching: false,
         purchaseOrder,
@@ -88,22 +81,22 @@ class PurchaseOrderDetails extends React.Component {
       fetching: true,
       justSaved: true
     }, () => {
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+      updateEntity({
         entityName: 'purchaseOrder',
         entity: this.state.purchaseOrder
-      }).then(() => {
+      }).then((response) => {
+        const { purchaseOrder } = response;
         this.setState({
           fetching: false,
-          purchaseOrder: this.props.purchaseOrder,
-          purchaseOrderSaved: deepCopy(this.props.purchaseOrder),
+          purchaseOrder,
+          purchaseOrderSaved: deepCopy(purchaseOrder),
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
+        const { errors } = response;
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors,
         });
       });
     });
@@ -190,7 +183,7 @@ class PurchaseOrderDetails extends React.Component {
       fetching: true,
       qtyModalOpen: false
     });
-    this.props.createEntity({
+    createEntity({
       directory: 'purchase_order_items',
       entityName: 'purchaseOrderItem',
       entity: {
@@ -199,8 +192,8 @@ class PurchaseOrderDetails extends React.Component {
         itemType: selectedItemType,
         qty: selectedItemQty
       }
-    }).then(() => {
-      const { items, otherItems } = this.props;
+    }).then((response) => {
+      const { items, otherItems } = response;
       this.setState({
         fetching: false,
         items,
@@ -216,11 +209,11 @@ class PurchaseOrderDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'purchase_order_items',
       id: e.target.dataset.id,
-    }).then(() => {
-      const { items, otherItems } = this.props;
+    }).then((response) => {
+      const { items, otherItems } = response;
       this.setState({
         fetching: false,
         items,
@@ -260,19 +253,24 @@ class PurchaseOrderDetails extends React.Component {
   }
 
   clickShip(args) {
-    if (!this.state.purchaseOrder.shipDate && this.state.changesToSave === false) {
+    const { reportingOnly } = args;
+    const { purchaseOrder, changesToSave } = this.state;
+    if (!purchaseOrder.shipDate && changesToSave === false) {
       this.setState({
         fetching: true
       }, () => {
-        this.props.sendRequest({
-          url: '/api/purchase_orders/ship',
-          method: 'post',
-          data: {
-            purchaseOrder: {
-              id: this.state.purchaseOrder.id
-            },
-            reportingOnly: args.reportingOnly
+        fetch('/api/purchase_orders/ship', {
+          method: 'POST',
+          headers: {
+            'x-csrf-token': getCsrfToken(),
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify(convertObjectKeysToUnderscore({
+            purchaseOrder: {
+              id: purchaseOrder.id,
+            },
+            reportingOnly,
+          }))
         }).then(() => {
           window.location.href = '/purchase_orders';
         });
@@ -546,13 +544,3 @@ class PurchaseOrderDetails extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderDetails);

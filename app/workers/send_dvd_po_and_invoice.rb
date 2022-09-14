@@ -30,7 +30,7 @@ class SendDvdPoAndInvoice
 
     # send shipping files
     source_doc = nil
-    if reporting_only == "false"
+    unless reporting_only
       source_doc = 5533 + PurchaseOrder.find_by_sql("SELECT * FROM purchase_orders WHERE ship_date IS NOT NULL AND reporting_only != 't'").count
       purchase_order.create_shipping_files(pathname, source_doc)
       attachments = [File.open("#{pathname}/#{source_doc}_worderline.txt", "r"), File.open("#{pathname}/#{source_doc}_worder.txt", "r")]
