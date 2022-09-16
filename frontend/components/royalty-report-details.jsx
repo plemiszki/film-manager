@@ -1,8 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Common, removeFinanceSymbols, Details } from 'handy-components'
-import { fetchEntity, updateEntity, exportUncrossedReports } from '../actions/index'
+import { Common, removeFinanceSymbols, Details, fetchEntity, updateEntity, deepCopy } from 'handy-components'
 
 const NO_EXPENSES_DEAL_ID = 1;
 const EXPENSES_FROM_TOP_DEAL_ID = 2;
@@ -11,7 +8,7 @@ const EXPENSES_FROM_BOTTOM_DEAL_ID = 4;
 const GR_PERCENTAGE_DEAL_ID = 5;
 const GR_PERCENTAGE_THEATRICAL_DEAL_ID = 6;
 
-class ReportDetails extends React.Component {
+export default class ReportDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -32,17 +29,15 @@ class ReportDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      directory: 'royalty_reports',
-      id: window.location.pathname.split("/")[2]
-    }).then(() => {
+    fetchEntity().then((response) => {
+      const { report, streams, films } = response;
       this.setState({
-        report: this.props.report,
-        reportSaved: Tools.deepCopy(this.props.report),
-        streams: this.props.streams,
-        streamsSaved: Tools.deepCopy(this.props.streams),
+        report,
+        reportSaved: deepCopy(report),
+        streams,
+        streamsSaved: deepCopy(streams),
         fetching: false,
-        films: this.props.films
+        films,
       }, () => {
         this.setState({
           changesToSave: this.checkForChanges()
@@ -66,32 +61,32 @@ class ReportDetails extends React.Component {
       fetching: true,
       justSaved: true
     }, () => {
-      this.props.updateEntity({
-        id: window.location.pathname.split('/')[2],
-        directory: 'royalty_reports',
+      const { report } = this.state;
+      updateEntity({
         entityName: 'report',
         entity: {
-          mg: removeFinanceSymbols(this.state.report.mg),
-          e_and_o: removeFinanceSymbols(this.state.report.eAndO),
-          amount_paid: removeFinanceSymbols(this.state.report.amountPaid),
-          current_total_expenses: removeFinanceSymbols(this.state.report.currentTotalExpenses),
-          cume_total_expenses: removeFinanceSymbols(this.state.report.cumeTotalExpenses)
+          mg: removeFinanceSymbols(report.mg),
+          e_and_o: removeFinanceSymbols(report.eAndO),
+          amount_paid: removeFinanceSymbols(report.amountPaid),
+          current_total_expenses: removeFinanceSymbols(report.currentTotalExpenses),
+          cume_total_expenses: removeFinanceSymbols(report.cumeTotalExpenses)
         },
         additionalData: {
           streams: newStreams
         }
-      }).then(() => {
+      }).then((response) => {
+        const { report, streams, films } = response;
         this.setState({
           fetching: false,
           changesToSave: false,
-          report: this.props.report,
-          reportSaved: Tools.deepCopy(this.props.report),
-          streams: this.props.streams,
-          streamsSaved: Tools.deepCopy(this.props.streams),
-          films: this.props.films
+          report,
+          reportSaved: deepCopy(report),
+          streams,
+          streamsSaved: deepCopy(streams),
+          films,
         });
-      }, () => {
-        const { errors } = this.props;
+      }, (response) => {
+        const { errors } = response;
         this.setState({
           fetching: false,
           errors,
@@ -118,15 +113,17 @@ class ReportDetails extends React.Component {
     this.setState({
       fetching: true
     }, () => {
-      this.props.exportUncrossedReports({
-        filmIds: this.state.films.map(film => film.id),
-        quarter: this.state.report.quarter,
-        year: this.state.report.year
-      }).then(() => {
+      const { films, report } = this.state;
+      fetch(`/api/royalty_reports/export_uncrossed?${new URLSearchParams({
+        filmIds: films.map(film => film.id),
+        quarter: report.quarter,
+        year: report.year,
+      })}`).then((response) => response.json()).then((response) => {
+        const { job } = response;
         this.setState({
           fetching: false,
-          job: this.props.job,
-          jobModalOpen: true
+          job,
+          jobModalOpen: true,
         });
       });
     });
@@ -760,13 +757,3 @@ class ReportDetails extends React.Component {
     Common.updateJobModal.call(this);
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, updateEntity, exportUncrossedReports }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReportDetails);
