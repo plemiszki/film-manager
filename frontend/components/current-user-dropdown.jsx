@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
+import { Common } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
-import { sendRequest } from '../actions/index.js'
 import Modal from 'react-modal'
 
-class CurrentUserDropDown extends React.Component {
+export default class CurrentUserDropDown extends Component {
 
   constructor(props) {
     super(props)
@@ -20,14 +17,12 @@ class CurrentUserDropDown extends React.Component {
   componentDidMount() {
     const { hasAutoRenewApproval } = this.props;
     if (hasAutoRenewApproval) {
-      this.props.sendRequest({
-        url: `/api/films/auto_renew`,
-      }).then(() => {
-        const { films } = this.props;
+      fetch('/api/films/auto_renew').then((response) => response.json()).then((response) => {
+        const { films } = response;
         this.setState({
           autoRenewFilms: films,
         })
-      });
+      })
     }
   }
 
@@ -46,32 +41,30 @@ class CurrentUserDropDown extends React.Component {
     this.setState({
       spinner: true
     });
-    this.props.sendRequest({
-      url: `/api/films/auto_renew/${film.id}`,
-    }).then(() => {
-      const { films } = this.props;
-      this.setState({
-        autoRenewFilms: films,
-        spinner: false,
-        autoRenewModalPage: 1,
+    fetch(`/api/films/auto_renew/${film.id}`)
+      .then((response) => response.json()).then((response) => {
+        const { films } = response;
+        this.setState({
+          autoRenewFilms: films,
+          spinner: false,
+          autoRenewModalPage: 1,
+        })
       })
-    });
   }
 
   clickRenewAll() {
     this.setState({
       spinner: true
     });
-    this.props.sendRequest({
-      url: '/api/films/auto_renew/all',
-    }).then(() => {
-      const { films } = this.props;
-      this.setState({
-        autoRenewFilms: films,
-        spinner: false,
-        autoRenewModalPage: 1,
+    fetch('/api/films/auto_renew/all')
+      .then((response) => response.json()).then((response) => {
+        const { films } = response;
+        this.setState({
+          autoRenewFilms: films,
+          spinner: false,
+          autoRenewModalPage: 1,
+        })
       })
-    });
   }
 
   clickNextPage() {
@@ -304,13 +297,3 @@ class CurrentUserDropDown extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentUserDropDown);
