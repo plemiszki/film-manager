@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, getCsrfToken } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -20,7 +17,7 @@ const qtyModalStyles = {
   }
 };
 
-class ReturnDetails extends React.Component {
+export default class ReturnDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -46,16 +43,12 @@ class ReturnDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: 'return'
-    }, 'return').then(() => {
-      const { items, otherItems, customers } = this.props;
+    fetchEntity().then((response) => {
+      const { items, otherItems, customers, return: returnRecord } = response;
       this.setState({
         fetching: false,
-        return: this.props.return,
-        returnSaved: deepCopy(this.props.return),
+        return: returnRecord,
+        returnSaved: deepCopy(returnRecord),
         items,
         otherItems,
         customers
@@ -69,23 +62,23 @@ class ReturnDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+    }, () => {
+      updateEntity({
         entityName: 'return',
         entity: this.state.return
-      }).then(() => {
+      }).then((response) => {
+        const { return: returnRecord } = response;
         this.setState({
           fetching: false,
-          return: this.props.return,
-          returnSaved: deepCopy(this.props.return),
+          return: returnRecord,
+          returnSaved: deepCopy(returnRecord),
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
+        const { errors } = response;
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors,
         });
       });
     });
@@ -115,7 +108,7 @@ class ReturnDetails extends React.Component {
       fetching: true,
       qtyModalOpen: false
     });
-    this.props.createEntity({
+    createEntity({
       directory: 'return_items',
       entityName: 'returnItem',
       entity: {
@@ -124,8 +117,8 @@ class ReturnDetails extends React.Component {
         itemType: selectedItemType,
         qty: selectedItemQty
       }
-    }).then(() => {
-      const { items, otherItems } = this.props;
+    }).then((response) => {
+      const { items, otherItems } = response;
       this.setState({
         fetching: false,
         items,
@@ -141,11 +134,11 @@ class ReturnDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'return_items',
       id: e.target.dataset.id,
-    }).then(() => {
-      const { items, otherItems } = this.props;
+    }).then((response) => {
+      const { items, otherItems } = response;
       this.setState({
         fetching: false,
         items,
@@ -158,14 +151,17 @@ class ReturnDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: `/api/returns/${this.state.return.id}/send_credit_memo`,
-      method: 'post'
-    }).then(() => {
+    fetch(`/api/returns/${this.state.return.id}/send_credit_memo`, {
+      method: 'POST',
+      headers: {
+        'x-csrf-token': getCsrfToken(),
+      },
+    }).then((response) => response.json()).then((response) => {
+      const { job } = response;
       this.setState({
-        job: this.props.job,
+        job,
         fetching: false,
-        jobModalOpen: true
+        jobModalOpen: true,
       });
     });
   }
@@ -324,13 +320,3 @@ class ReturnDetails extends React.Component {
     });
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, updateEntity, createEntity, deleteEntity, sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReturnDetails);
