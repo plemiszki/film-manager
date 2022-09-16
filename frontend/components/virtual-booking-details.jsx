@@ -1,13 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual } from 'handy-components'
-import { fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from '../actions/index'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, getCsrfToken } from 'handy-components'
 
-class VirtualBookingDetails extends React.Component {
+export default class VirtualBookingDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -32,23 +29,20 @@ class VirtualBookingDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: this.props.entityName
-    }, 'virtualBooking').then(() => {
+    fetchEntity().then((response) => {
+      const { virtualBooking, films, venues, invoices, payments, calculations, job } = response;
       this.setState({
         fetching: false,
-        virtualBooking: this.props.virtualBooking,
-        virtualBookingSaved: deepCopy(this.props.virtualBooking),
-        films: this.props.films,
-        venues: this.props.venues,
-        invoices: this.props.invoices,
-        payments: this.props.payments,
-        calculations: this.props.calculations,
+        virtualBooking,
+        virtualBookingSaved: deepCopy(virtualBooking),
+        films,
+        venues,
+        invoices,
+        payments,
+        calculations,
         changesToSave: false,
-        job: this.props.job,
-        jobModalOpen: !!this.props.job
+        job,
+        jobModalOpen: !!job
       }, () => {
         setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
@@ -90,11 +84,11 @@ class VirtualBookingDetails extends React.Component {
       fetching: true,
       deleteInvoiceModalOpen: false
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'invoices',
       id: this.state.deleteInvoiceId,
-    }).then(() => {
-      const { invoices } = this.props;
+    }).then((response) => {
+      const { invoices } = response;
       this.setState({
         fetching: false,
         invoices,
@@ -128,11 +122,11 @@ class VirtualBookingDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'payments',
       id: e.target.dataset.id,
-    }).then(() => {
-      const { payments, calculations } = this.props;
+    }).then((response) => {
+      const { payments, calculations } = response;
       this.setState({
         fetching: false,
         payments,
@@ -145,41 +139,45 @@ class VirtualBookingDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+    }, () => {
+      updateEntity({
         entityName: 'virtualBooking',
         entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.virtualBooking, fields: ['deduction', 'boxOffice'] })
-      }).then(() => {
+      }).then((response) => {
+        const { virtualBooking, calculations } = response;
         this.setState({
           fetching: false,
-          virtualBooking: this.props.virtualBooking,
-          virtualBookingSaved: deepCopy(this.props.virtualBooking),
-          calculations: this.props.calculations,
+          virtualBooking,
+          virtualBookingSaved: deepCopy(virtualBooking),
+          calculations,
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
+        const { errors } = response;
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors,
         });
       });
     });
   }
 
   clickSendReport() {
+    const { virtualBooking } = this.state;
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: `/api/virtual_bookings/${this.state.virtualBooking.id}/send_report`,
-      method: 'post'
-    }).then(() => {
+    fetch(`/api/virtual_bookings/${virtualBooking.id}/send_report`, {
+      method: 'post',
+      headers: {
+        'x-csrf-token': getCsrfToken(),
+      },
+    }).then((response) => response.json()).then((response) => {
+      const { job } = response;
       this.setState({
-        job: this.props.job,
+        job,
         fetching: false,
-        jobModalOpen: true
+        jobModalOpen: true,
       });
     });
   }
@@ -267,6 +265,7 @@ class VirtualBookingDetails extends React.Component {
         <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700, height: this.calculateNewInvoiceModalHeight() }) }>
           <NewInvoice
             context={ this.props.context }
+            bookingId={ this.state.virtualBooking.id }
             rows={ this.generateInvoiceRows() }
             payments={ this.state.payments }
             callback={ this.sendInvoiceCallback.bind(this) }
@@ -484,13 +483,3 @@ class VirtualBookingDetails extends React.Component {
     Common.updateJobModal.call(this);
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(VirtualBookingDetails);

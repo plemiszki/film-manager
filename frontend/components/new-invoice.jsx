@@ -62,7 +62,7 @@ class NewInvoice extends React.Component {
       method: (editMode ? 'PATCH' : 'POST'),
       json: true,
       data: {
-        bookingId: this.props.virtualBooking.id,
+        bookingId: this.props.bookingId,
         bookingType: 'virtualBooking',
         rows: this.convertAndFilterRows(this.state.rows)
       }
