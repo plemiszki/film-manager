@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Common, Details, convertObjectKeysToUnderscore } from 'handy-components'
-import { createEntity, sendRequest } from '../actions/index'
+import { Common, Details, convertObjectKeysToUnderscore, getCsrfToken } from 'handy-components'
 
-class NewInvoice extends React.Component {
+export default class NewInvoice extends React.Component {
   constructor(props) {
     super(props);
 
@@ -57,17 +54,20 @@ class NewInvoice extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: `/api/invoices/${editMode ? this.props.invoiceToEdit.number : ''}`,
+    fetch(`/api/invoices/${editMode ? this.props.invoiceToEdit.number : ''}`, {
       method: (editMode ? 'PATCH' : 'POST'),
-      json: true,
-      data: {
+      headers: {
+        'x-csrf-token': getCsrfToken(),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(convertObjectKeysToUnderscore({
         bookingId: this.props.bookingId,
         bookingType: 'virtualBooking',
         rows: this.convertAndFilterRows(this.state.rows)
-      }
-    }).then(() => {
-      this.props.callback(this.props.invoices);
+      }))
+    }).then((response) => response.json()).then((response) => {
+      const { invoices } = response;
+      this.props.callback(invoices);
     });
   }
 
@@ -157,13 +157,3 @@ class NewInvoice extends React.Component {
     return '';
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ createEntity, sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(NewInvoice);
