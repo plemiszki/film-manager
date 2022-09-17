@@ -1,9 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import { Common, stringifyDate, Details, ellipsis } from 'handy-components'
-import { sendRequest } from '../actions/index'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const exportModalStyles = {
@@ -22,7 +19,7 @@ const exportModalStyles = {
   }
 };
 
-class DvdReports extends React.Component {
+export default class DvdReports extends React.Component {
 
   constructor(props) {
     super(props)
@@ -54,13 +51,10 @@ class DvdReports extends React.Component {
   }
 
   fetchReportData() {
-    this.props.sendRequest({
-      url: '/api/dvd_reports',
-      data: {
-        year: this.state.year,
-      }
-    }).then(() => {
-      const { yearTotal, dvds, dvdCustomers, monthTotals, titleReportCustomers } = this.props;
+    fetch(`/api/dvd_reports?${new URLSearchParams({
+      year: this.state.year,
+    })}`).then((response) => response.json()).then((response) => {
+      const { yearTotal, dvds, dvdCustomers, monthTotals, titleReportCustomers } = response;
       this.setState({
         fetching: false,
         yearTotal,
@@ -95,20 +89,16 @@ class DvdReports extends React.Component {
       exportModalOpen: false,
       fetching: true
     });
-    this.props.sendRequest({
-      url: '/api/dvd_reports/export',
-      method: 'POST',
-      data: {
-        start_date: this.state.export.startDate,
-        end_date: this.state.export.endDate
-      },
-    }).then(() => {
+    fetch(`/api/dvd_reports/export?${new URLSearchParams({
+      start_date: this.state.export.startDate,
+      end_date: this.state.export.endDate,
+    })}`).then((response) => response.json()).then((response) => {
       this.setState({
         jobModalOpen: true,
-        job: this.props.job,
+        job: response.job,
         fetching: false
       });
-    })
+    });
   }
 
   modalCloseAndRefresh() {
@@ -331,13 +321,3 @@ class DvdReports extends React.Component {
     Common.updateJobModal.call(this);
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DvdReports);

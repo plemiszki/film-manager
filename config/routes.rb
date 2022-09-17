@@ -106,7 +106,7 @@ Rails.application.routes.draw do
     post '/invoices' => '/api/invoices#create'
     get '/credit_memos/export' => '/api/credit_memos#export'
     resources :credit_memos, only: [:index, :new, :create, :show]
-    post '/dvd_reports/export' => '/api/purchase_orders#export'
+    get '/dvd_reports/export' => '/api/purchase_orders#export'
     get '/calendar' => 'calendar#show'
 
     get '/returns/export' => '/api/returns#export'
