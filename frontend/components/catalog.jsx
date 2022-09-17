@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { fetchEntity } from '../actions/index'
-import { Common } from 'handy-components'
+import { Common, fetchEntity } from 'handy-components'
 
-class Catalog extends React.Component {
+export default class Catalog extends React.Component {
 
   constructor(props) {
     super(props)
@@ -14,11 +11,11 @@ class Catalog extends React.Component {
   componentDidMount() {
     const jobIdDiv = document.getElementById('job-id');
     if (jobIdDiv) {
-      this.props.fetchEntity({
+      fetchEntity({
         directory: 'jobs',
         id: jobIdDiv.innerHTML,
-      }).then(() => {
-        const { job } = this.props;
+      }).then((response) => {
+        const { job } = response;
         this.setState({
           job,
           jobModalOpen: true,
@@ -40,13 +37,3 @@ class Catalog extends React.Component {
     Common.updateJobModal.call(this);
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Catalog);

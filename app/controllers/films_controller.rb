@@ -10,11 +10,11 @@ class FilmsController < AdminController
   end
 
   def advanced
-    render 'advanced.html.erb'
+    render 'advanced', formats: [:html], handlers: [:erb]
   end
 
   def catalog
-    render 'catalog.html.erb'
+    render 'catalog', formats: [:html], handlers: [:erb]
   end
 
 end
