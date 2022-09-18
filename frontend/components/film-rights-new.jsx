@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Common, setUpNiceSelect, Details } from 'handy-components'
-import { sendRequest } from '../actions/index'
+import { Common, setUpNiceSelect, Details, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
 
-class FilmRightsNew extends React.Component {
+export default class FilmRightsNew extends React.Component {
 
   constructor(props) {
     super(props)
@@ -29,13 +26,10 @@ class FilmRightsNew extends React.Component {
   }
 
   componentDidMount() {
-    this.props.sendRequest({
-      url: '/api/rights_and_territories',
-      data: {
-        filmsToo: !!this.props.sublicensorId,
-      }
-    }).then(() => {
-      const { films, rights, territories } = this.props;
+    fetch(`/api/rights_and_territories?${new URLSearchParams({
+      filmsToo: !!this.props.sublicensorId,
+    })}`).then((response) => response.json()).then((response) => {
+      const { films, rights, territories } = response;
       let newState = {
         fetching: false,
         films,
@@ -76,10 +70,13 @@ class FilmRightsNew extends React.Component {
         const { filmRight, selectedRights, selectedTerritories } = this.state;
         const { filmId, sublicensorId, startDate, endDate, exclusive } = filmRight;
         if (this.props.filmId) {
-          this.props.sendRequest({
-            url: '/api/film_rights',
-            method: 'post',
-            data: {
+          fetch('/api/film_rights', {
+            method: 'POST',
+            headers: {
+              'x-csrf-token': getCsrfToken(),
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(convertObjectKeysToUnderscore({
               filmRight: {
                 film_id: filmId,
                 start_date: startDate,
@@ -88,15 +85,18 @@ class FilmRightsNew extends React.Component {
               },
               rights: selectedRights,
               territories: selectedTerritories
-            }
-          }).then(() => {
-            this.props.callback(this.props.filmRights);
+            }))
+          }).then((response) => response.json()).then((response) => {
+            this.props.callback(response.filmRights);
           });
         } else {
-          this.props.sendRequest({
-            url: '/api/sub_rights',
-            method: 'post',
-            data: {
+          fetch('/api/sub_rights', {
+            method: 'POST',
+            headers: {
+              'x-csrf-token': getCsrfToken(),
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(convertObjectKeysToUnderscore({
               subRight: {
                 film_id: filmId,
                 sublicensor_id: sublicensorId,
@@ -106,8 +106,8 @@ class FilmRightsNew extends React.Component {
               },
               rights: selectedRights,
               territories: selectedTerritories
-            }
-          }).then(() => {
+            }))
+          }).then((response) => response.json()).then(() => {
             window.location.pathname = `/sublicensors/${sublicensorId}`;
           });
         }
@@ -264,13 +264,3 @@ class FilmRightsNew extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FilmRightsNew);
