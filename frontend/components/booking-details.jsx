@@ -1,11 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { sendRequest, fetchEntity, updateEntity, deleteEntity } from '../actions/index.js'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
-import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect } from 'handy-components'
+import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
 
 const NewInvoiceStyles = {
   overlay: {
@@ -19,19 +16,7 @@ const NewInvoiceStyles = {
   }
 };
 
-const copyModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 700
-  }
-};
-
-class BookingDetails extends React.Component {
+export default class BookingDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -76,11 +61,8 @@ class BookingDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      directory: 'bookings',
-      id: window.location.pathname.split('/')[2]
-    }).then(() => {
-      const { booking, calculations, users, invoices, formats, weeklyTerms, weeklyBoxOffices, payments, films, venues } = this.props;
+    fetchEntity().then((response) => {
+      const { booking, calculations, users, invoices, formats, weeklyTerms, weeklyBoxOffices, payments, films, venues } = response;
       this.setState({
         fetching: false,
         booking,
@@ -104,14 +86,12 @@ class BookingDetails extends React.Component {
     this.setState({
       fetching: true,
       justSaved: true
-    }, function() {
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+    }, () => {
+      updateEntity({
         entityName: 'booking',
         entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.booking, fields: ['advance', 'shippingFee', 'deduction', 'houseExpense', 'boxOffice'] })
-      }).then(() => {
-        const { booking, calculations } = this.props;
+      }).then((response) => {
+        const { booking, calculations } = response;
         this.setState({
           fetching: false,
           booking,
@@ -119,24 +99,13 @@ class BookingDetails extends React.Component {
           calculations,
           changesToSave: false
         });
-      }, () => {
+      }, (response) => {
+        const { errors } = response;
         this.setState({
           fetching: false,
-          errors: this.props.errors
+          errors,
         });
       });
-    });
-  }
-
-  confirmDelete() {
-    this.setState({
-      fetching: true,
-      deleteModalOpen: false
-    });
-    this.props.deleteEntity({
-      directory: 'bookings',
-      id: this.state.booking.id,
-      redirectToIndex: true,
     });
   }
 
@@ -148,11 +117,11 @@ class BookingDetails extends React.Component {
       this.setState({
         fetching: false
       });
-      this.props.deleteEntity({
+      deleteEntity({
         directory: 'invoices',
         id: this.state.deleteInvoiceId,
-      }).then(() => {
-        const { invoices } = this.props;
+      }).then((response) => {
+        const { invoices } = response;
         this.setState({
           invoices,
         });
@@ -164,11 +133,11 @@ class BookingDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'weekly_terms',
       id: e.target.dataset.id,
-    }).then(() => {
-      const { weeklyTerms } = this.props;
+    }).then((response) => {
+      const { weeklyTerms } = response;
       this.setState({
         fetching: false,
         weeklyTerms,
@@ -180,11 +149,11 @@ class BookingDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'weekly_box_offices',
       id: e.target.dataset.id,
-    }).then(() => {
-      const { weeklyBoxOffices, calculations } = this.props;
+    }).then((response) => {
+      const { weeklyBoxOffices, calculations } = response;
       this.setState({
         fetching: false,
         weeklyBoxOffices,
@@ -197,11 +166,11 @@ class BookingDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'payments',
       id: e.target.dataset.id,
-    }).then(() => {
-      const { payments, calculations } = this.props;
+    }).then((response) => {
+      const { payments, calculations } = response;
       this.setState({
         fetching: false,
         payments,
@@ -215,11 +184,13 @@ class BookingDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: `/api/bookings/${booking.id}/confirm`,
-      method: 'post'
-    }).then(() => {
-      const { booking } = this.props;
+    fetch(`/api/bookings/${booking.id}/confirm`, {
+      method: 'POST',
+      headers: {
+        'x-csrf-token': getCsrfToken(),
+      },
+    }).then((response) => response.json()).then((response) => {
+      const { booking } = response;
       this.setState({
         fetching: false,
         booking
@@ -240,18 +211,21 @@ class BookingDetails extends React.Component {
           oldInvoiceOverage: null,
           oldInvoiceShipFee: null
         });
-        this.props.sendRequest({
-          url: `/api/invoices/${this.state.resendInvoiceId}`,
-          method: 'patch',
-          data: {
+        fetch(`/api/invoices/${this.state.resendInvoiceId}`, {
+          method: 'PATCH',
+          headers: {
+            'x-csrf-token': getCsrfToken(),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(convertObjectKeysToUnderscore({
             bookingId: booking.id,
             advance: newInvoiceAdvance,
             overage: newInvoiceOverage,
             shipFee: newInvoiceShipFee,
             paymentIds
-          }
-        }).then(() => {
-          const { invoices } = this.props;
+          }))
+        }).then((response) => response.json()).then((response) => {
+          const { invoices } = response;
           this.setState({
             fetching: false,
             invoices
@@ -262,20 +236,23 @@ class BookingDetails extends React.Component {
           newInvoiceModalOpen: false,
           fetching: true
         });
-        this.props.sendRequest({
-          url: '/api/invoices',
-          method: 'post',
-          data: {
+        fetch('/api/invoices', {
+          method: 'POST',
+          headers: {
+            'x-csrf-token': getCsrfToken(),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(convertObjectKeysToUnderscore({
             bookingId: booking.id,
             advance: newInvoiceAdvance,
             overage: newInvoiceOverage,
-            shipFee: newInvoiceShipFee
-          }
-        }).then(() => {
-          const { invoices } = this.props;
+            shipFee: newInvoiceShipFee,
+          }))
+        }).then((response) => response.json()).then((response) => {
+          const { invoices } = response;
           this.setState({
             fetching: false,
-            invoices
+            invoices,
           });
         });
       }
@@ -616,7 +593,7 @@ class BookingDetails extends React.Component {
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="booking" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+          <ConfirmDelete entityName="booking" confirmDelete={ Details.clickDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete entityName="invoice" confirmDelete={ this.confirmDeleteInvoice.bind(this) } closeModal={ Common.closeModals.bind(this) } />
@@ -877,13 +854,3 @@ class BookingDetails extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest, fetchEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BookingDetails);
