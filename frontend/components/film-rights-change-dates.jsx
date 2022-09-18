@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, Details } from 'handy-components'
+import { Common, Details, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
 
 export default class FilmRightsChangeDates extends React.Component {
 
@@ -32,15 +32,18 @@ export default class FilmRightsChangeDates extends React.Component {
         endDate,
         filmId,
       }))
-    }).then((response) => response.json()).then((response) => {
-      const { filmRights } = response;
-      this.props.updateChangedDates(filmRights);
-    }, (response) => {
-      const { errors } = response;
-      this.setState({
-        fetching: false,
-        errors,
-      });
+    }).then(async (response) => {
+      const payload = await response.json();
+      if (response.ok) {
+        const { filmRights } = payload;
+        this.props.updateChangedDates(filmRights);
+      } else {
+        const { errors } = payload;
+        this.setState({
+          fetching: false,
+          errors
+        });
+      }
     });
   }
 
