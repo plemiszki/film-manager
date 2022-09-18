@@ -1,13 +1,8 @@
 import React, { Component } from 'react'
-import Modal from 'react-modal'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import ChangeCase from 'change-case'
 import { Common, Details } from 'handy-components'
-import { sendRequest } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
-class CopyEntity extends React.Component {
+export default class CopyEntity extends Component {
 
   constructor(props) {
     super(props)
@@ -55,19 +50,22 @@ class CopyEntity extends React.Component {
         };
         break;
     }
-    this.props.sendRequest({
-      url,
-      method: 'post',
-      data
-    }).then(() => {
-      const { film, booking } = this.props;
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'x-csrf-token': getCsrfToken(),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(convertObjectKeysToUnderscore(data))
+    }).then((response) => {
+      const { film, booking } = response;
       if (film) {
         window.location.pathname = `/films/${film.id}`;
       } else if (booking) {
         window.location.pathname = `/bookings/${booking.id}`;
       }
-    }, () => {
-      const { errors } = this.props;
+    }, (response) => {
+      const { errors } = response;
       this.setState({
         fetching: false,
         errors
@@ -111,13 +109,3 @@ class CopyEntity extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CopyEntity);
