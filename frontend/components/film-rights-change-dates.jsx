@@ -1,11 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { Common, Details } from 'handy-components'
-import { sendRequest } from '../actions/index'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
-class FilmRightsChangeDates extends React.Component {
+export default class FilmRightsChangeDates extends React.Component {
 
   constructor(props) {
     super(props)
@@ -24,21 +20,26 @@ class FilmRightsChangeDates extends React.Component {
       fetching: true
     });
     const { startDate, endDate } = this.state.obj;
-    this.props.sendRequest({
-      url: '/api/film_rights/change_dates',
-      method: 'patch',
-      data: {
+    const { filmId } = this.props;
+    fetch('/api/film_rights/change_dates', {
+      method: 'PATCH',
+      headers: {
+        'x-csrf-token': getCsrfToken(),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(convertObjectKeysToUnderscore({
         startDate,
         endDate,
-        filmId: this.props.filmId
-      }
-    }).then(() => {
-      const { filmRights } = this.props;
+        filmId,
+      }))
+    }).then((response) => response.json()).then((response) => {
+      const { filmRights } = response;
       this.props.updateChangedDates(filmRights);
-    }, () => {
+    }, (response) => {
+      const { errors } = response;
       this.setState({
         fetching: false,
-        errors: this.props.errors
+        errors,
       });
     });
   }
@@ -68,13 +69,3 @@ class FilmRightsChangeDates extends React.Component {
     return (this.state.fetching || (obj.startDate === '' && obj.endDate === ''));
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FilmRightsChangeDates);
