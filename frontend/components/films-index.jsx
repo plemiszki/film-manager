@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
-import { Common, convertObjectKeysToUnderscore, removeFromArray } from 'handy-components'
-import { sendRequest, fetchEntities } from '../actions/index'
+import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, getCsrfToken } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const FilterModalStyles = {
@@ -34,7 +31,7 @@ const NewRightsModalStyles = {
   }
 };
 
-class FilmsIndex extends Component {
+export default class FilmsIndex extends Component {
 
   constructor(props) {
     super(props)
@@ -60,13 +57,13 @@ class FilmsIndex extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntities({
+    fetchEntities({
       directory: 'films',
       data: {
         filmType: this.props.filmType
       }
-    }).then(() => {
-      const { films, alternateAudios, alternateSubs, alternateLengths } = this.props;
+    }).then((response) => {
+      const { films, alternateAudios, alternateSubs, alternateLengths } = response;
       this.setState({
         fetching: false,
         films,
@@ -85,16 +82,20 @@ class FilmsIndex extends Component {
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: '/api/films/export',
-      method: 'post',
-      data: {
+    fetch('/api/films/export', {
+      method: 'POST',
+      headers: {
+        'x-csrf-token': getCsrfToken(),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(convertObjectKeysToUnderscore({
         filmType: this.props.filmType,
         filmIds: this.state.films.map(film => film.id)
-      }
-    }).then(() => {
+      }))
+    }).then((response) => response.json()).then((response) => {
+      const { job } = response;
       this.setState({
-        job: this.props.job,
+        job,
         fetching: false,
         jobModalOpen: true
       });
@@ -105,16 +106,20 @@ class FilmsIndex extends Component {
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: '/api/films/export',
-      method: 'post',
-      data: {
+    fetch('/api/films/export', {
+      method: 'POST',
+      headers: {
+        'x-csrf-token': getCsrfToken(),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(convertObjectKeysToUnderscore({
         filmType: this.props.filmType,
         searchCriteria: convertObjectKeysToUnderscore(searchCriteria)
-      }
-    }).then(() => {
+      }))
+    }).then((response) => response.json()).then((response) => {
+      const { job } = response;
       this.setState({
-        job: this.props.job,
+        job,
         fetching: false,
         jobModalOpen: true
       });
@@ -346,13 +351,3 @@ class FilmsIndex extends Component {
     Common.updateJobModal.call(this);
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest, fetchEntities }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FilmsIndex);
