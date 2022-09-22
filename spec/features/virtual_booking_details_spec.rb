@@ -223,6 +223,7 @@ describe 'virtual_booking_details', type: :feature do
   it 'starts the send email job' do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     find('.orange-button', text: 'Send Report').click
+    sleep 10
     expect(page).to have_content('Sending Report')
   end
 

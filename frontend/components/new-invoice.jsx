@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, Details, convertObjectKeysToUnderscore, getCsrfToken } from 'handy-components'
+import { Common, Details, convertObjectKeysToUnderscore, sendRequest } from 'handy-components'
 
 export default class NewInvoice extends React.Component {
   constructor(props) {
@@ -54,18 +54,14 @@ export default class NewInvoice extends React.Component {
     this.setState({
       fetching: true
     });
-    fetch(`/api/invoices/${editMode ? this.props.invoiceToEdit.number : ''}`, {
+    sendRequest(`/api/invoices/${editMode ? this.props.invoiceToEdit.number : ''}`, {
       method: (editMode ? 'PATCH' : 'POST'),
-      headers: {
-        'x-csrf-token': getCsrfToken(),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(convertObjectKeysToUnderscore({
+      data: {
         bookingId: this.props.bookingId,
         bookingType: 'virtualBooking',
-        rows: this.convertAndFilterRows(this.state.rows)
-      }))
-    }).then((response) => response.json()).then((response) => {
+        rows: this.convertAndFilterRows(this.state.rows),
+      }
+    }).then((response) => {
       const { invoices } = response;
       this.props.callback(invoices);
     });

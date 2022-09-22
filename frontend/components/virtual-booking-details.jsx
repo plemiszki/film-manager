@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, getCsrfToken } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
 
 export default class VirtualBookingDetails extends React.Component {
 
@@ -167,12 +167,9 @@ export default class VirtualBookingDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    fetch(`/api/virtual_bookings/${virtualBooking.id}/send_report`, {
-      method: 'post',
-      headers: {
-        'x-csrf-token': getCsrfToken(),
-      },
-    }).then((response) => response.json()).then((response) => {
+    sendRequest(`/api/virtual_bookings/${virtualBooking.id}/send_report`, {
+      method: 'POST',
+    }).then((response) => {
       const { job } = response;
       this.setState({
         job,

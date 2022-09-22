@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, removeFinanceSymbols, Details, fetchEntity, updateEntity, deepCopy } from 'handy-components'
+import { Common, removeFinanceSymbols, Details, fetchEntity, updateEntity, deepCopy, sendRequest } from 'handy-components'
 
 const NO_EXPENSES_DEAL_ID = 1;
 const EXPENSES_FROM_TOP_DEAL_ID = 2;
@@ -114,11 +114,11 @@ export default class ReportDetails extends React.Component {
       fetching: true
     }, () => {
       const { films, report } = this.state;
-      fetch(`/api/royalty_reports/export_uncrossed?${new URLSearchParams({
+      sendRequest('/api/royalty_reports/export_uncrossed', {
         filmIds: films.map(film => film.id),
         quarter: report.quarter,
         year: report.year,
-      })}`).then((response) => response.json()).then((response) => {
+      }).then((response) => {
         const { job } = response;
         this.setState({
           fetching: false,

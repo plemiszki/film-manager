@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
-import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
+import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
 
 const NewInvoiceStyles = {
   overlay: {
@@ -184,16 +184,16 @@ export default class BookingDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    fetch(`/api/bookings/${booking.id}/confirm`, {
+    sendRequest(`/api/bookings/${booking.id}/confirm`, {
       method: 'POST',
-      headers: {
-        'x-csrf-token': getCsrfToken(),
-      },
-    }).then((response) => response.json()).then((response) => {
+      data: {
+        year: this.state.year,
+      }
+    }).then((response) => {
       const { booking } = response;
       this.setState({
         fetching: false,
-        booking
+        booking,
       });
     });
   }
@@ -211,20 +211,16 @@ export default class BookingDetails extends React.Component {
           oldInvoiceOverage: null,
           oldInvoiceShipFee: null
         });
-        fetch(`/api/invoices/${this.state.resendInvoiceId}`, {
+        sendRequest(`/api/invoices/${this.state.resendInvoiceId}`, {
           method: 'PATCH',
-          headers: {
-            'x-csrf-token': getCsrfToken(),
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(convertObjectKeysToUnderscore({
+          data: {
             bookingId: booking.id,
             advance: newInvoiceAdvance,
             overage: newInvoiceOverage,
             shipFee: newInvoiceShipFee,
-            paymentIds
-          }))
-        }).then((response) => response.json()).then((response) => {
+            paymentIds,
+          }
+        }).then((response) => {
           const { invoices } = response;
           this.setState({
             fetching: false,
@@ -236,19 +232,15 @@ export default class BookingDetails extends React.Component {
           newInvoiceModalOpen: false,
           fetching: true
         });
-        fetch('/api/invoices', {
+        sendRequest('/api/invoices', {
           method: 'POST',
-          headers: {
-            'x-csrf-token': getCsrfToken(),
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(convertObjectKeysToUnderscore({
+          data: {
             bookingId: booking.id,
             advance: newInvoiceAdvance,
             overage: newInvoiceOverage,
             shipFee: newInvoiceShipFee,
-          }))
-        }).then((response) => response.json()).then((response) => {
+          }
+        }).then((response) => {
           const { invoices } = response;
           this.setState({
             fetching: false,

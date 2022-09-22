@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, getCsrfToken } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -151,12 +151,9 @@ export default class ReturnDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    fetch(`/api/returns/${this.state.return.id}/send_credit_memo`, {
+    sendRequest(`/api/returns/${this.state.return.id}/send_credit_memo`, {
       method: 'POST',
-      headers: {
-        'x-csrf-token': getCsrfToken(),
-      },
-    }).then((response) => response.json()).then((response) => {
+    }).then((response) => {
       const { job } = response;
       this.setState({
         job,

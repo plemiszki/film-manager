@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Common } from 'handy-components'
+import { Common, sendRequest } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import Modal from 'react-modal'
 
@@ -17,12 +17,12 @@ export default class CurrentUserDropDown extends Component {
   componentDidMount() {
     const { hasAutoRenewApproval } = this.props;
     if (hasAutoRenewApproval) {
-      fetch('/api/films/auto_renew').then((response) => response.json()).then((response) => {
+      sendRequest('/api/films/auto_renew').then((response) => {
         const { films } = response;
         this.setState({
           autoRenewFilms: films,
-        })
-      })
+        });
+      });
     }
   }
 
@@ -41,30 +41,28 @@ export default class CurrentUserDropDown extends Component {
     this.setState({
       spinner: true
     });
-    fetch(`/api/films/auto_renew/${film.id}`)
-      .then((response) => response.json()).then((response) => {
-        const { films } = response;
-        this.setState({
-          autoRenewFilms: films,
-          spinner: false,
-          autoRenewModalPage: 1,
-        })
-      })
+    sendRequest(`/api/films/auto_renew/${film.id}`).then((response) => {
+      const { films } = response;
+      this.setState({
+        autoRenewFilms: films,
+        spinner: false,
+        autoRenewModalPage: 1,
+      });
+    });
   }
 
   clickRenewAll() {
     this.setState({
       spinner: true
     });
-    fetch('/api/films/auto_renew/all')
-      .then((response) => response.json()).then((response) => {
-        const { films } = response;
-        this.setState({
-          autoRenewFilms: films,
-          spinner: false,
-          autoRenewModalPage: 1,
-        })
+    sendRequest('/api/films/auto_renew/all').then((response) => {
+      const { films } = response;
+      this.setState({
+        autoRenewFilms: films,
+        spinner: false,
+        autoRenewModalPage: 1,
       })
+    });
   }
 
   clickNextPage() {

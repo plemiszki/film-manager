@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
@@ -259,18 +259,14 @@ export default class PurchaseOrderDetails extends React.Component {
       this.setState({
         fetching: true
       }, () => {
-        fetch('/api/purchase_orders/ship', {
+        sendRequest('/api/purchase_orders/ship', {
           method: 'POST',
-          headers: {
-            'x-csrf-token': getCsrfToken(),
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(convertObjectKeysToUnderscore({
+          data: {
             purchaseOrder: {
               id: purchaseOrder.id,
             },
             reportingOnly,
-          }))
+          }
         }).then(() => {
           window.location.href = '/purchase_orders';
         });

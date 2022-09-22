@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, Details, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
+import { Common, Details, sendRequest } from 'handy-components'
 
 export default class FilmRightsChangeDates extends React.Component {
 
@@ -21,30 +21,23 @@ export default class FilmRightsChangeDates extends React.Component {
     });
     const { startDate, endDate } = this.state.obj;
     const { filmId } = this.props;
-    fetch('/api/film_rights/change_dates', {
+    sendRequest('/api/film_rights/change_dates', {
       method: 'PATCH',
-      headers: {
-        'x-csrf-token': getCsrfToken(),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(convertObjectKeysToUnderscore({
+      data: {
         startDate,
         endDate,
         filmId,
-      }))
-    }).then(async (response) => {
-      const payload = await response.json();
-      if (response.ok) {
-        const { filmRights } = payload;
-        this.props.updateChangedDates(filmRights);
-      } else {
-        const { errors } = payload;
-        this.setState({
-          fetching: false,
-          errors
-        });
       }
-    });
+    }).then((response) => {
+      const { filmRights } = response;
+      this.props.updateChangedDates(filmRights);
+    }, (response) => {
+      const { errors } = response;
+      this.setState({
+        fetching: false,
+        errors
+      });
+    })
   }
 
   changeFieldArgs() {

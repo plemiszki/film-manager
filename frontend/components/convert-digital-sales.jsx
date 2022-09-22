@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity } from 'handy-components'
+import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity, sendRequest } from 'handy-components'
 
 export default class ConvertDigitalSales extends React.Component {
 
@@ -26,13 +26,15 @@ export default class ConvertDigitalSales extends React.Component {
           jobModalOpen: true,
           fetching: true,
         });
-        fetch(`/api/films?${new URLSearchParams({
-          film_type: 'all',
-        })}`).then((response) => response.json()).then((response) => {
+        sendRequest('/api/films', {
+          data: {
+            film_type: 'all',
+          }
+        }).then((response) => {
           const { films } = response;
           this.setState({
-            films,
             fetching: false,
+            films,
           });
         });
       });

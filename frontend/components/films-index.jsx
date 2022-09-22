@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
-import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, getCsrfToken } from 'handy-components'
+import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const FilterModalStyles = {
@@ -82,46 +82,38 @@ export default class FilmsIndex extends Component {
     this.setState({
       fetching: true
     });
-    fetch('/api/films/export', {
+    sendRequest('/api/films/export', {
       method: 'POST',
-      headers: {
-        'x-csrf-token': getCsrfToken(),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(convertObjectKeysToUnderscore({
+      data: {
         filmType: this.props.filmType,
-        filmIds: this.state.films.map(film => film.id)
-      }))
-    }).then((response) => response.json()).then((response) => {
+        filmIds: this.state.films.map(film => film.id),
+      }
+    }).then((response) => {
       const { job } = response;
       this.setState({
         job,
         fetching: false,
-        jobModalOpen: true
+        jobModalOpen: true,
       });
     });
   }
 
   clickExportCustom(searchCriteria) {
     this.setState({
-      fetching: true
+      fetching: true,
     });
-    fetch('/api/films/export', {
+    sendRequest('/api/films/export', {
       method: 'POST',
-      headers: {
-        'x-csrf-token': getCsrfToken(),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(convertObjectKeysToUnderscore({
+      data: {
         filmType: this.props.filmType,
-        searchCriteria: convertObjectKeysToUnderscore(searchCriteria)
-      }))
-    }).then((response) => response.json()).then((response) => {
+        searchCriteria: convertObjectKeysToUnderscore(searchCriteria),
+      }
+    }).then((response) => {
       const { job } = response;
       this.setState({
         job,
         fetching: false,
-        jobModalOpen: true
+        jobModalOpen: true,
       });
     });
   }

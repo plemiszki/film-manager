@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, setUpNiceSelect, Details, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
+import { Common, setUpNiceSelect, Details, sendRequest } from 'handy-components'
 
 export default class FilmRightsNew extends React.Component {
 
@@ -26,9 +26,11 @@ export default class FilmRightsNew extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/api/rights_and_territories?${new URLSearchParams({
-      filmsToo: !!this.props.sublicensorId,
-    })}`).then((response) => response.json()).then((response) => {
+    sendRequest('/api/rights_and_territories', {
+      data: {
+        filmsToo: !!this.props.sublicensorId,
+      }
+    }).then((response) => {
       const { films, rights, territories } = response;
       let newState = {
         fetching: false,
@@ -70,13 +72,9 @@ export default class FilmRightsNew extends React.Component {
         const { filmRight, selectedRights, selectedTerritories } = this.state;
         const { filmId, sublicensorId, startDate, endDate, exclusive } = filmRight;
         if (this.props.filmId) {
-          fetch('/api/film_rights', {
+          sendRequest('/api/film_rights', {
             method: 'POST',
-            headers: {
-              'x-csrf-token': getCsrfToken(),
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(convertObjectKeysToUnderscore({
+            data: {
               filmRight: {
                 film_id: filmId,
                 start_date: startDate,
@@ -85,18 +83,14 @@ export default class FilmRightsNew extends React.Component {
               },
               rights: selectedRights,
               territories: selectedTerritories
-            }))
-          }).then((response) => response.json()).then((response) => {
+            }
+          }).then((response) => {
             this.props.callback(response.filmRights);
-          });
+          })
         } else {
-          fetch('/api/sub_rights', {
+          sendRequest('/api/sub_rights', {
             method: 'POST',
-            headers: {
-              'x-csrf-token': getCsrfToken(),
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(convertObjectKeysToUnderscore({
+            data: {
               subRight: {
                 film_id: filmId,
                 sublicensor_id: sublicensorId,
@@ -106,8 +100,8 @@ export default class FilmRightsNew extends React.Component {
               },
               rights: selectedRights,
               territories: selectedTerritories
-            }))
-          }).then((response) => response.json()).then(() => {
+            }
+          }).then(() => {
             window.location.pathname = `/sublicensors/${sublicensorId}`;
           });
         }

@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, stringifyDate, Details, ellipsis } from 'handy-components'
+import { Common, stringifyDate, Details, ellipsis, sendRequest } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const exportModalStyles = {
@@ -51,9 +51,11 @@ export default class DvdReports extends React.Component {
   }
 
   fetchReportData() {
-    fetch(`/api/dvd_reports?${new URLSearchParams({
-      year: this.state.year,
-    })}`).then((response) => response.json()).then((response) => {
+    sendRequest('/api/dvd_reports', {
+      data: {
+        year: this.state.year,
+      },
+    }).then((response) => {
       const { yearTotal, dvds, dvdCustomers, monthTotals, titleReportCustomers } = response;
       this.setState({
         fetching: false,
@@ -89,10 +91,12 @@ export default class DvdReports extends React.Component {
       exportModalOpen: false,
       fetching: true
     });
-    fetch(`/api/dvd_reports/export?${new URLSearchParams({
-      start_date: this.state.export.startDate,
-      end_date: this.state.export.endDate,
-    })}`).then((response) => response.json()).then((response) => {
+    sendRequest('/api/dvd_reports/export', {
+      data: {
+        start_date: this.state.export.startDate,
+        end_date: this.state.export.endDate,
+      },
+    }).then((response) => {
       this.setState({
         jobModalOpen: true,
         job: response.job,

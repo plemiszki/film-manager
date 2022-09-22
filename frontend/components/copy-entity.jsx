@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ChangeCase from 'change-case'
-import { Common, Details, getCsrfToken, convertObjectKeysToUnderscore } from 'handy-components'
+import { Common, Details, sendRequest } from 'handy-components'
 
 export default class CopyEntity extends Component {
 
@@ -50,30 +50,23 @@ export default class CopyEntity extends Component {
         };
         break;
     }
-    fetch(url, {
+    sendRequest(url, {
       method: 'POST',
-      headers: {
-        'x-csrf-token': getCsrfToken(),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(convertObjectKeysToUnderscore(data))
-    }).then(async (response) => {
-      const payload = await response.json();
-      if (!response.ok) {
-        const { errors } = payload;
-        this.setState({
-          fetching: false,
-          errors
-        });
-      } else {
-        const { film, booking } = payload;
-        if (film) {
-          window.location.pathname = `/films/${film.id}`;
-        } else if (booking) {
-          window.location.pathname = `/bookings/${booking.id}`;
-        }
+      data,
+    }).then((response) => {
+      const { film, booking } = response;
+      if (film) {
+        window.location.pathname = `/films/${film.id}`;
+      } else if (booking) {
+        window.location.pathname = `/bookings/${booking.id}`;
       }
-    })
+    }, (response) => {
+      const { errors } = response;
+      this.setState({
+        fetching: false,
+        errors
+      });
+    });
   }
 
   render() {

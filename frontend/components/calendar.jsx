@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, MONTHS } from 'handy-components'
+import { Common, MONTHS, sendRequest } from 'handy-components'
 
 export default class Calendar extends React.Component {
 
@@ -17,9 +17,11 @@ export default class Calendar extends React.Component {
   }
 
   fetchData() {
-    fetch(`/api/calendar?${new URLSearchParams({
-      year: this.state.year,
-    })}`).then((response) => response.json()).then((response) => {
+    sendRequest('/api/calendar', {
+      data: {
+        year: this.state.year,
+      }
+    }).then((response) => {
       this.setState({
         fetching: false,
         months: response.months
