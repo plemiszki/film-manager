@@ -1,9 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import { Common, setUpNiceSelect, ellipsis, pluralize } from 'handy-components'
-import { sendRequest, fetchEntities, fetchEntity } from '../actions/index'
+import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const importModalStyles = {
@@ -38,7 +35,7 @@ const sendModalStyles = {
   }
 };
 
-class ReportsIndex extends React.Component {
+export default class ReportsIndex extends React.Component {
 
   constructor(props) {
     super(props)
@@ -74,12 +71,12 @@ class ReportsIndex extends React.Component {
       jobId = $('#sage-import-id')[0].innerHTML;
     }
     if (jobId) {
-      this.props.fetchEntity({
+      fetchEntity({
         id: jobId,
         directory: 'jobs',
         entityName: 'job'
-      }).then(() => {
-        const { job } = this.props;
+      }).then((response) => {
+        const { job } = response;
         this.setState({
           job,
           jobModalOpen: true
@@ -90,14 +87,13 @@ class ReportsIndex extends React.Component {
 
   fetchReports() {
     const { quarter, year } = this.state;
-    this.props.fetchEntities({
-      directory: 'royalty_reports',
+    fetchEntities({
       data: {
         quarter,
         year
       }
-    }).then(() => {
-      const { reports } = this.props;
+    }).then((response) => {
+      const { reports } = response;
       this.setState({
         fetching: false,
         reports
@@ -169,16 +165,15 @@ class ReportsIndex extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: '/api/royalty_reports/export_all',
-      method: 'post',
+    sendRequest('/api/royalty_reports/export_all', {
+      method: 'POST',
       data: {
         quarter,
         year,
         daysDue
       }
-    }).then(() => {
-      const { job } = this.props;
+    }).then((response) => {
+      const { job } = response;
       this.setState({
         job,
         fetching: false,
@@ -192,15 +187,14 @@ class ReportsIndex extends React.Component {
     this.setState({
       fetching: true,
     });
-    this.props.sendRequest({
-      url: '/api/royalty_reports/error_check',
-      method: 'post',
+    sendRequest('/api/royalty_reports/error_check', {
+      method: 'POST',
       data: {
         quarter,
         year
       }
-    }).then(() => {
-      const { job } = this.props;
+    }).then((response) => {
+      const { job } = response;
       this.setState({
         job,
         fetching: false,
@@ -214,16 +208,15 @@ class ReportsIndex extends React.Component {
     this.setState({
       fetching: true,
     });
-    this.props.sendRequest({
-      url: '/api/royalty_reports/totals',
-      method: 'post',
+    sendRequest('/api/royalty_reports/totals', {
+      method: 'POST',
       data: {
         quarter,
         year,
         daysDue
       }
-    }).then(() => {
-      const { job } = this.props;
+    }).then((response) => {
+      const { job } = response;
       this.setState({
         job,
         fetching: false,
@@ -237,15 +230,14 @@ class ReportsIndex extends React.Component {
     this.setState({
       fetching: true,
     });
-    this.props.sendRequest({
-      url: '/api/royalty_reports/summary',
+    sendRequest('/api/royalty_reports/summary', {
       data: {
         quarter,
         year,
         daysDue
       }
-    }).then(() => {
-      const { job } = this.props;
+    }).then((response) => {
+      const { job } = response;
       this.setState({
         job,
         fetching: false,
@@ -259,16 +251,15 @@ class ReportsIndex extends React.Component {
     this.setState({
       fetching: true,
     });
-    this.props.sendRequest({
-      url: '/api/royalty_reports/send_all',
-      method: 'post',
+    sendRequest('/api/royalty_reports/send_all', {
+      method: 'POST',
       data: {
         quarter,
         year,
         daysDue
       }
-    }).then(() => {
-      const { job } = this.props;
+    }).then((response) => {
+      const { job } = response;
       this.setState({
         job,
         fetching: false,
@@ -443,13 +434,3 @@ class ReportsIndex extends React.Component {
     this.fetchReports();
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest, fetchEntities, fetchEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReportsIndex);
