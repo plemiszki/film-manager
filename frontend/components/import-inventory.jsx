@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { sendRequest } from '../actions/index'
-import { Common } from 'handy-components'
+import { Common, sendRequest } from 'handy-components'
 
-class ImportInventory extends React.Component {
+export default class ImportInventory extends React.Component {
 
   constructor(props) {
     super(props)
@@ -18,11 +15,8 @@ class ImportInventory extends React.Component {
 
   componentDidMount() {
     $('#upload-form-inventory #user_file').on('change', this.pickFile);
-    this.props.sendRequest({
-      url: '/api/purchase_orders/check_jobs',
-      method: 'get'
-    }).then(() => {
-      let { needToUpdate, job } = this.props;
+    sendRequest('/api/purchase_orders/check_jobs').then((response) => {
+      let { needToUpdate, job } = response;
       this.setState({
         needToUpdate,
         job,
@@ -70,13 +64,3 @@ class ImportInventory extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ImportInventory);

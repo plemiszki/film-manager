@@ -1,11 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Common, ConfirmDelete, Details, Index } from 'handy-components'
-import { sendRequest } from '../actions/index'
+import { sendRequest } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
-class InTheatersIndexItem extends React.Component {
+export default class InTheatersIndexItem extends React.Component {
 
   constructor(props) {
     super(props)
@@ -64,14 +61,13 @@ class InTheatersIndexItem extends React.Component {
       currentOrder[film.order] = film.id;
     });
     const newOrder = Tools.rearrangeFields(currentOrder, draggedIndex, dropZoneIndex);
-    this.props.sendRequest({
-      url: '/api/in_theaters/rearrange',
-      method: 'post',
+    sendRequest('/api/in_theaters/rearrange', {
+      method: 'POST',
       data: {
         new_order: newOrder
       }
-    }).then(() => {
-      const { inTheaters, comingSoon, repertory } = this.props;
+    }).then((response) => {
+      const { inTheaters, comingSoon, repertory } = response;
       this.props.updateFilms({
         inTheaters,
         comingSoon,
@@ -116,13 +112,3 @@ class InTheatersIndexItem extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(InTheatersIndexItem);
