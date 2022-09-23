@@ -1,14 +1,11 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
 import ModalSelect from './modal-select.jsx'
 import InTheatersIndexItem from './in-theaters-index-item.jsx'
-import { Common } from 'handy-components'
-import { sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index'
+import { Common, sendRequest, deleteEntity, createEntity } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
-class InTheatersIndex extends React.Component {
+export default class InTheatersIndex extends React.Component {
 
   constructor(props) {
     super(props)
@@ -23,10 +20,8 @@ class InTheatersIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.props.sendRequest({
-      url: '/api/in_theaters',
-    }).then(() => {
-      const { films, inTheaters, comingSoon, repertory } = this.props;
+    sendRequest('/api/in_theaters').then((response) => {
+      const { films, inTheaters, comingSoon, repertory } = response;
       this.setState({
         fetching: false,
         inTheaters,
@@ -42,11 +37,11 @@ class InTheatersIndex extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'in_theaters',
       id,
-    }).then(() => {
-      const { films, inTheaters, comingSoon, repertory } = this.props;
+    }).then((response) => {
+      const { films, inTheaters, comingSoon, repertory } = response;
       this.setState({
         fetching: false,
         inTheaters,
@@ -84,15 +79,15 @@ class InTheatersIndex extends React.Component {
       filmsModalOpen: false,
       fetching: true
     });
-    this.props.createEntity({
+    createEntity({
       directory: 'in_theaters',
       entityName: 'film',
       entity: {
         filmId,
         section: this.state.addSection
       }
-    }).then(() => {
-      const { films, inTheaters, comingSoon, repertory } = this.props;
+    }).then((response) => {
+      const { films, inTheaters, comingSoon, repertory } = response;
       this.setState({
         fetching: false,
         inTheaters,
@@ -202,13 +197,3 @@ class InTheatersIndex extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(InTheatersIndex);
