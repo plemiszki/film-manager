@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Common, deepCopy } from 'handy-components'
-import { fetchEntities, updateEntity } from '../actions/index'
+import { Common, deepCopy, fetchEntities, updateEntity } from 'handy-components'
 
-class JobsIndex extends React.Component {
+export default class JobsIndex extends React.Component {
 
   constructor(props) {
     super(props)
@@ -15,11 +12,11 @@ class JobsIndex extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntities({
+    fetchEntities({
       directory: 'jobs'
-    }).then(() => {
+    }).then((response) => {
       this.setState({
-        jobs: this.props.jobs,
+        jobs: response.jobs,
       });
     });
   }
@@ -37,15 +34,15 @@ class JobsIndex extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.updateEntity({
+    updateEntity({
       id,
       directory: 'jobs',
       entityName: 'job',
       entity: job
-    }).then(() => {
+    }).then((response) => {
       this.setState({
         fetching: false,
-        jobs: this.props.jobs
+        jobs: response.jobs
       });
     });
   }
@@ -96,13 +93,3 @@ class JobsIndex extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchEntities, updateEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(JobsIndex);
