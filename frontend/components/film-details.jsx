@@ -1,11 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import Modal from 'react-modal'
-import { sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity } from '../actions/index.js'
 import FilmRightsNew from './film-rights-new.jsx'
 import FilmRightsChangeDates from './film-rights-change-dates.jsx'
-import { Common, Details, capitalize, ConfirmDelete, ModalSelect, deepCopy, setUpNiceSelect, rearrangeFields, resetNiceSelect, alphabetizeArrayOfObjects, sortArrayOfObjects } from 'handy-components'
+import { Common, Details, capitalize, ConfirmDelete, ModalSelect, deepCopy, setUpNiceSelect, rearrangeFields, resetNiceSelect, alphabetizeArrayOfObjects, sortArrayOfObjects, fetchEntity, updateEntity, deleteEntity, sendRequest, createEntity } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
@@ -50,7 +47,7 @@ const ArtworkModalStyles = {
   }
 };
 
-class FilmDetails extends React.Component {
+export default class FilmDetails extends React.Component {
 
   constructor(props) {
     super(props)
@@ -122,11 +119,7 @@ class FilmDetails extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchEntity({
-      id: window.location.pathname.split('/')[2],
-      directory: window.location.pathname.split('/')[1],
-      entityName: 'film'
-    }).then(() => {
+    fetchEntity().then((response) => {
       const {
         actors,
         alternateAudios,
@@ -170,7 +163,7 @@ class FilmDetails extends React.Component {
         topics,
         quotes,
         virtualBookings,
-      } = this.props;
+      } = response;
       this.setState({
         actors,
         alternateAudios,
@@ -320,14 +313,13 @@ class FilmDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.sendRequest({
-      url: `/api/${directory}/rearrange`,
-      method: 'patch',
+    sendRequest(`/api/${directory}/rearrange`, {
+      method: 'PATCH',
       data,
-    }).then(() => {
+    }).then((response) => {
       this.setState({
         fetching: false,
-        [entityArray]: this.props[entityArray]
+        [entityArray]: response[entityArray]
       });
     });
   }
@@ -397,9 +389,7 @@ class FilmDetails extends React.Component {
     }, () => {
       const { film, percentageObject } = this.state;
       const filmWithTentative = this.extractTentativeReleaseDates(film);
-      this.props.updateEntity({
-        id: window.location.pathname.split("/")[2],
-        directory: window.location.pathname.split("/")[1],
+      updateEntity({
         entityName: 'film',
         entity: Details.removeFinanceSymbolsFromEntity({
           entity: film,
@@ -427,8 +417,8 @@ class FilmDetails extends React.Component {
         additionalData: {
           percentages: percentageObject
         }
-      }).then(() => {
-        const { film, filmRevenuePercentages, schedule } = this.props;
+      }).then((response) => {
+        const { film, filmRevenuePercentages, schedule } = response;
         this.setState({
           changesToSave: false,
           film,
@@ -438,8 +428,8 @@ class FilmDetails extends React.Component {
         }, () => {
           this.updatePercentageObject();
         });
-      }, () => {
-        const { errors } = this.props;
+      }, (response) => {
+        const { errors } = response;
         this.setState({
           fetching: false,
           errors,
@@ -471,20 +461,20 @@ class FilmDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.createEntity({
+    createEntity({
       directory,
       entityName,
       entity: {
         filmId: id,
         [key]: option.id
       }
-    }).then(() => {
+    }).then((response) => {
       let obj = {
         fetching: false,
-        [entityNamePlural]: this.props[entityNamePlural]
+        [entityNamePlural]: response[entityNamePlural]
       }
       otherArrays && otherArrays.forEach((arrayName) => {
-        obj[arrayName] = this.props[arrayName];
+        obj[arrayName] = response[arrayName];
       });
       this.setState(obj);
       Common.closeModals.call(this);
@@ -498,16 +488,16 @@ class FilmDetails extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.deleteEntity({
+    deleteEntity({
       directory,
       id,
-    }).then(() => {
+    }).then((response) => {
       let obj = {
         fetching: false,
-        [entityNamePlural]: this.props[entityNamePlural]
+        [entityNamePlural]: response[entityNamePlural]
       }
       otherArrays && otherArrays.forEach((arrayName) => {
-        obj[arrayName] = this.props[arrayName];
+        obj[arrayName] = response[arrayName];
       });
       this.setState(obj);
     });
@@ -519,7 +509,7 @@ class FilmDetails extends React.Component {
       deleteModalOpen: false
     });
     const { id } = this.state.film;
-    this.props.deleteEntity({
+    deleteEntity({
       directory: 'films',
       id,
       redirectToIndex: true,
@@ -527,14 +517,13 @@ class FilmDetails extends React.Component {
   }
 
   confirmUpdateArtwork() {
-    this.props.sendRequest({
-      url: '/api/films/update_artwork',
-      method: 'post',
+    sendRequest('/api/films/update_artwork', {
+      method: 'POST',
       data: {
         triggerId: this.state.film.id
       }
-    }).then(() => {
-      const { job } = this.props;
+    }).then((response) => {
+      const { job } = response;
       this.setState({
         job,
         artworkModalOpen: false,
@@ -768,7 +757,7 @@ class FilmDetails extends React.Component {
           </div>
         </Modal>
         <Modal isOpen={this.state.deleteModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="film" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+          <ConfirmDelete entityName="film" confirmDelete={ Details.clickDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
         { Common.renderJobModal.call(this, this.state.job) }
       </div>
@@ -1791,13 +1780,3 @@ class FilmDetails extends React.Component {
     this.setState({ film });
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ sendRequest, fetchEntity, createEntity, updateEntity, deleteEntity }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FilmDetails);
