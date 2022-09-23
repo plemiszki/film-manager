@@ -1,15 +1,11 @@
 import React from 'react'
-import Modal from 'react-modal'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import ChangeCase from 'change-case'
-import { Common, Details, deepCopy, setUpNiceSelect, resetNiceSelect } from 'handy-components'
-import { createEntity, fetchDataForNew } from '../actions/index'
+import { Common, Details, deepCopy, setUpNiceSelect, resetNiceSelect, createEntity, sendRequest } from 'handy-components'
 
 let entityNamePlural;
 let directory;
 
-class NewEntity extends React.Component {
+export default class NewEntity extends React.Component {
   constructor(props) {
     super(props);
 
@@ -41,11 +37,11 @@ class NewEntity extends React.Component {
   componentDidMount() {
     setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
     if (this.props.fetchData) {
-      this.props.fetchDataForNew({ directory }).then(() => {
+      sendRequest(`/api/${directory}/new`).then((response) => {
         let entity = deepCopy(this.state[this.props.entityName]);
         let obj = { fetching: false };
         this.props.fetchData.forEach((arrayName) => {
-          obj[arrayName] = this.props[arrayName];
+          obj[arrayName] = response[arrayName];
         })
         obj[this.props.entityName] = entity;
         this.setState(obj, () => {
@@ -64,25 +60,25 @@ class NewEntity extends React.Component {
     this.setState({
       fetching: true
     });
-    this.props.createEntity({
+    createEntity({
       directory,
       entityName: this.props.entityName,
-      entity: this.state[this.props.entityName]
-    }).then(() => {
+      entity: this.state[this.props.entityName],
+    }).then((response) => {
       if (this.props.redirectAfterCreate) {
-        window.location.href = `/${directory}/${this.props[this.props.entityName].id}`;
+        window.location.href = `/${directory}/${response[this.props.entityName].id}`;
       } else {
         if (this.props.callback) {
-          this.props.callback(this.props[entityNamePlural], entityNamePlural);
+          this.props.callback(response[entityNamePlural], entityNamePlural);
         }
         if (this.props.callbackFullProps) {
-          this.props.callbackFullProps(this.props, entityNamePlural);
+          this.props.callbackFullProps(response, entityNamePlural);
         }
       }
-    }, () => {
+    }, (response) => {
       this.setState({
         fetching: false,
-        errors: this.props.errors
+        errors: response.errors
       }, () => {
         resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
@@ -484,13 +480,3 @@ class NewEntity extends React.Component {
     }
   }
 }
-
-const mapStateToProps = (reducers) => {
-  return reducers.standardReducer;
-};
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ createEntity, fetchDataForNew }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(NewEntity);

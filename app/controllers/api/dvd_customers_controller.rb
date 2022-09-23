@@ -61,7 +61,7 @@ class Api::DvdCustomersController < AdminController
       :include_in_title_report,
       :nickname
     )
-    if result[:discount].gsub(' ', '').include?("/unit")
+    if result[:discount].to_s.gsub(' ', '').include?("/unit")
       result[:per_unit] = result[:discount].gsub(/[^\d.]/, '')
       result.delete(:discount)
     end
