@@ -174,12 +174,220 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteCallback: function () { window.location.pathname = `/films/${this.state.filmRight.filmId}` }, // arrow function won't work here
   });
 
+  renderSimpleDetails('sublicensor-details', {
+    entityName: 'sublicensor',
+    initialEntity: { name: '', contactName: '', email: '', phone: '', w8: false },
+    fields: [
+      [
+        { columnWidth: 4, property: 'name' },
+        { columnWidth: 4, property: 'contactName' },
+        { columnWidth: 4, property: 'email' },
+      ],
+      [
+        { columnWidth: 4, property: 'phone' },
+        { columnWidth: 2, property: 'w8', columnHeader: 'W-8 on File', type: 'dropdown', boolean: true },
+      ]
+    ],
+  });
 
+  renderSimpleDetails('digital-retailer-film-details', {
+    entityName: 'digitalRetailerFilm',
+    initialEntity: { filmId: '', digitalRetailerId: '', url: '' },
+    fetchData: ['films', 'digitalRetailers'],
+    fields: [
+      [
+        { columnWidth: 5, columnHeader: 'Company', property: 'digitalRetailerId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'digitalRetailers' },
+        { columnWidth: 7, columnHeader: 'URL', property: 'url' },
+      ]
+    ],
+    deleteCallback: function() { window.location.pathname = `/films/${this.state.digitalRetailerFilm.filmId}` },
+  });
 
+  renderSimpleDetails('sub-right-details', {
+    header: "Sublicensed Right Details",
+    entityName: 'subRight',
+    fetchData: ['films', 'rights', 'territories'],
+    initialEntity: { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '', exclusive: false },
+    fields: [
+      [
+        { columnWidth: 6, columnHeader: 'Film', property: 'filmId', type: 'modal', optionDisplayProperty: 'title' },
+        { columnWidth: 3, columnHeader: 'Right', property: 'rightId', type: 'dropdown', optionsArrayName: 'rights', optionDisplayProperty: 'name' },
+        { columnWidth: 3, columnHeader: 'Territory', property: 'territoryId', type: 'dropdown', optionsArrayName: 'territories', optionDisplayProperty: 'name' }
+      ],
+      [
+        { columnWidth: 2, property: 'startDate' },
+        { columnWidth: 2, property: 'endDate' },
+        { columnWidth: 2, property: 'exclusive', type: 'dropdown', boolean: true }
+      ]
+    ],
+    deleteCallback: function() { window.location.pathname = `/sublicensors/${this.state.subRight.sublicensorId}` },
+  });
 
+  renderSimpleDetails('merchandise-item-details', {
+    entityName: 'merchandiseItem',
+    fetchData: ['films', 'merchandiseTypes'],
+    header: "Merchandise Details",
+    initialEntity: { text: '', merchandiseTypeId: '', name: '', size: '', price: '', inventory: '', description: '', filmId: '' },
+    fields: [
+      [
+        { columnWidth: 6, property: 'name' },
+        { columnWidth: 6, property: 'merchandiseTypeId', columnHeader: 'Type', type: 'dropdown', optionsArrayName: 'merchandiseTypes', optionDisplayProperty: 'name' }
+      ],
+      [
+        { columnWidth: 12, property: 'description' }
+      ],
+      [
+        { columnWidth: 4, property: 'size' },
+        { columnWidth: 4, property: 'price', removeFinanceSymbols: true },
+        { columnWidth: 4, property: 'inventory' },
+      ],
+      [
+        { columnWidth: 12, property: 'filmId', columnHeader: 'Associated Film', type: 'modal', optionDisplayProperty: 'title', noneOption: true }
+      ]
+    ],
+  });
 
+  renderSimpleDetails('alias-details', {
+    entityName: 'alias',
+    fetchData: ['films'],
+    initialEntity: { text: '', filmId: '' },
+    fields: [[
+      { columnWidth: 6, property: 'text' },
+      { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }
+    ]]
+  });
 
+  renderSimpleDetails('country-details', {
+    entityName: 'country',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 12, property: 'name' },
+    ]],
+    customDeletePath: '/settings',
+  });
 
+  renderSimpleDetails('digital-retailer-details', {
+    customDeletePath: '/settings',
+    entityName: 'digitalRetailer',
+    initialEntity: { name: '' },
+    fields: [
+      [
+        { columnWidth: 9, property: 'name', columnHeader: 'Name (Internal)' },
+        { columnWidth: 3, property: 'sageId', columnHeader: 'Sage ID' }
+      ],
+      [
+        { columnWidth: 4, property: 'billingName', columnHeader: 'Billing Name' },
+        { columnWidth: 4, property: 'billingAddress1', columnHeader: 'Address 1' },
+        { columnWidth: 4, property: 'billingAddress2', columnHeader: 'Address 2' },
+        { columnWidth: 3, property: 'billingCity', columnHeader: 'City' },
+        { columnWidth: 1, property: 'billingState', columnHeader: 'State' },
+        { columnWidth: 2, property: 'billingZip', columnHeader: 'Zip' },
+        { columnWidth: 2, property: 'billingCountry', columnHeader: 'Country' }
+      ]
+    ],
+  });
+
+  renderSimpleDetails('edu-platform-details', {
+    customDeletePath: '/settings',
+    header: 'Educational Streaming Platform Details',
+    entityName: 'eduPlatform',
+    initialEntity: { name: '' },
+    fields: [
+      [
+        { columnWidth: 12, property: 'name' }
+      ]
+    ],
+  });
+
+  renderSimpleDetails('edu-platform-film-details', {
+    entityName: 'eduPlatformFilm',
+    header: "Educational Streaming Platform Film Details",
+    initialEntity: { filmId: '', eduPlatformId: '', url: '' },
+    fetchData: ['films', 'eduPlatforms'],
+    fields: [
+      [
+        { columnWidth: 5, columnHeader: 'Platform', property: 'eduPlatformId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'eduPlatforms' },
+        { columnWidth: 7, columnHeader: 'URL', property: 'url' },
+      ]
+    ],
+    deleteCallback: function() { window.location.pathname = `/films/${this.state.eduPlatformFilm.filmId}` },
+  });
+
+  renderSimpleDetails('format-details', {
+    entityName: 'format',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 4, property: 'name' },
+      { columnWidth: 2, property: 'active', type: 'dropdown', boolean: true }
+    ]],
+    hideDeleteButton: true,
+  });
+
+  renderSimpleDetails('genre-details', {
+    entityName: 'genre',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 12, property: 'name' },
+    ]],
+    customDeletePath: '/settings',
+  });
+
+  renderSimpleDetails('language-details', {
+    entityName: 'language',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 12, property: 'name' }
+    ]],
+    customDeletePath: '/settings',
+  });
+
+  renderSimpleDetails('merchandise-type-details', {
+    entityName: 'merchandiseType',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 12, property: 'name' },
+    ]],
+    customDeletePath: '/settings',
+  });
+
+  renderSimpleDetails('territory-details', {
+    entityName: 'territory',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 12, property: 'name' },
+    ]],
+    customDeletePath: '/settings',
+  });
+
+  renderSimpleDetails('topic-details', {
+    entityName: 'topic',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 12, property: 'name' },
+    ]],
+    customDeletePath: '/settings',
+  });
+
+  renderSimpleDetails('user-details', {
+    entityName: 'user',
+    initialEntity: { name: '', email: '', title: '', emailSignature: '' },
+    fields: [[
+      { columnWidth: 4, property: 'name' },
+      { columnWidth: 4, property: 'email' },
+      { columnWidth: 4, property: 'title' }
+    ],[
+      { columnWidth: 8, property: 'emailSignature', type: 'textbox', rows: 8 },
+      { columnWidth: 2, property: 'access', readOnly: true },
+      {
+        columnWidth: 2,
+        type: 'switch',
+        property: 'hasAutoRenewApproval',
+        columnHeader: 'Auto-Renew Approval',
+        readOnly: !FM.user.hasSuperAdminAccess
+      },
+    ]],
+    hideDeleteButton: !FM.user.hasSuperAdminAccess,
+  });
 
 
   if ($('#purchase-orders-index')[0]) {
@@ -389,28 +597,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  if ($('#sublicensor-details')[0]) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='sublicensor'
-          initialEntity={ { name: '', contactName: '', email: '', phone: '', w8: false } }
-          fields={ [
-            [
-              { columnWidth: 4, property: 'name' },
-              { columnWidth: 4, property: 'contactName' },
-              { columnWidth: 4, property: 'email' },
-            ],
-            [
-              { columnWidth: 4, property: 'phone' },
-              { columnWidth: 2, property: 'w8', columnHeader: 'W-8 on File', type: 'dropdown', boolean: true },
-            ]
-          ] }
-        />
-      ,
-      document.getElementById("sublicensor-details")
-    );
-  }
   if ($('#sublicensor-rights-index')[0]) {
     const directoryNames = window.location.pathname.split('/');
     const sublicensorId = directoryNames[directoryNames.length - 1];
@@ -450,81 +636,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("sublicensor-rights-index")
     );
   }
-  if ($('#digital-retailer-film-details')[0]) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='digitalRetailerFilm'
-          initialEntity={ { filmId: '', digitalRetailerId: '', url: '' } }
-          fetchData={ ['films', 'digitalRetailers'] }
-          fields={ [
-            [
-              { columnWidth: 5, columnHeader: 'Company', property: 'digitalRetailerId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'digitalRetailers' },
-              { columnWidth: 7, columnHeader: 'URL', property: 'url' },
-            ]
-          ] }
-          deleteCallback={ function() { window.location.pathname = `/films/${this.state.digitalRetailerFilm.filmId}` } }
-        />
-      ,
-      document.getElementById("digital-retailer-film-details")
-    );
-  }
-  if ($('#sub-right-details')[0]) {
-    ReactDOM.render(
-        <SimpleDetails
-          header="Sublicensed Right Details"
-          csrfToken={ true }
-          entityName='subRight'
-          fetchData={ ['films', 'rights', 'territories'] }
-          initialEntity={ { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '', exclusive: false } }
-          fields={ [
-            [
-              { columnWidth: 6, columnHeader: 'Film', property: 'filmId', type: 'modal', optionDisplayProperty: 'title' },
-              { columnWidth: 3, columnHeader: 'Right', property: 'rightId', type: 'dropdown', optionsArrayName: 'rights', optionDisplayProperty: 'name' },
-              { columnWidth: 3, columnHeader: 'Territory', property: 'territoryId', type: 'dropdown', optionsArrayName: 'territories', optionDisplayProperty: 'name' }
-            ],
-            [
-              { columnWidth: 2, property: 'startDate' },
-              { columnWidth: 2, property: 'endDate' },
-              { columnWidth: 2, property: 'exclusive', type: 'dropdown', boolean: true }
-            ]
-          ] }
-          deleteCallback={ function() { window.location.pathname = `/sublicensors/${this.state.subRight.sublicensorId}` } }
-        />
-      ,
-      document.getElementById("sub-right-details")
-    );
-  }
-  if ($('#merchandise-item-details')[0]) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='merchandiseItem'
-          fetchData={ ['films', 'merchandiseTypes'] }
-          header="Merchandise Details"
-          initialEntity={ { text: '', merchandiseTypeId: '', name: '', size: '', price: '', inventory: '', description: '', filmId: '' } }
-          fields={ [
-            [
-              { columnWidth: 6, property: 'name' },
-              { columnWidth: 6, property: 'merchandiseTypeId', columnHeader: 'Type', type: 'dropdown', optionsArrayName: 'merchandiseTypes', optionDisplayProperty: 'name' }
-            ],
-            [
-              { columnWidth: 12, property: 'description' }
-            ],
-            [
-              { columnWidth: 4, property: 'size' },
-              { columnWidth: 4, property: 'price', removeFinanceSymbols: true },
-              { columnWidth: 4, property: 'inventory' },
-            ],
-            [
-              { columnWidth: 12, property: 'filmId', columnHeader: 'Associated Film', type: 'modal', optionDisplayProperty: 'title', noneOption: true }
-            ]
-          ] }
-        />
-      ,
-      document.getElementById("merchandise-item-details")
-    );
-  }
 
   if (document.querySelector('#aliases-index')) {
     ReactDOM.render(
@@ -545,22 +656,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </FullIndex>
       ,
       document.querySelector('#aliases-index')
-    );
-  }
-  if (document.querySelector('#alias-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='alias'
-          fetchData={ ['films'] }
-          initialEntity={ { text: '', filmId: '' } }
-          fields={ [[
-            { columnWidth: 6, property: 'text' },
-            { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }
-          ]] }
-        />
-      ,
-      document.querySelector('#alias-details')
     );
   }
   if (document.querySelector('#bookers-index')) {
@@ -598,21 +693,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector('#countries-index')
     );
   }
-  if (document.querySelector('#country-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='country'
-          initialEntity={ { name: '' } }
-          fields={ [[
-            { columnWidth: 12, property: 'name' }
-          ]] }
-          customDeletePath='/settings'
-        />
-      ,
-      document.querySelector('#country-details')
-    );
-  }
   if (document.querySelector('#digital-retailers-index')) {
     ReactDOM.render(
         <FullIndex
@@ -628,33 +708,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </FullIndex>
       ,
       document.querySelector('#digital-retailers-index')
-    );
-  }
-  if (document.querySelector('#digital-retailer-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          customDeletePath='/settings'
-          entityName='digitalRetailer'
-          initialEntity={ { name: '' } }
-          fields={ [
-            [
-              { columnWidth: 9, property: 'name', columnHeader: 'Name (Internal)' },
-              { columnWidth: 3, property: 'sageId', columnHeader: 'Sage ID' }
-            ],
-            [
-              { columnWidth: 4, property: 'billingName', columnHeader: 'Billing Name' },
-              { columnWidth: 4, property: 'billingAddress1', columnHeader: 'Address 1' },
-              { columnWidth: 4, property: 'billingAddress2', columnHeader: 'Address 2' },
-              { columnWidth: 3, property: 'billingCity', columnHeader: 'City' },
-              { columnWidth: 1, property: 'billingState', columnHeader: 'State' },
-              { columnWidth: 2, property: 'billingZip', columnHeader: 'Zip' },
-              { columnWidth: 2, property: 'billingCountry', columnHeader: 'Country' }
-            ]
-          ] }
-        />
-      ,
-      document.querySelector('#digital-retailer-details')
     );
   }
   if (document.querySelector('#dvd-customers-index')) {
@@ -692,44 +745,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector('#edu-platforms-index')
     );
   }
-  if (document.querySelector('#edu-platform-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          customDeletePath='/settings'
-          header='Educational Streaming Platform Details'
-          entityName='eduPlatform'
-          initialEntity={ { name: '' } }
-          fields={ [
-            [
-              { columnWidth: 12, property: 'name' }
-            ]
-          ] }
-        />
-      ,
-      document.querySelector('#edu-platform-details')
-    );
-  }
-  if ($('#edu-platform-film-details')[0]) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='eduPlatformFilm'
-          header="Educational Streaming Platform Film Details"
-          initialEntity={ { filmId: '', eduPlatformId: '', url: '' } }
-          fetchData={ ['films', 'eduPlatforms'] }
-          fields={ [
-            [
-              { columnWidth: 5, columnHeader: 'Platform', property: 'eduPlatformId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'eduPlatforms' },
-              { columnWidth: 7, columnHeader: 'URL', property: 'url' },
-            ]
-          ] }
-          deleteCallback={ function() { window.location.pathname = `/films/${this.state.eduPlatformFilm.filmId}` } }
-        />
-      ,
-      document.getElementById("edu-platform-film-details")
-    );
-  }
   if (document.querySelector('#formats-index')) {
     ReactDOM.render(
         <FullIndex
@@ -747,22 +762,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector('#formats-index')
     );
   }
-  if (document.querySelector('#format-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='format'
-          initialEntity={ { name: '' } }
-          fields={ [[
-            { columnWidth: 4, property: 'name' },
-            { columnWidth: 2, property: 'active', type: 'dropdown', boolean: true }
-          ]] }
-          hideDeleteButton={ true }
-        />
-      ,
-      document.querySelector('#format-details')
-    );
-  }
   if (document.querySelector('#genres-index')) {
     ReactDOM.render(
         <FullIndex
@@ -778,21 +777,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </FullIndex>
       ,
       document.querySelector('#genres-index')
-    );
-  }
-  if (document.querySelector('#genre-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='genre'
-          initialEntity={ { name: '' } }
-          fields={ [[
-            { columnWidth: 12, property: 'name' }
-          ]] }
-          customDeletePath='/settings'
-        />
-      ,
-      document.querySelector('#genre-details')
     );
   }
   if (document.querySelector('#giftboxes-index')) {
@@ -828,21 +812,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </FullIndex>
       ,
       document.querySelector('#languages-index')
-    );
-  }
-  if (document.querySelector('#language-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='language'
-          initialEntity={ { name: '' } }
-          fields={ [[
-            { columnWidth: 12, property: 'name' }
-          ]] }
-          customDeletePath='/settings'
-        />
-      ,
-      document.querySelector('#language-details')
     );
   }
   if (document.querySelector('#licensors-index')) {
@@ -903,21 +872,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector('#merchandise-types-index')
     );
   }
-  if (document.querySelector('#merchandise-type-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='merchandiseType'
-          initialEntity={ { name: '' } }
-          fields={ [[
-            { columnWidth: 12, property: 'name' }
-          ]] }
-          customDeletePath='/settings'
-        />
-      ,
-      document.querySelector('#merchandise-type-details')
-    );
-  }
   if (document.querySelector('#shipping-addresses-index')) {
     ReactDOM.render(
         <FullIndex
@@ -949,21 +903,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector('#territories-index')
     );
   }
-  if (document.querySelector('#territory-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='territory'
-          initialEntity={ { name: '' } }
-          fields={ [[
-            { columnWidth: 12, property: 'name' }
-          ]] }
-          customDeletePath='/settings'
-        />
-      ,
-      document.querySelector('#territory-details')
-    );
-  }
   if (document.querySelector('#topics-index')) {
     ReactDOM.render(
         <FullIndex
@@ -981,21 +920,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector('#topics-index')
     );
   }
-  if (document.querySelector('#topic-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='topic'
-          initialEntity={ { name: '' } }
-          fields={ [[
-            { columnWidth: 12, property: 'name' }
-          ]] }
-          customDeletePath='/settings'
-        />
-      ,
-      document.querySelector('#topic-details')
-    );
-  }
   if (document.querySelector('#users-index')) {
     ReactDOM.render(
         <FullIndex
@@ -1011,33 +935,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </FullIndex>
       ,
       document.querySelector('#users-index')
-    );
-  }
-  if (document.querySelector('#user-details')) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='user'
-          initialEntity={ { name: '', email: '', title: '', emailSignature: '' } }
-          fields={ [[
-            { columnWidth: 4, property: 'name' },
-            { columnWidth: 4, property: 'email' },
-            { columnWidth: 4, property: 'title' }
-          ],[
-            { columnWidth: 8, property: 'emailSignature', type: 'textbox', rows: 8 },
-            { columnWidth: 2, property: 'access', readOnly: true },
-            {
-              columnWidth: 2,
-              type: 'switch',
-              property: 'hasAutoRenewApproval',
-              columnHeader: 'Auto-Renew Approval',
-              readOnly: !FM.user.hasSuperAdminAccess
-            },
-          ]] }
-          hideDeleteButton={ !FM.user.hasSuperAdminAccess }
-        />
-      ,
-      document.querySelector('#user-details')
     );
   }
   if (document.querySelector('#venues-index')) {
