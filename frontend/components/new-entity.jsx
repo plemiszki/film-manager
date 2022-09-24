@@ -191,7 +191,7 @@ export default class NewEntity extends React.Component {
           <div key="1" className="row">
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'name' }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'discount', columnHeader: 'Discount or Price/Unit' }) }
-            { Details.renderCheckbox.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'consignment' }) }
+            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'consignment' }) }
           </div>,
           <div key="2" className={ `row${this.state.dvdCustomer.consignment ? ' placeholder' : ''}` }>
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'invoicesEmail' }) }

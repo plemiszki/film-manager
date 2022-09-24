@@ -469,7 +469,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderFullIndex('dvd-customers-index', {
     entityName: 'dvdCustomer',
     columns: ['name'],
-    modalDimensions: { width: 1000, height: 680 },
+    modalDimensions: { width: 1000, height: 681 },
     header: "DVD Customers",
     includeNewButton: true,
     includeLinks: true,
