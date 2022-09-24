@@ -49,6 +49,23 @@ const renderSimpleDetails = (id, props = {}) => {
   }
 }
 
+const renderFullIndex = (id, props = {}, args = {}) => {
+  const { newEntity: newEntityProps } = args;
+  const node = document.getElementById(id);
+  if (node) {
+    const root = createRoot(node);
+    if (newEntityProps) {
+      root.render(
+        <FullIndex csrfToken={ true } { ...props }>
+          <NewEntity { ...newEntityProps } />
+        </FullIndex>
+      )
+    } else {
+      root.render(<FullIndex csrfToken={ true } { ...props } />);
+    }
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const currentUserInfo = document.getElementsByClassName("current-user")[0].dataset;
@@ -389,6 +406,227 @@ document.addEventListener("DOMContentLoaded", () => {
     hideDeleteButton: !FM.user.hasSuperAdminAccess,
   });
 
+  renderFullIndex('aliases-index', {
+    entityName: 'alias',
+    entityNamePlural: 'aliases',
+    columns: ['text', 'film'],
+    modalRows: 1,
+    modalDimensions: { width: 1000 },
+    includeLinks: true,
+    includeHover: true,
+    includeNewButton: true,
+  }, { newEntity: {
+    fetchData: ['films'],
+    initialEntity: { text: '', filmId: '' },
+  }});
+
+  renderFullIndex('bookers-index', {
+    entityName: 'booker',
+    columns: ['name', 'email', 'phone'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '', email: '', phone: '' }
+  }});
+
+  renderFullIndex('countries-index', {
+    entityName: 'country',
+    entityNamePlural: 'countries',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('digital-retailers-index', {
+    entityName: 'digitalRetailer',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('dvd-customers-index', {
+    entityName: 'dvdCustomer',
+    columns: ['name'],
+    modalDimensions: { width: 1000, height: 680 },
+    header: "DVD Customers",
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" },
+  }});
+
+  renderFullIndex('edu-platforms-index', {
+    entityName: 'eduPlatform',
+    header: 'Educational Streaming Platforms',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('formats-index', {
+    entityName: 'format',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('genres-index', {
+    entityName: 'genre',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('giftboxes-index', {
+    entityName: 'giftbox',
+    entityNamePlural: 'giftboxes',
+    columns: ['name', 'quantity'],
+    modalRows: 2,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '', upc: '' },
+  }});
+
+  renderFullIndex('languages-index', {
+    entityName: 'language',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('licensors-index', {
+    entityName: 'licensor',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 500 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+    redirectAfterCreate: true,
+  }});
+
+  renderFullIndex('merchandise-items-index', {
+    header: "Merchandise",
+    entityName: 'merchandiseItem',
+    columns: ['name', 'type', 'size', 'price'],
+    modalRows: 4,
+    modalDimensions: { width: 800 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '', description: '', size: '', price: '', inventory: '', filmId: '', merchandiseTypeId: 1 },
+    fetchData: ['films', 'merchandiseTypes'],
+  }});
+
+  renderFullIndex('merchandise-types-index', {
+    entityName: 'merchandiseType',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('shipping-addresses-index', {
+    entityName: 'shippingAddress',
+    entityNamePlural: 'shippingAddresses',
+    columns: ['label', 'customer'],
+    includeLinks: true,
+    includeHover: true,
+  });
+
+  renderFullIndex('territories-index', {
+    entityName: 'territory',
+    entityNamePlural: 'territories',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('topics-index', {
+    entityName: 'topic',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('users-index', {
+    entityName: 'user',
+    columns: ['name', 'title'],
+    modalRows: 3,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: "", email: "", password: "" },
+  }});
+
+  renderFullIndex('sublicensors-index', {
+    entityName: 'sublicensor',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
 
   if ($('#purchase-orders-index')[0]) {
     ReactDOM.render(
@@ -637,306 +875,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  if (document.querySelector('#aliases-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='alias'
-          entityNamePlural='aliases'
-          columns={ ['text', 'film'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 1000 } }
-          includeLinks={ true }
-          includeHover={ true }
-          includeNewButton={ true }
-        >
-          <NewEntity
-            fetchData={ ['films'] }
-            initialEntity={ { text: '', filmId: '' } }
-          />
-        </FullIndex>
-      ,
-      document.querySelector('#aliases-index')
-    );
-  }
-  if (document.querySelector('#bookers-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='booker'
-          columns={ ['name', 'email', 'phone'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '', email: '', phone: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#bookers-index')
-    );
-  }
-  if (document.querySelector('#countries-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='country'
-          entityNamePlural='countries'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#countries-index')
-    );
-  }
-  if (document.querySelector('#digital-retailers-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='digitalRetailer'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#digital-retailers-index')
-    );
-  }
-  if (document.querySelector('#dvd-customers-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='dvdCustomer'
-          columns={ ['name'] }
-          modalDimensions={ { width: 1000, height: 680 } }
-          header="DVD Customers"
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
-        </FullIndex>
-      ,
-      document.querySelector('#dvd-customers-index')
-    );
-  }
-  if (document.querySelector('#edu-platforms-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='eduPlatform'
-          header='Educational Streaming Platforms'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#edu-platforms-index')
-    );
-  }
-  if (document.querySelector('#formats-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='format'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#formats-index')
-    );
-  }
-  if (document.querySelector('#genres-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='genre'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#genres-index')
-    );
-  }
-  if (document.querySelector('#giftboxes-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='giftbox'
-          entityNamePlural='giftboxes'
-          columns={ ['name', 'quantity'] }
-          modalRows={ 2 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '', upc: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#giftboxes-index')
-    );
-  }
-  if (document.querySelector('#languages-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='language'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#languages-index')
-    );
-  }
-  if (document.querySelector('#licensors-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='licensor'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 500 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity
-            initialEntity={ { name: '' } }
-            redirectAfterCreate={ true }
-          />
-        </FullIndex>
-      ,
-      document.querySelector('#licensors-index')
-    );
-  }
-  if (document.querySelector('#merchandise-items-index')) {
-    ReactDOM.render(
-        <FullIndex
-          header="Merchandise"
-          entityName='merchandiseItem'
-          columns={ ['name', 'type', 'size', 'price'] }
-          modalRows={ 4 }
-          modalDimensions={ { width: 800 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity
-            initialEntity={ { name: '', description: '', size: '', price: '', inventory: '', filmId: '', merchandiseTypeId: 1 } }
-            fetchData={ ['films', 'merchandiseTypes'] }
-          />
-        </FullIndex>
-      ,
-      document.querySelector('#merchandise-items-index')
-    );
-  }
-  if (document.querySelector('#merchandise-types-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='merchandiseType'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#merchandise-types-index')
-    );
-  }
-  if (document.querySelector('#shipping-addresses-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='shippingAddress'
-          entityNamePlural='shippingAddresses'
-          columns={ ['label', 'customer'] }
-          includeLinks={ true }
-          includeHover={ true }
-        />
-      ,
-      document.querySelector('#shipping-addresses-index')
-    );
-  }
-  if (document.querySelector('#territories-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='territory'
-          entityNamePlural='territories'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#territories-index')
-    );
-  }
-  if (document.querySelector('#topics-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='topic'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#topics-index')
-    );
-  }
-  if (document.querySelector('#users-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='user'
-          columns={ ['name', 'title'] }
-          modalRows={ 3 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: "", email: "", password: "" } } />
-        </FullIndex>
-      ,
-      document.querySelector('#users-index')
-    );
-  }
   if (document.querySelector('#venues-index')) {
     ReactDOM.render(
         <SearchIndex
@@ -979,23 +917,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector('#venues-index')
     );
   }
-  if (document.querySelector('#sublicensors-index')) {
-    ReactDOM.render(
-        <FullIndex
-          entityName='sublicensor'
-          columns={ ['name'] }
-          modalRows={ 1 }
-          modalDimensions={ { width: 900 } }
-          includeNewButton={ true }
-          includeLinks={ true }
-          includeHover={ true }
-        >
-          <NewEntity initialEntity={ { name: '' } } />
-        </FullIndex>
-      ,
-      document.querySelector('#sublicensors-index')
-    );
-  }
+
   if (document.querySelector('#virtual-bookings-index')) {
     ReactDOM.render(
         <SearchIndex

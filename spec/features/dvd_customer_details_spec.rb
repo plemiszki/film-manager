@@ -31,6 +31,7 @@ describe 'dvd_customer_details', type: :feature do
 
   it 'displays information about the dvd customer' do
     visit dvd_customer_path(@dvd_customer, as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'DVD Customer Details'
     expect(find('input[data-field="name"]').value).to eq 'DVD Customer'
     expect(find('input[data-field="discount"]').value).to eq '50.0'
