@@ -303,8 +303,8 @@ export default class ReturnDetails extends React.Component {
 
   componentDidUpdate() {
     Common.updateJobModal.call(this, {
-      successCallback: () => {
-        const { creditMemoId, creditMemoNumber, creditMemoDate } = this.state.job.metadata;
+      successCallback: (job) => {
+        const { creditMemoId, creditMemoNumber, creditMemoDate } = job.metadata;
         let r = this.state.return;
         r.creditMemoId = creditMemoId;
         r.creditMemoNumber = creditMemoNumber;

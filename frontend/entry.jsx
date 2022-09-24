@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import ReactModal from 'react-modal'
 import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria, todayDMY } from 'handy-components'
 import FM from '../app/assets/javascripts/me/common.jsx'
+import { createRoot } from 'react-dom/client'
 
 import BookerDetails from './components/booker-details.jsx'
 import BookingDetails from './components/booking-details.jsx'
@@ -32,82 +33,156 @@ import RoyaltyReportsIndex from './components/reports-index.jsx'
 import VenueDetails from './components/venue-details.jsx'
 import VirtualBookingDetails from './components/virtual-booking-details.jsx'
 
+const renderIf = (id, component, props = {}) => {
+  const node = document.getElementById(id);
+  if (node) {
+    const root = createRoot(node);
+    root.render(React.createElement(component, props));
+  }
+}
+
+const renderSimpleDetails = (id, props = {}) => {
+  const node = document.getElementById(id);
+  if (node) {
+    const root = createRoot(node);
+    root.render(<SimpleDetails csrfToken={ true } { ...props } />);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const currentUserInfo = document.getElementsByClassName("current-user")[0].dataset;
   ReactModal.setAppElement(document.body);
 
-  if ($('#current-user-dropdown')[0]) {
-    ReactDOM.render(
-      <CurrentUserDropDown hasAutoRenewApproval={ currentUserInfo.hasAutoRenewApproval === "true" } />,
-      document.getElementById("current-user-dropdown")
-    );
-  }
-  if ($('#licensor-details')[0]) {
-    ReactDOM.render(
-      <LicensorDetails />,
-      document.getElementById("licensor-details")
-    );
-  }
-  if ($('#films-index')[0]) {
-    ReactDOM.render(
-      <FilmsIndex filmType="Feature" />,
-      document.getElementById("films-index")
-    );
-  }
-  if ($('#shorts-index')[0]) {
-    ReactDOM.render(
-      <FilmsIndex filmType="Short" />,
-      document.getElementById("shorts-index")
-    );
-  }
-  if ($('#tv-series-index')[0]) {
-    ReactDOM.render(
-      <FilmsIndex filmType="TV Series" />,
-      document.getElementById("tv-series-index")
-    );
-  }
-  if ($('#film-details')[0]) {
-    ReactDOM.render(
-      <FilmDetails />,
-      document.getElementById("film-details")
-    );
-  }
-  if ($('#royalty-details')[0]) {
-    ReactDOM.render(
-      <RoyaltyReportDetails />,
-      document.getElementById("royalty-details")
-    );
-  }
-  if ($('#reports-index')[0]) {
-    ReactDOM.render(
-      <RoyaltyReportsIndex />,
-      document.getElementById("reports-index")
-    );
-  }
-  if ($('#giftbox-details')[0]) {
-    ReactDOM.render(
-      <GiftBoxDetails />,
-      document.getElementById("giftbox-details")
-    );
-  }
-  if ($('#dvd-customer-details')[0]) {
-    ReactDOM.render(
-      <DvdCustomerDetails />,
-      document.getElementById("dvd-customer-details")
-    );
-  }
-  if ($('#dvd-details')[0]) {
-    ReactDOM.render(
-      <DvdDetails />,
-      document.getElementById("dvd-details")
-    );
-  }
+  renderIf('current-user-dropdown', CurrentUserDropDown, {
+    hasAutoRenewApproval: currentUserInfo.hasAutoRenewApproval === "true",
+  });
+  renderIf('films-index', FilmsIndex, { filmType: "Feature" });
+  renderIf('shorts-index', FilmsIndex, { filmType: "Short" });
+  renderIf('tv-series-index', FilmsIndex, { filmType: "TV Series" });
+  renderIf('film-details', FilmDetails);
+  renderIf('licensor-details', LicensorDetails);
+  renderIf('calendar', Calendar);
+  renderIf('royalty-details', RoyaltyReportDetails);
+  renderIf('reports-index', RoyaltyReportsIndex);
+  renderIf('giftbox-details', GiftBoxDetails);
+  renderIf('dvd-customer-details', DvdCustomerDetails);
+  renderIf('dvd-details', DvdDetails);
+  renderIf('import-inventory', ImportInventory);
+  renderIf('purchase-order-details', PurchaseOrderDetails);
+  renderIf('invoice-details', InvoiceDetails);
+  renderIf('credit-memo-details', CreditMemoDetails);
+  renderIf('dvd-reports', DvdReports);
+  renderIf('return-details', ReturnDetails);
+  renderIf('venue-details', VenueDetails);
+  renderIf('booking-details', BookingDetails);
+  renderIf('booker-details', BookerDetails);
+  renderIf('in-theaters-index', InTheatersIndex);
+  renderIf('catalog', Catalog);
+  renderIf('convert-digital-sales', ConvertDigitalSales);
+  renderIf('episode-details', EpisodeDetails);
+  renderIf('jobs-index', JobsIndex);
+  renderIf('virtual-booking-details', VirtualBookingDetails);
+
+  renderSimpleDetails('shipping-address-details', {
+    entityName: 'shippingAddress',
+    initialEntity: { label: '', name: '', address1: '', address2: '', city: '', state: '', zip: '', country: '', customerId: '' },
+    fetchData: ['dvdCustomers'],
+    fields: [
+      [
+        { columnWidth: 4, property: 'label' }
+      ],
+      [
+        { columnWidth: 4, property: 'name' },
+        { columnWidth: 4, property: 'address1', columnHeader: 'Address 1' },
+        { columnWidth: 4, property: 'address2', columnHeader: 'Address 2' }
+      ],
+      [
+        { columnWidth: 3, property: 'city' },
+        { columnWidth: 1, property: 'state' },
+        { columnWidth: 2, property: 'zip' },
+        { columnWidth: 2, property: 'country' },
+        { columnWidth: 4, property: 'customerId', type: 'modal', optionsArrayName: 'dvdCustomers', optionDisplayProperty: 'name', columnHeader: 'Customer' }
+      ]
+    ],
+  });
+
+  renderSimpleDetails('setting-details', {
+    entityName: 'settings',
+    header: "Settings",
+    hideDeleteButton: true,
+    fetchData: ['users'],
+    initialEntity: {
+      booking_confirmation_text: '',
+      unpaid_overage_booking_invoice_email_text: '',
+      unpaid_non_overage_booking_invoice_email_text: '',
+      partially_paid_booking_invoice_email_text: '',
+      paid_booking_invoice_email_text: '',
+      booking_invoice_payment_info_email_text: '',
+      shipping_terms_email_text: '',
+      all_booking_invoices_email_text: '',
+      dvd_invoice_email_text: '',
+      credit_memo_email_text: '',
+      virtual_booking_report_text: '',
+    },
+    fields: [
+      [
+        { columnWidth: 12, property: 'bookingConfirmationText', columnHeader: 'Booking Confirmation Email Copy', type: 'textbox', rows: 15 },
+        { columnWidth: 12, property: 'unpaidNonOverageBookingInvoiceEmailText', columnHeader: 'Unpaid Non-Overage Booking Invoice Email Copy', type: 'textbox', rows: 6 },
+        { columnWidth: 12, property: 'unpaidOverageBookingInvoiceEmailText', columnHeader: 'Unpaid Overage Booking Invoice Email Copy', type: 'textbox', rows: 6 },
+        { columnWidth: 12, property: 'partiallyPaidBookingInvoiceEmailText', columnHeader: 'Partially Paid Booking Invoice Email Copy', type: 'textbox', rows: 6 },
+        { columnWidth: 12, property: 'paidBookingInvoiceEmailText', columnHeader: 'Paid Booking Invoice Email Copy', type: 'textbox', rows: 6 },
+        { columnWidth: 12, property: 'bookingInvoicePaymentInfoEmailText', columnHeader: 'Booking Invoice Payment Info Email Copy', subheader: 'Included in all booking invoice emails with a balance due.', type: 'textbox', rows: 15 },
+        { columnWidth: 12, property: 'shippingTermsEmailText', columnHeader: 'Booking Invoice Shipping Terms Email Copy', subheader: 'Included in invoice emails for non-theatrical or festival bookings with an advance.', type: 'textbox', rows: 4 },
+        { columnWidth: 12, property: 'allBookingInvoicesEmailText', columnHeader: 'Booking Invoices Additional Email Copy', subheader: 'Included at the end of all booking invoice emails.', type: 'textbox', rows: 4 },
+        { columnWidth: 12, property: 'dvdInvoiceEmailText', columnHeader: 'DVD Invoice Email Copy', type: 'textbox', rows: 10 },
+        { columnWidth: 12, property: 'creditMemoEmailText', columnHeader: 'Credit Memo Email Copy', type: 'textbox', rows: 8 },
+        { columnWidth: 12, property: 'virtualBookingReportText', columnHeader: 'Virtual Booking Report Email Copy', type: 'textbox', rows: 6 },
+        { columnWidth: 5, columnHeader: 'Sender of Box Office Reminders', property: 'boxOfficeRemindersUserId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'users' }
+      ]
+    ],
+  });
+
+  renderSimpleDetails('quote-details', {
+    entityName: 'quote',
+    initialEntity: { text: '', author: '', publication: '' },
+    fields: [
+      [
+        { columnWidth: 12, property: 'text', type: 'textbox', rows: 5 }
+      ],
+      [
+        { columnWidth: 6, property: 'author' },
+        { columnWidth: 6, property: 'publication' }
+      ]
+    ],
+    deleteCallback: function () { window.location.pathname = `/films/${this.state.quote.filmId}` }, // arrow function won't work here
+  });
+
+  renderSimpleDetails('film-right-details', {
+    entityName: 'filmRight',
+    initialEntity: { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '' },
+    fetchData: ['rights', 'territories'],
+    fields: [
+      [
+        { columnWidth: 3, columnHeader: 'Right', property: 'rightId', type: 'dropdown', optionsArrayName: 'rights', optionDisplayProperty: 'name' },
+        { columnWidth: 3, columnHeader: 'Territory', property: 'territoryId', type: 'dropdown', optionsArrayName: 'territories', optionDisplayProperty: 'name' },
+        { columnWidth: 2, property: 'startDate' },
+        { columnWidth: 2, property: 'endDate' },
+        { columnWidth: 2, property: 'exclusive', type: 'dropdown', boolean: true }
+      ]
+    ],
+    deleteCallback: function () { window.location.pathname = `/films/${this.state.filmRight.filmId}` }, // arrow function won't work here
+  });
+
+
+
+
+
+
+
+
+
   if ($('#purchase-orders-index')[0]) {
-    ReactDOM.render(
-      <ImportInventory />,
-      document.getElementById("import-inventory")
-    );
     ReactDOM.render(
       <SearchIndex
         header='DVD Purchase Orders'
@@ -147,41 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("purchase-orders-index")
     );
   }
-  if ($('#purchase-order-details')[0]) {
-    ReactDOM.render(
-      <PurchaseOrderDetails
-      />,
-      document.getElementById("purchase-order-details")
-    );
-  }
-  if ($('#shipping-address-details')[0]) {
-    ReactDOM.render(
-      <SimpleDetails
-        csrfToken={ true }
-        entityName='shippingAddress'
-        initialEntity={ { label: '', name: '', address1: '', address2: '', city: '', state: '', zip: '', country: '', customerId: '' } }
-        fetchData={ ['dvdCustomers'] }
-        fields={ [
-          [
-            { columnWidth: 4, property: 'label' }
-          ],
-          [
-            { columnWidth: 4, property: 'name' },
-            { columnWidth: 4, property: 'address1', columnHeader: 'Address 1' },
-            { columnWidth: 4, property: 'address2', columnHeader: 'Address 2' }
-          ],
-          [
-            { columnWidth: 3, property: 'city' },
-            { columnWidth: 1, property: 'state' },
-            { columnWidth: 2, property: 'zip' },
-            { columnWidth: 2, property: 'country' },
-            { columnWidth: 4, property: 'customerId', type: 'modal', optionsArrayName: 'dvdCustomers', optionDisplayProperty: 'name', columnHeader: 'Customer' }
-          ]
-        ] }
-      />,
-      document.getElementById("shipping-address-details")
-    );
-  }
+
   if ($('#invoices-index')[0]) {
     ReactDOM.render(
         <SearchIndex
@@ -221,13 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("invoices-index")
     );
   }
-  if ($('#invoice-details')[0]) {
-    ReactDOM.render(
-        <InvoiceDetails />
-      ,
-      document.getElementById("invoice-details")
-    );
-  }
   if ($('#credit-memos-index')[0]) {
     ReactDOM.render(
         <SearchIndex
@@ -255,20 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </SearchIndex>
       ,
       document.getElementById("credit-memos-index")
-    );
-  }
-  if ($('#credit-memo-details')[0]) {
-    ReactDOM.render(
-        <CreditMemoDetails />
-      ,
-      document.getElementById("credit-memo-details")
-    );
-  }
-  if ($('#dvd-reports')[0]) {
-    ReactDOM.render(
-        <DvdReports />
-      ,
-      document.getElementById("dvd-reports")
     );
   }
   if ($('#returns-index')[0]) {
@@ -305,20 +325,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </SearchIndex>
       ,
       document.getElementById("returns-index")
-    );
-  }
-  if ($('#return-details')[0]) {
-    ReactDOM.render(
-        <ReturnDetails />
-      ,
-      document.getElementById("return-details")
-    );
-  }
-  if ($('#venue-details')[0]) {
-    ReactDOM.render(
-        <VenueDetails />
-      ,
-      document.getElementById("venue-details")
     );
   }
   if ($('#bookings-index')[0]) {
@@ -382,113 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("bookings-index")
     );
   }
-  if ($('#booking-details')[0]) {
-    ReactDOM.render(
-        <BookingDetails />
-      ,
-      document.getElementById("booking-details")
-    );
-  }
-  if ($('#setting-details')[0]) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='settings'
-          header="Settings"
-          hideDeleteButton={ true }
-          fetchData={ ['users'] }
-          initialEntity={ {
-            booking_confirmation_text: '',
-            unpaid_overage_booking_invoice_email_text: '',
-            unpaid_non_overage_booking_invoice_email_text: '',
-            partially_paid_booking_invoice_email_text: '',
-            paid_booking_invoice_email_text: '',
-            booking_invoice_payment_info_email_text: '',
-            shipping_terms_email_text: '',
-            all_booking_invoices_email_text: '',
-            dvd_invoice_email_text: '',
-            credit_memo_email_text: '',
-            virtual_booking_report_text: ''
-          } }
-          fields={ [
-            [
-              { columnWidth: 12, property: 'bookingConfirmationText', columnHeader: 'Booking Confirmation Email Copy', type: 'textbox', rows: 15 },
-              { columnWidth: 12, property: 'unpaidNonOverageBookingInvoiceEmailText', columnHeader: 'Unpaid Non-Overage Booking Invoice Email Copy', type: 'textbox', rows: 6 },
-              { columnWidth: 12, property: 'unpaidOverageBookingInvoiceEmailText', columnHeader: 'Unpaid Overage Booking Invoice Email Copy', type: 'textbox', rows: 6 },
-              { columnWidth: 12, property: 'partiallyPaidBookingInvoiceEmailText', columnHeader: 'Partially Paid Booking Invoice Email Copy', type: 'textbox', rows: 6 },
-              { columnWidth: 12, property: 'paidBookingInvoiceEmailText', columnHeader: 'Paid Booking Invoice Email Copy', type: 'textbox', rows: 6 },
-              { columnWidth: 12, property: 'bookingInvoicePaymentInfoEmailText', columnHeader: 'Booking Invoice Payment Info Email Copy', subheader: 'Included in all booking invoice emails with a balance due.', type: 'textbox', rows: 15 },
-              { columnWidth: 12, property: 'shippingTermsEmailText', columnHeader: 'Booking Invoice Shipping Terms Email Copy', subheader: 'Included in invoice emails for non-theatrical or festival bookings with an advance.', type: 'textbox', rows: 4 },
-              { columnWidth: 12, property: 'allBookingInvoicesEmailText', columnHeader: 'Booking Invoices Additional Email Copy', subheader: 'Included at the end of all booking invoice emails.', type: 'textbox', rows: 4 },
-              { columnWidth: 12, property: 'dvdInvoiceEmailText', columnHeader: 'DVD Invoice Email Copy', type: 'textbox', rows: 10 },
-              { columnWidth: 12, property: 'creditMemoEmailText', columnHeader: 'Credit Memo Email Copy', type: 'textbox', rows: 8 },
-              { columnWidth: 12, property: 'virtualBookingReportText', columnHeader: 'Virtual Booking Report Email Copy', type: 'textbox', rows: 6 },
-              { columnWidth: 5, columnHeader: 'Sender of Box Office Reminders', property: 'boxOfficeRemindersUserId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'users' }
-            ]
-          ] }
-        />
-      ,
-      document.getElementById("setting-details")
-    );
-  }
-  if ($('#quote-details')[0]) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='quote'
-          initialEntity={ { text: '', author: '', publication: '' } }
-          fields={ [
-            [
-              { columnWidth: 12, property: 'text', type: 'textbox', rows: 5 }
-            ],
-            [
-              { columnWidth: 6, property: 'author' },
-              { columnWidth: 6, property: 'publication' }
-            ]
-          ] }
-          deleteCallback={ function() { window.location.pathname = `/films/${this.state.quote.filmId}` } }
-        />
-      ,
-      document.getElementById("quote-details")
-    );
-  }
-  if ($('#booker-details')[0]) {
-    ReactDOM.render(
-        <BookerDetails
-        />
-      ,
-      document.getElementById("booker-details")
-    );
-  }
-  if ($('#in-theaters-index')[0]) {
-    ReactDOM.render(
-        <InTheatersIndex />
-      ,
-      document.getElementById("in-theaters-index")
-    );
-  }
-  if ($('#film-right-details')[0]) {
-    ReactDOM.render(
-        <SimpleDetails
-          csrfToken={ true }
-          entityName='filmRight'
-          initialEntity={ { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '' } }
-          fetchData={ ['rights', 'territories'] }
-          fields={ [
-            [
-              { columnWidth: 3, columnHeader: 'Right', property: 'rightId', type: 'dropdown', optionsArrayName: 'rights', optionDisplayProperty: 'name' },
-              { columnWidth: 3, columnHeader: 'Territory', property: 'territoryId', type: 'dropdown', optionsArrayName: 'territories', optionDisplayProperty: 'name' },
-              { columnWidth: 2, property: 'startDate' },
-              { columnWidth: 2, property: 'endDate' },
-              { columnWidth: 2, property: 'exclusive', type: 'dropdown', boolean: true }
-            ]
-          ] }
-          deleteCallback={ function() { window.location.pathname = `/films/${this.state.filmRight.filmId}` } }
-        />
-      ,
-      document.getElementById("film-right-details")
-    );
-  }
+
   if ($('#sublicensor-details')[0]) {
     ReactDOM.render(
         <SimpleDetails
@@ -569,14 +469,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("digital-retailer-film-details")
     );
   }
-  if ($('#calendar')[0]) {
-    ReactDOM.render(
-        <Calendar
-        />
-      ,
-      document.getElementById("calendar")
-    );
-  }
   if ($('#sub-right-details')[0]) {
     ReactDOM.render(
         <SimpleDetails
@@ -601,27 +493,6 @@ document.addEventListener("DOMContentLoaded", () => {
         />
       ,
       document.getElementById("sub-right-details")
-    );
-  }
-  if ($('#catalog')[0]) {
-    ReactDOM.render(
-        <Catalog />
-      ,
-      document.getElementById("catalog")
-    );
-  }
-  if ($('#convert-digital-sales')[0]) {
-    ReactDOM.render(
-        <ConvertDigitalSales />
-      ,
-      document.getElementById("convert-digital-sales")
-    );
-  }
-  if ($('#episode-details')[0]) {
-    ReactDOM.render(
-        <EpisodeDetails />
-      ,
-      document.getElementById("episode-details")
     );
   }
   if ($('#merchandise-item-details')[0]) {
@@ -1228,13 +1099,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector('#sublicensors-index')
     );
   }
-  if (document.querySelector('#jobs-index')) {
-    ReactDOM.render(
-        <JobsIndex />
-      ,
-      document.querySelector('#jobs-index')
-    );
-  }
   if (document.querySelector('#virtual-bookings-index')) {
     ReactDOM.render(
         <SearchIndex
@@ -1304,14 +1168,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </SearchIndex>
       ,
       document.querySelector('#virtual-bookings-index')
-    );
-  }
-  if (document.querySelector('#virtual-booking-details')) {
-    ReactDOM.render(
-        <VirtualBookingDetails
-        />
-      ,
-      document.querySelector('#virtual-booking-details')
     );
   }
 });

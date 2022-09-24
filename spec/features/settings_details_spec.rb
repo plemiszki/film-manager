@@ -14,6 +14,7 @@ describe 'settings_details', type: :feature do
 
   it 'displays information about the settings' do
     visit setting_path(@settings, as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'Settings'
     expect(find('textarea[data-field="bookingConfirmationText"]').value).to eq 'booking confirmation text'
     expect(find('textarea[data-field="dvdInvoiceEmailText"]').value).to eq 'dvd invoice email text'
