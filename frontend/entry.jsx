@@ -1,12 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux';
 import ReactModal from 'react-modal'
 import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria, todayDMY } from 'handy-components'
 import FM from '../app/assets/javascripts/me/common.jsx'
-
-import configureStore from './store/store';
-let store = configureStore();
 
 import BookerDetails from './components/booker-details.jsx'
 import BookingDetails from './components/booking-details.jsx'
@@ -36,198 +32,159 @@ import RoyaltyReportsIndex from './components/reports-index.jsx'
 import VenueDetails from './components/venue-details.jsx'
 import VirtualBookingDetails from './components/virtual-booking-details.jsx'
 
-$(document).ready(function() {
+document.addEventListener("DOMContentLoaded", () => {
 
   const currentUserInfo = document.getElementsByClassName("current-user")[0].dataset;
-
   ReactModal.setAppElement(document.body);
-  const MyContext = React.createContext();
 
   if ($('#current-user-dropdown')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <CurrentUserDropDown context={ MyContext } hasAutoRenewApproval={ currentUserInfo.hasAutoRenewApproval === "true" } />
-      </Provider>,
+      <CurrentUserDropDown hasAutoRenewApproval={ currentUserInfo.hasAutoRenewApproval === "true" } />,
       document.getElementById("current-user-dropdown")
     );
   }
   if ($('#licensor-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <LicensorDetails context={ MyContext } />
-      </Provider>,
+      <LicensorDetails />,
       document.getElementById("licensor-details")
     );
   }
   if ($('#films-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <FilmsIndex context={ MyContext } filmType="Feature" />
-      </Provider>,
+      <FilmsIndex filmType="Feature" />,
       document.getElementById("films-index")
     );
   }
   if ($('#shorts-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <FilmsIndex context={ MyContext } filmType="Short" />
-      </Provider>,
+      <FilmsIndex filmType="Short" />,
       document.getElementById("shorts-index")
     );
   }
   if ($('#tv-series-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <FilmsIndex context={ MyContext } filmType="TV Series" />
-      </Provider>,
+      <FilmsIndex filmType="TV Series" />,
       document.getElementById("tv-series-index")
     );
   }
   if ($('#film-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <FilmDetails context={ MyContext } />
-      </Provider>,
+      <FilmDetails />,
       document.getElementById("film-details")
     );
   }
   if ($('#royalty-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <RoyaltyReportDetails context={ MyContext } />
-      </Provider>,
+      <RoyaltyReportDetails />,
       document.getElementById("royalty-details")
     );
   }
   if ($('#reports-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <RoyaltyReportsIndex context={ MyContext } />
-      </Provider>,
+      <RoyaltyReportsIndex />,
       document.getElementById("reports-index")
     );
   }
   if ($('#giftbox-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <GiftBoxDetails context={ MyContext } />
-      </Provider>,
+      <GiftBoxDetails />,
       document.getElementById("giftbox-details")
     );
   }
   if ($('#dvd-customer-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <DvdCustomerDetails context={ MyContext } />
-      </Provider>,
+      <DvdCustomerDetails />,
       document.getElementById("dvd-customer-details")
     );
   }
   if ($('#dvd-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <DvdDetails context={ MyContext } />
-      </Provider>,
+      <DvdDetails />,
       document.getElementById("dvd-details")
     );
   }
   if ($('#purchase-orders-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <ImportInventory context={ MyContext } />
-      </Provider>,
+      <ImportInventory />,
       document.getElementById("import-inventory")
     );
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <SearchIndex
-          context={ MyContext }
-          header='DVD Purchase Orders'
-          entityName='purchaseOrder'
-          entityNamePlural='purchaseOrders'
-          columns={[
-            { name: 'orderDate', sortDir: 'desc', width: 162 },
-            { name: 'number', columnHeader: 'PO Number', width: 191 },
-            { name: 'customer', dbName: 'dvd_customers.name', width: 221 },
-            { name: 'shipDate', sortDir: 'desc', width: 162 },
-            { name: 'salesOrder', dbName: 'source_doc', sortDir: 'desc', width: 155 },
-            { name: 'invoice', dbName: 'invoices.num', sortDir: 'desc', width: 96 },
-            { name: 'units', orderByDisabled: true, width: 69 }
+      <SearchIndex
+        header='DVD Purchase Orders'
+        entityName='purchaseOrder'
+        entityNamePlural='purchaseOrders'
+        columns={[
+          { name: 'orderDate', sortDir: 'desc', width: 162 },
+          { name: 'number', columnHeader: 'PO Number', width: 191 },
+          { name: 'customer', dbName: 'dvd_customers.name', width: 221 },
+          { name: 'shipDate', sortDir: 'desc', width: 162 },
+          { name: 'salesOrder', dbName: 'source_doc', sortDir: 'desc', width: 155 },
+          { name: 'invoice', dbName: 'invoices.num', sortDir: 'desc', width: 96 },
+          { name: 'units', orderByDisabled: true, width: 69 }
+        ]}
+        batchSize={ 50 }
+        searchModalRows={ 4 }
+        searchModalDimensions={ { width: 600 } }
+        showNewButton={ true }
+        newModalRows={ 2 }
+        newModalDimensions={ { width: 600 } }
+      >
+        <SearchCriteria
+          fields={[
+            { name: 'orderDate', type: 'date range', columnWidth: 10 },
+            { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
+            { name: 'customer', type: 'modal', responseArrayName: 'customers', optionDisplayProperty: 'name', columnWidth: 8 },
+            { name: 'shipDate', type: 'date range', columnWidth: 10 },
+            { name: 'salesOrder', columnWidth: 6 },
           ]}
-          batchSize={ 50 }
-          searchModalRows={ 4 }
-          searchModalDimensions={ { width: 600 } }
-          showNewButton={ true }
-          newModalRows={ 2 }
-          newModalDimensions={ { width: 600 } }
-        >
-          <SearchCriteria
-            context={ MyContext }
-            fields={[
-              { name: 'orderDate', type: 'date range', columnWidth: 10 },
-              { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
-              { name: 'customer', type: 'modal', responseArrayName: 'customers', optionDisplayProperty: 'name', columnWidth: 8 },
-              { name: 'shipDate', type: 'date range', columnWidth: 10 },
-              { name: 'salesOrder', columnWidth: 6 },
-            ]}
-          />
-          <NewEntity
-            context={ MyContext }
-            fetchData={ ['shippingAddresses'] }
-            initialEntity={ { number: '', orderDate: '', shippingAddressId: '' } }
-            redirectAfterCreate={ true }
-          />
-        </SearchIndex>
-      </Provider>,
+        />
+        <NewEntity
+          fetchData={ ['shippingAddresses'] }
+          initialEntity={ { number: '', orderDate: '', shippingAddressId: '' } }
+          redirectAfterCreate={ true }
+        />
+      </SearchIndex>,
       document.getElementById("purchase-orders-index")
     );
   }
   if ($('#purchase-order-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <PurchaseOrderDetails
-          context={ MyContext }
-        />
-      </Provider>,
+      <PurchaseOrderDetails
+      />,
       document.getElementById("purchase-order-details")
     );
   }
   if ($('#shipping-address-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <SimpleDetails
-          csrfToken={ true }
-          context={ MyContext }
-          entityName='shippingAddress'
-          initialEntity={ { label: '', name: '', address1: '', address2: '', city: '', state: '', zip: '', country: '', customerId: '' } }
-          fetchData={ ['dvdCustomers'] }
-          fields={ [
-            [
-              { columnWidth: 4, property: 'label' }
-            ],
-            [
-              { columnWidth: 4, property: 'name' },
-              { columnWidth: 4, property: 'address1', columnHeader: 'Address 1' },
-              { columnWidth: 4, property: 'address2', columnHeader: 'Address 2' }
-            ],
-            [
-              { columnWidth: 3, property: 'city' },
-              { columnWidth: 1, property: 'state' },
-              { columnWidth: 2, property: 'zip' },
-              { columnWidth: 2, property: 'country' },
-              { columnWidth: 4, property: 'customerId', type: 'modal', optionsArrayName: 'dvdCustomers', optionDisplayProperty: 'name', columnHeader: 'Customer' }
-            ]
-          ] }
-        />
-      </Provider>,
+      <SimpleDetails
+        csrfToken={ true }
+        entityName='shippingAddress'
+        initialEntity={ { label: '', name: '', address1: '', address2: '', city: '', state: '', zip: '', country: '', customerId: '' } }
+        fetchData={ ['dvdCustomers'] }
+        fields={ [
+          [
+            { columnWidth: 4, property: 'label' }
+          ],
+          [
+            { columnWidth: 4, property: 'name' },
+            { columnWidth: 4, property: 'address1', columnHeader: 'Address 1' },
+            { columnWidth: 4, property: 'address2', columnHeader: 'Address 2' }
+          ],
+          [
+            { columnWidth: 3, property: 'city' },
+            { columnWidth: 1, property: 'state' },
+            { columnWidth: 2, property: 'zip' },
+            { columnWidth: 2, property: 'country' },
+            { columnWidth: 4, property: 'customerId', type: 'modal', optionsArrayName: 'dvdCustomers', optionDisplayProperty: 'name', columnHeader: 'Customer' }
+          ]
+        ] }
+      />,
       document.getElementById("shipping-address-details")
     );
   }
   if ($('#invoices-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SearchIndex
-          context={ MyContext }
           entityName='invoice'
           entityNamePlural='invoices'
           columns={[
@@ -242,7 +199,6 @@ $(document).ready(function() {
           showExportButton={ true }
         >
           <SearchCriteria
-            context={ MyContext }
             fields={[
               { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
               { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
@@ -261,23 +217,20 @@ $(document).ready(function() {
             ]}
           />
         </SearchIndex>
-      </Provider>,
+      ,
       document.getElementById("invoices-index")
     );
   }
   if ($('#invoice-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <InvoiceDetails context={ MyContext } />
-      </Provider>,
+        <InvoiceDetails />
+      ,
       document.getElementById("invoice-details")
     );
   }
   if ($('#credit-memos-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SearchIndex
-          context={ MyContext }
           entityName='creditMemo'
           columns={[
             { name: 'sentDate', sortDir: 'desc', width: 163 },
@@ -291,7 +244,6 @@ $(document).ready(function() {
           showExportButton={ true }
         >
           <SearchCriteria
-            context={ MyContext }
             fields={[
               { name: 'sentDate', type: 'date range', columnWidth: 10 },
               { name: 'number', columnHeader: 'Credit Memo Number', columnWidth: 6 },
@@ -301,32 +253,28 @@ $(document).ready(function() {
             ]}
           />
         </SearchIndex>
-      </Provider>,
+      ,
       document.getElementById("credit-memos-index")
     );
   }
   if ($('#credit-memo-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <CreditMemoDetails context={ MyContext } />
-      </Provider>,
+        <CreditMemoDetails />
+      ,
       document.getElementById("credit-memo-details")
     );
   }
   if ($('#dvd-reports')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <DvdReports context={ MyContext } />
-      </Provider>,
+        <DvdReports />
+      ,
       document.getElementById("dvd-reports")
     );
   }
   if ($('#returns-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SearchIndex
           header="DVD Returns"
-          context={ MyContext }
           entityName='return'
           columns={[
             { name: 'date', sortDir: 'desc', width: 196 },
@@ -343,7 +291,6 @@ $(document).ready(function() {
           newModalDimensions={ { width: 998 } }
         >
           <SearchCriteria
-            context={ MyContext }
             fields={[
               { name: 'date', type: 'date range', columnWidth: 10 },
               { name: 'number', columnWidth: 6 },
@@ -351,37 +298,32 @@ $(document).ready(function() {
             ]}
           />
           <NewEntity
-            context={ MyContext }
             fetchData={ ['customers'] }
             initialEntity={ { number: '', date: '', customerId: '' } }
             redirectAfterCreate={ true }
           />
         </SearchIndex>
-      </Provider>,
+      ,
       document.getElementById("returns-index")
     );
   }
   if ($('#return-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <ReturnDetails context={ MyContext } />
-      </Provider>,
+        <ReturnDetails />
+      ,
       document.getElementById("return-details")
     );
   }
   if ($('#venue-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <VenueDetails context={ MyContext } />
-      </Provider>,
+        <VenueDetails />
+      ,
       document.getElementById("venue-details")
     );
   }
   if ($('#bookings-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SearchIndex
-          context={ MyContext }
           entityName='booking'
           entityNamePlural='bookings'
           columns={[
@@ -414,7 +356,6 @@ $(document).ready(function() {
           preserveSearchCriteria={ true }
         >
           <SearchCriteria
-            context={ MyContext }
             fields={[
               { name: 'startDate', type: 'date range', columnWidth: 10 },
               { name: 'endDate', type: 'date range', columnWidth: 10 },
@@ -432,30 +373,26 @@ $(document).ready(function() {
             ]}
           />
           <NewEntity
-            context={ MyContext }
             fetchData={ ['films', 'venues', 'formats', 'users'] }
             initialEntity={ { filmId: '', venueId: '', startDate: '', endDate: '', bookingType: 'Non-Theatrical', status: 'Tentative', formatId: '', terms: '', bookerId: '', dateAdded: todayDMY() } }
             redirectAfterCreate={ true }
           />
         </SearchIndex>
-      </Provider>,
+      ,
       document.getElementById("bookings-index")
     );
   }
   if ($('#booking-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <BookingDetails context={ MyContext } />
-      </Provider>,
+        <BookingDetails />
+      ,
       document.getElementById("booking-details")
     );
   }
   if ($('#setting-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='settings'
           header="Settings"
           hideDeleteButton={ true }
@@ -490,16 +427,14 @@ $(document).ready(function() {
             ]
           ] }
         />
-      </Provider>,
+      ,
       document.getElementById("setting-details")
     );
   }
   if ($('#quote-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='quote'
           initialEntity={ { text: '', author: '', publication: '' } }
           fields={ [
@@ -513,34 +448,29 @@ $(document).ready(function() {
           ] }
           deleteCallback={ function() { window.location.pathname = `/films/${this.state.quote.filmId}` } }
         />
-      </Provider>,
+      ,
       document.getElementById("quote-details")
     );
   }
   if ($('#booker-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <BookerDetails
-          context={ MyContext }
         />
-      </Provider>,
+      ,
       document.getElementById("booker-details")
     );
   }
   if ($('#in-theaters-index')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <InTheatersIndex context={ MyContext } />
-      </Provider>,
+        <InTheatersIndex />
+      ,
       document.getElementById("in-theaters-index")
     );
   }
   if ($('#film-right-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='filmRight'
           initialEntity={ { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '' } }
           fetchData={ ['rights', 'territories'] }
@@ -555,16 +485,14 @@ $(document).ready(function() {
           ] }
           deleteCallback={ function() { window.location.pathname = `/films/${this.state.filmRight.filmId}` } }
         />
-      </Provider>,
+      ,
       document.getElementById("film-right-details")
     );
   }
   if ($('#sublicensor-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='sublicensor'
           initialEntity={ { name: '', contactName: '', email: '', phone: '', w8: false } }
           fields={ [
@@ -579,7 +507,7 @@ $(document).ready(function() {
             ]
           ] }
         />
-      </Provider>,
+      ,
       document.getElementById("sublicensor-details")
     );
   }
@@ -587,9 +515,7 @@ $(document).ready(function() {
     const directoryNames = window.location.pathname.split('/');
     const sublicensorId = directoryNames[directoryNames.length - 1];
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SearchIndex
-          context={ MyContext }
           header="Sublicensed Rights"
           entityName='subRight'
           columns={[
@@ -609,7 +535,6 @@ $(document).ready(function() {
           newModalDimensions={ { width: 1000, height: 598 } }
         >
           <SearchCriteria
-            context={ MyContext }
             fields={[
               { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 9 },
               { name: 'right', dbName: 'right_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'rights', columnWidth: 6 },
@@ -617,21 +542,18 @@ $(document).ready(function() {
             ]}
           />
           <FilmRightsNew
-            context={ MyContext }
             initialEntity={ {} }
             sublicensorId={ sublicensorId }
           />
         </SearchIndex>
-      </Provider>,
+      ,
       document.getElementById("sublicensor-rights-index")
     );
   }
   if ($('#digital-retailer-film-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='digitalRetailerFilm'
           initialEntity={ { filmId: '', digitalRetailerId: '', url: '' } }
           fetchData={ ['films', 'digitalRetailers'] }
@@ -643,27 +565,23 @@ $(document).ready(function() {
           ] }
           deleteCallback={ function() { window.location.pathname = `/films/${this.state.digitalRetailerFilm.filmId}` } }
         />
-      </Provider>,
+      ,
       document.getElementById("digital-retailer-film-details")
     );
   }
   if ($('#calendar')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <Calendar
-          context={ MyContext }
         />
-      </Provider>,
+      ,
       document.getElementById("calendar")
     );
   }
   if ($('#sub-right-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           header="Sublicensed Right Details"
           csrfToken={ true }
-          context={ MyContext }
           entityName='subRight'
           fetchData={ ['films', 'rights', 'territories'] }
           initialEntity={ { filmId: '', rightId: '', territoryId: '', startDate: '', endDate: '', exclusive: false } }
@@ -681,40 +599,35 @@ $(document).ready(function() {
           ] }
           deleteCallback={ function() { window.location.pathname = `/sublicensors/${this.state.subRight.sublicensorId}` } }
         />
-      </Provider>,
+      ,
       document.getElementById("sub-right-details")
     );
   }
   if ($('#catalog')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <Catalog context={ MyContext } />
-      </Provider>,
+        <Catalog />
+      ,
       document.getElementById("catalog")
     );
   }
   if ($('#convert-digital-sales')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <ConvertDigitalSales context={ MyContext } />
-      </Provider>,
+        <ConvertDigitalSales />
+      ,
       document.getElementById("convert-digital-sales")
     );
   }
   if ($('#episode-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <EpisodeDetails context={ MyContext } />
-      </Provider>,
+        <EpisodeDetails />
+      ,
       document.getElementById("episode-details")
     );
   }
   if ($('#merchandise-item-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='merchandiseItem'
           fetchData={ ['films', 'merchandiseTypes'] }
           header="Merchandise Details"
@@ -737,16 +650,14 @@ $(document).ready(function() {
             ]
           ] }
         />
-      </Provider>,
+      ,
       document.getElementById("merchandise-item-details")
     );
   }
 
   if (document.querySelector('#aliases-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='alias'
           entityNamePlural='aliases'
           columns={ ['text', 'film'] }
@@ -757,21 +668,18 @@ $(document).ready(function() {
           includeNewButton={ true }
         >
           <NewEntity
-            context={ MyContext }
             fetchData={ ['films'] }
             initialEntity={ { text: '', filmId: '' } }
           />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#aliases-index')
     );
   }
   if (document.querySelector('#alias-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='alias'
           fetchData={ ['films'] }
           initialEntity={ { text: '', filmId: '' } }
@@ -780,15 +688,13 @@ $(document).ready(function() {
             { columnWidth: 6, property: 'filmId', columnHeader: 'Film', errorsProperty: 'film', type: 'modal', optionDisplayProperty: 'title' }
           ]] }
         />
-      </Provider>,
+      ,
       document.querySelector('#alias-details')
     );
   }
   if (document.querySelector('#bookers-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='booker'
           columns={ ['name', 'email', 'phone'] }
           modalRows={ 1 }
@@ -797,17 +703,15 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '', email: '', phone: '' } } />
+          <NewEntity initialEntity={ { name: '', email: '', phone: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#bookers-index')
     );
   }
   if (document.querySelector('#countries-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='country'
           entityNamePlural='countries'
           columns={ ['name'] }
@@ -817,18 +721,16 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#countries-index')
     );
   }
   if (document.querySelector('#country-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='country'
           initialEntity={ { name: '' } }
           fields={ [[
@@ -836,15 +738,13 @@ $(document).ready(function() {
           ]] }
           customDeletePath='/settings'
         />
-      </Provider>,
+      ,
       document.querySelector('#country-details')
     );
   }
   if (document.querySelector('#digital-retailers-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='digitalRetailer'
           columns={ ['name'] }
           modalRows={ 1 }
@@ -853,19 +753,17 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#digital-retailers-index')
     );
   }
   if (document.querySelector('#digital-retailer-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
           customDeletePath='/settings'
-          context={ MyContext }
           entityName='digitalRetailer'
           initialEntity={ { name: '' } }
           fields={ [
@@ -884,15 +782,13 @@ $(document).ready(function() {
             ]
           ] }
         />
-      </Provider>,
+      ,
       document.querySelector('#digital-retailer-details')
     );
   }
   if (document.querySelector('#dvd-customers-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='dvdCustomer'
           columns={ ['name'] }
           modalDimensions={ { width: 1000, height: 680 } }
@@ -901,17 +797,15 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
+          <NewEntity initialEntity={ { name: "", discount: 0, consignment: false, invoicesEmail: "", sageId: "", paymentTerms: "", address2: "" } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#dvd-customers-index')
     );
   }
   if (document.querySelector('#edu-platforms-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='eduPlatform'
           header='Educational Streaming Platforms'
           columns={ ['name'] }
@@ -921,20 +815,18 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#edu-platforms-index')
     );
   }
   if (document.querySelector('#edu-platform-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
           customDeletePath='/settings'
           header='Educational Streaming Platform Details'
-          context={ MyContext }
           entityName='eduPlatform'
           initialEntity={ { name: '' } }
           fields={ [
@@ -943,16 +835,14 @@ $(document).ready(function() {
             ]
           ] }
         />
-      </Provider>,
+      ,
       document.querySelector('#edu-platform-details')
     );
   }
   if ($('#edu-platform-film-details')[0]) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='eduPlatformFilm'
           header="Educational Streaming Platform Film Details"
           initialEntity={ { filmId: '', eduPlatformId: '', url: '' } }
@@ -965,15 +855,13 @@ $(document).ready(function() {
           ] }
           deleteCallback={ function() { window.location.pathname = `/films/${this.state.eduPlatformFilm.filmId}` } }
         />
-      </Provider>,
+      ,
       document.getElementById("edu-platform-film-details")
     );
   }
   if (document.querySelector('#formats-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='format'
           columns={ ['name'] }
           modalRows={ 1 }
@@ -982,18 +870,16 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#formats-index')
     );
   }
   if (document.querySelector('#format-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='format'
           initialEntity={ { name: '' } }
           fields={ [[
@@ -1002,15 +888,13 @@ $(document).ready(function() {
           ]] }
           hideDeleteButton={ true }
         />
-      </Provider>,
+      ,
       document.querySelector('#format-details')
     );
   }
   if (document.querySelector('#genres-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='genre'
           columns={ ['name'] }
           modalRows={ 1 }
@@ -1019,18 +903,16 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#genres-index')
     );
   }
   if (document.querySelector('#genre-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='genre'
           initialEntity={ { name: '' } }
           fields={ [[
@@ -1038,15 +920,13 @@ $(document).ready(function() {
           ]] }
           customDeletePath='/settings'
         />
-      </Provider>,
+      ,
       document.querySelector('#genre-details')
     );
   }
   if (document.querySelector('#giftboxes-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='giftbox'
           entityNamePlural='giftboxes'
           columns={ ['name', 'quantity'] }
@@ -1056,17 +936,15 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '', upc: '' } } />
+          <NewEntity initialEntity={ { name: '', upc: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#giftboxes-index')
     );
   }
   if (document.querySelector('#languages-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='language'
           columns={ ['name'] }
           modalRows={ 1 }
@@ -1075,18 +953,16 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#languages-index')
     );
   }
   if (document.querySelector('#language-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='language'
           initialEntity={ { name: '' } }
           fields={ [[
@@ -1094,15 +970,13 @@ $(document).ready(function() {
           ]] }
           customDeletePath='/settings'
         />
-      </Provider>,
+      ,
       document.querySelector('#language-details')
     );
   }
   if (document.querySelector('#licensors-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='licensor'
           columns={ ['name'] }
           modalRows={ 1 }
@@ -1112,21 +986,18 @@ $(document).ready(function() {
           includeHover={ true }
         >
           <NewEntity
-            context={ MyContext }
             initialEntity={ { name: '' } }
             redirectAfterCreate={ true }
           />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#licensors-index')
     );
   }
   if (document.querySelector('#merchandise-items-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
           header="Merchandise"
-          context={ MyContext }
           entityName='merchandiseItem'
           columns={ ['name', 'type', 'size', 'price'] }
           modalRows={ 4 }
@@ -1136,20 +1007,17 @@ $(document).ready(function() {
           includeHover={ true }
         >
           <NewEntity
-            context={ MyContext }
             initialEntity={ { name: '', description: '', size: '', price: '', inventory: '', filmId: '', merchandiseTypeId: 1 } }
             fetchData={ ['films', 'merchandiseTypes'] }
           />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#merchandise-items-index')
     );
   }
   if (document.querySelector('#merchandise-types-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='merchandiseType'
           columns={ ['name'] }
           modalRows={ 1 }
@@ -1158,18 +1026,16 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#merchandise-types-index')
     );
   }
   if (document.querySelector('#merchandise-type-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='merchandiseType'
           initialEntity={ { name: '' } }
           fields={ [[
@@ -1177,30 +1043,26 @@ $(document).ready(function() {
           ]] }
           customDeletePath='/settings'
         />
-      </Provider>,
+      ,
       document.querySelector('#merchandise-type-details')
     );
   }
   if (document.querySelector('#shipping-addresses-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='shippingAddress'
           entityNamePlural='shippingAddresses'
           columns={ ['label', 'customer'] }
           includeLinks={ true }
           includeHover={ true }
         />
-      </Provider>,
+      ,
       document.querySelector('#shipping-addresses-index')
     );
   }
   if (document.querySelector('#territories-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='territory'
           entityNamePlural='territories'
           columns={ ['name'] }
@@ -1210,18 +1072,16 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#territories-index')
     );
   }
   if (document.querySelector('#territory-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='territory'
           initialEntity={ { name: '' } }
           fields={ [[
@@ -1229,15 +1089,13 @@ $(document).ready(function() {
           ]] }
           customDeletePath='/settings'
         />
-      </Provider>,
+      ,
       document.querySelector('#territory-details')
     );
   }
   if (document.querySelector('#topics-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='topic'
           columns={ ['name'] }
           modalRows={ 1 }
@@ -1246,18 +1104,16 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#topics-index')
     );
   }
   if (document.querySelector('#topic-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='topic'
           initialEntity={ { name: '' } }
           fields={ [[
@@ -1265,15 +1121,13 @@ $(document).ready(function() {
           ]] }
           customDeletePath='/settings'
         />
-      </Provider>,
+      ,
       document.querySelector('#topic-details')
     );
   }
   if (document.querySelector('#users-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='user'
           columns={ ['name', 'title'] }
           modalRows={ 3 }
@@ -1282,18 +1136,16 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: "", email: "", password: "" } } />
+          <NewEntity initialEntity={ { name: "", email: "", password: "" } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#users-index')
     );
   }
   if (document.querySelector('#user-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SimpleDetails
           csrfToken={ true }
-          context={ MyContext }
           entityName='user'
           initialEntity={ { name: '', email: '', title: '', emailSignature: '' } }
           fields={ [[
@@ -1313,15 +1165,13 @@ $(document).ready(function() {
           ]] }
           hideDeleteButton={ !FM.user.hasSuperAdminAccess }
         />
-      </Provider>,
+      ,
       document.querySelector('#user-details')
     );
   }
   if (document.querySelector('#venues-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SearchIndex
-          context={ MyContext }
           entityName='venue'
           entityNamePlural='venues'
           columns={[
@@ -1338,7 +1188,6 @@ $(document).ready(function() {
           newModalDimensions={ { width: 900 } }
         >
           <SearchCriteria
-            context={ MyContext }
             fields={[
               { name: 'label', fuzzy: true, columnWidth: 6 },
               {
@@ -1356,17 +1205,15 @@ $(document).ready(function() {
               { name: 'shippingState', columnWidth: 3 }
             ]}
           />
-          <NewEntity context={ MyContext } initialEntity={ { label: '', sageId: '', venueType: 'Theater' } } />
+          <NewEntity initialEntity={ { label: '', sageId: '', venueType: 'Theater' } } />
         </SearchIndex>
-      </Provider>,
+      ,
       document.querySelector('#venues-index')
     );
   }
   if (document.querySelector('#sublicensors-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <FullIndex
-          context={ MyContext }
           entityName='sublicensor'
           columns={ ['name'] }
           modalRows={ 1 }
@@ -1375,25 +1222,22 @@ $(document).ready(function() {
           includeLinks={ true }
           includeHover={ true }
         >
-          <NewEntity context={ MyContext } initialEntity={ { name: '' } } />
+          <NewEntity initialEntity={ { name: '' } } />
         </FullIndex>
-      </Provider>,
+      ,
       document.querySelector('#sublicensors-index')
     );
   }
   if (document.querySelector('#jobs-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
-        <JobsIndex context={ MyContext } />
-      </Provider>,
+        <JobsIndex />
+      ,
       document.querySelector('#jobs-index')
     );
   }
   if (document.querySelector('#virtual-bookings-index')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <SearchIndex
-          context={ MyContext }
           entityName='virtualBooking'
           entityNamePlural='virtualBookings'
           columns={[
@@ -1418,7 +1262,6 @@ $(document).ready(function() {
           newModalDimensions={ { width: 1000 } }
         >
           <SearchCriteria
-            context={ MyContext }
             fields={[
               { name: 'startDate', type: 'date range', columnWidth: 10 },
               { name: 'endDate', type: 'date range', columnWidth: 10 },
@@ -1443,7 +1286,6 @@ $(document).ready(function() {
             ]}
           />
           <NewEntity
-            context={ MyContext }
             fetchData={ ['films', 'venues'] }
             initialEntity={ {
               filmId: '',
@@ -1460,17 +1302,15 @@ $(document).ready(function() {
             redirectAfterCreate={ true }
           />
         </SearchIndex>
-      </Provider>,
+      ,
       document.querySelector('#virtual-bookings-index')
     );
   }
   if (document.querySelector('#virtual-booking-details')) {
     ReactDOM.render(
-      <Provider context={ MyContext } store={ store }>
         <VirtualBookingDetails
-          context={ MyContext }
         />
-      </Provider>,
+      ,
       document.querySelector('#virtual-booking-details')
     );
   }
