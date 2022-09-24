@@ -1,9 +1,8 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import ReactModal from 'react-modal'
-import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria, todayDMY } from 'handy-components'
-import FM from '../app/assets/javascripts/me/common.jsx'
 import { createRoot } from 'react-dom/client'
+import ReactModal from 'react-modal'
+import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria, todayDMY, parseUrl } from 'handy-components'
+import FM from '../app/assets/javascripts/me/common.jsx'
 
 import BookerDetails from './components/booker-details.jsx'
 import BookingDetails from './components/booking-details.jsx'
@@ -54,15 +53,25 @@ const renderFullIndex = (id, props = {}, args = {}) => {
   const node = document.getElementById(id);
   if (node) {
     const root = createRoot(node);
-    if (newEntityProps) {
-      root.render(
-        <FullIndex csrfToken={ true } { ...props }>
-          <NewEntity { ...newEntityProps } />
-        </FullIndex>
-      )
-    } else {
-      root.render(<FullIndex csrfToken={ true } { ...props } />);
-    }
+    root.render(
+      <FullIndex csrfToken={ true } { ...props }>
+        { newEntityProps && (<NewEntity { ...newEntityProps } />) }
+      </FullIndex>
+    );
+  }
+}
+
+const renderSearchIndex = (id, props = {}, args = {}) => {
+  const { searchCriteria: searchCriteriaProps, newEntity: newEntityProps } = args;
+  const node = document.getElementById(id);
+  if (node) {
+    const root = createRoot(node);
+    root.render(
+      <SearchIndex csrfToken={ true } { ...props }>
+        <SearchCriteria { ...searchCriteriaProps } />
+        { newEntityProps && (<NewEntity { ...newEntityProps } />) }
+      </SearchIndex>
+    );
   }
 }
 
@@ -627,366 +636,327 @@ document.addEventListener("DOMContentLoaded", () => {
     initialEntity: { name: '' },
   }});
 
+  renderSearchIndex('purchase-orders-index', {
+    header: 'DVD Purchase Orders',
+    entityName: 'purchaseOrder',
+    entityNamePlural: 'purchaseOrders',
+    columns: [
+      { name: 'orderDate', sortDir: 'desc', width: 162 },
+      { name: 'number', columnHeader: 'PO Number', width: 191 },
+      { name: 'customer', dbName: 'dvd_customers.name', width: 221 },
+      { name: 'shipDate', sortDir: 'desc', width: 162 },
+      { name: 'salesOrder', dbName: 'source_doc', sortDir: 'desc', width: 155 },
+      { name: 'invoice', dbName: 'invoices.num', sortDir: 'desc', width: 96 },
+      { name: 'units', orderByDisabled: true, width: 69 }
+    ],
+    batchSize: 50,
+    searchModalRows: 4,
+    searchModalDimensions: { width: 600 },
+    showNewButton: true,
+    newModalRows: 2,
+    newModalDimensions: { width: 600 },
+  }, {
+    searchCriteria: {
+      fields: [
+        { name: 'orderDate', type: 'date range', columnWidth: 10 },
+        { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
+        { name: 'customer', type: 'modal', responseArrayName: 'customers', optionDisplayProperty: 'name', columnWidth: 8 },
+        { name: 'shipDate', type: 'date range', columnWidth: 10 },
+        { name: 'salesOrder', columnWidth: 6 },
+      ]
+    },
+    newEntity: {
+      fetchData: ['shippingAddresses'],
+      initialEntity: { number: '', orderDate: '', shippingAddressId: '' },
+      redirectAfterCreate: true,
+    }
+  });
 
-  if ($('#purchase-orders-index')[0]) {
-    ReactDOM.render(
+  renderSearchIndex('invoices-index', {
+    entityName: 'invoice',
+    entityNamePlural: 'invoices',
+    columns: [
+      { name: 'sentDate', sortDir: 'desc', sortColumn: 'sentDateTimestamp', width: 248 },
+      { name: 'number', header: 'Invoice Number', width: 338 },
+      { name: 'type', dbName: 'invoice_type', width: 172 },
+      { name: 'poNumber', header: 'PO Number', width: 298 }
+    ],
+    batchSize: 50,
+    searchModalRows: 4,
+    searchModalDimensions: { width: 600 },
+    showExportButton: true,
+  }, {
+    searchCriteria: {
+      fields: [
+        { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
+        { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
+        { name: 'num', type: 'number range', columnHeader: 'Invoice Number', columnWidth: 10 },
+        {
+          name: 'invoiceType',
+          type: 'static dropdown',
+          options: [
+            { value: 'dvd', text: 'DVD' },
+            { value: 'booking', text: 'Booking' }
+          ],
+          columnHeader: 'Type',
+          columnWidth: 3
+        },
+        { name: 'sentDate', type: 'date range', columnWidth: 10 },
+      ]
+    }
+  });
+
+  renderSearchIndex('credit-memos-index', {
+    entityName: 'creditMemo',
+    columns: [
+      { name: 'sentDate', sortDir: 'desc', width: 163 },
+      { name: 'number', sortDir: 'desc', header: 'Credit Memo Number', width: 299 },
+      { name: 'customer', header: 'DVD Customer', dbName: 'customer_id', width: 299 },
+      { name: 'returnNumber', width: 295 }
+    ],
+    batchSize: 50,
+    searchModalRows: 4,
+    searchModalDimensions: { width: 600 },
+    showExportButton: true,
+  }, {
+    searchCriteria: {
+      fields: [
+        { name: 'sentDate', type: 'date range', columnWidth: 10 },
+        { name: 'number', columnHeader: 'Credit Memo Number', columnWidth: 6 },
+        { name: 'num', type: 'number range', columnHeader: 'Credit Memo Number', columnWidth: 10 },
+        { name: 'customer', dbName: 'customer_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'customers', columnWidth: 6 },
+        { name: 'returnNumber', columnWidth: 6 },
+      ],
+    }
+  });
+
+  renderSearchIndex('returns-index', {
+    header: "DVD Returns",
+    entityName: 'return',
+    columns: [
+      { name: 'date', sortDir: 'desc', width: 196 },
+      { name: 'number', width: 458 },
+      { name: 'customer', dbName: 'dvd_customers.name', width: 322 },
+      { name: 'units', orderByDisabled: true, width: 80 }
+    ],
+    batchSize: 50,
+    searchModalRows: 3,
+    searchModalDimensions: { width: 600 },
+    showNewButton: true,
+    showExportButton: true,
+    newModalRows: 1,
+    newModalDimensions: { width: 998 },
+  }, {
+    searchCriteria: {
+      fields: [
+        { name: 'date', type: 'date range', columnWidth: 10 },
+        { name: 'number', columnWidth: 6 },
+        { name: 'customer', type: 'modal', responseArrayName: 'customers', optionDisplayProperty: 'name', columnWidth: 8 },
+      ],
+    },
+    newEntity: {
+      fetchData: ['customers'],
+      initialEntity: { number: '', date: '', customerId: '' },
+      redirectAfterCreate: true,
+    }
+  });
+
+  renderSearchIndex('bookings-index', {
+    entityName: 'booking',
+    entityNamePlural: 'bookings',
+    columns: [
+      { name: 'startDate', width: 162 },
+      { name: 'endDate', width: 162 },
+      { name: 'film', dbName: 'films.title', width: 350 },
+      { name: 'venue', dbName: 'venues.label', width: 350 },
+      { name: 'dateAdded', sortDir: 'desc', width: 162 },
+      { name: 'city', dbName: 'shipping_city', width: 162 },
+      { name: 'state', dbName: 'shipping_state', width: 162 },
+      { name: 'terms', width: 162 },
+      { name: 'type', dbName: 'booking_type', width: 162 },
+      { name: 'status', width: 162 },
+      { name: 'format', dbName: 'formats.name', width: 162 },
+      { name: 'invoiceNumbers', header: 'Invoices', orderByDisabled: true, width: 162 },
+      { name: 'materialsSent', width: 125 },
+      { name: 'boxOfficeReceived', header: 'BO Received', width: 125 },
+      { name: 'totalGross', orderByDisabled: true, width: 125 },
+      { name: 'ourShare', orderByDisabled: true, width: 125 },
+      { name: 'received', orderByDisabled: true, width: 125 },
+      { name: 'owed', orderByDisabled: true, width: 125 },
+    ],
+    batchSize: 50,
+    searchModalRows: 4,
+    searchModalDimensions: { width: 600 },
+    showNewButton: true,
+    showExportButton: true,
+    newModalRows: 3,
+    newModalDimensions: { width: 1000 },
+    preserveSearchCriteria: true,
+  }, {
+    searchCriteria: {
+      fields: [
+        { name: 'startDate', type: 'date range', columnWidth: 10 },
+        { name: 'endDate', type: 'date range', columnWidth: 10 },
+        { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+        { name: 'venue', dbName: 'venue_id', type: 'modal', optionDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+        { name: 'dateAdded', type: 'date range', columnWidth: 10 },
+        { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
+        { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
+        { name: 'type', dbName: 'booking_type', type: 'checkboxes', options: [{ value: 'Theatrical', text: 'Theatrical' }, { value: 'Non-Theatrical', text: 'Non-Theatrical' }, { value: 'Festival', text: 'Festival' }], columnWidth: 5 },
+        { name: 'status', type: 'static dropdown', options: [{ value: 'Tentative', text: 'Tentative' }, { value: 'Confirmed', text: 'Confirmed' }], columnWidth: 4 },
+        { name: 'format', dbName: 'format_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'formats', columnWidth: 4 },
+        { name: 'materialsSent', type: 'yes/no', columnWidth: 4 },
+        { name: 'boxOfficeReceived', type: 'yes/no', columnWidth: 4 },
+        { name: 'balanceDue', type: 'yes/no', columnWidth: 4 },
+      ],
+    },
+    newEntity: {
+      fetchData: ['films', 'venues', 'formats', 'users'],
+      initialEntity: { filmId: '', venueId: '', startDate: '', endDate: '', bookingType: 'Non-Theatrical', status: 'Tentative', formatId: '', terms: '', bookerId: '', dateAdded: todayDMY() },
+      redirectAfterCreate: true,
+    }
+  });
+
+  renderSearchIndex('venues-index', {
+    entityName: 'venue',
+    entityNamePlural: 'venues',
+    columns: [
+      { name: 'label', width: 633 },
+      { name: 'type', dbName: 'venue_type', width: 175 },
+      { name: 'city', dbName: 'shipping_city', width: 188 },
+      { name: 'state', dbName: 'shipping_state', width: 60 }
+    ],
+    batchSize: 50,
+    searchModalRows: 4,
+    searchModalDimensions: { width: 600 },
+    showNewButton: true,
+    newModalRows: 1,
+    newModalDimensions: { width: 900 },
+  }, {
+    searchCriteria: {
+      fields: [
+        { name: 'label', fuzzy: true, columnWidth: 6 },
+        {
+          name: 'venueType',
+          type: 'static dropdown',
+          options: [
+            { value: 'Theater', text: 'Theater' },
+            { value: 'Non-Theatrical', text: 'Non-Theatrical' },
+            { value: 'Festival', text: 'Festival' },
+          ],
+          columnHeader: 'Type',
+          columnWidth: 4
+        },
+        { name: 'shippingCity', columnWidth: 6 },
+        { name: 'shippingState', columnWidth: 3 }
+      ],
+    },
+    newEntity: {
+      initialEntity: { label: '', sageId: '', venueType: 'Theater' },
+    }
+  });
+
+  renderSearchIndex('virtual-bookings-index', {
+    entityName: 'virtualBooking',
+    entityNamePlural: 'virtualBookings',
+    columns: [
+      { name: 'startDate', width: 162 },
+      { name: 'endDate', width: 162 },
+      { name: 'film', dbName: 'films.title', width: 350 },
+      { name: 'venue', dbName: 'venues.label', width: 350 },
+      { name: 'dateAdded', sortDir: 'desc', width: 162 },
+      { name: 'city', dbName: 'shipping_city', width: 162 },
+      { name: 'state', dbName: 'shipping_state', width: 162 },
+      { name: 'boxOfficeReceived', header: 'BO Received', width: 162 },
+      { name: 'invoiceOrReportSent', header: 'Invoice/Report', orderByDisabled: true, width: 162 },
+      { name: 'host', header: 'Hosted By', width: 162 },
+      { name: 'hasUrl', orderByDisabled: true, width: 162 },
+    ],
+    batchSize: 50,
+    searchModalRows: 4,
+    searchModalDimensions: { width: 600 },
+    showNewButton: true,
+    showExportButton: true,
+    newModalRows: 3,
+    newModalDimensions: { width: 1000 },
+  }, {
+    searchCriteria: {
+      fields: [
+        { name: 'startDate', type: 'date range', columnWidth: 10 },
+        { name: 'endDate', type: 'date range', columnWidth: 10 },
+        { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
+        { name: 'venue', dbName: 'venue_id', type: 'modal', optionDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
+        { name: 'dateAdded', type: 'date range', columnWidth: 10 },
+        { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
+        { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
+        { name: 'boxOfficeReceived', columnHeader: 'BO Received', type: 'yes/no', columnWidth: 4 },
+        { name: 'invoiceOrReportSent', columnHeader: 'Invoice/Report', type: 'yes/no', columnWidth: 4 },
+        {
+          name: 'host',
+          type: 'static dropdown',
+          options: [
+            { value: 'FM', text: 'FM' },
+            { value: 'Venue', text: 'Venue' }
+          ],
+          columnHeader: 'Hosted By',
+          columnWidth: 4
+        },
+        { name: 'hasUrl', type: 'yes/no', dbName: 'url', columnWidth: 4 }
+      ],
+    },
+    newEntity: {
+      fetchData: ['films', 'venues'],
+      initialEntity: {
+        filmId: '',
+        venueId: '',
+        dateAdded: todayDMY(),
+        startDate: '',
+        endDate: '',
+        shippingCity: '',
+        shippingState: '',
+        terms: '',
+        url: '',
+        host: 'FM'
+      },
+      redirectAfterCreate: true,
+    }
+  });
+
+  const sublicensorRightsIndexNode = document.getElementById("sublicensor-rights-index");
+  if (sublicensorRightsIndexNode) {
+    const sublicensorId = parseUrl()[0];
+    createRoot(sublicensorRightsIndexNode).render(
       <SearchIndex
-        header='DVD Purchase Orders'
-        entityName='purchaseOrder'
-        entityNamePlural='purchaseOrders'
+        header="Sublicensed Rights"
+        entityName='subRight'
         columns={[
-          { name: 'orderDate', sortDir: 'desc', width: 162 },
-          { name: 'number', columnHeader: 'PO Number', width: 191 },
-          { name: 'customer', dbName: 'dvd_customers.name', width: 221 },
-          { name: 'shipDate', sortDir: 'desc', width: 162 },
-          { name: 'salesOrder', dbName: 'source_doc', sortDir: 'desc', width: 155 },
-          { name: 'invoice', dbName: 'invoices.num', sortDir: 'desc', width: 96 },
-          { name: 'units', orderByDisabled: true, width: 69 }
+          { name: 'film', dbName: 'films.title' },
+          { name: 'right', dbName: 'rights.name', width: 200 },
+          { name: 'territory', dbName: 'territories.name', width: 250 },
+          { name: 'startDate', width: 120 },
+          { name: 'endDate', width: 120 },
+          { name: 'exclusive', width: 80 },
         ]}
         batchSize={ 50 }
-        searchModalRows={ 4 }
+        searchModalRows={ 3 }
         searchModalDimensions={ { width: 600 } }
+        staticSearchCriteria={ { sublicensorId: { value: sublicensorId } }}
         showNewButton={ true }
-        newModalRows={ 2 }
-        newModalDimensions={ { width: 600 } }
+        newButtonText="Add Rights"
+        newModalDimensions={ { width: 1000, height: 598 } }
       >
         <SearchCriteria
           fields={[
-            { name: 'orderDate', type: 'date range', columnWidth: 10 },
-            { name: 'number', columnHeader: 'PO Number', columnWidth: 6 },
-            { name: 'customer', type: 'modal', responseArrayName: 'customers', optionDisplayProperty: 'name', columnWidth: 8 },
-            { name: 'shipDate', type: 'date range', columnWidth: 10 },
-            { name: 'salesOrder', columnWidth: 6 },
+            { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 9 },
+            { name: 'right', dbName: 'right_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'rights', columnWidth: 6 },
+            { name: 'territory', dbName: 'territory_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'territories', columnWidth: 6 }
           ]}
         />
-        <NewEntity
-          fetchData={ ['shippingAddresses'] }
-          initialEntity={ { number: '', orderDate: '', shippingAddressId: '' } }
-          redirectAfterCreate={ true }
+        <FilmRightsNew
+          initialEntity={ {} }
+          sublicensorId={ sublicensorId }
         />
-      </SearchIndex>,
-      document.getElementById("purchase-orders-index")
-    );
-  }
-
-  if ($('#invoices-index')[0]) {
-    ReactDOM.render(
-        <SearchIndex
-          entityName='invoice'
-          entityNamePlural='invoices'
-          columns={[
-            { name: 'sentDate', sortDir: 'desc', sortColumn: 'sentDateTimestamp', width: 248 },
-            { name: 'number', header: 'Invoice Number', width: 338 },
-            { name: 'type', dbName: 'invoice_type', width: 172 },
-            { name: 'poNumber', header: 'PO Number', width: 298 }
-          ]}
-          batchSize={ 50 }
-          searchModalRows={ 4 }
-          searchModalDimensions={ { width: 600 } }
-          showExportButton={ true }
-        >
-          <SearchCriteria
-            fields={[
-              { name: 'poNumber', columnHeader: 'PO Number', columnWidth: 6 },
-              { name: 'number', columnHeader: 'Invoice Number', columnWidth: 6 },
-              { name: 'num', type: 'number range', columnHeader: 'Invoice Number', columnWidth: 10 },
-              {
-                name: 'invoiceType',
-                type: 'static dropdown',
-                options: [
-                  { value: 'dvd', text: 'DVD' },
-                  { value: 'booking', text: 'Booking' }
-                ],
-                columnHeader: 'Type',
-                columnWidth: 3
-              },
-              { name: 'sentDate', type: 'date range', columnWidth: 10 },
-            ]}
-          />
-        </SearchIndex>
-      ,
-      document.getElementById("invoices-index")
-    );
-  }
-  if ($('#credit-memos-index')[0]) {
-    ReactDOM.render(
-        <SearchIndex
-          entityName='creditMemo'
-          columns={[
-            { name: 'sentDate', sortDir: 'desc', width: 163 },
-            { name: 'number', sortDir: 'desc', header: 'Credit Memo Number', width: 299 },
-            { name: 'customer', header: 'DVD Customer', dbName: 'customer_id', width: 299 },
-            { name: 'returnNumber', width: 295 }
-          ]}
-          batchSize={ 50 }
-          searchModalRows={ 4 }
-          searchModalDimensions={ { width: 600 } }
-          showExportButton={ true }
-        >
-          <SearchCriteria
-            fields={[
-              { name: 'sentDate', type: 'date range', columnWidth: 10 },
-              { name: 'number', columnHeader: 'Credit Memo Number', columnWidth: 6 },
-              { name: 'num', type: 'number range', columnHeader: 'Credit Memo Number', columnWidth: 10 },
-              { name: 'customer', dbName: 'customer_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'customers', columnWidth: 6 },
-              { name: 'returnNumber', columnWidth: 6 },
-            ]}
-          />
-        </SearchIndex>
-      ,
-      document.getElementById("credit-memos-index")
-    );
-  }
-  if ($('#returns-index')[0]) {
-    ReactDOM.render(
-        <SearchIndex
-          header="DVD Returns"
-          entityName='return'
-          columns={[
-            { name: 'date', sortDir: 'desc', width: 196 },
-            { name: 'number', width: 458 },
-            { name: 'customer', dbName: 'dvd_customers.name', width: 322 },
-            { name: 'units', orderByDisabled: true, width: 80 }
-          ]}
-          batchSize={ 50 }
-          searchModalRows={ 3 }
-          searchModalDimensions={ { width: 600 } }
-          showNewButton={ true }
-          showExportButton={ true }
-          newModalRows={ 1 }
-          newModalDimensions={ { width: 998 } }
-        >
-          <SearchCriteria
-            fields={[
-              { name: 'date', type: 'date range', columnWidth: 10 },
-              { name: 'number', columnWidth: 6 },
-              { name: 'customer', type: 'modal', responseArrayName: 'customers', optionDisplayProperty: 'name', columnWidth: 8 },
-            ]}
-          />
-          <NewEntity
-            fetchData={ ['customers'] }
-            initialEntity={ { number: '', date: '', customerId: '' } }
-            redirectAfterCreate={ true }
-          />
-        </SearchIndex>
-      ,
-      document.getElementById("returns-index")
-    );
-  }
-  if ($('#bookings-index')[0]) {
-    ReactDOM.render(
-        <SearchIndex
-          entityName='booking'
-          entityNamePlural='bookings'
-          columns={[
-            { name: 'startDate', width: 162 },
-            { name: 'endDate', width: 162 },
-            { name: 'film', dbName: 'films.title', width: 350 },
-            { name: 'venue', dbName: 'venues.label', width: 350 },
-            { name: 'dateAdded', sortDir: 'desc', width: 162 },
-            { name: 'city', dbName: 'shipping_city', width: 162 },
-            { name: 'state', dbName: 'shipping_state', width: 162 },
-            { name: 'terms', width: 162 },
-            { name: 'type', dbName: 'booking_type', width: 162 },
-            { name: 'status', width: 162 },
-            { name: 'format', dbName: 'formats.name', width: 162 },
-            { name: 'invoiceNumbers', header: 'Invoices', orderByDisabled: true, width: 162 },
-            { name: 'materialsSent', width: 125 },
-            { name: 'boxOfficeReceived', header: 'BO Received', width: 125 },
-            { name: 'totalGross', orderByDisabled: true, width: 125 },
-            { name: 'ourShare', orderByDisabled: true, width: 125 },
-            { name: 'received', orderByDisabled: true, width: 125 },
-            { name: 'owed', orderByDisabled: true, width: 125 },
-          ]}
-          batchSize={ 50 }
-          searchModalRows={ 4 }
-          searchModalDimensions={ { width: 600 } }
-          showNewButton={ true }
-          showExportButton={ true }
-          newModalRows={ 3 }
-          newModalDimensions={ { width: 1000 } }
-          preserveSearchCriteria={ true }
-        >
-          <SearchCriteria
-            fields={[
-              { name: 'startDate', type: 'date range', columnWidth: 10 },
-              { name: 'endDate', type: 'date range', columnWidth: 10 },
-              { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
-              { name: 'venue', dbName: 'venue_id', type: 'modal', optionDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
-              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
-              { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
-              { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
-              { name: 'type', dbName: 'booking_type', type: 'checkboxes', options: [{ value: 'Theatrical', text: 'Theatrical' }, { value: 'Non-Theatrical', text: 'Non-Theatrical' }, { value: 'Festival', text: 'Festival' }], columnWidth: 5 },
-              { name: 'status', type: 'static dropdown', options: [{ value: 'Tentative', text: 'Tentative' }, { value: 'Confirmed', text: 'Confirmed' }], columnWidth: 4 },
-              { name: 'format', dbName: 'format_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'formats', columnWidth: 4 },
-              { name: 'materialsSent', type: 'yes/no', columnWidth: 4 },
-              { name: 'boxOfficeReceived', type: 'yes/no', columnWidth: 4 },
-              { name: 'balanceDue', type: 'yes/no', columnWidth: 4 },
-            ]}
-          />
-          <NewEntity
-            fetchData={ ['films', 'venues', 'formats', 'users'] }
-            initialEntity={ { filmId: '', venueId: '', startDate: '', endDate: '', bookingType: 'Non-Theatrical', status: 'Tentative', formatId: '', terms: '', bookerId: '', dateAdded: todayDMY() } }
-            redirectAfterCreate={ true }
-          />
-        </SearchIndex>
-      ,
-      document.getElementById("bookings-index")
-    );
-  }
-
-  if ($('#sublicensor-rights-index')[0]) {
-    const directoryNames = window.location.pathname.split('/');
-    const sublicensorId = directoryNames[directoryNames.length - 1];
-    ReactDOM.render(
-        <SearchIndex
-          header="Sublicensed Rights"
-          entityName='subRight'
-          columns={[
-            { name: 'film', dbName: 'films.title' },
-            { name: 'right', dbName: 'rights.name', width: 200 },
-            { name: 'territory', dbName: 'territories.name', width: 250 },
-            { name: 'startDate', width: 120 },
-            { name: 'endDate', width: 120 },
-            { name: 'exclusive', width: 80 },
-          ]}
-          batchSize={ 50 }
-          searchModalRows={ 3 }
-          searchModalDimensions={ { width: 600 } }
-          staticSearchCriteria={ { sublicensorId: { value: sublicensorId } }}
-          showNewButton={ true }
-          newButtonText="Add Rights"
-          newModalDimensions={ { width: 1000, height: 598 } }
-        >
-          <SearchCriteria
-            fields={[
-              { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 9 },
-              { name: 'right', dbName: 'right_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'rights', columnWidth: 6 },
-              { name: 'territory', dbName: 'territory_id', type: 'modal', optionDisplayProperty: 'name', responseArrayName: 'territories', columnWidth: 6 }
-            ]}
-          />
-          <FilmRightsNew
-            initialEntity={ {} }
-            sublicensorId={ sublicensorId }
-          />
-        </SearchIndex>
-      ,
-      document.getElementById("sublicensor-rights-index")
-    );
-  }
-
-  if (document.querySelector('#venues-index')) {
-    ReactDOM.render(
-        <SearchIndex
-          entityName='venue'
-          entityNamePlural='venues'
-          columns={[
-            { name: 'label', width: 633 },
-            { name: 'type', dbName: 'venue_type', width: 175 },
-            { name: 'city', dbName: 'shipping_city', width: 188 },
-            { name: 'state', dbName: 'shipping_state', width: 60 }
-          ]}
-          batchSize={ 50 }
-          searchModalRows={ 4 }
-          searchModalDimensions={ { width: 600 } }
-          showNewButton={ true }
-          newModalRows={ 1 }
-          newModalDimensions={ { width: 900 } }
-        >
-          <SearchCriteria
-            fields={[
-              { name: 'label', fuzzy: true, columnWidth: 6 },
-              {
-                name: 'venueType',
-                type: 'static dropdown',
-                options: [
-                  { value: 'Theater', text: 'Theater' },
-                  { value: 'Non-Theatrical', text: 'Non-Theatrical' },
-                  { value: 'Festival', text: 'Festival' },
-                ],
-                columnHeader: 'Type',
-                columnWidth: 4
-              },
-              { name: 'shippingCity', columnWidth: 6 },
-              { name: 'shippingState', columnWidth: 3 }
-            ]}
-          />
-          <NewEntity initialEntity={ { label: '', sageId: '', venueType: 'Theater' } } />
-        </SearchIndex>
-      ,
-      document.querySelector('#venues-index')
-    );
-  }
-
-  if (document.querySelector('#virtual-bookings-index')) {
-    ReactDOM.render(
-        <SearchIndex
-          entityName='virtualBooking'
-          entityNamePlural='virtualBookings'
-          columns={[
-            { name: 'startDate', width: 162 },
-            { name: 'endDate', width: 162 },
-            { name: 'film', dbName: 'films.title', width: 350 },
-            { name: 'venue', dbName: 'venues.label', width: 350 },
-            { name: 'dateAdded', sortDir: 'desc', width: 162 },
-            { name: 'city', dbName: 'shipping_city', width: 162 },
-            { name: 'state', dbName: 'shipping_state', width: 162 },
-            { name: 'boxOfficeReceived', header: 'BO Received', width: 162 },
-            { name: 'invoiceOrReportSent', header: 'Invoice/Report', orderByDisabled: true, width: 162 },
-            { name: 'host', header: 'Hosted By', width: 162 },
-            { name: 'hasUrl', orderByDisabled: true, width: 162 },
-          ]}
-          batchSize={ 50 }
-          searchModalRows={ 4 }
-          searchModalDimensions={ { width: 600 } }
-          showNewButton={ true }
-          showExportButton={ true }
-          newModalRows={ 3 }
-          newModalDimensions={ { width: 1000 } }
-        >
-          <SearchCriteria
-            fields={[
-              { name: 'startDate', type: 'date range', columnWidth: 10 },
-              { name: 'endDate', type: 'date range', columnWidth: 10 },
-              { name: 'film', dbName: 'film_id', type: 'modal', optionDisplayProperty: 'title', responseArrayName: 'films', columnWidth: 8 },
-              { name: 'venue', dbName: 'venue_id', type: 'modal', optionDisplayProperty: 'label', responseArrayName: 'venues', columnWidth: 8 },
-              { name: 'dateAdded', type: 'date range', columnWidth: 10 },
-              { name: 'shippingCity', columnHeader: 'City', columnWidth: 6 },
-              { name: 'shippingState', columnHeader: 'State', columnWidth: 2 },
-              { name: 'boxOfficeReceived', columnHeader: 'BO Received', type: 'yes/no', columnWidth: 4 },
-              { name: 'invoiceOrReportSent', columnHeader: 'Invoice/Report', type: 'yes/no', columnWidth: 4 },
-              {
-                name: 'host',
-                type: 'static dropdown',
-                options: [
-                  { value: 'FM', text: 'FM' },
-                  { value: 'Venue', text: 'Venue' }
-                ],
-                columnHeader: 'Hosted By',
-                columnWidth: 4
-              },
-              { name: 'hasUrl', type: 'yes/no', dbName: 'url', columnWidth: 4 }
-            ]}
-          />
-          <NewEntity
-            fetchData={ ['films', 'venues'] }
-            initialEntity={ {
-              filmId: '',
-              venueId: '',
-              dateAdded: todayDMY(),
-              startDate: '',
-              endDate: '',
-              shippingCity: '',
-              shippingState: '',
-              terms: '',
-              url: '',
-              host: 'FM'
-            } }
-            redirectAfterCreate={ true }
-          />
-        </SearchIndex>
-      ,
-      document.querySelector('#virtual-bookings-index')
+      </SearchIndex>
     );
   }
 });
