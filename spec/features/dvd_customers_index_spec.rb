@@ -58,7 +58,7 @@ describe 'dvd_customers_index', type: :feature do
     fill_out_and_submit_modal({
       name: 'New DVD Vendor',
       discount: 40,
-      consignment: true,
+      consignment: { value: true, type: :switch },
       billing_name: 'New Billing Name',
       address_1: 'New Address 1',
       address_2: 'New Address 2',
