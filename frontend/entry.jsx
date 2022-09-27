@@ -7,7 +7,6 @@ import FM from '../app/assets/javascripts/me/common.jsx'
 import BookerDetails from './components/booker-details.jsx'
 import BookingDetails from './components/booking-details.jsx'
 import Calendar from './components/calendar.jsx'
-import Catalog from './components/catalog.jsx'
 import ConvertDigitalSales from './components/convert-digital-sales.jsx'
 import CurrentUserDropDown from './components/current-user-dropdown.jsx'
 import DvdCustomerDetails from './components/dvd-customer-details.jsx'
@@ -104,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderIf('booking-details', BookingDetails);
   renderIf('booker-details', BookerDetails);
   renderIf('in-theaters-index', InTheatersIndex);
-  renderIf('catalog', Catalog);
   renderIf('convert-digital-sales', ConvertDigitalSales);
   renderIf('episode-details', EpisodeDetails);
   renderIf('jobs-index', JobsIndex);

@@ -1,6 +1,6 @@
 ### Film Manager
 
-Film Manager is an app for managing the daily operations of a film distribution business. This includes taking bookings, shipping DVDs, sending invoices, creating catalogs, and calculating quarterly royalty statements. It also exposes an API of public data for ingestion by the company website.
+Film Manager is an app for managing the daily operations of a film distribution business. This includes taking bookings, shipping DVDs, sending invoices, and calculating quarterly royalty statements. It also exposes an API of public data for ingestion by the company website.
 
 ![full_app](./doc/full_app.png)
 
@@ -93,12 +93,6 @@ The app offers two kinds of DVD reports. The first report displays monthly total
 The second report displays unit and revenue totals for each new title by customer.
 
 ![reports_titles](./doc/reports_titles.jpg)
-
-## Catalogs
-
-Another major function of the app is to export PDF catalogs of films for review by potential partners. A spreadsheet of titles can be imported to create a PDF with cover art, basic information, and synopses.
-
-![catalog](./doc/catalog.jpg)
 
 ## Invoices
 

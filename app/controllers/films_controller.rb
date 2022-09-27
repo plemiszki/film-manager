@@ -13,8 +13,4 @@ class FilmsController < AdminController
     render 'advanced', formats: [:html], handlers: [:erb]
   end
 
-  def catalog
-    render 'catalog', formats: [:html], handlers: [:erb]
-  end
-
 end
