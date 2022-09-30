@@ -88,6 +88,7 @@ export default class LicensorDetails extends React.Component {
                   <thead>
                     <tr>
                       <th>Title</th>
+                      <th>Days Statement Due</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -97,6 +98,9 @@ export default class LicensorDetails extends React.Component {
                         <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
                           <td className="name-column">
                             { film.title }
+                          </td>
+                          <td>
+                            { film.daysStatementDue }
                           </td>
                         </tr>
                       );

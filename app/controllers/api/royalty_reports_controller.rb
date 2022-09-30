@@ -128,10 +128,10 @@ class Api::RoyaltyReportsController < AdminController
 
   def export_uncrossed
     time_started = Time.now.to_s
-    reports = RoyaltyReport.where(quarter: params[:quarter], year: params[:year], film_id: params[:film_ids])
-    @job = Job.create!(job_id: time_started, name: "export uncrossed", first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: reports.length)
+    reports = RoyaltyReport.where(quarter: params[:quarter], year: params[:year], film_id: params[:film_ids].split(","))
+    job = Job.create!(job_id: time_started, name: "export uncrossed", first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: reports.length)
     ExportUncrossedReports.perform_async(reports.map(&:id), time_started)
-    render json: { job: @job.render_json }
+    render json: { job: job.render_json }
   end
 
   def codes
