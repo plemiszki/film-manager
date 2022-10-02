@@ -71,60 +71,69 @@ export default class LicensorDetails extends React.Component {
 
   render() {
     return(
-      <div className="licensor-details">
-        <div className="component">
-          <h1>Licensor Details</h1>
-          <div className="white-box">
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'name' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'email', columnHeader: 'Royalty Emails' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'licensor', property: 'address', rows: 5 }) }
-            </div>
-            <div className="row">
-              <div className="col-xs-12">
-                <table className="fm-admin-table">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td></tr>
-                    { this.state.films.map((film, index) => {
-                      return(
-                        <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
-                          <td className="name-column">
-                            { film.title }
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
+      <>
+        <div className="licensor-details">
+          <div className="handy-component">
+            <h1>Licensor Details</h1>
+            <div className="white-box">
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'name' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'email', columnHeader: 'Royalty Emails' }) }
               </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'licensor', property: 'address', rows: 5 }) }
+              </div>
+              <div className="row">
+                <div className="col-xs-12">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td></td></tr>
+                      { this.state.films.map((film, index) => {
+                        return(
+                          <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
+                            <td className="name-column">
+                              <a href={ `/films/${film.id}` }>
+                                { film.title }
+                              </a>
+                            </td>
+                          </tr>
+                        );
+                      }) }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              { this.renderButtons() }
+              { Common.renderSpinner(this.state.fetching) }
+              { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
             </div>
-            { this.renderButtons() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
+          <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+            <ConfirmDelete
+              entityName="licensor"
+              confirmDelete={ Details.clickDelete.bind(this) }
+              closeModal={ Common.closeModals.bind(this) }
+            />
+          </Modal>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="licensor"
-            confirmDelete={ Details.clickDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
-      </div>
+        <style jsx>{`
+          table {
+            margin-bottom: 60px;
+          }
+        `}</style>
+      </>
     );
   }
 
   renderButtons() {
     return(
       <div>
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "standard-button btn standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
           { Details.saveButtonText.call(this) }
         </a>
         <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>

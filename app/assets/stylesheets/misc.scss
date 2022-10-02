@@ -1,3 +1,7 @@
 #current-user {
     display: none;
 }
+
+.handy-component:not(.admin-modal) {
+    margin-bottom: 62px;
+}

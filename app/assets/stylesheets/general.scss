@@ -9,6 +9,6 @@ body {
     background-repeat: no-repeat;
 
     &:focus {
-        outline: none;
+        outline: none !important;
     }
 }
