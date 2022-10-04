@@ -28,8 +28,8 @@ export default class CreditMemoDetails extends React.Component {
 
   render() {
     return(
-      <div id="credit-memo-details">
-        <div className="component">
+      <>
+        <div className="handy-component">
           <h1>Credit Memo Details</h1>
           <div className="white-box">
             <div className="row">
@@ -61,7 +61,7 @@ export default class CreditMemoDetails extends React.Component {
               </div>
             </div>
             <hr />
-            <table className="fm-admin-table">
+            <table className="no-hover">
               <thead>
                 <tr>
                   <th>Item</th>
@@ -75,17 +75,25 @@ export default class CreditMemoDetails extends React.Component {
                 { this.state.rows.map((row, index) => {
                   return(
                     <tr key={ index }>
-                      <td className="indent">
-                        { row.label }
+                      <td>
+                        <div className="link-padding">
+                          { row.label }
+                        </div>
                       </td>
                       <td>
-                        { row.price }
+                        <div className="link-padding">
+                          { row.price }
+                        </div>
                       </td>
                       <td>
-                        { row.qty }
+                        <div className="link-padding">
+                          { row.qty }
+                        </div>
                       </td>
                       <td>
-                        { row.totalPrice }
+                        <div className="link-padding">
+                          { row.totalPrice }
+                        </div>
                       </td>
                     </tr>
                   );
@@ -99,14 +107,17 @@ export default class CreditMemoDetails extends React.Component {
                 { this.state.creditMemo.total }
               </div>
             </div>
-            <a id="export" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
+            <a className={ "standard-button btn " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
               Export
             </a>
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
-      </div>
+        <style jsx>{`
+          .row, table { margin-bottom: 30px; }
+        `}</style>
+      </>
     );
   }
 }

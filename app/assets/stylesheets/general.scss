@@ -12,3 +12,26 @@ body {
         outline: none !important;
     }
 }
+
+a.square-button {
+    padding: 12px 20px;
+    min-width: inherit;
+    border-radius: 5px;
+    background-color: var(--button-color);
+    font-family: 'TeachableSans-Bold';
+    color: white;
+    font-size: 12px;
+    line-height: 17px;
+    border: none;
+
+    &:hover {
+        cursor: pointer;
+        text-decoration: none;
+        background-color: var(--highlight-color);
+        color: white;
+    }
+
+    &.margin {
+        margin-left: 20px;
+    }
+}

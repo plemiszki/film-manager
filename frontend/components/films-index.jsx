@@ -74,10 +74,6 @@ export default class FilmsIndex extends Component {
     });
   }
 
-  redirect(id) {
-    window.location.pathname = "films/" + id;
-  }
-
   clickExportAll() {
     this.setState({
       fetching: true
@@ -181,63 +177,74 @@ export default class FilmsIndex extends Component {
   render() {
     var filteredFilms = this.state[this.state.filterActive ? 'filteredFilms' : 'films'].filterSearchText(this.state.searchText, this.state.sortBy);
     return(
-      <div id="films-index" className="component">
-        <div className="clearfix">
-          { this.renderHeader() }
-          { this.renderExportMetadataButton() }
-          { this.renderCustomButton() }
-          { this.renderFilterButton() }
-          { this.renderAddNewButton() }
-          <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+      <>
+        <div id="films-index" className="handy-component">
+          <div>
+            { this.renderHeader() }
+            { this.renderExportMetadataButton() }
+            { this.renderCustomButton() }
+            { this.renderFilterButton() }
+            { this.renderAddNewButton() }
+            <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+          </div>
+          <div className="white-box">
+            <table>
+              <thead>
+                <tr>
+                  <th><div className={ FM.sortClass.call(this, "title") } onClick={ FM.clickHeader.bind(this, "title") }>Title</div></th>
+                  <th><div className={ FM.sortClass.call(this, "endDate") } onClick={ FM.clickHeader.bind(this, "endDate") }>Expiration Date</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td></td><td></td></tr>
+                { _.orderBy(filteredFilms, [FM.commonSort.bind(this)]).map((film, index) => {
+                  return(
+                    <tr key={ index }>
+                      <td className="bold">
+                        <a href={ `/films/${film.id}` }>
+                          { film.title }
+                        </a>
+                      </td>
+                      <td className={ new Date(film.endDate) < Date.now() ? 'expired' : '' }>
+                        <a href={ `/films/${film.id}` }>
+                          { film.endDate }
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                }) }
+              </tbody>
+            </table>
+            { Common.renderSpinner(this.state.fetching) }
+            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          </div>
+          <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="film"
+              initialEntity={ { title: "", filmType: this.props.filmType, labelId: 1, year: "" } }
+              redirectAfterCreate={ true }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
+            <FilmRightsNew
+              context={ this.props.context }
+              search={ true }
+              filmType={ this.props.filmType }
+              availsExport={ this.clickExportCustom.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.updateFilter.bind(this) } contentLabel="Modal" style={ FilterModalStyles }>
+            { this.renderFilter() }
+          </Modal>
+          { Common.renderJobModal.call(this, this.state.job) }
         </div>
-        <div className="white-box">
-          <table className="fm-admin-table">
-            <thead>
-              <tr>
-                <th><div className={ FM.sortClass.call(this, "title") } onClick={ FM.clickHeader.bind(this, "title") }>Title</div></th>
-                <th><div className={ FM.sortClass.call(this, "endDate") } onClick={ FM.clickHeader.bind(this, "endDate") }>Expiration Date</div></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td></tr>
-              { _.orderBy(filteredFilms, [FM.commonSort.bind(this)]).map((film, index) => {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
-                    <td className="name-column">
-                      { film.title }
-                    </td>
-                    <td className={ new Date(film.endDate) < Date.now() ? 'expired' : '' }>
-                      { film.endDate }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-        </div>
-        <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="film"
-            initialEntity={ { title: "", filmType: this.props.filmType, labelId: 1, year: "" } }
-            redirectAfterCreate={ true }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
-          <FilmRightsNew
-            context={ this.props.context }
-            search={ true }
-            filmType={ this.props.filmType }
-            availsExport={ this.clickExportCustom.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.updateFilter.bind(this) } contentLabel="Modal" style={ FilterModalStyles }>
-          { this.renderFilter() }
-        </Modal>
-        { Common.renderJobModal.call(this, this.state.job) }
-      </div>
+        <style jsx>{`
+          .expired {
+            color: red;
+          }
+        `}</style>
+      </>
     );
   }
 
@@ -256,7 +263,7 @@ export default class FilmsIndex extends Component {
     }[this.props.filmType];
     if (FM.user.hasAdminAccess & !this.props.advanced) {
       return(
-        <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'newFilmModalOpen', true) }>Add { buttonText }</a>
+        <a className={ "square-button margin btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'newFilmModalOpen', true) }>Add { buttonText }</a>
       );
     }
   }
@@ -264,7 +271,7 @@ export default class FilmsIndex extends Component {
   renderExportMetadataButton() {
     if (this.props.filmType != 'TV Series') {
       return(
-        <a className={ "btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExportAll.bind(this) }>Export All</a>
+        <a className={ "square-button margin btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExportAll.bind(this) }>Export All</a>
       );
     }
   }
@@ -272,7 +279,7 @@ export default class FilmsIndex extends Component {
   renderFilterButton() {
     if (this.props.filmType === 'Feature') {
       return(
-        <a className={ "btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) + (this.state.filterActive ? ' green' : '') } onClick={ Common.changeState.bind(this, 'filterModalOpen', true) }>Filter</a>
+        <a className={ "square-button margin btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) + (this.state.filterActive ? ' green' : '') } onClick={ Common.changeState.bind(this, 'filterModalOpen', true) }>Filter</a>
       );
     }
   }
@@ -284,7 +291,7 @@ export default class FilmsIndex extends Component {
   renderCustomButton() {
     if (this.props.filmType != 'TV Series') {
       return(
-        <a className={ "btn orange-button float-button advanced-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'searchModalOpen', true) }>Export Custom</a>
+        <a className={ "square-button margin btn orange-button float-button advanced-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'searchModalOpen', true) }>Export Custom</a>
       );
     }
   }

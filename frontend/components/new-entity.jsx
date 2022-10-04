@@ -91,10 +91,10 @@ export default class NewEntity extends React.Component {
 
   render() {
     return(
-      <div className="new-entity component admin-modal">
+      <div className="new-entity handy-component admin-modal">
         <form className="white-box">
           { this.renderFields() }
-          <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.props.buttonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` } onClick={ this.clickAdd.bind(this) } />
+          <input type="submit" className={ "standard-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.props.buttonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` } onClick={ this.clickAdd.bind(this) } />
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           { Common.renderSpinner(this.state.fetching) }
         </form>

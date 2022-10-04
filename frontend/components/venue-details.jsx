@@ -159,13 +159,13 @@ export default class VenueDetails extends React.Component {
       });
     } catch(e) {
       $('.shredder-modal textarea').addClass('error');
-      $('.shredder-modal .errorMessage').text(e);
+      $('.shredder-modal .error-message').text(e);
     }
   }
 
   clearShredderError() {
     $('.shredder-modal textarea').removeClass('error');
-    $('.shredder-modal .errorMessage').text('');
+    $('.shredder-modal .error-message').text('');
   }
 
   redirect(directory, id) {
@@ -174,142 +174,182 @@ export default class VenueDetails extends React.Component {
 
   render() {
     return(
-      <div id="venue-details">
-        <div className="component details-component">
-          <h1>Venue Details</h1>
-          <div id="venue-profile-box" className="white-box">
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'venue', property: 'label' }) }
-              { Details.renderDropDown.bind(this)({
-                columnWidth: 3,
-                entity: 'venue',
-                property: 'venueType',
-                options: [
-                  { value: 'Theater', text: 'Theater' },
-                  { value: 'Non-Theatrical', text: 'Non-Theatrical' },
-                  { value: 'Festival', text: 'Festival' },
-                ]
-              }) }
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'sageId', columnHeader: 'Sage ID' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'contactName' }) }
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'email' }) }
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'phone' }) }
-            </div>
-            <hr />
-            <div className="address-block">
-              <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'billing' }) } } />
-              <h3>Billing Address:</h3>
+      <>
+        <div>
+          <div className="handy-component details-component">
+            <h1>Venue Details</h1>
+            <div className="white-box">
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingName', columnHeader: 'Name' }) }
-                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingAddress1', columnHeader: 'Address 1' }) }
-                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingAddress2', columnHeader: 'Address 2' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'venue', property: 'label' }) }
+                { Details.renderDropDown.bind(this)({
+                  columnWidth: 3,
+                  entity: 'venue',
+                  property: 'venueType',
+                  options: [
+                    { value: 'Theater', text: 'Theater' },
+                    { value: 'Non-Theatrical', text: 'Non-Theatrical' },
+                    { value: 'Festival', text: 'Festival' },
+                  ]
+                }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'sageId', columnHeader: 'Sage ID' }) }
               </div>
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'billingCity', columnHeader: 'City' }) }
-              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'venue', property: 'billingState', columnHeader: 'State' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingZip', columnHeader: 'Zip' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingCountry', columnHeader: 'Country' }) }
-              <div className="col-xs-4">
-                <a className={ "orange-button copy-address-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress.bind(this) }>
-                  Copy to Shipping Address
-                </a>
-              </div>
-            </div>
-            <hr />
-            <div className="address-block">
-              <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'shipping' }) } } />
-              <h3>Shipping Address:</h3>
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingName', columnHeader: 'Name' }) }
-                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingAddress1', columnHeader: 'Address 1' }) }
-                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingAddress2', columnHeader: 'Address 2' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'contactName' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'email' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'phone' }) }
+              </div>
+              <hr />
+              <div className="address-block">
+                <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'billing' }) } } />
+                <p className="section-header">Billing Address</p>
+                <div className="row">
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingName', columnHeader: 'Name' }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingAddress1', columnHeader: 'Address 1' }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingAddress2', columnHeader: 'Address 2' }) }
+                </div>
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'billingCity', columnHeader: 'City' }) }
+                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'venue', property: 'billingState', columnHeader: 'State' }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingZip', columnHeader: 'Zip' }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingCountry', columnHeader: 'Country' }) }
+                <div className="col-xs-4">
+                  <a className={ "standard-button btn copy-address-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress.bind(this) }>
+                    Copy to Shipping Address
+                  </a>
+                </div>
+              </div>
+              <hr />
+              <div className="address-block">
+                <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'shipping' }) } } />
+                <p className="section-header">Shipping Address</p>
+                <div className="row">
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingName', columnHeader: 'Name' }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingAddress1', columnHeader: 'Address 1' }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingAddress2', columnHeader: 'Address 2' }) }
+                </div>
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'shippingCity', columnHeader: 'City' }) }
+                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'venue', property: 'shippingState', columnHeader: 'State' }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'shippingZip', columnHeader: 'Zip' }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'shippingCountry', columnHeader: 'Country' }) }
+              </div>
+              <hr />
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 12, entity: 'venue', property: 'website' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'venue', property: 'notes', rows: 5 }) }
+              </div>
+              { this.renderButtons() }
+              { Common.renderSpinner(this.state.fetching) }
+              { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            </div>
+          </div>
+          <div className="handy-component">
+            <h1>Venue Bookings</h1>
+            <div className="white-box">
+              { Common.renderSpinner(this.state.fetching) }
+              { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+              <div className="row">
+                <div className="col-xs-12">
+                  <table className="fm-admin-table">
+                    <thead>
+                      <tr>
+                        <th>Start Date</th>
+                        <th>Film</th>
+                        <th>Total Gross</th>
+                        <th>Our Share</th>
+                        <th>Received</th>
+                        <th>Owed</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td></td><td></td></tr>
+                      { this.state.bookings.map((booking, index) => {
+                        const url = `/bookings/${booking.id}`
+                        return(
+                          <tr key={ index } onClick={ this.redirect.bind(this, "bookings", booking.id) }>
+                            <td className="indent">
+                              <a href={ url }>
+                                { booking.startDate }
+                              </a>
+                            </td>
+                            <td>
+                              <a href={ url }>
+                                { booking.film }
+                              </a>
+                            </td>
+                            <td>
+                              <a href={ url }>
+                                { booking.valid ? booking.totalGross : 'Invalid' }
+                              </a>
+                            </td>
+                            <td>
+                              <a href={ url }>
+                                { booking.valid ? booking.ourShare : 'Invalid' }
+                              </a>
+                            </td>
+                            <td>
+                              <a href={ url }>
+                                { booking.valid ? booking.received : 'Invalid' }
+                              </a>
+                            </td>
+                            <td>
+                              <a href={ url }>
+                                { booking.valid ? booking.owed : 'Invalid' }
+                              </a>
+                            </td>
+                          </tr>
+                        );
+                      }) }
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'shippingCity', columnHeader: 'City' }) }
-              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'venue', property: 'shippingState', columnHeader: 'State' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'shippingZip', columnHeader: 'Zip' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'shippingCountry', columnHeader: 'Country' }) }
-            </div>
-            <hr />
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 12, entity: 'venue', property: 'website' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'venue', property: 'notes', rows: 5 }) }
-            </div>
-            { this.renderButtons() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
+          <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+            <ConfirmDelete entityName="venue" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+          </Modal>
+          <Modal isOpen={ this.state.messageModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.messageModalStyles() }>
+            <ModalMessage message={ this.state.deleteError.message } memo={ this.state.deleteError.memo } />
+          </Modal>
+          <Modal isOpen={ this.state.shredderModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ShredderModalStyles }>
+            <div className="shredder-modal handy-component admin-modal">
+              <textarea onChange={ this.clearShredderError.bind(this) }></textarea>
+              <div className="error-message"></div>
+              <a className="standard-button btn" onClick={ this.clickSplitAddress.bind(this) }>Split Address</a>
+            </div>
+          </Modal>
         </div>
-        <div className="venue-bookings-index component">
-          <h1>Venue Bookings</h1>
-          <div className="white-box">
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-            <div className="row">
-              <div className="col-xs-12">
-                <table className="fm-admin-table">
-                  <thead>
-                    <tr>
-                      <th>Start Date</th>
-                      <th>Film</th>
-                      <th>Total Gross</th>
-                      <th>Our Share</th>
-                      <th>Received</th>
-                      <th>Owed</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td></tr>
-                    { this.state.bookings.map((booking, index) => {
-                      return(
-                        <tr key={ index } onClick={ this.redirect.bind(this, "bookings", booking.id) }>
-                          <td className="indent">
-                            { booking.startDate }
-                          </td>
-                          <td>
-                            { booking.film }
-                          </td>
-                          <td>
-                            { booking.valid ? booking.totalGross : 'Invalid' }
-                          </td>
-                          <td>
-                            { booking.valid ? booking.ourShare : 'Invalid' }
-                          </td>
-                          <td>
-                            { booking.valid ? booking.received : 'Invalid' }
-                          </td>
-                          <td>
-                            { booking.valid ? booking.owed : 'Invalid' }
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="venue" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
-        </Modal>
-        <Modal isOpen={ this.state.messageModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.messageModalStyles() }>
-          <ModalMessage message={ this.state.deleteError.message } memo={ this.state.deleteError.memo } />
-        </Modal>
-        <Modal isOpen={ this.state.shredderModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ShredderModalStyles }>
-          <div className="shredder-modal">
-            <textarea onChange={ this.clearShredderError.bind(this) }></textarea>
-            <div className="errorMessage"></div>
-            <a className="orange-button" onClick={ this.clickSplitAddress.bind(this) }>Split Address</a>
-          </div>
-        </Modal>
-      </div>
+        <style jsx>{`
+          .address-block { position: relative; }
+          img {
+            position: absolute;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            top: -20px;
+            right: -20px;
+          }
+          .copy-address-button {
+            margin-top: 28px;
+            padding: 14px 0;
+            width: 100%;
+            max-width: 250px;
+          }
+          .shredder-modal textarea {
+            height: 150px;
+          }
+          .shredder-modal .error-message {
+            height: 18px;
+            color: red;
+            margin-bottom: 10px;
+          }
+        `}</style>
+      </>
     );
   }
 
@@ -321,11 +361,11 @@ export default class VenueDetails extends React.Component {
     }
     return(
       <div>
-        <a className={ "btn orange-button" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+        <a className={ "standard-button standard-width btn" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
           { buttonText }
         </a>
-        <a id="delete" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete Venue
+        <a className={ "delete-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
+          Delete
         </a>
       </div>
     );
