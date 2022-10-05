@@ -37,8 +37,8 @@ export default class InvoiceDetails extends React.Component {
 
   render() {
     return(
-      <div id="invoice-details">
-        <div className="component">
+      <>
+        <div className="handy-component">
           <h1>Invoice Details</h1>
           <div className="white-box">
             <div className="row">
@@ -82,14 +82,19 @@ export default class InvoiceDetails extends React.Component {
               </div>
             </div>
             { this.renderNotes() }
-            <a id="export" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
+            <a className={ "standard-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
               Export
             </a>
             { Common.renderSpinner(this.state.fetching) }
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
-      </div>
+        <style jsx>{`
+          .row, table {
+            margin-bottom: 30px;
+          }
+        `}</style>
+      </>
     );
   }
 
@@ -132,17 +137,25 @@ export default class InvoiceDetails extends React.Component {
     if (this.state.invoice.invoiceType == "dvd") {
       return(
         <tr key={ index }>
-          <td className="indent">
-            { row.label }
+          <td>
+            <div className="link-padding">
+              { row.label }
+            </div>
           </td>
           <td>
-            { row.price }
+            <div className="link-padding">
+              { row.price }
+            </div>
           </td>
           <td>
-            { row.qty }
+            <div className="link-padding">
+              { row.qty }
+            </div>
           </td>
           <td>
-            { row.totalPrice }
+            <div className="link-padding">
+              { row.totalPrice }
+            </div>
           </td>
         </tr>
       );
