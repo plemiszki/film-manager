@@ -50,12 +50,10 @@ export default class Calendar extends React.Component {
   render() {
     return(
       <div className="calendar">
-        <div className="component">
-          <div className="clearfix">
-            <h1>Calendar - { this.state.year }</h1>
-            <a className={ "orange-button float-button small" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
-            <a className={ "orange-button float-button small margin" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
-          </div>
+        <div className="handy-component">
+          <h1>Calendar - { this.state.year }</h1>
+          <a className={ "standard-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
+          <a className={ "standard-button float-button margin" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           <div className="white-box">
             <table>
               <thead>
@@ -139,6 +137,38 @@ export default class Calendar extends React.Component {
             { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
+        <style jsx>{`
+          .margin {
+            margin-right: 30px;
+          }
+          table {
+            border: solid 1px gray;
+            width: 100%;
+          }
+          table th {
+            font-family: 'TeachableSans-SemiBold';
+            padding: 10px 10px;
+          }
+          th, td {
+            border: solid 1px gray;
+            text-align: center;
+            width: 14.29%;
+          }
+          table td {
+            padding: 20px !important;
+            color: #5F5F5F;
+          }
+          td.monthCell {
+            font-family: 'TeachableSans-SemiBold';
+          }
+          .film.tentative {
+            color: red;
+            font-style: italic;
+          }
+          .film:not(:last-of-type) {
+            margin-bottom: 15px;
+          }
+        `}</style>
       </div>
     );
   }
