@@ -1,7 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -84,10 +83,10 @@ export default class ReturnDetails extends React.Component {
     });
   }
 
-  selectItem(option, event) {
+  selectItem(option) {
     this.setState({
       selectedItemId: option.id,
-      selectedItemType: event.target.dataset.type,
+      selectedItemType: option.itemType,
       selectItemModalOpen: false,
       qtyModalOpen: true,
       selectedItemQty: 1
@@ -192,8 +191,8 @@ export default class ReturnDetails extends React.Component {
 
   render() {
     return(
-      <div id="return-details">
-        <div className="component">
+      <>
+        <div className="handy-component">
           <h1>Return Details</h1>
           <div className="white-box">
             <div className="row">
@@ -216,15 +215,19 @@ export default class ReturnDetails extends React.Component {
                   return(
                     <tr key={index}>
                       <td className="name-column">
-                        <div>
+                        <div className="link-padding">
                           { item.label }
                         </div>
                       </td>
                       <td>
+                        <div className="link-padding">
                           { item.qty }
+                        </div>
                       </td>
                       <td>
+                        <div className="link-padding">
                           { item.amount }
+                        </div>
                       </td>
                       { this.renderXButton(item) }
                     </tr>
@@ -232,7 +235,7 @@ export default class ReturnDetails extends React.Component {
                 }) }
               </tbody>
             </table>
-            <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'selectItemModalOpen', true) }>Add Item</a>
+            <a className="outline-button btn" onClick={ Common.changeState.bind(this, 'selectItemModalOpen', true) }>Add Item</a>
             <hr />
             { this.renderButtons() }
             <hr />
@@ -252,17 +255,69 @@ export default class ReturnDetails extends React.Component {
           <ModalSelect options={ this.state.otherItems } property="label" func={ this.selectItem.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
-          <div className="qty-modal">
-            <h1>Enter Quantity:</h1>
-            <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-            <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
-            <div className="orange-button" onClick={ this.clickQtyOk.bind(this) }>
-              OK
-            </div>
-          </div>
+          { this.renderQtyModal() }
         </Modal>
         { Common.renderJobModal.call(this, this.state.job) }
+        <style jsx>{`
+          table {
+            margin-bottom: 15px;
+          }
+          .outline-button {
+            margin-bottom: 30px;
+          }
+        `}</style>
+      </>
+    );
+  }
+
+  renderQtyModal() {
+    return(
+    <>
+      <div className="qty-modal">
+        <h1>Enter Quantity:</h1>
+        <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
+        <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
+        <div className="button" onClick={ this.clickQtyOk.bind(this) }>
+          OK
+        </div>
       </div>
+      <style jsx>{`
+        .qty-modal {
+          padding: 30px;
+          text-align: center;
+        }
+        h1 {
+          font-size: 16px;
+          margin-bottom: 14px;
+        }
+        h2 {
+          font-size: 12px;
+          margin-bottom: 20px;
+        }
+        input {
+          width: 170px;
+          padding: 13px;
+          margin-bottom: 20px;
+        }
+        .button {
+          margin: auto;
+          display: inline-block;
+          font-family: 'TeachableSans-Medium';
+          padding: 15px 40px;
+          text-align: center;
+          font-size: 12px;
+          border-radius: 100px;
+          background-color: var(--button-color);
+          color: white;
+          letter-spacing: inherit;
+          border: none;
+        }
+        .button:hover {
+          background-color: var(--highlight-color);
+          cursor: pointer;
+        }
+      `}</style>
+    </>
     );
   }
 
@@ -273,7 +328,7 @@ export default class ReturnDetails extends React.Component {
       );
     } else if (this.state.return.id) {
       return(
-        <a className={ "orange-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate and Send Credit Memo</a>
+        <a className={ "standard-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate and Send Credit Memo</a>
       );
     }
   }
@@ -290,14 +345,19 @@ export default class ReturnDetails extends React.Component {
 
   renderButtons() {
     return(
-      <div className="m-bottom">
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
+      <>
+        <a className={ "btn standard-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
           { Details.saveButtonText.call(this) }
         </a>
         <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
           Delete
         </a>
-      </div>
+        <style jsx>{`
+          a {
+            margin-bottom: 30px;
+          }
+        `}</style>
+      </>
     );
   }
 
