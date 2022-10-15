@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, DeleteButton, SaveButton } from 'handy-components'
 
 export default class VirtualBookingDetails extends React.Component {
 
@@ -214,7 +214,7 @@ export default class VirtualBookingDetails extends React.Component {
 
   render() {
     return(
-      <div id="virtual-booking-details" className="component details-component">
+      <div className="handy-component">
         <h1>Virtual Booking Details</h1>
         <div className="white-box">
           <div className="row">
@@ -249,12 +249,16 @@ export default class VirtualBookingDetails extends React.Component {
           { this.renderReportSection() }
           <hr className="divider" style={ { marginTop: 30 } } />
           <div>
-            <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-              { Details.saveButtonText.call(this) }
-            </a>
-            <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-              Delete
-            </a>
+            <SaveButton
+              justSaved={ this.state.justSaved }
+              changesToSave={ this.state.changesToSave }
+              disabled={ this.state.fetching }
+              onClick={ () => { this.clickSave() } }
+            />
+            <DeleteButton
+              disabled={ this.state.fetching }
+              onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }
+            />
           </div>
           { Common.renderSpinner(this.state.fetching) }
           { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }

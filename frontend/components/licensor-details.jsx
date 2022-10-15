@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy, fetchEntity, updateEntity } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, fetchEntity, updateEntity, Table, DeleteButton } from 'handy-components'
 
 export default class LicensorDetails extends React.Component {
 
@@ -85,27 +85,11 @@ export default class LicensorDetails extends React.Component {
               </div>
               <div className="row">
                 <div className="col-xs-12">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Title</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td></td></tr>
-                      { this.state.films.map((film, index) => {
-                        return(
-                          <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
-                            <td className="name-column">
-                              <a href={ `/films/${film.id}` }>
-                                { film.title }
-                              </a>
-                            </td>
-                          </tr>
-                        );
-                      }) }
-                    </tbody>
-                  </table>
+                  <Table
+                    styles={ { marginBottom: 60 } }
+                    columns={ ['title'] }
+                    rows={ this.state.films }
+                  />
                 </div>
               </div>
               { this.renderButtons() }
@@ -136,9 +120,7 @@ export default class LicensorDetails extends React.Component {
         <a className={ "standard-button btn standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
           { Details.saveButtonText.call(this) }
         </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
+        <DeleteButton onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) } />
       </div>
     );
   }

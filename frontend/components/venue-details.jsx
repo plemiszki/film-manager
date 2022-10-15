@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity } from 'handy-components'
+import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ShredderModalStyles = {
@@ -214,9 +214,16 @@ export default class VenueDetails extends React.Component {
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingZip', columnHeader: 'Zip' }) }
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingCountry', columnHeader: 'Country' }) }
                 <div className="col-xs-4">
-                  <a className={ "standard-button btn copy-address-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickCopyAddress.bind(this) }>
-                    Copy to Shipping Address
-                  </a>
+                  <Button
+                    text={ 'Copy to Shipping Address' }
+                    onClick={ () => { this.clickCopyAddress() } }
+                    styles={ {
+                      width: '100%',
+                      marginTop: '28px',
+                      padding: '14px 0',
+                      maxWidth: '250px',
+                    } }
+                  />
                 </div>
               </div>
               <hr />
