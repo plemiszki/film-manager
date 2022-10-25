@@ -1,5 +1,5 @@
 import React from 'react'
-import { sendRequest } from 'handy-components'
+import { sendRequest, rearrangeFields } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class InTheatersIndexItem extends React.Component {
@@ -60,7 +60,7 @@ export default class InTheatersIndexItem extends React.Component {
     this.props.sectionFilms.forEach((film) => {
       currentOrder[film.order] = film.id;
     });
-    const newOrder = Tools.rearrangeFields(currentOrder, draggedIndex, dropZoneIndex);
+    const newOrder = rearrangeFields({ currentOrder, draggedIndex, dropZoneIndex });
     sendRequest('/api/in_theaters/rearrange', {
       method: 'POST',
       data: {
