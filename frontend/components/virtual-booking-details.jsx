@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, DeleteButton, SaveButton } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, BottomButtons } from 'handy-components'
 
 export default class VirtualBookingDetails extends React.Component {
 
@@ -213,7 +213,8 @@ export default class VirtualBookingDetails extends React.Component {
   }
 
   render() {
-    return(
+    const { justSaved, changesToSave, fetching } = this.state;
+    return (
       <div className="handy-component">
         <h1>Virtual Booking Details</h1>
         <div className="white-box">
@@ -248,20 +249,16 @@ export default class VirtualBookingDetails extends React.Component {
           { this.renderInvoicesSection() }
           { this.renderReportSection() }
           <hr className="divider" style={ { marginTop: 30 } } />
-          <div>
-            <SaveButton
-              justSaved={ this.state.justSaved }
-              changesToSave={ this.state.changesToSave }
-              disabled={ this.state.fetching }
-              onClick={ () => { this.clickSave() } }
-            />
-            <DeleteButton
-              disabled={ this.state.fetching }
-              onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }
-            />
-          </div>
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <BottomButtons
+            entityName="virtualBooking"
+            confirmDelete={ Details.clickDelete.bind(this) }
+            justSaved={ justSaved }
+            changesToSave={ changesToSave }
+            disabled={ fetching }
+            clickSave={ () => { this.clickSave() } }
+          />
+          { Common.renderSpinner(fetching) }
+          { Common.renderGrayedOut(fetching, -36, -32, 5) }
         </div>
         <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700, height: this.calculateNewInvoiceModalHeight() }) }>
           <NewInvoice
@@ -276,13 +273,6 @@ export default class VirtualBookingDetails extends React.Component {
         </Modal>
         <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>
           <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
-        </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="virtualBooking"
-            confirmDelete={ Details.clickDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
         </Modal>
         <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete

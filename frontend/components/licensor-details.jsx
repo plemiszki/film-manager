@@ -1,20 +1,18 @@
 import React from 'react'
-import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy, fetchEntity, updateEntity, Table, DeleteButton } from 'handy-components'
+import { Common, Details, deepCopy, fetchEntity, updateEntity, Table, BottomButtons } from 'handy-components'
 
 export default class LicensorDetails extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       licensor: {},
       licensorSaved: {},
       films: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
     };
   }
 
@@ -22,7 +20,7 @@ export default class LicensorDetails extends React.Component {
     fetchEntity().then((response) => {
       const { licensor, films } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         licensor,
         licensorSaved: deepCopy(licensor),
         films
@@ -32,7 +30,7 @@ export default class LicensorDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       updateEntity({
@@ -41,14 +39,14 @@ export default class LicensorDetails extends React.Component {
       }).then((response) => {
         const { licensor } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           licensor,
           licensorSaved: deepCopy(licensor),
           changesToSave: false
         });
       }, (response) => {
         this.setState({
-          fetching: false,
+          spinner: false,
           errors: response.errors
         });
       });
@@ -70,6 +68,7 @@ export default class LicensorDetails extends React.Component {
   }
 
   render() {
+    const { justSaved, changesToSave, spinner } = this.state;
     return(
       <>
         <div className="licensor-details">
@@ -89,21 +88,23 @@ export default class LicensorDetails extends React.Component {
                     styles={ { marginBottom: 60 } }
                     columns={ ['title'] }
                     rows={ this.state.films }
+                    urlPrefix="films"
+                    sortable={ false }
                   />
                 </div>
               </div>
-              { this.renderButtons() }
-              { Common.renderSpinner(this.state.fetching) }
-              { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+              <BottomButtons
+                entityName="licensor"
+                confirmDelete={ Details.clickDelete.bind(this) }
+                justSaved={ justSaved }
+                changesToSave={ changesToSave }
+                disabled={ spinner }
+                clickSave={ () => { this.clickSave() } }
+              />
+              { Common.renderSpinner(spinner) }
+              { Common.renderGrayedOut(spinner, -36, -32, 5) }
             </div>
           </div>
-          <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-            <ConfirmDelete
-              entityName="licensor"
-              confirmDelete={ Details.clickDelete.bind(this) }
-              closeModal={ Common.closeModals.bind(this) }
-            />
-          </Modal>
         </div>
         <style jsx>{`
           table {
@@ -111,17 +112,6 @@ export default class LicensorDetails extends React.Component {
           }
         `}</style>
       </>
-    );
-  }
-
-  renderButtons() {
-    return(
-      <div>
-        <a className={ "standard-button btn standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <DeleteButton onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) } />
-      </div>
     );
   }
 }
