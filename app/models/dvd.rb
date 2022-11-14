@@ -30,4 +30,27 @@ class Dvd < ActiveRecord::Base
     self.as_json.deep_transform_keys { |k| k.to_s.camelize(:lower) }
   end
 
+  def self.update_pricing!
+    require 'csv'
+    problems = []
+    table = CSV.parse(File.read(Rails.root.join("./pricing.csv").to_s), headers: true)
+    table.each do |row|
+      dvd_upc = row["Retail DVD UPC"]
+      dvd_price = row["NEW DVD PRICE"]
+      bd_upc = row["Blu-ray UPC"]
+      bd_price = row["NEW BLU RAY PRICE"]
+      if dvd_upc.present? && dvd_upc != "n/a"
+        dvd = Dvd.find_by_upc(dvd_upc)
+        problems << row["Title"] unless dvd
+        dvd.update!(price: dvd_price.sub("$", ""))
+      end
+      if bd_upc.present? && bd_upc != "n/a"
+        bd = Dvd.find_by_upc(bd_upc)
+        problems << row["Title"] unless bd
+        bd.update!(price: bd_price.sub("$", ""))
+      end
+    end
+    problems
+  end
+
 end
