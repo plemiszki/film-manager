@@ -45,6 +45,7 @@ class Api::FilmsController < AdminController
     @film = Film.new(film_params)
     @film.label_id = Label.find_by_name("Film Movement").id
     @film.days_statement_due = 30
+    @film.title = @film.title.strip
     if @film.save
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
