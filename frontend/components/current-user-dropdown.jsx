@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Common, sendRequest } from 'handy-components'
+import { Common, sendRequest, Button, Spinner, GrayedOut } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import Modal from 'react-modal'
 
@@ -219,7 +219,16 @@ export default class CurrentUserDropDown extends Component {
                       <td>{ autoRenewDaysNotice }</td>
                       <td>{ autoRenewTerm }</td>
                       <td className="text-center">
-                        <a className="btn orange-button renew-single" onClick={ this.clickRenew.bind(this, film) }>Renew</a>
+                        <Button
+                          text="Renew"
+                          onClick={ () => { this.clickRenew(film) } }
+                          styles={
+                            {
+                              display: 'inline',
+                              padding: '8px 20px',
+                            }
+                          }
+                        />
                       </td>
                     </tr>
                   );
@@ -227,11 +236,23 @@ export default class CurrentUserDropDown extends Component {
               }
             </tbody>
           </table>
-          <a className="btn orange-button renew-all" onClick={ () => { this.clickRenewAll() } }>Renew All</a>
+          <Button
+            text="Renew All"
+            onClick={ () => { this.clickRenewAll() } }
+            styles={
+              {
+                display: 'block',
+                position: 'absolute',
+                width: 175,
+                left: 'calc(50% - 87.5px)',
+                bottom: 20,
+              }
+            }
+          />
           { autoRenewFilms.slice(startIndex).length > 10 && (<a className="next-page page-nav" onClick={ this.clickNextPage.bind(this) }></a>) }
           { autoRenewModalPage > 1 && (<a className="prev-page page-nav" onClick={ this.clickPrevPage.bind(this) }></a>) }
-          { Common.renderSpinner(spinner) }
-          { Common.renderGrayedOut(spinner, -36, -32, 5) }
+          <GrayedOut visible={ spinner } />
+          <Spinner visible={ spinner } />
         </Modal>
         <style jsx>{`
           table {
@@ -261,17 +282,6 @@ export default class CurrentUserDropDown extends Component {
           }
           td {
             padding-top: 8px;
-          }
-          a.renew-single {
-            display: inline;
-            padding: 8px 20px;
-          }
-          a.renew-all {
-            display: block;
-            position: absolute;
-            width: 175px;
-            left: calc(50% - 87.5px);
-            bottom: 20px;
           }
           a.page-nav {
             display: block;
