@@ -35,3 +35,10 @@ a.square-button {
         margin-left: 20px;
     }
 }
+
+.no-column-padding {
+    .col-xs-12, .col-xs-6 {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+    }
+}

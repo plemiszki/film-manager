@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, BottomButtons } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, BottomButtons, Button } from 'handy-components'
 
 export default class VirtualBookingDetails extends React.Component {
 
@@ -240,7 +240,7 @@ export default class VirtualBookingDetails extends React.Component {
           </div>
           { this.renderBillingAddressSection() }
           <hr className="divider" />
-          <h3>Box Office</h3>
+          <p className="section-header">Box Office</p>
           <div className="row">
             { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'virtualBooking', property: 'boxOfficeReceived' }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'virtualBooking', property: 'boxOffice' }) }
@@ -291,7 +291,7 @@ export default class VirtualBookingDetails extends React.Component {
       return(
         <>
           <hr className="divider" />
-          <h3>Billing Address</h3>
+          <p className="section-header">Billing Address</p>
           <div className="row">
             { Details.renderField.call(this, { columnWidth: 4, entity: 'virtualBooking', property: 'billingName', columnHeader: 'Name' }) }
             { Details.renderField.call(this, { columnWidth: 4, entity: 'virtualBooking', property: 'billingAddress1', columnHeader: 'Address 1' }) }
@@ -313,7 +313,7 @@ export default class VirtualBookingDetails extends React.Component {
       return(
         <>
           <hr className="divider" style={ { marginTop: 30 } } />
-          <h3>Invoices</h3>
+          <p className="section-header">Invoices</p>
           <div className="row">
             <div className="col-xs-12">
               <table className="fm-admin-table invoices-table">
@@ -366,11 +366,11 @@ export default class VirtualBookingDetails extends React.Component {
           <hr className="divider" style={ { marginTop: 30 } } />
           <div className="row">
             <div className="col-xs-6">
-              <h3>Calculations</h3>
+              <p className="section-header">Calculations</p>
               { this.renderCalculations() }
             </div>
             <div className="col-xs-6">
-              <h3>Payments</h3>
+              <p className="section-header">Payments</p>
               <>
                 <ul className="payments-list">
                   { this.state.payments.map((payment) => {
@@ -416,27 +416,35 @@ export default class VirtualBookingDetails extends React.Component {
   }
 
   renderReportSection() {
+    const { fetching, changesToSave, virtualBooking } = this.state;
     if (this.state.virtualBooking.host == 'FM') {
-      return(
-        <>
+      return (
+        <div>
           <hr className="divider" style={ { marginTop: 30 } } />
           <div className="row">
             <div className="col-xs-6">
-              <h3>Calculations</h3>
+              <p className="section-header">Calculations</p>
               { this.renderCalculations() }
             </div>
-            <div className="col-xs-6">
-              <h3>Report</h3>
+            <div className="col-xs-6 no-column-padding">
+              <p className="section-header">Report</p>
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'virtualBooking', property: 'reportSentDate', columnHeader: 'Sent Date', readOnly: true }) }
               <div className="col-xs-6">
                 <h2>&nbsp;</h2>
-                <a className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) } style={ { paddingTop: 14, paddingBottom: 14 } } onClick={ this.clickSendReport.bind(this) }>
-                  { this.state.changesToSave ? "Save to Send" : (this.state.virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
-                </a>
+                <Button
+                  marginLeft
+                  disabled={ fetching || changesToSave }
+                  text={ changesToSave ? "Save to Send" : (virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
+                  onClick={ () => { this.clickSendReport() } }
+                  styles={ {
+                    paddingTop: 14,
+                    paddingBottom: 14,
+                  } }
+                />
               </div>
             </div>
           </div>
-        </>
+        </div>
       );
     }
   }
