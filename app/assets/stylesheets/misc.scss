@@ -1,7 +1,15 @@
 #current-user {
-    display: none;
+	display: none;
 }
 
 .handy-component:not(.admin-modal) {
-    margin-bottom: 62px;
+	margin-bottom: 62px;
+}
+
+a.standard-link {
+	text-decoration: underline;
+
+	&:hover {
+			text-decoration: underline;
+	}
 }

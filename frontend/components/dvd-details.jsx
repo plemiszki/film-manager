@@ -1,7 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity } from 'handy-components'
+import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, OutlineButton, Spinner, GrayedOut, SaveButton, DeleteButton, Button, Table, ModalSelect } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class DvdDetails extends React.Component {
@@ -68,8 +67,9 @@ export default class DvdDetails extends React.Component {
     });
   }
 
-  selectShort(option, event) {
-    const shortId = event.target.dataset.id;
+  selectShort(option) {
+    console.log(option);
+    const shortId = option.id;
     this.setState({
       fetching: true,
       shortsModalOpen: false
@@ -91,8 +91,8 @@ export default class DvdDetails extends React.Component {
     });
   }
 
-  clickX(e) {
-    const dvdShortId = e.target.dataset.id;
+  clickX(option) {
+    const dvdShortId = option.id;
     this.setState({
       fetching: true
     });
@@ -145,9 +145,10 @@ export default class DvdDetails extends React.Component {
   }
 
   render() {
-    return(
-      <div id="dvd-details">
-        <div className="component">
+    const { fetching, justSaved, changesToSave, shorts } = this.state;
+    return (
+      <>
+        <div className="handy-component">
           <h1>DVD Details</h1>
           <div className="white-box">
             <div className="row">
@@ -168,61 +169,48 @@ export default class DvdDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 5, entity: 'dvd', property: 'soundConfig', columnHeader: 'Sound Configuration' }) }
               { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'dvd', property: 'specialFeatures', rows: 5 }) }
             </div>
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th>Short Films</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td></tr>
-                { this.state.shorts.map((short, index) => {
-                  return(
-                    <tr key={ index }>
-                      <td className="name-column">
-                        <div onClick={ FM.redirect.bind(this, "films", short.filmId) }>
-                          { short.title }
-                        </div>
-                        <div className="x-button" onClick={ this.clickX.bind(this) } data-id={ short.id }></div>
-                      </td>
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
-            <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'shortsModalOpen', true) }>Add Short</a>
-            { this.renderButtons() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <Table
+              columns={ [{ header: 'Short Films', name: 'title' }] }
+              rows={ shorts }
+              clickDelete={ (entity) => this.clickX(entity) }
+              urlPrefix="films"
+              urlProperty="filmId"
+              sortable={ false }
+              styles={ { marginBottom: 15 } }
+            />
+            <OutlineButton
+              text="Add Short"
+              onClick={ () => { this.setState({ shortsModalOpen: true }) } }
+              marginBottom
+            />
+            <hr />
+            <div>
+              <SaveButton
+                justSaved={ justSaved }
+                changesToSave={ changesToSave }
+                disabled={ fetching }
+                onClick={ () => { this.clickSave() } }
+              />
+              <DeleteButton
+                entityName="dvd"
+                confirmDelete={ Details.clickDelete.bind(this) }
+              />
+              <Button
+                marginRight
+                float
+                disabled={ fetching }
+                text="Email HTML"
+                onClick={ () => { this.getHTML() } }
+              />
+            </div>
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="dvd"
-            confirmDelete={ this.confirmDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
         <Modal isOpen={ this.state.shortsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.otherShorts } property={ "title" } func={ this.selectShort.bind(this) } />
+          <ModalSelect options={ this.state.otherShorts } property="title" func={ this.selectShort.bind(this) } />
         </Modal>
-      </div>
-    );
-  }
-
-  renderButtons() {
-    return(
-      <div>
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-        <a className={ "html orange-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.getHTML.bind(this) }>
-          Email HTML
-        </a>
-      </div>
+      </>
     );
   }
 }
