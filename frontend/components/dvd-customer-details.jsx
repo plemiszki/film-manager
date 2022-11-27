@@ -1,6 +1,5 @@
 import React from 'react'
-import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy, fetchEntity, updateEntity } from 'handy-components'
+import { Details, deepCopy, fetchEntity, updateEntity, BottomButtons, Spinner, GrayedOut } from 'handy-components'
 
 export default class DvdCustomerDetails extends React.Component {
 
@@ -78,9 +77,10 @@ export default class DvdCustomerDetails extends React.Component {
   }
 
   render() {
-    return(
-      <div id="dvd-customer-details">
-        <div className="component">
+    const { justSaved, changesToSave, fetching } = this.state;
+    return (
+      <>
+        <div className="handy-component">
           <h1>DVD Customer Details</h1>
           <div className="white-box">
             <div className="row">
@@ -97,7 +97,7 @@ export default class DvdCustomerDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvdCustomer', property: 'creditMemoEmail', columnHeader: 'Credit Memos Email' }) }
             </div>
             <hr />
-            <p>Billing Address</p>
+            <p className="section-header">Billing Address</p>
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 4, entity: 'dvdCustomer', property: 'billingName' }) }
               { Details.renderField.bind(this)({ columnWidth: 4, entity: 'dvdCustomer', property: 'address1', columnHeader: 'Address 1' }) }
@@ -115,32 +115,19 @@ export default class DvdCustomerDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvdCustomer', property: 'nickname' }) }
               { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'dvdCustomer', property: 'notes', rows: 5 }) }
             </div>
-            { this.renderButtons() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <BottomButtons
+              entityName="dvdCustomer"
+              confirmDelete={ Details.clickDelete.bind(this) }
+              justSaved={ justSaved }
+              changesToSave={ changesToSave }
+              disabled={ fetching }
+              clickSave={ () => { this.clickSave() } }
+            />
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="dvdCustomer"
-            confirmDelete={ Details.clickDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
-      </div>
-    );
-  }
-
-  renderButtons() {
-    return(
-      <div>
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-      </div>
+      </>
     );
   }
 }
