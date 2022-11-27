@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, BottomButtons, Button } from 'handy-components'
+import { Common, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, BottomButtons, Button } from 'handy-components'
 
 export default class VirtualBookingDetails extends React.Component {
 
@@ -257,8 +257,8 @@ export default class VirtualBookingDetails extends React.Component {
             disabled={ fetching }
             clickSave={ () => { this.clickSave() } }
           />
-          { Common.renderSpinner(fetching) }
-          { Common.renderGrayedOut(fetching, -36, -32, 5) }
+          <GrayedOut visible={ fetching } />
+          <Spinner visible={ fetching } />
         </div>
         <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700, height: this.calculateNewInvoiceModalHeight() }) }>
           <NewInvoice
@@ -273,13 +273,6 @@ export default class VirtualBookingDetails extends React.Component {
         </Modal>
         <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>
           <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
-        </Modal>
-        <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="invoice"
-            confirmDelete={ this.confirmInvoiceDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
         </Modal>
         { Common.renderJobModal.call(this, this.state.job) }
       </div>
