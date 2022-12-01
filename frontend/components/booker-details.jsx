@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, BottomButtons, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity, Spinner, GrayedOut, OutlineButton, ModalSelect, ListEntry } from 'handy-components'
+import { Common, BottomButtons, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity, Spinner, GrayedOut, OutlineButton, ModalSelect, ListBox } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class BookerDetails extends React.Component {
@@ -113,7 +113,7 @@ export default class BookerDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, fetching } = this.state;
+    const { justSaved, changesToSave, fetching, bookerVenues } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -126,19 +126,13 @@ export default class BookerDetails extends React.Component {
             </div>
             <div className="row">
               <div className="col-xs-12">
-                <h2>Venues:</h2>
-                <ul>
-                  { this.state.bookerVenues.map((bookerVenue) => {
-                    return (
-                      <ListEntry
-                        key={ bookerVenue.id }
-                        id={ bookerVenue.id }
-                        text={ bookerVenue.venue }
-                        clickDelete={ (id) => this.clickDeleteVenue(id) }
-                      />
-                    );
-                  }) }
-                </ul>
+                <p className="section-header">Venues</p>
+                <ListBox
+                  list={ bookerVenues }
+                  clickDelete={ (bookerVenue) => { this.clickDeleteVenue(bookerVenue.id) } }
+                  textFunc={ bookerVenue => bookerVenue.venue }
+                  styles={ { marginBottom: 15 } }
+                />
                 <OutlineButton
                   text="Add Venue"
                   onClick={ () => { this.clickAddVenue() } }

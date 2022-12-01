@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
-import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
+import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, sendRequest, SaveButton, DeleteButton, Button, OutlineButton, Spinner, GrayedOut, ListBox, Table } from 'handy-components'
 
 const NewInvoiceStyles = {
   overlay: {
@@ -162,13 +162,13 @@ export default class BookingDetails extends React.Component {
     });
   }
 
-  clickDeletePayment(e) {
+  clickDeletePayment(id) {
     this.setState({
       fetching: true
     });
     deleteEntity({
       directory: 'payments',
-      id: e.target.dataset.id,
+      id,
     }).then((response) => {
       const { payments, calculations } = response;
       this.setState({
@@ -407,10 +407,12 @@ export default class BookingDetails extends React.Component {
   }
 
   render() {
-    NewInvoiceStyles.content.height = (238 + (34 * this.state.payments.length));
-    return(
-      <div className="booking-details">
-        <div className="component details-component">
+    const { justSaved, changesToSave, fetching, payments, invoices } = this.state;
+    console.log(invoices);
+    NewInvoiceStyles.content.height = (238 + (34 * payments.length));
+    return (
+      <>
+        <div className="handy-component">
           <h1>Booking Details</h1>
           <div className="white-box">
             <div className="row">
@@ -472,7 +474,7 @@ export default class BookingDetails extends React.Component {
               { this.renderTermsColumn() }
             </div>
             <hr />
-            <h3>Billing Address</h3>
+            <p className="section-header">Billing Address</p>
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'billingName', columnHeader: 'Name' }) }
               { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'billingAddress1', columnHeader: 'Address 1' }) }
@@ -485,7 +487,7 @@ export default class BookingDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'billingCountry', columnHeader: 'Country' }) }
             </div>
             <hr />
-            <h3>Shipping Address</h3>
+            <p className="section-header">Shipping Address</p>
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'shippingName', columnHeader: 'Name' }) }
               { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booking', property: 'shippingAddress1', columnHeader: 'Address 1' }) }
@@ -498,30 +500,55 @@ export default class BookingDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'booking', property: 'shippingCountry', columnHeader: 'Country' }) }
             </div>
             <hr />
-            <h3>Notes</h3>
+            <p className="section-header">Notes</p>
             <div className="row">
               { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'booking', property: 'notes', rows: 5, hideHeader: true }) }
             </div>
             <hr />
             { this.renderConfirmationSection() }
-            <h3>Screening Materials</h3>
+            <p className="section-header">Screening Materials</p>
             <div className="row">
               { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'materialsSent' }) }
               { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'trackingNumber' }) }
               { Details.renderField.bind(this)({ columnWidth: 6, entity: 'booking', property: 'shippingNotes' }) }
             </div>
             <hr />
-            <h3>Box Office</h3>
+            <p className="section-header">Box Office</p>
             <div className="row">
               { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'booking', property: 'boxOfficeReceived' }) }
               { this.renderBoxOfficeSection() }
               { Details.renderSwitch.bind(this)({ columnWidth: 4, entity: 'booking', property: 'excludeFromBoRequests', columnHeader: 'Exclude From Automated Box Office Requests' }) }
             </div>
             <hr />
-            <h3>Invoices</h3>
+            <p className="section-header">Invoices</p>
             { this.renderImportedInvoicesSection() }
             <div className="row">
               <div className="col-xs-12">
+                <Table
+                  columns={ [{
+                    header: 'Sent',
+                    name: 'sentDate',
+                  }, {
+                    header: 'Number',
+                    name: 'number',
+                  }, {
+                    header: 'Total',
+                    name: 'total',
+                  }, {
+                    header: 'Edit',
+                    isEditButton: true,
+                    width: 80,
+                  }, {
+                    header: 'Delete',
+                    isDeleteButton: true,
+                    width: 80,
+                  }] }
+                  rows={ invoices }
+                  sortable={ false }
+                  urlPrefix="invoices"
+                  clickDelete={ () => console.log('delete') }
+                  clickEdit={ () => console.log('edit') }
+                />
                 <table className="fm-admin-table invoices-table">
                   <thead>
                     <tr>
@@ -557,36 +584,58 @@ export default class BookingDetails extends React.Component {
                     }) }
                   </tbody>
                 </table>
-                <a className='blue-outline-button small' onClick={ Common.changeState.bind(this, 'newInvoiceModalOpen', true) }>Add Invoice</a>
+                <OutlineButton
+                  text="Add Invoice"
+                  onClick={ () => { this.setState({ newInvoiceModalOpen: true }) } }
+                  marginBottom
+                />
               </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-xs-6">
-                <h3>Payments</h3>
-                <ul className="payments-list">
-                  { this.state.payments.map((payment) => {
-                    return(
-                      <li key={ payment.id }>{ payment.date } - { payment.amount }{ payment.notes && " (" + payment.notes + ")" }<div className="x-button" onClick={ this.clickDeletePayment.bind(this) } data-id={ payment.id }></div></li>
-                    );
-                  }) }
-                </ul>
-                <a className={ 'blue-outline-button small' } onClick={ Common.changeState.bind(this, 'newPaymentModalOpen', true) }>Add Payment</a>
+                <p className="section-header">Payments</p>
+                <ListBox
+                  list={ payments }
+                  clickDelete={ payment => this.clickDeletePayment(payment.id) }
+                  textFunc={ payment => `${payment.date} - ${payment.amount}${payment.notes && `(${payment.notes})`}` }
+                  styles={ { marginBottom: 15 } }
+                />
+                <OutlineButton
+                  text="Add Payment"
+                  onClick={ () => { this.setState({ newPaymentModalOpen: true }) } }
+                  marginBottom
+                />
               </div>
               <div className="col-xs-6">
-                <h3>Calculations</h3>
+                <p className="section-header">Calculations</p>
                 { this.renderCalculations() }
               </div>
             </div>
             <hr />
-            { this.renderButtons() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <div>
+              <SaveButton
+                justSaved={ justSaved }
+                changesToSave={ changesToSave }
+                disabled={ fetching }
+                onClick={ () => { this.clickSave() } }
+              />
+              <DeleteButton
+                entityName="booking"
+                confirmDelete={ Details.clickDelete.bind(this) }
+              />
+              <Button
+                marginRight
+                float
+                disabled={ fetching }
+                text="Copy Booking"
+                onClick={ () => { this.setState({ copyModalOpen: true }) } }
+              />
+            </div>
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="booking" confirmDelete={ Details.clickDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
-        </Modal>
         <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete entityName="invoice" confirmDelete={ this.confirmDeleteInvoice.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
@@ -684,7 +733,7 @@ export default class BookingDetails extends React.Component {
             </div>
           </div>
         </Modal>
-      </div>
+      </>
     );
   }
 
@@ -741,10 +790,11 @@ export default class BookingDetails extends React.Component {
   }
 
   renderConfirmationSection() {
+    const { changesToSave, fetching } = this.state;
     if (this.state.booking.bookingConfirmationSent) {
       return(
         <div>
-          <h3>Booking Confirmation</h3>
+          <p className="section-header">Booking Confirmation</p>
           <div className="row">
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'bookingConfirmationSent', readOnly: true }) }
           </div>
@@ -755,12 +805,15 @@ export default class BookingDetails extends React.Component {
       if (this.state.bookingSaved.email) {
         return(
           <div>
-            <h3>Booking Confirmation</h3>
+            <p className="section-header">Booking Confirmation</p>
             <div className="row">
               <div className="col-xs-12">
-                <a className={ "btn orange-button confirmation-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave) } onClick={ this.clickSendConfirmation.bind(this) }>
-                  { this.state.changesToSave ? "Save to Send" : "Send Booking Confirmation" }
-                </a>
+                <Button
+                  text={ changesToSave ? "Save to Send" : "Send Booking Confirmation" }
+                  disabled={ fetching || changesToSave }
+                  onClick={ () => { this.clickSendConfirmation() } }
+                  marginBottom
+                />
               </div>
             </div>
             <hr />
@@ -828,21 +881,5 @@ export default class BookingDetails extends React.Component {
         </div>
       );
     }
-  }
-
-  renderButtons() {
-    return(
-      <div>
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-        <a className={ "btn float-button orange-button copy-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'copyModalOpen', true) }>
-          Copy Booking
-        </a>
-      </div>
-    );
   }
 }

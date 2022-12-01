@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, fetchEntity } from 'handy-components'
+import { Common, fetchEntity, Spinner, GrayedOut } from 'handy-components'
 
 export default class InvoiceDetails extends React.Component {
 
@@ -36,7 +36,8 @@ export default class InvoiceDetails extends React.Component {
   }
 
   render() {
-    return(
+    const { fetching } = this.props;
+    return (
       <>
         <div className="handy-component">
           <h1>Invoice Details</h1>
@@ -85,8 +86,8 @@ export default class InvoiceDetails extends React.Component {
             <a className={ "standard-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
               Export
             </a>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <Spinner visible={ fetching } />
+            <GrayedOut visible={ fetching } />
           </div>
         </div>
         <style jsx>{`
