@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, setUpNiceSelect, Details, sendRequest } from 'handy-components'
+import { Button, setUpNiceSelect, Details, sendRequest, Spinner, GrayedOut, OutlineButton } from 'handy-components'
 
 export default class FilmRightsNew extends React.Component {
 
@@ -158,60 +158,160 @@ export default class FilmRightsNew extends React.Component {
   }
 
   render() {
-    return(
-      <div id="film-rights-new" className="component">
-        <div className="white-box">
-          <div className="row">
-            { this.renderFilmField.call(this) }
-            { Details.renderField.bind(this)({
-              columnWidth: (this.props.sublicensorId ? 2 : 4),
-              entity: 'filmRight',
-              property: 'startDate'
-            }) }
-            { Details.renderField.bind(this)({
-              columnWidth: (this.props.sublicensorId ? 2 : 4),
-              entity: 'filmRight',
-              property: 'endDate'
-            }) }
-            { this.renderExclusiveColumn() }
-          </div>
-          <div className="row">
-            <div className="col-xs-6 relative">
-              <div className="rights-list" data-array={ 'selectedRights' }>
-                { this.renderAddOrToggle('rights', this.state.rightsOperator) }
-                { this.state.rights.map((right, index) => {
-                  return(
-                    <div key={ index } className="checkbox-container">
-                      <input id={ right.name } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox.bind(this) } checked={ this.state.selectedRights.indexOf(right.id) > -1 } data-thing={ right.id } /><label className={ "checkbox" } htmlFor={ right.name }>{ right.name }</label>
-                    </div>
-                  );
-                }) }
-              </div>
-              <a className="blue-outline-button small" onClick={ this.clickNoRights.bind(this) }>NONE</a>
-              <a className="blue-outline-button small" onClick={ this.clickAllRights.bind(this) }>ALL</a>
+    const { search } = this.props;
+    const { fetching } = this.state;
+    const outlineButtonStyles = {
+      minWidth: 75,
+    }
+    return (
+      <>
+        <div className="handy-component admin-modal">
+          <div className="white-box">
+            <div className="row">
+              { this.renderFilmField.call(this) }
+              { Details.renderField.bind(this)({
+                columnWidth: (this.props.sublicensorId ? 2 : 4),
+                entity: 'filmRight',
+                property: 'startDate',
+                hideFieldError: true,
+                styles: {
+                  marginBottom: 30,
+                },
+              }) }
+              { Details.renderField.bind(this)({
+                columnWidth: (this.props.sublicensorId ? 2 : 4),
+                entity: 'filmRight',
+                property: 'endDate',
+                hideFieldError: true,
+                styles: {
+                  marginBottom: 30,
+                },
+              }) }
+              { this.renderExclusiveColumn() }
             </div>
-            <div className="col-xs-6 relative">
-              <div className="rights-list" data-array={ 'selectedTerritories' }>
-                { this.renderAddOrToggle('territories', this.state.territoriesOperator) }
-                { this.state.territories.map((territory, index) => {
-                  return(
-                    <div key={ index } className="checkbox-container">
-                      <input id={ territory.name } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox.bind(this) } checked={ this.state.selectedTerritories.indexOf(territory.id) > -1 } data-thing={ territory.id } /><label className={ "checkbox" } htmlFor={ territory.name }>{ territory.name }</label>
-                    </div>
-                  );
-                }) }
+            <div className="row">
+              <div className="col-xs-6 relative">
+                <div className="rights-list" data-array={ 'selectedRights' }>
+                  { this.renderAddOrToggle('rights', this.state.rightsOperator) }
+                  { this.state.rights.map((right, index) => {
+                    return (
+                      <div key={ index } className="checkbox-container">
+                        <input id={ right.name } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox.bind(this) } checked={ this.state.selectedRights.indexOf(right.id) > -1 } data-thing={ right.id } /><label className={ "checkbox" } htmlFor={ right.name }>{ right.name }</label>
+                      </div>
+                    );
+                  }) }
+                </div>
+                <OutlineButton
+                  text="NONE"
+                  onClick={ () => this.clickNoRights() }
+                  float
+                  styles={ outlineButtonStyles }
+                />
+                <OutlineButton
+                  text="ALL"
+                  onClick={ () => this.clickAllRights() }
+                  float
+                  styles={ { ...outlineButtonStyles, marginRight: 10 } }
+                />
               </div>
-              <a className="blue-outline-button small" onClick={ this.clickNoTerritories.bind(this) }>NONE</a>
-              <a className="blue-outline-button small" onClick={ this.clickAllTerritories.bind(this) }>ALL</a>
+              <div className="col-xs-6 relative">
+                <div className="rights-list" data-array={ 'selectedTerritories' }>
+                  { this.renderAddOrToggle('territories', this.state.territoriesOperator) }
+                  { this.state.territories.map((territory, index) => {
+                    return (
+                      <div key={ index } className="checkbox-container">
+                        <input id={ territory.name } className="checkbox" type="checkbox" onChange={ this.changeArrayCheckbox.bind(this) } checked={ this.state.selectedTerritories.indexOf(territory.id) > -1 } data-thing={ territory.id } /><label className={ "checkbox" } htmlFor={ territory.name }>{ territory.name }</label>
+                      </div>
+                    );
+                  }) }
+                </div>
+                <OutlineButton
+                  text="NONE"
+                  onClick={ () => this.clickNoTerritories() }
+                  float
+                  styles={ outlineButtonStyles }
+                />
+                <OutlineButton
+                  text="ALL"
+                  onClick={ () => this.clickAllTerritories() }
+                  float
+                  styles={ { ...outlineButtonStyles, marginRight: 10 } }
+                />
+              </div>
             </div>
+            <Button
+              disabled={ this.buttonInactive() }
+              onClick={ () => search ? this.clickSearch() : this.clickAdd() }
+              text={ search ? 'Search' : 'Add Rights' }
+            />
+            <Spinner visible={ fetching } />
+            <GrayedOut visible={ fetching } />
           </div>
-          <a className={ "orange-button" + Common.renderInactiveButtonClass(this.buttonInactive()) } onClick={ this.props.search ? this.clickSearch.bind(this) : this.clickAdd.bind(this) }>
-            { this.props.search ? 'Search' : 'Add Rights' }
-          </a>
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
         </div>
-      </div>
+        <style jsx>{`
+          label, .checkbox {
+            display: inline-block;
+            width: auto;
+          }
+          .checkbox {
+            margin-top: 0;
+          }
+          input.select {
+            width: calc(100% - 50px);
+            margin-right: 17px;
+          }
+          label {
+            font-family: 'TeachableSans-SemiBold';
+            color: black;
+            line-height: 13px;
+          }
+          .checkbox-container:first-of-type .checkbox {
+            margin-top: 20px;
+          }
+          .checkbox-container:last-of-type .checkbox {
+            margin-bottom: 20px;
+          }
+          .checkbox {
+            margin-right: 10px;
+            margin-left: 20px;
+            margin-bottom: 15px;
+          }
+          .nice-select {
+            width: 100%;
+          }
+          img {
+            cursor: pointer;
+          }
+          div.text-center {
+            position: absolute;
+            width: 100%;
+            bottom: 36px;
+          }
+          div.type-checkboxes {
+            padding-left: 20px;
+            padding-top: 10px;
+            border: 1px solid #E4E9ED;
+            border-radius: 3px;
+          }
+          div.col-xs-6.relative {
+            position: relative;
+          }
+          div.rights-list {
+            border: 1px solid #E4E9ED;
+            border-radius: 3px;
+            height: 335px;
+            margin-bottom: 10px;
+            overflow-y: scroll;
+          }
+          .blue-outline-button {
+            float: right;
+            min-width: 75px;
+          }
+          .blue-outline-button:last-of-type {
+            margin-right: 10px;
+          }
+        `}</style>
+      </>
     );
   }
 
@@ -251,9 +351,25 @@ export default class FilmRightsNew extends React.Component {
   renderAddOrToggle(which, value) {
     if (this.props.search) {
       return (
-        <a className="and-or-button" onClick={ () => { this.changeOperator(which, value) } }>
-          { value }
-        </a>
+        <>
+          <a className="and-or-button" onClick={ () => { this.changeOperator(which, value) } }>
+            { value }
+          </a>
+          <style jsx>{`
+            a {
+              position: absolute;
+              color: #5F5F5F;
+              right: 30px;
+              top: 15px;
+              border: 1px solid #E4E9ED;
+              border-radius: 5px;
+              padding: 10px;
+              width: 80px;
+              text-align: center;
+              cursor: pointer;
+            }
+          `}</style>
+        </>
       );
     }
   }

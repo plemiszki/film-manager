@@ -606,7 +606,7 @@ export default class FilmDetails extends React.Component {
       'TV Series': 'TV Series'
     }[this.state.film.filmType];
     return(
-      <div className="film-details component details-component">
+      <div className="handy-component film-details component details-component">
         <h1>{ title } Details</h1>
         { this.renderTopTabs() }
         <div className="white-box">
