@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
-import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest } from 'handy-components'
+import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const FilterModalStyles = {
@@ -297,52 +297,82 @@ export default class FilmsIndex extends Component {
   }
 
   renderFilter() {
-    return(
-      <div className="films-index-filter white-box">
-        <div className="row">
-          <div className="col-xs-4">
-            <h2>Alternate Lengths</h2>
-            <div className="checkbox-list" data-array="lengths">
-              { this.state.allAltLengths.map((length, index) => {
-                return(
-                  <div key={ index } className="checkbox-container">
-                    <input id={ length } type="checkbox" checked={ this.state.selectedAltLengths.indexOf(length.toString()) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ length }>{ length }</label>
-                  </div>
-                );
-              }) }
+    return (
+      <>
+        <div className="handy-component admin-modal">
+          <div className="row">
+            <div className="col-xs-4">
+              <h2>Alternate Lengths</h2>
+              <div className="checkbox-list" data-array="lengths">
+                { this.state.allAltLengths.map((length, index) => {
+                  return(
+                    <div key={ index } className="checkbox-container">
+                      <input id={ length } type="checkbox" checked={ this.state.selectedAltLengths.indexOf(length.toString()) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ length }>{ length }</label>
+                    </div>
+                  );
+                }) }
+              </div>
+            </div>
+            <div className="col-xs-4">
+              <h2>Alternate Audio Tracks</h2>
+              <div className="checkbox-list" data-array="audios">
+                { this.state.allAltAudios.map((audio, index) => {
+                  return(
+                    <div key={ index } className="checkbox-container">
+                      <input id={ audio } type="checkbox" checked={ this.state.selectedAltAudios.indexOf(audio) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ audio }>{ audio }</label>
+                    </div>
+                  );
+                }) }
+              </div>
+            </div>
+            <div className="col-xs-4">
+              <h2>Alternate Subtitles</h2>
+              <div className="checkbox-list" data-array="subtitles">
+                { this.state.allAltSubs.map((sub, index) => {
+                  return(
+                    <div key={ index } className="checkbox-container">
+                      <input id={ sub } type="checkbox" checked={ this.state.selectedAltSubs.indexOf(sub) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ sub }>{ sub }</label>
+                    </div>
+                  );
+                }) }
+              </div>
             </div>
           </div>
-          <div className="col-xs-4">
-            <h2>Alternate Audio Tracks</h2>
-            <div className="checkbox-list" data-array="audios">
-              { this.state.allAltAudios.map((audio, index) => {
-                return(
-                  <div key={ index } className="checkbox-container">
-                    <input id={ audio } type="checkbox" checked={ this.state.selectedAltAudios.indexOf(audio) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ audio }>{ audio }</label>
-                  </div>
-                );
-              }) }
-            </div>
-          </div>
-          <div className="col-xs-4">
-            <h2>Alternate Subtitles</h2>
-            <div className="checkbox-list" data-array="subtitles">
-              { this.state.allAltSubs.map((sub, index) => {
-                return(
-                  <div key={ index } className="checkbox-container">
-                    <input id={ sub } type="checkbox" checked={ this.state.selectedAltSubs.indexOf(sub) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ sub }>{ sub }</label>
-                  </div>
-                );
-              }) }
-            </div>
+          <div className="row text-center">
+            <Button text="Close Filter" onClick={ () => { this.updateFilter() } } />
           </div>
         </div>
-        <div className="row">
-          <div className="col-xs-12 text-center">
-            <a className="orange-button" onClick={ this.updateFilter.bind(this) }>Close Filter</a>
-          </div>
-        </div>
-      </div>
+        <style jsx>{`
+          .admin-modal {
+            padding: 30px;
+            background-color: white;
+          }
+          .checkbox-list {
+            border: 1px solid #E4E9ED;
+            border-radius: 3px;
+            height: 253px;
+            margin-bottom: 30px;
+            overflow-y: scroll;
+          }
+          label {
+            font-family: 'TeachableSans-SemiBold';
+            color: black;
+            margin-right: 10px;
+            margin-left: 20px;
+          }
+          [type="checkbox"] {
+            margin-right: 10px;
+            margin-left: 20px;
+            margin-bottom: 15px;
+          }
+          .checkbox-container:first-of-type [type="checkbox"] {
+            margin-top: 20px;
+          }
+          .checkbox-container:last-of-type [type="checkbox"] {
+            margin-bottom: 20px;
+          }
+        `}</style>
+      </>
     );
   }
 
