@@ -2,6 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
+import NewInvoice from './new-invoice.jsx'
 import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, sendRequest, SaveButton, DeleteButton, Button, OutlineButton, Spinner, GrayedOut, ListBox, Table } from 'handy-components'
 
 const NewInvoiceStyles = {
@@ -82,6 +83,26 @@ export default class BookingDetails extends React.Component {
     });
   }
 
+  sendInvoiceCallback(invoices) {
+    this.setState({
+      newInvoiceModalOpen: false,
+      invoices
+    });
+  }
+
+  generateInvoiceRows() {
+    const { bookingSaved, calculations, films } = this.state;
+    const film = films.find(film => film.id === bookingSaved.filmId)
+    const filmTitle = film && film.title;
+    return [{
+      label: 'Amount Due',
+      labelExport: `${filmTitle}\n${bookingSaved.startDate} - ${bookingSaved.endDate}\n${bookingSaved.terms} (Total Gross: ${calculations.totalGross})`,
+      amount: calculations.ourShare,
+      active: true,
+      sufficient: true
+    }];
+  }
+
   clickSave() {
     this.setState({
       fetching: true,
@@ -129,13 +150,13 @@ export default class BookingDetails extends React.Component {
     });
   }
 
-  clickDeleteWeek(e) {
+  clickDeleteWeek(weeklyTerms) {
     this.setState({
       fetching: true
     });
     deleteEntity({
       directory: 'weekly_terms',
-      id: e.target.dataset.id,
+      id: weeklyTerms.id,
     }).then((response) => {
       const { weeklyTerms } = response;
       this.setState({
@@ -145,13 +166,13 @@ export default class BookingDetails extends React.Component {
     });
   }
 
-  clickDeleteWeeklyBoxOffice(e) {
+  clickDeleteWeeklyBoxOffice(weeklyBoxOffice) {
     this.setState({
       fetching: true
     });
     deleteEntity({
       directory: 'weekly_box_offices',
-      id: e.target.dataset.id,
+      id: weeklyBoxOffice.id,
     }).then((response) => {
       const { weeklyBoxOffices, calculations } = response;
       this.setState({
@@ -359,51 +380,57 @@ export default class BookingDetails extends React.Component {
     });
   }
 
-  clickInvoice(id, e) {
-    const { invoices } = this.state;
-    if (e.target.tagName === 'IMG') {
-      const invoice = invoices.find(invoice => invoice.id === id);
-      const rows = invoice.rows;
-      let oldAdvance;
-      let oldOverage;
-      let oldShipFee;
-      rows.forEach(function(row) {
-        if (row.label === 'Advance') {
-          oldAdvance = row.amount;
-        } else if (row.label.slice(0,7) === 'Overage') {
-          oldOverage = row.amount;
-        } else if (row.label === 'Shipping Fee') {
-          oldShipFee = row.amount;
-        }
-      });
-      const payments = invoice.payments;
-      let paymentsObj = {};
-      payments.forEach((payment) => {
-        paymentsObj[payment.id] = true;
-      });
-      this.setState({
-        newInvoiceModalOpen: true,
-        oldInvoiceAdvance: oldAdvance,
-        oldInvoiceOverage: oldOverage,
-        oldInvoiceShipFee: oldShipFee,
-        newInvoiceAdvance: !!oldAdvance,
-        newInvoiceOverage: !!oldOverage,
-        newInvoiceShipFee: !!oldShipFee,
-        resendInvoiceId: invoice.number,
-        invoicePayments: paymentsObj
-      });
-    } else if (e.target.tagName === 'DIV' && e.target.classList.contains('delete-invoice')) {
-      this.setState({
-        deleteInvoiceId: id,
-        deleteInvoiceModalOpen: true
-      });
-    } else {
-      this.redirect("invoices", id);
-    }
+  clickEdit(invoice) {
+    const rows = invoice.rows;
+    let oldAdvance;
+    let oldOverage;
+    let oldShipFee;
+    rows.forEach((row) => {
+      if (row.label === 'Advance') {
+        oldAdvance = row.amount;
+      } else if (row.label.slice(0,7) === 'Overage') {
+        oldOverage = row.amount;
+      } else if (row.label === 'Shipping Fee') {
+        oldShipFee = row.amount;
+      }
+    });
+    const payments = invoice.payments;
+    let paymentsObj = {};
+    payments.forEach((payment) => {
+      paymentsObj[payment.id] = true;
+    });
+    this.setState({
+      newInvoiceModalOpen: true,
+      oldInvoiceAdvance: oldAdvance,
+      oldInvoiceOverage: oldOverage,
+      oldInvoiceShipFee: oldShipFee,
+      newInvoiceAdvance: !!oldAdvance,
+      newInvoiceOverage: !!oldOverage,
+      newInvoiceShipFee: !!oldShipFee,
+      resendInvoiceId: invoice.number,
+      invoicePayments: paymentsObj,
+    });
+  }
+
+  clickDelete(invoice) {
+    this.setState({
+      deleteInvoiceId: invoice.id,
+      deleteInvoiceModalOpen: true,
+    });
   }
 
   redirect(directory, id) {
     window.location.pathname = directory + "/" + id;
+  }
+
+  calculateNewInvoiceModalHeight() {
+    const { payments } = this.state;
+    const rows = 1 + payments.length;
+    const padding = 36;
+    const border = 1;
+    const buttonHeight = 47;
+    const rowHeight = 54;
+    return (rowHeight * rows) + (padding * 2) + (border * 2) + buttonHeight;
   }
 
   render() {
@@ -546,44 +573,10 @@ export default class BookingDetails extends React.Component {
                   rows={ invoices }
                   sortable={ false }
                   urlPrefix="invoices"
-                  clickDelete={ () => console.log('delete') }
-                  clickEdit={ () => console.log('edit') }
+                  clickDelete={ invoice => this.clickDelete(invoice) }
+                  clickEdit={ invoice => this.clickEdit(invoice) }
+                  styles={ { marginBottom: 15 } }
                 />
-                <table className="fm-admin-table invoices-table">
-                  <thead>
-                    <tr>
-                      <th>Sent</th>
-                      <th>Number</th>
-                      <th>Total</th>
-                      <th className="button">Edit</th>
-                      <th className="button">Delete</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td><td></td><td></td><td></td></tr>
-                    { this.state.invoices.map((invoice, index) => {
-                      return(
-                        <tr key={ index } onClick={ this.clickInvoice.bind(this, invoice.id) }>
-                          <td className="indent">
-                            { invoice.sentDate }
-                          </td>
-                          <td>
-                            { invoice.number }
-                          </td>
-                          <td>
-                            { invoice.total }
-                          </td>
-                          <td className="button">
-                            <img src={ Images.edit } />
-                          </td>
-                          <td className="button">
-                            <div className="delete-invoice"></div>
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
                 <OutlineButton
                   text="Add Invoice"
                   onClick={ () => { this.setState({ newInvoiceModalOpen: true }) } }
@@ -671,67 +664,17 @@ export default class BookingDetails extends React.Component {
             callbackFullProps={ response => this.setState({ payments: response.payments, calculations: response.calculations, newPaymentModalOpen: false }) }
           />
         </Modal>
-        <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ NewInvoiceStyles }>
-          <div className="new-invoice-modal">
-            <div>
-              <input
-                id="advance-checkbox"
-                className="checkbox"
-                type="checkbox"
-                onChange={ this.changeAdvanceCheckbox.bind(this) }
-                checked={ this.state.newInvoiceAdvance }
-                disabled={ !this.newInvoiceAdvanceEnabled() }
-              />
-              <label
-                className={ "checkbox" + (this.newInvoiceAdvanceEnabled() ? "" : " disabled") }
-                htmlFor="advance-checkbox"
-              >
-                Advance - { (this.state.resendInvoiceId && this.state.oldInvoiceAdvance) ? (this.state.oldInvoiceAdvance + ' →') : '' } { this.state.bookingSaved.advance }
-              </label>
-            </div>
-            <div>
-              <input
-                id="overage-checkbox"
-                className="checkbox"
-                type="checkbox"
-                onChange={ this.changeOverageCheckbox.bind(this) }
-                checked={ this.state.newInvoiceOverage }
-                disabled={ !this.newInvoiceOverageEnabled() }
-              />
-              <label
-                className={ "checkbox" + (this.newInvoiceOverageEnabled() ? "" : " disabled") }
-                htmlFor="overage-checkbox"
-              >
-                Overage - { (this.state.resendInvoiceId && this.state.oldInvoiceOverage) ? (this.state.oldInvoiceOverage + ' →') : '' } { this.state.calculations.overage }
-              </label>
-            </div>
-            <div>
-              <input
-                id="shipfee-checkbox"
-                className="checkbox"
-                type="checkbox"
-                onChange={ this.changeShipFeeCheckbox.bind(this) }
-                checked={ this.state.newInvoiceShipFee }
-                disabled={ !this.newInvoiceShipFeeEnabled() }
-              />
-              <label
-                className={ "checkbox" + (this.newInvoiceShipFeeEnabled() ? "" : " disabled") }
-                htmlFor="shipfee-checkbox"
-              >
-                Shipping Fee - { (this.state.resendInvoiceId && this.state.oldInvoiceShipFee) ? (this.state.oldInvoiceShipFee + ' →') : '' } { this.state.bookingSaved.shippingFee }
-              </label>
-            </div>
-            { this.state.payments.map((payment, index) => {
-              return(
-                <div key={ index }><input id={ `payment-${payment.id}` } className="checkbox" type="checkbox" onChange={ this.changePaymentCheckbox.bind(this) } checked={ this.state.invoicePayments[payment.id] || false } data-id={ payment.id } /><label className="checkbox" htmlFor={ `payment-${payment.id}` }>Payment ({ payment.date }) - ({ payment.amount })</label></div>
-              );
-            }) }
-            <div className="text-center">
-              <a className={ "orange-button" + Common.renderInactiveButtonClass(!this.state.newInvoiceAdvance && !this.state.newInvoiceOverage && !this.state.newInvoiceShipFee) } onClick={ this.clickSendInvoice.bind(this) }>
-                { this.state.resendInvoiceId ? ('Resend Invoice ' + this.state.resendInvoiceId) : 'Send Invoice' }
-              </a>
-            </div>
-          </div>
+        <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700, height: this.calculateNewInvoiceModalHeight() }) }>
+          <NewInvoice
+            context={ this.props.context }
+            bookingId={ this.state.booking.id }
+            bookingType="booking"
+            rows={ this.generateInvoiceRows() }
+            payments={ this.state.payments }
+            callback={ this.sendInvoiceCallback.bind(this) }
+            editMode={ this.state.editInvoiceMode }
+            invoiceToEdit={ (this.state.editInvoiceMode && this.state.invoices.find(invoice => invoice.id === this.state.editInvoiceId)) || null }
+          />
         </Modal>
       </>
     );
@@ -756,18 +699,22 @@ export default class BookingDetails extends React.Component {
 
   renderTermsColumn() {
     const { termsValid } = this.state.bookingSaved;
+    const { weeklyTerms } = this.state;
     if (this.state.booking.termsChange) {
-      return(
+      return (
         <div className="col-xs-6">
           <h2>Terms by Week</h2>
-          <ul className="weekly-terms">
-            { this.state.weeklyTerms.map((weeklyTerms) => {
-              return(
-                <li key={ weeklyTerms.id }>Week { +weeklyTerms.order + 1 } - { weeklyTerms.terms }<div className="x-button" onClick={ this.clickDeleteWeek.bind(this) } data-id={ weeklyTerms.id }></div></li>
-              );
-            }) }
-          </ul>
-          <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newWeeklyTermsModalOpen', true) }>Add Week</a>
+          <ListBox
+            list={ weeklyTerms }
+            clickDelete={ weeklyTerms => this.clickDeleteWeek(weeklyTerms) }
+            textFunc={ weeklyTerms => `Week ${ +weeklyTerms.order + 1 } - ${ weeklyTerms.terms }` }
+            styles={ { marginBottom: 15 } }
+          />
+          <OutlineButton
+            text="Add Week"
+            onClick={ () => { this.setState({ newWeeklyTermsModalOpen: true }) } }
+            marginBottom
+          />
         </div>
       );
     } else {
@@ -848,21 +795,25 @@ export default class BookingDetails extends React.Component {
 
   renderBoxOfficeSection() {
     if (this.state.booking.termsChange) {
-      return(
+      const { weeklyBoxOffices } = this.state;
+      return (
         <div className="col-xs-6">
           <h2>Box Office by Week</h2>
-          <ul className="weekly-box-offices">
-            { this.state.weeklyBoxOffices.map((weeklyBoxOffice) => {
-              return(
-                <li key={ weeklyBoxOffice.id }>Week { +weeklyBoxOffice.order + 1 } - { weeklyBoxOffice.amount }<div className="x-button" onClick={ this.clickDeleteWeeklyBoxOffice.bind(this) } data-id={ weeklyBoxOffice.id }></div></li>
-              );
-            }) }
-          </ul>
-          <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newWeeklyBoxOfficeModalOpen', true) }>Add Weekly Box Office</a>
+          <ListBox
+            list={ weeklyBoxOffices }
+            clickDelete={ weeklyBoxOffice => this.clickDeleteWeeklyBoxOffice(weeklyBoxOffice) }
+            textFunc={ weeklyBoxOffice => `Week ${ +weeklyBoxOffice.order + 1 } - ${ weeklyBoxOffice.amount }` }
+            styles={ { marginBottom: 15 } }
+          />
+          <OutlineButton
+            text="Add Weekly Box Office"
+            onClick={ () => { this.setState({ newWeeklyBoxOfficeModalOpen: true }) } }
+            marginBottom
+          />
         </div>
       );
     } else {
-      return(
+      return (
         <>
           { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'boxOffice' }) }
         </>

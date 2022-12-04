@@ -51,15 +51,17 @@ export default class NewInvoice extends React.Component {
   }
 
   clickSend(editMode) {
+    const { bookingId, bookingType, invoiceToEdit } = this.props;
+    const { rows } = this.state;
     this.setState({
       fetching: true
     });
-    sendRequest(`/api/invoices/${editMode ? this.props.invoiceToEdit.number : ''}`, {
+    sendRequest(`/api/invoices/${editMode ? invoiceToEdit.number : ''}`, {
       method: (editMode ? 'PATCH' : 'POST'),
       data: {
-        bookingId: this.props.bookingId,
-        bookingType: 'virtualBooking',
-        rows: this.convertAndFilterRows(this.state.rows),
+        bookingId,
+        bookingType,
+        rows: this.convertAndFilterRows(rows),
       }
     }).then((response) => {
       const { invoices } = response;

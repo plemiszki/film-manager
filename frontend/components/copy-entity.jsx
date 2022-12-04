@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ChangeCase from 'change-case'
-import { Common, Details, sendRequest } from 'handy-components'
+import { Common, Details, sendRequest, Button, Spinner, GrayedOut } from 'handy-components'
 
 export default class CopyEntity extends Component {
 
@@ -21,8 +21,7 @@ export default class CopyEntity extends Component {
     }
   }
 
-  clickCopy(e) {
-    e.preventDefault();
+  clickCopy() {
     const { film, booking } = this.state;
     this.setState({
       fetching: true
@@ -70,14 +69,19 @@ export default class CopyEntity extends Component {
   }
 
   render() {
+    const { buttonText, entityName } = this.props;
     const { fetching } = this.state;
-    return(
-      <div className="copy-entity component admin-modal">
+    return (
+      <div className="handy-component admin-modal">
         <form className="white-box">
           { this.renderFields() }
-          <input type="submit" className={ "btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.props.buttonText || `Copy ${ChangeCase.titleCase(this.props.entityName)}` } onClick={ this.clickCopy.bind(this) } />
-          { Common.renderSpinner(fetching) }
-          { Common.renderGrayedOut(fetching, -36, -32, 5) }
+          <Button
+            submit
+            text={ buttonText || `Copy ${ChangeCase.titleCase(entityName)}` }
+            onClick={ () => { this.clickCopy() } }
+          />
+          <Spinner visible={ fetching } />
+          <GrayedOut visible={ fetching } />
         </form>
       </div>
     );
