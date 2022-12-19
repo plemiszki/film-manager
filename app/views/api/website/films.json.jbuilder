@@ -22,6 +22,7 @@ json.array!(@films) do |film|
   json.club_date film.club_date ? film.club_date.strftime("%-m/%-d/%y") : ""
   json.edu_page film.edu_page
   json.video_page film.video_page
+  json.now_playing_page film.now_playing_page
   json.rating film.rating
   json.aspect_ratio film.aspect_ratio
   json.sound_config film.sound_config

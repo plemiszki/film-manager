@@ -1212,10 +1212,11 @@ export default class FilmDetails extends React.Component {
           <div>
             <hr />
             <div className="row">
-              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'nowPlayingPage', columnHeader: 'Now Playing Page' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
             </div>
             <hr style={ { marginTop: 30 } } />
             <div className="row">

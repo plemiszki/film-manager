@@ -421,6 +421,7 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="active"]', visible: false).checked?).to eq true
     expect(find('input[data-field="eduPage"]', visible: false).checked?).to eq true
     expect(find('input[data-field="videoPage"]', visible: false).checked?).to eq true
+    expect(find('input[data-field="nowPlayingPage"]', visible: false).checked?).to eq true
     expect(find('input[data-field="dayAndDate"]', visible: false).checked?).to eq true
     expect(find('input[data-field="certifiedFresh"]', visible: false).checked?).to eq true
     expect(find('input[data-field="criticsPick"]', visible: false).checked?).to eq true
@@ -449,6 +450,7 @@ describe 'film_details', type: :feature do
       active: { value: false, type: :switch },
       edu_page: { value: false, type: :switch },
       video_page: { value: false, type: :switch },
+      now_playing_page: { value: false, type: :switch },
       day_and_date: { value: false, type: :switch },
       certified_fresh: { value: false, type: :switch },
       critics_pick: { value: false, type: :switch },

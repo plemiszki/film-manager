@@ -304,6 +304,7 @@ class Api::FilmsController < AdminController
       :theatrical_tentative,
       :fm_plus_tentative,
       :video_page,
+      :now_playing_page,
       :edu_page,
       :fm_plus_url,
       :aspect_ratio,
