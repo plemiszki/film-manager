@@ -7,7 +7,7 @@
   "dependencies": {
     "@babel/core": "7.4.0",
     "@babel/preset-react": "7.0.0",
-    "babel-loader": "8.0.5",
+    "babel-loader": "8.3.0",
     "change-case": "3.1.0",
     "handy-components": "3.7.0",
     "handy-tools": "2.13.2",
