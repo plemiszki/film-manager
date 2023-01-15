@@ -68,7 +68,6 @@ export default class DvdDetails extends React.Component {
   }
 
   selectShort(option) {
-    console.log(option);
     const shortId = option.id;
     this.setState({
       fetching: true,

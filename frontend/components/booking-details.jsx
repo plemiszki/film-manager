@@ -435,7 +435,6 @@ export default class BookingDetails extends React.Component {
 
   render() {
     const { justSaved, changesToSave, fetching, payments, invoices } = this.state;
-    console.log(invoices);
     NewInvoiceStyles.content.height = (238 + (34 * payments.length));
     return (
       <>
