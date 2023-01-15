@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity } from 'handy-components'
+import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity, Button, SearchBar, Spinner, GrayedOut } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const importModalStyles = {
@@ -318,75 +318,164 @@ export default class ReportsIndex extends React.Component {
   }
 
   render() {
-    return(
-      <div>
-        <div id="reports-index" className="component">
-          <div className="clearfix">
+    const { fetching, daysDue, reports, searchText, job, sortBy } = this.state;
+    return (
+      <>
+        <div>
+          <div className="handy-component">
             <h1>Statements - Q{ this.state.quarter }, { this.state.year }</h1>
-            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ Common.changeState.bind(this, 'sendModalOpen', true) }>Send All</a>
-            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.daysDue === 'all' || this.state.reports.length === 0) } onClick={ this.clickExport.bind(this) }>Export All</a>
-            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickSummary.bind(this) }>Summary</a>
-            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickTotals.bind(this) }>Totals</a>
-            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching || this.state.reports.length === 0) } onClick={ this.clickErrorCheck.bind(this) }>Error Check</a>
-            <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'importModalOpen', true) }>Import</a>
-            <a className={ "btn orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
-            <a className={ "btn orange-button float-button arrow-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
+            <Button
+              square
+              text="Send All"
+              float
+              disabled={ fetching || daysDue === 'all' || reports.length === 0 }
+              onClick={ Common.changeState.bind(this, 'sendModalOpen', true) }
+            />
+            <Button
+              square
+              text="Export All"
+              float
+              styles={ { marginRight: 15 } }
+              disabled={ fetching || daysDue === 'all' || reports.length === 0 }
+              onClick={ () => { this.clickExport() } }
+            />
+            <Button
+              square
+              text="Summary"
+              float
+              styles={ { marginRight: 15 } }
+              disabled={ fetching || reports.length === 0 }
+              onClick={ () => { this.clickSummary() } }
+            />
+            <Button
+              square
+              text="Totals"
+              float
+              styles={ { marginRight: 15 } }
+              disabled={ fetching || reports.length === 0 }
+              onClick={ () => { this.clickTotals() } }
+            />
+            <Button
+              square
+              text="Error Check"
+              float
+              styles={ { marginRight: 15 } }
+              disabled={ fetching || reports.length === 0 }
+              onClick={ () => { this.clickErrorCheck() } }
+            />
+            <Button
+              square
+              text="Import"
+              float
+              styles={ { marginRight: 15 } }
+              disabled={ fetching || reports.length === 0 }
+              onClick={ Common.changeState.bind(this, 'importModalOpen', true) }
+            />
+            <Button
+              square
+              text=">>"
+              float
+              styles={ { marginRight: 15 } }
+              disabled={ fetching }
+              onClick={ this.clickNext.bind(this) }
+            />
+            <Button
+              square
+              text="<<"
+              float
+              styles={ { marginRight: 15 } }
+              disabled={ fetching }
+              onClick={ this.clickPrev.bind(this) }
+            />
+            <div className="white-box">
+              <SearchBar
+                onChange={ FM.changeSearchText.bind(this) }
+                value={ searchText || "" }
+                styles={
+                  { position: 'absolute', right: '32px', top: '12px' }
+                }
+              />
+              <select className="days-filter" onChange={ (e) => { this.setState({ daysDue: e.target.value }) } } value={ this.state.daysDue }>
+                <option value="all">All</option>
+                <option value="30">30 days</option>
+                <option value="45">45 days</option>
+                <option value="60">60 days</option>
+              </select>
+              <table>
+                <thead>
+                  <tr>
+                    <th><div className={ FM.sortClass.call(this, "title") } onClick={ this.clickTitle.bind(this) }>Title</div></th>
+                    <th><div className={ FM.sortClass.call(this, "licensor") } onClick={ this.clickLicensor.bind(this) }>Licensor</div></th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td></td><td></td><td></td></tr>
+                  { reports.sort(this.sortReports.bind(this)).filterDaysDue(this.state.daysDue).filterSearchText(searchText, sortBy).map(function(report, index) {
+                    const { id, title, licensor, days, sendReport, dateSent } = report;
+                    const url = `/royalty_reports/${id}`;
+                    return (
+                      <tr key={ index }>
+                        <td className="bold">
+                          <a href={ url }>{ ellipsis(title, 42) }</a>
+                        </td>
+                        <td>
+                          <a href={ url }>{ licensor }</a>
+                        </td>
+                        <td>
+                          <a href={ url }>{ days } days</a>
+                        </td>
+                        <td>
+                          <a href={ url }>
+                            { sendReport ? (dateSent ? Tools.formatDate(new Date(dateSent + " 0:00")) : "Not Sent") : "Do Not Send" }
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  }.bind(this)) }
+                </tbody>
+              </table>
+              <Spinner visible={ fetching } />
+              <GrayedOut visible={ fetching } />
+            </div>
           </div>
-          <div className="white-box">
-            <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
-            <select id="days-filter" onChange={ (e) => { this.setState({ daysDue: e.target.value }); } } value={ this.state.daysDue }>
-              <option value="all">All</option>
-              <option value="30">30 days</option>
-              <option value="45">45 days</option>
-              <option value="60">60 days</option>
-            </select>
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th><div className={ FM.sortClass.call(this, "title") } onClick={ this.clickTitle.bind(this) }>Title</div></th>
-                  <th><div className={ FM.sortClass.call(this, "licensor") } onClick={ this.clickLicensor.bind(this) }>Licensor</div></th>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td></tr>
-                { this.state.reports.sort(this.sortReports.bind(this)).filterDaysDue(this.state.daysDue).filterSearchText(this.state.searchText, this.state.sortBy).map(function(report, index) {
-                  return(
-                    <tr key={ index } onClick={ this.redirect.bind(this, report.id) }>
-                      <td className="name-column">
-                        { ellipsis(report.title, 42) }
-                      </td>
-                      <td>
-                        { report.licensor }
-                      </td>
-                      <td>
-                        { report.days } days
-                      </td>
-                      <td>
-                        { report.sendReport ? (report.dateSent ? Tools.formatDate(new Date(report.dateSent + " 0:00")) : "Not Sent") : "Do Not Send" }
-                      </td>
-                    </tr>
-                  );
-                }.bind(this)) }
-              </tbody>
-            </table>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          </div>
+          <Modal isOpen={ this.state.importModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ importModalStyles }>
+            <div className="handy-component admin-modal">
+              <h1>Import File</h1>
+              <Button onClick={ () => { this.clickImportRevenue() } } text="Import Revenue" styles={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
+              <Button onClick={ () => { this.clickImportExpenses() } } text="Import Expenses" styles={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
+            </div>
+          </Modal>
+          <Modal isOpen={this.state.sendModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ sendModalStyles }>
+            { this.renderSendModalHeader() }
+          </Modal>
+          { Common.renderJobModal.call(this, job) }
         </div>
-        <Modal isOpen={ this.state.importModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ importModalStyles }>
-          <div className="import-file">
-            <h1>Import File</h1>
-            <a className="orange-button" onClick={ this.clickImportRevenue.bind(this) }>Import Revenue</a>
-            <a className="orange-button" onClick={ this.clickImportExpenses.bind(this) }>Import Expenses</a>
-          </div>
-        </Modal>
-        <Modal isOpen={this.state.sendModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ sendModalStyles }>
-          { this.renderSendModalHeader() }
-        </Modal>
-        { Common.renderJobModal.call(this, this.state.job) }
-      </div>
+        <style jsx>{`
+          .white-box {
+            position: relative;
+          }
+          .days-filter {
+            position: absolute;
+            width: 100px;
+            top: 14px;
+            right: 300px;
+          }
+          th:first-of-type {
+            width: 40%;
+          }
+          th:nth-of-type(2) {
+            width: 30%;
+          }
+          th:nth-of-type(3) {
+            width: 15%;
+          }
+          th:nth-of-type(4) {
+            width: 15%;
+          }
+        `}</style>
+      </>
     );
   }
 
