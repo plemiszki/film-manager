@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
-import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button } from 'handy-components'
+import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button, Spinner, GrayedOut, SearchBar } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const FilterModalStyles = {
@@ -175,8 +175,9 @@ export default class FilmsIndex extends Component {
   }
 
   render() {
+    const { searchText, fetching } = this.state;
     var filteredFilms = this.state[this.state.filterActive ? 'filteredFilms' : 'films'].filterSearchText(this.state.searchText, this.state.sortBy);
-    return(
+    return (
       <>
         <div id="films-index" className="handy-component">
           <div>
@@ -185,7 +186,10 @@ export default class FilmsIndex extends Component {
             { this.renderCustomButton() }
             { this.renderFilterButton() }
             { this.renderAddNewButton() }
-            <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+            <SearchBar
+              onChange={ FM.changeSearchText.bind(this) }
+              value={ searchText || "" }
+            />
           </div>
           <div className="white-box">
             <table>
@@ -215,8 +219,8 @@ export default class FilmsIndex extends Component {
                 }) }
               </tbody>
             </table>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <Spinner visible={ fetching } />
+            <GrayedOut visible={ fetching } />
           </div>
           <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
             <NewEntity
