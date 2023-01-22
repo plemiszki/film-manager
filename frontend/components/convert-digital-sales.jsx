@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity, sendRequest } from 'handy-components'
+import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity, sendRequest, Spinner, GrayedOut } from 'handy-components'
 
 export default class ConvertDigitalSales extends React.Component {
 
@@ -79,62 +79,73 @@ export default class ConvertDigitalSales extends React.Component {
   }
 
   render() {
-    const { job } = this.state;
+    const { fetching, job, filmsModalOpen, errors, films } = this.state;
     if (job) {
       const { status } = job;
       if (status === 'running' || status === 'success') {
-        return(
+        return (
           <div>
             { Common.renderJobModal.call(this, job) }
           </div>
         );
       } else if (status === 'failed') {
         if (job.errorsText === 'Unable to import spreadsheet') {
-          return(
+          return (
             <div>
               { Common.renderJobModal.call(this, job) }
             </div>
           );
         } else {
-          return(
-            <div className="component">
-              <h1 style={ { width: '100%', textAlign: 'center' } }>There are unrecognized films in this sales report.</h1>
-              <p className="text-center m-bottom">Please create aliases for the below titles, then re-upload the sales report.</p>
-              <div className="white-box">
-                <div className="row">
-                  <div className="col-xs-12">
-                    <table className="admin-table no-links no-cursor">
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr><td></td><td></td></tr>
-                        { this.state.errors.map((error, index) => {
-                          return(
-                            <tr key={ index }>
-                              <td>
-                                { error }
-                              </td>
-                              <td style={ { textDecoration: 'underline' } }>
-                                <span style={ { cursor: 'pointer' } } onClick={ this.addAlias.bind(this) } data-index={ index }>Add Alias</span>
-                              </td>
-                            </tr>
-                          );
-                        }) }
-                      </tbody>
-                    </table>
+          return (
+            <>
+              <div className="handy-component">
+                <h1 style={ { width: '100%', textAlign: 'center' } }>There are unrecognized films in this sales report.</h1>
+                <p className="text-center">Please create aliases for the below titles, then re-upload the sales report.</p>
+                <div className="white-box">
+                  <div className="row">
+                    <div className="col-xs-12">
+                      <table className="no-links no-cursor">
+                        <thead>
+                          <tr>
+                            <th>Title</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr><td></td><td></td></tr>
+                          { errors.map((error, index) => {
+                            return (
+                              <tr key={ index }>
+                                <td>
+                                  <div className="link-padding">
+                                    { error }
+                                  </div>
+                                </td>
+                                <td style={ { textDecoration: 'underline' } }>
+                                  <div className="link-padding">
+                                    <span style={ { cursor: 'pointer' } } onClick={ this.addAlias.bind(this) } data-index={ index }>Add Alias</span>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          }) }
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
+                  <Spinner visible={ fetching } />
+                  <GrayedOut visible={ fetching } />
                 </div>
-                { Common.renderSpinner(this.state.fetching) }
-                { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+                <Modal isOpen={ filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
+                  <ModalSelect options={ films } property="title" func={ this.selectFilm.bind(this) } />
+                </Modal>
               </div>
-              <Modal isOpen={ this.state.filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
-                <ModalSelect options={ this.state.films } property="title" func={ this.selectFilm.bind(this) } />
-              </Modal>
-            </div>
+              <style jsx>{`
+                .text-center {
+                  margin-bottom: 30px;
+                }
+              `}</style>
+            </>
           );
         }
       }

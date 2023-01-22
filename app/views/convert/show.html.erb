@@ -2,27 +2,29 @@
 <% if flash[:job_id] %>
   <div id="job-id" class="hidden"><%= flash[:job_id] %></div>
 <% end %>
-<%= form_for User.first do |f| %>
-  <div class="text-center" style="background-color: #F7F8E0;padding: 10px;border: solid 1px gray;">
-    <p style="margin-bottom: 10px;font-family:'TeachableSans-Bold'">Please upload a spreadsheet with columns in the following order:</p>
-    <p style="margin-bottom: 10px;font-family:'TeachableSans-SemiBold'">Film Title | GL Code | Amount<p>
-    <p>(The first row will not be imported)</p>
-  </div>
-  <strong>
-  <br />
-  <label for="retailer-field">Digital Retailer</label>
-  <select name="user[digital_retailer_id]">
-    <% DigitalRetailer.all.order(:name).each do |dr| %>
-      <option value="<%= dr.id %>"><%= dr.name %></option>
-    <% end %>
-  </select><br />
-  <br />
-  <label for="number-field">Invoice Number</label>
-  <input id="number-field" name="user[invoice_number]" /><br />
-  <br />
-  <label for="date-field">Invoice Date</label>
-  <input id="date-field" name="user[date]" type="date" value="<%= Date.today %>" /><br />
-  <br />
-  <%= f.file_field :spreadsheet %><br />
-  <input type="submit" />
-<% end %>
+<div class="convert-digital-sales">
+  <%= form_for User.first do |f| %>
+    <div class="instructions text-center">
+      <p style="margin-bottom: 10px;font-family:'TeachableSans-Bold'">Please upload a spreadsheet with columns in the following order:</p>
+      <p style="margin-bottom: 10px;font-family:'TeachableSans-SemiBold'">Film Title | GL Code | Amount<p>
+      <p>(The first row will not be imported)</p>
+    </div>
+    <strong>
+    <br />
+    <label for="retailer-field">Digital Retailer</label>
+    <select name="user[digital_retailer_id]">
+      <% DigitalRetailer.all.order(:name).each do |dr| %>
+        <option value="<%= dr.id %>"><%= dr.name %></option>
+      <% end %>
+    </select><br />
+    <br />
+    <label for="number-field">Invoice Number</label>
+    <input id="number-field" name="user[invoice_number]" /><br />
+    <br />
+    <label for="date-field">Invoice Date</label>
+    <input id="date-field" name="user[date]" type="date" value="<%= Date.today %>" /><br />
+    <br />
+    <%= f.file_field :spreadsheet %><br />
+    <input type="submit" />
+  <% end %>
+</div>
