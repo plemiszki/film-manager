@@ -11,7 +11,7 @@ export default class InTheatersIndexItem extends React.Component {
 
   componentDidMount() {
     var hyphenatedSection = this.props.section.replace(' ', '-');
-    $(`.fm-admin-table.${hyphenatedSection} td`).draggable({
+    $(`.${hyphenatedSection} td`).draggable({
       cursor: '-webkit-grabbing',
       handle: '.handle',
       helper() { return '<div></div>'; },
@@ -77,38 +77,59 @@ export default class InTheatersIndexItem extends React.Component {
   }
 
   render() {
-    return(
-      <tr>
-        <td id={"index-" + this.props.film.order} className="indent" data-index={ this.props.film.order } data-section={ this.props.section }>
-          { this.renderTopDropZone() }
-          <div>
-            { this.props.film.film }
-          </div>
-          { this.renderHandle() }
-          <div className="x-button" onClick={ this.props.clickXButton } data-id={ this.props.film.id }></div>
-          { this.renderBottomDropZone() }
-        </td>
-      </tr>
-    );
-  }
-
-  renderHandle() {
-    if (this.props.renderHandle) {
-      return(
-        <img className="handle" src={ Images.handle } onMouseDown={ this.mouseDownHandler.bind(this) } onMouseUp={ this.mouseUpHandler.bind(this) } />
-      );
-    }
-  }
-
-  renderTopDropZone() {
-    return(
-      <div className={ "top-drop-zone" + (this.props.film.order == 0 ? '' : ' hidden') } data-index="-1" data-section={ this.props.section }></div>
-    );
-  }
-
-  renderBottomDropZone() {
-    return(
-      <div className="drop-zone" data-index={ this.props.film.order } data-section={ this.props.section }></div>
+    const { renderHandle, film, section, clickXButton } = this.props;
+    return (
+      <>
+        <tr>
+          <td id={"index-" + film.order} className="indent" data-index={ film.order } data-section={ section }>
+            <div className={ "top-drop-zone" + (film.order == 0 ? '' : ' hidden') } data-index="-1" data-section={ section }></div>
+            <div>
+              { film.film }
+            </div>
+            { renderHandle && (
+              <img className="handle" src={ Images.handle } onMouseDown={ this.mouseDownHandler.bind(this) } onMouseUp={ this.mouseUpHandler.bind(this) } />
+            ) }
+            <div className="x-button" onClick={ clickXButton } data-id={ film.id }></div>
+            <div className="drop-zone" data-index={ film.order } data-section={ section }></div>
+          </td>
+        </tr>
+        <style jsx>{`
+          td {
+            padding-top: 10px;
+            padding-bottom: 10px;
+          }
+          .indent {
+            color: #5F5F5F;
+          }
+          .handle {
+            position: absolute;
+            top: 12px;
+            right: 50px;
+            cursor: grab;
+            cursor: -webkit-grab;
+            cursor: -moz-grab;
+          }
+          tr.highlight {
+            background-color: #CED8F6;
+          }
+          .top-drop-zone, .drop-zone {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 11px;
+            border-radius: 5px;
+          }
+          .top-drop-zone.highlight, .drop-zone.highlight {
+            border: dashed 1px black;
+          }
+          .top-drop-zone {
+            top: -5px;
+          }
+          .drop-zone {
+            top: 31px;
+          }
+        `}</style>
+      </>
     );
   }
 }
