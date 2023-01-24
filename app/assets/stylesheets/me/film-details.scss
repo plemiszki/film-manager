@@ -37,19 +37,19 @@
     }
   }
 
-  div.key-art {
-    width: 100%;
-    height: 74px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: 50%;
-    cursor: pointer;
+  // div.key-art {
+  //   width: 100%;
+  //   height: 74px;
+  //   background-size: contain;
+  //   background-repeat: no-repeat;
+  //   background-position: 50%;
+  //   cursor: pointer;
 
-    &.empty {
-      border: 1px solid #E4E9ED;
-      background-color: #FAFAFA;
-    }
-  }
+  //   &.empty {
+  //     border: 1px solid #E4E9ED;
+  //     background-color: #FAFAFA;
+  //   }
+  // }
 
   .schedule {
 
@@ -85,44 +85,44 @@
     color: red;
   }
 
-  .tabs-row {
-    margin-left: 60px;
-    display: inline-block;
-    font-size: 14px;
-    vertical-align: bottom;
+  // .tabs-row {
+  //   // margin-left: 60px;
+  //   // display: inline-block;
+  //   // font-size: 14px;
+  //   // vertical-align: bottom;
 
-    &.tv {
-      margin-left: 30px;
-      font-size: 11px;
-      @media (min-width: 1450px) {
-        margin-left: 60px;
-        font-size: 14px;
-      }
-    }
+  //   // &.tv {
+  //   //   margin-left: 30px;
+  //   //   font-size: 11px;
+  //   //   @media (min-width: 1450px) {
+  //   //     margin-left: 60px;
+  //   //     font-size: 14px;
+  //   //   }
+  //   // }
 
-    .tab {
-      float: left;
-      background-color: white;
-      vertical-align: bottom;
-      padding: 20px 20px 15px 20px;
-      border-top-right-radius: 10px;
-      border-top-left-radius: 10px;
-      user-select: none;
+  //   // .tab {
+  //   //   float: left;
+  //   //   background-color: white;
+  //   //   vertical-align: bottom;
+  //   //   padding: 20px 20px 15px 20px;
+  //   //   border-top-right-radius: 10px;
+  //   //   border-top-left-radius: 10px;
+  //   //   user-select: none;
 
-      &:not(:first-of-type) {
-        margin-left: 5px;
-      }
+  //   //   &:not(:first-of-type) {
+  //   //     margin-left: 5px;
+  //   //   }
 
-      &:not(.selected) {
-        margin-bottom: 2px;
-        padding-bottom: 13px;
+  //   //   &:not(.selected) {
+  //   //     margin-bottom: 2px;
+  //   //     padding-bottom: 13px;
 
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
-  }
+  //   //     &:hover {
+  //   //       cursor: pointer;
+  //   //     }
+  //   //   }
+  //   // }
+  // }
 
   .blue-outline-button {
     margin-bottom: 30px;
