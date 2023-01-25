@@ -15,13 +15,14 @@ import {
   Details,
   fetchEntity,
   GrayedOut,
+  ListBox,
+  ListBoxReorderable,
   ModalSelect,
   rearrangeFields,
   resetNiceSelect,
   SaveButton,
   sendRequest,
   setUpNiceSelect,
-  SortableAssociation,
   sortArrayOfObjects,
   Spinner,
   updateEntity,
@@ -298,7 +299,7 @@ export default class FilmDetails extends React.Component {
         entityArray = 'filmLanguages';
         directory = 'film_languages';
         break
-      case 'cast':
+      case 'actors':
         entityArray = 'actors';
         break
       case 'laurels':
@@ -1181,7 +1182,7 @@ export default class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <h2>Director(s):</h2>
-              <SortableAssociation
+              <ListBoxReorderable
                 entityName="director"
                 entities={ directors }
                 displayFunction={ director => `${director.firstName} ${director.lastName}` }
@@ -1198,8 +1199,9 @@ export default class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <p className="section-header">Countries</p>
-              <SortableAssociation
+              <ListBoxReorderable
                 entityName="country"
+                entityNamePlural="countries"
                 entities={ filmCountries }
                 displayProperty="country"
                 clickAdd={ () => { this.setState({ countriesModalOpen: true }) } }
@@ -1209,7 +1211,7 @@ export default class FilmDetails extends React.Component {
             </div>
             <div className="col-xs-6">
               <p className="section-header">Languages</p>
-              <SortableAssociation
+              <ListBoxReorderable
                 entityName="language"
                 entities={ filmLanguages }
                 displayProperty="language"
@@ -1223,7 +1225,7 @@ export default class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <p className="section-header">Cast</p>
-              <SortableAssociation
+              <ListBoxReorderable
                 entityName="actor"
                 entities={ actors }
                 displayFunction={ actor => `${actor.firstName} ${actor.lastName}` }
@@ -1251,13 +1253,11 @@ export default class FilmDetails extends React.Component {
           <div className="row">
             <div className="col-xs-12">
               <p className="section-header">Schedule</p>
-              <ul className="standard-list schedule">
-                { schedule.map((entry, index) => {
-                  return (
-                    <li key={ index } className={ entry.tentative ? 'tentative' : '' }>{ entry.label } - { entry.date_string + (entry.tentative ? ' (?)' : '') }</li>
-                  );
-                }) }
-              </ul>
+              <ListBox
+                style={ { marginBottom: '60px' } }
+                entities={ schedule }
+                displayFunction={ revenueStream => `${ revenueStream.label } - ${ revenueStream.date_string + (revenueStream.tentative ? ' (?)' : '') }` }
+              />
             </div>
           </div>
         </div>
