@@ -5,7 +5,6 @@ import FilmRightsChangeDates from './film-rights-change-dates.jsx'
 import {
   alphabetizeArrayOfObjects,
   Button,
-  capitalize,
   Common,
   ConfirmDelete,
   createEntity,
@@ -18,6 +17,7 @@ import {
   ListBox,
   ListBoxReorderable,
   ModalSelect,
+  OutlineButton,
   rearrangeFields,
   resetNiceSelect,
   SaveButton,
@@ -26,6 +26,7 @@ import {
   sortArrayOfObjects,
   Spinner,
   updateEntity,
+  Table,
 } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import NewEntity from './new-entity.jsx'
@@ -136,7 +137,7 @@ export default class FilmDetails extends React.Component {
       subRights: [],
       subRightsSortBy: 'sublicensorName',
       subtitleLanguages: [],
-      tab: (FM.params.tab ? capitalize(FM.params.tab) : 'General'),
+      tab: (FM.params.tab ? ChangeCase.titleCase(FM.params.tab) : 'General'),
       topics: [],
       virtualBookings: [],
     };
@@ -907,7 +908,7 @@ export default class FilmDetails extends React.Component {
       return (
         <div>
           <hr />
-          <table className="fm-admin-table">
+          <table>
             <thead>
               <tr>
                 <th>Season</th>
@@ -942,7 +943,7 @@ export default class FilmDetails extends React.Component {
       return (
         <div>
           <hr />
-          <table className="fm-admin-table">
+          <table>
             <thead>
               <tr>
                 <th>Type</th>
@@ -1593,126 +1594,124 @@ export default class FilmDetails extends React.Component {
   renderRoyaltyFields() {
     const { dealTemplates, film, filmRevenuePercentages, filmRights, percentageErrors, percentageObject, revenueStreams } = this.state;
     return (
-      <div>
-        <div className={ film.filmType == 'Short' ? 'hidden' : '' }>
-          <div className="row">
-            { Details.renderDropDown.bind(this)({ columnWidth: 5, entity: 'film', property: 'dealTypeId', columnHeader: 'Deal Type', options: dealTemplates, optionDisplayProperty: 'name', readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 1, entity: 'film', property: 'grPercentage', columnHeader: 'GR %', readOnly: !FM.user.hasAdminAccess, hidden: film.dealTypeId != "5" && film.dealTypeId != "6" }) }
-            { Details.renderDropDown.bind(this)({
-              columnWidth: 3,
-              entity: 'film',
-              property: 'daysStatementDue',
-              columnHeader: 'Statements Due',
-              options: [
-                { value: 30, text: '30 Days' },
-                { value: 45, text: '45 Days' },
-                { value: 60, text: '60 Days' }
-              ],
-              readOnly: !FM.user.hasAdminAccess,
-            }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'mg', columnHeader: 'MG', readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'eAndO', columnHeader: 'E & O', readOnly: !FM.user.hasAdminAccess, hidden: film.filmType === "Short" }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'expenseCap', readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'sellOffPeriod', columnHeader: 'DVD Sell Off Period (Months)', readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'acceptDelivery', columnHeader: 'Delivery Acceptance Date', readOnly: !FM.user.hasAdminAccess }) }
-          </div>
-          <div className="row">
-            { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'royaltyNotes', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'contractualObligations', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
-          </div>
-        </div>
-        <hr />
-        <h3>Licensed Rights</h3>
-        <div className="row">
-          <div className="col-xs-12">
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'name') }>Right</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'territory') }>Territory</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'startDate') } >Start Date</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'endDate') }>End Date</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'exclusive') }>Exclusive</div></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td><td></td><td></td></tr>
-                { _.orderBy(filmRights, [this.rightsSort.bind(this), this.rightsSortSecond.bind(this)]).map((right, index) => {
-                  return (
-                    <tr key={ index } onClick={ this.redirect.bind(this, 'film_rights', right.id) }>
-                      <td className="indent">
-                        { right.name }
-                      </td>
-                      <td>
-                        { right.territory }
-                      </td>
-                      <td>
-                        { right.startDate }
-                      </td>
-                      <td>
-                        { right.endDate }
-                      </td>
-                      <td>
-                        { right.exclusive }
-                      </td>
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
-            { this.renderRightsButtons.call(this) }
-          </div>
-        </div>
-        <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
-          <hr />
-          <h3>Revenue Splits</h3>
-          <div className="row">
-            { filmRevenuePercentages.map((revenuePercentage, index) => {
-              const properErrorsArray = percentageErrors[revenuePercentage.id] ? percentageErrors[revenuePercentage.id] : [];
-              const revenueStream = revenueStreams.find(stream => stream.id == revenuePercentage.revenueStreamId);
-              return (
-                <div key={ index }>
-                  { Details.renderField.bind(this)({
-                    columnWidth: 2,
-                    entity: 'percentageObject',
-                    property: revenuePercentage.id,
-                    errorsKey: revenuePercentage.id,
-                    errorsProperty: 'value',
-                    columnHeader: revenueStream.nickname || revenueStream.name,
-                    readOnly: !FM.user.hasAdminAccess,
-                    showFieldError: false,
-                  }) }
-                </div>
-              );
-            }) }
+      <>
+        <div>
+          <div className={ film.filmType == 'Short' ? 'hidden' : '' }>
+            <div className="row">
+              { Details.renderDropDown.bind(this)({ columnWidth: 5, entity: 'film', property: 'dealTypeId', columnHeader: 'Deal Type', options: dealTemplates, optionDisplayProperty: 'name', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'film', property: 'grPercentage', columnHeader: 'GR %', readOnly: !FM.user.hasAdminAccess, hidden: film.dealTypeId != "5" && film.dealTypeId != "6" }) }
+              { Details.renderDropDown.bind(this)({
+                columnWidth: 3,
+                entity: 'film',
+                property: 'daysStatementDue',
+                columnHeader: 'Statements Due',
+                options: [
+                  { value: 30, text: '30 Days' },
+                  { value: 45, text: '45 Days' },
+                  { value: 60, text: '60 Days' }
+                ],
+                readOnly: !FM.user.hasAdminAccess,
+              }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'mg', columnHeader: 'MG', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'eAndO', columnHeader: 'E & O', readOnly: !FM.user.hasAdminAccess, hidden: film.filmType === "Short" }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'expenseCap', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'sellOffPeriod', columnHeader: 'DVD Sell Off Period (Months)', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'acceptDelivery', columnHeader: 'Delivery Acceptance Date', readOnly: !FM.user.hasAdminAccess }) }
+            </div>
+            <div className="row">
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'royaltyNotes', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'contractualObligations', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
+            </div>
           </div>
           <hr />
-          <div className={ "row reserve-section" + (this.state.film.reserve ? "" : " no-reserve") }>
-            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'reserve', columnHeader: 'Reserve Against Returns' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reservePercentage', columnHeader: 'Reserve %', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reserveQuarters', columnHeader: '# of Quarters', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
-            <div className={ `spacer${this.state.film.reserve ? ' hidden' : ''}` }></div>
+          <p className="section-header">Licensed Rights</p>
+          <div className="row">
+            <div className="col-xs-12">
+              <Table
+                columns={ [{
+                  header: 'Right',
+                  name: 'name',
+                }, {
+                  header: 'Territory',
+                  name: 'territory',
+                }, {
+                  header: 'Start Date',
+                  name: 'startDate',
+                }, {
+                  header: 'End Date',
+                  name: 'endDate',
+                }, {
+                  header: 'Exclusive',
+                  name: 'exclusive',
+                }] }
+                rows={ filmRights }
+                urlPrefix="film_rights"
+                marginBottom
+              />
+              { FM.user.hasAdminAccess && (
+                <>
+                  <OutlineButton
+                    onClick={ () => { this.setState({ newRightsModalOpen: true }) } }
+                    text="Add Rights"
+                    style={ { marginBottom: '30px' } }
+                  />
+                  <OutlineButton
+                    onClick={ () => { this.setState({ changeDatesModalOpen: true }) } }
+                    text="Change All Dates"
+                    style={ { marginBottom: '30px' } }
+                    float
+                  />
+                </>
+              ) }
+            </div>
           </div>
-          <hr />
-          <div className={ "row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew") }>
-            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'autoRenew', columnHeader: 'Auto-Renew' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewTerm', columnHeader: 'Term (Months)', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewDaysNotice', columnHeader: 'Days Notice', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewOptOut', columnHeader: 'Opt Out', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
-            <div className={ `spacer${this.state.film.autoRenew ? ' hidden' : ''}` }></div>
+          <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
+            <hr />
+            <p className="section-header">Revenue Splits</p>
+            <div className="row">
+              { filmRevenuePercentages.map((revenuePercentage, index) => {
+                const properErrorsArray = percentageErrors[revenuePercentage.id] ? percentageErrors[revenuePercentage.id] : [];
+                const revenueStream = revenueStreams.find(stream => stream.id == revenuePercentage.revenueStreamId);
+                return (
+                  <div key={ index }>
+                    { Details.renderField.bind(this)({
+                      columnWidth: 2,
+                      entity: 'percentageObject',
+                      property: revenuePercentage.id,
+                      errorsKey: revenuePercentage.id,
+                      errorsProperty: 'value',
+                      columnHeader: revenueStream.nickname || revenueStream.name,
+                      readOnly: !FM.user.hasAdminAccess,
+                      showFieldError: false,
+                    }) }
+                  </div>
+                );
+              }) }
+            </div>
+            <hr />
+            <div className={ "row reserve-section" + (this.state.film.reserve ? "" : " no-reserve") }>
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'reserve', columnHeader: 'Reserve Against Returns' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reservePercentage', columnHeader: 'Reserve %', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reserveQuarters', columnHeader: '# of Quarters', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
+              <div className={ `spacer${this.state.film.reserve ? ' hidden' : ''}` }></div>
+            </div>
+            <hr />
+            <div className={ "row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew") }>
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'autoRenew', columnHeader: 'Auto-Renew' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewTerm', columnHeader: 'Term (Months)', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewDaysNotice', columnHeader: 'Days Notice', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewOptOut', columnHeader: 'Opt Out', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
+              <div className={ `spacer${this.state.film.autoRenew ? ' hidden' : ''}` }></div>
+            </div>
           </div>
         </div>
-      </div>
+        <style jsx>{`
+          .spacer {
+            height: 103px;
+          }
+        `}</style>
+      </>
     );
-  }
-
-  renderRightsButtons() {
-    if (FM.user.hasAdminAccess) {
-      return ([
-        <a key={ 1 } className="blue-outline-button small m-right" onClick={ Common.changeState.bind(this, 'newRightsModalOpen', true) }>Add Rights</a>,
-        <a key={ 2 } className="blue-outline-button small float-button" onClick={ Common.changeState.bind(this, 'changeDatesModalOpen', true) }>Change All Dates</a>
-      ]);
-    }
   }
 
   renderButtons() {

@@ -26,6 +26,7 @@ export default class FilmRightsNew extends React.Component {
   }
 
   componentDidMount() {
+    setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
     sendRequest('/api/rights_and_territories', {
       data: {
         filmsToo: !!this.props.sublicensorId,
@@ -44,9 +45,7 @@ export default class FilmRightsNew extends React.Component {
         newState.films = films;
         newState.filmRight = filmRight;
       }
-      this.setState(newState, () => {
-        setUpNiceSelect({ selector: '#film-rights-new select', func: Details.changeDropdownField.bind(this) });
-      });
+      this.setState(newState);
     });
   }
 
@@ -205,13 +204,13 @@ export default class FilmRightsNew extends React.Component {
                   text="NONE"
                   onClick={ () => this.clickNoRights() }
                   float
-                  styles={ outlineButtonStyles }
+                  style={ outlineButtonStyles }
                 />
                 <OutlineButton
                   text="ALL"
                   onClick={ () => this.clickAllRights() }
                   float
-                  styles={ { ...outlineButtonStyles, marginRight: 10 } }
+                  style={ { ...outlineButtonStyles, marginRight: 10 } }
                 />
               </div>
               <div className="col-xs-6 relative">
@@ -229,13 +228,13 @@ export default class FilmRightsNew extends React.Component {
                   text="NONE"
                   onClick={ () => this.clickNoTerritories() }
                   float
-                  styles={ outlineButtonStyles }
+                  style={ outlineButtonStyles }
                 />
                 <OutlineButton
                   text="ALL"
                   onClick={ () => this.clickAllTerritories() }
                   float
-                  styles={ { ...outlineButtonStyles, marginRight: 10 } }
+                  style={ { ...outlineButtonStyles, marginRight: 10 } }
                 />
               </div>
             </div>
@@ -327,13 +326,17 @@ export default class FilmRightsNew extends React.Component {
 
   renderExclusiveColumn() {
     if (!this.props.search) {
-      return(
+      return (
         <>
           { Details.renderDropDown.bind(this)({
             columnWidth: 2,
             entity: 'filmRight',
             property: 'exclusive',
             boolean: true,
+            hideFieldError: true,
+            styles: {
+              marginBottom: 30,
+            },
           }) }
         </>
       );

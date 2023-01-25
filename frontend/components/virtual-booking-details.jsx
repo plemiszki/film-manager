@@ -333,7 +333,7 @@ export default class VirtualBookingDetails extends React.Component {
                 urlPrefix="invoices"
                 clickDelete={ (invoice) => this.clickDelete(invoice) }
                 clickEdit={ (invoice) => this.clickEdit(invoice) }
-                styles={ {  marginBottom: 15 } }
+                style={ {  marginBottom: 15 } }
               />
               <OutlineButton
                 text="Add Invoice"

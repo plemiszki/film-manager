@@ -175,7 +175,7 @@ export default class DvdDetails extends React.Component {
               urlPrefix="films"
               urlProperty="filmId"
               sortable={ false }
-              styles={ { marginBottom: 15 } }
+              style={ { marginBottom: 15 } }
             />
             <OutlineButton
               text="Add Short"

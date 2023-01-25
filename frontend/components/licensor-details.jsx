@@ -85,7 +85,7 @@ export default class LicensorDetails extends React.Component {
               <div className="row">
                 <div className="col-xs-12">
                   <Table
-                    styles={ { marginBottom: 60 } }
+                    style={ { marginBottom: 60 } }
                     columns={ ['title'] }
                     rows={ this.state.films }
                     urlPrefix="films"
