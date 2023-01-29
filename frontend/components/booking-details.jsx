@@ -588,10 +588,10 @@ export default class BookingDetails extends React.Component {
               <div className="col-xs-6">
                 <p className="section-header">Payments</p>
                 <ListBox
-                  list={ payments }
+                  entities={ payments }
                   clickDelete={ payment => this.clickDeletePayment(payment.id) }
-                  textFunc={ payment => `${payment.date} - ${payment.amount}${payment.notes && `(${payment.notes})`}` }
-                  styles={ { marginBottom: 15 } }
+                  displayFunction={ payment => `${payment.date} - ${payment.amount}${payment.notes && `(${payment.notes})`}` }
+                  style={ { marginBottom: 15 } }
                 />
                 <OutlineButton
                   text="Add Payment"
@@ -704,10 +704,10 @@ export default class BookingDetails extends React.Component {
         <div className="col-xs-6">
           <h2>Terms by Week</h2>
           <ListBox
-            list={ weeklyTerms }
+            entities={ weeklyTerms }
             clickDelete={ weeklyTerms => this.clickDeleteWeek(weeklyTerms) }
-            textFunc={ weeklyTerms => `Week ${ +weeklyTerms.order + 1 } - ${ weeklyTerms.terms }` }
-            styles={ { marginBottom: 15 } }
+            displayFunction={ weeklyTerms => `Week ${ +weeklyTerms.order + 1 } - ${ weeklyTerms.terms }` }
+            style={ { marginBottom: 15 } }
           />
           <OutlineButton
             text="Add Week"
@@ -799,10 +799,10 @@ export default class BookingDetails extends React.Component {
         <div className="col-xs-6">
           <h2>Box Office by Week</h2>
           <ListBox
-            list={ weeklyBoxOffices }
+            entities={ weeklyBoxOffices }
             clickDelete={ weeklyBoxOffice => this.clickDeleteWeeklyBoxOffice(weeklyBoxOffice) }
-            textFunc={ weeklyBoxOffice => `Week ${ +weeklyBoxOffice.order + 1 } - ${ weeklyBoxOffice.amount }` }
-            styles={ { marginBottom: 15 } }
+            displayFunction={ weeklyBoxOffice => `Week ${ +weeklyBoxOffice.order + 1 } - ${ weeklyBoxOffice.amount }` }
+            style={ { marginBottom: 15 } }
           />
           <OutlineButton
             text="Add Weekly Box Office"

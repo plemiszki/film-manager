@@ -27,6 +27,7 @@ import {
   Spinner,
   updateEntity,
   Table,
+  SearchBar,
 } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import NewEntity from './new-entity.jsx'
@@ -1048,82 +1049,89 @@ export default class FilmDetails extends React.Component {
         </div>
       );
     } else if (tab === "Bookings") {
-      var filteredBookings = this.state.bookings.concat(this.state.virtualBookings).filterSearchText(this.state.searchText, this.state.sortBy);
+      var joinedBookings = this.state.bookings.concat(this.state.virtualBookings);
       return (
-        <div>
-          <hr />
-          <h3>Screening Formats</h3>
-          <div className="row">
-            <div className="col-xs-6">
-              <ul className="standard-list screening-formats-list">
-                { alphabetizeArrayOfObjects(filmFormats, 'format').map((filmFormat) => {
-                  return(
-                    <li key={ filmFormat.id }>
-                      { filmFormat.format }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_formats', otherArrays: ['formats'] }) } data-id={ filmFormat.id }></div>
-                    </li>
-                  );
-                }) }
-              </ul>
-              <a className={ 'blue-outline-button small' } onClick={ Common.changeState.bind(this, 'formatsModalOpen', true) }>Add Format</a>
+        <>
+          <div>
+            <hr />
+            <p className="section-header">Screening Formats</p>
+            <div className="row">
+              <div className="col-xs-6">
+                <ListBox
+                  entityName="format"
+                  displayProperty="format"
+                  entities={ alphabetizeArrayOfObjects(filmFormats, 'format') }
+                  clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_formats', otherArrays: ['formats'] }) }}
+                  clickAdd={ () => { this.setState({ formatsModalOpen: true }) } }
+                  style={ { marginBottom: 30 } }
+                />
+              </div>
             </div>
+            <hr />
+            <div className="row">
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'rating' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'aspectRatio' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'film', property: 'soundConfig' }) }
+            </div>
+            <hr />
+            <p className="section-header">Bookings</p>
+            <div style={ { position: 'relative', marginBottom: 40 } }>
+              <ul className="bookings-count-list clearfix">
+                <li>Theatrical: { this.state.film.theatricalCount }</li>
+                <li>Festival: { this.state.film.festivalCount }</li>
+                <li>Non-Theatrical: { this.state.film.nonTheatricalCount }</li>
+              </ul>
+              <SearchBar
+                onChange={ FM.changeSearchText.bind(this) }
+                value={ this.state.searchText || "" }
+                style={ {
+                  float: 'none',
+                  position: 'absolute',
+                  right: 0,
+                } }
+              />
+            </div>
+            <Table
+              rows={ joinedBookings }
+              searchText={ this.state.searchText }
+              columns={[
+                { name: "startDate", width: 180, date: true },
+                { name: "venue" },
+                { name: "type", width: 200 },
+                {
+                  name: "owed",
+                  displayFunction: booking => booking.type === 'Virtual' ? 'N/A' : (booking.valid ? booking.owed : 'Invalid'),
+                },
+              ]}
+              style={ { marginBottom: 30 } }
+              clickRow={ (booking) => {
+                if (booking.type === 'Virtual') {
+                  this.redirect.call(this, "virtual_bookings", booking.id);
+                } else {
+                  this.redirect.call(this, "bookings", booking.id)
+                }
+              } }
+            />
+            <hr />
           </div>
-          <hr />
-          <div className="row">
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'rating' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'aspectRatio' }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'film', property: 'soundConfig' }) }
-          </div>
-          <hr />
-          <h3>Bookings</h3>
-          <ul className="bookings-count-list clearfix">
-            <li>Theatrical: { this.state.film.theatricalCount }</li>
-            <li>Festival: { this.state.film.festivalCount }</li>
-            <li>Non-Theatrical: { this.state.film.nonTheatricalCount }</li>
-          </ul>
-          <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
-          <table className="fm-admin-table bookings-table">
-            <thead>
-              <tr>
-                <th><div className={ FM.sortClass.call(this, "startDate") } onClick={ FM.clickHeader.bind(this, "startDate") }>Start Date</div></th>
-                <th><div className={ FM.sortClass.call(this, "venue") } onClick={ FM.clickHeader.bind(this, "venue") }>Venue</div></th>
-                <th><div className={ FM.sortClass.call(this, "type") } onClick={ FM.clickHeader.bind(this, "type") }>Type</div></th>
-                <th><div className={ FM.sortClass.call(this, "owed") } onClick={ FM.clickHeader.bind(this, "owed") }>Owed</div></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td><td></td></tr>
-              { _.orderBy(filteredBookings, [FM.commonSort.bind(this)]).map((booking, index) => {
-                return(
-                  <tr
-                    key={ index }
-                    onClick={ () => {
-                      if (booking.type === 'Virtual') {
-                        this.redirect.call(this, "virtual_bookings", booking.id);
-                      } else {
-                        this.redirect.call(this, "bookings", booking.id)
-                      }
-                    }}
-                  >
-                    <td className="indent">
-                      { booking.startDate }
-                    </td>
-                    <td>
-                      { booking.venue }
-                    </td>
-                    <td>
-                      { booking.type }
-                    </td>
-                    <td>
-                      { booking.type === 'Virtual' ? 'N/A' : (booking.valid ? booking.owed : 'Invalid') }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
-          <hr />
-        </div>
-      )
+          <style>{`
+            ul.bookings-count-list {
+              display: inline-block;
+              font-family: 'TeachableSans-Bold';
+              font-size: 14px;
+            }
+            ul.bookings-count-list li {
+              float: left;
+              border: 1px solid #E4E9ED;
+              border-radius: 10px;
+              padding: 10px 20px;
+            }
+            ul.bookings-count-list li:not(:last-of-type) {
+              margin-right: 20px;
+            }
+          `}</style>
+        </>
+      );
     } else if (tab === "Statements") {
       return (
         <div>
@@ -1457,6 +1465,9 @@ export default class FilmDetails extends React.Component {
               <hr style={ { marginTop: 30 } } />
             </div>
             <style jsx>{`
+              .badge-checkboxes {
+                margin-bottom: 10px;
+              }
               .quotes-header {
                 margin-bottom: 10px !important;
               }

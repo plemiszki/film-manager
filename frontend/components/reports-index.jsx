@@ -391,7 +391,7 @@ export default class ReportsIndex extends React.Component {
               <SearchBar
                 onChange={ FM.changeSearchText.bind(this) }
                 value={ searchText || "" }
-                styles={
+                style={
                   { position: 'absolute', right: '32px', top: '12px' }
                 }
               />
