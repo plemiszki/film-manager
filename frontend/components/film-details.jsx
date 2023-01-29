@@ -1279,197 +1279,221 @@ export default class FilmDetails extends React.Component {
         )
       } else {
         return (
-          <div>
-            <hr />
-            <div className="row">
-              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
-            </div>
-            <hr style={ { marginTop: 30 } } />
-            <div className="row">
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 500 characters', characterCount: true }) }
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'shortSynopsis', rows: 4, columnHeader: 'Synopsis - 240 characters', characterCount: true }) }
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'logline', rows: 2, columnHeader: 'Synopsis - 150 characters', characterCount: true }) }
-            </div>
-            <hr style={ { marginTop: 30 } } />
-            <div className="row">
-              <div className="col-xs-12">
-                <h3>Laurels</h3>
-                <ul className="standard-list reorderable laurels-list">
-                  <li className="drop-zone" data-index="-1" data-section="laurels"></li>
-                  { sortArrayOfObjects(laurels, 'order').map((laurel, index) => {
-                    return (
-                      <div key={ laurel.id }>
-                        <li data-index={ index } data-section="laurels">
-                          { laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'laurels' }) } data-id={ laurel.id }></div>
-                        </li>
-                        <li className="drop-zone" data-index={ index } data-section="laurels"></li>
-                      </div>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'laurelModalOpen', true) }>Add Laurel</a>
-                <div className="row row-of-checkboxes badge-checkboxes">
-                  { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
-                  { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
+          <>
+            <div>
+              <hr />
+              <div className="row">
+                { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
+                { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
+                { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
+                { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
+              </div>
+              <hr style={ { marginTop: 30 } } />
+              <div className="row">
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 500 characters', characterCount: true }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'shortSynopsis', rows: 4, columnHeader: 'Synopsis - 240 characters', characterCount: true }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'logline', rows: 2, columnHeader: 'Synopsis - 150 characters', characterCount: true }) }
+              </div>
+              <hr style={ { marginTop: 30 } } />
+              <div className="row">
+                <div className="col-xs-12">
+                  <p className="section-header">Laurels</p>
+                  <ListBoxReorderable
+                    entityName="laurel"
+                    entities={ laurels }
+                    displayFunction={ laurel => `${laurel.result}${laurel.awardName ? ` - ${laurel.awardName}` : '' } - ${laurel.festival}` }
+                    clickAdd={ () => { this.setState({ laurelModalOpen: true }) } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'laurels' }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                  <div className="row row-of-checkboxes badge-checkboxes">
+                    { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
+                    { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
+                  </div>
                 </div>
               </div>
-            </div>
-            <hr style={ { marginTop: 30 } } />
-            <div className="row">
-              <div className="col-xs-12 quotes-list">
-                <h3 className="quotes-header">Quotes</h3>
-                <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
-                { sortArrayOfObjects(quotes, 'order').map((quote, index) => {
-                  return (
-                    <div key={ quote.id } className="quote-container">
-                      { this.renderQuote(quote, index) }
-                    </div>
-                  );
-                }) }
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-xs-12">
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'quoteModalOpen', true) }>Add Quote</a>
-              </div>
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-xs-6">
-                <h3>Genres</h3>
-                <ul className="standard-list reorderable genres-list">
-                  <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
-                  { sortArrayOfObjects(filmGenres, 'order').map((filmGenre, index) => {
+              <hr style={ { marginTop: 30 } } />
+              <div className="row">
+                <div className="col-xs-12 quotes-list">
+                  <p className="section-header quotes-header">Quotes</p>
+                  <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
+                  { sortArrayOfObjects(quotes, 'order').map((quote, index) => {
+                    let bottomLine = "";
+                    bottomLine += quote.author ? quote.author : "";
+                    bottomLine += quote.author && quote.publication ? ", " : "";
+                    bottomLine += quote.publication ? quote.publication : "";
                     return (
-                      <div key={ filmGenre.id }>
-                        <li data-index={ index } data-section="genres">
-                          { filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_genres', otherArrays: ['genres'] }) } data-id={ filmGenre.id }></div>
-                        </li>
-                        <li className="drop-zone" data-index={ index } data-section="genres"></li>
+                      <div key={ quote.id } className="quote-container">
+                        <div className="quote" onClick={ this.clickQuote } data-id={ quote.id } data-index={ index } data-section={ 'quotes' }>
+                          <p data-id={ quote.id }>{ FM.user.id === 1 ? (<span>({ quote.order })&nbsp;&nbsp;</span>) : null }"{ quote.text }"</p>
+                          <p data-id={ quote.id }>- { bottomLine }</p>
+                          <div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div>
+                        </div>
+                        <div className="quote-drop-zone" data-index={ index } data-section="quotes"></div>
                       </div>
                     );
                   }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'genresModalOpen', true) }>Add Genre</a>
+                </div>
               </div>
-              <div className="col-xs-6">
-                <h3>Related Films</h3>
-                <ul className="standard-list related-films-list">
-                  { this.state.relatedFilms.map((relatedFilm) => {
-                    return (
-                      <li key={ relatedFilm.id }>
-                        { relatedFilm.title }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'related_films', otherArrays: ['otherFilms'] }) } data-id={ relatedFilm.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'relatedFilmsModalOpen', true) }>Add Related Film</a>
+              <div className="row">
+                <div className="col-xs-12">
+                  <OutlineButton
+                    text="Add Quote"
+                    onClick={ () => { this.setState({ quoteModalOpen: true }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
               </div>
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-xs-4">
-                <h3>Alternate Lengths</h3>
-                <ul className="standard-list alternate-lengths-list">
-                  { sortArrayOfObjects(alternateLengths, 'length').map((alternateLength) => {
-                    return (
-                      <li key={ alternateLength.id }>
-                        { alternateLength.length }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_lengths' }) } data-id={ alternateLength.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newAltLengthModalOpen', true) }>Add Length</a>
+              <hr />
+              <div className="row">
+                <div className="col-xs-6">
+                  <p className="section-header">Genres</p>
+                  <ListBoxReorderable
+                    entityName="genre"
+                    entities={ filmGenres }
+                    displayProperty="genre"
+                    clickAdd={ () => { this.setState({ genresModalOpen: true }) } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'filmGenres', otherArrays: ['genres'] }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
+                <div className="col-xs-6">
+                  <p className="section-header">Related Films</p>
+                  <ListBoxReorderable
+                    entityName="relatedFilm"
+                    entities={ this.state.relatedFilms }
+                    displayProperty="title"
+                    clickAdd={ () => { this.setState({ relatedFilmsModalOpen: true }) } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'related_films', otherArrays: ['otherFilms'] }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
               </div>
-              <div className="col-xs-4">
-                <h3>Alternate Audio Tracks</h3>
-                <ul className="standard-list alternate-audios-list">
-                  { alphabetizeArrayOfObjects(alternateAudios, 'languageName').map((alternateAudio) => {
-                    return (
-                      <li key={ alternateAudio.id }>
-                        { alternateAudio.languageName }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_audios', otherArrays: ['audioLanguages'] }) } data-id={ alternateAudio.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateAudioModalOpen', true) }>Add Audio Track</a>
+              <hr />
+              <div className="row">
+                <div className="col-xs-4">
+                  <p className="section-header">Alternate Lengths</p>
+                  <ListBox
+                    entityName="alternateLength"
+                    buttonText="Add Length"
+                    entities={ alternateLengths }
+                    displayProperty="length"
+                    clickAdd={ () => { this.setState({ newAltLengthModalOpen: true }) } }
+                    clickDelete={ (length) => { this.deleteFromList({ id: length.id, directory: 'alternate_lengths' }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
+                <div className="col-xs-4">
+                  <p className="section-header">Alternate Audio Tracks</p>
+                  <ListBox
+                    entityName="languageName"
+                    buttonText="Add Audio Track"
+                    entities={ alternateAudios }
+                    displayProperty="languageName"
+                    clickAdd={ () => { this.setState({ alternateAudioModalOpen: true }) } }
+                    clickDelete={ (audio) => { this.deleteFromList({ id: audio.id, directory: 'alternate_audios', otherArrays: ['audioLanguages'] }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
+                <div className="col-xs-4">
+                  <p className="section-header">Alternate Subtitles</p>
+                  <ListBox
+                    entityName="languageName"
+                    buttonText="Add Subtitles"
+                    entities={ alternateSubs }
+                    displayProperty="languageName"
+                    clickAdd={ () => { this.setState({ alternateSubsModalOpen: true }) } }
+                    clickDelete={ (sub) => { this.deleteFromList({ id: sub.id, directory: 'alternate_subs', otherArrays: ['audioLanguages'] }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
               </div>
-              <div className="col-xs-4">
-                <h3>Alternate Subtitles</h3>
-                <ul className="standard-list alternate-subtitles-list">
-                  { alphabetizeArrayOfObjects(alternateSubs, 'languageName').map((alternateSub) => {
-                    return (
-                      <li key={ alternateSub.id }>
-                        { alternateSub.languageName }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_subs', otherArrays: ['subtitleLanguages'] }) } data-id={ alternateSub.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateSubsModalOpen', true) }>Add Subtitles</a>
+              <hr />
+              <div className="row">
+                <div className="col-xs-12">
+                  <p className="section-header">Digital Retailers</p>
+                  <Table
+                    rows={ this.state.digitalRetailerFilms }
+                    columns={[
+                      { name: "name", width: 200, bold: true },
+                      { name: "url", header: "URL" },
+                    ]}
+                    style={ { marginBottom: 30 } }
+                  />
+                  <OutlineButton
+                    onClick={ () => { this.setState({ newDigitalRetailerModalOpen: true }) } }
+                    text="Add Digital Retailer"
+                    style={ { marginBottom: 30 } }
+                  />
+                </div>
               </div>
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-xs-12">
-                <h3>Digital Retailers</h3>
-                <table className="fm-admin-table digital-retailers-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>URL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td></tr>
-                    { this.state.digitalRetailerFilms.map((digitalRetailerFilm, index) => {
-                      return (
-                        <tr key={ index } onClick={ this.redirect.bind(this, 'digital_retailer_films', digitalRetailerFilm.id) }>
-                          <td className="name-column">
-                            { digitalRetailerFilm.name }
-                          </td>
-                          <td>
-                            { digitalRetailerFilm.url }
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newDigitalRetailerModalOpen', true) }>Add Digital Retailer</a>
+              <hr />
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'fmPlusUrl', columnHeader: 'Film Movement Plus Link' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'standaloneSite' }) }
               </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'vimeoTrailer', columnHeader: 'Vimeo Trailer Link' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'youtubeTrailer', columnHeader: 'YouTube Trailer Link' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'proresTrailer', columnHeader: 'ProRes Trailer Link' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'facebookLink' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'twitterLink' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'instagramLink' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'rentalUrl' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalPrice' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalDays' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
+              </div>
+              <hr style={ { marginTop: 30 } } />
             </div>
-            <hr />
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'fmPlusUrl', columnHeader: 'Film Movement Plus Link' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'standaloneSite' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'vimeoTrailer', columnHeader: 'Vimeo Trailer Link' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'youtubeTrailer', columnHeader: 'YouTube Trailer Link' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'proresTrailer', columnHeader: 'ProRes Trailer Link' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'facebookLink' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'twitterLink' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'instagramLink' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'rentalUrl' }) }
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalPrice' }) }
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalDays' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
-            </div>
-            <hr style={ { marginTop: 30 } } />
-          </div>
+            <style jsx>{`
+              .quotes-header {
+                margin-bottom: 10px !important;
+              }
+              .quote-container .quote {
+                position: relative;
+                border: solid 1px #e4e9ed;
+                border-radius: 3px;
+                padding: 15px;
+                padding-right: 80px;
+                cursor: pointer;
+              }
+              .quote p {
+                font-family: 'TeachableSans-Medium';
+              }
+              .quote p:first-of-type {
+                margin-bottom: 10px;
+              }
+              .quote-drop-zone {
+                height: 20px;
+              }
+              .quote-drop-zone.highlight {
+                border: dashed 1px black;
+              }
+              .quote .handle {
+                display: inline-block;
+                position: absolute;
+                top: calc(50% - 8px);
+                right: 30px;
+                background-position: 50%;
+                background-size: 17px;
+                background-repeat: no-repeat;
+                width: 17px;
+                height: 17px;
+                cursor: grab;
+              }
+            `}</style>
+          </>
         );
       }
     } else if (this.state.tab === "Educational") {
@@ -1816,23 +1840,6 @@ export default class FilmDetails extends React.Component {
         </div>
       );
     }
-  }
-
-  renderQuote(quote, index) {
-    var bottomLine = "";
-    bottomLine += quote.author ? quote.author : "";
-    bottomLine += quote.author && quote.publication ? ", " : "";
-    bottomLine += quote.publication ? quote.publication : "";
-    return (
-      <div>
-        <div className="quote" onClick={ this.clickQuote } data-id={ quote.id } data-index={ index } data-section={ 'quotes' }>
-          <p data-id={ quote.id }>{ FM.user.id === 1 ? (<span>({ quote.order })&nbsp;&nbsp;</span>) : null }"{ quote.text }"</p>
-          <p data-id={ quote.id }>- { bottomLine }</p>
-          <div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div>
-        </div>
-        <div className="quote-drop-zone" data-index={ index } data-section="quotes"></div>
-      </div>
-    );
   }
 
   componentDidUpdate() {
