@@ -265,26 +265,26 @@
     }
   }
 
-  .search-box {
-    margin-right: 0 !important;
-    margin-bottom: 40px;
-  }
+  // .search-box {
+  //   margin-right: 0 !important;
+  //   margin-bottom: 40px;
+  // }
 
-  ul.bookings-count-list {
-    display: inline-block;
-    font-family: 'TeachableSans-Bold';
-    font-size: 14px;
+  // ul.bookings-count-list {
+  //   display: inline-block;
+  //   font-family: 'TeachableSans-Bold';
+  //   font-size: 14px;
 
-    li {
-      float: left;
-      border: 1px solid #E4E9ED;
-      border-radius: 10px;
-      padding: 10px 20px;
-      &:not(:last-of-type) {
-        margin-right: 20px;
-      }
-    }
-  }
+  //   li {
+  //     float: left;
+  //     border: 1px solid #E4E9ED;
+  //     border-radius: 10px;
+  //     padding: 10px 20px;
+  //     &:not(:last-of-type) {
+  //       margin-right: 20px;
+  //     }
+  //   }
+  // }
 
   .bookings-table {
 

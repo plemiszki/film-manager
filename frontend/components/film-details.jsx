@@ -1518,7 +1518,7 @@ export default class FilmDetails extends React.Component {
             <hr />
             <div className="row">
               <div className="col-xs-2">
-                <h3>Pricing</h3>
+                <p className="section-header">Pricing</p>
                 <div className="edu-subheader-container">
                   <p>Pre-Street</p>
                   <p>Non-Member</p>
@@ -1562,47 +1562,42 @@ export default class FilmDetails extends React.Component {
                 { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPostStreetMember', columnHeader: 'PPR + DRL' }) }
               </div>
               <div className="col-xs-4">
-                <h3>Topics</h3>
-                <ul className="standard-list topics-list">
-                  { alphabetizeArrayOfObjects(filmTopics, 'topic').map((filmTopic) => {
-                    return (
-                      <li key={ filmTopic.id }>
-                        { filmTopic.topic }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_topics', otherArrays: ['topics'] }) } data-id={ filmTopic.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'topicsModalOpen', true) }>Add Topic</a>
+                <p className="section-header">Topics</p>
+                <ListBox
+                  entities={ filmTopics }
+                  sort
+                  entityName="topic"
+                  clickAdd={ () => { this.setState({ topicsModalOpen: true }) } }
+                  clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_topics', otherArrays: ['topics'] }) }}
+                  displayProperty="topic"
+                  style={ { marginBottom: 15 } }
+                />
               </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-xs-12">
-                <h3>Educational Streaming Platforms</h3>
-                <table className="fm-admin-table edu-platforms-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>URL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td></tr>
-                    { this.state.eduPlatformFilms.map((eduPlatformFilm, index) => {
-                      return (
-                        <tr key={ index } onClick={ this.redirect.bind(this, 'edu_platform_films', eduPlatformFilm.id) }>
-                          <td className="name-column">
-                            { eduPlatformFilm.name }
-                          </td>
-                          <td>
-                            { eduPlatformFilm.url }
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newEduPlatformModalOpen', true) }>Add Platform</a>
+                <p className="section-header">Educational Streaming Platforms</p>
+                <Table
+                  columns={ [{
+                    name: 'name',
+                    bold: true,
+                  }, {
+                    name: 'url',
+                    header: 'URL',
+                  }] }
+                  rows={ this.state.eduPlatformFilms }
+                  sortable={ false }
+                  urlPrefix="edu_platform_films"
+                  style={ { marginBottom: 30 } }
+                />
+                <OutlineButton
+                  text="Add Platform"
+                  onClick={ () => { this.setState({
+                    newEduPlatformModalOpen: true,
+                  }) } }
+                  marginBottom
+                />
               </div>
             </div>
             <hr />
