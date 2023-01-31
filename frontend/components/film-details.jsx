@@ -944,26 +944,23 @@ export default class FilmDetails extends React.Component {
       return (
         <div>
           <hr />
-          <table>
-            <thead>
-              <tr>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td></tr>
-              { dvds.map((dvd, index) => {
-                return (
-                  <tr key={ index } onClick={ this.redirect.bind(this, "dvds", dvd.id) }>
-                    <td className="name-column">
-                      { dvd.type }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
-          <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ Common.changeState.bind(this, 'dvdModalOpen', true) }>Add DVD</a>
+          <Table
+            columns={ [{
+              name: 'type',
+              bold: true,
+            }] }
+            rows={ dvds }
+            sortable={ false }
+            urlPrefix="dvds"
+            style={ { marginBottom: 30 } }
+          />
+          { dvds.length < 6 && (
+            <OutlineButton
+              text="Add DVD"
+              onClick={ () => { this.setState({ dvdModalOpen: true }) }}
+              style={ { marginBottom: '30px' } }
+            />
+          ) }
           <hr />
         </div>
       );
@@ -971,29 +968,17 @@ export default class FilmDetails extends React.Component {
       return(
         <div>
           <hr />
-          <table className="fm-admin-table">
-            <thead>
-              <tr>
-                <th>Feature Title</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td></tr>
-              { this.state.dvds.map((dvd, index) => {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, 'dvds', dvd.id) }>
-                    <td className="name-column">
-                      { dvd.featureTitle }
-                    </td>
-                    <td>
-                      { dvd.type }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
+          <Table
+            columns={ [{
+              name: 'featureTitle',
+            }, {
+              name: 'type',
+            }] }
+            rows={ dvds }
+            sortable={ false }
+            urlPrefix="dvds"
+            style={ { marginBottom: 30 } }
+          />
           <hr />
         </div>
       );
