@@ -909,34 +909,26 @@ export default class FilmDetails extends React.Component {
       return (
         <div>
           <hr />
-          <table>
-            <thead>
-              <tr>
-                <th>Season</th>
-                <th>Episode</th>
-                <th>Title</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td></tr>
-              { episodes.map((episode, index) => {
-                return (
-                  <tr key={ index } onClick={ this.redirect.bind(this, "episodes", episode.id) }>
-                    <td className="name-column">
-                      { episode.seasonNumber }
-                    </td>
-                    <td>
-                      { episode.episodeNumber }
-                    </td>
-                    <td>
-                      { episode.title }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
-          <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'episodeModalOpen', true) }>Add Episode</a>
+          <Table
+            columns={ [{
+              name: 'seasonNumber',
+              header: 'Season',
+            }, {
+              name: 'episodeNumber',
+              header: 'Episode'
+            }, {
+              name: 'title',
+            }] }
+            rows={ episodes }
+            sortable={ false }
+            urlPrefix="episodes"
+            style={ { marginBottom: 30 } }
+          />
+          <OutlineButton
+            text="Add Episode"
+            onClick={ () => { this.setState({ episodeModalOpen: true }) }}
+            style={ { marginBottom: '30px' } }
+          />
           <hr />
         </div>
       );
