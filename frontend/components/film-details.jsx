@@ -989,45 +989,26 @@ export default class FilmDetails extends React.Component {
           <p className="section-header">Sublicensed Rights</p>
           <div className="row">
             <div className="col-xs-12">
-              <table className="fm-admin-table no-hover">
-                <thead>
-                  <tr>
-                    <th><div className={ this.state.subRightsSortBy === 'sublicensorName' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'sublicensorName') }>Sublicensor</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'rightName' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'rightName') }>Right</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'territory') }>Territory</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'startDate') }>Start Date</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'endDate') }>End Date</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'exclusive') }>Exclusive</div></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                  { _.orderBy(subRights, [this.subRightsSort.bind(this), this.subRightsSortSecond.bind(this)]).map((subRight, index) => {
-                    return(
-                      <tr key={ index }>
-                        <td className="indent">
-                          { subRight.sublicensorName }
-                        </td>
-                        <td>
-                          { subRight.rightName }
-                        </td>
-                        <td>
-                          { subRight.territory }
-                        </td>
-                        <td>
-                          { subRight.startDate }
-                        </td>
-                        <td>
-                          { subRight.endDate }
-                        </td>
-                        <td>
-                          { subRight.exclusive }
-                        </td>
-                      </tr>
-                    );
-                  }) }
-                </tbody>
-              </table>
+              <Table
+                columns={ [{
+                  name: 'sublicensorName',
+                  header: 'Sublicensor',
+                }, {
+                  name: 'rightName',
+                  header: 'Right',
+                }, {
+                  name: 'territory',
+                }, {
+                  name: 'startDate',
+                }, {
+                  name: 'endDate',
+                }, {
+                  name: 'exclusive',
+                }] }
+                rows={ subRights }
+                links={ false }
+                style={ { marginBottom: 30 } }
+              />
             </div>
           </div>
           <hr />
