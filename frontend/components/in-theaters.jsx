@@ -1,6 +1,5 @@
 import React from 'react'
 import Modal from 'react-modal'
-// import ModalSelect from './modal-select.jsx'
 import InTheatersIndexItem from './in-theaters-index-item.jsx'
 import { Common, sendRequest, deleteEntity, createEntity, OutlineButton, Spinner, GrayedOut, ModalSelect } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'

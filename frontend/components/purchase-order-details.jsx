@@ -1,8 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
-import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner, ModalSelect } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
