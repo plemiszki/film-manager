@@ -1102,43 +1102,30 @@ export default class FilmDetails extends React.Component {
           <hr style={ { marginTop: 30 } } />
           <div className="row">
             <div className="col-xs-6">
-              <h3>Crossed Films</h3>
-              <ul className="standard-list crossed-films-list">
-                { crossedFilms.map((crossedFilm) => {
-                  return(
-                    <li key={ crossedFilm.id }>
-                      { crossedFilm.title }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'crossed_films', otherArrays: ['otherCrossedFilms'] }) } data-id={ crossedFilm.id }></div>
-                    </li>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'crossedFilmModalOpen', true) }>Add Film</a>
+              <p className="section-header">Crossed Films</p>
+              <ListBox
+                entityName="crossedFilm"
+                buttonText="Add Film"
+                displayProperty="title"
+                entities={ crossedFilms }
+                clickDelete={ crossedFilm => { this.deleteFromList({ id: crossedFilm.id, directory: 'crossed_films', otherArrays: ['otherCrossedFilms'] }) }}
+                clickAdd={ () => { this.setState({ crossedFilmModalOpen: true }) } }
+                style={ { marginBottom: 30 } }
+              />
             </div>
           </div>
           <hr />
-          <table className="fm-admin-table">
-            <thead>
-              <tr>
-                <th>Year</th>
-                <th>Quarter</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td></tr>
-              { this.state.reports.map((report, index) => {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, "royalty_reports", report.id) }>
-                    <td className="name-column">
-                      { report.year }
-                    </td>
-                    <td>
-                      { report.quarter }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
+          <Table
+            columns={ [{
+              name: 'year',
+            }, {
+              name: 'quarter',
+            }] }
+            rows={ this.state.reports }
+            sortable={ false }
+            urlPrefix="royalty_reports"
+            style={ { marginBottom: 30 } }
+          />
           <hr />
         </div>
       );
