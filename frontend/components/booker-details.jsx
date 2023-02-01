@@ -128,9 +128,9 @@ export default class BookerDetails extends React.Component {
               <div className="col-xs-12">
                 <p className="section-header">Venues</p>
                 <ListBox
-                  list={ bookerVenues }
+                  entities={ bookerVenues }
                   clickDelete={ (bookerVenue) => { this.clickDeleteVenue(bookerVenue.id) } }
-                  textFunc={ bookerVenue => bookerVenue.venue }
+                  displayProperty="venue"
                   styles={ { marginBottom: 15 } }
                 />
                 <OutlineButton

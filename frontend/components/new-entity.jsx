@@ -1,6 +1,6 @@
 import React from 'react'
 import ChangeCase from 'change-case'
-import { Common, Details, deepCopy, setUpNiceSelect, resetNiceSelect, createEntity, sendRequest } from 'handy-components'
+import { Common, Details, deepCopy, setUpNiceSelect, resetNiceSelect, createEntity, sendRequest, GrayedOut, Spinner } from 'handy-components'
 
 let entityNamePlural;
 let directory;
@@ -90,13 +90,14 @@ export default class NewEntity extends React.Component {
   }
 
   render() {
-    return(
+    const { fetching } = this.state;
+    return (
       <div className="new-entity handy-component admin-modal">
         <form className="white-box">
           { this.renderFields() }
           <input type="submit" className={ "standard-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.props.buttonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` } onClick={ this.clickAdd.bind(this) } />
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-          { Common.renderSpinner(this.state.fetching) }
+          <GrayedOut visible={ fetching } />
+          <Spinner visible={ fetching } />
         </form>
       </div>
     );

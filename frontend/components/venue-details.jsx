@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button } from 'handy-components'
+import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button, GrayedOut, Spinner } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ShredderModalStyles = {
@@ -173,7 +173,8 @@ export default class VenueDetails extends React.Component {
   }
 
   render() {
-    return(
+    const { fetching } = this.state;
+    return (
       <>
         <div>
           <div className="handy-component details-component">
@@ -250,15 +251,15 @@ export default class VenueDetails extends React.Component {
                 { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'venue', property: 'notes', rows: 5 }) }
               </div>
               { this.renderButtons() }
-              { Common.renderSpinner(this.state.fetching) }
-              { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+              <GrayedOut visible={ fetching } />
+              <Spinner visible={ fetching } />
             </div>
           </div>
           <div className="handy-component">
             <h1>Venue Bookings</h1>
             <div className="white-box">
-              { Common.renderSpinner(this.state.fetching) }
-              { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+              <GrayedOut visible={ fetching } />
+              <Spinner visible={ fetching } />
               <div className="row">
                 <div className="col-xs-12">
                   <table className="fm-admin-table">

@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
@@ -275,11 +275,11 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   render() {
-    const { purchaseOrder, purchaseOrderSaved, dvdCustomers, errors } = this.state;
+    const { purchaseOrder, purchaseOrderSaved, dvdCustomers, fetching } = this.state;
     const customer = this.getCustomerFromId(purchaseOrder.customerId);
-    return(
+    return (
       <div id="purchase-order-details">
-        <div className="component">
+        <div className="handy-component">
           <h1>Purchase Order Details</h1>
           <div className="white-box">
             <div className="row">
@@ -399,8 +399,8 @@ export default class PurchaseOrderDetails extends React.Component {
               </div>
             </div>
             { this.renderButtons() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

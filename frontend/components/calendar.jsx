@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, MONTHS, sendRequest } from 'handy-components'
+import { Common, MONTHS, sendRequest, GrayedOut, Spinner } from 'handy-components'
 
 export default class Calendar extends React.Component {
 
@@ -48,7 +48,8 @@ export default class Calendar extends React.Component {
   }
 
   render() {
-    return(
+    const { fetching } = this.state;
+    return (
       <div className="calendar">
         <div className="handy-component">
           <h1>Calendar - { this.state.year }</h1>
@@ -133,8 +134,8 @@ export default class Calendar extends React.Component {
                 }
               </tbody>
             </table>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
         <style jsx>{`

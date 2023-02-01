@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -190,7 +190,8 @@ export default class ReturnDetails extends React.Component {
   }
 
   render() {
-    return(
+    const { fetching } = this.state;
+    return (
       <>
         <div className="handy-component">
           <h1>Return Details</h1>
@@ -240,8 +241,8 @@ export default class ReturnDetails extends React.Component {
             { this.renderButtons() }
             <hr />
             { this.renderCreditMemoSection() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>

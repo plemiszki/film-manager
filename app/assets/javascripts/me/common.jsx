@@ -262,7 +262,7 @@ var FM = {
   },
 
   jobModal: function(job) {
-    return(
+    return (
       <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ FM.jobModalStyles }>
         <div className="jobs-modal">
           { Common.renderSpinner(true) }

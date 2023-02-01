@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, Details, deepCopy, fetchEntity, updateEntity, Table, BottomButtons } from 'handy-components'
+import { Details, deepCopy, fetchEntity, updateEntity, Table, BottomButtons, GrayedOut, Spinner } from 'handy-components'
 
 export default class LicensorDetails extends React.Component {
 
@@ -69,7 +69,7 @@ export default class LicensorDetails extends React.Component {
 
   render() {
     const { justSaved, changesToSave, spinner } = this.state;
-    return(
+    return (
       <>
         <div className="licensor-details">
           <div className="handy-component">
@@ -101,8 +101,8 @@ export default class LicensorDetails extends React.Component {
                 disabled={ spinner }
                 clickSave={ () => { this.clickSave() } }
               />
-              { Common.renderSpinner(spinner) }
-              { Common.renderGrayedOut(spinner, -36, -32, 5) }
+              <GrayedOut visible={ spinner } />
+              <Spinner visible={ spinner } />
             </div>
           </div>
         </div>

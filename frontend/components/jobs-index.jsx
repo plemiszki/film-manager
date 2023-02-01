@@ -48,8 +48,9 @@ export default class JobsIndex extends React.Component {
   }
 
   render() {
+    const { fetching } = this.state;
     if (this.state.jobs.length > 0) {
-      return(
+      return (
         <div id="jobs-index" className="component">
           <div className="white-box" style={ { padding: 20 } }>
             <table className="fm-admin-table no-hover no-highlight">
@@ -83,8 +84,8 @@ export default class JobsIndex extends React.Component {
                 }) }
               </tbody>
             </table>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -20, -20, 5) }
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
       );

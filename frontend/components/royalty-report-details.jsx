@@ -146,7 +146,7 @@ export default class ReportDetails extends React.Component {
   }
 
   render() {
-    const { showJoined, report, streams } = this.state;
+    const { showJoined, report, streams, fetching } = this.state;
     const { dealId } = report;
     const crossedStatement = (report.id === 0);
 
@@ -698,8 +698,8 @@ export default class ReportDetails extends React.Component {
               }) }
             </div>
             { this.renderButtons() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
           { Common.renderJobModal.call(this, this.state.job) }
         </div>
