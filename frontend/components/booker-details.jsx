@@ -128,6 +128,7 @@ export default class BookerDetails extends React.Component {
               <div className="col-xs-12">
                 <p className="section-header">Venues</p>
                 <ListBox
+                  entityName="bookerVenue"
                   entities={ bookerVenues }
                   clickDelete={ (bookerVenue) => { this.clickDeleteVenue(bookerVenue.id) } }
                   displayProperty="venue"

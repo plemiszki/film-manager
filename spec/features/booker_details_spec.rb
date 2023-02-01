@@ -39,7 +39,7 @@ describe 'booker_details', type: :feature do
 
   it 'adds venues' do
     visit booker_path(@booker, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Venue').click
+    find('a', text: 'Add Venue').click
     select_from_modal('Some Theater')
     expect(BookerVenue.last.attributes).to include(
       'booker_id' => @booker.id,
@@ -50,8 +50,8 @@ describe 'booker_details', type: :feature do
   it 'removes venues' do
     BookerVenue.create(booker_id: @booker.id, venue_id: @venue.id)
     visit booker_path(@booker, as: $admin_user)
-    within('.standard-list') do
-      find('.x-button').click
+    within('ul[data-test="booker-venues"]') do
+      find('.x-gray-circle').click
     end
     expect(page).not_to have_selector('.spinner')
     expect(BookerVenue.count).to eq(0)
@@ -59,11 +59,7 @@ describe 'booker_details', type: :feature do
 
   it 'deletes the booker' do
     visit booker_path(@booker, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/bookers', ignore_query: true)
     expect(Booker.find_by_id(@booker.id)).to be(nil)
   end

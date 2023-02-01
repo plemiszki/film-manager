@@ -99,9 +99,17 @@ end
 
 def save_and_wait
   expect(page).not_to have_selector('.spinner')
-  save_button = find('.orange-button, .btn', text: /^Save$/)
+  save_button = find('a', text: /^Save$/)
   save_button.click
   expect(page).not_to have_selector('.spinner')
+end
+
+def click_delete_and_confirm
+  delete_button = find('a', text: /^Delete$/)
+  delete_button.click
+  within('.confirm-delete') do
+    find('.red-button').click
+  end
 end
 
 def fill_out_and_submit_modal(data, button_type)
