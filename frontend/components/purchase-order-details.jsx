@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner, ModalSelect } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner, ModalSelect, BottomButtons } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
@@ -274,7 +274,7 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   render() {
-    const { purchaseOrder, purchaseOrderSaved, dvdCustomers, fetching } = this.state;
+    const { purchaseOrder, purchaseOrderSaved, dvdCustomers, fetching, justSaved, changesToSave } = this.state;
     const customer = this.getCustomerFromId(purchaseOrder.customerId);
     return (
       <div id="purchase-order-details">
@@ -397,7 +397,16 @@ export default class PurchaseOrderDetails extends React.Component {
                 </div>
               </div>
             </div>
-            { this.renderButtons() }
+            { !this.state.purchaseOrder.shipDate && (
+              <BottomButtons
+                entityName="purchaseOrder"
+                confirmDelete={ Details.clickDelete.bind(this) }
+                justSaved={ justSaved }
+                changesToSave={ changesToSave }
+                disabled={ fetching }
+                clickSave={ () => { this.clickSave() } }
+              />
+            ) }
             <GrayedOut visible={ fetching } />
             <Spinner visible={ fetching } />
           </div>
@@ -480,21 +489,6 @@ export default class PurchaseOrderDetails extends React.Component {
       return(
         <a className="blue-outline-button small" onClick={ this.clickAddItem.bind(this) }>Add Item</a>
       )
-    }
-  }
-
-  renderButtons() {
-    if (!this.state.purchaseOrder.shipDate) {
-      return(
-        <div>
-          <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-            { Details.saveButtonText.call(this) }
-          </a>
-          <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-            Delete
-          </a>
-        </div>
-      );
     }
   }
 

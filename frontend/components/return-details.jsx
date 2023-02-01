@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -190,7 +190,7 @@ export default class ReturnDetails extends React.Component {
   }
 
   render() {
-    const { fetching } = this.state;
+    const { fetching, justSaved, changesToSave } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -238,7 +238,14 @@ export default class ReturnDetails extends React.Component {
             </table>
             <a className="outline-button btn" onClick={ Common.changeState.bind(this, 'selectItemModalOpen', true) }>Add Item</a>
             <hr />
-            { this.renderButtons() }
+            <BottomButtons
+              entityName="return"
+              confirmDelete={ Details.clickDelete.bind(this) }
+              justSaved={ justSaved }
+              changesToSave={ changesToSave }
+              disabled={ fetching }
+              clickSave={ () => { this.clickSave() } }
+            />
             <hr />
             { this.renderCreditMemoSection() }
             <GrayedOut visible={ fetching } />
@@ -342,24 +349,6 @@ export default class ReturnDetails extends React.Component {
         </td>
       );
     }
-  }
-
-  renderButtons() {
-    return(
-      <>
-        <a className={ "btn standard-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-        <style jsx>{`
-          a {
-            margin-bottom: 30px;
-          }
-        `}</style>
-      </>
-    );
   }
 
   componentDidUpdate() {

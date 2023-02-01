@@ -697,7 +697,27 @@ export default class ReportDetails extends React.Component {
                 inputStyles,
               }) }
             </div>
-            { this.renderButtons() }
+            <div>
+              <SaveButton
+                justSaved={ justSaved }
+                changesToSave={ changesToSave }
+                disabled={ fetching }
+                onClick={ () => { this.clickSave() } }
+              />
+              <Button
+                text="Export PDF"
+                onClick={ () => { this.clickExport() } }
+                disabled= { fetching }
+                float
+              />
+              <Button
+                text={ showJoined ? "Including Current Period" : "Not Including Current Period" }
+                onClick={ () => { this.clickToggle() } }
+                disabled= { fetching }
+                float
+                marginRight
+              />
+            </div>
             <GrayedOut visible={ fetching } />
             <Spinner visible={ fetching } />
           </div>
@@ -845,33 +865,6 @@ export default class ReportDetails extends React.Component {
           }
         `}</style>
       </>
-    );
-  }
-
-  renderButtons() {
-    const { justSaved, changesToSave, fetching, showJoined } = this.state;
-    return (
-      <div>
-        <SaveButton
-          justSaved={ justSaved }
-          changesToSave={ changesToSave }
-          disabled={ fetching }
-          onClick={ () => { this.clickSave() } }
-        />
-        <Button
-          text="Export PDF"
-          onClick={ () => { this.clickExport() } }
-          disabled= { fetching }
-          float
-        />
-        <Button
-          text={ showJoined ? "Including Current Period" : "Not Including Current Period" }
-          onClick={ () => { this.clickToggle() } }
-          disabled= { fetching }
-          float
-          marginRight
-        />
-      </div>
     );
   }
 

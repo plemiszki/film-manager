@@ -173,7 +173,7 @@ export default class VenueDetails extends React.Component {
   }
 
   render() {
-    const { fetching } = this.state;
+    const { fetching, justSaved, changesToSave } = this.state;
     return (
       <>
         <div>
@@ -250,7 +250,14 @@ export default class VenueDetails extends React.Component {
               <div className="row">
                 { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'venue', property: 'notes', rows: 5 }) }
               </div>
-              { this.renderButtons() }
+              <BottomButtons
+                entityName="venue"
+                confirmDelete={ Details.clickDelete.bind(this) }
+                justSaved={ justSaved }
+                changesToSave={ changesToSave }
+                disabled={ fetching }
+                clickSave={ () => { this.clickSave() } }
+              />
               <GrayedOut visible={ fetching } />
               <Spinner visible={ fetching } />
             </div>
@@ -358,24 +365,6 @@ export default class VenueDetails extends React.Component {
           }
         `}</style>
       </>
-    );
-  }
-
-  renderButtons() {
-    if (this.state.changesToSave) {
-      var buttonText = "Save";
-    } else {
-      var buttonText = this.state.justSaved ? "Saved" : "No Changes";
-    }
-    return(
-      <div>
-        <a className={ "standard-button standard-width btn" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { buttonText }
-        </a>
-        <a className={ "delete-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickDelete.bind(this) }>
-          Delete
-        </a>
-      </div>
     );
   }
 }
