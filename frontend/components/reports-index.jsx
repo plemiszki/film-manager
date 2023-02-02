@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity, Button, SearchBar, Spinner, GrayedOut } from 'handy-components'
+import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity, Button, SearchBar, Spinner, GrayedOut, Table } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const importModalStyles = {
@@ -318,7 +318,9 @@ export default class ReportsIndex extends React.Component {
   }
 
   render() {
-    const { fetching, daysDue, reports, searchText, job, sortBy } = this.state;
+    const { fetching, daysDue, reports, searchText, job } = this.state;
+    const sortedReports = reports.sort(this.sortReports.bind(this)).filterDaysDue(this.state.daysDue);
+
     return (
       <>
         <div>
@@ -401,41 +403,32 @@ export default class ReportsIndex extends React.Component {
                 <option value="45">45 days</option>
                 <option value="60">60 days</option>
               </select>
-              <table>
-                <thead>
-                  <tr>
-                    <th><div className={ FM.sortClass.call(this, "title") } onClick={ this.clickTitle.bind(this) }>Title</div></th>
-                    <th><div className={ FM.sortClass.call(this, "licensor") } onClick={ this.clickLicensor.bind(this) }>Licensor</div></th>
-                    <th></th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td></td><td></td><td></td></tr>
-                  { reports.sort(this.sortReports.bind(this)).filterDaysDue(this.state.daysDue).filterSearchText(searchText, sortBy).map(function(report, index) {
-                    const { id, title, licensor, days, sendReport, dateSent } = report;
-                    const url = `/royalty_reports/${id}`;
-                    return (
-                      <tr key={ index }>
-                        <td className="bold">
-                          <a href={ url }>{ ellipsis(title, 42) }</a>
-                        </td>
-                        <td>
-                          <a href={ url }>{ licensor }</a>
-                        </td>
-                        <td>
-                          <a href={ url }>{ days } days</a>
-                        </td>
-                        <td>
-                          <a href={ url }>
-                            { sendReport ? (dateSent ? Tools.formatDate(new Date(dateSent + " 0:00")) : "Not Sent") : "Do Not Send" }
-                          </a>
-                        </td>
-                      </tr>
-                    );
-                  }.bind(this)) }
-                </tbody>
-              </table>
+              <Table
+                urlPrefix="royalty_reports"
+                searchText={ searchText }
+                rows={ sortedReports }
+                columns={[
+                  {
+                    name: "title",
+                    bold: true,
+                    displayFunction: report => ellipsis(report.title, 42),
+                    width: "40%",
+                  },
+                  { name: "licensor", width: "30%" },
+                  {
+                    header: "",
+                    displayFunction: report => `${report.days} days`,
+                    width: "15%",
+                  },
+                  {
+                    header: "",
+                    displayFunction: (report) => {
+                      return report.sendReport ? (report.dateSent ? Tools.formatDate(new Date(report.dateSent + " 0:00")) : "Not Sent") : "Do Not Send"
+                    },
+                    width: "15%",
+                  },
+                ]}
+              />
               <Spinner visible={ fetching } />
               <GrayedOut visible={ fetching } />
             </div>
@@ -461,18 +454,6 @@ export default class ReportsIndex extends React.Component {
             width: 100px;
             top: 14px;
             right: 300px;
-          }
-          th:first-of-type {
-            width: 40%;
-          }
-          th:nth-of-type(2) {
-            width: 30%;
-          }
-          th:nth-of-type(3) {
-            width: 15%;
-          }
-          th:nth-of-type(4) {
-            width: 15%;
           }
         `}</style>
       </>

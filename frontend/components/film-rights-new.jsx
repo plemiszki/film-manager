@@ -302,13 +302,6 @@ export default class FilmRightsNew extends React.Component {
             margin-bottom: 10px;
             overflow-y: scroll;
           }
-          .blue-outline-button {
-            float: right;
-            min-width: 75px;
-          }
-          .blue-outline-button:last-of-type {
-            margin-right: 10px;
-          }
         `}</style>
       </>
     );

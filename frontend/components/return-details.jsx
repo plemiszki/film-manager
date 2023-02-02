@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, Button } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -129,13 +129,13 @@ export default class ReturnDetails extends React.Component {
     });
   }
 
-  clickX(e) {
+  deleteItem(id) {
     this.setState({
       fetching: true
     });
     deleteEntity({
       directory: 'return_items',
-      id: e.target.dataset.id,
+      id,
     }).then((response) => {
       const { items, otherItems } = response;
       this.setState({
@@ -190,7 +190,7 @@ export default class ReturnDetails extends React.Component {
   }
 
   render() {
-    const { fetching, justSaved, changesToSave } = this.state;
+    const { fetching, justSaved, changesToSave, items } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -202,41 +202,22 @@ export default class ReturnDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 4, entity: 'return', property: 'date' }) }
             </div>
             <hr />
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Qty</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td></tr>
-                { this.state.items.map((item, index) => {
-                  return(
-                    <tr key={index}>
-                      <td className="name-column">
-                        <div className="link-padding">
-                          { item.label }
-                        </div>
-                      </td>
-                      <td>
-                        <div className="link-padding">
-                          { item.qty }
-                        </div>
-                      </td>
-                      <td>
-                        <div className="link-padding">
-                          { item.amount }
-                        </div>
-                      </td>
-                      { this.renderXButton(item) }
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
-            <a className="outline-button btn" onClick={ Common.changeState.bind(this, 'selectItemModalOpen', true) }>Add Item</a>
+            <Table
+              rows={ items }
+              columns={[
+                { name: 'label', header: 'Item' },
+                { name: 'qty' },
+                { name: 'amount' },
+              ]}
+              clickDelete={ this.state.return.creditMemoDate ? null : item => this.deleteItem(item.id) }
+              sortable={ false }
+              style={ { marginBottom: 15 } }
+            />
+            <OutlineButton
+              text="Add Item"
+              onClick={ () => this.setState({ selectItemModalOpen: true }) }
+              marginBottom
+            />
             <hr />
             <BottomButtons
               entityName="return"
@@ -245,6 +226,7 @@ export default class ReturnDetails extends React.Component {
               changesToSave={ changesToSave }
               disabled={ fetching }
               clickSave={ () => { this.clickSave() } }
+              marginBottom
             />
             <hr />
             { this.renderCreditMemoSection() }
@@ -266,20 +248,12 @@ export default class ReturnDetails extends React.Component {
           { this.renderQtyModal() }
         </Modal>
         { Common.renderJobModal.call(this, this.state.job) }
-        <style jsx>{`
-          table {
-            margin-bottom: 15px;
-          }
-          .outline-button {
-            margin-bottom: 30px;
-          }
-        `}</style>
       </>
     );
   }
 
   renderQtyModal() {
-    return(
+    return (
     <>
       <div className="qty-modal">
         <h1>Enter Quantity:</h1>
@@ -330,23 +304,18 @@ export default class ReturnDetails extends React.Component {
   }
 
   renderCreditMemoSection() {
+    const { fetching, changesToSave, items } = this.state;
     if (this.state.return.creditMemoId) {
-      return(
+      return (
         <div><a style={ { textDecoration: 'underline' } } href={ `/credit_memos/${this.state.return.creditMemoId}` }>Credit Memo { this.state.return.creditMemoNumber }</a> was sent on { this.state.return.creditMemoDate }.</div>
       );
     } else if (this.state.return.id) {
-      return(
-        <a className={ "standard-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate and Send Credit Memo</a>
-      );
-    }
-  }
-
-  renderXButton(item) {
-    if (!this.state.return.shipDate) {
-      return(
-        <td>
-          <div className="x-button" onClick={ this.clickX.bind(this) } data-id={ item.id }></div>
-        </td>
+      return (
+        <Button
+          text="Generate and Send Credit Memo"
+          disabled={ fetching || changesToSave || items.length === 0 }
+          onClick={ () => { this.clickGenerateButton() } }
+        />
       );
     }
   }

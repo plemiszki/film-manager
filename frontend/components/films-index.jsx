@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
-import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button, Spinner, GrayedOut, SearchBar } from 'handy-components'
+import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button, Spinner, GrayedOut, SearchBar, Table } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const FilterModalStyles = {
@@ -179,7 +179,7 @@ export default class FilmsIndex extends Component {
     var filteredFilms = this.state[this.state.filterActive ? 'filteredFilms' : 'films'].filterSearchText(this.state.searchText, this.state.sortBy);
     return (
       <>
-        <div id="films-index" className="handy-component">
+        <div className="handy-component">
           <div>
             { this.renderHeader() }
             { this.renderExportMetadataButton() }
@@ -192,33 +192,23 @@ export default class FilmsIndex extends Component {
             />
           </div>
           <div className="white-box">
-            <table>
-              <thead>
-                <tr>
-                  <th><div className={ FM.sortClass.call(this, "title") } onClick={ FM.clickHeader.bind(this, "title") }>Title</div></th>
-                  <th><div className={ FM.sortClass.call(this, "endDate") } onClick={ FM.clickHeader.bind(this, "endDate") }>Expiration Date</div></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td></tr>
-                { _.orderBy(filteredFilms, [FM.commonSort.bind(this)]).map((film, index) => {
-                  return(
-                    <tr key={ index }>
-                      <td className="bold">
-                        <a href={ `/films/${film.id}` }>
-                          { film.title }
-                        </a>
-                      </td>
-                      <td className={ new Date(film.endDate) < Date.now() ? 'expired' : '' }>
-                        <a href={ `/films/${film.id}` }>
-                          { film.endDate }
-                        </a>
-                      </td>
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
+            <Table
+              rows={ filteredFilms }
+              columns={[
+                {
+                  name: "title",
+                  bold: true,
+                },
+                {
+                  name: "endDate",
+                  header: 'Expiration Date',
+                  date: true,
+                  dateSortLast: [""],
+                  redIf: film => new Date(film.endDate) < Date.now(),
+                },
+              ]}
+              urlPrefix="films"
+            />
             <Spinner visible={ fetching } />
             <GrayedOut visible={ fetching } />
           </div>
@@ -243,11 +233,6 @@ export default class FilmsIndex extends Component {
           </Modal>
           { Common.renderJobModal.call(this, this.state.job) }
         </div>
-        <style jsx>{`
-          .expired {
-            color: red;
-          }
-        `}</style>
       </>
     );
   }

@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner, ModalSelect, BottomButtons } from 'handy-components'
+import { Common, Button, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner, ModalSelect, BottomButtons, Table, OutlineButton } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const AddAddressModalStyles = {
@@ -101,18 +101,6 @@ export default class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  clickDelete() {
-    this.setState({
-      deleteModalOpen: true
-    });
-  }
-
-  clickSaveShippingAddress() {
-    this.setState({
-      addAddressModalOpen: true
-    });
-  }
-
   addShippingAddressCallback(shippingAddresses) {
     this.setState({
       shippingAddresses,
@@ -120,15 +108,9 @@ export default class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  clickUseSavedShippingAddress() {
-    this.setState({
-      selectAddressModalOpen: true
-    });
-  }
-
-  clickSelectShippingAddress(option, event) {
+  clickSelectShippingAddress(option) {
     for (let i = 0; i < this.state.shippingAddresses.length; i++) {
-      if (this.state.shippingAddresses[i].id === +event.target.dataset.id) {
+      if (this.state.shippingAddresses[i].id === option.id) {
         let address = this.state.shippingAddresses[i];
         let purchaseOrder = this.state.purchaseOrder;
         purchaseOrder.name = address.name;
@@ -158,10 +140,11 @@ export default class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  clickSelectItem(option, event) {
+  clickSelectItem(option) {
+    console.log(option);
     this.setState({
-      selectedItemId: event.target.dataset.id,
-      selectedItemType: event.target.dataset.type,
+      selectedItemId: option.id,
+      selectedItemType: option.itemType,
       selectItemModalOpen: false,
       qtyModalOpen: true,
       selectedItemQty: 1
@@ -204,13 +187,13 @@ export default class PurchaseOrderDetails extends React.Component {
     });
   }
 
-  clickX(e) {
+  deleteItem(id) {
     this.setState({
       fetching: true
     });
     deleteEntity({
       directory: 'purchase_order_items',
-      id: e.target.dataset.id,
+      id,
     }).then((response) => {
       const { items, otherItems } = response;
       this.setState({
@@ -274,235 +257,205 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   render() {
-    const { purchaseOrder, purchaseOrderSaved, dvdCustomers, fetching, justSaved, changesToSave } = this.state;
+    const { purchaseOrder, dvdCustomers, fetching, justSaved, changesToSave } = this.state;
     const customer = this.getCustomerFromId(purchaseOrder.customerId);
+    const canSendInvoice = this.canSendInvoice(customer);
+    const unshippedPO = !purchaseOrder.shipDate;
+    const shippedPO = !unshippedPO;
+
+    let tableColumns = [
+      {
+        name: "label",
+        header: "Item"
+      },
+      {
+        name: "qty",
+        redIf: item => unshippedPO && (item.qty > item.stock),
+      },
+    ];
+
+    if (unshippedPO) {
+      tableColumns.push({
+        name: "stock",
+        redIf: item => unshippedPO && (item.qty > item.stock),
+      });
+    }
+
+    tableColumns.push({
+      header: purchaseOrder.sendInvoice ? 'Unit Price' : '',
+      name: "price",
+      displayFunction: item => purchaseOrder.sendInvoice ? item.price : '',
+    });
+
     return (
-      <div id="purchase-order-details">
-        <div className="handy-component">
-          <h1>Purchase Order Details</h1>
-          <div className="white-box">
-            <div className="row">
-              { Details.renderField.bind(this)({
-                columnWidth: 6,
-                entity: 'purchaseOrder',
-                property: 'number',
-                warnIf: !purchaseOrder.shipDate && purchaseOrder.duplicate,
-                warning: 'A PO with this number already exists',
-                readOnly: !!purchaseOrder.shipDate,
-              }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'orderDate', readOnly: !!purchaseOrder.shipDate }) }
-            </div>
-            <hr />
-            { this.renderSavedShippingAddressButton() }
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'purchaseOrder', property: 'name', readOnly: !!purchaseOrder.shipDate }) }
-              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'purchaseOrder', property: 'address1', columnHeader: 'Address 1', readOnly: !!purchaseOrder.shipDate }) }
-              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'purchaseOrder', property: 'address2', columnHeader: 'Address 2', readOnly: !!purchaseOrder.shipDate }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'purchaseOrder', property: 'city', readOnly: !!purchaseOrder.shipDate }) }
-              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'purchaseOrder', property: 'state', readOnly: !!purchaseOrder.shipDate }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'purchaseOrder', property: 'zip', readOnly: !!purchaseOrder.shipDate }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'purchaseOrder', property: 'country', readOnly: !!purchaseOrder.shipDate }) }
-              { Details.renderDropDown.bind(this)({
-                columnWidth: 4,
-                entity: 'purchaseOrder',
-                property: 'customerId',
-                columnHeader: 'Customer',
-                options: dvdCustomers || [],
-                optionDisplayProperty: 'name',
-                optional: true,
-                noneValue: '0',
-                readOnly: !!purchaseOrder.shipDate,
-              }) }
-            </div>
-            { this.renderSaveShippingAddressButton() }
-            <hr />
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th>Items</th>
-                  <th>Qty</th>
-                  { (() => {
-                    if (!purchaseOrder.shipDate) {
-                      return(<th>Stock</th>)
-                    }
-                  })() }
-                  <th>{ purchaseOrderSaved.sendInvoice ? 'Unit Price' : '' }</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td></tr>
-                { this.state.items.map((item, index) => {
-                  return(
-                    <tr key={ index }>
-                      <td className="name-column">
-                        <div>
-                          { item.label }
-                        </div>
-                      </td>
-                      <td className={ !purchaseOrder.shipDate && item.qty > item.stock ? "warning" : "" } >
-                          { item.qty }
-                      </td>
-                      { (() => {
-                        if (!purchaseOrder.shipDate) {
-                          return(
-                            <td className={ item.qty > item.stock ? "warning" : "" } >
-                                { item.stock }
-                            </td>
-                          )
-                        }
-                      })() }
-                      <td>
-                          { this.state.purchaseOrderSaved.sendInvoice ? item.price : '' }
-                      </td>
-                      { this.renderXButton(item) }
-                    </tr>
-                  );
+      <>
+        <div>
+          <div className="handy-component">
+            <h1>Purchase Order Details</h1>
+            <div className="white-box">
+              <div className="row">
+                { Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: 'purchaseOrder',
+                  property: 'number',
+                  warnIf: unshippedPO && purchaseOrder.duplicate,
+                  warning: 'A PO with this number already exists',
+                  readOnly: shippedPO,
                 }) }
-              </tbody>
-            </table>
-            { this.renderAddItemButton() }
-            <hr />
-            <div className="row">
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5 }) }
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-xs-12 text-center">
-                <input
-                  id="send-invoice"
-                  className="checkbox"
-                  type="checkbox"
-                  onChange={ FM.changeCheckBox.bind(this, this.changeFieldArgs()) }
-                  checked={ this.state.purchaseOrder.sendInvoice }
-                  data-field="sendInvoice"
-                  disabled={
-                    this.state.purchaseOrder.shipDate ||
-                    this.canSendInvoice(this.getCustomerFromId(this.state.purchaseOrder.customerId)) === false
-                  }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'purchaseOrder', property: 'orderDate', readOnly: !!purchaseOrder.shipDate }) }
+              </div>
+              <hr />
+              { unshippedPO && (
+                <OutlineButton
+                  text="Use Saved Shipping Address"
+                  onClick={ () => this.setState({ selectAddressModalOpen: true }) }
+                  marginBottom
                 />
-                <label className="checkbox">Send Invoice</label>
-                { this.renderDisabledNotification() }
-                <div>
-                  <a
-                    id="ship"
-                    className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) + (this.state.purchaseOrder.shipDate ? " shipped" : "") }
-                    onClick={ this.clickShip.bind(this, { reportingOnly: false }) }
-                  >
-                    { this.state.purchaseOrder.shipDate ? "Shipped " + this.state.purchaseOrder.shipDate : (this.state.changesToSave ? "Save to Ship" : "Ship Now") }
-                  </a>
-                  { this.renderReportingOnlyButton() }
+              ) }
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'purchaseOrder', property: 'name', readOnly: !!purchaseOrder.shipDate }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'purchaseOrder', property: 'address1', columnHeader: 'Address 1', readOnly: !!purchaseOrder.shipDate }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'purchaseOrder', property: 'address2', columnHeader: 'Address 2', readOnly: !!purchaseOrder.shipDate }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'purchaseOrder', property: 'city', readOnly: !!purchaseOrder.shipDate }) }
+                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'purchaseOrder', property: 'state', readOnly: !!purchaseOrder.shipDate }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'purchaseOrder', property: 'zip', readOnly: !!purchaseOrder.shipDate }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'purchaseOrder', property: 'country', readOnly: !!purchaseOrder.shipDate }) }
+                { Details.renderDropDown.bind(this)({
+                  columnWidth: 4,
+                  entity: 'purchaseOrder',
+                  property: 'customerId',
+                  columnHeader: 'Customer',
+                  options: dvdCustomers || [],
+                  optionDisplayProperty: 'name',
+                  optional: true,
+                  noneValue: '0',
+                  readOnly: shippedPO,
+                }) }
+              </div>
+              { unshippedPO && (
+                <OutlineButton
+                  text="Save Shipping Address"
+                  onClick={ () => this.setState({ addAddressModalOpen: true }) }
+                  marginBottom
+                />
+              ) }
+              <hr />
+              <Table
+                sortable={ false }
+                links={ false }
+                rows={ this.state.items }
+                columns={ tableColumns }
+                marginBottom
+                clickDelete={ unshippedPO ? item => this.deleteItem(item.id) : null }
+              />
+              { unshippedPO && (
+                <OutlineButton
+                  text="Add Item"
+                  onClick={ () => this.clickAddItem() }
+                  marginBottom
+                />
+              ) }
+              <hr />
+              <div className="row">
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5 }) }
+              </div>
+              <hr />
+              <div className="row">
+                { Details.renderSwitch.bind(this)({
+                  columnWidth: 12,
+                  entity: 'purchaseOrder',
+                  property: 'sendInvoice',
+                  center: true,
+                  readOnly: shippedPO || !canSendInvoice,
+                  style: { marginBottom: 30 }
+                }) }
+              </div>
+              <div className="row">
+                <div className="col-xs-12 text-center">
+                  { unshippedPO && !customer && (
+                    <div className="notification">Invoice cannot be sent because no customer is selected.</div>
+                  ) }
+                  { unshippedPO && customer && customer.consignment && (
+                    <div className="notification">Invoice cannot be sent because { customer.name } sells on consignment.</div>
+                  ) }
+                  <div>
+                    <Button
+                      disabled= { fetching || changesToSave || shippedPO }
+                      text={ shippedPO ? `Shipped ${purchaseOrder.shipDate}` : (changesToSave ? "Save to Ship" : "Ship Now") }
+                      onClick={ () => this.clickShip({ reportingOnly: false }) }
+                      marginBottom
+                    />
+                    { unshippedPO && canSendInvoice && (
+                      <Button
+                        disabled={ fetching || changesToSave }
+                        text={ changesToSave ? "Save to Ship" : "Invoice Only" }
+                        onClick={ () => this.clickShip({ reportingOnly: true }) }
+                        style={ { marginLeft: 20 } }
+                      />
+                    ) }
+                  </div>
                 </div>
               </div>
+              { unshippedPO && (
+                <BottomButtons
+                  entityName="purchaseOrder"
+                  confirmDelete={ Details.clickDelete.bind(this) }
+                  justSaved={ justSaved }
+                  changesToSave={ changesToSave }
+                  disabled={ fetching }
+                  clickSave={ () => { this.clickSave() } }
+                />
+              ) }
+              <GrayedOut visible={ fetching } />
+              <Spinner visible={ fetching } />
             </div>
-            { !this.state.purchaseOrder.shipDate && (
-              <BottomButtons
-                entityName="purchaseOrder"
-                confirmDelete={ Details.clickDelete.bind(this) }
-                justSaved={ justSaved }
-                changesToSave={ changesToSave }
-                disabled={ fetching }
-                clickSave={ () => { this.clickSave() } }
-              />
-            ) }
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
           </div>
+          <Modal isOpen={ this.state.addAddressModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ AddAddressModalStyles }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="shippingAddress"
+              entityNamePlural="shippingAddresses"
+              initialEntity={ {
+                label: "",
+                name: purchaseOrder.name,
+                address1: purchaseOrder.address1,
+                address2: purchaseOrder.address2,
+                city: purchaseOrder.city,
+                state: purchaseOrder.state,
+                zip: purchaseOrder.zip,
+                country: purchaseOrder.country,
+                customerId: purchaseOrder.customerId,
+                customerInfo: purchaseOrder.customerId !== '0' ? `Customer: ${customer.name}` : "No DVD Customer"
+              } }
+              callback={ this.addShippingAddressCallback.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.selectAddressModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+            <ModalSelect options={ this.state.shippingAddresses } property="label" func={ this.clickSelectShippingAddress.bind(this) } />
+          </Modal>
+          <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
+            <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />
+          </Modal>
+          <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
+            <div className="qty-modal">
+              <h1>Enter Quantity:</h1>
+              <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
+              <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
+              <div className="orange-button" onClick={ this.clickQtyOk.bind(this) }>
+                OK
+              </div>
+            </div>
+          </Modal>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="purchaseOrder"
-            confirmDelete={ Details.clickDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.addAddressModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ AddAddressModalStyles }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="shippingAddress"
-            entityNamePlural="shippingAddresses"
-            initialEntity={ {
-              label: "",
-              name: purchaseOrder.name,
-              address1: purchaseOrder.address1,
-              address2: purchaseOrder.address2,
-              city: purchaseOrder.city,
-              state: purchaseOrder.state,
-              zip: purchaseOrder.zip,
-              country: purchaseOrder.country,
-              customerId: purchaseOrder.customerId,
-              customerInfo: purchaseOrder.customerId !== '0' ? `Customer: ${customer.name}` : "No DVD Customer"
-            } }
-            callback={ this.addShippingAddressCallback.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.selectAddressModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.shippingAddresses } property="label" func={ this.clickSelectShippingAddress.bind(this) } />
-        </Modal>
-        <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />
-        </Modal>
-        <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
-          <div className="qty-modal">
-            <h1>Enter Quantity:</h1>
-            <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-            <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
-            <div className="orange-button" onClick={ this.clickQtyOk.bind(this) }>
-              OK
-            </div>
-          </div>
-        </Modal>
-      </div>
+        <style jsx>{`
+          .notification {
+            margin-bottom: 30px;
+          }
+        `}</style>
+      </>
     );
-  }
-
-  renderSavedShippingAddressButton() {
-    if (!this.state.purchaseOrder.shipDate) {
-      return(
-        <a className="blue-outline-button small" onClick={ this.clickUseSavedShippingAddress.bind(this) }>Use Saved Shipping Address</a>
-      );
-    }
-  }
-
-  renderSaveShippingAddressButton() {
-    if (!this.state.purchaseOrder.shipDate) {
-      return(
-        <a id="save-address" className="blue-outline-button small" onClick={ this.clickSaveShippingAddress.bind(this ) }>Save Shipping Address</a>
-      );
-    }
-  }
-
-  renderXButton(item) {
-    if (!this.state.purchaseOrder.shipDate) {
-      return(
-        <td>
-          <div className="x-button" onClick={ this.clickX.bind(this) } data-id={ item.id }></div>
-        </td>
-      );
-    }
-  }
-
-  renderAddItemButton() {
-    if (!this.state.purchaseOrder.shipDate) {
-      return(
-        <a className="blue-outline-button small" onClick={ this.clickAddItem.bind(this) }>Add Item</a>
-      )
-    }
-  }
-
-  renderDisabledNotification() {
-    const customer = this.getCustomerFromId(this.state.purchaseOrder.customerId);
-    if (customer === undefined) {
-      return(
-        <div className="notification">Invoice cannot be sent because no customer is selected.</div>
-      );
-    } else if (customer.consignment) {
-      return(
-        <div className="notification">Invoice cannot be sent because { customer.name } sells on consignment.</div>
-      );
-    }
   }
 
   getCustomerFromId(id) {
@@ -516,20 +469,6 @@ export default class PurchaseOrderDetails extends React.Component {
       return false;
     } else {
       return true;
-    }
-  }
-
-  renderReportingOnlyButton() {
-    if (!this.state.purchaseOrder.shipDate) {
-      return(
-        <a
-          id="reporting-only"
-          className={ "orange-button" + Common.renderInactiveButtonClass(this.state.fetching || this.state.changesToSave) }
-          onClick={ this.clickShip.bind(this, { reportingOnly: true }) }
-        >
-          { this.state.changesToSave ? "Save to Ship" : "Invoice Only" }
-        </a>
-      );
     }
   }
 }

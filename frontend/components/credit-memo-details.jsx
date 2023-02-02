@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, fetchEntity, GrayedOut, Spinner } from 'handy-components'
+import { Common, fetchEntity, GrayedOut, Spinner, Table } from 'handy-components'
 
 export default class CreditMemoDetails extends React.Component {
 
@@ -62,45 +62,18 @@ export default class CreditMemoDetails extends React.Component {
               </div>
             </div>
             <hr />
-            <table className="no-hover">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Price</th>
-                  <th>Qty</th>
-                  <th>Total Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td><td></td></tr>
-                { this.state.rows.map((row, index) => {
-                  return(
-                    <tr key={ index }>
-                      <td>
-                        <div className="link-padding">
-                          { row.label }
-                        </div>
-                      </td>
-                      <td>
-                        <div className="link-padding">
-                          { row.price }
-                        </div>
-                      </td>
-                      <td>
-                        <div className="link-padding">
-                          { row.qty }
-                        </div>
-                      </td>
-                      <td>
-                        <div className="link-padding">
-                          { row.totalPrice }
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
+            <Table
+              rows={ this.state.rows }
+              columns={[
+                { name: 'label', header: 'Item' },
+                { name: 'price' },
+                { name: 'qty' },
+                { name: 'totalPrice'},
+              ]}
+              links={ false }
+              sortable={ false }
+              marginBottom
+            />
             <hr />
             <div className="row">
               <div className="col-xs-12">

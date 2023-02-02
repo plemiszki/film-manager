@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button, GrayedOut, Spinner } from 'handy-components'
+import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button, GrayedOut, Spinner, Table, BottomButtons } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ShredderModalStyles = {
@@ -269,58 +269,33 @@ export default class VenueDetails extends React.Component {
               <Spinner visible={ fetching } />
               <div className="row">
                 <div className="col-xs-12">
-                  <table className="fm-admin-table">
-                    <thead>
-                      <tr>
-                        <th>Start Date</th>
-                        <th>Film</th>
-                        <th>Total Gross</th>
-                        <th>Our Share</th>
-                        <th>Received</th>
-                        <th>Owed</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td></td><td></td></tr>
-                      { this.state.bookings.map((booking, index) => {
-                        const url = `/bookings/${booking.id}`
-                        return(
-                          <tr key={ index } onClick={ this.redirect.bind(this, "bookings", booking.id) }>
-                            <td className="indent">
-                              <a href={ url }>
-                                { booking.startDate }
-                              </a>
-                            </td>
-                            <td>
-                              <a href={ url }>
-                                { booking.film }
-                              </a>
-                            </td>
-                            <td>
-                              <a href={ url }>
-                                { booking.valid ? booking.totalGross : 'Invalid' }
-                              </a>
-                            </td>
-                            <td>
-                              <a href={ url }>
-                                { booking.valid ? booking.ourShare : 'Invalid' }
-                              </a>
-                            </td>
-                            <td>
-                              <a href={ url }>
-                                { booking.valid ? booking.received : 'Invalid' }
-                              </a>
-                            </td>
-                            <td>
-                              <a href={ url }>
-                                { booking.valid ? booking.owed : 'Invalid' }
-                              </a>
-                            </td>
-                          </tr>
-                        );
-                      }) }
-                    </tbody>
-                  </table>
+                  <Table
+                    columns={[
+                      {
+                        name: 'startDate',
+                        date: true,
+                      },
+                      { name: 'film' },
+                      {
+                        name: 'totalGross',
+                        displayFunction: row => row.valid ? row.totalGross : 'Invalid',
+                      },
+                      {
+                        name: 'ourShare',
+                        displayFunction: row => row.valid ? row.ourShare : 'Invalid',
+                      },
+                      {
+                        name: 'received',
+                        displayFunction: row => row.valid ? row.received : 'Invalid',
+                      },
+                      {
+                        name: 'owed',
+                        displayFunction: row => row.valid ? row.owed : 'Invalid',
+                      },
+                    ]}
+                    rows={ this.state.bookings }
+                    urlPrefix="bookings"
+                  />
                 </div>
               </div>
             </div>
