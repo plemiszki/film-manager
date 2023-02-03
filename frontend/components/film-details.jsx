@@ -1211,6 +1211,15 @@ export default class FilmDetails extends React.Component {
                 style={ { marginBottom: '60px' } }
                 entities={ schedule }
                 displayFunction={ revenueStream => `${ revenueStream.label } - ${ revenueStream.date_string + (revenueStream.tentative ? ' (?)' : '') }` }
+                styleIf={[
+                  {
+                    func: revenueStream => revenueStream.tentative,
+                    style: {
+                      color: 'red',
+                      fontStyle: 'italic',
+                    }
+                  }
+                ]}
               />
             </div>
           </div>

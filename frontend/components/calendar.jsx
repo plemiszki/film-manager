@@ -56,7 +56,7 @@ export default class Calendar extends React.Component {
           <a className={ "standard-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
           <a className={ "standard-button float-button margin" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
           <div className="white-box">
-            <table>
+            <table className="no-hover">
               <thead>
                 <tr>
                   <th></th>

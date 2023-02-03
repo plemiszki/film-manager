@@ -281,11 +281,12 @@ export default class PurchaseOrderDetails extends React.Component {
       });
     }
 
-    tableColumns.push({
-      header: purchaseOrder.sendInvoice ? 'Unit Price' : '',
-      name: "price",
-      displayFunction: item => purchaseOrder.sendInvoice ? item.price : '',
-    });
+    if (purchaseOrder.sendInvoice) {
+      tableColumns.push({
+        name: "price",
+        header: 'Unit Price',
+      });
+    }
 
     return (
       <>
