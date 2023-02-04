@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, deepCopy, fetchEntities, updateEntity } from 'handy-components'
+import { deepCopy, fetchEntities, updateEntity, GrayedOut, Spinner, OutlineButton } from 'handy-components'
 
 export default class JobsIndex extends React.Component {
 
@@ -21,14 +21,8 @@ export default class JobsIndex extends React.Component {
     });
   }
 
-  goToJob(e) {
-    let id = e.target.dataset.id;
-    window.location = `/royalty_reports?job_id=${id}`;
-  }
-
-  killJob(e) {
+  killJob(id) {
     const { jobs } = this.state;
-    const id = e.target.dataset.id;
     let job = deepCopy(jobs.find(job => job.id == id));
     job.status = 'killed';
     this.setState({
@@ -48,10 +42,10 @@ export default class JobsIndex extends React.Component {
   }
 
   render() {
-    const { fetching } = this.state;
+    const { fetching, jobs } = this.state;
     if (this.state.jobs.length > 0) {
       return (
-        <div id="jobs-index" className="component">
+        <div id="jobs-index" className="handy-component">
           <div className="white-box" style={ { padding: 20 } }>
             <table className="fm-admin-table no-hover no-highlight">
               <thead>
@@ -64,8 +58,8 @@ export default class JobsIndex extends React.Component {
               </thead>
               <tbody>
                 <tr><td></td></tr>
-                { this.state.jobs.map((job, index) => {
-                  return(
+                { jobs.map((job, index) => {
+                  return (
                     <tr key={ index }>
                       <td className="name-column">
                         { job.jobId }
@@ -74,10 +68,16 @@ export default class JobsIndex extends React.Component {
                         { `${job.currentValue} / ${job.totalValue}` }
                       </td>
                       <td>
-                        <a className="blue-outline-button small margin" onClick={ this.goToJob.bind(this) } data-id={ job.id }>Go to Job</a>
+                        <OutlineButton
+                          text="Go to Job"
+                          onClick={ () => window.location = `/royalty_reports?job_id=${job.id}` }
+                        />
                       </td>
                       <td>
-                        <a className="blue-outline-button small" onClick={ this.killJob.bind(this) } data-id={ job.id }>Kill Job</a>
+                        <OutlineButton
+                          text="Kill Job"
+                          onClick={ () => this.killJob(job.id) }
+                        />
                       </td>
                     </tr>
                   );
