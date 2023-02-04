@@ -132,7 +132,7 @@ export default class BookerDetails extends React.Component {
                   entities={ bookerVenues }
                   clickDelete={ (bookerVenue) => { this.clickDeleteVenue(bookerVenue.id) } }
                   displayProperty="venue"
-                  styles={ { marginBottom: 15 } }
+                  style={ { marginBottom: 15 } }
                 />
                 <OutlineButton
                   text="Add Venue"

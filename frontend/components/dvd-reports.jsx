@@ -146,7 +146,7 @@ export default class DvdReports extends React.Component {
                 disabled={ fetching }
                 text="Export"
                 onClick={ () => { this.setState({ exportModalOpen: true }) } }
-                styles={{
+                style={{
                   position: 'absolute',
                   right: 0,
                 }}

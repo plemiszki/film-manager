@@ -364,7 +364,7 @@ export default class VirtualBookingDetails extends React.Component {
                 list={ payments }
                 clickDelete={ (payment) => { this.clickDeletePayment(payment.id) } }
                 textFunc={ payment => `${payment.date} - ${payment.amount}${payment.notes && ` (${payment.notes})`}` }
-                styles={ { marginBottom: 15 } }
+                style={ { marginBottom: 15 } }
               />
               <OutlineButton
                 text="Add Payment"
@@ -403,7 +403,7 @@ export default class VirtualBookingDetails extends React.Component {
                   disabled={ fetching || changesToSave }
                   text={ changesToSave ? "Save to Send" : (virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
                   onClick={ () => { this.clickSendReport() } }
-                  styles={ {
+                  style={ {
                     paddingTop: 14,
                     paddingBottom: 14,
                   } }

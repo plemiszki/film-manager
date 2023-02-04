@@ -795,7 +795,7 @@ export default class ReportDetails extends React.Component {
               disabled={ fetching }
               text="Export Uncrossed Statements"
               onClick={ () => { this.clickExportUncrossed() } }
-              styles={ { marginTop: '20px' } }
+              style={ { marginTop: '20px' } }
             />
           </div>
           <style jsx>{`

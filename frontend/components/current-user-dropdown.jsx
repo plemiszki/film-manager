@@ -222,7 +222,7 @@ export default class CurrentUserDropDown extends Component {
                         <Button
                           text="Renew"
                           onClick={ () => { this.clickRenew(film) } }
-                          styles={
+                          style={
                             {
                               display: 'inline',
                               padding: '8px 20px',
@@ -239,7 +239,7 @@ export default class CurrentUserDropDown extends Component {
           <Button
             text="Renew All"
             onClick={ () => { this.clickRenewAll() } }
-            styles={
+            style={
               {
                 display: 'block',
                 position: 'absolute',

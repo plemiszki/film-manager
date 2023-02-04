@@ -337,7 +337,7 @@ export default class ReportsIndex extends React.Component {
               square
               text="Export All"
               float
-              styles={ { marginRight: 15 } }
+              style={ { marginRight: 15 } }
               disabled={ fetching || daysDue === 'all' || reports.length === 0 }
               onClick={ () => { this.clickExport() } }
             />
@@ -345,7 +345,7 @@ export default class ReportsIndex extends React.Component {
               square
               text="Summary"
               float
-              styles={ { marginRight: 15 } }
+              style={ { marginRight: 15 } }
               disabled={ fetching || reports.length === 0 }
               onClick={ () => { this.clickSummary() } }
             />
@@ -353,7 +353,7 @@ export default class ReportsIndex extends React.Component {
               square
               text="Totals"
               float
-              styles={ { marginRight: 15 } }
+              style={ { marginRight: 15 } }
               disabled={ fetching || reports.length === 0 }
               onClick={ () => { this.clickTotals() } }
             />
@@ -361,7 +361,7 @@ export default class ReportsIndex extends React.Component {
               square
               text="Error Check"
               float
-              styles={ { marginRight: 15 } }
+              style={ { marginRight: 15 } }
               disabled={ fetching || reports.length === 0 }
               onClick={ () => { this.clickErrorCheck() } }
             />
@@ -369,7 +369,7 @@ export default class ReportsIndex extends React.Component {
               square
               text="Import"
               float
-              styles={ { marginRight: 15 } }
+              style={ { marginRight: 15 } }
               disabled={ fetching || reports.length === 0 }
               onClick={ Common.changeState.bind(this, 'importModalOpen', true) }
             />
@@ -377,7 +377,7 @@ export default class ReportsIndex extends React.Component {
               square
               text=">>"
               float
-              styles={ { marginRight: 15 } }
+              style={ { marginRight: 15 } }
               disabled={ fetching }
               onClick={ this.clickNext.bind(this) }
             />
@@ -385,7 +385,7 @@ export default class ReportsIndex extends React.Component {
               square
               text="<<"
               float
-              styles={ { marginRight: 15 } }
+              style={ { marginRight: 15 } }
               disabled={ fetching }
               onClick={ this.clickPrev.bind(this) }
             />
@@ -436,8 +436,8 @@ export default class ReportsIndex extends React.Component {
           <Modal isOpen={ this.state.importModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ importModalStyles }>
             <div className="handy-component admin-modal">
               <h1>Import File</h1>
-              <Button onClick={ () => { this.clickImportRevenue() } } text="Import Revenue" styles={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
-              <Button onClick={ () => { this.clickImportExpenses() } } text="Import Expenses" styles={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
+              <Button onClick={ () => { this.clickImportRevenue() } } text="Import Revenue" style={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
+              <Button onClick={ () => { this.clickImportExpenses() } } text="Import Expenses" style={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
             </div>
           </Modal>
           <Modal isOpen={this.state.sendModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ sendModalStyles }>

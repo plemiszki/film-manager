@@ -218,7 +218,7 @@ export default class VenueDetails extends React.Component {
                   <Button
                     text={ 'Copy to Shipping Address' }
                     onClick={ () => { this.clickCopyAddress() } }
-                    styles={ {
+                    style={ {
                       width: '100%',
                       marginTop: '28px',
                       padding: '14px 0',
