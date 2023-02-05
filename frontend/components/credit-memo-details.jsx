@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, fetchEntity, GrayedOut, Spinner, Table } from 'handy-components'
+import { fetchEntity, GrayedOut, Spinner, Table, Button } from 'handy-components'
 
 export default class CreditMemoDetails extends React.Component {
 
@@ -8,7 +8,7 @@ export default class CreditMemoDetails extends React.Component {
     this.state = {
       fetching: true,
       creditMemo: {},
-      rows: []
+      rows: [],
     };
   }
 
@@ -17,7 +17,7 @@ export default class CreditMemoDetails extends React.Component {
       this.setState({
         fetching: false,
         creditMemo: response.creditMemo,
-        rows: response.rows
+        rows: response.rows,
       });
     });
   }
@@ -27,7 +27,7 @@ export default class CreditMemoDetails extends React.Component {
   }
 
   render() {
-    const { fetching } = this.state;
+    const { fetching, creditMemo, rows } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -36,34 +36,34 @@ export default class CreditMemoDetails extends React.Component {
             <div className="row">
               <div className="col-xs-2">
                 <h2>Number</h2>
-                { this.state.creditMemo.number }
+                { creditMemo.number }
               </div>
               <div className="col-xs-2">
                 <h2>Sent Date</h2>
-                { this.state.creditMemo.sentDate }
+                { creditMemo.sentDate }
               </div>
               <div className="col-xs-2">
                 <h2>Return Number</h2>
-                { this.state.creditMemo.returnNumber }
+                { creditMemo.returnNumber }
               </div>
               <div className="col-xs-4">
                 <h2>DVD Customer</h2>
-                { this.state.creditMemo.customerName }
+                { creditMemo.customerName }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Billing Address</h2>
-                <p>{ this.state.creditMemo.billingName }</p>
-                <p>{ this.state.creditMemo.billingAddress1 }</p>
-                <p>{ this.state.creditMemo.billingAddress2 }</p>
-                <p>{ this.state.creditMemo.billingCity }, { this.state.creditMemo.billingState } { this.state.creditMemo.billingZip }</p>
-                <p>{ this.state.creditMemo.billingCountry == 'USA' ? '' : this.state.creditMemo.billingCountry }</p>
+                <p>{ creditMemo.billingName }</p>
+                <p>{ creditMemo.billingAddress1 }</p>
+                <p>{ creditMemo.billingAddress2 }</p>
+                <p>{ creditMemo.billingCity }, { creditMemo.billingState } { creditMemo.billingZip }</p>
+                <p>{ creditMemo.billingCountry == 'USA' ? '' : creditMemo.billingCountry }</p>
               </div>
             </div>
             <hr />
             <Table
-              rows={ this.state.rows }
+              rows={ rows }
               columns={[
                 { name: 'label', header: 'Item' },
                 { name: 'price' },
@@ -78,12 +78,14 @@ export default class CreditMemoDetails extends React.Component {
             <div className="row">
               <div className="col-xs-12">
                 <h2>Total</h2>
-                { this.state.creditMemo.total }
+                { creditMemo.total }
               </div>
             </div>
-            <a className={ "standard-button btn " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
-              Export
-            </a>
+            <Button
+              text="Export"
+              onClick={ () => { this.clickExport() } }
+              disabled={ fetching }
+            />
             <GrayedOut visible={ fetching } />
             <Spinner visible={ fetching } />
           </div>
