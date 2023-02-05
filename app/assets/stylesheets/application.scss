@@ -13,8 +13,6 @@
  *= require_self
  */
 
-// $imgpath: 'handy-components/images';
-
 :root {
   --button-color: #01647c;
   --highlight-color: #0385a4;
@@ -32,50 +30,3 @@
 @import 'sign-in';
 @import 'codes';
 @import 'convert-digital-sales';
-
-// @import 'defaults';
-
-// @import 'me/reset';
-// @import 'me/fonts';
-// @import 'me/general';
-
-// @import 'handy-tools/styles/reset';
-// @import 'handy-tools/styles/fonts';
-// @import 'handy-tools/styles/general';
-// @import 'handy-tools/styles/buttons';
-// @import 'handy-tools/styles/sign-in';
-
-// @import 'handy-components/styles/admin-layout';
-// @import 'handy-components/styles/admin-layout-rails';
-// @import 'handy-components/styles/admin-table';
-// @import 'handy-components/styles/admin-table-rails';
-// @import 'handy-components/styles/modal-select';
-
-// @import 'me/dvd-customer-details';
-// @import 'me/dvd-details';
-// @import 'me/films-index';
-// @import 'me/film-details';
-// @import 'me/giftbox-details';
-// @import 'me/new-thing';
-// @import 'me/reports-index';
-// @import 'me/report-details';
-// @import 'me/sign-in';
-// @import 'me/purchase-order-details';
-// @import 'me/invoice-details';
-// @import 'me/credit-memo-details';
-// @import 'me/dvd-reports';
-// @import 'me/return-details';
-// @import 'me/venue-details';
-// @import 'me/booking-details';
-// @import 'me/in-theaters';
-// @import 'me/film-rights-new';
-// @import 'me/calendar';
-// @import 'me/codes';
-
-// .blue-button:not(.disabled) {
-//   background-color: $button-color !important;
-// }
-
-// .blue-button:not(.disabled):hover {
-//   background-color: $highlight-color !important;
-// }
