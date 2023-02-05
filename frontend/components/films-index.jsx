@@ -175,17 +175,57 @@ export default class FilmsIndex extends Component {
   }
 
   render() {
-    const { searchText, fetching } = this.state;
+    const { filmType, advanced } = this.props;
+    const { searchText, fetching, filterActive } = this.state;
     var filteredFilms = this.state[this.state.filterActive ? 'filteredFilms' : 'films'].filterSearchText(this.state.searchText, this.state.sortBy);
     return (
       <>
         <div className="handy-component">
           <div>
-            { this.renderHeader() }
-            { this.renderExportMetadataButton() }
-            { this.renderCustomButton() }
-            { this.renderFilterButton() }
-            { this.renderAddNewButton() }
+            <h1>{ filmType === 'TV Series' ? 'TV Series' : `${filmType}s` }</h1>
+            { filmType !== 'TV Series' && (
+              <Button
+                float
+                square
+                disabled={ fetching }
+                text="Export All"
+                onClick={ () => { this.clickExportAll() } }
+                style={ { marginLeft: 20 } }
+              />
+            ) }
+            { filmType !== 'TV Series' && (
+              <Button
+                float
+                square
+                disabled={ fetching }
+                text="Export Custom"
+                onClick={ () => { this.setState({ searchModalOpen: true }) } }
+                style={ { marginLeft: 20 } }
+              />
+            ) }
+            { filmType === 'Feature' && (
+              <Button
+                float
+                square
+                disabled={ fetching }
+                text="Filter"
+                onClick={ () => { this.setState({ filterModalOpen: true }) } }
+                style={ {
+                  marginLeft: 20,
+                  backgroundColor: filterActive ? 'green' : null,
+                } }
+              />
+            ) }
+            { FM.user.hasAdminAccess && !advanced && (
+              <Button
+                float
+                square
+                disabled={ fetching }
+                text={ `Add ${filmType === 'Feature' ? 'Film' : filmType}` }
+                onClick={ () => { this.setState({ newFilmModalOpen: true }) } }
+                style={ { marginLeft: 20 } }
+              />
+            ) }
             <SearchBar
               onChange={ FM.changeSearchText.bind(this) }
               value={ searchText || "" }
@@ -237,52 +277,8 @@ export default class FilmsIndex extends Component {
     );
   }
 
-  renderHeader() {
-    let header = this.props.filmType == 'TV Series' ? 'TV Series' : `${this.props.filmType}s`;
-    return(
-      <h1>{ header }</h1>
-    );
-  }
-
-  renderAddNewButton() {
-    let buttonText = {
-      'Feature': 'Film',
-      'Short': 'Short',
-      'TV Series': 'TV Series'
-    }[this.props.filmType];
-    if (FM.user.hasAdminAccess & !this.props.advanced) {
-      return(
-        <a className={ "square-button margin btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'newFilmModalOpen', true) }>Add { buttonText }</a>
-      );
-    }
-  }
-
-  renderExportMetadataButton() {
-    if (this.props.filmType != 'TV Series') {
-      return(
-        <a className={ "square-button margin btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExportAll.bind(this) }>Export All</a>
-      );
-    }
-  }
-
-  renderFilterButton() {
-    if (this.props.filmType === 'Feature') {
-      return(
-        <a className={ "square-button margin btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) + (this.state.filterActive ? ' green' : '') } onClick={ Common.changeState.bind(this, 'filterModalOpen', true) }>Filter</a>
-      );
-    }
-  }
-
   filterActive() {
     return this.state.selectedAltSubs.length > 0 || this.state.selectedAltAudios.length > 0 || this.state.selectedAltLengths.length > 0;
-  }
-
-  renderCustomButton() {
-    if (this.props.filmType != 'TV Series') {
-      return(
-        <a className={ "square-button margin btn orange-button float-button advanced-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'searchModalOpen', true) }>Export Custom</a>
-      );
-    }
   }
 
   renderFilter() {

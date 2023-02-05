@@ -13,3 +13,16 @@ a.standard-link {
 			text-decoration: underline;
 	}
 }
+
+.no-column-padding {
+	.col-xs-12, .col-xs-6 {
+			padding-right: 0 !important;
+			padding-left: 0 !important;
+	}
+}
+
+.grabbing {
+	cursor: grabbing !important;
+	cursor: -webkit-grabbing !important;
+	cursor: -moz-grabbing !important;
+}

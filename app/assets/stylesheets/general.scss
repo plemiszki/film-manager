@@ -12,39 +12,3 @@ body {
         outline: none !important;
     }
 }
-
-a.square-button {
-    padding: 12px 20px;
-    min-width: inherit;
-    border-radius: 5px;
-    background-color: var(--button-color);
-    font-family: 'TeachableSans-Bold';
-    color: white;
-    font-size: 12px;
-    line-height: 17px;
-    border: none;
-
-    &:hover {
-        cursor: pointer;
-        text-decoration: none;
-        background-color: var(--highlight-color);
-        color: white;
-    }
-
-    &.margin {
-        margin-left: 20px;
-    }
-}
-
-.no-column-padding {
-    .col-xs-12, .col-xs-6 {
-        padding-right: 0 !important;
-        padding-left: 0 !important;
-    }
-}
-
-.grabbing {
-    cursor: grabbing !important;
-    cursor: -webkit-grabbing !important;
-    cursor: -moz-grabbing !important;
-}
