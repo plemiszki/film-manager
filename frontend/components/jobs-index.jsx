@@ -1,5 +1,5 @@
 import React from 'react'
-import { deepCopy, fetchEntities, updateEntity, GrayedOut, Spinner, OutlineButton } from 'handy-components'
+import { deepCopy, fetchEntities, updateEntity, GrayedOut, Spinner, OutlineButton, Table } from 'handy-components'
 
 export default class JobsIndex extends React.Component {
 
@@ -43,47 +43,34 @@ export default class JobsIndex extends React.Component {
 
   render() {
     const { fetching, jobs } = this.state;
-    if (this.state.jobs.length > 0) {
+    if (jobs.length) {
       return (
-        <div id="jobs-index" className="handy-component">
+        <div className="handy-component">
           <div className="white-box" style={ { padding: 20 } }>
-            <table className="fm-admin-table no-hover no-highlight">
-              <thead>
-                <tr>
-                  <th>Currently Running Export Statement Jobs</th>
-                  <th>Status</th>
-                  <th style={ { width: 120 } }></th>
-                  <th style={ { width: 120 } }></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td></tr>
-                { jobs.map((job, index) => {
-                  return (
-                    <tr key={ index }>
-                      <td className="name-column">
-                        { job.jobId }
-                      </td>
-                      <td>
-                        { `${job.currentValue} / ${job.totalValue}` }
-                      </td>
-                      <td>
-                        <OutlineButton
-                          text="Go to Job"
-                          onClick={ () => window.location = `/royalty_reports?job_id=${job.id}` }
-                        />
-                      </td>
-                      <td>
-                        <OutlineButton
-                          text="Kill Job"
-                          onClick={ () => this.killJob(job.id) }
-                        />
-                      </td>
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
+            <Table
+              sortable={ false }
+              links={ false }
+              hover={ true }
+              columns={[
+                { name: "jobId", header: "Currently Running Export Statement Jobs" },
+                { name: "status", displayFunction: job => `${job.currentValue} / ${job.totalValue}` },
+                {
+                  isButton: true,
+                  buttonText: "Go to Job",
+                  bold: true,
+                  clickButton: job => window.location = `/royalty_reports?job_id=${job.id}`,
+                  width: 120,
+                },
+                {
+                  isButton: true,
+                  buttonText: "Kill Job",
+                  bold: true,
+                  clickButton: job => this.killJob(job.id),
+                  width: 120,
+                },
+              ]}
+              rows={ jobs }
+            />
             <GrayedOut visible={ fetching } />
             <Spinner visible={ fetching } />
           </div>
