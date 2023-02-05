@@ -209,7 +209,23 @@ export default class InTheatersIndex extends React.Component {
             margin-top: 30px;
           }
           table {
+            width: 100%;
+            user-select: none;
             margin-bottom: 11px;
+          }
+          thead {
+            border-bottom: solid 1px #dadee2;
+          }
+          th {
+            font-family: 'TeachableSans-SemiBold';
+            color: black;
+            padding-bottom: 20px;
+          }
+          th:first-of-type {
+            padding-left: 10px;
+          }
+          tr:first-child td {
+            padding-top: 10px;
           }
         `}</style>
       </>

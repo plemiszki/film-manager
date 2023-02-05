@@ -89,13 +89,15 @@ export default class InTheatersIndexItem extends React.Component {
             { renderHandle && (
               <img className="handle" src={ Images.handle } onMouseDown={ this.mouseDownHandler.bind(this) } onMouseUp={ this.mouseUpHandler.bind(this) } />
             ) }
-            <div className="x-button" onClick={ clickXButton } data-id={ film.id }></div>
+            <div className="x-gray-circle" onClick={ clickXButton } data-id={ film.id }></div>
             <div className="drop-zone" data-index={ film.order } data-section={ section }></div>
           </td>
         </tr>
         <style jsx>{`
           td {
+            position: relative;
             padding-top: 10px;
+            padding-left: 10px;
             padding-bottom: 10px;
           }
           .indent {
@@ -108,6 +110,17 @@ export default class InTheatersIndexItem extends React.Component {
             cursor: grab;
             cursor: -webkit-grab;
             cursor: -moz-grab;
+          }
+          .x-gray-circle {
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            top: 10px;
+            margin-right: 10px;
+            background-size: contain;
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
           }
           tr.highlight {
             background-color: #CED8F6;
