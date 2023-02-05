@@ -351,11 +351,11 @@ var FM = {
       var cityStateRegEx = /^[\w\s]+, \w{2} [\w\d]+$/;
       if (lines[2].match(cityStateRegEx)) {
         splitObj = splitCityStateZipLine(lines[2]);
-      } else if (lines[3].match(cityStateRegEx)) {
+      } else if (lines[3] && lines[3].match(cityStateRegEx)) {
         result.address2 = lines[2];
         splitObj = splitCityStateZipLine(lines[3]);
       } else {
-        throw 'Did not find CITY, STATE/PROVINCE ZIP on line 3 or 4';
+        throw 'Did not find "CITY, STATE/PROVINCE ZIP" on line 3 or 4';
       }
     }
     result.city = splitObj.city;

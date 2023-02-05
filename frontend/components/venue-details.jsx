@@ -310,7 +310,10 @@ export default class VenueDetails extends React.Component {
             <div className="shredder-modal handy-component admin-modal">
               <textarea onChange={ this.clearShredderError.bind(this) }></textarea>
               <div className="error-message"></div>
-              <a className="standard-button btn" onClick={ this.clickSplitAddress.bind(this) }>Split Address</a>
+              <Button
+                text="Split Address"
+                onClick={ this.clickSplitAddress }
+              />
             </div>
           </Modal>
         </div>
