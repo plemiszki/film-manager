@@ -388,10 +388,10 @@ export default class PurchaseOrderDetails extends React.Component {
                       onClick={ () => this.clickShip({ reportingOnly: false }) }
                       marginBottom
                     />
-                    { unshippedPO && canSendInvoice && (
+                    { unshippedPO && canSendInvoice && purchaseOrder.sendInvoice && (
                       <Button
                         disabled={ fetching || changesToSave }
-                        text={ changesToSave ? "Save to Ship" : "Invoice Only" }
+                        text={ changesToSave ? "Save to Ship" : "Send Invoice Only" }
                         onClick={ () => this.clickShip({ reportingOnly: true }) }
                         style={ { marginLeft: 20 } }
                       />
@@ -441,18 +441,39 @@ export default class PurchaseOrderDetails extends React.Component {
           </Modal>
           <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
             <div className="qty-modal">
-              <h1>Enter Quantity:</h1>
+              <h1>Enter Quantity</h1>
               <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-              <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
-              <div className="orange-button" onClick={ this.clickQtyOk.bind(this) }>
-                OK
-              </div>
+              <form>
+                <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
+                <Button
+                  submit
+                  text="OK"
+                  onClick={ () => this.clickQtyOk() }
+                />
+              </form>
             </div>
           </Modal>
         </div>
         <style jsx>{`
           .notification {
             margin-bottom: 30px;
+          }
+          .qty-modal {
+            padding: 30px;
+            text-align: center;
+          }
+          .qty-modal h1 {
+            font-size: 16px;
+            margin-bottom: 14px;
+          }
+          .qty-modal h2 {
+            font-size: 12px;
+            margin-bottom: 20px;
+          }
+          .qty-modal input {
+            width: 170px;
+            padding: 13px;
+            margin-bottom: 20px;
           }
         `}</style>
       </>

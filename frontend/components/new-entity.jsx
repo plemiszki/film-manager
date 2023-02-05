@@ -1,6 +1,6 @@
 import React from 'react'
 import ChangeCase from 'change-case'
-import { Common, Details, deepCopy, setUpNiceSelect, resetNiceSelect, createEntity, sendRequest, GrayedOut, Spinner } from 'handy-components'
+import { Details, deepCopy, setUpNiceSelect, resetNiceSelect, createEntity, sendRequest, GrayedOut, Spinner, Button } from 'handy-components'
 
 let entityNamePlural;
 let directory;
@@ -90,12 +90,18 @@ export default class NewEntity extends React.Component {
   }
 
   render() {
+    const { buttonText, entityName } = this.props;
     const { fetching } = this.state;
     return (
       <div className="new-entity handy-component admin-modal">
         <form className="white-box">
           { this.renderFields() }
-          <input type="submit" className={ "standard-button btn" + Common.renderDisabledButtonClass(this.state.fetching) } value={ this.props.buttonText || `Add ${ChangeCase.titleCase(this.props.entityName)}` } onClick={ this.clickAdd.bind(this) } />
+          <Button
+            submit
+            disabled={ fetching }
+            text={ buttonText || `Add ${ChangeCase.titleCase(entityName)}` }
+            onClick={ () => { this.clickAdd() } }
+          />
           <GrayedOut visible={ fetching } />
           <Spinner visible={ fetching } />
         </form>
@@ -377,24 +383,41 @@ export default class NewEntity extends React.Component {
         ]);
       case 'shippingAddress':
         const { shippingAddress } = this.state;
-        return([
-          <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'shippingAddress', property: 'label' }) }
-          </div>,
-          <div key="2" className="row">
-            <div className="col-xs-12">
-              <div className="address-container">
-                <p>{ shippingAddress.name }</p>
-                <p>{ shippingAddress.address1 }</p>
-                { shippingAddress.address2 && <p>{ shippingAddress.address2 }</p> }
-                <p>{ shippingAddress.city }, { shippingAddress.state } { shippingAddress.zip }</p>
-                <p>{ shippingAddress.country }</p>
-                <br />
-                <p>{ shippingAddress.customerInfo }</p>
+        return (
+          <>
+            <div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 12, entity: 'shippingAddress', property: 'label' }) }
+              </div>
+              <div className="row">
+                <div className="col-xs-12">
+                  <div className="address-container">
+                    <p>{ shippingAddress.name }</p>
+                    <p>{ shippingAddress.address1 }</p>
+                    { shippingAddress.address2 && <p>{ shippingAddress.address2 }</p> }
+                    <p>{ shippingAddress.city }, { shippingAddress.state } { shippingAddress.zip }</p>
+                    <p>{ shippingAddress.country }</p>
+                    <br />
+                    <p>{ shippingAddress.customerInfo }</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ]);
+            <style jsx>{`
+              .address-container {
+                height: calc(22px * 7);
+                margin-bottom: 30px;
+              }
+              .address-container p {
+                line-height: 22px;
+                font-size: 16px;
+              }
+              .address-container p:last-of-type {
+                font-style: italic;
+              }
+            `}</style>
+          </>
+        );
       case 'sublicensor':
         return([
           <div key="1" className="row">
