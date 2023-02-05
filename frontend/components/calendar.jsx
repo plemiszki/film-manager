@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, MONTHS, sendRequest, GrayedOut, Spinner } from 'handy-components'
+import { Common, MONTHS, sendRequest, GrayedOut, Spinner, Button } from 'handy-components'
 
 export default class Calendar extends React.Component {
 
@@ -48,15 +48,26 @@ export default class Calendar extends React.Component {
   }
 
   render() {
-    const { fetching } = this.state;
+    const { fetching, months } = this.state;
     return (
       <div className="calendar">
         <div className="handy-component">
           <h1>Calendar - { this.state.year }</h1>
-          <a className={ "standard-button float-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
-          <a className={ "standard-button float-button margin" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
+          <Button
+            float
+            disabled={ fetching }
+            onClick={ () => { clickNext() } }
+            text="&#62;&#62;"
+          />
+          <Button
+            float
+            disabled={ fetching }
+            onClick={ () => { clickPrev() } }
+            text="&#60;&#60;"
+            marginRight
+          />
           <div className="white-box">
-            <table className="no-hover">
+            <table>
               <thead>
                 <tr>
                   <th></th>
@@ -68,14 +79,14 @@ export default class Calendar extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                { this.state.months.map((month, index) => {
+                { months.map((month, index) => {
                     return(
                       <tr key={ index }>
                         <td className="monthCell">
                           { MONTHS[index] }
                         </td>
                         <td data-test="theatrical">
-                          { this.state.months[index].theatricalReleases.map((theatricalRelease, index) => {
+                          { months[index].theatricalReleases.map((theatricalRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" + (theatricalRelease.tentative ? ' tentative' : '') }>
                                   { theatricalRelease.title }<br />
@@ -86,7 +97,7 @@ export default class Calendar extends React.Component {
                           }
                         </td>
                         <td data-test="dvd">
-                          { this.state.months[index].dvdReleases.map((dvdRelease, index) => {
+                          { months[index].dvdReleases.map((dvdRelease, index) => {
                               return(
                                 <div key={ index } className="film">
                                   { dvdRelease.title }<br />
@@ -97,7 +108,7 @@ export default class Calendar extends React.Component {
                           }
                         </td>
                         <td data-test="tvod">
-                          { this.state.months[index].tvodReleases.map((tvodRelease, index) => {
+                          { months[index].tvodReleases.map((tvodRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" + (tvodRelease.tentative ? ' tentative' : '') }>
                                   { tvodRelease.title }<br />
@@ -108,7 +119,7 @@ export default class Calendar extends React.Component {
                           }
                         </td>
                         <td data-test="fm-plus">
-                          { this.state.months[index].fmPlusReleases.map((fmPlusRelease, index) => {
+                          { months[index].fmPlusReleases.map((fmPlusRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" }>
                                   { fmPlusRelease.title }<br />
@@ -119,7 +130,7 @@ export default class Calendar extends React.Component {
                           }
                         </td>
                         <td data-test="club">
-                          { this.state.months[index].clubReleases.map((clubRelease, index) => {
+                          { months[index].clubReleases.map((clubRelease, index) => {
                               return(
                                 <div key={ index } className={ "film" }>
                                   { clubRelease }
