@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity, Button, SearchBar, Spinner, GrayedOut, Table } from 'handy-components'
+import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity, Button, SearchBar, Spinner, GrayedOut, Table, ConfirmModal } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const importModalStyles = {
@@ -250,6 +250,7 @@ export default class ReportsIndex extends React.Component {
     const { quarter, year, daysDue } = this.state;
     this.setState({
       fetching: true,
+      sendModalOpen: false,
     });
     sendRequest('/api/royalty_reports/send_all', {
       method: 'POST',
@@ -440,9 +441,7 @@ export default class ReportsIndex extends React.Component {
               <Button onClick={ () => { this.clickImportExpenses() } } text="Import Expenses" style={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
             </div>
           </Modal>
-          <Modal isOpen={this.state.sendModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ sendModalStyles }>
-            { this.renderSendModalHeader() }
-          </Modal>
+          { this.renderSendModalHeader() }
           { Common.renderJobModal.call(this, job) }
         </div>
         <style jsx>{`
@@ -461,35 +460,39 @@ export default class ReportsIndex extends React.Component {
   }
 
   renderSendModalHeader() {
-    var total = this.state.reports.filterDaysDue(this.state.daysDue).filter(function(report) {
+    const { reports, daysDue, sendModalOpen } = this.state;
+    const total = reports.filterDaysDue(daysDue).filter((report) => {
       return report.sendReport === true;
     }).length;
-    var unsent = this.state.reports.filterDaysDue(this.state.daysDue).filter(function(report) {
+    const unsent = reports.filterDaysDue(daysDue).filter((report) => {
       return report.sendReport === true && report.dateSent === null;
     }).length;
     if (unsent === total) {
-      return(
-        <div className="send-modal">
-          <h1>Send all { unsent } reports now&#63;</h1>
-          <a className="orange-button" onClick={ this.clickConfirmSend.bind(this) }>Yes</a>
-          <a className="orange-button" onClick={ Common.closeModals.bind(this) }>No</a>
-        </div>
+      return (
+        <ConfirmModal
+          isOpen={ sendModalOpen }
+          headerText={ `Send all ${unsent} reports now?` }
+          confirm={ this.clickConfirmSend.bind(this) }
+          cancel={ Common.closeModals.bind(this) }
+        />
       )
     } else if (unsent === 0) {
-      return(
-        <div className="send-modal">
-          <h1>All reports have been sent.</h1>
-          <a className="orange-button" onClick={ Common.closeModals.bind(this) }>OK</a>
-        </div>
-      )
+      return (
+        <ConfirmModal
+          isOpen={ sendModalOpen }
+          headerText="All reports have been sent."
+          dismiss={ Common.closeModals.bind(this) }
+        />
+      );
     } else {
-      return(
-        <div className="send-modal">
-          <h1>Send remaining { unsent } { pluralize('report', unsent) } now&#63;</h1>
-          <a className="orange-button" onClick={ this.clickConfirmSend.bind(this) }>Yes</a>
-          <a className="orange-button" onClick={ Common.closeModals.bind(this) }>No</a>
-        </div>
-      )
+      return (
+        <ConfirmModal
+          isOpen={ sendModalOpen }
+          headerText={ `Send remaining ${unsent} ${pluralize('report', unsent)} now?` }
+          confirm={ this.clickConfirmSend.bind(this) }
+          cancel={ Common.closeModals.bind(this) }
+        />
+      );
     }
   }
 
