@@ -7,6 +7,7 @@ import {
   Button,
   Common,
   ConfirmDelete,
+  ConfirmModal,
   createEntity,
   deepCopy,
   DeleteButton,
@@ -57,19 +58,6 @@ const ChangeDatesModalStyles = {
     margin: 'auto',
     maxWidth: 500,
     height: 240
-  }
-};
-
-const ArtworkModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 600,
-    height: 162
   }
 };
 
@@ -785,13 +773,12 @@ export default class FilmDetails extends React.Component {
               initialEntity={ { title: "", year: "", length: "", filmType: film.filmType, copyFrom: film.id } }
             />
           </Modal>
-          <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ArtworkModalStyles }>
-            <h1 className="my-modal-header">Update artwork for all films now?</h1>
-            <div className="text-center">
-              <div className="orange-button small margin" onClick={ this.confirmUpdateArtwork.bind(this) }>Yes</div>
-              <div className="cancel-button small" onClick={ Common.closeModals.bind(this) }>No</div>
-            </div>
-          </Modal>
+          <ConfirmModal
+            isOpen={ this.state.artworkModalOpen }
+            headerText="Update artwork for all films now?"
+            confirm={ () => this.confirmUpdateArtwork() }
+            cancel={ Common.closeModals.bind(this) }
+          />
           <Modal isOpen={this.state.deleteModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
             <ConfirmDelete entityName="film" confirmDelete={ Details.clickDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
           </Modal>
