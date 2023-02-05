@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, stringifyDate, Details, ellipsis, sendRequest, Button, GrayedOut, Spinner } from 'handy-components'
+import { Common, stringifyDate, Details, sendRequest, Button, GrayedOut, Spinner, Table } from 'handy-components'
 
 const exportModalStyles = {
   overlay: {
@@ -27,11 +27,8 @@ export default class DvdReports extends React.Component {
     };
     this.state = {
       fetching: true,
-      customers: [],
-      titleReportCustomers: [],
-      yearTotal: null,
-      monthTotals: [],
-      dvds: [],
+      titlesReport: [],
+      customersReport: [],
       year: (new Date).getFullYear(),
       exportModalOpen: false,
       export: {
@@ -56,14 +53,11 @@ export default class DvdReports extends React.Component {
         year,
       },
     }).then((response) => {
-      const { yearTotal, dvds, dvdCustomers, monthTotals, titleReportCustomers } = response;
+      const { customersReport, titlesReport } = response;
       this.setState({
         fetching: false,
-        yearTotal,
-        customers: dvdCustomers,
-        dvds,
-        monthTotals,
-        titleReportCustomers
+        customersReport,
+        titlesReport,
       });
     });
   }
@@ -123,7 +117,9 @@ export default class DvdReports extends React.Component {
   }
 
   render() {
-    const { fetching, year, customers, yearTotal, monthTotals, dvds, exportModalOpen, job } = this.state;
+    const { fetching, customersReport, titlesReport, year, exportModalOpen, job } = this.state;
+    const UNITS_COLUMN_WIDTH = 60;
+    const SALES_COLUMN_WIDTH = 120;
     return (
       <>
         <div>
@@ -152,80 +148,31 @@ export default class DvdReports extends React.Component {
                 }}
               />
             </div>
-            <div className="white-box months-report">
+            <div className="white-box">
               <div className="row">
-                <div className="col-xs-3 vendor-names">
-                  <table className="no-hover">
-                    <thead>
-                      <tr>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td></td></tr>
-                      { customers.map((dvdCustomer, index) => {
-                        return(
-                          <tr key={ index }>
-                            <td className="bold">
-                              <div className="link-padding">{ dvdCustomer.name }</div>
-                            </td>
-                          </tr>
-                        );
-                      }) }
-                      <tr>
-                        <td className="bold"><div className="link-padding">TOTAL</div></td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="col-xs-3">
+                  <Table
+                    hover={ false }
+                    links={ false }
+                    sortable={ false }
+                    columns={[{
+                      name: 'name',
+                      header: 'Customer',
+                      bold: true,
+                    }]}
+                    rows={ customersReport }
+                  />
                 </div>
-                <div className="col-xs-9 months">
-                  <table className="month no-hover">
-                    <thead>
-                      <tr>
-                        <th>TOTAL</th>
-                        <th>Jan</th>
-                        <th>Feb</th>
-                        <th>Mar</th>
-                        <th>Apr</th>
-                        <th>May</th>
-                        <th>Jun</th>
-                        <th>Jul</th>
-                        <th>Aug</th>
-                        <th>Sep</th>
-                        <th>Oct</th>
-                        <th>Nov</th>
-                        <th>Dec</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                      { customers.map((dvdCustomer, index) => {
-                        return (
-                          <tr key={ index }>
-                            <td data-test={ `${dvdCustomer.nickname}-total` } className="bold">
-                              <div className="link-padding">{ dvdCustomer.sales.total }</div>
-                            </td>
-                            { ['total', 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].map((suffix, index) => {
-                              return (
-                                <td key={ index } data-test={ `${dvdCustomer.nickname}-${suffix}` }>
-                                  <div className="link-padding">{ dvdCustomer.sales[index + 1] }</div>
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        );
-                      }) }
-                      <tr className="bold">
-                        <td data-test="year-total">{ yearTotal }</td>
-                        { monthTotals.map((month, index) => {
-                            const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-                            return (
-                              <td key={ index } data-test={ `total-${months[index]}` }><div className="link-padding">{ month }</div></td>
-                            );
-                        }) }
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="col-xs-9">
+                  <Table
+                    fixed
+                    defaultColumnWidth={ 120 }
+                    hover={ false }
+                    links={ false }
+                    sortable={ false }
+                    columns={ [{ name: 'total', header: 'TOTAL', bold: true }, 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] }
+                    rows={ customersReport }
+                  />
                 </div>
               </div>
               <GrayedOut visible={ fetching } />
@@ -233,70 +180,31 @@ export default class DvdReports extends React.Component {
             </div>
           </div>
           <div className="handy-component">
-            <div className="white-box titles-report">
+            <div className="white-box">
               <div className="row">
-                <div className="col-xs-3">
-                  <table className="title no-hover">
-                    <thead>
-                      <tr>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td></td></tr>
-                      { dvds.map((dvd, index) => {
-                        return (
-                          <tr key={ index }>
-                            <td className="bold">
-                              <div className="link-padding">{ ellipsis(dvd.title, 25) + (dvd.type != "Retail" ? (" - " + dvd.type) : "") }</div>
-                            </td>
-                          </tr>
-                        );
-                      }) }
-                    </tbody>
-                  </table>
-                </div>
-                <div className="col-xs-9">
-                  <table className="sales no-hover">
-                    <thead>
-                      <tr>
-                        <th className="date">Date</th>
-                        <th className="units">TOTAL</th>
-                        <th></th>
-                        { customers.map((customer, index) => {
-                          if (customer.includeInTitleReport) {
-                            return([
-                              <th key={ index } className="units">{ customer.nickname || customer.name }</th>,
-                              <th key={ `${index}-B`}></th>
-                            ]);
-                          }
-                        }) }
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                      { dvds.map((dvd, index) => {
-                        return (
-                          <tr key={ index }>
-                            <td><div className="link-padding">{ dvd.retailDate }</div></td>
-                            <td className="bold" data-test={ `${dvd.id}-total-units` }>{ dvd.totalUnits }</td>
-                            <td className="bold" data-test={ `${dvd.id}-total-sales` }>{ dvd.totalSales }</td>
-                            { customers.map((customer, index) => {
-                              if (customer.includeInTitleReport) {
-                                const obj = dvd.sales.find(element => element.dvdCustomerId === customer.id);
-                                return (
-                                  <React.Fragment key={ index }>
-                                    <td className="units" data-test={ `${dvd.id}-${customer.nickname}-units` }>{ obj.units }</td>
-                                    <td data-test={ `${dvd.id}-${customer.nickname}-sales` }>{ obj.amount }</td>
-                                  </React.Fragment>
-                                );
-                              }
-                            })}
-                          </tr>
-                        )
-                      }) }
-                    </tbody>
-                  </table>
+                <div className="col-xs-12">
+                  <Table
+                    fixed
+                    hover={ false }
+                    links={ false }
+                    defaultSearchColumn="retailDate"
+                    columns={[
+                      { name: 'title', bold: true, width: 400 },
+                      { name: 'type', bold: true, header: 'Format', width: 120 },
+                      { name: 'retailDate', header: 'Street Date', date: true, width: 130 },
+                      { name: 'totalUnits', header: 'TOTAL', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'totalSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                      { name: 'aecUnits', header: 'AEC', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'aecSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                      { name: 'amazonUnits', header: 'Amazon', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'amazonSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                      { name: 'ingramUnits', header: 'Ingram', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'ingramSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                      { name: 'midwestUnits', header: 'Midwest', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'midwestSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                    ]}
+                    rows={ titlesReport }
+                  />
                 </div>
               </div>
               <Spinner visible={ fetching } />
@@ -343,43 +251,6 @@ export default class DvdReports extends React.Component {
           }
           .header h1 {
             padding: 0 70px;
-          }
-          th {
-            height: 37px;
-            white-space: nowrap;
-          }
-          div.link-padding {
-            white-space: nowrap;
-          }
-          .vendor-names thead {
-            border-bottom: none;
-          }
-          .vendor-names td {
-            border-right: solid 1px #DADEE2;
-          }
-          .months {
-            overflow-y: scroll;
-          }
-          .months table {
-            table-layout: fixed;
-          }
-          .months th.bold {
-            width: 300px;
-          }
-          .months th:not(.bold) {
-            width: 150px;
-          }
-          .sales {
-            table-layout: fixed;
-          }
-          .sales th {
-            width: 100px;
-          }
-          .sales th.date {
-            width: 130px;
-          }
-          .sales th.units {
-            width: 40px;
           }
         `}</style>
       </>

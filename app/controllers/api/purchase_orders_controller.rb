@@ -85,6 +85,7 @@ class Api::PurchaseOrdersController < AdminController
   end
 
   def reporting
+    # customers report
     @sales = {}
     month_totals = Hash.new(0)
     @dvd_customers = DvdCustomer.all.order(:name)
@@ -115,12 +116,14 @@ class Api::PurchaseOrdersController < AdminController
       @sales[:month_totals] = month_totals
       @sales[:year_total] = month_totals.values.reduce(:+)
     end
+
+    # titles report
+    @titles_report_dvd_customers = DvdCustomer.where(include_in_title_report: true).order(:name)
     @dvds = Dvd.where(retail_date: (DateTime.parse("1/1/#{params[:year]}"))..DateTime.parse("12/31/#{params[:year]}")).includes(:dvd_type).includes(:feature).order(:retail_date)
     @dvd_units = Hash.new { |hash, key| hash[key] = {} }
     @dvd_sales = Hash.new { |hash, key| hash[key] = {} }
     @dvds.each do |dvd|
-      @title_report_dvd_customers = DvdCustomer.where(include_in_title_report: true).order(:name)
-      @title_report_dvd_customers.each do |dvd_customer|
+      @titles_report_dvd_customers.each do |dvd_customer|
         units = PurchaseOrderItem.where(item_id: dvd.id, item_type: "dvd").includes(:purchase_order).select { |item| item.purchase_order.customer_id == dvd_customer.id && item.purchase_order.ship_date }.reduce(0) { |total, item| total += item.qty }
         returned_units = ReturnItem.where(item_id: dvd.id, item_type: "dvd").includes(:return).select { |item| item.return.customer_id == dvd_customer.id }.reduce(0) { |total, item| total += item.qty }
         units -= returned_units
@@ -140,6 +143,7 @@ class Api::PurchaseOrdersController < AdminController
       end
       @dvd_sales[dvd.id][:total_sales] = total_sales
     end
+
     render 'reporting', formats: [:json], handlers: [:jbuilder]
   end
 

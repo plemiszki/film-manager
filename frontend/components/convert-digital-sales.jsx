@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity, sendRequest, Spinner, GrayedOut } from 'handy-components'
+import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity, sendRequest, Spinner, GrayedOut, Table } from 'handy-components'
 
 export default class ConvertDigitalSales extends React.Component {
 
@@ -47,10 +47,9 @@ export default class ConvertDigitalSales extends React.Component {
     });
   }
 
-  addAlias(e) {
-    const index = e.target.dataset.index;
+  addAlias(row) {
     this.setState({
-      currentTitle: this.state.errors[index],
+      currentTitle: row.title,
       filmsModalOpen: true
     });
   }
@@ -80,6 +79,9 @@ export default class ConvertDigitalSales extends React.Component {
 
   render() {
     const { fetching, job, filmsModalOpen, errors, films } = this.state;
+    const mappedErrors = errors.map(error => {
+      return { title: error }
+    });
     if (job) {
       const { status } = job;
       if (status === 'running' || status === 'success') {
@@ -104,33 +106,20 @@ export default class ConvertDigitalSales extends React.Component {
                 <div className="white-box">
                   <div className="row">
                     <div className="col-xs-12">
-                      <table className="no-links no-cursor">
-                        <thead>
-                          <tr>
-                            <th>Title</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr><td></td><td></td></tr>
-                          { errors.map((error, index) => {
-                            return (
-                              <tr key={ index }>
-                                <td>
-                                  <div className="link-padding">
-                                    { error }
-                                  </div>
-                                </td>
-                                <td style={ { textDecoration: 'underline' } }>
-                                  <div className="link-padding">
-                                    <span style={ { cursor: 'pointer' } } onClick={ this.addAlias.bind(this) } data-index={ index }>Add Alias</span>
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          }) }
-                        </tbody>
-                      </table>
+                      <Table
+                        links={ false }
+                        sortable={ false }
+                        columns={[
+                          'title',
+                          {
+                            isButton: true,
+                            buttonText: 'Add Alias',
+                            clickButton: row => this.addAlias(row),
+                            bold: true,
+                          },
+                        ]}
+                        rows={ mappedErrors }
+                      />
                     </div>
                   </div>
                   <Spinner visible={ fetching } />
