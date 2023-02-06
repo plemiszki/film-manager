@@ -23,7 +23,7 @@ describe 'edu_platforms_index', type: :feature do
   it 'adds educational platforms' do
     visit setting_path(as: $admin_user)
     within('#edu-platforms-index') do
-      find('.btn', text: 'Add Edu Platform').click
+      click_btn("Add Edu Platform")
     end
     info = { name: 'Test' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'edu_platforms_index', type: :feature do
   it 'validates educational platforms' do
     visit setting_path(as: $admin_user)
     within('#edu-platforms-index') do
-      find('.btn', text: 'Add Edu Platform').click
+      click_btn("Add Edu Platform")
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

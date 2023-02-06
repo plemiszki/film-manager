@@ -41,11 +41,7 @@ describe 'merchandise_type_details', type: :feature do
 
   it 'deletes the merchandise_type' do
     visit merchandise_type_path(@merchandise_type, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/settings', ignore_query: true)
     expect(MerchandiseType.find_by_id(@merchandise_type.id)).to be(nil)
   end

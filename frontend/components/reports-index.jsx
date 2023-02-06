@@ -371,7 +371,7 @@ export default class ReportsIndex extends React.Component {
               text="Import"
               float
               style={ { marginRight: 15 } }
-              disabled={ fetching || reports.length === 0 }
+              disabled={ fetching }
               onClick={ Common.changeState.bind(this, 'importModalOpen', true) }
             />
             <Button

@@ -95,7 +95,7 @@ describe 'virtual_booking_details', type: :feature do
     @virtual_booking.update(host: 'Venue')
     create(:virtual_booking_invoice)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    within('.invoices-table') do
+    within('table') do
       expect(page).to have_content('1B')
     end
   end
@@ -104,9 +104,9 @@ describe 'virtual_booking_details', type: :feature do
     create(:setting)
     @virtual_booking.update(host: 'Venue')
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Invoice').click
-    within('.new-invoice') do
-      find('.blue-button', text: 'Send Invoice').click
+    click_btn("Add Invoice")
+    within('.admin-modal') do
+      click_btn("Send Invoice")
     end
     wait_for_ajax
     expect(Invoice.count).to eq(1)
@@ -114,7 +114,7 @@ describe 'virtual_booking_details', type: :feature do
     expect(InvoiceRow.count).to eq(1)
     expect(InvoiceRow.first.item_label).to eq('Amount Due')
     expect(InvoiceRow.first.total_price).to eq(200)
-    within('.invoices-table') do
+    within('table') do
       expect(page).to have_content('1B')
     end
   end
@@ -128,12 +128,12 @@ describe 'virtual_booking_details', type: :feature do
       box_office: 1000
     })
     save_and_wait
-    within('.invoices-table') do
+    within('table') do
       find('img').click
     end
-    within('.new-invoice') do
+    within('.admin-modal') do
       expect(page).to have_content('$100.00 → $450.00')
-      find('.blue-button', text: 'Resend Invoice').click
+      click_btn("Resend Invoice")
     end
     wait_for_ajax
     expect(InvoiceRow.first.item_label).to eq('Amount Due')
@@ -144,15 +144,13 @@ describe 'virtual_booking_details', type: :feature do
     @virtual_booking.update(host: 'Venue')
     create(:virtual_booking_invoice)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    within('.invoices-table') do
-      find('div.delete-invoice').click
+    within('table') do
+      find('.x-gray-circle').click
     end
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_confirm_delete
     wait_for_ajax
     expect(Invoice.count).to eq(0)
-    within('.invoices-table') do
+    within('table') do
       expect(page).to have_no_content('1B')
     end
   end
@@ -161,7 +159,7 @@ describe 'virtual_booking_details', type: :feature do
     @virtual_booking.update(host: 'Venue')
     create(:virtual_booking_payment)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    within('.payments-list') do
+    within(list_box_selector("payments")) do
       expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
     end
   end
@@ -169,7 +167,7 @@ describe 'virtual_booking_details', type: :feature do
   it 'validates payments' do
     @virtual_booking.update(host: 'Venue')
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Payment').click
+    click_btn("Add Payment")
     fill_out_and_submit_modal({}, :input)
     wait_for_ajax
     within('.admin-modal') do
@@ -181,7 +179,7 @@ describe 'virtual_booking_details', type: :feature do
     @virtual_booking.update(host: 'Venue')
     create(:virtual_booking)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Payment').click
+    click_btn("Add Payment")
     info = {
       date: Date.today.strftime('%-m/%-d/%y'),
       amount: 20,
@@ -190,7 +188,7 @@ describe 'virtual_booking_details', type: :feature do
     fill_out_and_submit_modal(info, :input)
     wait_for_ajax
     verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
-    within('.payments-list') do
+    within(list_box_selector("payments")) do
       expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $20.00")
     end
   end
@@ -199,30 +197,26 @@ describe 'virtual_booking_details', type: :feature do
     @virtual_booking.update(host: 'Venue')
     create(:virtual_booking_payment)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    within('.payments-list') do
-      find('.circle-x-button').click
+    within(list_box_selector("payments")) do
+      find('.x-gray-circle').click
     end
     wait_for_ajax
     expect(Payment.count).to eq(0)
-    within('.payments-list') do
+    within(list_box_selector("payments")) do
       expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
     end
   end
 
   it 'deletes the virtual_booking' do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/virtual_bookings', ignore_query: true)
     expect(VirtualBooking.find_by_id(@virtual_booking.id)).to be(nil)
   end
 
   it 'starts the send email job' do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    find('.orange-button', text: 'Send Report').click
+    click_btn('Send Report')
     sleep 10
     expect(page).to have_content('Sending Report')
   end

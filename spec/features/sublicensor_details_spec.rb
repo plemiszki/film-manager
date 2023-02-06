@@ -69,14 +69,14 @@ describe 'sublicensor_details', type: :feature do
     create(:territory)
     visit sublicensor_path(@sublicensor, as: $admin_user)
     wait_for_ajax
-    find('.new-button', text: 'Add Rights').click
-    within('#film-rights-new') do
+    click_btn('Add Rights')
+    within('.admin-modal') do
       fill_out_form({
         start_date: '1/1/2010',
         end_date: '1/1/2020'
       })
-      find_all('.blue-outline-button', text: 'ALL').each { |button| button.click }
-      find('.orange-button').click
+      find_all('a', text: 'ALL').each { |button| button.click }
+      click_btn("Add Rights")
     end
     wait_for_ajax
     within('.search-index') do
@@ -89,11 +89,7 @@ describe 'sublicensor_details', type: :feature do
   it 'deletes the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
     wait_for_ajax
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/sublicensors', ignore_query: true)
     expect(Sublicensor.find_by_id(@sublicensor.id)).to be(nil)
   end

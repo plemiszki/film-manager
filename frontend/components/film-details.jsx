@@ -1003,10 +1003,10 @@ export default class FilmDetails extends React.Component {
             <div className="row">
               <div className="col-xs-6">
                 <ListBox
-                  entityName="format"
+                  entityName="filmFormat"
                   displayProperty="format"
                   entities={ alphabetizeArrayOfObjects(filmFormats, 'format') }
-                  clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_formats', otherArrays: ['formats'] }) }}
+                  clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
                   clickAdd={ () => { this.setState({ formatsModalOpen: true }) } }
                   style={ { marginBottom: 30 } }
                 />
@@ -1303,7 +1303,7 @@ export default class FilmDetails extends React.Component {
                     entities={ filmGenres }
                     displayProperty="genre"
                     clickAdd={ () => { this.setState({ genresModalOpen: true }) } }
-                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'filmGenres', otherArrays: ['genres'] }) }}
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_genres', otherArrays: ['genres'] }) }}
                     style={ { marginBottom: '30px' } }
                   />
                 </div>
@@ -1336,7 +1336,7 @@ export default class FilmDetails extends React.Component {
                 <div className="col-xs-4">
                   <p className="section-header">Alternate Audio Tracks</p>
                   <ListBox
-                    entityName="languageName"
+                    entityName="alternateAudio"
                     buttonText="Add Audio Track"
                     entities={ alternateAudios }
                     displayProperty="languageName"
@@ -1348,7 +1348,7 @@ export default class FilmDetails extends React.Component {
                 <div className="col-xs-4">
                   <p className="section-header">Alternate Subtitles</p>
                   <ListBox
-                    entityName="languageName"
+                    entityName="alternateSub"
                     buttonText="Add Subtitles"
                     entities={ alternateSubs }
                     displayProperty="languageName"
@@ -1505,11 +1505,11 @@ export default class FilmDetails extends React.Component {
               <div className="col-xs-4">
                 <p className="section-header">Topics</p>
                 <ListBox
+                  entityName="topic"
                   entities={ filmTopics }
                   sort
-                  entityName="topic"
                   clickAdd={ () => { this.setState({ topicsModalOpen: true }) } }
-                  clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_topics', otherArrays: ['topics'] }) }}
+                  clickDelete={ filmTopic => { this.deleteFromList({ id: filmTopic.id, directory: 'film_topics', otherArrays: ['topics'] }) }}
                   displayProperty="topic"
                   style={ { marginBottom: 15 } }
                 />

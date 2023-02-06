@@ -74,8 +74,8 @@ describe 'dvd_reports', type: :feature do
 
   it 'starts the export job' do
     visit dvd_reports_path(as: $admin_user)
-    find('.export-button', text: 'Export').click
-    find('.orange-button', text: 'Export Sales Report').click
+    click_btn('Export')
+    click_btn('Export Sales Report')
     expect(page).to have_content('Exporting DVD Sales')
   end
 

@@ -64,13 +64,13 @@ describe 'film_details', type: :feature do
     wait_for_ajax
     expect(page).not_to have_selector('.spinner')
     expect(find('input[data-field="title"]').value).to eq 'Some Film'
-    expect(find('.directors-list')).to have_content('Rob Reiner')
+    expect(find(list_box_selector("directors"))).to have_content('Rob Reiner')
     expect(find('select[data-field="labelId"]', visible: false).value).to eq '1'
     expect(find('input[data-field="year"]').value).to eq '2002'
     expect(find('input[data-field="length"]').value).to eq '90'
-    expect(find('.countries-list')).to have_content('Canada')
-    expect(find('.languages-list')).to have_content('French')
-    expect(find('.actors-list')).to have_content('Brad Pitt')
+    expect(find(list_box_selector("countries"))).to have_content('Canada')
+    expect(find(list_box_selector("languages"))).to have_content('French')
+    expect(find(list_box_selector("actors"))).to have_content('Brad Pitt')
     expect(find('input[data-field="clubDate"]').value).to eq '11/1/02'
     expect(find('input[data-field="theatricalRelease"]').value).to eq '12/1/02'
     expect(find('input[data-field="svodRelease"]').value).to eq '1/1/03'
@@ -109,7 +109,7 @@ describe 'film_details', type: :feature do
 
   it 'adds directors' do
     visit film_path(@film, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Director').click
+    click_btn("Add Director")
     fill_out_and_submit_modal({
       first_name: 'Johnny',
       last_name: 'Depp'
@@ -122,8 +122,8 @@ describe 'film_details', type: :feature do
 
   it 'removes directors' do
     visit film_path(@film, as: $admin_user)
-    within('.directors-list') do
-      find('.x-button').click
+    within(list_box_selector("directors")) do
+      find('.x-gray-circle').click
     end
     expect(page).not_to have_selector('.spinner')
     expect(Director.count).to eq(0)
@@ -131,7 +131,7 @@ describe 'film_details', type: :feature do
 
   it 'adds countries' do
     visit film_path(@film, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Country').click
+    click_btn('Add Country')
     select_from_modal('Belize')
     expect(FilmCountry.last.country.attributes).to include(
       'name' => 'Belize'
@@ -140,8 +140,8 @@ describe 'film_details', type: :feature do
 
   it 'removes countries' do
     visit film_path(@film, as: $admin_user)
-    within('.countries-list') do
-      find('.x-button').click
+    within(list_box_selector("countries")) do
+      find('.x-gray-circle').click
     end
     expect(page).not_to have_selector('.spinner')
     expect(FilmCountry.count).to eq(0)
@@ -149,7 +149,7 @@ describe 'film_details', type: :feature do
 
   it 'adds languages' do
     visit film_path(@film, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Language').click
+    click_btn('Add Language')
     select_from_modal('Spanish')
     expect(FilmLanguage.last.language.attributes).to include(
       'name' => 'Spanish'
@@ -158,8 +158,8 @@ describe 'film_details', type: :feature do
 
   it 'removes languages' do
     visit film_path(@film, as: $admin_user)
-    within('.languages-list') do
-      find('.x-button').click
+    within(list_box_selector("languages")) do
+      find('.x-gray-circle').click
     end
     expect(page).not_to have_selector('.spinner')
     expect(FilmLanguage.count).to eq(0)
@@ -167,7 +167,7 @@ describe 'film_details', type: :feature do
 
   it 'adds actors' do
     visit film_path(@film, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Actor').click
+    click_btn('Add Actor')
     fill_out_and_submit_modal({
       first_name: 'Robert',
       last_name: 'DeNiro'
@@ -180,8 +180,8 @@ describe 'film_details', type: :feature do
 
   it 'removes actors' do
     visit film_path(@film, as: $admin_user)
-    within('.actors-list') do
-      find('.x-button').click
+    within(list_box_selector("actors")) do
+      find('.x-gray-circle').click
     end
     expect(page).not_to have_selector('.spinner')
     expect(Actor.count).to eq(0)
@@ -211,8 +211,8 @@ describe 'film_details', type: :feature do
   it 'displays the licensed rights' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Contract').click
-    expect(find('.fm-admin-table')).to have_content('Theatrical')
-    expect(find('.fm-admin-table')).to have_content('Non-Theatrical')
+    expect(find('table')).to have_content('Theatrical')
+    expect(find('table')).to have_content('Non-Theatrical')
   end
 
   it 'updates contract information' do
@@ -259,30 +259,30 @@ describe 'film_details', type: :feature do
   it 'adds licensed rights' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Contract').click
-    find('.blue-outline-button', text: 'Add Rights').click
-    within('#film-rights-new') do
+    click_btn('Add Rights')
+    within('.admin-modal') do
       find('label', text: 'Belgium').click
-      find('.blue-outline-button', text: 'ALL', match: :first).click
-      find('.orange-button', text: 'Add Rights').click
+      find('a', text: 'ALL', match: :first).click
+      click_btn('Add Rights')
     end
     expect(page).not_to have_selector('.spinner')
     expect(@film.film_rights.count).to eq(4)
-    expect(find('.fm-admin-table')).to have_content('Belgium')
+    expect(find('table')).to have_content('Belgium')
   end
 
   it 'changes dates of all licensed rights' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Contract').click
-    find('.blue-outline-button', text: 'Change All Dates').click
-    within('#film-rights-change-dates') do
+    click_btn('Change All Dates')
+    within('.admin-modal') do
       fill_out_form({
         start_date: '3/3/2033',
         end_date: '4/4/2034'
       })
-      find('.orange-button', text: 'Change All Dates').click
+      click_btn('Change All Dates')
     end
     wait_for_ajax
-    within('.fm-admin-table') do
+    within('table') do
       expect(page).to have_content('3/3/33')
       expect(page).to have_content('4/4/34')
     end
@@ -337,7 +337,7 @@ describe 'film_details', type: :feature do
       ppr_drl_post_street_member: '$16.00',
     }
     fill_out_form(new_info)
-    find('.blue-button', text: 'Save').click
+    click_btn("Save")
     expect(page).not_to have_selector('.spinner')
     verify_db_and_component(
       entity: @film,
@@ -381,7 +381,7 @@ describe 'film_details', type: :feature do
       ppr_drl_post_street_member: '',
     }
     fill_out_form(new_info)
-    find('.blue-button', text: 'Save').click
+    click_btn("Save")
     expect(page).not_to have_selector('.spinner')
     expect(page).to have_content('Msrp pre street is not a number')
     expect(page).to have_content('Ppr pre street is not a number')
@@ -470,7 +470,7 @@ describe 'film_details', type: :feature do
     create(:laurel)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.laurels-list') do
+    within(list_box_selector("laurels")) do
       expect(page).to have_content('Cannes International Film Festival')
     end
   end
@@ -478,7 +478,7 @@ describe 'film_details', type: :feature do
   it 'add laurels' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    find('.blue-outline-button', text: 'Add Laurel').click
+    click_btn("Add Laurel")
     laurel_info = {
       result: { value: 'Nominated', type: :select },
       award_name: 'Best Film',
@@ -493,8 +493,8 @@ describe 'film_details', type: :feature do
     create(:laurel)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.laurels-list') do
-      find('.x-button').click
+    within(list_box_selector("laurels")) do
+      find('.x-gray-circle').click
     end
     expect(page).to have_no_css('.spinner')
     expect(Laurel.count).to eq(0)
@@ -505,7 +505,7 @@ describe 'film_details', type: :feature do
     create(:quote)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.quotes-list') do
+    within(".quotes-container") do
       expect(page).to have_content('This is the greatest film in history.')
       expect(page).to have_content('Roger Ebert')
       expect(page).to have_content('Chicago Sun')
@@ -515,7 +515,7 @@ describe 'film_details', type: :feature do
   it 'adds quotes' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    find('.blue-outline-button', text: 'Add Quote').click
+    click_btn("Add Quote")
     quote_info = {
       text: 'I thought I died and went to heaven.',
       author: 'Peter Biskind',
@@ -532,7 +532,7 @@ describe 'film_details', type: :feature do
     create(:film_genre)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.genres-list') do
+    within(list_box_selector("genres")) do
       expect(page).to have_content('Comedy')
     end
   end
@@ -541,11 +541,11 @@ describe 'film_details', type: :feature do
     create(:genre)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    find('.blue-outline-button', text: 'Add Genre').click
+    click_btn("Add Genre")
     select_from_modal('Comedy')
     expect(page).to have_no_css('.spinner')
     expect(FilmGenre.count).to eq(1)
-    within('.genres-list') do
+    within(list_box_selector("genres")) do
       expect(page).to have_content('Comedy')
     end
   end
@@ -555,8 +555,8 @@ describe 'film_details', type: :feature do
     create(:film_genre)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.genres-list') do
-      find('.x-button').click
+    within(list_box_selector("genres")) do
+      find('.x-gray-circle').click
     end
     expect(page).to have_no_css('.spinner')
     expect(FilmGenre.count).to eq(0)
@@ -568,7 +568,7 @@ describe 'film_details', type: :feature do
     create(:film_topic)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
-    within('.topics-list') do
+    within(list_box_selector("topics")) do
       expect(page).to have_content('Latino')
     end
   end
@@ -577,11 +577,11 @@ describe 'film_details', type: :feature do
     create(:topic)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
-    find('.blue-outline-button', text: 'Add Topic').click
+    click_btn("Add Topic")
     select_from_modal('Latino')
     expect(page).to have_no_css('.spinner')
     expect(FilmTopic.count).to eq(1)
-    within('.topics-list') do
+    within(list_box_selector("topics")) do
       expect(page).to have_content('Latino')
     end
   end
@@ -591,8 +591,8 @@ describe 'film_details', type: :feature do
     create(:film_topic)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
-    within('.topics-list') do
-      find('.x-button').click
+    within(list_box_selector("topics")) do
+      find('.x-gray-circle').click
     end
     expect(page).to have_no_css('.spinner')
     expect(FilmTopic.count).to eq(0)
@@ -603,7 +603,7 @@ describe 'film_details', type: :feature do
     create(:alternate_length)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.alternate-lengths-list') do
+    within(list_box_selector("alternate-lengths")) do
       expect(page).to have_content('60')
     end
   end
@@ -611,7 +611,7 @@ describe 'film_details', type: :feature do
   it 'adds alternate lengths' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    find('.blue-outline-button', text: 'Add Length').click
+    click_btn("Add Length")
     fill_out_and_submit_modal({ length: 60 }, :input)
     expect(AlternateLength.count).to eq(1)
     expect(page).to have_content('60')
@@ -621,8 +621,8 @@ describe 'film_details', type: :feature do
     create(:alternate_length)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.alternate-lengths-list') do
-      find('.x-button').click
+    within(list_box_selector("alternate-lengths")) do
+      find('.x-gray-circle').click
     end
     expect(page).to have_no_css('.spinner')
     expect(AlternateLength.count).to be(0)
@@ -633,7 +633,7 @@ describe 'film_details', type: :feature do
     create(:alternate_audio)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.alternate-audios-list') do
+    within(list_box_selector("alternate-audios")) do
       expect(page).to have_content('French')
     end
   end
@@ -641,7 +641,7 @@ describe 'film_details', type: :feature do
   it 'adds alternate audio tracks' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    find('.blue-outline-button', text: 'Add Audio Track').click
+    click_btn("Add Audio Track")
     select_from_modal('French')
     expect(AlternateAudio.count).to eq(1)
     expect(page).to have_content('French')
@@ -651,8 +651,8 @@ describe 'film_details', type: :feature do
     create(:alternate_audio)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.alternate-audios-list') do
-      find('.x-button').click
+    within(list_box_selector("alternate-audios")) do
+      find('.x-gray-circle').click
     end
     expect(page).to have_no_css('.spinner')
     expect(AlternateAudio.count).to be(0)
@@ -663,7 +663,7 @@ describe 'film_details', type: :feature do
     create(:alternate_sub)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.alternate-subtitles-list') do
+    within(list_box_selector("alternate-subs")) do
       expect(page).to have_content('French')
     end
   end
@@ -671,7 +671,7 @@ describe 'film_details', type: :feature do
   it 'adds alternate subtitles' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    find('.blue-outline-button', text: 'Add Subtitles').click
+    click_btn("Add Subtitles")
     select_from_modal('French')
     expect(AlternateSub.count).to eq(1)
     expect(page).to have_content('French')
@@ -681,8 +681,8 @@ describe 'film_details', type: :feature do
     create(:alternate_sub)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.alternate-subtitles-list') do
-      find('.x-button').click
+    within(list_box_selector("alternate-subs")) do
+      find('.x-gray-circle').click
     end
     expect(page).to have_no_css('.spinner')
     expect(AlternateSub.count).to be(0)
@@ -694,7 +694,7 @@ describe 'film_details', type: :feature do
     create(:related_film)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.related-films-list') do
+    within(list_box_selector("related-films")) do
       expect(page).to have_content('Another Film')
     end
   end
@@ -703,7 +703,7 @@ describe 'film_details', type: :feature do
     create(:film, title: 'Another Film')
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    find('.blue-outline-button', text: 'Add Related Film').click
+    click_btn("Add Related Film")
     select_from_modal('Another Film')
     expect(page).to have_no_css('.spinner')
     expect(RelatedFilm.count).to eq(1)
@@ -715,8 +715,8 @@ describe 'film_details', type: :feature do
     create(:related_film)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.related-films-list') do
-      find('.x-button').click
+    within(list_box_selector("related-films")) do
+      find('.x-gray-circle').click
     end
     expect(page).to have_no_css('.spinner')
     expect(RelatedFilm.count).to be(0)
@@ -728,7 +728,7 @@ describe 'film_details', type: :feature do
     create(:digital_retailer_film)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within('.digital-retailers-table') do
+    within("table") do
       expect(page).to have_content('iTunes')
     end
   end
@@ -737,7 +737,7 @@ describe 'film_details', type: :feature do
     create(:digital_retailer)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    find('.blue-outline-button', text: 'Add Digital Retailer').click
+    click_btn("Add Digital Retailer")
     fill_out_and_submit_modal({
       digital_retailer_id: { value: 1, type: :select },
       url: 'https://www.itunes.com/another_film'
@@ -753,7 +753,7 @@ describe 'film_details', type: :feature do
     create(:edu_platform_film)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
-    within('.edu-platforms-table') do
+    within("table") do
       expect(page).to have_content('Kanopy')
     end
   end
@@ -762,7 +762,7 @@ describe 'film_details', type: :feature do
     create(:edu_platform)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
-    find('.blue-outline-button', text: 'Add Platform').click
+    click_btn("Add Platform")
     fill_out_and_submit_modal({
       edu_platform_id: { value: 1, type: :select },
       url: 'https://www.kanopy.com/asdf'
@@ -778,7 +778,7 @@ describe 'film_details', type: :feature do
     create(:edu_platform_film)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Educational').click
-    find('.blue-outline-button', text: 'Add Platform').click
+    click_btn("Add Platform")
     fill_out_and_submit_modal({
       edu_platform_id: { value: 1, type: :select },
       url: ''
@@ -820,7 +820,7 @@ describe 'film_details', type: :feature do
     create(:film_format)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Bookings').click
-    within('ul.screening-formats-list') do
+    within(list_box_selector("formats")) do
       expect(page).to have_content('35mm')
     end
   end
@@ -829,10 +829,10 @@ describe 'film_details', type: :feature do
     create(:format)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Bookings').click
-    find('.blue-outline-button', text: 'Add Format').click
+    click_btn("Add Format")
     select_from_modal('35mm')
     expect(page).to have_no_css('.spinner')
-    within('ul.screening-formats-list') do
+    within(list_box_selector("formats")) do
       expect(page).to have_content('35mm')
     end
   end
@@ -842,7 +842,7 @@ describe 'film_details', type: :feature do
     create(:film_format)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Bookings').click
-    find('.x-button').click
+    find('.x-gray-circle').click
     expect(page).to have_no_css('.spinner')
     expect(FilmFormat.count).to be(0)
     expect(page).to have_no_content('35mm')
@@ -855,7 +855,7 @@ describe 'film_details', type: :feature do
     create(:virtual_booking, venue_id: 2)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Bookings').click
-    within('.bookings-table') do
+    within('table') do
       expect(page).to have_content('Film at Lincoln Center')
       expect(page).to have_content('Theatrical')
       expect(page).to have_content('Alamo Drafthouse Cinema')
@@ -871,13 +871,13 @@ describe 'film_details', type: :feature do
   it "displays the film's dvds" do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'DVDs').click
-    expect(find('.fm-admin-table')).to have_content('Retail')
+    expect(find('table')).to have_content('Retail')
   end
 
   it 'adds dvds' do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'DVDs').click
-    find('.blue-outline-button', text: 'Add DVD').click
+    click_btn("Add DVD")
     info = {
       dvd_type_id: { value: 'Club', type: :select_modal },
     }
@@ -931,7 +931,7 @@ describe 'film_details', type: :feature do
     create(:film, title: 'Another Film')
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Statements').click
-    find('.blue-outline-button', text: 'Add Film').click
+    click_btn("Add Film")
     select_from_modal('Another Film')
     expect(page).to have_no_css('.spinner')
     expect(CrossedFilm.count).to eq(2)
@@ -942,7 +942,7 @@ describe 'film_details', type: :feature do
     create(:royalty_report)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Statements').click
-    within('.fm-admin-table') do
+    within('table') do
       expect(page).to have_content('2019')
     end
   end
@@ -954,7 +954,7 @@ describe 'film_details', type: :feature do
     create(:sub_right)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Sublicensing').click
-    within('.fm-admin-table') do
+    within('table') do
       expect(page).to have_content('Kanopy')
     end
   end
@@ -966,7 +966,7 @@ describe 'film_details', type: :feature do
     create(:episode, film_id: @tv_series.id)
     visit film_path(@tv_series, as: $admin_user)
     find('div.tab', text: 'Episodes').click
-    within('.fm-admin-table') do
+    within('table') do
       expect(page).to have_content('Pilot')
     end
   end
@@ -976,7 +976,7 @@ describe 'film_details', type: :feature do
     create(:episode, film_id: @tv_series.id)
     visit film_path(@tv_series, as: $admin_user)
     find('div.tab', text: 'Episodes').click
-    find('.blue-outline-button', text: 'Add Episode').click
+    click_btn("Add Episode")
     info = {
       title: 'Episode 2',
       length: 60,
@@ -996,8 +996,7 @@ describe 'film_details', type: :feature do
 
   it 'validates the film when copying' do
     visit film_path(@film, as: $admin_user)
-    copy_button = find('.orange-button', text: 'Copy Film')
-    copy_button.click
+    click_btn('Copy Film')
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_no_css('.spinner')
     expect(page).to have_content("Title can't be blank")
@@ -1007,8 +1006,7 @@ describe 'film_details', type: :feature do
 
   it 'copies the film' do
     visit film_path(@film, as: $admin_user)
-    copy_button = find('.orange-button', text: 'Copy Film')
-    copy_button.click
+    click_btn('Copy Film')
     new_film_data = {
       title: 'New Film',
       year: 1999,
@@ -1025,11 +1023,7 @@ describe 'film_details', type: :feature do
 
   it 'deletes the film' do
     visit film_path(@film, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/films', ignore_query: true)
     expect(Film.find_by_id(@film.id)).to be(nil)
   end
@@ -1037,7 +1031,7 @@ describe 'film_details', type: :feature do
   it 'starts the update artwork job' do
     visit film_path(@film, as: $admin_user)
     find('.key-art').click
-    find('.orange-button', text: 'Yes').click
+    click_btn('Yes')
     expect(page).to have_content('Updating Artwork')
   end
 

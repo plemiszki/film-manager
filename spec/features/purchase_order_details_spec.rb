@@ -86,10 +86,10 @@ describe 'purchase_order_details_spec', type: :feature do
       zip: '90210',
       country: 'saved country'
     })
-    find('.blue-outline-button', text: 'Save Shipping Address').click
+    click_btn("Save Shipping Address")
     within('.admin-modal') do
       find('input[data-field="label"]').set('Saved Address')
-      find('input.btn').click
+      click_btn("Add Shipping Address")
     end
     expect(page).to have_no_css('.spinner')
     expect(ShippingAddress.last.attributes).to include(
@@ -107,7 +107,7 @@ describe 'purchase_order_details_spec', type: :feature do
 
   it 'uses a saved shipping address' do
     visit purchase_order_path(@purchase_order, as: $admin_user)
-    find('.blue-outline-button', text: 'Use Saved Shipping Address').click
+    click_btn("Use Saved Shipping Address")
     select_from_modal('Label')
     save_and_wait
     expect(@purchase_order.reload.attributes).to include(
@@ -127,10 +127,10 @@ describe 'purchase_order_details_spec', type: :feature do
 
   it 'adds items to the purchase order' do
     visit purchase_order_path(@purchase_order, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Item').click
+    click_btn("Add Item")
     select_from_modal('A Movie - Retail')
     within('.qty-modal') do
-      find('.orange-button').click
+      click_btn('OK')
     end
     expect(page).to have_no_css('.spinner')
     expect(@purchase_order.reload.purchase_order_items.length).to be(1)
@@ -139,18 +139,14 @@ describe 'purchase_order_details_spec', type: :feature do
   it 'removes items from the purchase order' do
     create(:purchase_order_item)
     visit purchase_order_path(@purchase_order, as: $admin_user)
-    find('.x-button').click
+    find('.x-gray-circle').click
     expect(page).to have_no_css('.spinner')
     expect(@purchase_order.reload.purchase_order_items.length).to eq(0)
   end
 
   it 'deletes the purchase order' do
     visit purchase_order_path(@purchase_order, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/purchase_orders', ignore_query: true)
     expect(PurchaseOrder.find_by_id(@purchase_order.id)).to be(nil)
   end
@@ -159,7 +155,7 @@ describe 'purchase_order_details_spec', type: :feature do
     create(:setting)
     Sidekiq::Testing.inline! do
       visit purchase_order_path(@purchase_order, as: $admin_user)
-      find('.orange-button', text: 'Ship Now').click
+      click_btn('Ship Now')
       expect(page).to have_no_css('.spinner', wait: 10)
       expect(page).to have_current_path('/purchase_orders', ignore_query: true)
       expect(@purchase_order.reload.attributes).to include(

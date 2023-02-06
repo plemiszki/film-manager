@@ -13,7 +13,10 @@ export default class NewInvoice extends React.Component {
   componentDidMount() {
     const { editMode, invoiceToEdit } = this.props;
     let result = [];
+    console.log(invoiceToEdit);
+    console.log(editMode);
     this.props.rows.forEach((row) => {
+      console.log(row);
       if (editMode) {
         const sentRow = invoiceToEdit.rows.find(sentRow => sentRow.label === row.label);
         if (sentRow) {
@@ -91,7 +94,7 @@ export default class NewInvoice extends React.Component {
             { this.renderRows() }
             <div className="button-container">
               <Button
-                disabled={ fetching }
+                disabled={ fetching || this.insufficientInvoiceRows() }
                 onClick={ () => { this.clickSend(editMode) } }
                 text={ `${ editMode ? 'Resend' : 'Send' } Invoice` }
               />
@@ -113,13 +116,14 @@ export default class NewInvoice extends React.Component {
     const { editMode } = this.props;
     return this.state.rows.map((row, index) => {
       const amount = (row.payment ? `(${row.amount})` : row.amount );
-      return(
+      return (
         <React.Fragment key={ index }>
           <div>
             <div className="switch-container">
               { Common.renderSwitchComponent({
                 checked: row.active,
-                onChange: this.flipSwitch.bind(this, index)
+                onChange: this.flipSwitch.bind(this, index),
+                testLabel: `switch-${index}`,
               }) }
             </div>
             <p className={ row.active ? '' : 'disabled' }>
@@ -146,15 +150,8 @@ export default class NewInvoice extends React.Component {
     });
   }
 
-  renderDisabledButtonClass() {
-    const disabledClass = ' disabled';
-    if (this.state.fetching) {
-      return disabledClass;
-    }
+  insufficientInvoiceRows() {
     const sufficientActiveRows = this.state.rows.filter((row) => row.active && row.sufficient);
-    if (sufficientActiveRows.length === 0) {
-      return disabledClass;
-    }
-    return '';
+    return sufficientActiveRows.length === 0;
   }
 }

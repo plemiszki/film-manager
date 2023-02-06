@@ -23,7 +23,7 @@ describe 'territories_index', type: :feature do
   it 'adds territories' do
     visit setting_path(as: $admin_user)
     within('#territories-index') do
-      find('.btn', text: 'Add Territory').click
+      click_btn("Add Territory")
     end
     info = { name: 'Canada' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'territories_index', type: :feature do
   it 'validates territories' do
     visit setting_path(as: $admin_user)
     within('#territories-index') do
-      find('.btn', text: 'Add Territory').click
+      click_btn("Add Territory")
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

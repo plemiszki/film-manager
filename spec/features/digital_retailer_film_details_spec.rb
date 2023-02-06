@@ -52,11 +52,7 @@ describe 'digital_retailer_film_details', type: :feature do
 
   it 'deletes digital retailer film' do
     visit digital_retailer_film_path(@digital_retailer_film, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path("/films/#{@digital_retailer_film.film.id}", ignore_query: true)
     expect(DigitalRetailerFilm.find_by_id(@digital_retailer_film.id)).to be(nil)
   end

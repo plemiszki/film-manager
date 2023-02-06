@@ -26,7 +26,7 @@ describe 'merchandise_index', type: :feature do
 
   it 'adds merchandise' do
     visit merchandise_items_path(as: $admin_user)
-    find('.btn', text: 'Add Merchandise Item').click
+    click_btn("Add Merchandise Item")
     fill_out_and_submit_modal({
       name: 'Wilby Wonderful Shirt',
       merchandise_type_id: { type: :select, value: 1 },
@@ -36,7 +36,7 @@ describe 'merchandise_index', type: :feature do
       inventory: 20,
       film_id: { type: :select_modal, value: 'Wilby Wonderful' }
     }, :input)
-    expect(find('.admin-table')).to have_content 'Wilby Wonderful Shirt'
+    expect(find('table')).to have_content 'Wilby Wonderful Shirt'
     verify_db(
       entity: MerchandiseItem.last,
       data: {
@@ -53,7 +53,7 @@ describe 'merchandise_index', type: :feature do
 
   it 'validates merchandise' do
     visit merchandise_items_path(as: $admin_user)
-    find('.btn', text: 'Add Merchandise Item').click
+    click_btn("Add Merchandise Item")
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content "Name can't be blank"
     expect(page).to have_content "Price is not a number"

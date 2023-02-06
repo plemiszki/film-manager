@@ -22,7 +22,7 @@ describe 'purchase_orders_index', type: :feature do
 
   it 'adds new purchase orders' do
     visit purchase_orders_path(as: $admin_user)
-    find('.new-button', text: 'Add Purchase Order').click
+    click_btn('Add Purchase Order')
     fill_out_and_submit_modal({
       number: '450001',
       order_date: '1/1/2025',
@@ -46,7 +46,7 @@ describe 'purchase_orders_index', type: :feature do
 
   it 'validates new purchase orders properly' do
     visit purchase_orders_path(as: $admin_user)
-    find('.new-button', text: 'Add Purchase Order').click
+    click_btn('Add Purchase Order')
     fill_out_and_submit_modal({
       number: ''
     }, :input)

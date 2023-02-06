@@ -24,14 +24,14 @@ describe 'calendar', type: :feature do
 
   it 'advances to the next year' do
     visit calendar_path(as: $admin_user)
-    find('.orange-button', text: '>>').click
+    click_btn('>>')
     expect(page).to have_no_css('.spinner')
     expect(page).to have_content(Date.today.year + 1)
   end
 
   it 'moves back to the previous year' do
     visit calendar_path(as: $admin_user)
-    find('.orange-button', text: '<<').click
+    click_btn('<<')
     expect(page).to have_no_css('.spinner')
     expect(page).to have_content(Date.today.year - 1)
   end

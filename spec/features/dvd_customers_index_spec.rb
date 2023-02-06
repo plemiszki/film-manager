@@ -19,7 +19,7 @@ describe 'dvd_customers_index', type: :feature do
 
   it 'adds new dvd customers' do
     visit dvd_customers_path(as: $admin_user)
-    find('.float-button', text: 'Add Dvd Customer').click
+    click_btn('Add Dvd Customer')
     fill_out_and_submit_modal({
       name: 'New DVD Vendor',
       discount: 40,
@@ -34,7 +34,7 @@ describe 'dvd_customers_index', type: :feature do
       zip: '10001',
       country: 'New Country'
     }, :input)
-    expect(find('.admin-table')).to have_content 'New DVD Vendor'
+    expect(find('table')).to have_content 'New DVD Vendor'
     expect(DvdCustomer.last.attributes).to include(
       'name' => 'New DVD Vendor',
       'discount' => 0.4e2,
@@ -54,7 +54,7 @@ describe 'dvd_customers_index', type: :feature do
 
   it 'adds new consignment dvd customers' do
     visit dvd_customers_path(as: $admin_user)
-    find('.float-button', text: 'Add Dvd Customer').click
+    click_btn('Add Dvd Customer')
     fill_out_and_submit_modal({
       name: 'New DVD Vendor',
       discount: 40,
@@ -67,7 +67,7 @@ describe 'dvd_customers_index', type: :feature do
       zip: '10001',
       country: 'New Country'
     }, :input)
-    expect(find('.admin-table')).to have_content 'New DVD Vendor'
+    expect(find('table')).to have_content 'New DVD Vendor'
     expect(DvdCustomer.last.attributes).to include(
       'name' => 'New DVD Vendor',
       'discount' => 0.4e2,
@@ -84,7 +84,7 @@ describe 'dvd_customers_index', type: :feature do
 
   it 'validates new dvd customers properly' do
     visit dvd_customers_path(as: $admin_user)
-    find('.float-button', text: 'Add Dvd Customer').click
+    click_btn('Add Dvd Customer')
     fill_out_and_submit_modal({
       name: ''
     }, :input)

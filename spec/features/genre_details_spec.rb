@@ -41,11 +41,7 @@ describe 'genre_details', type: :feature do
 
   it 'deletes the genre' do
     visit genre_path(@genre, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/settings', ignore_query: true)
     expect(Genre.find_by_id(@genre.id)).to be(nil)
   end

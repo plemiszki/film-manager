@@ -57,11 +57,7 @@ describe 'digital_retailer_details', type: :feature do
 
   it 'deletes the digital retailer' do
     visit digital_retailer_path(@digtial_retailer, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/settings', ignore_query: true)
     expect(DigitalRetailer.find_by_id(@digtial_retailer.id)).to be(nil)
   end

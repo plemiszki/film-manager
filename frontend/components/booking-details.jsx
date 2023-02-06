@@ -50,14 +50,6 @@ export default class BookingDetails extends React.Component {
         owed: "$0.00",
         overage: "$0.00"
       },
-      newInvoiceAdvance: false,
-      newInvoiceOverage: false,
-      newInvoiceShipFee: false,
-      resendInvoiceId: null,
-      oldInvoiceAdvance: null,
-      oldInvoiceOverage: null,
-      oldInvoiceShipFee: null,
-      invoicePayments: {}
     };
   }
 
@@ -94,13 +86,22 @@ export default class BookingDetails extends React.Component {
     const { bookingSaved, calculations, films } = this.state;
     const film = films.find(film => film.id === bookingSaved.filmId)
     const filmTitle = film && film.title;
-    return [{
-      label: 'Amount Due',
-      labelExport: `${filmTitle}\n${bookingSaved.startDate} - ${bookingSaved.endDate}\n${bookingSaved.terms} (Total Gross: ${calculations.totalGross})`,
-      amount: calculations.ourShare,
-      active: true,
-      sufficient: true
-    }];
+    return [
+      {
+        label: 'Advance',
+        labelExport: 'Advance',
+        amount: bookingSaved.advance,
+        active: false,
+        sufficient: true,
+      },
+      {
+        label: 'Amount Due',
+        labelExport: `${filmTitle}\n${bookingSaved.startDate} - ${bookingSaved.endDate}\n${bookingSaved.terms} (Total Gross: ${calculations.totalGross})`,
+        amount: calculations.ourShare,
+        active: false,
+        sufficient: true,
+      }
+    ];
   }
 
   clickSave() {
@@ -219,117 +220,6 @@ export default class BookingDetails extends React.Component {
     });
   }
 
-  clickSendInvoice() {
-    const { booking, newInvoiceAdvance, newInvoiceOverage, newInvoiceShipFee } = this.state;
-    const paymentIds = this.getInvoicePaymentIds();
-    if (this.state.newInvoiceAdvance || this.state.newInvoiceOverage || this.state.newInvoiceShipFee) {
-      if (this.state.resendInvoiceId) {
-        this.setState({
-          newInvoiceModalOpen: false,
-          fetching: true,
-          resendInvoiceId: null,
-          oldInvoiceAdvance: null,
-          oldInvoiceOverage: null,
-          oldInvoiceShipFee: null
-        });
-        sendRequest(`/api/invoices/${this.state.resendInvoiceId}`, {
-          method: 'PATCH',
-          data: {
-            bookingId: booking.id,
-            advance: newInvoiceAdvance,
-            overage: newInvoiceOverage,
-            shipFee: newInvoiceShipFee,
-            paymentIds,
-          }
-        }).then((response) => {
-          const { invoices } = response;
-          this.setState({
-            fetching: false,
-            invoices
-          });
-        });
-      } else {
-        this.setState({
-          newInvoiceModalOpen: false,
-          fetching: true
-        });
-        sendRequest('/api/invoices', {
-          method: 'POST',
-          data: {
-            bookingId: booking.id,
-            advance: newInvoiceAdvance,
-            overage: newInvoiceOverage,
-            shipFee: newInvoiceShipFee,
-          }
-        }).then((response) => {
-          const { invoices } = response;
-          this.setState({
-            fetching: false,
-            invoices,
-          });
-        });
-      }
-    }
-  }
-
-  getInvoicePaymentIds() {
-    const { invoicePayments } = this.state;
-    const paymentIds = Object.keys(invoicePayments);
-    let result = [];
-    for (let i = 0; i < paymentIds.length; i++) {
-      if (invoicePayments[paymentIds[i]]) {
-        result.push(paymentIds[i]);
-      }
-    }
-    return result;
-  }
-
-  newInvoiceAdvanceEnabled() {
-    if (this.state.booking.advance === "$0.00") {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  newInvoiceOverageEnabled() {
-    if (this.state.calculations.overage === "$0.00") {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  newInvoiceShipFeeEnabled() {
-    if (this.state.booking.shippingFee === "$0.00") {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  closeModal() {
-    const { errors } = this.state;
-    this.setState({
-      errors: errors,
-      deleteModalOpen: false,
-      copyModalOpen: false,
-      filmsModalOpen: false,
-      venuesModalOpen: false,
-      newWeeklyTermsModalOpen: false,
-      newWeeklyBoxOfficeModalOpen: false,
-      newPaymentModalOpen: false,
-      newInvoiceModalOpen: false,
-      newInvoiceAdvance: false,
-      newInvoiceOverage: false,
-      newInvoiceShipFee: false,
-      resendInvoiceId: null,
-      oldInvoiceAdvance: null,
-      oldInvoiceOverage: null,
-      oldInvoiceShipFee: null
-    });
-  }
-
   checkForChanges() {
     return !Tools.objectsAreEqual(this.state.booking, this.state.bookingSaved);
   }
@@ -349,66 +239,11 @@ export default class BookingDetails extends React.Component {
     }
   }
 
-  changeAdvanceCheckbox() {
-    this.setState({
-      newInvoiceAdvance: !this.state.newInvoiceAdvance
-    });
-  }
-
-  changeOverageCheckbox() {
-    this.setState({
-      newInvoiceOverage: !this.state.newInvoiceOverage
-    });
-  }
-
-  changeShipFeeCheckbox() {
-    this.setState({
-      newInvoiceShipFee: !this.state.newInvoiceShipFee
-    });
-  }
-
-  changePaymentCheckbox(e) {
-    var id = e.target.dataset.id;
-    var obj = this.state.invoicePayments;
-    if (obj[id]) {
-      obj[id] = false;
-    } else {
-      obj[id] = true;
-    }
-    this.setState({
-      invoicePayments: obj
-    });
-  }
-
   clickEdit(invoice) {
-    const rows = invoice.rows;
-    let oldAdvance;
-    let oldOverage;
-    let oldShipFee;
-    rows.forEach((row) => {
-      if (row.label === 'Advance') {
-        oldAdvance = row.amount;
-      } else if (row.label.slice(0,7) === 'Overage') {
-        oldOverage = row.amount;
-      } else if (row.label === 'Shipping Fee') {
-        oldShipFee = row.amount;
-      }
-    });
-    const payments = invoice.payments;
-    let paymentsObj = {};
-    payments.forEach((payment) => {
-      paymentsObj[payment.id] = true;
-    });
     this.setState({
       newInvoiceModalOpen: true,
-      oldInvoiceAdvance: oldAdvance,
-      oldInvoiceOverage: oldOverage,
-      oldInvoiceShipFee: oldShipFee,
-      newInvoiceAdvance: !!oldAdvance,
-      newInvoiceOverage: !!oldOverage,
-      newInvoiceShipFee: !!oldShipFee,
-      resendInvoiceId: invoice.number,
-      invoicePayments: paymentsObj,
+      editInvoiceMode: true,
+      editInvoiceId: invoice.id,
     });
   }
 
@@ -425,7 +260,7 @@ export default class BookingDetails extends React.Component {
 
   calculateNewInvoiceModalHeight() {
     const { payments } = this.state;
-    const rows = 1 + payments.length;
+    const rows = 2 + payments.length;
     const padding = 36;
     const border = 1;
     const buttonHeight = 47;
@@ -588,6 +423,7 @@ export default class BookingDetails extends React.Component {
               <div className="col-xs-6">
                 <p className="section-header">Payments</p>
                 <ListBox
+                  entityName="payment"
                   entities={ payments }
                   clickDelete={ payment => this.clickDeletePayment(payment.id) }
                   displayFunction={ payment => `${payment.date} - ${payment.amount}${payment.notes && `(${payment.notes})`}` }
@@ -631,7 +467,7 @@ export default class BookingDetails extends React.Component {
         <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete entityName="invoice" confirmDelete={ this.confirmDeleteInvoice.bind(this) } closeModal={ Common.closeModals.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
           <CopyEntity
             context={ this.props.context }
             entityName="booking"
@@ -639,7 +475,7 @@ export default class BookingDetails extends React.Component {
             films={ this.state.films }
           />
         </Modal>
-        <Modal isOpen={ this.state.newWeeklyTermsModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+        <Modal isOpen={ this.state.newWeeklyTermsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
           <NewEntity
             context={ this.props.context }
             entityName="weeklyTerm"
@@ -647,7 +483,7 @@ export default class BookingDetails extends React.Component {
             callback={ response => this.setState({ weeklyTerms: response, newWeeklyTermsModalOpen: false }) }
           />
         </Modal>
-        <Modal isOpen={ this.state.newWeeklyBoxOfficeModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+        <Modal isOpen={ this.state.newWeeklyBoxOfficeModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
           <NewEntity
             context={ this.props.context }
             entityName="weeklyBoxOffice"
@@ -655,7 +491,7 @@ export default class BookingDetails extends React.Component {
             callbackFullProps={ response => this.setState({ weeklyBoxOffices: response.weeklyBoxOffices, calculations: response.calculations, newWeeklyBoxOfficeModalOpen: false }) }
           />
         </Modal>
-        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+        <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
           <NewEntity
             context={ this.props.context }
             entityName="payment"
@@ -704,6 +540,7 @@ export default class BookingDetails extends React.Component {
         <div className="col-xs-6">
           <h2>Terms by Week</h2>
           <ListBox
+            entityName="weeklyTerm"
             entities={ weeklyTerms }
             clickDelete={ weeklyTerms => this.clickDeleteWeek(weeklyTerms) }
             displayFunction={ weeklyTerms => `Week ${ +weeklyTerms.order + 1 } - ${ weeklyTerms.terms }` }
@@ -799,6 +636,7 @@ export default class BookingDetails extends React.Component {
         <div className="col-xs-6">
           <h2>Box Office by Week</h2>
           <ListBox
+            entityName="weeklyBoxOffice"
             entities={ weeklyBoxOffices }
             clickDelete={ weeklyBoxOffice => this.clickDeleteWeeklyBoxOffice(weeklyBoxOffice) }
             displayFunction={ weeklyBoxOffice => `Week ${ +weeklyBoxOffice.order + 1 } - ${ weeklyBoxOffice.amount }` }

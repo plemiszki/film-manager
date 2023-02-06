@@ -361,9 +361,10 @@ export default class VirtualBookingDetails extends React.Component {
             <div className="col-xs-6">
               <p className="section-header">Payments</p>
               <ListBox
-                list={ payments }
+                entityName="payment"
+                entities={ payments }
                 clickDelete={ (payment) => { this.clickDeletePayment(payment.id) } }
-                textFunc={ payment => `${payment.date} - ${payment.amount}${payment.notes && ` (${payment.notes})`}` }
+                displayFunction={ payment => `${payment.date} - ${payment.amount}${payment.notes && ` (${payment.notes})`}` }
                 style={ { marginBottom: 15 } }
               />
               <OutlineButton

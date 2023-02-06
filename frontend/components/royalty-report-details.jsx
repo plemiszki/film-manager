@@ -146,7 +146,7 @@ export default class ReportDetails extends React.Component {
   }
 
   render() {
-    const { showJoined, report, streams, fetching } = this.state;
+    const { showJoined, report, streams, fetching, justSaved, changesToSave } = this.state;
     const { dealId } = report;
     const crossedStatement = (report.id === 0);
 

@@ -56,13 +56,13 @@ export default class Calendar extends React.Component {
           <Button
             float
             disabled={ fetching }
-            onClick={ () => { clickNext() } }
+            onClick={ () => { this.clickNext() } }
             text="&#62;&#62;"
           />
           <Button
             float
             disabled={ fetching }
-            onClick={ () => { clickPrev() } }
+            onClick={ () => { this.clickPrev() } }
             text="&#60;&#60;"
             marginRight
           />

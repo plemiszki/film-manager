@@ -23,7 +23,7 @@ describe 'topics_index', type: :feature do
   it 'adds topics' do
     visit setting_path(as: $admin_user)
     within('#topics-index') do
-      find('.btn', text: 'Add Topic').click
+      click_btn("Add Topic")
     end
     info = { name: 'LGBT' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'topics_index', type: :feature do
   it 'validates topics' do
     visit setting_path(as: $admin_user)
     within('#topics-index') do
-      find('.btn', text: 'Add Topic').click
+      click_btn("Add Topic")
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

@@ -41,11 +41,7 @@ describe 'topic_details', type: :feature do
 
   it 'deletes the topic' do
     visit topic_path(@topic, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/settings', ignore_query: true)
     expect(Topic.find_by_id(@topic.id)).to be(nil)
   end

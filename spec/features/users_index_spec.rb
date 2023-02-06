@@ -18,13 +18,13 @@ describe 'users_index', type: :feature do
 
   it 'adds new users' do
     visit users_path(as: $admin_user)
-    find('.btn', text: 'Add User').click
+    click_btn("Add User")
     fill_out_and_submit_modal({
       name: 'Bob',
       email: 'bob@domain.com',
       password: 'password'
     }, :input)
-    expect(find('.admin-table')).to have_content 'Bob'
+    expect(find('table')).to have_content 'Bob'
     expect(User.last.attributes).to include(
       'name' => 'Bob',
       'email' => 'bob@domain.com',
@@ -34,7 +34,7 @@ describe 'users_index', type: :feature do
 
   it 'validates new users' do
     visit users_path(as: $admin_user)
-    find('.btn', text: 'Add User').click
+    click_btn("Add User")
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content "Name can't be blank"
     expect(page).to have_content "Email is invalid"

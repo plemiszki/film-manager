@@ -23,7 +23,7 @@ describe 'merchandise_types_index', type: :feature do
   it 'adds merchandise_types' do
     visit setting_path(as: $admin_user)
     within('#merchandise-types-index') do
-      find('.btn', text: 'Add Merchandise Type').click
+      click_btn("Add Merchandise Type")
     end
     info = { name: 'Poster' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'merchandise_types_index', type: :feature do
   it 'validates merchandise_types' do
     visit setting_path(as: $admin_user)
     within('#merchandise-types-index') do
-      find('.btn', text: 'Add Merchandise Type').click
+      click_btn("Add Merchandise Type")
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

@@ -18,7 +18,7 @@ describe 'giftbox_details', type: :feature do
     expect(find('input[data-field="name"]').value).to eq('Beyond Borders')
     expect(find('input[data-field="upc"]').value).to eq('857692005017')
     expect(find('input[data-field="msrp"]').value).to eq('$39.95')
-    expect(find('select[data-field="onDemand"]', visible: false).value).to eq('f')
+    expect(find('input[data-field="onDemand"]', visible: false).value).to eq('f')
     expect(find('input[data-field="quantity"]').value).to eq('100')
     expect(find('input[data-field="sageId"]').value).to eq('BEYOND BORDERS')
   end
@@ -29,7 +29,7 @@ describe 'giftbox_details', type: :feature do
       name: 'new name',
       upc: 'new upc',
       msrp: 49.95,
-      on_demand: { value: 't', type: :select },
+      on_demand: { value: true, type: :switch },
       sage_id: 'new sage id'
     }
     fill_out_form(new_info)
@@ -53,11 +53,7 @@ describe 'giftbox_details', type: :feature do
 
   it 'deletes the giftbox' do
     visit giftbox_path(@giftbox, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/giftboxes', ignore_query: true)
     expect(Giftbox.find_by_id(@giftbox.id)).to be(nil)
   end
@@ -78,7 +74,7 @@ describe 'giftbox_details', type: :feature do
     create_dvd_types
     visit giftbox_path(@giftbox, as: $admin_user)
     expect(page).to have_no_css('.spinner')
-    find('.blue-outline-button', text: 'Add DVD').click
+    click_btn('Add DVD')
     select_from_modal('Wilby Wonderful - Retail')
     expect(page).to have_content('Wilby Wonderful')
   end
@@ -90,7 +86,7 @@ describe 'giftbox_details', type: :feature do
     create(:giftbox_dvd)
     create_dvd_types
     visit giftbox_path(@giftbox, as: $admin_user)
-    find('.x-button').click
+    find('.x-gray-circle').click
     expect(page).to have_no_css('.spinner')
     expect(GiftboxDvd.count).to be(0)
     expect(page).to have_no_content('Wilby Wonderful')

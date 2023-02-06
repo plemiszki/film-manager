@@ -327,12 +327,6 @@ export default class VenueDetails extends React.Component {
             top: -20px;
             right: -20px;
           }
-          .copy-address-button {
-            margin-top: 28px;
-            padding: 14px 0;
-            width: 100%;
-            max-width: 250px;
-          }
           .shredder-modal textarea {
             height: 150px;
           }

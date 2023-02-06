@@ -23,7 +23,7 @@ describe 'formats_index', type: :feature do
   it 'adds formats' do
     visit setting_path(as: $admin_user)
     within('#formats-index') do
-      find('.btn', text: 'Add Format').click
+      click_btn("Add Format")
     end
     info = { name: 'Digibeta' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'formats_index', type: :feature do
   it 'validates formats' do
     visit setting_path(as: $admin_user)
     within('#formats-index') do
-      find('.btn', text: 'Add Format').click
+      click_btn("Add Format")
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

@@ -48,7 +48,7 @@ describe 'credit_memos_index', type: :feature do
 
   it 'starts the export job' do
     visit credit_memos_path(as: $admin_user)
-    find('.export-button', text: 'Export').click
+    click_btn('Export')
     expect(page).to have_content('Exporting Credit Memos')
   end
 

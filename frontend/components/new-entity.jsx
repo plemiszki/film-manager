@@ -53,10 +53,9 @@ export default class NewEntity extends React.Component {
     }
   }
 
-  clickAdd(e) {
+  clickAdd() {
     let entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
     let directory = ChangeCase.snakeCase(entityNamePlural);
-    e.preventDefault();
     this.setState({
       fetching: true
     });

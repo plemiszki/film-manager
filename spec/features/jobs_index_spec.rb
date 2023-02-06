@@ -38,7 +38,7 @@ describe 'jobs_index', type: :feature do
     visit royalty_reports_path(as: $admin_user)
     sleep 2
     within all('#jobs-index')[1] do
-      find('.blue-outline-button', text: 'Kill').click
+      click_btn("Kill Job")
     end
     expect(page).to have_no_css('.spinner')
     expect(page).to have_no_css('#jobs-index')

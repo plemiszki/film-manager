@@ -41,11 +41,7 @@ describe 'country_details', type: :feature do
 
   it 'deletes the country' do
     visit country_path(@country, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/settings', ignore_query: true)
     expect(Country.find_by_id(@country.id)).to be(nil)
   end

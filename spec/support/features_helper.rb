@@ -11,6 +11,10 @@ def create_dvd_types
   DvdType.create!(name: 'Club')
 end
 
+def list_box_selector(text)
+  "ul[data-test=#{text}]"
+end
+
 def clear_form(except: nil)
   expect(page).not_to have_selector('.spinner')
   inputs = page.all("input[data-field], textarea[data-field]")
@@ -89,6 +93,18 @@ def verify_db(entity:, data:)
   expect(entity.reload.attributes).to include(arrow_syntax)
 end
 
+def click_btn(text, type = :link)
+  if type == :link
+    find('a', text: /\A#{text}\z/).click
+  elsif :submit
+    find('input[type="submit"]', value: /\A#{text}\z/).click
+  end
+end
+
+def flip_switch(text)
+  find("div.oval[data-test=\"#{text}\"]").click
+end
+
 def click_nice_select_option(css_selector, option_text)
   field = find(css_selector, visible: false)
   nice_select_div = field.sibling('.nice-select')
@@ -107,18 +123,32 @@ end
 def click_delete_and_confirm
   delete_button = find('a', text: /^Delete$/)
   delete_button.click
+  click_confirm_delete
+end
+
+def click_confirm_delete
   within('.confirm-delete') do
-    find('.red-button').click
+    find('a', text: /^Yes$/).click
   end
+end
+
+def confirm
+  within('.confirm-modal') do
+    click_btn('Yes')
+  end
+end
+
+def click_index_add_button
+  find('a', text: /^Add #{@entity_name.capitalize}$/).click
 end
 
 def fill_out_and_submit_modal(data, button_type)
   within('.admin-modal') do
     fill_out_form(data)
     if button_type == :input
-      find('input.btn').click
-    elsif button_type == :orange_button
-      find('.orange-button').click
+      find('input[type="submit"]').click
+    else
+      find('a').click
     end
   end
   expect(page).not_to have_selector('.spinner')
@@ -176,7 +206,7 @@ def search_index(criteria)
       end
     end
   end
-  find('input.submit-button').click
+  click_btn('Search', :input)
 end
 
 def select_from_modal(option)

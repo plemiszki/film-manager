@@ -35,8 +35,8 @@ describe 'royalty_reports_index', type: :feature do
     Sidekiq::Testing.inline! do
       visit royalty_reports_path(as: $admin_user, no_jobs: true)
       wait_for_ajax
-      find('.btn', text: 'Import').click
-      find('.orange-button', text: 'Import Revenue').click
+      click_btn("Import")
+      click_btn('Import Revenue')
       find('form input[type="file"]', visible: false).set('spec/support/revenue.xlsx')
       expect(page).to have_content 'Import Complete'
       expect(RoyaltyReport.count).to eq(1)
@@ -50,8 +50,8 @@ describe 'royalty_reports_index', type: :feature do
     Sidekiq::Testing.inline! do
       visit royalty_reports_path(as: $admin_user, no_jobs: true)
       wait_for_ajax
-      find('.btn', text: 'Import').click
-      find('.orange-button', text: 'Import Expenses').click
+      click_btn("Import")
+      click_btn('Import Expenses')
       find('form input[type="file"]', visible: false).set('spec/support/expenses.xlsx')
       expect(page).to have_content 'Import Complete'
       expect(RoyaltyReport.count).to eq(1)
@@ -65,7 +65,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:royalty_report, film_id: 2, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
-    click_nice_select_option('#days-filter', '30 days')
+    click_nice_select_option('select.days-filter', '30 days')
     expect(page).to have_content 'Wilby Wonderful'
     expect(page).to have_no_content 'Another Film'
   end
@@ -76,7 +76,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
-    find('.btn', text: 'Totals').click
+    click_btn("Totals")
     expect(page).to have_content 'Calculating Totals'
   end
 
@@ -86,7 +86,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
-    find('.btn', text: 'Summary').click
+    click_btn("Summary")
     expect(page).to have_content 'Creating Summary'
   end
 
@@ -96,7 +96,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
-    find('.btn', text: 'Error Check').click
+    click_btn("Error Check")
     expect(page).to have_content 'Checking For Errors'
   end
 
@@ -106,8 +106,8 @@ describe 'royalty_reports_index', type: :feature do
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
-    click_nice_select_option('#days-filter', '30 days')
-    find('.btn', text: 'Export All').click
+    click_nice_select_option('select.days-filter', '30 days')
+    click_btn("Export All")
     expect(page).to have_content 'Exporting Reports'
   end
 
@@ -117,11 +117,9 @@ describe 'royalty_reports_index', type: :feature do
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
     wait_for_ajax
-    click_nice_select_option('#days-filter', '30 days')
-    find('.btn', text: 'Send All').click
-    within('.send-modal') do
-      find('.orange-button', text: 'Yes').click
-    end
+    click_nice_select_option('select.days-filter', '30 days')
+    click_btn('Send All')
+    confirm
     expect(page).to have_content 'Exporting Reports'
   end
 
