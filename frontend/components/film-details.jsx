@@ -126,7 +126,7 @@ export default class FilmDetails extends React.Component {
       subRights: [],
       subRightsSortBy: 'sublicensorName',
       subtitleLanguages: [],
-      tab: (FM.params.tab ? ChangeCase.titleCase(FM.params.tab) : 'General'),
+      tab: (FM.params.tab ? FM.params.tab.toLowerCase() : 'general'),
       topics: [],
       virtualBookings: [],
     };
@@ -375,7 +375,7 @@ export default class FilmDetails extends React.Component {
   }
 
   clickTab(e) {
-    const tab = e.target.innerText;
+    const tab = e.target.innerText.toLowerCase();
     if (this.state.tab !== tab) {
       $('select').niceSelect('destroy');
       this.setState({
@@ -780,7 +780,7 @@ export default class FilmDetails extends React.Component {
             cancel={ Common.closeModals.bind(this) }
           />
           <Modal isOpen={this.state.deleteModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-            <ConfirmDelete entityName="film" confirmDelete={ Details.clickDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+            <ConfirmDelete entityName="film" confirmDelete={ Details.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
           </Modal>
           { Common.renderJobModal.call(this, this.state.job) }
         </div>
@@ -825,7 +825,7 @@ export default class FilmDetails extends React.Component {
       {
         return (
           <>
-            <div className={ "tab" + (tab === label ? " selected" : "") } onClick={ this.clickTab.bind(this) }>{ label }</div>
+            <div className={ "tab" + (tab === label.toLowerCase() ? " selected" : "") } onClick={ this.clickTab.bind(this) }>{ label }</div>
             <style jsx>{`
               .tab {
                 float: left;
@@ -878,7 +878,7 @@ export default class FilmDetails extends React.Component {
       schedule,
       subRights,
     } = this.state;
-    if (tab === "Contract") {
+    if (tab === "contract") {
       return (
         <div>
           <hr />
@@ -892,7 +892,7 @@ export default class FilmDetails extends React.Component {
           <hr />
         </div>
       );
-    } else if (tab === "Episodes") {
+    } else if (tab === "episodes") {
       return (
         <div>
           <hr />
@@ -919,7 +919,7 @@ export default class FilmDetails extends React.Component {
           <hr />
         </div>
       );
-    } else if (tab === "DVDs" && film.filmType !== 'Short') {
+    } else if (tab === "dvds" && film.filmType !== 'Short') {
       return (
         <div>
           <hr />
@@ -943,7 +943,7 @@ export default class FilmDetails extends React.Component {
           <hr />
         </div>
       );
-    } else if (tab === "DVDs" && film.filmType === 'Short') {
+    } else if (tab === "dvds" && film.filmType === 'Short') {
       return(
         <div>
           <hr />
@@ -961,7 +961,7 @@ export default class FilmDetails extends React.Component {
           <hr />
         </div>
       );
-    } else if (tab === "Sublicensing") {
+    } else if (tab === "sublicensing") {
       return (
         <div>
           <hr />
@@ -993,7 +993,7 @@ export default class FilmDetails extends React.Component {
           <hr />
         </div>
       );
-    } else if (tab === "Bookings") {
+    } else if (tab === "bookings") {
       var joinedBookings = this.state.bookings.concat(this.state.virtualBookings);
       return (
         <>
@@ -1003,7 +1003,7 @@ export default class FilmDetails extends React.Component {
             <div className="row">
               <div className="col-xs-6">
                 <ListBox
-                  entityName="filmFormat"
+                  entityName="format"
                   displayProperty="format"
                   entities={ alphabetizeArrayOfObjects(filmFormats, 'format') }
                   clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
@@ -1077,7 +1077,7 @@ export default class FilmDetails extends React.Component {
           `}</style>
         </>
       );
-    } else if (tab === "Statements") {
+    } else if (tab === "statements") {
       return (
         <div>
           <hr />
@@ -1116,7 +1116,7 @@ export default class FilmDetails extends React.Component {
           <hr />
         </div>
       );
-    } else if (tab === "General") {
+    } else if (tab === "general") {
       return (
         <div>
           <hr />
@@ -1212,7 +1212,7 @@ export default class FilmDetails extends React.Component {
           </div>
         </div>
       );
-    } else if (tab === "Marketing") {
+    } else if (tab === "marketing") {
       if (film.filmType === "Short") {
         return (
           <div>
@@ -1448,7 +1448,7 @@ export default class FilmDetails extends React.Component {
           </>
         );
       }
-    } else if (this.state.tab === "Educational") {
+    } else if (this.state.tab === "educational") {
       return (
         <>
           <div>
@@ -1707,7 +1707,7 @@ export default class FilmDetails extends React.Component {
         <>
           <DeleteButton
             entityName="film"
-            confirmDelete={ Details.clickDelete.bind(this) }
+            confirmDelete={ Details.confirmDelete.bind(this) }
           />,
           <Button
             text="Copy Film"

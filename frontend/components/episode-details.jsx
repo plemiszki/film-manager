@@ -84,17 +84,6 @@ export default class EpisodeDetails extends React.Component {
     });
   }
 
-  confirmDelete() {
-    const { episode } = this.state;
-    this.setState({
-      fetching: true,
-      deleteModalOpen: false
-    });
-    deleteEntity().then(() => {
-      window.location.pathname = `/films/${episode.filmId}`;
-    });
-  }
-
   checkForChanges() {
     return !Tools.objectsAreEqual(this.state.episode, this.state.episodeSaved);
   }
@@ -108,7 +97,7 @@ export default class EpisodeDetails extends React.Component {
   }
 
   render() {
-    const { fetching, justSaved, changesToSave } = this.state;
+    const { fetching, justSaved, changesToSave, episode } = this.state;
     return (
       <div id="episode-profile">
         <div className="handy-component">
@@ -141,7 +130,9 @@ export default class EpisodeDetails extends React.Component {
             <hr />
             <BottomButtons
               entityName="episode"
-              confirmDelete={ Details.clickDelete.bind(this) }
+              confirmDelete={ Details.confirmDelete.bind(this, {
+                callback: () => window.location.href = `/films/${episode.filmId}?tab=episodes`,
+              }) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ fetching }
@@ -157,13 +148,6 @@ export default class EpisodeDetails extends React.Component {
             entityName="actor"
             initialEntity={{ actorableId: this.state.episode.id, actorableType: 'Episode', firstName: "", lastName: "" }}
             callback={ this.updateActors.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="episode"
-            confirmDelete={ this.confirmDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
           />
         </Modal>
       </div>

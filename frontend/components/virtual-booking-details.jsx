@@ -246,7 +246,7 @@ export default class VirtualBookingDetails extends React.Component {
           <hr className="divider" style={ { marginTop: 30 } } />
           <BottomButtons
             entityName="virtualBooking"
-            confirmDelete={ Details.clickDelete.bind(this) }
+            confirmDelete={ Details.confirmDelete.bind(this) }
             justSaved={ justSaved }
             changesToSave={ changesToSave }
             disabled={ fetching }

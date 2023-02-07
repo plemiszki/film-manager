@@ -133,7 +133,7 @@ export default class GiftboxDetails extends React.Component {
             </div>
             <BottomButtons
               entityName="giftBox"
-              confirmDelete={ Details.clickDelete.bind(this) }
+              confirmDelete={ Details.confirmDelete.bind(this) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ fetching }

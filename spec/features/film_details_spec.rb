@@ -505,7 +505,7 @@ describe 'film_details', type: :feature do
     create(:quote)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
-    within(".quotes-container") do
+    within(".quotes-list") do
       expect(page).to have_content('This is the greatest film in history.')
       expect(page).to have_content('Roger Ebert')
       expect(page).to have_content('Chicago Sun')

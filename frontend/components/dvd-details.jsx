@@ -144,7 +144,7 @@ export default class DvdDetails extends React.Component {
   }
 
   render() {
-    const { fetching, justSaved, changesToSave, shorts } = this.state;
+    const { fetching, justSaved, changesToSave, shorts, dvd } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -192,7 +192,9 @@ export default class DvdDetails extends React.Component {
               />
               <DeleteButton
                 entityName="dvd"
-                confirmDelete={ Details.clickDelete.bind(this) }
+                confirmDelete={ Details.confirmDelete.bind(this, {
+                  callback: () => window.location.href = `/films/${dvd.featureFilmId}?tab=dvds`,
+                }) }
               />
               <Button
                 marginRight

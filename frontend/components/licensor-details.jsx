@@ -95,7 +95,7 @@ export default class LicensorDetails extends React.Component {
               </div>
               <BottomButtons
                 entityName="licensor"
-                confirmDelete={ Details.clickDelete.bind(this) }
+                confirmDelete={ Details.confirmDelete.bind(this) }
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ spinner }

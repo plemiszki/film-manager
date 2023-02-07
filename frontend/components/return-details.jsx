@@ -221,7 +221,7 @@ export default class ReturnDetails extends React.Component {
             <hr />
             <BottomButtons
               entityName="return"
-              confirmDelete={ Details.clickDelete.bind(this) }
+              confirmDelete={ Details.confirmDelete.bind(this) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ fetching }
@@ -237,7 +237,7 @@ export default class ReturnDetails extends React.Component {
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete
             entityName="return"
-            confirmDelete={ Details.clickDelete.bind(this) }
+            confirmDelete={ Details.confirmDelete.bind(this) }
             closeModal={ Common.closeModals.bind(this) }
           />
         </Modal>
@@ -258,45 +258,35 @@ export default class ReturnDetails extends React.Component {
       <div className="qty-modal">
         <h1>Enter Quantity:</h1>
         <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-        <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
-        <div className="button" onClick={ this.clickQtyOk.bind(this) }>
-          OK
-        </div>
+        <form>
+          <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
+          <Button
+            submit
+            text="OK"
+            onClick={ () => this.clickQtyOk() }
+          />
+        </form>
       </div>
       <style jsx>{`
+        .notification {
+          margin-bottom: 30px;
+        }
         .qty-modal {
           padding: 30px;
           text-align: center;
         }
-        h1 {
+        .qty-modal h1 {
           font-size: 16px;
           margin-bottom: 14px;
         }
-        h2 {
+        .qty-modal h2 {
           font-size: 12px;
           margin-bottom: 20px;
         }
-        input {
+        .qty-modal input {
           width: 170px;
           padding: 13px;
           margin-bottom: 20px;
-        }
-        .button {
-          margin: auto;
-          display: inline-block;
-          font-family: 'TeachableSans-Medium';
-          padding: 15px 40px;
-          text-align: center;
-          font-size: 12px;
-          border-radius: 100px;
-          background-color: var(--button-color);
-          color: white;
-          letter-spacing: inherit;
-          border: none;
-        }
-        .button:hover {
-          background-color: var(--highlight-color);
-          cursor: pointer;
         }
       `}</style>
     </>

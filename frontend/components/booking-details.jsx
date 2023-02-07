@@ -450,7 +450,7 @@ export default class BookingDetails extends React.Component {
               />
               <DeleteButton
                 entityName="booking"
-                confirmDelete={ Details.clickDelete.bind(this) }
+                confirmDelete={ Details.confirmDelete.bind(this) }
               />
               <Button
                 marginRight

@@ -89,7 +89,7 @@ describe 'purchase_order_details_spec', type: :feature do
     click_btn("Save Shipping Address")
     within('.admin-modal') do
       find('input[data-field="label"]').set('Saved Address')
-      click_btn("Add Shipping Address")
+      click_btn("Add Shipping Address", :input)
     end
     expect(page).to have_no_css('.spinner')
     expect(ShippingAddress.last.attributes).to include(
@@ -130,7 +130,7 @@ describe 'purchase_order_details_spec', type: :feature do
     click_btn("Add Item")
     select_from_modal('A Movie - Retail')
     within('.qty-modal') do
-      click_btn('OK')
+      click_btn('OK', :submit)
     end
     expect(page).to have_no_css('.spinner')
     expect(@purchase_order.reload.purchase_order_items.length).to be(1)

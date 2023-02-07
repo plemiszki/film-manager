@@ -402,7 +402,7 @@ export default class PurchaseOrderDetails extends React.Component {
               { unshippedPO && (
                 <BottomButtons
                   entityName="purchaseOrder"
-                  confirmDelete={ Details.clickDelete.bind(this) }
+                  confirmDelete={ Details.confirmDelete.bind(this) }
                   justSaved={ justSaved }
                   changesToSave={ changesToSave }
                   disabled={ fetching }

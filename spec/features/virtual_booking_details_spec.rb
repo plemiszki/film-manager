@@ -129,7 +129,7 @@ describe 'virtual_booking_details', type: :feature do
     })
     save_and_wait
     within('table') do
-      find('img').click
+      find('.edit-image').click
     end
     within('.admin-modal') do
       expect(page).to have_content('$100.00 → $450.00')

@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, ConfirmDelete, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button, GrayedOut, Spinner, Table, BottomButtons } from 'handy-components'
+import { Common, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button, GrayedOut, Spinner, Table, BottomButtons } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const ShredderModalStyles = {
@@ -110,10 +110,10 @@ export default class VenueDetails extends React.Component {
           this.setState({
             messageModalOpen: true,
             deleteError: response,
-            fetching: false
+            fetching: false,
           })
         }
-      )
+      );
     });
   }
 
@@ -252,7 +252,7 @@ export default class VenueDetails extends React.Component {
               </div>
               <BottomButtons
                 entityName="venue"
-                confirmDelete={ Details.clickDelete.bind(this) }
+                confirmDelete={ this.confirmDelete.bind(this) }
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ fetching }
@@ -300,9 +300,6 @@ export default class VenueDetails extends React.Component {
               </div>
             </div>
           </div>
-          <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-            <ConfirmDelete entityName="venue" confirmDelete={ this.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
-          </Modal>
           <Modal isOpen={ this.state.messageModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.messageModalStyles() }>
             <ModalMessage message={ this.state.deleteError.message } memo={ this.state.deleteError.memo } />
           </Modal>
@@ -312,7 +309,7 @@ export default class VenueDetails extends React.Component {
               <div className="error-message"></div>
               <Button
                 text="Split Address"
-                onClick={ this.clickSplitAddress }
+                onClick={ this.clickSplitAddress.bind(this) }
               />
             </div>
           </Modal>

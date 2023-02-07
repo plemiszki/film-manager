@@ -97,8 +97,12 @@ def click_btn(text, type = :link)
   if type == :link
     find('a', text: /\A#{text}\z/).click
   elsif :submit
-    find('input[type="submit"]', value: /\A#{text}\z/).click
+    click_on text
   end
+end
+
+def click_table_button(text)
+  find("table div.custom-button", text: text).click
 end
 
 def flip_switch(text)

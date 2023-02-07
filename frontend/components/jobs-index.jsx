@@ -51,6 +51,7 @@ export default class JobsIndex extends React.Component {
               sortable={ false }
               links={ false }
               hover={ true }
+              test="jobs"
               columns={[
                 { name: "jobId", header: "Currently Running Export Statement Jobs" },
                 { name: "status", displayFunction: job => `${job.currentValue} / ${job.totalValue}` },

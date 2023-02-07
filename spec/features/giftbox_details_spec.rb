@@ -18,7 +18,7 @@ describe 'giftbox_details', type: :feature do
     expect(find('input[data-field="name"]').value).to eq('Beyond Borders')
     expect(find('input[data-field="upc"]').value).to eq('857692005017')
     expect(find('input[data-field="msrp"]').value).to eq('$39.95')
-    expect(find('input[data-field="onDemand"]', visible: false).value).to eq('f')
+    expect(find('input[data-field="onDemand"]', visible: false).checked?).to eq false
     expect(find('input[data-field="quantity"]').value).to eq('100')
     expect(find('input[data-field="sageId"]').value).to eq('BEYOND BORDERS')
   end

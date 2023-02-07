@@ -117,7 +117,7 @@ export default class DvdCustomerDetails extends React.Component {
             </div>
             <BottomButtons
               entityName="dvdCustomer"
-              confirmDelete={ Details.clickDelete.bind(this) }
+              confirmDelete={ Details.confirmDelete.bind(this) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ fetching }

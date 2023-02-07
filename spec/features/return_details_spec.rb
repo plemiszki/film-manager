@@ -65,7 +65,7 @@ describe 'return_details', type: :feature do
     click_btn('Add Item')
     select_from_modal('Film 1')
     within('.qty-modal') do
-      click_btn('OK')
+      click_btn('OK', :submit)
     end
     expect(page).to have_no_css('.spinner')
     expect(@return.reload.return_items.length).to eq(1)
