@@ -13,10 +13,7 @@ export default class NewInvoice extends React.Component {
   componentDidMount() {
     const { editMode, invoiceToEdit } = this.props;
     let result = [];
-    console.log(invoiceToEdit);
-    console.log(editMode);
     this.props.rows.forEach((row) => {
-      console.log(row);
       if (editMode) {
         const sentRow = invoiceToEdit.rows.find(sentRow => sentRow.label === row.label);
         if (sentRow) {
@@ -113,7 +110,6 @@ export default class NewInvoice extends React.Component {
   }
 
   renderRows() {
-    const { editMode } = this.props;
     return this.state.rows.map((row, index) => {
       const amount = (row.payment ? `(${row.amount})` : row.amount );
       return (
@@ -124,6 +120,7 @@ export default class NewInvoice extends React.Component {
                 checked: row.active,
                 onChange: this.flipSwitch.bind(this, index),
                 testLabel: `switch-${index}`,
+                readOnly: row.disabled,
               }) }
             </div>
             <p className={ row.active ? '' : 'disabled' }>

@@ -282,11 +282,11 @@ describe 'booking_details', type: :feature do
     end
     within('.admin-modal') do
       flip_switch('switch-0') # advance
-      flip_switch('switch-1') # overage
+      flip_switch('switch-2') # overage
       click_btn('Resend Invoice')
     end
     wait_for_ajax
-    expect(InvoiceRow.first.item_label).to eq('Overage (Total Gross: $1,000.00)')
+    expect(InvoiceRow.first.item_label_export).to eq('Overage (Total Gross: $1,000.00)')
     expect(InvoiceRow.first.total_price).to eq(350)
   end
 

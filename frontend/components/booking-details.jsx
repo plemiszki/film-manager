@@ -3,7 +3,7 @@ import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
 import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, sendRequest, SaveButton, DeleteButton, Button, OutlineButton, Spinner, GrayedOut, ListBox, Table } from 'handy-components'
+import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, sendRequest, SaveButton, DeleteButton, Button, OutlineButton, Spinner, GrayedOut, ListBox, Table, removeFinanceSymbols } from 'handy-components'
 
 const NewInvoiceStyles = {
   overlay: {
@@ -86,6 +86,7 @@ export default class BookingDetails extends React.Component {
     const { bookingSaved, calculations, films } = this.state;
     const film = films.find(film => film.id === bookingSaved.filmId)
     const filmTitle = film && film.title;
+    const { overage, totalGross } = calculations;
     return [
       {
         label: 'Advance',
@@ -93,14 +94,24 @@ export default class BookingDetails extends React.Component {
         amount: bookingSaved.advance,
         active: false,
         sufficient: true,
+        disabled: !+removeFinanceSymbols(bookingSaved.advance || "0.00"),
       },
       {
-        label: 'Amount Due',
-        labelExport: `${filmTitle}\n${bookingSaved.startDate} - ${bookingSaved.endDate}\n${bookingSaved.terms} (Total Gross: ${calculations.totalGross})`,
-        amount: calculations.ourShare,
+        label: 'Shipping Fee',
+        labelExport: 'Shipping Fee',
+        amount: bookingSaved.shippingFee,
         active: false,
         sufficient: true,
-      }
+        disabled: !+removeFinanceSymbols(bookingSaved.shippingFee || "0.00"),
+      },
+      {
+        label: 'Overage',
+        labelExport: `Overage (Total Gross: ${totalGross})`,
+        amount: overage,
+        active: false,
+        sufficient: true,
+        disabled: !+removeFinanceSymbols(overage || "0.00"),
+      },
     ];
   }
 
@@ -260,7 +271,7 @@ export default class BookingDetails extends React.Component {
 
   calculateNewInvoiceModalHeight() {
     const { payments } = this.state;
-    const rows = 2 + payments.length;
+    const rows = 3 + payments.length;
     const padding = 36;
     const border = 1;
     const buttonHeight = 47;

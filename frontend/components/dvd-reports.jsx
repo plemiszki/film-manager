@@ -166,6 +166,7 @@ export default class DvdReports extends React.Component {
                 <div className="col-xs-9">
                   <Table
                     fixed
+                    test="customers-report"
                     defaultColumnWidth={ 120 }
                     hover={ false }
                     links={ false }
@@ -185,6 +186,7 @@ export default class DvdReports extends React.Component {
                 <div className="col-xs-12">
                   <Table
                     fixed
+                    test="titles-report"
                     hover={ false }
                     links={ false }
                     defaultSearchColumn="retailDate"
