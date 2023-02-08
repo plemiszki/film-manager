@@ -25,6 +25,7 @@ FactoryBot.define do
     active { true }
     edu_page { true }
     video_page { true }
+    now_playing_page { true }
     day_and_date { true }
     certified_fresh { true }
     critics_pick { true }

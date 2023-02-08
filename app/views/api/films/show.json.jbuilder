@@ -52,6 +52,7 @@ json.film do
   json.fmPlusRelease @film.fm_plus_release ? (@film.fm_plus_release.strftime("%-m/%-d/%y") + (@film.fm_plus_tentative ? '?' : '')) : ""
   json.eduPage @film.edu_page
   json.videoPage @film.video_page
+  json.nowPlayingPage @film.now_playing_page
   json.artworkUrl @film.artwork_url || ""
   json.fmPlusUrl @film.fm_plus_url
   json.aspectRatio @film.aspect_ratio

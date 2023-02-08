@@ -115,9 +115,11 @@ export default class ReportDetails extends React.Component {
     }, () => {
       const { films, report } = this.state;
       sendRequest('/api/royalty_reports/export_uncrossed', {
-        filmIds: films.map(film => film.id),
-        quarter: report.quarter,
-        year: report.year,
+        data: {
+          filmIds: films.map(film => film.id),
+          quarter: report.quarter,
+          year: report.year,
+        }
       }).then((response) => {
         const { job } = response;
         this.setState({

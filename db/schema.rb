@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_05_034245) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_12_18_221622) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -34,24 +33,24 @@ ActiveRecord::Schema.define(version: 2022_07_05_034245) do
   create_table "alternate_audios", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "language_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["film_id", "language_id"], name: "index_alternate_audios_on_film_id_and_language_id", unique: true
   end
 
   create_table "alternate_lengths", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.string "length", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["film_id", "length"], name: "index_alternate_lengths_on_film_id_and_length", unique: true
   end
 
   create_table "alternate_subs", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "language_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["film_id", "language_id"], name: "index_alternate_subs_on_film_id_and_language_id", unique: true
   end
 
@@ -248,15 +247,15 @@ ActiveRecord::Schema.define(version: 2022_07_05_034245) do
     t.integer "edu_platform_id", null: false
     t.integer "film_id", null: false
     t.string "url", default: ""
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["edu_platform_id", "film_id"], name: "index_edu_platform_films_on_edu_platform_id_and_film_id", unique: true
   end
 
   create_table "edu_platforms", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "episodes", id: :serial, force: :cascade do |t|
@@ -374,8 +373,8 @@ ActiveRecord::Schema.define(version: 2022_07_05_034245) do
     t.boolean "certified_fresh", default: false
     t.boolean "critics_pick", default: false
     t.string "imdb_id", default: ""
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.date "accept_delivery"
     t.boolean "day_and_date", default: false
     t.integer "auto_renew_days_notice", default: 0
@@ -402,6 +401,7 @@ ActiveRecord::Schema.define(version: 2022_07_05_034245) do
     t.decimal "ppr_drl_pre_street_member", precision: 7, scale: 2, default: "0.0"
     t.decimal "ppr_drl_post_street_member", precision: 7, scale: 2, default: "0.0"
     t.boolean "auto_renew_opt_out", default: false
+    t.boolean "now_playing_page", default: false
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
     t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"
@@ -650,8 +650,8 @@ ActiveRecord::Schema.define(version: 2022_07_05_034245) do
     t.decimal "cume_reserve", precision: 8, scale: 2, default: "0.0"
     t.decimal "joined_liquidated_reserve", precision: 8, scale: 2, default: "0.0"
     t.decimal "joined_reserve", precision: 8, scale: 2, default: "0.0"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.decimal "cume_liquidated_reserve", precision: 8, scale: 2, default: "0.0"
     t.decimal "current_liquidated_reserve", precision: 8, scale: 2, default: "0.0"
     t.index ["film_id"], name: "index_royalty_reports_on_film_id"
@@ -742,8 +742,8 @@ ActiveRecord::Schema.define(version: 2022_07_05_034245) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "email", null: false
     t.string "encrypted_password", limit: 128, null: false
     t.string "confirmation_token", limit: 128

@@ -98,9 +98,9 @@ class CreditMemo < ActiveRecord::Base
     string +=   "Return Number: #{self.return_number}<br>"
     string += "</div>"
     string += "<div class=\"film-movement\">Film Movement</div>"
-    string += "237 West 35th Street<br>"
-    string += "Suite 303<br>"
-    string += "New York, NY 10001<br>"
+    string += "505 8th Avenue<br>"
+    string += "Suite 1102<br>"
+    string += "New York, NY 10018<br>"
     string += "212.941.7744<br>"
     string += "<br>"
 
