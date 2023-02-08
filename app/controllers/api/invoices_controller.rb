@@ -146,9 +146,6 @@ class Api::InvoicesController < AdminController
   end
 
   def create_invoice_rows_and_payments(invoice, booking, calculations)
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Advance', item_qty: 1, total_price: booking.advance) if params[:advance] == true
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: "Overage (Total Gross: #{dollarify(number_with_precision(calculations[:total_gross], precision: 2, delimiter: ','))})", item_qty: 1, total_price: calculations[:overage]) if params[:overage] == true
-    InvoiceRow.create!(invoice_id: invoice.id, item_label: 'Shipping Fee', item_qty: 1, total_price: booking.shipping_fee) if params[:ship_fee] == true
     if params[:rows]
       params.permit(rows: [:label, :label_export, :amount])[:rows].each do |row|
         InvoiceRow.create!(

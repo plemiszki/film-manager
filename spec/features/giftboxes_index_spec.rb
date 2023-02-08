@@ -19,7 +19,7 @@ describe 'giftboxes_index', type: :feature do
 
   it 'adds giftboxes' do
     visit giftboxes_path(as: $admin_user)
-    find('.float-button', text: 'Add Giftbox').click
+    click_btn('Add Giftbox')
     info = {
       name: 'Faces of Israel',
       upc: '857692005024'
@@ -34,7 +34,7 @@ describe 'giftboxes_index', type: :feature do
 
   it 'validates new giftboxes' do
     visit giftboxes_path(as: $admin_user)
-    find('.float-button', text: 'Add Giftbox').click
+    click_btn('Add Giftbox')
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")
     expect(page).to have_content("Upc can't be blank")

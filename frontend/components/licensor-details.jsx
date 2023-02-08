@@ -1,20 +1,18 @@
 import React from 'react'
-import Modal from 'react-modal'
-import { Common, ConfirmDelete, Details, deepCopy, fetchEntity, updateEntity } from 'handy-components'
+import { Details, deepCopy, fetchEntity, updateEntity, Table, BottomButtons, GrayedOut, Spinner } from 'handy-components'
 
 export default class LicensorDetails extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       licensor: {},
       licensorSaved: {},
       films: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteModalOpen: false
     };
   }
 
@@ -22,7 +20,7 @@ export default class LicensorDetails extends React.Component {
     fetchEntity().then((response) => {
       const { licensor, films } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         licensor,
         licensorSaved: deepCopy(licensor),
         films
@@ -32,7 +30,7 @@ export default class LicensorDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       updateEntity({
@@ -41,14 +39,14 @@ export default class LicensorDetails extends React.Component {
       }).then((response) => {
         const { licensor } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           licensor,
           licensorSaved: deepCopy(licensor),
           changesToSave: false
         });
       }, (response) => {
         this.setState({
-          fetching: false,
+          spinner: false,
           errors: response.errors
         });
       });
@@ -70,71 +68,50 @@ export default class LicensorDetails extends React.Component {
   }
 
   render() {
-    return(
-      <div className="licensor-details">
-        <div className="component">
-          <h1>Licensor Details</h1>
-          <div className="white-box">
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'name' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'email', columnHeader: 'Royalty Emails' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'licensor', property: 'address', rows: 5 }) }
-            </div>
-            <div className="row">
-              <div className="col-xs-12">
-                <table className="fm-admin-table">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Days Statement Due</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td></tr>
-                    { this.state.films.map((film, index) => {
-                      return(
-                        <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
-                          <td className="name-column">
-                            { film.title }
-                          </td>
-                          <td>
-                            { film.daysStatementDue }
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
+    const { justSaved, changesToSave, spinner } = this.state;
+    return (
+      <>
+        <div className="licensor-details">
+          <div className="handy-component">
+            <h1>Licensor Details</h1>
+            <div className="white-box">
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'name' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'email', columnHeader: 'Royalty Emails' }) }
               </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'licensor', property: 'address', rows: 5 }) }
+              </div>
+              <div className="row">
+                <div className="col-xs-12">
+                  <Table
+                    style={ { marginBottom: 60 } }
+                    columns={ ['title'] }
+                    rows={ this.state.films }
+                    urlPrefix="films"
+                    sortable={ false }
+                  />
+                </div>
+              </div>
+              <BottomButtons
+                entityName="licensor"
+                confirmDelete={ Details.confirmDelete.bind(this) }
+                justSaved={ justSaved }
+                changesToSave={ changesToSave }
+                disabled={ spinner }
+                clickSave={ () => { this.clickSave() } }
+              />
+              <GrayedOut visible={ spinner } />
+              <Spinner visible={ spinner } />
             </div>
-            { this.renderButtons() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="licensor"
-            confirmDelete={ Details.clickDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
-      </div>
-    );
-  }
-
-  renderButtons() {
-    return(
-      <div>
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-      </div>
+        <style jsx>{`
+          table {
+            margin-bottom: 60px;
+          }
+        `}</style>
+      </>
     );
   }
 }

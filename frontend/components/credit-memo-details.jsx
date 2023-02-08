@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, fetchEntity } from 'handy-components'
+import { fetchEntity, GrayedOut, Spinner, Table, Button } from 'handy-components'
 
 export default class CreditMemoDetails extends React.Component {
 
@@ -8,7 +8,7 @@ export default class CreditMemoDetails extends React.Component {
     this.state = {
       fetching: true,
       creditMemo: {},
-      rows: []
+      rows: [],
     };
   }
 
@@ -17,7 +17,7 @@ export default class CreditMemoDetails extends React.Component {
       this.setState({
         fetching: false,
         creditMemo: response.creditMemo,
-        rows: response.rows
+        rows: response.rows,
       });
     });
   }
@@ -27,86 +27,73 @@ export default class CreditMemoDetails extends React.Component {
   }
 
   render() {
-    return(
-      <div id="credit-memo-details">
-        <div className="component">
+    const { fetching, creditMemo, rows } = this.state;
+    return (
+      <>
+        <div className="handy-component">
           <h1>Credit Memo Details</h1>
           <div className="white-box">
             <div className="row">
               <div className="col-xs-2">
                 <h2>Number</h2>
-                { this.state.creditMemo.number }
+                { creditMemo.number }
               </div>
               <div className="col-xs-2">
                 <h2>Sent Date</h2>
-                { this.state.creditMemo.sentDate }
+                { creditMemo.sentDate }
               </div>
               <div className="col-xs-2">
                 <h2>Return Number</h2>
-                { this.state.creditMemo.returnNumber }
+                { creditMemo.returnNumber }
               </div>
               <div className="col-xs-4">
                 <h2>DVD Customer</h2>
-                { this.state.creditMemo.customerName }
+                { creditMemo.customerName }
               </div>
             </div>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Billing Address</h2>
-                <p>{ this.state.creditMemo.billingName }</p>
-                <p>{ this.state.creditMemo.billingAddress1 }</p>
-                <p>{ this.state.creditMemo.billingAddress2 }</p>
-                <p>{ this.state.creditMemo.billingCity }, { this.state.creditMemo.billingState } { this.state.creditMemo.billingZip }</p>
-                <p>{ this.state.creditMemo.billingCountry == 'USA' ? '' : this.state.creditMemo.billingCountry }</p>
+                <p>{ creditMemo.billingName }</p>
+                <p>{ creditMemo.billingAddress1 }</p>
+                <p>{ creditMemo.billingAddress2 }</p>
+                <p>{ creditMemo.billingCity }, { creditMemo.billingState } { creditMemo.billingZip }</p>
+                <p>{ creditMemo.billingCountry == 'USA' ? '' : creditMemo.billingCountry }</p>
               </div>
             </div>
             <hr />
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Price</th>
-                  <th>Qty</th>
-                  <th>Total Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td><td></td></tr>
-                { this.state.rows.map((row, index) => {
-                  return(
-                    <tr key={ index }>
-                      <td className="indent">
-                        { row.label }
-                      </td>
-                      <td>
-                        { row.price }
-                      </td>
-                      <td>
-                        { row.qty }
-                      </td>
-                      <td>
-                        { row.totalPrice }
-                      </td>
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
+            <Table
+              rows={ rows }
+              columns={[
+                { name: 'label', header: 'Item' },
+                { name: 'price' },
+                { name: 'qty' },
+                { name: 'totalPrice'},
+              ]}
+              links={ false }
+              sortable={ false }
+              marginBottom
+            />
             <hr />
             <div className="row">
               <div className="col-xs-12">
                 <h2>Total</h2>
-                { this.state.creditMemo.total }
+                { creditMemo.total }
               </div>
             </div>
-            <a id="export" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
-              Export
-            </a>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <Button
+              text="Export"
+              onClick={ () => { this.clickExport() } }
+              disabled={ fetching }
+            />
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
-      </div>
+        <style jsx>{`
+          .row, table { margin-bottom: 30px; }
+        `}</style>
+      </>
     );
   }
 }

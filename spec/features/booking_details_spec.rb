@@ -147,21 +147,22 @@ describe 'booking_details', type: :feature do
     create(:weekly_term)
     create(:weekly_term, terms: '30%')
     visit booking_path(@booking, as: $admin_user)
-    within('.weekly-terms') do
+    within(list_box_selector("weekly-terms")) do
       expect(page).to have_content('40%')
       expect(page).to have_content('30%')
     end
   end
 
   it 'adds weekly terms' do
+    p 'we are here'
     @booking.update(terms_change: true)
     visit booking_path(@booking, as: $admin_user)
-    find('.blue-outline-button', text: /\AAdd Week\z/).click
+    click_btn("Add Week")
     fill_out_and_submit_modal({
       terms: '20%'
     }, :input)
     wait_for_ajax
-    within('.weekly-terms') do
+    within(list_box_selector("weekly-terms")) do
       expect(page).to have_content('20%')
     end
   end
@@ -169,7 +170,7 @@ describe 'booking_details', type: :feature do
   it 'validates weekly terms' do
     @booking.update(terms_change: true)
     visit booking_path(@booking, as: $admin_user)
-    find('.blue-outline-button', text: /\AAdd Week\z/).click
+    click_btn("Add Week")
     fill_out_and_submit_modal({}, :input)
     wait_for_ajax
     within('.admin-modal') do
@@ -181,11 +182,11 @@ describe 'booking_details', type: :feature do
     @booking.update(terms_change: true)
     create(:weekly_term)
     visit booking_path(@booking, as: $admin_user)
-    within('.weekly-terms') do
-      find('.x-button').click
+    within(list_box_selector("weekly-terms")) do
+      find('.x-gray-circle').click
     end
     wait_for_ajax
-    within('.weekly-terms') do
+    within(list_box_selector("weekly-terms")) do
       expect(page).to have_no_content('40%')
     end
   end
@@ -197,7 +198,7 @@ describe 'booking_details', type: :feature do
       create(:weekly_box_office, amount: 100 * (index + 1), order: index)
     end
     visit booking_path(@booking, as: $admin_user)
-    within('.weekly-box-offices') do
+    within(list_box_selector("weekly-box-offices")) do
       expect(page).to have_content('Week 1 - $100.00')
       expect(page).to have_content('Week 2 - $200.00')
     end
@@ -206,12 +207,12 @@ describe 'booking_details', type: :feature do
   it 'adds weekly box office returns' do
     @booking.update(terms_change: true)
     visit booking_path(@booking, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Weekly Box Office').click
+    click_btn("Add Weekly Box Office")
     fill_out_and_submit_modal({
       amount: '500'
     }, :input)
     wait_for_ajax
-    within('.weekly-box-offices') do
+    within(list_box_selector("weekly-box-offices")) do
       expect(page).to have_content('Week 1 - $500.00')
     end
   end
@@ -219,7 +220,7 @@ describe 'booking_details', type: :feature do
   it 'validates weekly box office returns' do
     @booking.update(terms_change: true)
     visit booking_path(@booking, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Weekly Box Office').click
+    click_btn("Add Weekly Box Office")
     fill_out_and_submit_modal({}, :input)
     wait_for_ajax
     within('.admin-modal') do
@@ -236,11 +237,11 @@ describe 'booking_details', type: :feature do
     @booking.update(terms_change: true)
     create(:weekly_box_office)
     visit booking_path(@booking, as: $admin_user)
-    within('.weekly-box-offices') do
-      find('.x-button').click
+    within(list_box_selector("weekly-box-offices")) do
+      find('.x-gray-circle').click
     end
     wait_for_ajax
-    within('.weekly-box-offices') do
+    within(list_box_selector("weekly-box-offices")) do
       expect(page).to have_no_content('Week 1 - $500.00')
     end
   end
@@ -248,7 +249,7 @@ describe 'booking_details', type: :feature do
   it 'displays invoices' do
     create(:booking_invoice)
     visit booking_path(@booking, as: $admin_user)
-    within('.invoices-table') do
+    within('table') do
       expect(page).to have_content('1B')
     end
   end
@@ -256,10 +257,10 @@ describe 'booking_details', type: :feature do
   it 'adds invoices' do
     create(:setting)
     visit booking_path(@booking, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Invoice').click
-    within('.new-invoice-modal') do
-      find('#advance-checkbox').click
-      find('.orange-button', text: 'Send Invoice').click
+    click_btn("Add Invoice")
+    within('.admin-modal') do
+      flip_switch('switch-0') # advance
+      click_btn('Send Invoice')
     end
     wait_for_ajax
     expect(Invoice.count).to eq(1)
@@ -267,7 +268,7 @@ describe 'booking_details', type: :feature do
     expect(InvoiceRow.count).to eq(1)
     expect(InvoiceRow.first.item_label).to eq('Advance')
     expect(InvoiceRow.first.total_price).to eq(100)
-    within('.invoices-table') do
+    within('table') do
       expect(page).to have_content('1B')
     end
   end
@@ -276,30 +277,28 @@ describe 'booking_details', type: :feature do
     create(:booking_invoice)
     create(:invoice_row, item_label: 'Advance', unit_price: 100, total_price: 100)
     visit booking_path(@booking, as: $admin_user)
-    within('.invoices-table') do
-      find('img').click
+    within('table') do
+      find('.edit-image').click
     end
-    within('.new-invoice-modal') do
-      find('#advance-checkbox').click
-      find('#overage-checkbox').click
-      find('.orange-button', text: 'Resend Invoice').click
+    within('.admin-modal') do
+      flip_switch('switch-0') # advance
+      flip_switch('switch-2') # overage
+      click_btn('Resend Invoice')
     end
     wait_for_ajax
-    expect(InvoiceRow.first.item_label).to eq('Overage (Total Gross: $1,000.00)')
+    expect(InvoiceRow.first.item_label_export).to eq('Overage (Total Gross: $1,000.00)')
     expect(InvoiceRow.first.total_price).to eq(350)
   end
 
   it 'deletes invoices' do
     create(:booking_invoice)
     visit booking_path(@booking, as: $admin_user)
-    within('.invoices-table') do
-      find('div.delete-invoice').click
+    within('table') do
+      find('.x-gray-circle').click
     end
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_confirm_delete
     wait_for_ajax
-    within('.invoices-table') do
+    within('table') do
       expect(page).to have_no_content('1B')
     end
     expect(Invoice.count).to eq(0)
@@ -308,30 +307,30 @@ describe 'booking_details', type: :feature do
   it 'displays payments' do
     create(:payment)
     visit booking_path(@booking, as: $admin_user)
-    within('.payments-list') do
+    within(list_box_selector("payments")) do
       expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
     end
   end
 
   it 'adds payments' do
     visit booking_path(@booking, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Payment').click
+    click_btn("Add Payment")
     info = {
       date: Date.today.strftime('%-m/%-d/%y'),
       amount: 20,
-      notes: 'note about payment'
+      notes: 'note about payment',
     }
     fill_out_and_submit_modal(info, :input)
     wait_for_ajax
     verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
-    within('.payments-list') do
+    within(list_box_selector("payments")) do
       expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $20.00")
     end
   end
 
   it 'validates payments' do
     visit booking_path(@booking, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Payment').click
+    click_btn("Add Payment")
     fill_out_and_submit_modal({}, :input)
     wait_for_ajax
     within('.admin-modal') do
@@ -343,12 +342,12 @@ describe 'booking_details', type: :feature do
     create(:booking_invoice)
     create(:payment)
     visit booking_path(@booking, as: $admin_user)
-    within('.payments-list') do
-      find('.x-button').click
+    within(list_box_selector("payments")) do
+      find('.x-gray-circle').click
     end
     wait_for_ajax
     expect(Payment.count).to eq(0)
-    within('.payments-list') do
+    within(list_box_selector("payments")) do
       expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
     end
   end
@@ -356,7 +355,7 @@ describe 'booking_details', type: :feature do
   it 'sends booking confirmations' do
     create(:setting)
     visit booking_path(@booking, as: $admin_user)
-    find('.confirmation-button').click
+    click_btn('Send Booking Confirmation')
     wait_for_ajax
     expect(@booking.reload.booking_confirmation_sent).to eq(Date.today)
     expect(find('input[data-field="bookingConfirmationSent"]').value).to eq(Date.today.strftime('%-m/%-d/%y'))
@@ -385,7 +384,7 @@ describe 'booking_details', type: :feature do
   it 'copies bookings' do
     create(:film, title: 'Another Film')
     visit booking_path(@booking, as: $admin_user)
-    find('.copy-button').click
+    click_btn("Copy Booking")
     fill_out_and_submit_modal({
       film_id: { value: 'Another Film', type: :select_modal }
     }, :input)
@@ -428,11 +427,7 @@ describe 'booking_details', type: :feature do
 
   it 'deletes bookings' do
     visit booking_path(@booking, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/bookings', ignore_query: true)
     expect(Booking.find_by_id(@booking.id)).to be(nil)
   end

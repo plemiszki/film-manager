@@ -59,7 +59,7 @@ describe 'episode_details', type: :feature do
 
   it 'adds cast members' do
     visit episode_path(@episode, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Actor').click
+    click_btn("Add Actor")
     fill_out_and_submit_modal({
       first_name: 'Julia',
       last_name: 'Roberts'
@@ -70,8 +70,8 @@ describe 'episode_details', type: :feature do
   it 'removes cast members' do
     @actor = create(:episode_actor)
     visit episode_path(@episode, as: $admin_user)
-    within('.standard-list') do
-      find('.x-button').click
+    within(list_box_selector("actors")) do
+      find('.x-gray-circle').click
     end
     expect(page).to have_no_css('.spinner')
     expect(page).to have_no_content('Tom Hanks')
@@ -80,11 +80,7 @@ describe 'episode_details', type: :feature do
 
   it 'deletes the episode' do
     visit episode_path(@episode, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/films/1', ignore_query: true)
     expect(Episode.find_by_id(@episode.id)).to be(nil)
   end

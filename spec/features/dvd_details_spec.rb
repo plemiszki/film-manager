@@ -60,13 +60,13 @@ describe 'dvd_details', type: :feature do
 
   it 'adds shorts' do
     visit dvd_path(@dvd, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Short').click
+    click_btn("Add Short")
     select_from_modal('A Short Film')
     expect(DvdShort.last.attributes).to include(
       'dvd_id' => @dvd.id,
       'short_id' => @short.id
     )
-    expect(find('.fm-admin-table')).to have_content('A Short Film')
+    expect(find('table')).to have_content('A Short Film')
   end
 
   it 'deletes shorts' do
@@ -74,12 +74,12 @@ describe 'dvd_details', type: :feature do
     create(:dvd_short, short_id: @short.id)
     create(:dvd_short, short_id: @another_short.id)
     visit dvd_path(@dvd, as: $admin_user)
-    within('.fm-admin-table') do
-      find_all('.x-button').first.click
+    within('table') do
+      find_all('.x-gray-circle').first.click
     end
     wait_for_ajax
     expect(DvdShort.count).to eq(1)
-    within('.fm-admin-table') do
+    within('table') do
       expect(page).to have_no_content("A Short Film")
       expect(page).to have_content("Another Short Film")
     end
@@ -87,11 +87,7 @@ describe 'dvd_details', type: :feature do
 
   it 'deletes the dvd' do
     visit dvd_path(@dvd, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/films/1', ignore_query: true)
     expect(Dvd.find_by_id(@dvd.id)).to be(nil)
   end

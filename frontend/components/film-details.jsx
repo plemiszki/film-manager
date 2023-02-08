@@ -2,7 +2,34 @@ import React from 'react'
 import Modal from 'react-modal'
 import FilmRightsNew from './film-rights-new.jsx'
 import FilmRightsChangeDates from './film-rights-change-dates.jsx'
-import { Common, Details, capitalize, ConfirmDelete, ModalSelect, deepCopy, setUpNiceSelect, rearrangeFields, resetNiceSelect, alphabetizeArrayOfObjects, sortArrayOfObjects, fetchEntity, updateEntity, deleteEntity, sendRequest, createEntity } from 'handy-components'
+import {
+  alphabetizeArrayOfObjects,
+  Button,
+  Common,
+  ConfirmDelete,
+  ConfirmModal,
+  createEntity,
+  deepCopy,
+  DeleteButton,
+  deleteEntity,
+  Details,
+  fetchEntity,
+  GrayedOut,
+  ListBox,
+  ListBoxReorderable,
+  ModalSelect,
+  OutlineButton,
+  rearrangeFields,
+  resetNiceSelect,
+  SaveButton,
+  sendRequest,
+  setUpNiceSelect,
+  sortArrayOfObjects,
+  Spinner,
+  updateEntity,
+  Table,
+  SearchBar,
+} from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
@@ -31,19 +58,6 @@ const ChangeDatesModalStyles = {
     margin: 'auto',
     maxWidth: 500,
     height: 240
-  }
-};
-
-const ArtworkModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    maxWidth: 600,
-    height: 162
   }
 };
 
@@ -112,7 +126,7 @@ export default class FilmDetails extends React.Component {
       subRights: [],
       subRightsSortBy: 'sublicensorName',
       subtitleLanguages: [],
-      tab: (FM.params.tab ? capitalize(FM.params.tab) : 'General'),
+      tab: (FM.params.tab ? FM.params.tab.toLowerCase() : 'general'),
       topics: [],
       virtualBookings: [],
     };
@@ -275,7 +289,7 @@ export default class FilmDetails extends React.Component {
         entityArray = 'filmLanguages';
         directory = 'film_languages';
         break
-      case 'cast':
+      case 'actors':
         entityArray = 'actors';
         break
       case 'laurels':
@@ -361,7 +375,7 @@ export default class FilmDetails extends React.Component {
   }
 
   clickTab(e) {
-    const tab = e.target.innerText;
+    const tab = e.target.innerText.toLowerCase();
     if (this.state.tab !== tab) {
       $('select').niceSelect('destroy');
       this.setState({
@@ -481,9 +495,8 @@ export default class FilmDetails extends React.Component {
     });
   }
 
-  deleteFromList(args, e) {
-    const { directory, otherArrays } = args;
-    const { id } = e.target.dataset;
+  deleteFromList(args) {
+    const { directory, otherArrays, id } = args;
     const entityNamePlural = ChangeCase.camelCase(directory);
     this.setState({
       fetching: true
@@ -599,204 +612,274 @@ export default class FilmDetails extends React.Component {
   }
 
   render() {
-    const { dvds, dvdTypes, film, licensors } = this.state;
-    let title = {
+    const { dvds, dvdTypes, film, tab, fetching } = this.state;
+    const title = {
       'Short': 'Short',
       'Feature': 'Film',
       'TV Series': 'TV Series'
-    }[this.state.film.filmType];
-    return(
-      <div className="film-details component details-component">
-        <h1>{ title } Details</h1>
-        { this.renderTopTabs() }
-        <div className="white-box">
-          <div className="row">
-            <div className="col-xs-1">
-              <div className={ "key-art" + (this.state.film.artworkUrl ? '' : ' empty') } style={ this.state.film.artworkUrl ? { 'backgroundImage': `url(${this.state.film.artworkUrl})` } : {} } onClick={ Common.changeState.bind(this, 'artworkModalOpen', true) }></div>
+    }[film.filmType];
+    return (
+      <>
+        <div className="handy-component">
+          <h1>{ title } Details</h1>
+          <div className={ `tabs-row${film.filmType == 'TV Series' ? ' tv' : ''}` }>
+            { this.renderTopTab("General") }
+            { this.renderTopTab("Contract") }
+            { this.renderTopTab("Marketing") }
+            { this.renderTopTab("Bookings") }
+            { this.renderTopTab("Educational") }
+            { this.renderTopTab("DVDs") }
+            { this.renderTopTab("Statements") }
+            { this.renderTopTab("Sublicensing") }
+            { this.renderTopTab("Episodes") }
+          </div>
+          <div className="white-box">
+            <div className="row">
+              <div className="col-xs-1">
+                <div className={ "key-art" + (film.artworkUrl ? '' : ' empty') } style={ film.artworkUrl ? { 'backgroundImage': `url(${film.artworkUrl})` } : {} } onClick={ Common.changeState.bind(this, 'artworkModalOpen', true) }></div>
+              </div>
+              { Details.renderField.bind(this)({ columnWidth: 9, entity: 'film', property: 'title' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'filmType', readOnly: true, columnHeader: 'Type' }) }
             </div>
-            { Details.renderField.bind(this)({ columnWidth: 9, entity: 'film', property: 'title' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'filmType', readOnly: true, columnHeader: 'Type' }) }
+            { this.renderTab(tab) }
+            { this.renderButtons() }
+            <Spinner visible={ fetching } />
+            <GrayedOut visible={ fetching } />
           </div>
-          { this.renderTab(this.state.tab) }
-          { this.renderButtons() }
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <Modal isOpen={ this.state.crossedFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.otherCrossedFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'crossed_films', entityName: 'crossedFilm', key: 'crossedFilmId', otherArrays: ['otherCrossedFilms'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.countries } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_countries', entityName: 'filmCountry', key: 'countryId', otherArrays: ['countries'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.languagesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.languages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_languages', entityName: 'filmLanguage', key: 'languageId', otherArrays: ['languages'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.alternateAudioModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.audioLanguages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_audios', entityName: 'alternateAudio', key: 'languageId', otherArrays: ['audioLanguages'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.alternateSubsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.subtitleLanguages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_subs', entityName: 'alternateSub', key: 'languageId', otherArrays: ['subtitleLanguages'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.genresModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.genres } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_genres', entityName: 'filmGenre', key: 'genreId', otherArrays: ['genres'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.topicsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.topics } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_topics', entityName: 'filmTopic', key: 'topicId', otherArrays: ['topics'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.relatedFilmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.otherFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'related_films', entityName: 'relatedFilm', key: 'otherFilmId', otherArrays: ['otherFilms'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.formatsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
+            <ModalSelect options={ this.state.formats } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) } />
+          </Modal>
+          <Modal isOpen={ this.state.episodeModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="episode"
+              initialEntity={ { filmId: film.id, title: '', length: '', episodeNumber: '', seasonNumber: '' } }
+              redirectAfterCreate={ true }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.dvdModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="dvd"
+              initialEntity={ { featureFilmId: film.id, dvdTypeId: (film.id && dvds.length < 6) ? dvdTypes[0].id : 1 } }
+              passData={
+                { dvdTypes }
+              }
+              buttonText="Add DVD"
+              redirectAfterCreate={ true }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.quoteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750, height: 428 }) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="quote"
+              initialEntity={ { filmId: film.id, text: "", author: "", publication: "" } }
+              callback={ this.createCallback.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={this.state.laurelModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 2) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="laurel"
+              initialEntity={ { filmId: film.id, result: "Official Selection", awardName: "", festival: "" } }
+              callback={ this.createCallback.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.directorModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="director"
+              initialEntity={ { filmId: film.id, firstName: "", lastName: "" } }
+              callback={ this.createCallback.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.actorModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="actor"
+              initialEntity={ { actorableId: film.id, actorableType: 'Film', firstName: "", lastName: "" } }
+              callback={ this.createCallback.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="digitalRetailerFilm"
+              initialEntity={ { filmId: film.id, url: '', digitalRetailerId: '1' } }
+              fetchData={ ['digitalRetailers'] }
+              callback={ this.createCallback.bind(this) }
+              buttonText={ 'Add Digital Retailer' }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.newEduPlatformModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="eduPlatformFilm"
+              initialEntity={ { filmId: this.state.film.id, url: "", eduPlatformId: "1" } }
+              fetchData={ ['eduPlatforms'] }
+              callback={ this.createCallback.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.newAltLengthModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="alternateLength"
+              initialEntity={ { length: "", filmId: this.state.film.id } }
+              callback={ this.createCallback.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
+            <FilmRightsNew
+              context={ this.props.context }
+              filmId={ this.state.film.id }
+              callback={ this.newFilmRightsCallback.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.changeDatesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ChangeDatesModalStyles }>
+            <FilmRightsChangeDates
+              context={ this.props.context }
+              filmId={ this.state.film.id }
+              updateChangedDates={ this.updateChangedDates.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 900 }, 1) }>
+            <CopyEntity
+              context={ this.props.context }
+              entityName="film"
+              initialEntity={ { title: "", year: "", length: "", filmType: film.filmType, copyFrom: film.id } }
+            />
+          </Modal>
+          <ConfirmModal
+            isOpen={ this.state.artworkModalOpen }
+            headerText="Update artwork for all films now?"
+            confirm={ () => this.confirmUpdateArtwork() }
+            cancel={ Common.closeModals.bind(this) }
+          />
+          <Modal isOpen={this.state.deleteModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
+            <ConfirmDelete entityName="film" confirmDelete={ Details.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
+          </Modal>
+          { Common.renderJobModal.call(this, this.state.job) }
         </div>
-        <Modal isOpen={ this.state.crossedFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.otherCrossedFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'crossed_films', entityName: 'crossedFilm', key: 'crossedFilmId', otherArrays: ['otherCrossedFilms'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.countries } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_countries', entityName: 'filmCountry', key: 'countryId', otherArrays: ['countries'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.languagesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.languages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_languages', entityName: 'filmLanguage', key: 'languageId', otherArrays: ['languages'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.alternateAudioModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.audioLanguages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_audios', entityName: 'alternateAudio', key: 'languageId', otherArrays: ['audioLanguages'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.alternateSubsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.subtitleLanguages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_subs', entityName: 'alternateSub', key: 'languageId', otherArrays: ['subtitleLanguages'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.genresModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.genres } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_genres', entityName: 'filmGenre', key: 'genreId', otherArrays: ['genres'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.topicsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.topics } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_topics', entityName: 'filmTopic', key: 'topicId', otherArrays: ['topics'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.relatedFilmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.otherFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'related_films', entityName: 'relatedFilm', key: 'otherFilmId', otherArrays: ['otherFilms'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.formatsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-          <ModalSelect options={ this.state.formats } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) } />
-        </Modal>
-        <Modal isOpen={ this.state.episodeModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="episode"
-            initialEntity={ { filmId: film.id, title: '', length: '', episodeNumber: '', seasonNumber: '' } }
-            redirectAfterCreate={ true }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.dvdModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="dvd"
-            initialEntity={ { featureFilmId: film.id, dvdTypeId: (film.id && dvds.length < 6) ? dvdTypes[0].id : 1 } }
-            passData={
-              { dvdTypes }
-            }
-            buttonText="Add DVD"
-            redirectAfterCreate={ true }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.quoteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750, height: 428 }) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="quote"
-            initialEntity={ { filmId: film.id, text: "", author: "", publication: "" } }
-            callback={ this.createCallback.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={this.state.laurelModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 2) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="laurel"
-            initialEntity={ { filmId: film.id, result: "Official Selection", awardName: "", festival: "" } }
-            callback={ this.createCallback.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.directorModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="director"
-            initialEntity={ { filmId: film.id, firstName: "", lastName: "" } }
-            callback={ this.createCallback.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.actorModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="actor"
-            initialEntity={ { actorableId: film.id, actorableType: 'Film', firstName: "", lastName: "" } }
-            callback={ this.createCallback.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.newDigitalRetailerModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="digitalRetailerFilm"
-            initialEntity={ { filmId: film.id, url: '', digitalRetailerId: '1' } }
-            fetchData={ ['digitalRetailers'] }
-            callback={ this.createCallback.bind(this) }
-            buttonText={ 'Add Digital Retailer' }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.newEduPlatformModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="eduPlatformFilm"
-            initialEntity={ { filmId: this.state.film.id, url: "", eduPlatformId: "1" } }
-            fetchData={ ['eduPlatforms'] }
-            callback={ this.createCallback.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.newAltLengthModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="alternateLength"
-            initialEntity={ { length: "", filmId: this.state.film.id } }
-            callback={ this.createCallback.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.newRightsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
-          <FilmRightsNew
-            context={ this.props.context }
-            filmId={ this.state.film.id }
-            callback={ this.newFilmRightsCallback.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.changeDatesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ChangeDatesModalStyles }>
-          <FilmRightsChangeDates
-            context={ this.props.context }
-            filmId={ this.state.film.id }
-            updateChangedDates={ this.updateChangedDates.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 900 }, 1) }>
-          <CopyEntity
-            context={ this.props.context }
-            entityName="film"
-            initialEntity={ { title: "", year: "", length: "", filmType: film.filmType, copyFrom: film.id } }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.artworkModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ArtworkModalStyles }>
-          <h1 className="my-modal-header">Update artwork for all films now?</h1>
-          <div className="text-center">
-            <div className="orange-button small margin" onClick={ this.confirmUpdateArtwork.bind(this) }>Yes</div>
-            <div className="cancel-button small" onClick={ Common.closeModals.bind(this) }>No</div>
-          </div>
-        </Modal>
-        <Modal isOpen={this.state.deleteModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="film" confirmDelete={ Details.clickDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
-        </Modal>
-        { Common.renderJobModal.call(this, this.state.job) }
-      </div>
-    );
-  }
-
-  renderTopTabs() {
-    return(
-      <div className={ `tabs-row${this.state.film.filmType == 'TV Series' ? ' tv' : ''}` }>
-        { this.renderTopTab("General") }
-        { this.renderTopTab("Contract") }
-        { this.renderTopTab("Marketing") }
-        { this.renderTopTab("Bookings") }
-        { this.renderTopTab("Educational") }
-        { this.renderTopTab("DVDs") }
-        { this.renderTopTab("Statements") }
-        { this.renderTopTab("Sublicensing") }
-        { this.renderTopTab("Episodes") }
-      </div>
+        <style jsx>{`
+          .tabs-row {
+            margin-left: 60px;
+            display: inline-block;
+            font-size: 14px;
+            vertical-align: bottom;
+          }
+          .tabs-row.tv {
+            margin-left: 30px;
+            font-size: 11px;
+          }
+          .tabs-row.tv @media (min-width: 1450px) {
+            margin-left: 60px;
+            font-size: 14px;
+          }
+          div.key-art {
+            width: 100%;
+            height: 74px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: 50%;
+            cursor: pointer;
+          }
+          div.key-art.empty {
+            border: 1px solid #E4E9ED;
+            background-color: #FAFAFA;
+          }
+        `}</style>
+      </>
     );
   }
 
   renderTopTab(label) {
-    if (this.state.film.id) {
+    const { film, tab } = this.state;
+    if (film.id) {
       if (['General', 'Contract', 'Educational', 'DVDs', 'Bookings', 'Marketing'].indexOf(label) > -1 ||
-          (['Statements', 'Sublicensing'].indexOf(label) > -1 && (this.state.film.filmType == 'Feature' || this.state.film.filmType == 'TV Series')) ||
-          (label == 'Episodes' && this.state.film.filmType == 'TV Series'))
+          (['Statements', 'Sublicensing'].indexOf(label) > -1 && (film.filmType == 'Feature' || film.filmType == 'TV Series')) ||
+          (label == 'Episodes' && film.filmType == 'TV Series'))
       {
-        return(
-          <div className={ "tab" + (this.state.tab === label ? " selected" : "") } onClick={ this.clickTab.bind(this) }>{ label }</div>
+        return (
+          <>
+            <div className={ "tab" + (tab === label.toLowerCase() ? " selected" : "") } onClick={ this.clickTab.bind(this) }>{ label }</div>
+            <style jsx>{`
+              .tab {
+                float: left;
+                background-color: white;
+                vertical-align: bottom;
+                padding: 20px 20px 15px 20px;
+                border-top-right-radius: 10px;
+                border-top-left-radius: 10px;
+                user-select: none;
+              }
+
+              .tab:not(:first-of-type) {
+                margin-left: 5px;
+              }
+
+              .tab:not(.selected) {
+                margin-bottom: 2px;
+                padding-bottom: 13px;
+              }
+
+              .tab:not(.selected):hover {
+                cursor: pointer;
+              }
+            `}</style>
+          </>
         );
       }
     }
   }
 
   renderTab(tab) {
-    const { actors, alternateAudios, alternateLengths, alternateSubs, crossedFilms, directors, film, filmCountries, filmFormats, filmGenres, filmLanguages, filmTopics, labels, laurels, quotes, schedule, subRights } = this.state;
-    if (tab === "Contract") {
-      return(
+    const {
+      actors,
+      alternateAudios,
+      alternateLengths,
+      alternateSubs,
+      crossedFilms,
+      directors,
+      dvds,
+      episodes,
+      film,
+      filmCountries,
+      filmFormats,
+      filmGenres,
+      filmLanguages,
+      filmTopics,
+      labels,
+      laurels,
+      quotes,
+      schedule,
+      subRights,
+    } = this.state;
+    if (tab === "contract") {
+      return (
         <div>
           <hr />
           <div className="row">
@@ -809,228 +892,193 @@ export default class FilmDetails extends React.Component {
           <hr />
         </div>
       );
-    } else if (this.state.tab === "Episodes") {
-      return(
+    } else if (tab === "episodes") {
+      return (
         <div>
           <hr />
-          <table className="fm-admin-table">
-            <thead>
-              <tr>
-                <th>Season</th>
-                <th>Episode</th>
-                <th>Title</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td></tr>
-              { this.state.episodes.map((episode, index) => {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, "episodes", episode.id) }>
-                    <td className="name-column">
-                      { episode.seasonNumber }
-                    </td>
-                    <td>
-                      { episode.episodeNumber }
-                    </td>
-                    <td>
-                      { episode.title }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
-          <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'episodeModalOpen', true) }>Add Episode</a>
+          <Table
+            columns={ [{
+              name: 'seasonNumber',
+              header: 'Season',
+            }, {
+              name: 'episodeNumber',
+              header: 'Episode'
+            }, {
+              name: 'title',
+            }] }
+            rows={ episodes }
+            sortable={ false }
+            urlPrefix="episodes"
+            style={ { marginBottom: 30 } }
+          />
+          <OutlineButton
+            text="Add Episode"
+            onClick={ () => { this.setState({ episodeModalOpen: true }) }}
+            style={ { marginBottom: '30px' } }
+          />
           <hr />
         </div>
       );
-    } else if (this.state.tab === "DVDs" && this.state.film.filmType !== 'Short') {
-      return(
+    } else if (tab === "dvds" && film.filmType !== 'Short') {
+      return (
         <div>
           <hr />
-          <table className="fm-admin-table">
-            <thead>
-              <tr>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td></tr>
-              { this.state.dvds.map((dvd, index) => {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, "dvds", dvd.id) }>
-                    <td className="name-column">
-                      { dvd.type }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
-          <a className={ 'blue-outline-button small' + (this.state.dvds.length === 6 ? ' hidden' : '') } onClick={ Common.changeState.bind(this, 'dvdModalOpen', true) }>Add DVD</a>
+          <Table
+            columns={ [{
+              name: 'type',
+              bold: true,
+            }] }
+            rows={ dvds }
+            sortable={ false }
+            urlPrefix="dvds"
+            style={ { marginBottom: 30 } }
+          />
+          { dvds.length < 6 && (
+            <OutlineButton
+              text="Add DVD"
+              onClick={ () => { this.setState({ dvdModalOpen: true }) }}
+              style={ { marginBottom: '30px' } }
+            />
+          ) }
           <hr />
         </div>
       );
-    } else if (this.state.tab === "DVDs" && this.state.film.filmType === 'Short') {
+    } else if (tab === "dvds" && film.filmType === 'Short') {
       return(
         <div>
           <hr />
-          <table className="fm-admin-table">
-            <thead>
-              <tr>
-                <th>Feature Title</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td></tr>
-              { this.state.dvds.map((dvd, index) => {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, 'dvds', dvd.id) }>
-                    <td className="name-column">
-                      { dvd.featureTitle }
-                    </td>
-                    <td>
-                      { dvd.type }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
+          <Table
+            columns={ [{
+              name: 'featureTitle',
+            }, {
+              name: 'type',
+            }] }
+            rows={ dvds }
+            sortable={ false }
+            urlPrefix="dvds"
+            style={ { marginBottom: 30 } }
+          />
           <hr />
         </div>
       );
-    } else if (this.state.tab === "Sublicensing") {
-      return(
+    } else if (tab === "sublicensing") {
+      return (
         <div>
           <hr />
-          <h3>Sublicensed Rights</h3>
+          <p className="section-header">Sublicensed Rights</p>
           <div className="row">
             <div className="col-xs-12">
-              <table className="fm-admin-table no-hover">
-                <thead>
-                  <tr>
-                    <th><div className={ this.state.subRightsSortBy === 'sublicensorName' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'sublicensorName') }>Sublicensor</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'rightName' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'rightName') }>Right</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'territory') }>Territory</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'startDate') }>Start Date</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'endDate') }>End Date</div></th>
-                    <th><div className={ this.state.subRightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'subRightsSortBy', 'exclusive') }>Exclusive</div></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                  { _.orderBy(subRights, [this.subRightsSort.bind(this), this.subRightsSortSecond.bind(this)]).map((subRight, index) => {
-                    return(
-                      <tr key={ index }>
-                        <td className="indent">
-                          { subRight.sublicensorName }
-                        </td>
-                        <td>
-                          { subRight.rightName }
-                        </td>
-                        <td>
-                          { subRight.territory }
-                        </td>
-                        <td>
-                          { subRight.startDate }
-                        </td>
-                        <td>
-                          { subRight.endDate }
-                        </td>
-                        <td>
-                          { subRight.exclusive }
-                        </td>
-                      </tr>
-                    );
-                  }) }
-                </tbody>
-              </table>
+              <Table
+                columns={ [{
+                  name: 'sublicensorName',
+                  header: 'Sublicensor',
+                }, {
+                  name: 'rightName',
+                  header: 'Right',
+                }, {
+                  name: 'territory',
+                }, {
+                  name: 'startDate',
+                }, {
+                  name: 'endDate',
+                }, {
+                  name: 'exclusive',
+                }] }
+                rows={ subRights }
+                links={ false }
+                style={ { marginBottom: 30 } }
+              />
             </div>
           </div>
           <hr />
         </div>
       );
-    } else if (this.state.tab === "Bookings") {
-      var filteredBookings = this.state.bookings.concat(this.state.virtualBookings).filterSearchText(this.state.searchText, this.state.sortBy);
-      return(
-        <div>
-          <hr />
-          <h3>Screening Formats</h3>
-          <div className="row">
-            <div className="col-xs-6">
-              <ul className="standard-list screening-formats-list">
-                { alphabetizeArrayOfObjects(filmFormats, 'format').map((filmFormat) => {
-                  return(
-                    <li key={ filmFormat.id }>
-                      { filmFormat.format }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_formats', otherArrays: ['formats'] }) } data-id={ filmFormat.id }></div>
-                    </li>
-                  );
-                }) }
-              </ul>
-              <a className={ 'blue-outline-button small' } onClick={ Common.changeState.bind(this, 'formatsModalOpen', true) }>Add Format</a>
+    } else if (tab === "bookings") {
+      var joinedBookings = this.state.bookings.concat(this.state.virtualBookings);
+      return (
+        <>
+          <div>
+            <hr />
+            <p className="section-header">Screening Formats</p>
+            <div className="row">
+              <div className="col-xs-6">
+                <ListBox
+                  entityName="format"
+                  displayProperty="format"
+                  entities={ alphabetizeArrayOfObjects(filmFormats, 'format') }
+                  clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
+                  clickAdd={ () => { this.setState({ formatsModalOpen: true }) } }
+                  style={ { marginBottom: 30 } }
+                />
+              </div>
             </div>
+            <hr />
+            <div className="row">
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'rating' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'aspectRatio' }) }
+              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'film', property: 'soundConfig' }) }
+            </div>
+            <hr />
+            <p className="section-header">Bookings</p>
+            <div style={ { position: 'relative', marginBottom: 40 } }>
+              <ul className="bookings-count-list clearfix">
+                <li>Theatrical: { this.state.film.theatricalCount }</li>
+                <li>Festival: { this.state.film.festivalCount }</li>
+                <li>Non-Theatrical: { this.state.film.nonTheatricalCount }</li>
+              </ul>
+              <SearchBar
+                onChange={ FM.changeSearchText.bind(this) }
+                value={ this.state.searchText || "" }
+                style={ {
+                  float: 'none',
+                  position: 'absolute',
+                  right: 0,
+                } }
+              />
+            </div>
+            <Table
+              rows={ joinedBookings }
+              searchText={ this.state.searchText }
+              columns={[
+                { name: "startDate", width: 180, date: true },
+                { name: "venue" },
+                { name: "type", width: 200 },
+                {
+                  name: "owed",
+                  displayFunction: booking => booking.type === 'Virtual' ? 'N/A' : (booking.valid ? booking.owed : 'Invalid'),
+                },
+              ]}
+              style={ { marginBottom: 30 } }
+              clickRow={ (booking) => {
+                if (booking.type === 'Virtual') {
+                  this.redirect.call(this, "virtual_bookings", booking.id);
+                } else {
+                  this.redirect.call(this, "bookings", booking.id)
+                }
+              } }
+            />
+            <hr />
           </div>
-          <hr />
-          <div className="row">
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'rating' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'aspectRatio' }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'film', property: 'soundConfig' }) }
-          </div>
-          <hr />
-          <h3>Bookings</h3>
-          <ul className="bookings-count-list clearfix">
-            <li>Theatrical: { this.state.film.theatricalCount }</li>
-            <li>Festival: { this.state.film.festivalCount }</li>
-            <li>Non-Theatrical: { this.state.film.nonTheatricalCount }</li>
-          </ul>
-          <input className="search-box margin" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
-          <table className="fm-admin-table bookings-table">
-            <thead>
-              <tr>
-                <th><div className={ FM.sortClass.call(this, "startDate") } onClick={ FM.clickHeader.bind(this, "startDate") }>Start Date</div></th>
-                <th><div className={ FM.sortClass.call(this, "venue") } onClick={ FM.clickHeader.bind(this, "venue") }>Venue</div></th>
-                <th><div className={ FM.sortClass.call(this, "type") } onClick={ FM.clickHeader.bind(this, "type") }>Type</div></th>
-                <th><div className={ FM.sortClass.call(this, "owed") } onClick={ FM.clickHeader.bind(this, "owed") }>Owed</div></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td><td></td></tr>
-              { _.orderBy(filteredBookings, [FM.commonSort.bind(this)]).map((booking, index) => {
-                return(
-                  <tr
-                    key={ index }
-                    onClick={ () => {
-                      if (booking.type === 'Virtual') {
-                        this.redirect.call(this, "virtual_bookings", booking.id);
-                      } else {
-                        this.redirect.call(this, "bookings", booking.id)
-                      }
-                    }}
-                  >
-                    <td className="indent">
-                      { booking.startDate }
-                    </td>
-                    <td>
-                      { booking.venue }
-                    </td>
-                    <td>
-                      { booking.type }
-                    </td>
-                    <td>
-                      { booking.type === 'Virtual' ? 'N/A' : (booking.valid ? booking.owed : 'Invalid') }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
-          <hr />
-        </div>
-      )
-    } else if (this.state.tab === "Statements") {
-      return(
+          <style>{`
+            ul.bookings-count-list {
+              display: inline-block;
+              font-family: 'TeachableSans-Bold';
+              font-size: 14px;
+            }
+            ul.bookings-count-list li {
+              float: left;
+              border: 1px solid #E4E9ED;
+              border-radius: 10px;
+              padding: 10px 20px;
+            }
+            ul.bookings-count-list li:not(:last-of-type) {
+              margin-right: 20px;
+            }
+          `}</style>
+        </>
+      );
+    } else if (tab === "statements") {
+      return (
         <div>
           <hr />
           <div className="row">
@@ -1041,67 +1089,48 @@ export default class FilmDetails extends React.Component {
           <hr style={ { marginTop: 30 } } />
           <div className="row">
             <div className="col-xs-6">
-              <h3>Crossed Films</h3>
-              <ul className="standard-list crossed-films-list">
-                { crossedFilms.map((crossedFilm) => {
-                  return(
-                    <li key={ crossedFilm.id }>
-                      { crossedFilm.title }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'crossed_films', otherArrays: ['otherCrossedFilms'] }) } data-id={ crossedFilm.id }></div>
-                    </li>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'crossedFilmModalOpen', true) }>Add Film</a>
+              <p className="section-header">Crossed Films</p>
+              <ListBox
+                entityName="crossedFilm"
+                buttonText="Add Film"
+                displayProperty="title"
+                entities={ crossedFilms }
+                clickDelete={ crossedFilm => { this.deleteFromList({ id: crossedFilm.id, directory: 'crossed_films', otherArrays: ['otherCrossedFilms'] }) }}
+                clickAdd={ () => { this.setState({ crossedFilmModalOpen: true }) } }
+                style={ { marginBottom: 30 } }
+              />
             </div>
           </div>
           <hr />
-          <table className="fm-admin-table">
-            <thead>
-              <tr>
-                <th>Year</th>
-                <th>Quarter</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td></tr>
-              { this.state.reports.map((report, index) => {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, "royalty_reports", report.id) }>
-                    <td className="name-column">
-                      { report.year }
-                    </td>
-                    <td>
-                      { report.quarter }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
+          <Table
+            columns={ [{
+              name: 'year',
+            }, {
+              name: 'quarter',
+            }] }
+            rows={ this.state.reports }
+            sortable={ false }
+            urlPrefix="royalty_reports"
+            style={ { marginBottom: 30 } }
+          />
           <hr />
         </div>
       );
-    } else if (this.state.tab === "General") {
-      return(
+    } else if (tab === "general") {
+      return (
         <div>
           <hr />
           <div className="row">
             <div className="col-xs-6">
               <h2>Director(s):</h2>
-              <ul className="standard-list reorderable directors-list">
-                <li className="drop-zone" data-index="-1" data-section={ 'directors' }></li>
-                { sortArrayOfObjects(directors, 'order').map((director, index) => {
-                  return(
-                    <div key={ director.id }>
-                      <li data-id={ director.id } data-index={ index } data-section="directors">
-                        { director.firstName } { director.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'directors' }) } data-id={ director.id }></div>
-                      </li>
-                      <li className="drop-zone" data-index={ index } data-section="directors"></li>
-                    </div>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'directorModalOpen', true) }>Add Director</a>
+              <ListBoxReorderable
+                entityName="director"
+                entities={ directors }
+                displayFunction={ director => `${director.firstName} ${director.lastName}` }
+                clickAdd={ () => { this.setState({ directorModalOpen: true }) } }
+                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'directors' }) }}
+                style={ { marginBottom: '30px' } }
+              />
             </div>
             { Details.renderDropDown.bind(this)({ columnWidth: 2, entity: 'film', property: 'labelId', columnHeader: 'Label', options: labels, optionDisplayProperty: 'name', optionSortProperty: 'id' }) }
             { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'year' }) }
@@ -1110,61 +1139,44 @@ export default class FilmDetails extends React.Component {
           <hr />
           <div className="row">
             <div className="col-xs-6">
-              <h3>Countries</h3>
-              <ul className="standard-list reorderable countries-list">
-                <li className="drop-zone" data-index="-1" data-section={ 'countries' }></li>
-                { sortArrayOfObjects(filmCountries, 'order').map((filmCountry, index) => {
-                  return(
-                    <div key={ filmCountry.id }>
-                      <li data-id={ filmCountry.id } data-index={ index } data-section="countries">
-                        { filmCountry.country }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_countries', otherArrays: ['countries'] }) } data-id={ filmCountry.id }></div>
-                      </li>
-                      <li className="drop-zone" data-index={ index } data-section="countries"></li>
-                    </div>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'countriesModalOpen', true) }>Add Country</a>
+              <p className="section-header">Countries</p>
+              <ListBoxReorderable
+                entityName="country"
+                entityNamePlural="countries"
+                entities={ filmCountries }
+                displayProperty="country"
+                clickAdd={ () => { this.setState({ countriesModalOpen: true }) } }
+                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_countries', otherArrays: ['countries'] }) }}
+                style={ { marginBottom: '30px' } }
+              />
             </div>
             <div className="col-xs-6">
-              <h3>Languages</h3>
-              <ul className="standard-list reorderable languages-list">
-                <li className="drop-zone" data-index="-1" data-section="languages"></li>
-                { sortArrayOfObjects(filmLanguages, 'order').map((filmLanguage, index) => {
-                  return(
-                    <div key={ filmLanguage.id }>
-                      <li data-index={ index } data-section="languages">
-                        { filmLanguage.language }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_languages', otherArrays: ['languages'] }) } data-id={ filmLanguage.id }></div>
-                      </li>
-                      <li className="drop-zone" data-index={ index } data-section="languages"></li>
-                    </div>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'languagesModalOpen', true) }>Add Language</a>
+              <p className="section-header">Languages</p>
+              <ListBoxReorderable
+                entityName="language"
+                entities={ filmLanguages }
+                displayProperty="language"
+                clickAdd={ () => { this.setState({ languagesModalOpen: true }) } }
+                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_languages', otherArrays: ['languages'] }) }}
+                style={ { marginBottom: '30px' } }
+              />
             </div>
           </div>
           <hr />
           <div className="row">
             <div className="col-xs-6">
-              <h3>Cast</h3>
-              <ul className="standard-list reorderable actors-list">
-                <li className="drop-zone" data-index="-1" data-section={ 'cast' }></li>
-                { sortArrayOfObjects(actors, 'order').map((actor, index) => {
-                  return(
-                    <div key={ actor.id }>
-                      <li data-index={ index } data-section="cast">
-                        { actor.firstName } { actor.lastName }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'actors' }) } data-id={ actor.id }></div>
-                      </li>
-                      <li className="drop-zone" data-index={ index } data-section="cast"></li>
-                    </div>
-                  );
-                }) }
-              </ul>
-              <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'actorModalOpen', true) }>Add Actor</a>
+              <p className="section-header">Cast</p>
+              <ListBoxReorderable
+                entityName="actor"
+                entities={ actors }
+                displayFunction={ actor => `${actor.firstName} ${actor.lastName}` }
+                clickAdd={ () => { this.setState({ actorModalOpen: true }) } }
+                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'actors' }) }}
+                style={ { marginBottom: '30px' } }
+              />
             </div>
             <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
-              <h3>Release Dates</h3>
+              <p className="section-header">Release Dates</p>
               { Details.renderField.bind(this)({ entity: 'film', property: 'theatricalRelease', readOnly: !FM.user.hasAdminAccess }) }
               { Details.renderField.bind(this)({ entity: 'film', property: 'svodRelease', columnHeader: 'SVOD Release', readOnly: !FM.user.hasAdminAccess }) }
               { Details.renderField.bind(this)({ entity: 'film', property: 'tvodRelease', columnHeader: 'TVOD/EST Release', readOnly: !FM.user.hasAdminAccess }) }
@@ -1181,21 +1193,28 @@ export default class FilmDetails extends React.Component {
           <hr />
           <div className="row">
             <div className="col-xs-12">
-              <h3>Schedule</h3>
-              <ul className="standard-list schedule">
-                { schedule.map((entry, index) => {
-                  return(
-                    <li key={ index } className={ entry.tentative ? 'tentative' : '' }>{ entry.label } - { entry.date_string + (entry.tentative ? ' (?)' : '') }</li>
-                  );
-                }) }
-              </ul>
+              <p className="section-header">Schedule</p>
+              <ListBox
+                style={ { marginBottom: '60px' } }
+                entities={ schedule }
+                displayFunction={ revenueStream => `${ revenueStream.label } - ${ revenueStream.date_string + (revenueStream.tentative ? ' (?)' : '') }` }
+                styleIf={[
+                  {
+                    func: revenueStream => revenueStream.tentative,
+                    style: {
+                      color: 'red',
+                      fontStyle: 'italic',
+                    }
+                  }
+                ]}
+              />
             </div>
           </div>
         </div>
       );
-    } else if (this.state.tab === "Marketing") {
-      if (this.state.film.filmType === "Short") {
-        return(
+    } else if (tab === "marketing") {
+      if (film.filmType === "Short") {
+        return (
           <div>
             <hr />
             <div className="row">
@@ -1208,203 +1227,229 @@ export default class FilmDetails extends React.Component {
           </div>
         )
       } else {
-        return(
-          <div>
-            <hr />
-            <div className="row">
-              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'nowPlayingPage', columnHeader: 'Now Playing Page' }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
-            </div>
-            <hr style={ { marginTop: 30 } } />
-            <div className="row">
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 500 characters', characterCount: true }) }
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'shortSynopsis', rows: 4, columnHeader: 'Synopsis - 240 characters', characterCount: true }) }
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'logline', rows: 2, columnHeader: 'Synopsis - 150 characters', characterCount: true }) }
-            </div>
-            <hr style={ { marginTop: 30 } } />
-            <div className="row">
-              <div className="col-xs-12">
-                <h3>Laurels</h3>
-                <ul className="standard-list reorderable laurels-list">
-                  <li className="drop-zone" data-index="-1" data-section="laurels"></li>
-                  { sortArrayOfObjects(laurels, 'order').map((laurel, index) => {
-                    return(
-                      <div key={ laurel.id }>
-                        <li data-index={ index } data-section="laurels">
-                          { laurel.result }{ laurel.awardName ? ` - ${laurel.awardName}` : '' } - { laurel.festival }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'laurels' }) } data-id={ laurel.id }></div>
-                        </li>
-                        <li className="drop-zone" data-index={ index } data-section="laurels"></li>
-                      </div>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'laurelModalOpen', true) }>Add Laurel</a>
-                <div className="row row-of-checkboxes badge-checkboxes">
-                  { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
-                  { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
+        return (
+          <>
+            <div>
+              <hr />
+              <div className="row">
+                { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'active', columnHeader: 'Active on Website' }) }
+                { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'eduPage', columnHeader: 'Educational Page' }) }
+                { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'videoPage', columnHeader: 'Video Page' }) }
+                { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'dayAndDate', columnHeader: 'Day and Date' }) }
+              </div>
+              <hr style={ { marginTop: 30 } } />
+              <div className="row">
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 500 characters', characterCount: true }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'shortSynopsis', rows: 4, columnHeader: 'Synopsis - 240 characters', characterCount: true }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'logline', rows: 2, columnHeader: 'Synopsis - 150 characters', characterCount: true }) }
+              </div>
+              <hr style={ { marginTop: 30 } } />
+              <div className="row">
+                <div className="col-xs-12">
+                  <p className="section-header">Laurels</p>
+                  <ListBoxReorderable
+                    entityName="laurel"
+                    entities={ laurels }
+                    displayFunction={ laurel => `${laurel.result}${laurel.awardName ? ` - ${laurel.awardName}` : '' } - ${laurel.festival}` }
+                    clickAdd={ () => { this.setState({ laurelModalOpen: true }) } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'laurels' }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                  <div className="row row-of-checkboxes badge-checkboxes">
+                    { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'certifiedFresh' }) }
+                    { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'criticsPick', columnHeader: "Critic's Pick" }) }
+                  </div>
                 </div>
               </div>
-            </div>
-            <hr style={ { marginTop: 30 } } />
-            <div className="row">
-              <div className="col-xs-12 quotes-list">
-                <h3 className="quotes-header">Quotes</h3>
-                <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
-                { sortArrayOfObjects(quotes, 'order').map((quote, index) => {
-                  return(
-                    <div key={ quote.id } className="quote-container">
-                      { this.renderQuote(quote, index) }
-                    </div>
-                  );
-                }) }
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-xs-12">
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'quoteModalOpen', true) }>Add Quote</a>
-              </div>
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-xs-6">
-                <h3>Genres</h3>
-                <ul className="standard-list reorderable genres-list">
-                  <li className="drop-zone" data-index="-1" data-section={ 'genres' }></li>
-                  { sortArrayOfObjects(filmGenres, 'order').map((filmGenre, index) => {
-                    return(
-                      <div key={ filmGenre.id }>
-                        <li data-index={ index } data-section="genres">
-                          { filmGenre.genre }<div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div><div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_genres', otherArrays: ['genres'] }) } data-id={ filmGenre.id }></div>
-                        </li>
-                        <li className="drop-zone" data-index={ index } data-section="genres"></li>
+              <hr style={ { marginTop: 30 } } />
+              <div className="row">
+                <div className="col-xs-12 quotes-list">
+                  <p className="section-header quotes-header">Quotes</p>
+                  <div className="quote-drop-zone" data-index="-1" data-section="quotes"></div>
+                  { sortArrayOfObjects(quotes, 'order').map((quote, index) => {
+                    let bottomLine = "";
+                    bottomLine += quote.author ? quote.author : "";
+                    bottomLine += quote.author && quote.publication ? ", " : "";
+                    bottomLine += quote.publication ? quote.publication : "";
+                    return (
+                      <div key={ quote.id } className="quote-container">
+                        <div className="quote" onClick={ this.clickQuote } data-id={ quote.id } data-index={ index } data-section={ 'quotes' }>
+                          <p data-id={ quote.id }>{ FM.user.id === 1 ? (<span>({ quote.order })&nbsp;&nbsp;</span>) : null }"{ quote.text }"</p>
+                          <p data-id={ quote.id }>- { bottomLine }</p>
+                          <div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div>
+                        </div>
+                        <div className="quote-drop-zone" data-index={ index } data-section="quotes"></div>
                       </div>
                     );
                   }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'genresModalOpen', true) }>Add Genre</a>
+                </div>
               </div>
-              <div className="col-xs-6">
-                <h3>Related Films</h3>
-                <ul className="standard-list related-films-list">
-                  { this.state.relatedFilms.map((relatedFilm) => {
-                    return(
-                      <li key={ relatedFilm.id }>
-                        { relatedFilm.title }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'related_films', otherArrays: ['otherFilms'] }) } data-id={ relatedFilm.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'relatedFilmsModalOpen', true) }>Add Related Film</a>
+              <div className="row">
+                <div className="col-xs-12">
+                  <OutlineButton
+                    text="Add Quote"
+                    onClick={ () => { this.setState({ quoteModalOpen: true }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
               </div>
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-xs-4">
-                <h3>Alternate Lengths</h3>
-                <ul className="standard-list alternate-lengths-list">
-                  { sortArrayOfObjects(alternateLengths, 'length').map((alternateLength) => {
-                    return(
-                      <li key={ alternateLength.id }>
-                        { alternateLength.length }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_lengths' }) } data-id={ alternateLength.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newAltLengthModalOpen', true) }>Add Length</a>
+              <hr />
+              <div className="row">
+                <div className="col-xs-6">
+                  <p className="section-header">Genres</p>
+                  <ListBoxReorderable
+                    entityName="genre"
+                    entities={ filmGenres }
+                    displayProperty="genre"
+                    clickAdd={ () => { this.setState({ genresModalOpen: true }) } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_genres', otherArrays: ['genres'] }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
+                <div className="col-xs-6">
+                  <p className="section-header">Related Films</p>
+                  <ListBoxReorderable
+                    entityName="relatedFilm"
+                    entities={ this.state.relatedFilms }
+                    displayProperty="title"
+                    clickAdd={ () => { this.setState({ relatedFilmsModalOpen: true }) } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'related_films', otherArrays: ['otherFilms'] }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
               </div>
-              <div className="col-xs-4">
-                <h3>Alternate Audio Tracks</h3>
-                <ul className="standard-list alternate-audios-list">
-                  { alphabetizeArrayOfObjects(alternateAudios, 'languageName').map((alternateAudio) => {
-                    return(
-                      <li key={ alternateAudio.id }>
-                        { alternateAudio.languageName }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_audios', otherArrays: ['audioLanguages'] }) } data-id={ alternateAudio.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateAudioModalOpen', true) }>Add Audio Track</a>
+              <hr />
+              <div className="row">
+                <div className="col-xs-4">
+                  <p className="section-header">Alternate Lengths</p>
+                  <ListBox
+                    entityName="alternateLength"
+                    buttonText="Add Length"
+                    entities={ alternateLengths }
+                    displayProperty="length"
+                    clickAdd={ () => { this.setState({ newAltLengthModalOpen: true }) } }
+                    clickDelete={ (length) => { this.deleteFromList({ id: length.id, directory: 'alternate_lengths' }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
+                <div className="col-xs-4">
+                  <p className="section-header">Alternate Audio Tracks</p>
+                  <ListBox
+                    entityName="alternateAudio"
+                    buttonText="Add Audio Track"
+                    entities={ alternateAudios }
+                    displayProperty="languageName"
+                    clickAdd={ () => { this.setState({ alternateAudioModalOpen: true }) } }
+                    clickDelete={ (audio) => { this.deleteFromList({ id: audio.id, directory: 'alternate_audios', otherArrays: ['audioLanguages'] }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
+                <div className="col-xs-4">
+                  <p className="section-header">Alternate Subtitles</p>
+                  <ListBox
+                    entityName="alternateSub"
+                    buttonText="Add Subtitles"
+                    entities={ alternateSubs }
+                    displayProperty="languageName"
+                    clickAdd={ () => { this.setState({ alternateSubsModalOpen: true }) } }
+                    clickDelete={ (sub) => { this.deleteFromList({ id: sub.id, directory: 'alternate_subs', otherArrays: ['audioLanguages'] }) }}
+                    style={ { marginBottom: '30px' } }
+                  />
+                </div>
               </div>
-              <div className="col-xs-4">
-                <h3>Alternate Subtitles</h3>
-                <ul className="standard-list alternate-subtitles-list">
-                  { alphabetizeArrayOfObjects(alternateSubs, 'languageName').map((alternateSub) => {
-                    return(
-                      <li key={ alternateSub.id }>
-                        { alternateSub.languageName }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'alternate_subs', otherArrays: ['subtitleLanguages'] }) } data-id={ alternateSub.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'alternateSubsModalOpen', true) }>Add Subtitles</a>
+              <hr />
+              <div className="row">
+                <div className="col-xs-12">
+                  <p className="section-header">Digital Retailers</p>
+                  <Table
+                    rows={ this.state.digitalRetailerFilms }
+                    columns={[
+                      { name: "name", width: 200, bold: true },
+                      { name: "url", header: "URL" },
+                    ]}
+                    style={ { marginBottom: 30 } }
+                  />
+                  <OutlineButton
+                    onClick={ () => { this.setState({ newDigitalRetailerModalOpen: true }) } }
+                    text="Add Digital Retailer"
+                    style={ { marginBottom: 30 } }
+                  />
+                </div>
               </div>
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-xs-12">
-                <h3>Digital Retailers</h3>
-                <table className="fm-admin-table digital-retailers-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>URL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td></tr>
-                    { this.state.digitalRetailerFilms.map((digitalRetailerFilm, index) => {
-                      return(
-                        <tr key={ index } onClick={ this.redirect.bind(this, 'digital_retailer_films', digitalRetailerFilm.id) }>
-                          <td className="name-column">
-                            { digitalRetailerFilm.name }
-                          </td>
-                          <td>
-                            { digitalRetailerFilm.url }
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newDigitalRetailerModalOpen', true) }>Add Digital Retailer</a>
+              <hr />
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'fmPlusUrl', columnHeader: 'Film Movement Plus Link' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'standaloneSite' }) }
               </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'vimeoTrailer', columnHeader: 'Vimeo Trailer Link' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'youtubeTrailer', columnHeader: 'YouTube Trailer Link' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'proresTrailer', columnHeader: 'ProRes Trailer Link' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'facebookLink' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'twitterLink' }) }
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'instagramLink' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'rentalUrl' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalPrice' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalDays' }) }
+              </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
+              </div>
+              <hr style={ { marginTop: 30 } } />
             </div>
-            <hr />
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'fmPlusUrl', columnHeader: 'Film Movement Plus Link' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'standaloneSite' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'vimeoTrailer', columnHeader: 'Vimeo Trailer Link' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'youtubeTrailer', columnHeader: 'YouTube Trailer Link' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'proresTrailer', columnHeader: 'ProRes Trailer Link' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'facebookLink' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'twitterLink' }) }
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'instagramLink' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'film', property: 'rentalUrl' }) }
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalPrice' }) }
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'rentalDays' }) }
-            </div>
-            <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'imdbId', columnHeader: 'IMDB ID' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
-            </div>
-            <hr style={ { marginTop: 30 } } />
-          </div>
+            <style jsx>{`
+              .badge-checkboxes {
+                margin-bottom: 10px;
+              }
+              .quotes-header {
+                margin-bottom: 10px !important;
+              }
+              .quote-container .quote {
+                position: relative;
+                border: solid 1px #e4e9ed;
+                border-radius: 3px;
+                padding: 15px;
+                padding-right: 80px;
+                cursor: pointer;
+              }
+              .quote p {
+                font-family: 'TeachableSans-Medium';
+              }
+              .quote p:first-of-type {
+                margin-bottom: 10px;
+              }
+              .quote-drop-zone {
+                height: 20px;
+              }
+              .quote-drop-zone.highlight {
+                border: dashed 1px black;
+              }
+              .quote .handle {
+                display: inline-block;
+                position: absolute;
+                top: calc(50% - 8px);
+                right: 30px;
+                background-position: 50%;
+                background-size: 17px;
+                background-repeat: no-repeat;
+                width: 17px;
+                height: 17px;
+                cursor: grab;
+              }
+            `}</style>
+          </>
         );
       }
-    } else if (this.state.tab === "Educational") {
-      return(
+    } else if (this.state.tab === "educational") {
+      return (
         <>
           <div>
             <hr />
@@ -1414,7 +1459,7 @@ export default class FilmDetails extends React.Component {
             <hr />
             <div className="row">
               <div className="col-xs-2">
-                <h3>Pricing</h3>
+                <p className="section-header">Pricing</p>
                 <div className="edu-subheader-container">
                   <p>Pre-Street</p>
                   <p>Non-Member</p>
@@ -1458,47 +1503,42 @@ export default class FilmDetails extends React.Component {
                 { Details.renderField.bind(this)({ entity: 'film', property: 'pprDrlPostStreetMember', columnHeader: 'PPR + DRL' }) }
               </div>
               <div className="col-xs-4">
-                <h3>Topics</h3>
-                <ul className="standard-list topics-list">
-                  { alphabetizeArrayOfObjects(filmTopics, 'topic').map((filmTopic) => {
-                    return(
-                      <li key={ filmTopic.id }>
-                        { filmTopic.topic }<div className="x-button" onClick={ this.deleteFromList.bind(this, { directory: 'film_topics', otherArrays: ['topics'] }) } data-id={ filmTopic.id }></div>
-                      </li>
-                    );
-                  }) }
-                </ul>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'topicsModalOpen', true) }>Add Topic</a>
+                <p className="section-header">Topics</p>
+                <ListBox
+                  entityName="topic"
+                  entities={ filmTopics }
+                  sort
+                  clickAdd={ () => { this.setState({ topicsModalOpen: true }) } }
+                  clickDelete={ filmTopic => { this.deleteFromList({ id: filmTopic.id, directory: 'film_topics', otherArrays: ['topics'] }) }}
+                  displayProperty="topic"
+                  style={ { marginBottom: 15 } }
+                />
               </div>
             </div>
             <hr />
             <div className="row">
               <div className="col-xs-12">
-                <h3>Educational Streaming Platforms</h3>
-                <table className="fm-admin-table edu-platforms-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>URL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td></tr>
-                    { this.state.eduPlatformFilms.map((eduPlatformFilm, index) => {
-                      return(
-                        <tr key={ index } onClick={ this.redirect.bind(this, 'edu_platform_films', eduPlatformFilm.id) }>
-                          <td className="name-column">
-                            { eduPlatformFilm.name }
-                          </td>
-                          <td>
-                            { eduPlatformFilm.url }
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
-                <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'newEduPlatformModalOpen', true) }>Add Platform</a>
+                <p className="section-header">Educational Streaming Platforms</p>
+                <Table
+                  columns={ [{
+                    name: 'name',
+                    bold: true,
+                  }, {
+                    name: 'url',
+                    header: 'URL',
+                  }] }
+                  rows={ this.state.eduPlatformFilms }
+                  sortable={ false }
+                  urlPrefix="edu_platform_films"
+                  style={ { marginBottom: 30 } }
+                />
+                <OutlineButton
+                  text="Add Platform"
+                  onClick={ () => { this.setState({
+                    newEduPlatformModalOpen: true,
+                  }) } }
+                  marginBottom
+                />
               </div>
             </div>
             <hr />
@@ -1515,7 +1555,7 @@ export default class FilmDetails extends React.Component {
         </>
       );
     } else {
-      return(
+      return (
         <div>
         </div>
       );
@@ -1524,135 +1564,137 @@ export default class FilmDetails extends React.Component {
 
   renderRoyaltyFields() {
     const { dealTemplates, film, filmRevenuePercentages, filmRights, percentageErrors, percentageObject, revenueStreams } = this.state;
-    return(
-      <div>
-        <div className={ film.filmType == 'Short' ? 'hidden' : '' }>
-          <div className="row">
-            { Details.renderDropDown.bind(this)({ columnWidth: 5, entity: 'film', property: 'dealTypeId', columnHeader: 'Deal Type', options: dealTemplates, optionDisplayProperty: 'name', readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 1, entity: 'film', property: 'grPercentage', columnHeader: 'GR %', readOnly: !FM.user.hasAdminAccess, hidden: film.dealTypeId != "5" && film.dealTypeId != "6" }) }
-            { Details.renderDropDown.bind(this)({
-              columnWidth: 3,
-              entity: 'film',
-              property: 'daysStatementDue',
-              columnHeader: 'Statements Due',
-              options: [
-                { value: 30, text: '30 Days' },
-                { value: 45, text: '45 Days' },
-                { value: 60, text: '60 Days' }
-              ],
-              readOnly: !FM.user.hasAdminAccess,
-            }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'mg', columnHeader: 'MG', readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'eAndO', columnHeader: 'E & O', readOnly: !FM.user.hasAdminAccess, hidden: film.filmType === "Short" }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'expenseCap', readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'sellOffPeriod', columnHeader: 'DVD Sell Off Period (Months)', readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'acceptDelivery', columnHeader: 'Delivery Acceptance Date', readOnly: !FM.user.hasAdminAccess }) }
-          </div>
-          <div className="row">
-            { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'royaltyNotes', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'contractualObligations', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
-          </div>
-        </div>
-        <hr />
-        <h3>Licensed Rights</h3>
-        <div className="row">
-          <div className="col-xs-12">
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th><div className={ this.state.rightsSortBy === 'name' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'name') }>Right</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'territory' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'territory') }>Territory</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'startDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'startDate') } >Start Date</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'endDate' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'endDate') }>End Date</div></th>
-                  <th><div className={ this.state.rightsSortBy === 'exclusive' ? "sort-header-active" : "sort-header-inactive" } onClick={ Common.changeState.bind(this, 'rightsSortBy', 'exclusive') }>Exclusive</div></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td><td></td><td></td></tr>
-                { _.orderBy(filmRights, [this.rightsSort.bind(this), this.rightsSortSecond.bind(this)]).map((right, index) => {
-                  return(
-                    <tr key={ index } onClick={ this.redirect.bind(this, 'film_rights', right.id) }>
-                      <td className="indent">
-                        { right.name }
-                      </td>
-                      <td>
-                        { right.territory }
-                      </td>
-                      <td>
-                        { right.startDate }
-                      </td>
-                      <td>
-                        { right.endDate }
-                      </td>
-                      <td>
-                        { right.exclusive }
-                      </td>
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
-            { this.renderRightsButtons.call(this) }
-          </div>
-        </div>
-        <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
-          <hr />
-          <h3>Revenue Splits</h3>
-          <div className="row">
-            { filmRevenuePercentages.map((revenuePercentage, index) => {
-              const properErrorsArray = percentageErrors[revenuePercentage.id] ? percentageErrors[revenuePercentage.id] : [];
-              const revenueStream = revenueStreams.find(stream => stream.id == revenuePercentage.revenueStreamId);
-              return(
-                <div key={ index }>
-                  { Details.renderField.bind(this)({
-                    columnWidth: 2,
-                    entity: 'percentageObject',
-                    property: revenuePercentage.id,
-                    errorsKey: revenuePercentage.id,
-                    errorsProperty: 'value',
-                    columnHeader: revenueStream.nickname || revenueStream.name,
-                    readOnly: !FM.user.hasAdminAccess,
-                    showFieldError: false,
-                  }) }
-                </div>
-              );
-            }) }
+    return (
+      <>
+        <div>
+          <div className={ film.filmType == 'Short' ? 'hidden' : '' }>
+            <div className="row">
+              { Details.renderDropDown.bind(this)({ columnWidth: 5, entity: 'film', property: 'dealTypeId', columnHeader: 'Deal Type', options: dealTemplates, optionDisplayProperty: 'name', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'film', property: 'grPercentage', columnHeader: 'GR %', readOnly: !FM.user.hasAdminAccess, hidden: film.dealTypeId != "5" && film.dealTypeId != "6" }) }
+              { Details.renderDropDown.bind(this)({
+                columnWidth: 3,
+                entity: 'film',
+                property: 'daysStatementDue',
+                columnHeader: 'Statements Due',
+                options: [
+                  { value: 30, text: '30 Days' },
+                  { value: 45, text: '45 Days' },
+                  { value: 60, text: '60 Days' }
+                ],
+                readOnly: !FM.user.hasAdminAccess,
+              }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'mg', columnHeader: 'MG', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'eAndO', columnHeader: 'E & O', readOnly: !FM.user.hasAdminAccess, hidden: film.filmType === "Short" }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'expenseCap', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'sellOffPeriod', columnHeader: 'DVD Sell Off Period (Months)', readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'film', property: 'acceptDelivery', columnHeader: 'Delivery Acceptance Date', readOnly: !FM.user.hasAdminAccess }) }
+            </div>
+            <div className="row">
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'royaltyNotes', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'film', property: 'contractualObligations', rows: 3, readOnly: !FM.user.hasAdminAccess }) }
+            </div>
           </div>
           <hr />
-          <div className={ "row reserve-section" + (this.state.film.reserve ? "" : " no-reserve") }>
-            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'reserve', columnHeader: 'Reserve Against Returns' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reservePercentage', columnHeader: 'Reserve %', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reserveQuarters', columnHeader: '# of Quarters', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
-            <div className={ `spacer${this.state.film.reserve ? ' hidden' : ''}` }></div>
+          <p className="section-header">Licensed Rights</p>
+          <div className="row">
+            <div className="col-xs-12">
+              <Table
+                columns={ [{
+                  header: 'Right',
+                  name: 'name',
+                }, {
+                  header: 'Territory',
+                  name: 'territory',
+                }, {
+                  header: 'Start Date',
+                  name: 'startDate',
+                }, {
+                  header: 'End Date',
+                  name: 'endDate',
+                }, {
+                  header: 'Exclusive',
+                  name: 'exclusive',
+                }] }
+                rows={ filmRights }
+                urlPrefix="film_rights"
+                marginBottom
+              />
+              { FM.user.hasAdminAccess && (
+                <>
+                  <OutlineButton
+                    onClick={ () => { this.setState({ newRightsModalOpen: true }) } }
+                    text="Add Rights"
+                    style={ { marginBottom: '30px' } }
+                  />
+                  <OutlineButton
+                    onClick={ () => { this.setState({ changeDatesModalOpen: true }) } }
+                    text="Change All Dates"
+                    style={ { marginBottom: '30px' } }
+                    float
+                  />
+                </>
+              ) }
+            </div>
           </div>
-          <hr />
-          <div className={ "row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew") }>
-            { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'autoRenew', columnHeader: 'Auto-Renew' }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewTerm', columnHeader: 'Term (Months)', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewDaysNotice', columnHeader: 'Days Notice', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
-            { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewOptOut', columnHeader: 'Opt Out', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
-            <div className={ `spacer${this.state.film.autoRenew ? ' hidden' : ''}` }></div>
+          <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
+            <hr />
+            <p className="section-header">Revenue Splits</p>
+            <div className="row">
+              { filmRevenuePercentages.map((revenuePercentage, index) => {
+                const properErrorsArray = percentageErrors[revenuePercentage.id] ? percentageErrors[revenuePercentage.id] : [];
+                const revenueStream = revenueStreams.find(stream => stream.id == revenuePercentage.revenueStreamId);
+                return (
+                  <div key={ index }>
+                    { Details.renderField.bind(this)({
+                      columnWidth: 2,
+                      entity: 'percentageObject',
+                      property: revenuePercentage.id,
+                      errorsKey: revenuePercentage.id,
+                      errorsProperty: 'value',
+                      columnHeader: revenueStream.nickname || revenueStream.name,
+                      readOnly: !FM.user.hasAdminAccess,
+                      showFieldError: false,
+                    }) }
+                  </div>
+                );
+              }) }
+            </div>
+            <hr />
+            <div className={ "row reserve-section" + (this.state.film.reserve ? "" : " no-reserve") }>
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'reserve', columnHeader: 'Reserve Against Returns' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reservePercentage', columnHeader: 'Reserve %', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'reserveQuarters', columnHeader: '# of Quarters', hidden: !film.reserve, readOnly: !FM.user.hasAdminAccess }) }
+              <div className={ `spacer${this.state.film.reserve ? ' hidden' : ''}` }></div>
+            </div>
+            <hr />
+            <div className={ "row auto-renew-section" + (this.state.film.autoRenew ? "" : " no-renew") }>
+              { Details.renderSwitch.bind(this)({ columnWidth: 3, entity: 'film', property: 'autoRenew', columnHeader: 'Auto-Renew' }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewTerm', columnHeader: 'Term (Months)', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewDaysNotice', columnHeader: 'Days Notice', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'film', property: 'autoRenewOptOut', columnHeader: 'Opt Out', hidden: !film.autoRenew, readOnly: !FM.user.hasAdminAccess }) }
+              <div className={ `spacer${this.state.film.autoRenew ? ' hidden' : ''}` }></div>
+            </div>
           </div>
         </div>
-      </div>
+        <style jsx>{`
+          .spacer {
+            height: 103px;
+          }
+        `}</style>
+      </>
     );
   }
 
-  renderRightsButtons() {
-    if (FM.user.hasAdminAccess) {
-      return([
-        <a key={ 1 } className="blue-outline-button small m-right" onClick={ Common.changeState.bind(this, 'newRightsModalOpen', true) }>Add Rights</a>,
-        <a key={ 2 } className="blue-outline-button small float-button" onClick={ Common.changeState.bind(this, 'changeDatesModalOpen', true) }>Change All Dates</a>
-      ]);
-    }
-  }
-
   renderButtons() {
-    return(
+    const { justSaved, changesToSave, fetching } = this.state;
+    return (
       <div>
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
+        <SaveButton
+          justSaved={ justSaved }
+          changesToSave={ changesToSave }
+          disabled={ fetching }
+          onClick={ () => { this.clickSave() } }
+        />
         { this.renderErrorGuide() }
         { this.renderCopyAndDeleteButtons() }
       </div>
@@ -1661,14 +1703,20 @@ export default class FilmDetails extends React.Component {
 
   renderCopyAndDeleteButtons() {
     if (FM.user.hasAdminAccess) {
-      return([
-        <a key={ 1 } className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>,
-        <a key={ 2 } style={ { marginRight: 30 } } className={ "btn float-button orange-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'copyModalOpen', true) }>
-          Copy Film
-        </a>
-      ]);
+      return (
+        <>
+          <DeleteButton
+            entityName="film"
+            confirmDelete={ Details.confirmDelete.bind(this) }
+          />,
+          <Button
+            text="Copy Film"
+            marginRight
+            float
+            onClick={ () => { this.setState({ copyModalOpen: true }) } }
+          />
+        </>
+      );
     }
   }
 
@@ -1739,23 +1787,6 @@ export default class FilmDetails extends React.Component {
         </div>
       );
     }
-  }
-
-  renderQuote(quote, index) {
-    var bottomLine = "";
-    bottomLine += quote.author ? quote.author : "";
-    bottomLine += quote.author && quote.publication ? ", " : "";
-    bottomLine += quote.publication ? quote.publication : "";
-    return(
-      <div>
-        <div className="quote" onClick={ this.clickQuote } data-id={ quote.id } data-index={ index } data-section={ 'quotes' }>
-          <p data-id={ quote.id }>{ FM.user.id === 1 ? (<span>({ quote.order })&nbsp;&nbsp;</span>) : null }"{ quote.text }"</p>
-          <p data-id={ quote.id }>- { bottomLine }</p>
-          <div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div>
-        </div>
-        <div className="quote-drop-zone" data-index={ index } data-section="quotes"></div>
-      </div>
-    );
   }
 
   componentDidUpdate() {

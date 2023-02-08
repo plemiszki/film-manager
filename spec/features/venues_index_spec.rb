@@ -20,13 +20,13 @@ describe 'venues_index', type: :feature do
 
   it 'adds new venues' do
     visit venues_path(as: $admin_user)
-    find('.btn', text: 'Add Venue').click
+    click_btn("Add Venue")
     find('[data-field="label"]').set('New Venue')
     find('[data-field="sageId"]').set('foo')
     within('.admin-modal') do
       find('input[type="submit"]').click
     end
-    expect(find('.admin-table')).to have_content 'New Venue'
+    expect(find('table')).to have_content 'New Venue'
     expect(Venue.last.attributes).to include(
       'label' => 'New Venue',
       'sage_id' => 'foo',
@@ -36,7 +36,7 @@ describe 'venues_index', type: :feature do
 
   it 'validates new venues' do
     visit venues_path(as: $admin_user)
-    find('.btn', text: 'Add Venue').click
+    click_btn("Add Venue")
     within('.admin-modal') do
       find('input[type="submit"]').click
     end

@@ -27,7 +27,7 @@ describe 'credit_memo_details', type: :feature do
     expect(page).to have_content '012345678'
     expect(page).to have_content 'DVD Vendor'
     expect(page).to have_content 'Billing Name'
-    within('.fm-admin-table') do
+    within('table') do
       expect(page).to have_content 'Wilby Wonderful'
       expect(page).to have_content '$7.99'
     end

@@ -1,7 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity } from 'handy-components'
+import { Common, BottomButtons, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity, Spinner, GrayedOut, OutlineButton, ModalSelect, ListBox } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class BookerDetails extends React.Component {
@@ -41,33 +40,33 @@ export default class BookerDetails extends React.Component {
     });
   }
 
-  selectVenue(option, e) {
+  selectVenue(option) {
     this.setState({
       venuesModalOpen: false,
-      fetching: true
+      fetching: true,
     });
     createEntity({
       directory: 'booker_venues',
       entityName: 'booker_venue',
       entity: {
         bookerId: this.state.booker.id,
-        venueId: e.target.dataset.id
+        venueId: option.id,
       }
     }).then((response) => {
       this.setState({
         fetching: false,
-        bookerVenues: response.bookerVenues
+        bookerVenues: response.bookerVenues,
       });
     });
   }
 
-  clickDeleteVenue(e) {
+  clickDeleteVenue(id) {
     this.setState({
       fetching: true
     });
     deleteEntity({
       directory: 'booker_venues',
-      id: e.target.dataset.id,
+      id,
     }).then((response) => {
       const { bookerVenues } = response;
       this.setState({
@@ -114,9 +113,10 @@ export default class BookerDetails extends React.Component {
   }
 
   render() {
-    return(
-      <div id="booker-details">
-        <div className="component details-component">
+    const { justSaved, changesToSave, fetching, bookerVenues } = this.state;
+    return (
+      <>
+        <div className="handy-component">
           <h1>Booker Details</h1>
           <div className="white-box">
             <div className="row">
@@ -126,46 +126,37 @@ export default class BookerDetails extends React.Component {
             </div>
             <div className="row">
               <div className="col-xs-12">
-                <h2>Venues:</h2>
-                <ul className="standard-list">
-                  { this.state.bookerVenues.map((venue) => {
-                    return(
-                      <li key={ venue.id }>{ venue.venue }<div className="x-button" onClick={ this.clickDeleteVenue.bind(this) } data-id={ venue.id }></div></li>
-                    );
-                  }) }
-                </ul>
-                <a className={ 'blue-outline-button small margin-bottom' } onClick={ this.clickAddVenue.bind(this) }>Add Venue</a>
+                <p className="section-header">Venues</p>
+                <ListBox
+                  entityName="bookerVenue"
+                  entities={ bookerVenues }
+                  clickDelete={ (bookerVenue) => { this.clickDeleteVenue(bookerVenue.id) } }
+                  displayProperty="venue"
+                  style={ { marginBottom: 15 } }
+                />
+                <OutlineButton
+                  text="Add Venue"
+                  onClick={ () => { this.clickAddVenue() } }
+                  marginBottom
+                />
               </div>
             </div>
-            { this.renderButtons() }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-            { Common.renderSpinner(this.state.fetching) }
+            <BottomButtons
+              entityName="booker"
+              confirmDelete={ Details.confirmDelete.bind(this) }
+              justSaved={ justSaved }
+              changesToSave={ changesToSave }
+              disabled={ fetching }
+              clickSave={ () => { this.clickSave() } }
+            />
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
         <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.venues } property={ "name" } func={ this.selectVenue.bind(this) } />
+          <ModalSelect options={ this.state.venues } property="name" func={ this.selectVenue.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="booker"
-            confirmDelete={ Details.clickDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
-      </div>
-    );
-  }
-
-  renderButtons() {
-    return(
-      <div>
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-      </div>
+      </>
     );
   }
 }

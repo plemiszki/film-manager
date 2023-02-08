@@ -27,7 +27,7 @@ describe 'virtual_bookings_index', type: :feature do
 
   it 'adds virtual bookings' do
     visit virtual_bookings_path(as: $admin_user)
-    find('.btn', text: 'Add Virtual Booking').click
+    click_btn("Add Virtual Booking")
     info = {
       film_id: { value: 'Another Film', type: :select_modal },
       venue_id: { value: 'Another Venue', type: :select_modal },
@@ -47,7 +47,7 @@ describe 'virtual_bookings_index', type: :feature do
 
   it 'validates new virtual bookings' do
     visit virtual_bookings_path(as: $admin_user)
-    find('.btn', text: 'Add Virtual Booking').click
+    click_btn("Add Virtual Booking")
     fill_out_and_submit_modal({ url: '' }, :input)
     expect(page).to have_content "Film can't be blank"
     expect(page).to have_content "Venue can't be blank"
@@ -57,7 +57,7 @@ describe 'virtual_bookings_index', type: :feature do
 
   it 'starts the export job' do
     visit virtual_bookings_path(as: $admin_user)
-    find('.export-button', text: 'Export').click
+    click_btn("Export")
     expect(page).to have_content('Exporting Virtual Bookings')
   end
 

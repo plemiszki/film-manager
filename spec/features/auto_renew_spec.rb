@@ -56,7 +56,7 @@ describe 'auto_renew', type: :feature do
   it 'renews all films' do
     visit films_path(as: $admin_user)
     find('.icon').click
-    find('a.renew-all', text: 'Renew All').click
+    find('a', text: 'Renew All').click
     wait_for_ajax
     expect(find('table.auto-renew-films')).not_to have_content('Test 1')
     expect(@film.reload.end_date).to eq(Date.today - 90.days + 2.years)

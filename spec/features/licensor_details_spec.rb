@@ -50,11 +50,7 @@ describe 'licensor_details', type: :feature do
 
   it 'deletes the licensor' do
     visit licensor_path(@licensor, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/licensors', ignore_query: true)
     expect(Licensor.find_by_id(@licensor.id)).to be(nil)
   end

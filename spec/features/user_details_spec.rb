@@ -57,11 +57,7 @@ describe 'user_details', type: :feature do
 
   it 'deletes the user, if admin' do
     visit user_path(@user, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/users', ignore_query: true)
     expect(User.find_by_id(@user.id)).to be(nil)
   end

@@ -63,11 +63,7 @@ describe 'sub_right_details', type: :feature do
 
   it 'deletes the sublicensed right' do
     visit sub_right_path(@sub_right, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path("/sublicensors/#{@sub_right.sublicensor.id}", ignore_query: true)
     expect(SubRight.find_by_id(@sub_right.id)).to be(nil)
   end

@@ -22,7 +22,7 @@ describe 'returns_index', type: :feature do
 
   it 'adds new returns' do
     visit returns_path(as: $admin_user)
-    find('.new-button').click
+    click_btn('Add Return')
     fill_out_and_submit_modal({
       customer_id: { value: 'DVD Vendor', type: :select_modal },
       date: Date.today.strftime("%-m/%-d/%y"),
@@ -39,7 +39,7 @@ describe 'returns_index', type: :feature do
 
   it 'validates new returns properly' do
     visit returns_path(as: $admin_user)
-    find('.new-button').click
+    click_btn('Add Return')
     fill_out_and_submit_modal({
       customer_id: { value: 'DVD Vendor', type: :select_modal }
     }, :input)
@@ -49,7 +49,7 @@ describe 'returns_index', type: :feature do
 
   it 'starts the export job' do
     visit returns_path(as: $admin_user)
-    find('.export-button', text: 'Export').click
+    click_btn('Export')
     expect(page).to have_content('Exporting DVD Returns')
   end
 

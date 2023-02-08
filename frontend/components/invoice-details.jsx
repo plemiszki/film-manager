@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, fetchEntity } from 'handy-components'
+import { Common, fetchEntity, Spinner, GrayedOut, Table, Button } from 'handy-components'
 
 export default class InvoiceDetails extends React.Component {
 
@@ -36,76 +36,118 @@ export default class InvoiceDetails extends React.Component {
   }
 
   render() {
-    return(
-      <div id="invoice-details">
-        <div className="component">
+    const { fetching } = this.props;
+    const { invoice, rows, payments } = this.state;
+    console.log(rows);
+    const dvdInvoice = invoice.invoiceType === "dvd";
+    const bookingInvoice = invoice.invoiceType === "booking";
+    const tableColumns = dvdInvoice ? [
+      { name: 'label', header: 'Item' },
+      { name: 'price' },
+      { name: 'qty' },
+      { name: 'totalPrice' },
+    ] : [
+      { name: 'label', header: 'Description' },
+      { name: 'totalPrice', header: 'Amount' },
+    ]
+    return (
+      <>
+        <div className="handy-component">
           <h1>Invoice Details</h1>
           <div className="white-box">
             <div className="row">
-              <div className={ this.state.invoice.invoiceType == "booking" ? "col-xs-2" : "col-xs-4" }>
+              <div className={ bookingInvoice ? "col-xs-2" : "col-xs-4" }>
                 <h2>Number</h2>
-                { this.state.invoice.number }
+                { invoice.number }
               </div>
-              <div className={ this.state.invoice.invoiceType == "booking" ? "col-xs-2" : "col-xs-4" }>
+              <div className={ bookingInvoice ? "col-xs-2" : "col-xs-4" }>
                 <h2>Sent Date</h2>
-                { this.state.invoice.sentDate }
+                { invoice.sentDate }
               </div>
-              { this.renderPOSection() }
-              { this.renderFilmAndVenueSection() }
+              { dvdInvoice && (
+                <div className="col-xs-4">
+                  <h2>PO Number</h2>
+                  { invoice.poNumber }
+                </div>
+              ) }
+              { bookingInvoice && (
+                <div>
+                  <div className="col-xs-4">
+                    <h2>Film</h2>
+                    { invoice.film }
+                  </div>
+                  <div className="col-xs-4">
+                    <h2>Venue</h2>
+                    { invoice.venue }
+                  </div>
+                </div>
+              ) }
             </div>
             <div className="row">
               <div className="col-xs-4">
                 <h2>Billing Address</h2>
-                <p>{ this.state.invoice.billingName }</p>
-                <p>{ this.state.invoice.billingAddress1 }</p>
-                <p>{ this.state.invoice.billingAddress2 }</p>
-                <p>{ this.state.invoice.billingCity }, { this.state.invoice.billingState } { this.state.invoice.billingZip }</p>
-                <p>{ this.state.invoice.billingCountry == 'USA' ? '' : this.state.invoice.billingCountry }</p>
+                <p>{ invoice.billingName }</p>
+                <p>{ invoice.billingAddress1 }</p>
+                <p>{ invoice.billingAddress2 }</p>
+                <p>{ invoice.billingCity }, { invoice.billingState } { invoice.billingZip }</p>
+                <p>{ invoice.billingCountry == 'USA' ? '' : invoice.billingCountry }</p>
               </div>
-              { this.renderShippingAddressSection() }
+              { invoice.shippingAddress1 && (
+                <div className="col-xs-4">
+                  <h2>Shipping Address</h2>
+                  <p>{ invoice.shippingName }</p>
+                  <p>{ invoice.shippingAddress1 }</p>
+                  <p>{ invoice.shippingAddress2 }</p>
+                  <p>{ invoice.shippingCity }, { invoice.shippingState } { invoice.shippingZip }</p>
+                  <p>{ invoice.shippingCountry == 'USA' ? '' : invoice.shippingCountry }</p>
+                </div>
+              ) }
             </div>
             <hr />
-            <table className="fm-admin-table">
-              <thead>
-                { this.renderTableHeaders() }
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td><td></td></tr>
-                { (this.state.rows.concat(this.state.payments)).map(this.renderTableColumns.bind(this)) }
-              </tbody>
-            </table>
+            <Table
+              columns={ tableColumns }
+              rows={ rows.concat(payments) }
+              sortable={ false }
+              links={ false }
+              marginBottom
+            />
             <hr />
             <div className="row">
               <div className="col-xs-12">
                 <h2>Total</h2>
-                { this.state.invoice.total }
+                { invoice.total }
               </div>
             </div>
-            { this.renderNotes() }
-            <a id="export" className={ "orange-button " + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickExport.bind(this) }>
-              Export
-            </a>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            { invoice.notes && (
+              <div className="row">
+                <div className="col-xs-12">
+                  <h2>Notes</h2>
+                  { invoice.notes.split('\n').map((line, key) => {
+                    return (
+                      <span key={ key }>
+                        { line }<br />
+                      </span>
+                    );
+                  }) }
+                </div>
+              </div>
+            ) }
+            <Button
+              text="Export"
+              disabled={ fetching }
+              onClick={ () => { this.clickExport() } }
+            />
+            <Spinner visible={ fetching } />
+            <GrayedOut visible={ fetching } />
           </div>
         </div>
-      </div>
+        <style jsx>{`
+          .row, table {
+            margin-bottom: 30px;
+          }
+        `}</style>
+      </>
     );
-  }
-
-  renderShippingAddressSection() {
-    if (this.state.invoice.shippingAddress1) {
-      return(
-        <div className="col-xs-4">
-          <h2>Shipping Address</h2>
-          <p>{ this.state.invoice.shippingName }</p>
-          <p>{ this.state.invoice.shippingAddress1 }</p>
-          <p>{ this.state.invoice.shippingAddress2 }</p>
-          <p>{ this.state.invoice.shippingCity }, { this.state.invoice.shippingState } { this.state.invoice.shippingZip }</p>
-          <p>{ this.state.invoice.shippingCountry == 'USA' ? '' : this.state.invoice.shippingCountry }</p>
-        </div>
-      );
-    }
   }
 
   renderTableHeaders() {
@@ -130,24 +172,32 @@ export default class InvoiceDetails extends React.Component {
 
   renderTableColumns(row, index) {
     if (this.state.invoice.invoiceType == "dvd") {
-      return(
+      return (
         <tr key={ index }>
-          <td className="indent">
-            { row.label }
+          <td>
+            <div className="link-padding">
+              { row.label }
+            </div>
           </td>
           <td>
-            { row.price }
+            <div className="link-padding">
+              { row.price }
+            </div>
           </td>
           <td>
-            { row.qty }
+            <div className="link-padding">
+              { row.qty }
+            </div>
           </td>
           <td>
-            { row.totalPrice }
+            <div className="link-padding">
+              { row.totalPrice }
+            </div>
           </td>
         </tr>
       );
     } else {
-      return(
+      return (
         <tr key={ index }>
           <td className="indent">
             { row.label }
@@ -157,53 +207,6 @@ export default class InvoiceDetails extends React.Component {
           </td>
         </tr>
       );
-    }
-  }
-
-  renderPOSection() {
-    if (this.state.invoice.invoiceType == "dvd") {
-      return(
-        <div className="col-xs-4">
-          <h2>PO Number</h2>
-          { this.state.invoice.poNumber }
-        </div>
-      );
-    }
-  }
-
-  renderFilmAndVenueSection() {
-    if (this.state.invoice.invoiceType == "booking") {
-      return(
-        <div>
-          <div className="col-xs-4">
-            <h2>Film</h2>
-            { this.state.invoice.film }
-          </div>
-          <div className="col-xs-4">
-            <h2>Venue</h2>
-            { this.state.invoice.venue }
-          </div>
-        </div>
-      );
-    }
-  }
-
-  renderNotes() {
-    if (this.state.invoice.notes) {
-      return(
-        <div className="row">
-          <div className="col-xs-12">
-            <h2>Notes</h2>
-            { this.state.invoice.notes.split('\n').map(function(line, key) {
-              return(
-                <span key={ key }>
-                  { line }<br />
-                </span>
-              )
-            }) }
-          </div>
-        </div>
-      )
     }
   }
 }

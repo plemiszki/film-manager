@@ -45,37 +45,37 @@ describe 'dvd_reports', type: :feature do
     settings.update(next_dvd_invoice_number: settings.next_dvd_invoice_number + 1)
     visit dvd_reports_path(as: $admin_user)
     wait_for_ajax
-    within('.months-report') do
-      expect(find('td[data-test="aec-jan"]')).to have_content('$39.66')
-      expect(find('td[data-test="aec-feb"]')).to have_content('$89.26')
-      expect(find('td[data-test="aec-total"]')).to have_content('$128.92')
-      expect(find('td[data-test="midwest-jan"]')).to have_content('$54.56')
-      expect(find('td[data-test="midwest-feb"]')).to have_content('$99.17')
-      expect(find('td[data-test="midwest-total"]')).to have_content('$153.73')
-      expect(find('td[data-test="total-jan"]')).to have_content('$94.22')
-      expect(find('td[data-test="total-feb"]')).to have_content('$188.43')
+    within('table[data-test="customers-report"]') do
+      expect(find('div[data-test="0-0"]')).to have_content('$128.92')
+      expect(find('div[data-test="0-1"]')).to have_content('$39.66')
+      expect(find('div[data-test="0-2"]')).to have_content('$89.26')
+      expect(find('div[data-test="1-0"]')).to have_content('$153.73')
+      expect(find('div[data-test="1-1"]')).to have_content('$54.56')
+      expect(find('div[data-test="1-2"]')).to have_content('$99.17')
+      expect(find('div[data-test="2-1"]')).to have_content('$94.22')
+      expect(find('div[data-test="2-2"]')).to have_content('$188.43')
+      expect(find('div[data-test="2-0"]')).to have_content('$282.65')
     end
-    expect(find('td[data-test="year-total"]')).to have_content('$282.65')
-    within('.titles-report') do
-      expect(find('td[data-test="1-aec-sales"]')).to have_content('$99.20')
-      expect(find('td[data-test="1-aec-units"]')).to have_content('4')
-      expect(find('td[data-test="1-midwest-sales"]')).to have_content('$49.64')
-      expect(find('td[data-test="1-midwest-units"]')).to have_content('2')
-      expect(find('td[data-test="1-total-sales"]')).to have_content('$148.84')
-      expect(find('td[data-test="1-total-units"]')).to have_content('6')
-      expect(find('td[data-test="2-aec-sales"]')).to have_content('$29.72')
-      expect(find('td[data-test="2-aec-units"]')).to have_content('2')
-      expect(find('td[data-test="2-midwest-sales"]')).to have_content('$104.09')
-      expect(find('td[data-test="2-midwest-units"]')).to have_content('7')
-      expect(find('td[data-test="2-total-sales"]')).to have_content('$133.81')
-      expect(find('td[data-test="2-total-units"]')).to have_content('9')
+    within('table[data-test="titles-report"]') do
+      expect(find('div[data-test="0-3"]')).to have_content('6')
+      expect(find('div[data-test="0-4"]')).to have_content('$148.84')
+      expect(find('div[data-test="0-5"]')).to have_content('4')
+      expect(find('div[data-test="0-6"]')).to have_content('$99.20')
+      expect(find('div[data-test="0-11"]')).to have_content('2')
+      expect(find('div[data-test="0-12"]')).to have_content('$49.64')
+      expect(find('div[data-test="1-3"]')).to have_content('9')
+      expect(find('div[data-test="1-4"]')).to have_content('$133.81')
+      expect(find('div[data-test="1-5"]')).to have_content('2')
+      expect(find('div[data-test="1-6"]')).to have_content('$29.72')
+      expect(find('div[data-test="1-11"]')).to have_content('7')
+      expect(find('div[data-test="1-12"]')).to have_content('$104.09')
     end
   end
 
   it 'starts the export job' do
     visit dvd_reports_path(as: $admin_user)
-    find('.export-button', text: 'Export').click
-    find('.orange-button', text: 'Export Sales Report').click
+    click_btn('Export')
+    click_btn('Export Sales Report')
     expect(page).to have_content('Exporting DVD Sales')
   end
 

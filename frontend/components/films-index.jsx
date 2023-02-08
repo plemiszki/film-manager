@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import FilmRightsNew from './film-rights-new.jsx'
-import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest } from 'handy-components'
+import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button, Spinner, GrayedOut, SearchBar, Table } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const FilterModalStyles = {
@@ -72,10 +72,6 @@ export default class FilmsIndex extends Component {
         allAltLengths: alternateLengths
       });
     });
-  }
-
-  redirect(id) {
-    window.location.pathname = "films/" + id;
   }
 
   clickExportAll() {
@@ -179,163 +175,189 @@ export default class FilmsIndex extends Component {
   }
 
   render() {
+    const { filmType, advanced } = this.props;
+    const { searchText, fetching, filterActive } = this.state;
     var filteredFilms = this.state[this.state.filterActive ? 'filteredFilms' : 'films'].filterSearchText(this.state.searchText, this.state.sortBy);
-    return(
-      <div id="films-index" className="component">
-        <div className="clearfix">
-          { this.renderHeader() }
-          { this.renderExportMetadataButton() }
-          { this.renderCustomButton() }
-          { this.renderFilterButton() }
-          { this.renderAddNewButton() }
-          <input className="search-box" onChange={ FM.changeSearchText.bind(this) } value={ this.state.searchText || "" } data-field="searchText" />
+    return (
+      <>
+        <div className="handy-component">
+          <div>
+            <h1>{ filmType === 'TV Series' ? 'TV Series' : `${filmType}s` }</h1>
+            { filmType !== 'TV Series' && (
+              <Button
+                float
+                square
+                disabled={ fetching }
+                text="Export All"
+                onClick={ () => { this.clickExportAll() } }
+                style={ { marginLeft: 20 } }
+              />
+            ) }
+            { filmType !== 'TV Series' && (
+              <Button
+                float
+                square
+                disabled={ fetching }
+                text="Export Custom"
+                onClick={ () => { this.setState({ searchModalOpen: true }) } }
+                style={ { marginLeft: 20 } }
+              />
+            ) }
+            { filmType === 'Feature' && (
+              <Button
+                float
+                square
+                disabled={ fetching }
+                text="Filter"
+                onClick={ () => { this.setState({ filterModalOpen: true }) } }
+                style={ {
+                  marginLeft: 20,
+                  backgroundColor: filterActive ? 'green' : null,
+                } }
+              />
+            ) }
+            { FM.user.hasAdminAccess && !advanced && (
+              <Button
+                float
+                square
+                disabled={ fetching }
+                text={ `Add ${filmType === 'Feature' ? 'Film' : filmType}` }
+                onClick={ () => { this.setState({ newFilmModalOpen: true }) } }
+                style={ { marginLeft: 20 } }
+              />
+            ) }
+            <SearchBar
+              onChange={ FM.changeSearchText.bind(this) }
+              value={ searchText || "" }
+            />
+          </div>
+          <div className="white-box">
+            <Table
+              rows={ filteredFilms }
+              columns={[
+                {
+                  name: "title",
+                  bold: true,
+                },
+                {
+                  name: "endDate",
+                  header: 'Expiration Date',
+                  date: true,
+                  dateSortLast: [""],
+                  redIf: film => new Date(film.endDate) < Date.now(),
+                },
+              ]}
+              urlPrefix="films"
+            />
+            <Spinner visible={ fetching } />
+            <GrayedOut visible={ fetching } />
+          </div>
+          <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+            <NewEntity
+              context={ this.props.context }
+              entityName="film"
+              initialEntity={ { title: "", filmType: this.props.filmType, labelId: 1, year: "" } }
+              redirectAfterCreate={ true }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
+            <FilmRightsNew
+              context={ this.props.context }
+              search={ true }
+              filmType={ this.props.filmType }
+              availsExport={ this.clickExportCustom.bind(this) }
+            />
+          </Modal>
+          <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.updateFilter.bind(this) } contentLabel="Modal" style={ FilterModalStyles }>
+            { this.renderFilter() }
+          </Modal>
+          { Common.renderJobModal.call(this, this.state.job) }
         </div>
-        <div className="white-box">
-          <table className="fm-admin-table">
-            <thead>
-              <tr>
-                <th><div className={ FM.sortClass.call(this, "title") } onClick={ FM.clickHeader.bind(this, "title") }>Title</div></th>
-                <th><div className={ FM.sortClass.call(this, "endDate") } onClick={ FM.clickHeader.bind(this, "endDate") }>Expiration Date</div></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td></td><td></td></tr>
-              { _.orderBy(filteredFilms, [FM.commonSort.bind(this)]).map((film, index) => {
-                return(
-                  <tr key={ index } onClick={ this.redirect.bind(this, film.id) }>
-                    <td className="name-column">
-                      { film.title }
-                    </td>
-                    <td className={ new Date(film.endDate) < Date.now() ? 'expired' : '' }>
-                      { film.endDate }
-                    </td>
-                  </tr>
-                );
-              }) }
-            </tbody>
-          </table>
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-        </div>
-        <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
-          <NewEntity
-            context={ this.props.context }
-            entityName="film"
-            initialEntity={ { title: "", filmType: this.props.filmType, labelId: 1, year: "" } }
-            redirectAfterCreate={ true }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
-          <FilmRightsNew
-            context={ this.props.context }
-            search={ true }
-            filmType={ this.props.filmType }
-            availsExport={ this.clickExportCustom.bind(this) }
-          />
-        </Modal>
-        <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.updateFilter.bind(this) } contentLabel="Modal" style={ FilterModalStyles }>
-          { this.renderFilter() }
-        </Modal>
-        { Common.renderJobModal.call(this, this.state.job) }
-      </div>
+      </>
     );
-  }
-
-  renderHeader() {
-    let header = this.props.filmType == 'TV Series' ? 'TV Series' : `${this.props.filmType}s`;
-    return(
-      <h1>{ header }</h1>
-    );
-  }
-
-  renderAddNewButton() {
-    let buttonText = {
-      'Feature': 'Film',
-      'Short': 'Short',
-      'TV Series': 'TV Series'
-    }[this.props.filmType];
-    if (FM.user.hasAdminAccess & !this.props.advanced) {
-      return(
-        <a className={ "btn orange-button float-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'newFilmModalOpen', true) }>Add { buttonText }</a>
-      );
-    }
-  }
-
-  renderExportMetadataButton() {
-    if (this.props.filmType != 'TV Series') {
-      return(
-        <a className={ "btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ this.clickExportAll.bind(this) }>Export All</a>
-      );
-    }
-  }
-
-  renderFilterButton() {
-    if (this.props.filmType === 'Feature') {
-      return(
-        <a className={ "btn orange-button float-button metadata-button" + Common.renderDisabledButtonClass(this.state.fetching) + (this.state.filterActive ? ' green' : '') } onClick={ Common.changeState.bind(this, 'filterModalOpen', true) }>Filter</a>
-      );
-    }
   }
 
   filterActive() {
     return this.state.selectedAltSubs.length > 0 || this.state.selectedAltAudios.length > 0 || this.state.selectedAltLengths.length > 0;
   }
 
-  renderCustomButton() {
-    if (this.props.filmType != 'TV Series') {
-      return(
-        <a className={ "btn orange-button float-button advanced-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'searchModalOpen', true) }>Export Custom</a>
-      );
-    }
-  }
-
   renderFilter() {
-    return(
-      <div className="films-index-filter white-box">
-        <div className="row">
-          <div className="col-xs-4">
-            <h2>Alternate Lengths</h2>
-            <div className="checkbox-list" data-array="lengths">
-              { this.state.allAltLengths.map((length, index) => {
-                return(
-                  <div key={ index } className="checkbox-container">
-                    <input id={ length } type="checkbox" checked={ this.state.selectedAltLengths.indexOf(length.toString()) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ length }>{ length }</label>
-                  </div>
-                );
-              }) }
+    return (
+      <>
+        <div className="handy-component admin-modal">
+          <div className="row">
+            <div className="col-xs-4">
+              <h2>Alternate Lengths</h2>
+              <div className="checkbox-list" data-array="lengths">
+                { this.state.allAltLengths.map((length, index) => {
+                  return(
+                    <div key={ index } className="checkbox-container">
+                      <input id={ length } type="checkbox" checked={ this.state.selectedAltLengths.indexOf(length.toString()) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ length }>{ length }</label>
+                    </div>
+                  );
+                }) }
+              </div>
+            </div>
+            <div className="col-xs-4">
+              <h2>Alternate Audio Tracks</h2>
+              <div className="checkbox-list" data-array="audios">
+                { this.state.allAltAudios.map((audio, index) => {
+                  return(
+                    <div key={ index } className="checkbox-container">
+                      <input id={ audio } type="checkbox" checked={ this.state.selectedAltAudios.indexOf(audio) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ audio }>{ audio }</label>
+                    </div>
+                  );
+                }) }
+              </div>
+            </div>
+            <div className="col-xs-4">
+              <h2>Alternate Subtitles</h2>
+              <div className="checkbox-list" data-array="subtitles">
+                { this.state.allAltSubs.map((sub, index) => {
+                  return(
+                    <div key={ index } className="checkbox-container">
+                      <input id={ sub } type="checkbox" checked={ this.state.selectedAltSubs.indexOf(sub) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ sub }>{ sub }</label>
+                    </div>
+                  );
+                }) }
+              </div>
             </div>
           </div>
-          <div className="col-xs-4">
-            <h2>Alternate Audio Tracks</h2>
-            <div className="checkbox-list" data-array="audios">
-              { this.state.allAltAudios.map((audio, index) => {
-                return(
-                  <div key={ index } className="checkbox-container">
-                    <input id={ audio } type="checkbox" checked={ this.state.selectedAltAudios.indexOf(audio) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ audio }>{ audio }</label>
-                  </div>
-                );
-              }) }
-            </div>
-          </div>
-          <div className="col-xs-4">
-            <h2>Alternate Subtitles</h2>
-            <div className="checkbox-list" data-array="subtitles">
-              { this.state.allAltSubs.map((sub, index) => {
-                return(
-                  <div key={ index } className="checkbox-container">
-                    <input id={ sub } type="checkbox" checked={ this.state.selectedAltSubs.indexOf(sub) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ sub }>{ sub }</label>
-                  </div>
-                );
-              }) }
-            </div>
+          <div className="row text-center">
+            <Button text="Close Filter" onClick={ () => { this.updateFilter() } } />
           </div>
         </div>
-        <div className="row">
-          <div className="col-xs-12 text-center">
-            <a className="orange-button" onClick={ this.updateFilter.bind(this) }>Close Filter</a>
-          </div>
-        </div>
-      </div>
+        <style jsx>{`
+          .admin-modal {
+            padding: 30px;
+            background-color: white;
+          }
+          .checkbox-list {
+            border: 1px solid #E4E9ED;
+            border-radius: 3px;
+            height: 253px;
+            margin-bottom: 30px;
+            overflow-y: scroll;
+          }
+          label {
+            font-family: 'TeachableSans-SemiBold';
+            color: black;
+            margin-right: 10px;
+            margin-left: 20px;
+          }
+          [type="checkbox"] {
+            margin-right: 10px;
+            margin-left: 20px;
+            margin-bottom: 15px;
+          }
+          .checkbox-container:first-of-type [type="checkbox"] {
+            margin-top: 20px;
+          }
+          .checkbox-container:last-of-type [type="checkbox"] {
+            margin-bottom: 20px;
+          }
+        `}</style>
+      </>
     );
   }
 

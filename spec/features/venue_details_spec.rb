@@ -112,7 +112,7 @@ describe 'venue_details', type: :feature do
       billing_zip: '90210',
       billing_country: 'USA'
     })
-    find('.copy-address-button').click
+    click_btn("Copy to Shipping Address")
     expect(find('input[data-field="shippingName"]').value).to eq('Billing Name')
     expect(find('input[data-field="shippingAddress1"]').value).to eq('Billing Address 1')
     expect(find('input[data-field="shippingAddress2"]').value).to eq('Billing Address 2')
@@ -127,7 +127,7 @@ describe 'venue_details', type: :feature do
     find('.address-block img', match: :first).click
     within('.shredder-modal') do
       find('textarea').set("Shredded Name\nShredded Address 1\nShredded Address 2\nShredded City, MA 01778")
-      find('.orange-button', text: 'Split Address').click
+      click_btn('Split Address')
     end
     expect(find('input[data-field="billingName"]').value).to eq('Shredded Name')
     expect(find('input[data-field="billingAddress1"]').value).to eq('Shredded Address 1')
@@ -140,22 +140,14 @@ describe 'venue_details', type: :feature do
 
   it 'deletes venues with no bookings' do
     visit venue_path(@no_bookings_venue, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Venue')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/venues', ignore_query: true)
     expect(Venue.find_by_id(@no_bookings_venue.id)).to be(nil)
   end
 
   it 'errors on delete for venues with bookings' do
     visit venue_path(@venue, as: $admin_user)
-    delete_button = find('.orange-button', text: 'Delete Venue')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_no_css('.spinner')
     expect(page).to have_content 'This venue cannot be deleted because there are bookings associated with it.'
   end

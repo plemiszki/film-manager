@@ -23,7 +23,7 @@ describe 'languages_index', type: :feature do
   it 'adds languages' do
     visit setting_path(as: $admin_user)
     within('#languages-index') do
-      find('.btn', text: 'Add Language').click
+      click_btn("Add Language")
     end
     info = { name: 'Spanish' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'languages_index', type: :feature do
   it 'validates languages' do
     visit setting_path(as: $admin_user)
     within('#languages-index') do
-      find('.btn', text: 'Add Language').click
+      click_btn("Add Language")
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

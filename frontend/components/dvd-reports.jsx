@@ -1,7 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import { Common, stringifyDate, Details, ellipsis, sendRequest } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
+import { Common, stringifyDate, Details, sendRequest, Button, GrayedOut, Spinner, Table } from 'handy-components'
 
 const exportModalStyles = {
   overlay: {
@@ -28,11 +27,8 @@ export default class DvdReports extends React.Component {
     };
     this.state = {
       fetching: true,
-      customers: [],
-      titleReportCustomers: [],
-      yearTotal: null,
-      monthTotals: [],
-      dvds: [],
+      titlesReport: [],
+      customersReport: [],
       year: (new Date).getFullYear(),
       exportModalOpen: false,
       export: {
@@ -51,19 +47,17 @@ export default class DvdReports extends React.Component {
   }
 
   fetchReportData() {
+    const { year } = this.state;
     sendRequest('/api/dvd_reports', {
       data: {
-        year: this.state.year,
+        year,
       },
     }).then((response) => {
-      const { yearTotal, dvds, dvdCustomers, monthTotals, titleReportCustomers } = response;
+      const { customersReport, titlesReport } = response;
       this.setState({
         fetching: false,
-        yearTotal,
-        customers: dvdCustomers,
-        dvds,
-        monthTotals,
-        titleReportCustomers
+        customersReport,
+        titlesReport,
       });
     });
   }
@@ -123,202 +117,146 @@ export default class DvdReports extends React.Component {
   }
 
   render() {
-    return(
-      <div id="dvd-reports">
-        <div className="component">
-          <div className="text-center">
-            <a className={"orange-button export-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'exportModalOpen', true) }>Export</a>
-            <div className="clearfix">
-              <a className={ "orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickNext.bind(this) }>&#62;&#62;</a>
-              <h1>DVD Reports - { this.state.year }</h1>
-              <a className={"orange-button float-button arrow-button" + Common.renderInactiveButtonClass(this.state.fetching) } onClick={ this.clickPrev.bind(this) }>&#60;&#60;</a>
+    const { fetching, customersReport, titlesReport, year, exportModalOpen, job } = this.state;
+    const UNITS_COLUMN_WIDTH = 60;
+    const SALES_COLUMN_WIDTH = 120;
+    return (
+      <>
+        <div>
+          <div className="handy-component">
+            <div className="text-center">
+              <div className="header">
+                <Button
+                  disabled={ fetching }
+                  text="<<"
+                  onClick={ () => { this.clickPrev() } }
+                />
+                <h1>DVD Reports - { year }</h1>
+                <Button
+                  disabled={ fetching }
+                  text=">>"
+                  onClick={ () => { this.clickNext() } }
+                />
+              </div>
+              <Button
+                disabled={ fetching }
+                text="Export"
+                onClick={ () => { this.setState({ exportModalOpen: true }) } }
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                }}
+              />
+            </div>
+            <div className="white-box">
+              <div className="row">
+                <div className="col-xs-3">
+                  <Table
+                    hover={ false }
+                    links={ false }
+                    sortable={ false }
+                    columns={[{
+                      name: 'name',
+                      header: 'Customer',
+                      bold: true,
+                    }]}
+                    rows={ customersReport }
+                  />
+                </div>
+                <div className="col-xs-9">
+                  <Table
+                    fixed
+                    test="customers-report"
+                    defaultColumnWidth={ 120 }
+                    hover={ false }
+                    links={ false }
+                    sortable={ false }
+                    columns={ [{ name: 'total', header: 'TOTAL', bold: true }, 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] }
+                    rows={ customersReport }
+                  />
+                </div>
+              </div>
+              <GrayedOut visible={ fetching } />
+              <Spinner visible={ fetching } />
             </div>
           </div>
-          <div className="white-box months-report">
-            <div className="row">
-              <div className="col-xs-3">
-                <table className="fm-admin-table no-hover no-highlight">
-                  <thead>
-                    <tr>
-                      <th className="name-column"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td></tr>
-                    { this.state.customers.map((dvdCustomer, index) => {
-                      return(
-                        <tr key={ index }>
-                          <td className="name-column">
-                            <div>{ dvdCustomer.name }</div>
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                    <tr>
-                      <td className="name-column">TOTAL</td>
-                    </tr>
-                  </tbody>
-                </table>
+          <div className="handy-component">
+            <div className="white-box">
+              <div className="row">
+                <div className="col-xs-12">
+                  <Table
+                    fixed
+                    test="titles-report"
+                    hover={ false }
+                    links={ false }
+                    defaultSearchColumn="retailDate"
+                    columns={[
+                      { name: 'title', bold: true, width: 400 },
+                      { name: 'type', bold: true, header: 'Format', width: 120 },
+                      { name: 'retailDate', header: 'Street Date', date: true, width: 130 },
+                      { name: 'totalUnits', header: 'TOTAL', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'totalSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                      { name: 'aecUnits', header: 'AEC', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'aecSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                      { name: 'amazonUnits', header: 'Amazon', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'amazonSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                      { name: 'ingramUnits', header: 'Ingram', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'ingramSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                      { name: 'midwestUnits', header: 'Midwest', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+                      { name: 'midwestSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+                    ]}
+                    rows={ titlesReport }
+                  />
+                </div>
               </div>
-              <div className="col-xs-9">
-                <table className="month fm-admin-table no-hover no-highlight">
-                  <thead>
-                    <tr>
-                      <th>TOTAL</th>
-                      <th>Jan</th>
-                      <th>Feb</th>
-                      <th>Mar</th>
-                      <th>Apr</th>
-                      <th>May</th>
-                      <th>Jun</th>
-                      <th>Jul</th>
-                      <th>Aug</th>
-                      <th>Sep</th>
-                      <th>Oct</th>
-                      <th>Nov</th>
-                      <th>Dec</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                    { this.state.customers.map((dvdCustomer, index) => {
-                      return(
-                        <tr key={ index }>
-                          <td data-test={ `${dvdCustomer.nickname}-total` } className="bold">{ dvdCustomer.sales.total }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-jan` }>{ dvdCustomer.sales[1] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-feb` }>{ dvdCustomer.sales[2] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-mar` }>{ dvdCustomer.sales[3] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-apr` }>{ dvdCustomer.sales[4] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-may` }>{ dvdCustomer.sales[5] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-jun` }>{ dvdCustomer.sales[6] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-jul` }>{ dvdCustomer.sales[7] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-aug` }>{ dvdCustomer.sales[8] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-sep` }>{ dvdCustomer.sales[9] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-oct` }>{ dvdCustomer.sales[10] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-nov` }>{ dvdCustomer.sales[11] }</td>
-                          <td data-test={ `${dvdCustomer.nickname}-dec` }>{ dvdCustomer.sales[12] }</td>
-                        </tr>
-                      );
-                    }) }
-                    <tr className="bold">
-                      <td data-test="year-total">{ this.state.yearTotal }</td>
-                      { this.state.monthTotals.map((month, index) => {
-                        const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-                        return(
-                          <td key={ index } data-test={ `total-${months[index]}` }>{ month }</td>
-                        );
-                      }) }
-                    </tr>
-                  </tbody>
-                </table>
+              <Spinner visible={ fetching } />
+              <GrayedOut visible={ fetching } />
+            </div>
+          </div>
+          <Modal isOpen={ exportModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ exportModalStyles }>
+            <div className="handy-component admin-modal">
+              <div className="row">
+                { Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: 'export',
+                  property: 'startDate'
+                }) }
+                { Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: 'export',
+                  property: 'endDate'
+                }) }
+              </div>
+              <div className="row button-row">
+                <div className="col-xs-12">
+                  <Button
+                    text="Export Sales Report"
+                    onClick={ () => { this.clickExport() } }
+                  />
+                </div>
               </div>
             </div>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
-          </div>
+          </Modal>
+          { Common.renderJobModal.call(this, job) }
         </div>
-        <div className="component">
-          <div className="white-box titles-report">
-            <div className="row">
-              <div className="col-xs-3">
-                <table className="fm-admin-table no-hover no-highlight">
-                  <thead>
-                    <tr>
-                      <th className="name-column"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td></tr>
-                    { this.state.dvds.map((dvd, index) => {
-                      return(
-                        <tr key={ index }>
-                          <td className="name-column">
-                            <div>{ ellipsis(dvd.title, 25) + (dvd.type != "Retail" ? (" - " + dvd.type) : "") }</div>
-                          </td>
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
-              </div>
-              <div className="col-xs-9">
-                <table className="title fm-admin-table no-hover no-highlight">
-                  <thead>
-                    <tr>
-                      <th className="date">Date</th>
-                      <th className="units">TOTAL</th>
-                      <th></th>
-                      { this.renderDvdCustomerHeaders() }
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                     { this.state.dvds.map((dvd, index) => {
-                      return(
-                        <tr key={ index }>
-                          <td>{ dvd.retailDate }</td>
-                          <td className="bold" data-test={ `${dvd.id}-total-units` }>{ dvd.totalUnits }</td>
-                          <td className="bold" data-test={ `${dvd.id}-total-sales` }>{ dvd.totalSales }</td>
-                          { this.renderDvdCustomerData(dvd) }
-                        </tr>
-                      );
-                    }) }
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -30, -20, 5) }
-          </div>
-        </div>
-        <Modal isOpen={ this.state.exportModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ exportModalStyles }>
-          <div className="export-modal">
-            <div className="row">
-              { Details.renderField.bind(this)({
-                columnWidth: 6,
-                entity: 'export',
-                property: 'startDate'
-              }) }
-              { Details.renderField.bind(this)({
-                columnWidth: 6,
-                entity: 'export',
-                property: 'endDate'
-              }) }
-            </div>
-            <div className="row button-row">
-              <div className="col-xs-12">
-                <a className="orange-button" onClick={ this.clickExport.bind(this) }>Export Sales Report</a>
-              </div>
-            </div>
-          </div>
-        </Modal>
-        { FM.jobModal.call(this, this.state.job) }
-        { FM.jobErrorsModal.call(this) }
-      </div>
+        <style jsx>{`
+          .white-box {
+            padding: 30px 20px;
+          }
+          .text-center {
+            position: relative;
+          }
+          .header {
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 10px;
+          }
+          .header h1 {
+            padding: 0 70px;
+          }
+        `}</style>
+      </>
     );
-  }
-
-  renderDvdCustomerHeaders() {
-    return this.state.customers.map((customer, index) => {
-      if (customer.includeInTitleReport) {
-        return([
-          <th key={ index } className="units">{ customer.nickname || customer.name }</th>,
-            <th key={ `${index}-B`}></th>
-          ]);
-      }
-    })
-  }
-
-  renderDvdCustomerData(dvd) {
-    return this.state.customers.map((customer, index) => {
-      if (customer.includeInTitleReport) {
-        const obj = dvd.sales.find(element => element.dvdCustomerId === customer.id);
-        return([
-          <td key={ index } className="units" data-test={ `${dvd.id}-${customer.nickname}-units` }>{ obj.units }</td>,
-          <td key={ `${index}-B`} data-test={ `${dvd.id}-${customer.nickname}-sales` }>{ obj.amount }</td>
-        ]);
-      }
-    })
   }
 
   componentDidUpdate() {

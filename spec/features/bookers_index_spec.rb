@@ -4,6 +4,7 @@ require 'support/features_helper'
 describe 'bookers_index', type: :feature do
 
   before(:each) do
+    @entity_name = "Booker"
     Booker.create!(name: 'Some Booker', email: 'booker@foo.com', phone: '212-941-7744')
   end
 
@@ -20,13 +21,13 @@ describe 'bookers_index', type: :feature do
 
   it 'adds new bookers' do
     visit bookers_path(as: $admin_user)
-    find('.float-button', text: 'Add Booker').click
+    click_index_add_button
     fill_out_and_submit_modal({
       name: 'Joe Booker',
       email: 'joe@somewhere.com',
       phone: '555-555-5555'
     }, :input)
-    expect(find('.admin-table')).to have_content 'Joe Booker'
+    expect(find('table')).to have_content 'Joe Booker'
     expect(Booker.last.attributes).to include(
       'name' => 'Joe Booker',
       'email' => 'joe@somewhere.com',
@@ -36,7 +37,7 @@ describe 'bookers_index', type: :feature do
 
   it 'validates new bookers properly' do
     visit bookers_path(as: $admin_user)
-    find('.float-button', text: 'Add Booker').click
+    click_btn('Add Booker')
     fill_out_and_submit_modal({
       name: ''
     }, :input)

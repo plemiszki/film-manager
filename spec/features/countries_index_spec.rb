@@ -23,7 +23,7 @@ describe 'countries_index', type: :feature do
   it 'adds countries' do
     visit setting_path(as: $admin_user)
     within('#countries-index') do
-      find('.btn', text: 'Add Country').click
+      click_btn('Add Country')
     end
     info = { name: 'Spain' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'countries_index', type: :feature do
   it 'validates countries' do
     visit setting_path(as: $admin_user)
     within('#countries-index') do
-      find('.btn', text: 'Add Country').click
+      click_btn('Add Country')
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

@@ -23,7 +23,7 @@ describe 'genres_index', type: :feature do
   it 'adds genres' do
     visit setting_path(as: $admin_user)
     within('#genres-index') do
-      find('.btn', text: 'Add Genre').click
+      click_btn("Add Genre")
     end
     info = { name: 'Drama' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'genres_index', type: :feature do
   it 'validates genres' do
     visit setting_path(as: $admin_user)
     within('#genres-index') do
-      find('.btn', text: 'Add Genre').click
+      click_btn("Add Genre")
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

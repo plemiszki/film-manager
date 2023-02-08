@@ -10,4 +10,8 @@ class DvdCustomer < ActiveRecord::Base
     !self.consignment
   end
 
+  def get_name
+    self.nickname.presence || self.name
+  end
+
 end

@@ -19,7 +19,7 @@ describe 'sublicensors_index', type: :feature do
 
   it 'adds new sublicensors' do
     visit sublicensors_path(as: $admin_user)
-    find('.btn', text: 'Add Sublicensor').click
+    click_btn("Add Sublicensor")
     info = {
       name: 'Fandor'
     }
@@ -33,7 +33,7 @@ describe 'sublicensors_index', type: :feature do
 
   it 'validates new sublicensors' do
     visit sublicensors_path(as: $admin_user)
-    find('.btn', text: 'Add Sublicensor').click
+    click_btn("Add Sublicensor")
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content "Name can't be blank"
   end

@@ -38,11 +38,7 @@ describe 'alias_details', type: :feature do
 
   it 'deletes the alias' do
     visit alias_path(@alias, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/aliases', ignore_query: true)
     expect(Alias.find_by_id(@alias.id)).to be(nil)
   end

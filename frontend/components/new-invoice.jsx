@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, Details, convertObjectKeysToUnderscore, sendRequest } from 'handy-components'
+import { Common, Details, convertObjectKeysToUnderscore, sendRequest, Button, Spinner, GrayedOut } from 'handy-components'
 
 export default class NewInvoice extends React.Component {
   constructor(props) {
@@ -51,15 +51,17 @@ export default class NewInvoice extends React.Component {
   }
 
   clickSend(editMode) {
+    const { bookingId, bookingType, invoiceToEdit } = this.props;
+    const { rows } = this.state;
     this.setState({
       fetching: true
     });
-    sendRequest(`/api/invoices/${editMode ? this.props.invoiceToEdit.number : ''}`, {
+    sendRequest(`/api/invoices/${editMode ? invoiceToEdit.number : ''}`, {
       method: (editMode ? 'PATCH' : 'POST'),
       data: {
-        bookingId: this.props.bookingId,
-        bookingType: 'virtualBooking',
-        rows: this.convertAndFilterRows(this.state.rows),
+        bookingId,
+        bookingType,
+        rows: this.convertAndFilterRows(rows),
       }
     }).then((response) => {
       const { invoices } = response;
@@ -81,18 +83,21 @@ export default class NewInvoice extends React.Component {
 
   render() {
     const { editMode } = this.props;
-    return(
+    const { fetching } = this.state;
+    return (
       <>
-        <div className="component admin-modal new-invoice">
+        <div className="handy-component admin-modal">
           <div className="white-box">
             { this.renderRows() }
             <div className="button-container">
-              <a className={ "btn blue-button" + this.renderDisabledButtonClass() } onClick={ this.clickSend.bind(this, editMode) }>
-                { editMode ? 'Resend' : 'Send' } Invoice
-              </a>
+              <Button
+                disabled={ fetching || this.insufficientInvoiceRows() }
+                onClick={ () => { this.clickSend(editMode) } }
+                text={ `${ editMode ? 'Resend' : 'Send' } Invoice` }
+              />
             </div>
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
-            { Common.renderSpinner(this.state.fetching) }
+            <Spinner visible={ fetching } />
+            <GrayedOut visible={ fetching } />
           </div>
         </div>
         <style jsx>{`
@@ -105,16 +110,17 @@ export default class NewInvoice extends React.Component {
   }
 
   renderRows() {
-    const { editMode } = this.props;
     return this.state.rows.map((row, index) => {
       const amount = (row.payment ? `(${row.amount})` : row.amount );
-      return(
+      return (
         <React.Fragment key={ index }>
           <div>
             <div className="switch-container">
               { Common.renderSwitchComponent({
                 checked: row.active,
-                onChange: this.flipSwitch.bind(this, index)
+                onChange: this.flipSwitch.bind(this, index),
+                testLabel: `switch-${index}`,
+                readOnly: row.disabled,
               }) }
             </div>
             <p className={ row.active ? '' : 'disabled' }>
@@ -141,15 +147,8 @@ export default class NewInvoice extends React.Component {
     });
   }
 
-  renderDisabledButtonClass() {
-    const disabledClass = ' disabled';
-    if (this.state.fetching) {
-      return disabledClass;
-    }
+  insufficientInvoiceRows() {
     const sufficientActiveRows = this.state.rows.filter((row) => row.active && row.sufficient);
-    if (sufficientActiveRows.length === 0) {
-      return disabledClass;
-    }
-    return '';
+    return sufficientActiveRows.length === 0;
   }
 }

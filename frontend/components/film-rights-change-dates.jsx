@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, Details, sendRequest } from 'handy-components'
+import { Button, Details, sendRequest, Spinner, GrayedOut } from 'handy-components'
 
 export default class FilmRightsChangeDates extends React.Component {
 
@@ -45,23 +45,23 @@ export default class FilmRightsChangeDates extends React.Component {
   }
 
   render() {
-    return(
-      <div id="film-rights-change-dates" className="component admin-modal">
+    const { fetching, obj } = this.state;
+    return (
+      <div className="handy-component admin-modal">
         <div className="white-box">
           <div className="row">
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'obj', property: 'startDate' }) }
             { Details.renderField.bind(this)({ columnWidth: 6, entity: 'obj', property: 'endDate' }) }
           </div>
-          <a className={ "btn orange-button" + Common.renderDisabledButtonClass(this.buttonDisabled()) } onClick={ this.clickChange.bind(this) }>Change All Dates</a>
-          { Common.renderSpinner(this.state.fetching) }
-          { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+          <Button
+            text="Change All Dates"
+            onClick={ () => { this.clickChange() } }
+            disabled={ fetching || (obj.startDate === '' && obj.endDate === '') }
+          />
+          <Spinner visible={ fetching } />
+          <GrayedOut visible={ fetching } />
         </div>
       </div>
     );
-  }
-
-  buttonDisabled() {
-    const { obj } = this.state;
-    return (this.state.fetching || (obj.startDate === '' && obj.endDate === ''));
   }
 }

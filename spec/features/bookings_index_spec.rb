@@ -32,7 +32,7 @@ describe 'bookings_index', type: :feature do
 
   it 'adds bookings' do
     visit bookings_path(as: $admin_user)
-    find('.new-button', text: 'Add Booking').click
+    click_btn("Add Booking")
     info = {
       film_id: { value: 'Wilby Wonderful', type: :select_modal },
       venue_id: { value: 'Film at Lincoln Center', type: :select_modal },
@@ -54,7 +54,7 @@ describe 'bookings_index', type: :feature do
 
   it 'validates new bookings' do
     visit bookings_path(as: $admin_user)
-    find('.new-button', text: 'Add Booking').click
+    click_btn('Add Booking')
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content "Film can't be blank"
     expect(page).to have_content "Venue can't be blank"
@@ -135,7 +135,7 @@ describe 'bookings_index', type: :feature do
 
   it 'starts the export job' do
     visit bookings_path(as: $admin_user)
-    find('.export-button', text: 'Export').click
+    click_btn('Export')
     expect(page).to have_content('Exporting Bookings')
   end
 

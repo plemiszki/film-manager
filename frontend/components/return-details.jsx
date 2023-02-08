@@ -1,7 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest } from 'handy-components'
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, Button } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 const qtyModalStyles = {
@@ -84,10 +83,10 @@ export default class ReturnDetails extends React.Component {
     });
   }
 
-  selectItem(option, event) {
+  selectItem(option) {
     this.setState({
       selectedItemId: option.id,
-      selectedItemType: event.target.dataset.type,
+      selectedItemType: option.itemType,
       selectItemModalOpen: false,
       qtyModalOpen: true,
       selectedItemQty: 1
@@ -130,13 +129,13 @@ export default class ReturnDetails extends React.Component {
     });
   }
 
-  clickX(e) {
+  deleteItem(id) {
     this.setState({
       fetching: true
     });
     deleteEntity({
       directory: 'return_items',
-      id: e.target.dataset.id,
+      id,
     }).then((response) => {
       const { items, otherItems } = response;
       this.setState({
@@ -191,9 +190,10 @@ export default class ReturnDetails extends React.Component {
   }
 
   render() {
-    return(
-      <div id="return-details">
-        <div className="component">
+    const { fetching, justSaved, changesToSave, items } = this.state;
+    return (
+      <>
+        <div className="handy-component">
           <h1>Return Details</h1>
           <div className="white-box">
             <div className="row">
@@ -202,49 +202,42 @@ export default class ReturnDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 4, entity: 'return', property: 'date' }) }
             </div>
             <hr />
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Qty</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td><td></td><td></td></tr>
-                { this.state.items.map((item, index) => {
-                  return(
-                    <tr key={index}>
-                      <td className="name-column">
-                        <div>
-                          { item.label }
-                        </div>
-                      </td>
-                      <td>
-                          { item.qty }
-                      </td>
-                      <td>
-                          { item.amount }
-                      </td>
-                      { this.renderXButton(item) }
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
-            <a className="blue-outline-button small" onClick={ Common.changeState.bind(this, 'selectItemModalOpen', true) }>Add Item</a>
+            <Table
+              rows={ items }
+              columns={[
+                { name: 'label', header: 'Item' },
+                { name: 'qty' },
+                { name: 'amount' },
+              ]}
+              clickDelete={ this.state.return.creditMemoDate ? null : item => this.deleteItem(item.id) }
+              sortable={ false }
+              style={ { marginBottom: 15 } }
+            />
+            <OutlineButton
+              text="Add Item"
+              onClick={ () => this.setState({ selectItemModalOpen: true }) }
+              marginBottom
+            />
             <hr />
-            { this.renderButtons() }
+            <BottomButtons
+              entityName="return"
+              confirmDelete={ Details.confirmDelete.bind(this) }
+              justSaved={ justSaved }
+              changesToSave={ changesToSave }
+              disabled={ fetching }
+              clickSave={ () => { this.clickSave() } }
+              marginBottom
+            />
             <hr />
             { this.renderCreditMemoSection() }
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
           <ConfirmDelete
             entityName="return"
-            confirmDelete={ Details.clickDelete.bind(this) }
+            confirmDelete={ Details.confirmDelete.bind(this) }
             closeModal={ Common.closeModals.bind(this) }
           />
         </Modal>
@@ -252,53 +245,69 @@ export default class ReturnDetails extends React.Component {
           <ModalSelect options={ this.state.otherItems } property="label" func={ this.selectItem.bind(this) } />
         </Modal>
         <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
-          <div className="qty-modal">
-            <h1>Enter Quantity:</h1>
-            <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-            <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
-            <div className="orange-button" onClick={ this.clickQtyOk.bind(this) }>
-              OK
-            </div>
-          </div>
+          { this.renderQtyModal() }
         </Modal>
         { Common.renderJobModal.call(this, this.state.job) }
+      </>
+    );
+  }
+
+  renderQtyModal() {
+    return (
+    <>
+      <div className="qty-modal">
+        <h1>Enter Quantity:</h1>
+        <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
+        <form>
+          <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
+          <Button
+            submit
+            text="OK"
+            onClick={ () => this.clickQtyOk() }
+          />
+        </form>
       </div>
+      <style jsx>{`
+        .notification {
+          margin-bottom: 30px;
+        }
+        .qty-modal {
+          padding: 30px;
+          text-align: center;
+        }
+        .qty-modal h1 {
+          font-size: 16px;
+          margin-bottom: 14px;
+        }
+        .qty-modal h2 {
+          font-size: 12px;
+          margin-bottom: 20px;
+        }
+        .qty-modal input {
+          width: 170px;
+          padding: 13px;
+          margin-bottom: 20px;
+        }
+      `}</style>
+    </>
     );
   }
 
   renderCreditMemoSection() {
+    const { fetching, changesToSave, items } = this.state;
     if (this.state.return.creditMemoId) {
-      return(
+      return (
         <div><a style={ { textDecoration: 'underline' } } href={ `/credit_memos/${this.state.return.creditMemoId}` }>Credit Memo { this.state.return.creditMemoNumber }</a> was sent on { this.state.return.creditMemoDate }.</div>
       );
     } else if (this.state.return.id) {
-      return(
-        <a className={ "orange-button btn" + Common.renderDisabledButtonClass(this.state.fetching || this.state.changesToSave || this.state.items.length === 0) } onClick={ this.clickGenerateButton.bind(this) }>Generate and Send Credit Memo</a>
+      return (
+        <Button
+          text="Generate and Send Credit Memo"
+          disabled={ fetching || changesToSave || items.length === 0 }
+          onClick={ () => { this.clickGenerateButton() } }
+        />
       );
     }
-  }
-
-  renderXButton(item) {
-    if (!this.state.return.shipDate) {
-      return(
-        <td>
-          <div className="x-button" onClick={ this.clickX.bind(this) } data-id={ item.id }></div>
-        </td>
-      );
-    }
-  }
-
-  renderButtons() {
-    return(
-      <div className="m-bottom">
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-      </div>
-    );
   }
 
   componentDidUpdate() {

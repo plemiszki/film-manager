@@ -28,7 +28,7 @@ describe 'films_index', type: :feature do
       year: 2002,
       length: 90
     }
-    find('.orange-button', text: 'Add Film').click
+    click_btn('Add Film')
     fill_out_and_submit_modal(info, :input)
     expect(page).to have_current_path "/films/#{Film.last.id}", ignore_query: true
     verify_db(
@@ -39,7 +39,7 @@ describe 'films_index', type: :feature do
 
   it 'validates new films properly' do
     visit films_path(as: $admin_user)
-    find('.orange-button', text: 'Add Film').click
+    click_btn('Add Film')
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content "Title can't be blank"
     expect(page).to have_content 'Year is not a number'
@@ -54,7 +54,7 @@ describe 'films_index', type: :feature do
 
   it 'can add new short films' do
     visit shorts_path(as: $admin_user)
-    find('.orange-button', text: 'Add Short').click
+    click_btn('Add Short')
     info = {
       title: 'New Short',
       year: 2002,
@@ -76,7 +76,7 @@ describe 'films_index', type: :feature do
 
   it 'can add new tv series' do
     visit tv_series_index_path(as: $admin_user)
-    find('.orange-button', text: 'Add TV Series').click
+    click_btn('Add TV Series')
     info = {
       title: 'New TV Series',
       year: 2005,
@@ -92,7 +92,7 @@ describe 'films_index', type: :feature do
 
   it 'starts the export all job' do
     visit films_path(as: $admin_user)
-    find('.orange-button', text: 'Export All').click
+    click_btn('Export All')
     expect(page).to have_content('Exporting Metadata')
   end
 
@@ -100,13 +100,13 @@ describe 'films_index', type: :feature do
     create(:right)
     create(:territory)
     visit films_path(as: $admin_user)
-    find('.orange-button', text: 'Export Custom').click
-    within('#film-rights-new') do
+    click_btn('Export Custom')
+    within('.admin-modal') do
       find('[data-field="startDate"').set('1/1/2000')
       find('[data-field="endDate"').set('1/1/2000')
       find('label', text: 'USA').click
-      find('.blue-outline-button', text: 'ALL', match: :first).click
-      find('.orange-button', text: 'Search').click
+      find('a', text: 'ALL', match: :first).click
+      click_btn('Search')
     end
     expect(page).to have_content('Exporting Metadata')
   end

@@ -41,11 +41,7 @@ describe 'language_details', type: :feature do
 
   it 'deletes the language' do
     visit language_path(@language, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/settings', ignore_query: true)
     expect(Language.find_by_id(@language.id)).to be(nil)
   end

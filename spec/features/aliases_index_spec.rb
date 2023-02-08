@@ -22,7 +22,7 @@ describe 'aliases_index', type: :feature do
 
   it 'validates new aliases properly' do
     visit aliases_path(as: $admin_user)
-    find('.float-button', text: 'Add Alias').click
+    find('a', text: 'Add Alias').click
     fill_out_and_submit_modal({
       text: ''
     }, :input)
@@ -31,13 +31,13 @@ describe 'aliases_index', type: :feature do
 
   it 'adds new aliases' do
     visit aliases_path(as: $admin_user)
-    find('.float-button', text: 'Add Alias').click
+    find('a', text: 'Add Alias').click
     fill_out_and_submit_modal({
       text: 'Another Alias',
       film_id: { value: 'Wilby Wonderful', type: :select_modal },
     }, :input)
     wait_for_ajax
-    expect(find('.admin-table')).to have_content 'Another Alias'
+    expect(find('table')).to have_content 'Another Alias'
     expect(Alias.last.attributes).to include(
       'text' => 'Another Alias',
       'film_id' => 1,

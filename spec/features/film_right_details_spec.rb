@@ -61,11 +61,7 @@ describe 'film_right_details', type: :feature do
 
   it 'deletes the film right' do
     visit film_right_path(@film_right, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path("/films/#{@film_right.film.id}", ignore_query: true)
     expect(FilmRight.find_by_id(@film_right.id)).to be(nil)
   end

@@ -1,0 +1,72 @@
+#clearance {
+
+    margin: auto;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 5px;
+    text-align: center;
+    font-family: 'TeachableSans-SemiBold';
+
+    #header {
+      background-position-y: bottom;
+      background-color: white;
+      color: #5f5f5f;
+      font-size: 18px;
+      padding: 50px 0;
+
+      #t-sign {
+        display: block;
+        width: 92px;
+        height: 70px;
+        background-image: asset-data-url("swirl.jpg");
+        margin: auto;
+        margin-bottom: 10px;
+      }
+    }
+
+    #content {
+
+      background-color: white;
+      padding: 50px 0;
+      color: #5f5f5f;
+      font-size: 14px;
+
+      #flash-message {
+        color: red;
+        margin-bottom: 10px;
+      }
+
+      .text-field, .password-field {
+        display: block;
+        width: 80%;
+        margin: auto;
+        text-align: left;
+
+        input {
+          width: 100%;
+          margin-top: 10px;
+          margin-bottom: 30px;
+          color: black;
+          font-family: 'TeachableSans-Regular';
+          border: 1px solid #E4E9ED;
+          padding: 13px;
+        }
+      }
+
+      .submit-field {
+        input {
+          display: inline-block;
+          font-family: 'TeachableSans-Bold';
+          font-size: 14px;
+          padding: 15px 40px;
+          border-radius: 100px;
+          color: white;
+          background-color: #01647c;
+        }
+
+        input:hover {
+          background-color: #0385a4;
+        }
+      }
+    }
+  }

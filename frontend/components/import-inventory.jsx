@@ -40,8 +40,8 @@ export default class ImportInventory extends React.Component {
   render() {
     return(
       <>
-        <div id="import-inventory" className="component">
-          <a className="orange-button" onClick={ this.clickUpdateStock.bind(this) }>
+        <div>
+          <a onClick={ this.clickUpdateStock.bind(this) }>
             <img className={ this.state.needToUpdate ? "" : "hidden" } src={ Images.attention } />
             Update Stock
           </a>
@@ -49,8 +49,19 @@ export default class ImportInventory extends React.Component {
         </div>
         <style jsx>{`
           a {
+            display: inline-block;
             position: relative;
             margin-right: 20px;
+            color: white;
+            background-color: var(--button-color);
+            padding: 15px 40px;
+            margin-bottom: 62px;
+            border-radius: 100px;
+            font-size: 12px;
+            cursor: pointer;
+          }
+          a:hover {
+            background-color: var(--highlight-color);
           }
           a img {
             position: absolute;

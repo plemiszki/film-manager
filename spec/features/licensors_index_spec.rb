@@ -20,7 +20,7 @@ describe 'licensors_index', type: :feature do
 
   it 'adds new licensors' do
     visit licensors_path(as: $admin_user)
-    find('.btn', text: 'Add Licensor').click
+    click_btn("Add Licensor")
     fill_out_and_submit_modal({
       name: 'New Licensor',
     }, :input)
@@ -32,9 +32,9 @@ describe 'licensors_index', type: :feature do
 
   it 'validates new licensors properly' do
     visit licensors_path(as: $admin_user)
-    find('.btn', text: 'Add Licensor').click
+    click_btn("Add Licensor")
     within('.admin-modal') do
-      find('.btn[value="Add Licensor"]').click
+      click_btn("Add Licensor", :submit)
     end
     expect(page).to have_content "Name can't be blank"
   end

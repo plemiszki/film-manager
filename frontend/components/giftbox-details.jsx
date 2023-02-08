@@ -1,7 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import ModalSelect from './modal-select.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity } from 'handy-components'
+import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, BottomButtons, Spinner, GrayedOut, ModalSelect, OutlineButton, Table } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class GiftboxDetails extends React.Component {
@@ -38,8 +37,8 @@ export default class GiftboxDetails extends React.Component {
     });
   }
 
-  selectDvd(option, event) {
-    const dvdId = event.target.dataset.id;
+  selectDvd(option) {
+    const dvdId = option.id;
     this.setState({
       fetching: true,
       dvdsModalOpen: false
@@ -86,10 +85,10 @@ export default class GiftboxDetails extends React.Component {
     });
   }
 
-  clickX(e) {
-    const giftboxDvdId = e.target.dataset.id;
+  clickX(giftboxDvd) {
+    const giftboxDvdId = giftboxDvd.id;
     this.setState({
-      fetching: true
+      fetching: true,
     });
     deleteEntity({
       directory: 'giftbox_dvds',
@@ -116,10 +115,10 @@ export default class GiftboxDetails extends React.Component {
   }
 
   render() {
-    const { giftbox } = this.state;
-    return(
-      <div id="giftbox-details">
-        <div className="component details-component">
+    const { giftbox, giftboxDvds, justSaved, changesToSave, fetching } = this.state;
+    return (
+      <>
+        <div className="handy-component">
           <h1>Gift Box Details</h1>
           <div id="giftbox-profile-box" className="white-box">
             <div className="row">
@@ -128,63 +127,41 @@ export default class GiftboxDetails extends React.Component {
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'giftbox', property: 'msrp', columnHeader: 'MSRP' }) }
             </div>
             <div className="row">
-              { Details.renderDropDown.bind(this)({ columnWidth: 2, entity: 'giftbox', property: 'onDemand', columnHeader: 'On Demand?', boolean: true }) }
               { Details.renderField.bind(this)({ columnWidth: 3, entity: 'giftbox', property: 'sageId', columnHeader: 'Sage ID' }) }
+              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'giftbox', property: 'onDemand', columnHeader: 'On Demand', boolean: true }) }
               { Details.renderField.bind(this)({ columnWidth: 2, entity: 'giftbox', property: 'quantity', readOnly: true, hidden: giftbox.onDemand }) }
             </div>
-            { this.renderButtons() }
+            <BottomButtons
+              entityName="giftBox"
+              confirmDelete={ Details.confirmDelete.bind(this) }
+              justSaved={ justSaved }
+              changesToSave={ changesToSave }
+              disabled={ fetching }
+              clickSave={ () => { this.clickSave() } }
+              marginBottom
+            />
             <hr />
-            <table className="fm-admin-table">
-              <thead>
-                <tr>
-                  <th>DVDs</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td></td></tr>
-                { this.state.giftboxDvds.map((giftboxDvd, index) => {
-                  return(
-                    <tr key={ index }>
-                      <td className="name-column">
-                        <div onClick={ FM.redirect.bind(this, "giftboxDvds", giftboxDvd.dvdId) }>
-                          { giftboxDvd.title }
-                        </div>
-                        <div className="x-button" onClick={ this.clickX.bind(this) } data-id={ giftboxDvd.id }></div>
-                      </td>
-                    </tr>
-                  );
-                }) }
-              </tbody>
-            </table>
-            <a className={ 'blue-outline-button small' } onClick={ Common.changeState.bind(this, 'dvdsModalOpen', true) }>Add DVD</a>
-            { Common.renderSpinner(this.state.fetching) }
-            { Common.renderGrayedOut(this.state.fetching, -36, -32, 5) }
+            <Table
+              columns={ [{ header: 'DVDs', name: 'title' }] }
+              rows={ giftboxDvds }
+              clickDelete={ (entity) => this.clickX(entity) }
+              urlPrefix="dvds"
+              urlProperty="dvdId"
+              sortable={ false }
+              marginBottom
+            />
+            <OutlineButton
+              text="Add DVD"
+              onClick={ () => { this.setState({ dvdsModalOpen: true }) } }
+            />
+            <GrayedOut visible={ fetching } />
+            <Spinner visible={ fetching } />
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="giftbox"
-            confirmDelete={ Details.clickDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
         <Modal isOpen={ this.state.dvdsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherDvds } property={ "title" } func={ this.selectDvd.bind(this) } />
         </Modal>
-      </div>
-    );
-  }
-
-  renderButtons() {
-    return(
-      <div>
-        <a className={ "btn blue-button standard-width" + Common.renderDisabledButtonClass(this.state.fetching || !this.state.changesToSave) } onClick={ this.clickSave.bind(this) }>
-          { Details.saveButtonText.call(this) }
-        </a>
-        <a className={ "btn delete-button" + Common.renderDisabledButtonClass(this.state.fetching) } onClick={ Common.changeState.bind(this, 'deleteModalOpen', true) }>
-          Delete
-        </a>
-      </div>
+      </>
     );
   }
 }

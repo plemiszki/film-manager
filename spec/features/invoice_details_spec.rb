@@ -28,7 +28,7 @@ describe 'invoice_details', type: :feature do
     create(:invoice_row)
     @invoice.update!(total: 24.94)
     visit invoice_path(@invoice, as: $admin_user)
-    within('.fm-admin-table') do
+    within('table') do
       expect(page).to have_content 'Some Film'
       expect(page).to have_content '$12.47'
       expect(page).to have_content '$24.94'

@@ -55,21 +55,17 @@ describe 'return_details', type: :feature do
 
   it 'deletes the return' do
     visit return_path(@return, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/returns', ignore_query: true)
     expect(Return.find_by_id(@return.id)).to be(nil)
   end
 
   it 'adds items to the return' do
     visit return_path(@return, as: $admin_user)
-    find('.blue-outline-button', text: 'Add Item').click
+    click_btn('Add Item')
     select_from_modal('Film 1')
     within('.qty-modal') do
-      find('.orange-button').click
+      click_btn('OK', :submit)
     end
     expect(page).to have_no_css('.spinner')
     expect(@return.reload.return_items.length).to eq(1)
@@ -81,7 +77,7 @@ describe 'return_details', type: :feature do
   it 'removes items from the return' do
     create(:return_item)
     visit return_path(@return, as: $admin_user)
-    find('.x-button').click
+    find('.x-gray-circle').click
     expect(page).to have_no_css('.spinner')
     expect(@return.reload.return_items.length).to eq(0)
   end
@@ -90,7 +86,7 @@ describe 'return_details', type: :feature do
     create(:return_item)
     visit return_path(@return, as: $admin_user)
     wait_for_ajax
-    find('.orange-button', text: 'Generate and Send Credit Memo').click
+    click_btn('Generate and Send Credit Memo')
     expect(page).to have_content('Generating Credit Memo')
   end
 
@@ -99,7 +95,7 @@ describe 'return_details', type: :feature do
     create(:return_item)
     Sidekiq::Testing.inline! do
       visit return_path(@return, as: $admin_user)
-      find('.orange-button', text: 'Generate and Send Credit Memo').click
+      click_btn('Generate and Send Credit Memo')
       expect(page).to have_no_css('.spinner', wait: 10)
       expect(page).to have_content('Credit Memo Sent Successfully')
       expect(page).to have_content("Credit Memo #{CreditMemo.last.number} was sent")

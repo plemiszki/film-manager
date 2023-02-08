@@ -76,11 +76,7 @@ describe 'shipping_address_details', type: :feature do
 
   it 'deletes the licensor' do
     visit shipping_address_path(@shipping_address, as: $admin_user)
-    delete_button = find('.delete-button', text: 'Delete')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path('/shipping_addresses', ignore_query: true)
     expect(ShippingAddress.find_by_id(@shipping_address.id)).to be(nil)
   end

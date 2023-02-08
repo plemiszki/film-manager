@@ -23,7 +23,7 @@ describe 'digital_retailers_index', type: :feature do
   it 'adds digital retailers' do
     visit setting_path(as: $admin_user)
     within('#digital-retailers-index') do
-      find('.btn', text: 'Add Digital Retailer').click
+      click_btn("Add Digital Retailer")
     end
     info = { name: 'Kanopy' }
     fill_out_and_submit_modal(info, :input)
@@ -39,7 +39,7 @@ describe 'digital_retailers_index', type: :feature do
   it 'validates digital retailers' do
     visit setting_path(as: $admin_user)
     within('#digital-retailers-index') do
-      find('.btn', text: 'Add Digital Retailer').click
+      click_btn("Add Digital Retailer")
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")

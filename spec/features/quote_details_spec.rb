@@ -46,11 +46,7 @@ describe 'quote_details', type: :feature do
 
   it 'deletes the quote' do
     visit quote_path(@quote, as: $admin_user)
-    delete_button = find('.delete-button')
-    delete_button.click
-    within('.confirm-delete') do
-      find('.red-button').click
-    end
+    click_delete_and_confirm
     expect(page).to have_current_path("/films/#{@quote.film.id}", ignore_query: true)
     expect(Quote.find_by_id(@quote.id)).to be(nil)
   end

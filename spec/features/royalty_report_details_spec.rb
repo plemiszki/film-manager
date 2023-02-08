@@ -29,7 +29,7 @@ describe 'royalty_report_details', type: :feature do
   it 'displays stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
     wait_for_ajax
-    find('#toggle').click
+    click_btn('Including Current Period')
     0.upto(13) do |n|
       expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentRevenue\"]").value).to eq(dollarify(number_with_precision(n * 100, precision: 2, delimiter: ',')))
       expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentExpense\"]").value).to eq(dollarify(number_with_precision(n * 10, precision: 2, delimiter: ',')))
@@ -44,7 +44,7 @@ describe 'royalty_report_details', type: :feature do
   it 'calculates the report, not including current period' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
     wait_for_ajax
-    find('#toggle').click
+    click_btn('Including Current Period')
     0.upto(13) do |n|
       current_difference = (n * 100) - (n * 10)
       current_net = current_difference.fdiv(2)
@@ -84,7 +84,7 @@ describe 'royalty_report_details', type: :feature do
   it 'validates stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
     wait_for_ajax
-    find('#toggle').click
+    click_btn('Including Current Period')
     clear_form
     save_and_wait
     expect(find_all('input.error').count).to eq(87)
@@ -93,7 +93,7 @@ describe 'royalty_report_details', type: :feature do
   it 'updates stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
     wait_for_ajax
-    find('#toggle').click
+    click_btn('Including Current Period')
     0.upto(13) do |n|
       x = n + 1
       current_revenue_field = find("input[data-test-index=\"#{n}\"][data-field=\"currentRevenue\"]").set(x * 100)
