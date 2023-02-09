@@ -154,7 +154,6 @@ describe 'booking_details', type: :feature do
   end
 
   it 'adds weekly terms' do
-    p 'we are here'
     @booking.update(terms_change: true)
     visit booking_path(@booking, as: $admin_user)
     click_btn("Add Week")
