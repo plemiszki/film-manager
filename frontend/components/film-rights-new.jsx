@@ -6,7 +6,7 @@ export default class FilmRightsNew extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       filmRight: {
         startDate: "",
         endDate: "",
@@ -34,7 +34,7 @@ export default class FilmRightsNew extends React.Component {
     }).then((response) => {
       const { films, rights, territories } = response;
       let newState = {
-        fetching: false,
+        spinner: false,
         films,
         rights,
         territories
@@ -50,7 +50,7 @@ export default class FilmRightsNew extends React.Component {
   }
 
   clickSearch() {
-    if (this.state.fetching === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
+    if (this.state.spinner === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
       this.props.availsExport({
         selectedRights: this.state.selectedRights,
         selectedTerritories: this.state.selectedTerritories,
@@ -64,9 +64,9 @@ export default class FilmRightsNew extends React.Component {
   }
 
   clickAdd() {
-    if (this.state.fetching === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
+    if (this.state.spinner === false && this.state.selectedRights.length > 0 && this.state.selectedTerritories.length > 0) {
       this.setState({
-        fetching: true
+        spinner: true
       }, () => {
         const { filmRight, selectedRights, selectedTerritories } = this.state;
         const { filmId, sublicensorId, startDate, endDate, exclusive } = filmRight;
@@ -158,7 +158,7 @@ export default class FilmRightsNew extends React.Component {
 
   render() {
     const { search } = this.props;
-    const { fetching } = this.state;
+    const { spinner } = this.state;
     const outlineButtonStyles = {
       minWidth: 75,
     }
@@ -243,8 +243,8 @@ export default class FilmRightsNew extends React.Component {
               onClick={ () => search ? this.clickSearch() : this.clickAdd() }
               text={ search ? 'Search' : 'Add Rights' }
             />
-            <Spinner visible={ fetching } />
-            <GrayedOut visible={ fetching } />
+            <Spinner visible={ spinner } />
+            <GrayedOut visible={ spinner } />
           </div>
         </div>
         <style jsx>{`
@@ -338,9 +338,9 @@ export default class FilmRightsNew extends React.Component {
 
   buttonInactive() {
     if (this.props.search) {
-      return (this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0 || this.state.filmRight.startDate === '' || this.state.filmRight.endDate === '');
+      return (this.state.spinner || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0 || this.state.filmRight.startDate === '' || this.state.filmRight.endDate === '');
     } else {
-      return (this.state.fetching || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0);
+      return (this.state.spinner || this.state.selectedRights.length === 0 || this.state.selectedTerritories.length === 0);
     }
   }
 

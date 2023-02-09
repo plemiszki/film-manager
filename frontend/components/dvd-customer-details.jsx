@@ -6,7 +6,7 @@ export default class DvdCustomerDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       dvdCustomer: {},
       dvdCustomerSaved: {},
       films: [],
@@ -21,7 +21,7 @@ export default class DvdCustomerDetails extends React.Component {
     fetchEntity().then((response) => {
       const { dvdCustomer } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         dvdCustomer,
         dvdCustomerSaved: deepCopy(dvdCustomer)
       });
@@ -30,7 +30,7 @@ export default class DvdCustomerDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       const { dvdCustomer } = this.state;
@@ -40,14 +40,14 @@ export default class DvdCustomerDetails extends React.Component {
       }).then((response) => {
         const { dvdCustomer} = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           dvdCustomer,
           dvdCustomerSaved: deepCopy(dvdCustomer),
           changesToSave: false
         });
       }, (response) => {
         this.setState({
-          fetching: false,
+          spinner: false,
           errors: response.errors
         });
       });
@@ -77,7 +77,7 @@ export default class DvdCustomerDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, fetching } = this.state;
+    const { justSaved, changesToSave, spinner } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -120,11 +120,11 @@ export default class DvdCustomerDetails extends React.Component {
               confirmDelete={ Details.confirmDelete.bind(this) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
-              disabled={ fetching }
+              disabled={ spinner }
               clickSave={ () => { this.clickSave() } }
             />
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
       </>

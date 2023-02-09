@@ -8,7 +8,7 @@ export default class EpisodeDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       episode: {},
       episodeSaved: {},
       actors: [],
@@ -24,7 +24,7 @@ export default class EpisodeDetails extends React.Component {
     fetchEntity().then((response) => {
       const { episode, actors } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         episode,
         episodeSaved: deepCopy(episode),
         actors
@@ -36,7 +36,7 @@ export default class EpisodeDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       const { episode } = this.state;
@@ -46,7 +46,7 @@ export default class EpisodeDetails extends React.Component {
       }).then((response) => {
         const { episode } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           episode,
           episodeSaved: deepCopy(episode),
           changesToSave: false
@@ -54,7 +54,7 @@ export default class EpisodeDetails extends React.Component {
       }, (response) => {
         const { errors } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           errors,
         });
       });
@@ -70,7 +70,7 @@ export default class EpisodeDetails extends React.Component {
 
   clickDeleteActor(id) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'actors',
@@ -78,7 +78,7 @@ export default class EpisodeDetails extends React.Component {
     }).then((response) => {
       const { actors } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         actors,
       });
     });
@@ -97,7 +97,7 @@ export default class EpisodeDetails extends React.Component {
   }
 
   render() {
-    const { fetching, justSaved, changesToSave, episode } = this.state;
+    const { spinner, justSaved, changesToSave, episode } = this.state;
     return (
       <div id="episode-profile">
         <div className="handy-component">
@@ -135,11 +135,11 @@ export default class EpisodeDetails extends React.Component {
               }) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
-              disabled={ fetching }
+              disabled={ spinner }
               clickSave={ () => { this.clickSave() } }
             />
-            <Spinner visible={ fetching } />
-            <GrayedOut visible={ fetching } />
+            <Spinner visible={ spinner } />
+            <GrayedOut visible={ spinner } />
           </div>
         </div>
         <Modal isOpen={ this.state.actorModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 500 }, 1) }>

@@ -9,7 +9,7 @@ export default class InTheatersIndex extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       inTheaters: [],
       comingSoon: [],
       repertory: [],
@@ -22,7 +22,7 @@ export default class InTheatersIndex extends React.Component {
     sendRequest('/api/in_theaters').then((response) => {
       const { films, inTheaters, comingSoon, repertory } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         inTheaters,
         comingSoon,
         repertory,
@@ -34,7 +34,7 @@ export default class InTheatersIndex extends React.Component {
   clickX(e) {
     const id = e.target.dataset.id;
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'in_theaters',
@@ -42,7 +42,7 @@ export default class InTheatersIndex extends React.Component {
     }).then((response) => {
       const { films, inTheaters, comingSoon, repertory } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         inTheaters,
         comingSoon,
         repertory,
@@ -76,7 +76,7 @@ export default class InTheatersIndex extends React.Component {
     const filmId = option.id;
     this.setState({
       filmsModalOpen: false,
-      fetching: true
+      spinner: true
     });
     createEntity({
       directory: 'in_theaters',
@@ -88,7 +88,7 @@ export default class InTheatersIndex extends React.Component {
     }).then((response) => {
       const { films, inTheaters, comingSoon, repertory } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         inTheaters,
         comingSoon,
         repertory,
@@ -102,7 +102,7 @@ export default class InTheatersIndex extends React.Component {
   }
 
   render() {
-    const { fetching, inTheaters, films, filmsModalOpen } = this.state;
+    const { spinner, inTheaters, films, filmsModalOpen } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -197,8 +197,8 @@ export default class InTheatersIndex extends React.Component {
               text="Add Film"
               onClick={ () => this.clickAddRepertoryFilm() }
             />
-            <Spinner visible={ fetching } />
-            <GrayedOut visible={ fetching } />
+            <Spinner visible={ spinner } />
+            <GrayedOut visible={ spinner } />
           </div>
           <Modal isOpen={ filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
             <ModalSelect options={ films } property="title" func={ this.selectFilm.bind(this) } />

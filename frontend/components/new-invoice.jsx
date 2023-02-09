@@ -54,7 +54,7 @@ export default class NewInvoice extends React.Component {
     const { bookingId, bookingType, invoiceToEdit } = this.props;
     const { rows } = this.state;
     this.setState({
-      fetching: true
+      spinner: true
     });
     sendRequest(`/api/invoices/${editMode ? invoiceToEdit.number : ''}`, {
       method: (editMode ? 'PATCH' : 'POST'),
@@ -83,7 +83,7 @@ export default class NewInvoice extends React.Component {
 
   render() {
     const { editMode } = this.props;
-    const { fetching } = this.state;
+    const { spinner } = this.state;
     return (
       <>
         <div className="handy-component admin-modal">
@@ -91,13 +91,13 @@ export default class NewInvoice extends React.Component {
             { this.renderRows() }
             <div className="button-container">
               <Button
-                disabled={ fetching || this.insufficientInvoiceRows() }
+                disabled={ spinner || this.insufficientInvoiceRows() }
                 onClick={ () => { this.clickSend(editMode) } }
                 text={ `${ editMode ? 'Resend' : 'Send' } Invoice` }
               />
             </div>
-            <Spinner visible={ fetching } />
-            <GrayedOut visible={ fetching } />
+            <Spinner visible={ spinner } />
+            <GrayedOut visible={ spinner } />
           </div>
         </div>
         <style jsx>{`

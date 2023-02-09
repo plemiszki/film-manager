@@ -24,7 +24,7 @@ export default class VenueDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       venue: {},
       venueSaved: {},
       bookings: [],
@@ -42,7 +42,7 @@ export default class VenueDetails extends React.Component {
         venue,
         venueSaved: Tools.deepCopy(venue),
         bookings,
-        fetching: false
+        spinner: false
       }, () => {
         setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
       });
@@ -69,7 +69,7 @@ export default class VenueDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       updateEntity({
@@ -78,14 +78,14 @@ export default class VenueDetails extends React.Component {
       }).then((response) => {
         const { venue } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           changesToSave: false,
           venue,
           venueSaved: Tools.deepCopy(venue)
         });
       }, (response) => {
         this.setState({
-          fetching: false,
+          spinner: false,
           errors: response.errors
         });
       });
@@ -100,7 +100,7 @@ export default class VenueDetails extends React.Component {
 
   confirmDelete() {
     this.setState({
-      fetching: true,
+      spinner: true,
       deleteModalOpen: false
     }, () => {
       deleteEntity().then(
@@ -110,7 +110,7 @@ export default class VenueDetails extends React.Component {
           this.setState({
             messageModalOpen: true,
             deleteError: response,
-            fetching: false,
+            spinner: false,
           })
         }
       );
@@ -173,7 +173,7 @@ export default class VenueDetails extends React.Component {
   }
 
   render() {
-    const { fetching, justSaved, changesToSave } = this.state;
+    const { spinner, justSaved, changesToSave } = this.state;
     return (
       <>
         <div>
@@ -255,18 +255,18 @@ export default class VenueDetails extends React.Component {
                 confirmDelete={ this.confirmDelete.bind(this) }
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
-                disabled={ fetching }
+                disabled={ spinner }
                 clickSave={ () => { this.clickSave() } }
               />
-              <GrayedOut visible={ fetching } />
-              <Spinner visible={ fetching } />
+              <GrayedOut visible={ spinner } />
+              <Spinner visible={ spinner } />
             </div>
           </div>
           <div className="handy-component">
             <h1>Venue Bookings</h1>
             <div className="white-box">
-              <GrayedOut visible={ fetching } />
-              <Spinner visible={ fetching } />
+              <GrayedOut visible={ spinner } />
+              <Spinner visible={ spinner } />
               <div className="row">
                 <div className="col-xs-12">
                   <Table

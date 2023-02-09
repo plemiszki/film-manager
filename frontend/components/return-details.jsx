@@ -21,7 +21,7 @@ export default class ReturnDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       return: {
         customerId: 0,
       },
@@ -45,7 +45,7 @@ export default class ReturnDetails extends React.Component {
     fetchEntity().then((response) => {
       const { items, otherItems, customers, return: returnRecord } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         return: returnRecord,
         returnSaved: deepCopy(returnRecord),
         items,
@@ -59,7 +59,7 @@ export default class ReturnDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       updateEntity({
@@ -68,7 +68,7 @@ export default class ReturnDetails extends React.Component {
       }).then((response) => {
         const { return: returnRecord } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           return: returnRecord,
           returnSaved: deepCopy(returnRecord),
           changesToSave: false
@@ -76,7 +76,7 @@ export default class ReturnDetails extends React.Component {
       }, (response) => {
         const { errors } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           errors,
         });
       });
@@ -104,7 +104,7 @@ export default class ReturnDetails extends React.Component {
   clickQtyOk() {
     const { selectedItemId, selectedItemType, selectedItemQty } = this.state;
     this.setState({
-      fetching: true,
+      spinner: true,
       qtyModalOpen: false
     });
     createEntity({
@@ -119,7 +119,7 @@ export default class ReturnDetails extends React.Component {
     }).then((response) => {
       const { items, otherItems } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         items,
         otherItems,
         selectedItemId: null,
@@ -131,7 +131,7 @@ export default class ReturnDetails extends React.Component {
 
   deleteItem(id) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'return_items',
@@ -139,7 +139,7 @@ export default class ReturnDetails extends React.Component {
     }).then((response) => {
       const { items, otherItems } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         items,
         otherItems,
       });
@@ -148,7 +148,7 @@ export default class ReturnDetails extends React.Component {
 
   clickGenerateButton() {
     this.setState({
-      fetching: true
+      spinner: true
     });
     sendRequest(`/api/returns/${this.state.return.id}/send_credit_memo`, {
       method: 'POST',
@@ -156,7 +156,7 @@ export default class ReturnDetails extends React.Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true,
       });
     });
@@ -190,7 +190,7 @@ export default class ReturnDetails extends React.Component {
   }
 
   render() {
-    const { fetching, justSaved, changesToSave, items } = this.state;
+    const { spinner, justSaved, changesToSave, items } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -224,14 +224,14 @@ export default class ReturnDetails extends React.Component {
               confirmDelete={ Details.confirmDelete.bind(this) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
-              disabled={ fetching }
+              disabled={ spinner }
               clickSave={ () => { this.clickSave() } }
               marginBottom
             />
             <hr />
             { this.renderCreditMemoSection() }
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
         <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
@@ -294,7 +294,7 @@ export default class ReturnDetails extends React.Component {
   }
 
   renderCreditMemoSection() {
-    const { fetching, changesToSave, items } = this.state;
+    const { spinner, changesToSave, items } = this.state;
     if (this.state.return.creditMemoId) {
       return (
         <div><a style={ { textDecoration: 'underline' } } href={ `/credit_memos/${this.state.return.creditMemoId}` }>Credit Memo { this.state.return.creditMemoNumber }</a> was sent on { this.state.return.creditMemoDate }.</div>
@@ -303,7 +303,7 @@ export default class ReturnDetails extends React.Component {
       return (
         <Button
           text="Generate and Send Credit Memo"
-          disabled={ fetching || changesToSave || items.length === 0 }
+          disabled={ spinner || changesToSave || items.length === 0 }
           onClick={ () => { this.clickGenerateButton() } }
         />
       );

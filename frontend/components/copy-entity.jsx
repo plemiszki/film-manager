@@ -8,7 +8,7 @@ export default class CopyEntity extends Component {
     super(props)
 
     this.state = {
-      fetching: false,
+      spinner: false,
       [this.props.entityName]: this.props.initialEntity,
       errors: {},
       films: this.props.films
@@ -24,7 +24,7 @@ export default class CopyEntity extends Component {
   clickCopy() {
     const { film, booking } = this.state;
     this.setState({
-      fetching: true
+      spinner: true
     });
     let url;
     let data;
@@ -62,7 +62,7 @@ export default class CopyEntity extends Component {
     }, (response) => {
       const { errors } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         errors
       });
     });
@@ -70,7 +70,7 @@ export default class CopyEntity extends Component {
 
   render() {
     const { buttonText, entityName } = this.props;
-    const { fetching } = this.state;
+    const { spinner } = this.state;
     return (
       <div className="handy-component admin-modal">
         <form className="white-box">
@@ -80,8 +80,8 @@ export default class CopyEntity extends Component {
             text={ buttonText || `Copy ${ChangeCase.titleCase(entityName)}` }
             onClick={ () => { this.clickCopy() } }
           />
-          <Spinner visible={ fetching } />
-          <GrayedOut visible={ fetching } />
+          <Spinner visible={ spinner } />
+          <GrayedOut visible={ spinner } />
         </form>
       </div>
     );

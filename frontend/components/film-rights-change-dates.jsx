@@ -6,7 +6,7 @@ export default class FilmRightsChangeDates extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: false,
+      spinner: false,
       obj: {
         startDate: "",
         endDate: ""
@@ -17,7 +17,7 @@ export default class FilmRightsChangeDates extends React.Component {
 
   clickChange() {
     this.setState({
-      fetching: true
+      spinner: true
     });
     const { startDate, endDate } = this.state.obj;
     const { filmId } = this.props;
@@ -34,7 +34,7 @@ export default class FilmRightsChangeDates extends React.Component {
     }, (response) => {
       const { errors } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         errors
       });
     })
@@ -45,7 +45,7 @@ export default class FilmRightsChangeDates extends React.Component {
   }
 
   render() {
-    const { fetching, obj } = this.state;
+    const { spinner, obj } = this.state;
     return (
       <div className="handy-component admin-modal">
         <div className="white-box">
@@ -56,10 +56,10 @@ export default class FilmRightsChangeDates extends React.Component {
           <Button
             text="Change All Dates"
             onClick={ () => { this.clickChange() } }
-            disabled={ fetching || (obj.startDate === '' && obj.endDate === '') }
+            disabled={ spinner || (obj.startDate === '' && obj.endDate === '') }
           />
-          <Spinner visible={ fetching } />
-          <GrayedOut visible={ fetching } />
+          <Spinner visible={ spinner } />
+          <GrayedOut visible={ spinner } />
         </div>
       </div>
     );

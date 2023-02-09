@@ -6,7 +6,7 @@ export default class JobsIndex extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: false,
+      spinner: false,
       jobs: []
     };
   }
@@ -26,7 +26,7 @@ export default class JobsIndex extends React.Component {
     let job = deepCopy(jobs.find(job => job.id == id));
     job.status = 'killed';
     this.setState({
-      fetching: true
+      spinner: true
     });
     updateEntity({
       id,
@@ -35,14 +35,14 @@ export default class JobsIndex extends React.Component {
       entity: job
     }).then((response) => {
       this.setState({
-        fetching: false,
+        spinner: false,
         jobs: response.jobs
       });
     });
   }
 
   render() {
-    const { fetching, jobs } = this.state;
+    const { spinner, jobs } = this.state;
     if (jobs.length) {
       return (
         <div className="handy-component">
@@ -72,8 +72,8 @@ export default class JobsIndex extends React.Component {
               ]}
               rows={ jobs }
             />
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
       );

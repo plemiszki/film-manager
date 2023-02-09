@@ -44,7 +44,7 @@ export default class ReportsIndex extends React.Component {
       errorsText: ""
     };
     this.state = {
-      fetching: true,
+      spinner: true,
       sortBy: "title",
       searchText: "",
       quarter: FM.properStatementQuarter(date).quarter,
@@ -95,7 +95,7 @@ export default class ReportsIndex extends React.Component {
     }).then((response) => {
       const { reports } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         reports
       });
     });
@@ -111,7 +111,7 @@ export default class ReportsIndex extends React.Component {
     this.setState({
       quarter: newQuarter,
       year: newYear,
-      fetching: true
+      spinner: true
     }, () => {
       this.fetchReports();
     });
@@ -127,7 +127,7 @@ export default class ReportsIndex extends React.Component {
     this.setState({
       quarter: newQuarter,
       year: newYear,
-      fetching: true
+      spinner: true
     }, () => {
       this.fetchReports();
     });
@@ -154,7 +154,7 @@ export default class ReportsIndex extends React.Component {
   pickFile() {
     this.setState({
       importModalOpen: false,
-      fetching: true
+      spinner: true
     }, () => {
       $('#upload-form-sage #submit-button-sage').click();
     });
@@ -163,7 +163,7 @@ export default class ReportsIndex extends React.Component {
   clickExport() {
     const { quarter, year, daysDue } = this.state;
     this.setState({
-      fetching: true
+      spinner: true
     });
     sendRequest('/api/royalty_reports/export_all', {
       method: 'POST',
@@ -176,7 +176,7 @@ export default class ReportsIndex extends React.Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true
       });
     });
@@ -185,7 +185,7 @@ export default class ReportsIndex extends React.Component {
   clickErrorCheck() {
     const { quarter, year } = this.state;
     this.setState({
-      fetching: true,
+      spinner: true,
     });
     sendRequest('/api/royalty_reports/error_check', {
       method: 'POST',
@@ -197,7 +197,7 @@ export default class ReportsIndex extends React.Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true
       });
     });
@@ -206,7 +206,7 @@ export default class ReportsIndex extends React.Component {
   clickTotals() {
     const { quarter, year, daysDue } = this.state;
     this.setState({
-      fetching: true,
+      spinner: true,
     });
     sendRequest('/api/royalty_reports/totals', {
       method: 'POST',
@@ -219,7 +219,7 @@ export default class ReportsIndex extends React.Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true
       });
     });
@@ -228,7 +228,7 @@ export default class ReportsIndex extends React.Component {
   clickSummary() {
     const { quarter, year, daysDue } = this.state;
     this.setState({
-      fetching: true,
+      spinner: true,
     });
     sendRequest('/api/royalty_reports/summary', {
       data: {
@@ -240,7 +240,7 @@ export default class ReportsIndex extends React.Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true
       });
     });
@@ -249,7 +249,7 @@ export default class ReportsIndex extends React.Component {
   clickConfirmSend() {
     const { quarter, year, daysDue } = this.state;
     this.setState({
-      fetching: true,
+      spinner: true,
       sendModalOpen: false,
     });
     sendRequest('/api/royalty_reports/send_all', {
@@ -263,7 +263,7 @@ export default class ReportsIndex extends React.Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true
       });
     });
@@ -283,7 +283,7 @@ export default class ReportsIndex extends React.Component {
 
   fileDone() {
     this.setState({
-      fetching: false,
+      spinner: false,
     });
     window.location.pathname = 'api/royalty_reports/zip';
   }
@@ -319,7 +319,7 @@ export default class ReportsIndex extends React.Component {
   }
 
   render() {
-    const { fetching, daysDue, reports, searchText, job } = this.state;
+    const { spinner, daysDue, reports, searchText, job } = this.state;
     const sortedReports = reports.sort(this.sortReports.bind(this)).filterDaysDue(this.state.daysDue);
 
     return (
@@ -331,7 +331,7 @@ export default class ReportsIndex extends React.Component {
               square
               text="Send All"
               float
-              disabled={ fetching || daysDue === 'all' || reports.length === 0 }
+              disabled={ spinner || daysDue === 'all' || reports.length === 0 }
               onClick={ Common.changeState.bind(this, 'sendModalOpen', true) }
             />
             <Button
@@ -339,7 +339,7 @@ export default class ReportsIndex extends React.Component {
               text="Export All"
               float
               style={ { marginRight: 15 } }
-              disabled={ fetching || daysDue === 'all' || reports.length === 0 }
+              disabled={ spinner || daysDue === 'all' || reports.length === 0 }
               onClick={ () => { this.clickExport() } }
             />
             <Button
@@ -347,7 +347,7 @@ export default class ReportsIndex extends React.Component {
               text="Summary"
               float
               style={ { marginRight: 15 } }
-              disabled={ fetching || reports.length === 0 }
+              disabled={ spinner || reports.length === 0 }
               onClick={ () => { this.clickSummary() } }
             />
             <Button
@@ -355,7 +355,7 @@ export default class ReportsIndex extends React.Component {
               text="Totals"
               float
               style={ { marginRight: 15 } }
-              disabled={ fetching || reports.length === 0 }
+              disabled={ spinner || reports.length === 0 }
               onClick={ () => { this.clickTotals() } }
             />
             <Button
@@ -363,7 +363,7 @@ export default class ReportsIndex extends React.Component {
               text="Error Check"
               float
               style={ { marginRight: 15 } }
-              disabled={ fetching || reports.length === 0 }
+              disabled={ spinner || reports.length === 0 }
               onClick={ () => { this.clickErrorCheck() } }
             />
             <Button
@@ -371,7 +371,7 @@ export default class ReportsIndex extends React.Component {
               text="Import"
               float
               style={ { marginRight: 15 } }
-              disabled={ fetching }
+              disabled={ spinner }
               onClick={ Common.changeState.bind(this, 'importModalOpen', true) }
             />
             <Button
@@ -379,7 +379,7 @@ export default class ReportsIndex extends React.Component {
               text=">>"
               float
               style={ { marginRight: 15 } }
-              disabled={ fetching }
+              disabled={ spinner }
               onClick={ this.clickNext.bind(this) }
             />
             <Button
@@ -387,7 +387,7 @@ export default class ReportsIndex extends React.Component {
               text="<<"
               float
               style={ { marginRight: 15 } }
-              disabled={ fetching }
+              disabled={ spinner }
               onClick={ this.clickPrev.bind(this) }
             />
             <div className="white-box">
@@ -430,8 +430,8 @@ export default class ReportsIndex extends React.Component {
                   },
                 ]}
               />
-              <Spinner visible={ fetching } />
-              <GrayedOut visible={ fetching } />
+              <Spinner visible={ spinner } />
+              <GrayedOut visible={ spinner } />
             </div>
           </div>
           <Modal isOpen={ this.state.importModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ importModalStyles }>
@@ -502,7 +502,7 @@ export default class ReportsIndex extends React.Component {
 
   importCallback() {
     this.setState({
-      fetching: true
+      spinner: true
     });
     this.fetchReports();
   }

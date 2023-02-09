@@ -22,7 +22,7 @@ export default class BookingDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       booking: {},
       bookingSaved: {},
       films: [],
@@ -57,7 +57,7 @@ export default class BookingDetails extends React.Component {
     fetchEntity().then((response) => {
       const { booking, calculations, users, invoices, formats, weeklyTerms, weeklyBoxOffices, payments, films, venues } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         booking,
         bookingSaved: deepCopy(booking),
         calculations,
@@ -117,7 +117,7 @@ export default class BookingDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       updateEntity({
@@ -126,7 +126,7 @@ export default class BookingDetails extends React.Component {
       }).then((response) => {
         const { booking, calculations } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           booking,
           bookingSaved: deepCopy(booking),
           calculations,
@@ -135,7 +135,7 @@ export default class BookingDetails extends React.Component {
       }, (response) => {
         const { errors } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           errors,
         });
       });
@@ -144,11 +144,11 @@ export default class BookingDetails extends React.Component {
 
   confirmDeleteInvoice() {
     this.setState({
-      fetching: true,
+      spinner: true,
       deleteInvoiceModalOpen: false
     }, () => {
       this.setState({
-        fetching: false
+        spinner: false
       });
       deleteEntity({
         directory: 'invoices',
@@ -164,7 +164,7 @@ export default class BookingDetails extends React.Component {
 
   clickDeleteWeek(weeklyTerms) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'weekly_terms',
@@ -172,7 +172,7 @@ export default class BookingDetails extends React.Component {
     }).then((response) => {
       const { weeklyTerms } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         weeklyTerms,
       });
     });
@@ -180,7 +180,7 @@ export default class BookingDetails extends React.Component {
 
   clickDeleteWeeklyBoxOffice(weeklyBoxOffice) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'weekly_box_offices',
@@ -188,7 +188,7 @@ export default class BookingDetails extends React.Component {
     }).then((response) => {
       const { weeklyBoxOffices, calculations } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         weeklyBoxOffices,
         calculations,
       });
@@ -197,7 +197,7 @@ export default class BookingDetails extends React.Component {
 
   clickDeletePayment(id) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'payments',
@@ -205,7 +205,7 @@ export default class BookingDetails extends React.Component {
     }).then((response) => {
       const { payments, calculations } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         payments,
         calculations,
       });
@@ -215,7 +215,7 @@ export default class BookingDetails extends React.Component {
   clickSendConfirmation() {
     const { booking } = this.state;
     this.setState({
-      fetching: true
+      spinner: true
     });
     sendRequest(`/api/bookings/${booking.id}/confirm`, {
       method: 'POST',
@@ -225,7 +225,7 @@ export default class BookingDetails extends React.Component {
     }).then((response) => {
       const { booking } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         booking,
       });
     });
@@ -280,7 +280,7 @@ export default class BookingDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, fetching, payments, invoices } = this.state;
+    const { justSaved, changesToSave, spinner, payments, invoices } = this.state;
     NewInvoiceStyles.content.height = (238 + (34 * payments.length));
     return (
       <>
@@ -456,7 +456,7 @@ export default class BookingDetails extends React.Component {
               <SaveButton
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
-                disabled={ fetching }
+                disabled={ spinner }
                 onClick={ () => { this.clickSave() } }
               />
               <DeleteButton
@@ -466,13 +466,13 @@ export default class BookingDetails extends React.Component {
               <Button
                 marginRight
                 float
-                disabled={ fetching }
+                disabled={ spinner }
                 text="Copy Booking"
                 onClick={ () => { this.setState({ copyModalOpen: true }) } }
               />
             </div>
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
         <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
@@ -584,7 +584,7 @@ export default class BookingDetails extends React.Component {
   }
 
   renderConfirmationSection() {
-    const { changesToSave, fetching } = this.state;
+    const { changesToSave, spinner } = this.state;
     if (this.state.booking.bookingConfirmationSent) {
       return(
         <div>
@@ -604,7 +604,7 @@ export default class BookingDetails extends React.Component {
               <div className="col-xs-12">
                 <Button
                   text={ changesToSave ? "Save to Send" : "Send Booking Confirmation" }
-                  disabled={ fetching || changesToSave }
+                  disabled={ spinner || changesToSave }
                   onClick={ () => { this.clickSendConfirmation() } }
                   marginBottom
                 />

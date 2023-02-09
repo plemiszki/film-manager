@@ -8,7 +8,7 @@ export default class GiftboxDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       giftbox: {},
       giftboxSaved: {},
       giftboxDvds: [],
@@ -26,7 +26,7 @@ export default class GiftboxDetails extends React.Component {
     }).then((response) => {
       const { giftbox, giftboxDvds, otherDvds } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         giftbox,
         giftboxSaved: deepCopy(giftbox),
         giftboxDvds,
@@ -40,7 +40,7 @@ export default class GiftboxDetails extends React.Component {
   selectDvd(option) {
     const dvdId = option.id;
     this.setState({
-      fetching: true,
+      spinner: true,
       dvdsModalOpen: false
     });
     createEntity({
@@ -53,7 +53,7 @@ export default class GiftboxDetails extends React.Component {
     }).then((response) => {
       const { giftboxDvds, otherDvds } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         giftboxDvds,
         otherDvds
       });
@@ -62,7 +62,7 @@ export default class GiftboxDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, function() {
       updateEntity({
@@ -71,14 +71,14 @@ export default class GiftboxDetails extends React.Component {
       }).then((response) => {
         const { giftbox } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           giftbox,
           giftboxSaved: deepCopy(giftbox),
           changesToSave: false
         });
       }, (response) => {
         this.setState({
-          fetching: false,
+          spinner: false,
           errors: response.errors
         });
       });
@@ -88,7 +88,7 @@ export default class GiftboxDetails extends React.Component {
   clickX(giftboxDvd) {
     const giftboxDvdId = giftboxDvd.id;
     this.setState({
-      fetching: true,
+      spinner: true,
     });
     deleteEntity({
       directory: 'giftbox_dvds',
@@ -96,7 +96,7 @@ export default class GiftboxDetails extends React.Component {
     }).then((response) => {
       const { giftboxDvds, otherDvds } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         giftboxDvds,
         otherDvds,
       });
@@ -115,7 +115,7 @@ export default class GiftboxDetails extends React.Component {
   }
 
   render() {
-    const { giftbox, giftboxDvds, justSaved, changesToSave, fetching } = this.state;
+    const { giftbox, giftboxDvds, justSaved, changesToSave, spinner } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -136,7 +136,7 @@ export default class GiftboxDetails extends React.Component {
               confirmDelete={ Details.confirmDelete.bind(this) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
-              disabled={ fetching }
+              disabled={ spinner }
               clickSave={ () => { this.clickSave() } }
               marginBottom
             />
@@ -154,8 +154,8 @@ export default class GiftboxDetails extends React.Component {
               text="Add DVD"
               onClick={ () => { this.setState({ dvdsModalOpen: true }) } }
             />
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
         <Modal isOpen={ this.state.dvdsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>

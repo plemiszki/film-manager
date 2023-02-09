@@ -24,7 +24,7 @@ export default class ConvertDigitalSales extends React.Component {
         this.setState({
           job,
           jobModalOpen: true,
-          fetching: true,
+          spinner: true,
         });
         sendRequest('/api/films', {
           data: {
@@ -33,7 +33,7 @@ export default class ConvertDigitalSales extends React.Component {
         }).then((response) => {
           const { films } = response;
           this.setState({
-            fetching: false,
+            spinner: false,
             films,
           });
         });
@@ -58,7 +58,7 @@ export default class ConvertDigitalSales extends React.Component {
     let filmId = option.id;
     this.setState({
       filmsModalOpen: false,
-      fetching: true
+      spinner: true
     });
     createEntity({
       directory: 'aliases',
@@ -72,13 +72,13 @@ export default class ConvertDigitalSales extends React.Component {
       removeFromArray(errors, this.state.currentTitle);
       this.setState({
         errors,
-        fetching: false
+        spinner: false
       });
     });
   }
 
   render() {
-    const { fetching, job, filmsModalOpen, errors, films } = this.state;
+    const { spinner, job, filmsModalOpen, errors, films } = this.state;
     const mappedErrors = errors.map(error => {
       return { title: error }
     });
@@ -122,8 +122,8 @@ export default class ConvertDigitalSales extends React.Component {
                       />
                     </div>
                   </div>
-                  <Spinner visible={ fetching } />
-                  <GrayedOut visible={ fetching } />
+                  <Spinner visible={ spinner } />
+                  <GrayedOut visible={ spinner } />
                 </div>
                 <Modal isOpen={ filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
                   <ModalSelect options={ films } property="title" func={ this.selectFilm.bind(this) } />

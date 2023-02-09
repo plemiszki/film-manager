@@ -6,7 +6,7 @@ export default class Calendar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       year: (new Date).getFullYear(),
       months: []
     };
@@ -23,7 +23,7 @@ export default class Calendar extends React.Component {
       }
     }).then((response) => {
       this.setState({
-        fetching: false,
+        spinner: false,
         months: response.months
       });
     });
@@ -32,7 +32,7 @@ export default class Calendar extends React.Component {
   clickNext() {
     this.setState({
       year: this.state.year + 1,
-      fetching: true,
+      spinner: true,
     }, () => {
       this.fetchData();
     });
@@ -41,27 +41,27 @@ export default class Calendar extends React.Component {
   clickPrev() {
     this.setState({
       year: this.state.year - 1,
-      fetching: true,
+      spinner: true,
     }, () => {
       this.fetchData();
     });
   }
 
   render() {
-    const { fetching, months } = this.state;
+    const { spinner, months } = this.state;
     return (
       <div className="calendar">
         <div className="handy-component">
           <h1>Calendar - { this.state.year }</h1>
           <Button
             float
-            disabled={ fetching }
+            disabled={ spinner }
             onClick={ () => { this.clickNext() } }
             text="&#62;&#62;"
           />
           <Button
             float
-            disabled={ fetching }
+            disabled={ spinner }
             onClick={ () => { this.clickPrev() } }
             text="&#60;&#60;"
             marginRight
@@ -145,8 +145,8 @@ export default class Calendar extends React.Component {
                 }
               </tbody>
             </table>
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
         <style jsx>{`

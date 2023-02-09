@@ -6,7 +6,7 @@ export default class InvoiceDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       invoice: {},
       rows: [],
       payments: []
@@ -23,7 +23,7 @@ export default class InvoiceDetails extends React.Component {
         }
       });
       this.setState({
-        fetching: false,
+        spinner: false,
         invoice,
         rows,
         payments: mappedPayments
@@ -36,7 +36,7 @@ export default class InvoiceDetails extends React.Component {
   }
 
   render() {
-    const { fetching } = this.props;
+    const { spinner } = this.props;
     const { invoice, rows, payments } = this.state;
     console.log(rows);
     const dvdInvoice = invoice.invoiceType === "dvd";
@@ -134,11 +134,11 @@ export default class InvoiceDetails extends React.Component {
             ) }
             <Button
               text="Export"
-              disabled={ fetching }
+              disabled={ spinner }
               onClick={ () => { this.clickExport() } }
             />
-            <Spinner visible={ fetching } />
-            <GrayedOut visible={ fetching } />
+            <Spinner visible={ spinner } />
+            <GrayedOut visible={ spinner } />
           </div>
         </div>
         <style jsx>{`

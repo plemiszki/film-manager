@@ -35,7 +35,7 @@ export default class PurchaseOrderDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       purchaseOrder: {
         customerId: '0',
         sendInvoice: true
@@ -62,7 +62,7 @@ export default class PurchaseOrderDetails extends React.Component {
     fetchEntity().then((response) => {
       let { shippingAddresses, dvdCustomers, purchaseOrder, items, otherItems } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         purchaseOrder,
         purchaseOrderSaved: deepCopy(purchaseOrder),
         dvdCustomers,
@@ -77,7 +77,7 @@ export default class PurchaseOrderDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       updateEntity({
@@ -86,7 +86,7 @@ export default class PurchaseOrderDetails extends React.Component {
       }).then((response) => {
         const { purchaseOrder } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           purchaseOrder,
           purchaseOrderSaved: deepCopy(purchaseOrder),
           changesToSave: false
@@ -94,7 +94,7 @@ export default class PurchaseOrderDetails extends React.Component {
       }, (response) => {
         const { errors } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           errors,
         });
       });
@@ -162,7 +162,7 @@ export default class PurchaseOrderDetails extends React.Component {
   clickQtyOk() {
     const { purchaseOrder, selectedItemId, selectedItemType, selectedItemQty } = this.state;
     this.setState({
-      fetching: true,
+      spinner: true,
       qtyModalOpen: false
     });
     createEntity({
@@ -177,7 +177,7 @@ export default class PurchaseOrderDetails extends React.Component {
     }).then((response) => {
       const { items, otherItems } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         items,
         otherItems,
         selectedItemId: null,
@@ -189,7 +189,7 @@ export default class PurchaseOrderDetails extends React.Component {
 
   deleteItem(id) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'purchase_order_items',
@@ -197,7 +197,7 @@ export default class PurchaseOrderDetails extends React.Component {
     }).then((response) => {
       const { items, otherItems } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         items,
         otherItems,
       });
@@ -239,7 +239,7 @@ export default class PurchaseOrderDetails extends React.Component {
     const { purchaseOrder, changesToSave } = this.state;
     if (!purchaseOrder.shipDate && changesToSave === false) {
       this.setState({
-        fetching: true
+        spinner: true
       }, () => {
         sendRequest('/api/purchase_orders/ship', {
           method: 'POST',
@@ -257,7 +257,7 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   render() {
-    const { purchaseOrder, dvdCustomers, fetching, justSaved, changesToSave } = this.state;
+    const { purchaseOrder, dvdCustomers, spinner, justSaved, changesToSave } = this.state;
     const customer = this.getCustomerFromId(purchaseOrder.customerId);
     const canSendInvoice = this.canSendInvoice(customer);
     const unshippedPO = !purchaseOrder.shipDate;
@@ -383,14 +383,14 @@ export default class PurchaseOrderDetails extends React.Component {
                   ) }
                   <div>
                     <Button
-                      disabled= { fetching || changesToSave || shippedPO }
+                      disabled= { spinner || changesToSave || shippedPO }
                       text={ shippedPO ? `Shipped ${purchaseOrder.shipDate}` : (changesToSave ? "Save to Ship" : "Ship Now") }
                       onClick={ () => this.clickShip({ reportingOnly: false }) }
                       marginBottom
                     />
                     { unshippedPO && canSendInvoice && purchaseOrder.sendInvoice && (
                       <Button
-                        disabled={ fetching || changesToSave }
+                        disabled={ spinner || changesToSave }
                         text={ changesToSave ? "Save to Ship" : "Send Invoice Only" }
                         onClick={ () => this.clickShip({ reportingOnly: true }) }
                         style={ { marginLeft: 20 } }
@@ -405,12 +405,12 @@ export default class PurchaseOrderDetails extends React.Component {
                   confirmDelete={ Details.confirmDelete.bind(this) }
                   justSaved={ justSaved }
                   changesToSave={ changesToSave }
-                  disabled={ fetching }
+                  disabled={ spinner }
                   clickSave={ () => { this.clickSave() } }
                 />
               ) }
-              <GrayedOut visible={ fetching } />
-              <Spinner visible={ fetching } />
+              <GrayedOut visible={ spinner } />
+              <Spinner visible={ spinner } />
             </div>
           </div>
           <Modal isOpen={ this.state.addAddressModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ AddAddressModalStyles }>

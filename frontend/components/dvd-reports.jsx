@@ -26,7 +26,7 @@ export default class DvdReports extends React.Component {
       errorsText: ""
     };
     this.state = {
-      fetching: true,
+      spinner: true,
       titlesReport: [],
       customersReport: [],
       year: (new Date).getFullYear(),
@@ -55,7 +55,7 @@ export default class DvdReports extends React.Component {
     }).then((response) => {
       const { customersReport, titlesReport } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         customersReport,
         titlesReport,
       });
@@ -65,7 +65,7 @@ export default class DvdReports extends React.Component {
   clickPrev() {
     this.setState({
       year: (this.state.year -= 1),
-      fetching: true
+      spinner: true
     }, () => {
       this.fetchReportData();
     });
@@ -74,7 +74,7 @@ export default class DvdReports extends React.Component {
   clickNext() {
     this.setState({
       year: (this.state.year += 1),
-      fetching: true
+      spinner: true
     }, () => {
       this.fetchReportData();
     });
@@ -83,7 +83,7 @@ export default class DvdReports extends React.Component {
   clickExport() {
     this.setState({
       exportModalOpen: false,
-      fetching: true
+      spinner: true
     });
     sendRequest('/api/dvd_reports/export', {
       data: {
@@ -94,7 +94,7 @@ export default class DvdReports extends React.Component {
       this.setState({
         jobModalOpen: true,
         job: response.job,
-        fetching: false
+        spinner: false
       });
     });
   }
@@ -117,7 +117,7 @@ export default class DvdReports extends React.Component {
   }
 
   render() {
-    const { fetching, customersReport, titlesReport, year, exportModalOpen, job } = this.state;
+    const { spinner, customersReport, titlesReport, year, exportModalOpen, job } = this.state;
     const UNITS_COLUMN_WIDTH = 60;
     const SALES_COLUMN_WIDTH = 120;
     return (
@@ -127,19 +127,19 @@ export default class DvdReports extends React.Component {
             <div className="text-center">
               <div className="header">
                 <Button
-                  disabled={ fetching }
+                  disabled={ spinner }
                   text="<<"
                   onClick={ () => { this.clickPrev() } }
                 />
                 <h1>DVD Reports - { year }</h1>
                 <Button
-                  disabled={ fetching }
+                  disabled={ spinner }
                   text=">>"
                   onClick={ () => { this.clickNext() } }
                 />
               </div>
               <Button
-                disabled={ fetching }
+                disabled={ spinner }
                 text="Export"
                 onClick={ () => { this.setState({ exportModalOpen: true }) } }
                 style={{
@@ -176,8 +176,8 @@ export default class DvdReports extends React.Component {
                   />
                 </div>
               </div>
-              <GrayedOut visible={ fetching } />
-              <Spinner visible={ fetching } />
+              <GrayedOut visible={ spinner } />
+              <Spinner visible={ spinner } />
             </div>
           </div>
           <div className="handy-component">
@@ -209,8 +209,8 @@ export default class DvdReports extends React.Component {
                   />
                 </div>
               </div>
-              <Spinner visible={ fetching } />
-              <GrayedOut visible={ fetching } />
+              <Spinner visible={ spinner } />
+              <GrayedOut visible={ spinner } />
             </div>
           </div>
           <Modal isOpen={ exportModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ exportModalStyles }>

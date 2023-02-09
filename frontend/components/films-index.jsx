@@ -40,7 +40,7 @@ export default class FilmsIndex extends Component {
       errors_text: ""
     };
     this.state = {
-      fetching: true,
+      spinner: true,
       searchText: '',
       sortBy: 'title',
       filterActive: false,
@@ -65,7 +65,7 @@ export default class FilmsIndex extends Component {
     }).then((response) => {
       const { films, alternateAudios, alternateSubs, alternateLengths } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         films,
         allAltAudios: alternateAudios,
         allAltSubs: alternateSubs,
@@ -76,7 +76,7 @@ export default class FilmsIndex extends Component {
 
   clickExportAll() {
     this.setState({
-      fetching: true
+      spinner: true
     });
     sendRequest('/api/films/export', {
       method: 'POST',
@@ -88,7 +88,7 @@ export default class FilmsIndex extends Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true,
       });
     });
@@ -96,7 +96,7 @@ export default class FilmsIndex extends Component {
 
   clickExportCustom(searchCriteria) {
     this.setState({
-      fetching: true,
+      spinner: true,
     });
     sendRequest('/api/films/export', {
       method: 'POST',
@@ -108,7 +108,7 @@ export default class FilmsIndex extends Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true,
       });
     });
@@ -176,7 +176,7 @@ export default class FilmsIndex extends Component {
 
   render() {
     const { filmType, advanced } = this.props;
-    const { searchText, fetching, filterActive } = this.state;
+    const { searchText, spinner, filterActive } = this.state;
     var filteredFilms = this.state[this.state.filterActive ? 'filteredFilms' : 'films'].filterSearchText(this.state.searchText, this.state.sortBy);
     return (
       <>
@@ -187,7 +187,7 @@ export default class FilmsIndex extends Component {
               <Button
                 float
                 square
-                disabled={ fetching }
+                disabled={ spinner }
                 text="Export All"
                 onClick={ () => { this.clickExportAll() } }
                 style={ { marginLeft: 20 } }
@@ -197,7 +197,7 @@ export default class FilmsIndex extends Component {
               <Button
                 float
                 square
-                disabled={ fetching }
+                disabled={ spinner }
                 text="Export Custom"
                 onClick={ () => { this.setState({ searchModalOpen: true }) } }
                 style={ { marginLeft: 20 } }
@@ -207,7 +207,7 @@ export default class FilmsIndex extends Component {
               <Button
                 float
                 square
-                disabled={ fetching }
+                disabled={ spinner }
                 text="Filter"
                 onClick={ () => { this.setState({ filterModalOpen: true }) } }
                 style={ {
@@ -220,7 +220,7 @@ export default class FilmsIndex extends Component {
               <Button
                 float
                 square
-                disabled={ fetching }
+                disabled={ spinner }
                 text={ `Add ${filmType === 'Feature' ? 'Film' : filmType}` }
                 onClick={ () => { this.setState({ newFilmModalOpen: true }) } }
                 style={ { marginLeft: 20 } }
@@ -249,8 +249,8 @@ export default class FilmsIndex extends Component {
               ]}
               urlPrefix="films"
             />
-            <Spinner visible={ fetching } />
-            <GrayedOut visible={ fetching } />
+            <Spinner visible={ spinner } />
+            <GrayedOut visible={ spinner } />
           </div>
           <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
             <NewEntity

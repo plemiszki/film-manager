@@ -8,7 +8,7 @@ export default class DvdDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       dvd: {
         stock: "",
         unitsShipped: ""
@@ -30,7 +30,7 @@ export default class DvdDetails extends React.Component {
     fetchEntity().then((response) => {
       const { dvd, shorts, otherShorts, dvdTypes } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         dvd,
         dvdSaved: deepCopy(dvd),
         shorts,
@@ -44,7 +44,7 @@ export default class DvdDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       updateEntity({
@@ -53,14 +53,14 @@ export default class DvdDetails extends React.Component {
       }).then((response) => {
         const { dvd } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           dvd,
           dvdSaved: deepCopy(dvd),
           changesToSave: false
         });
       }, (response) => {
         this.setState({
-          fetching: false,
+          spinner: false,
           errors: response.errors
         });
       });
@@ -70,7 +70,7 @@ export default class DvdDetails extends React.Component {
   selectShort(option) {
     const shortId = option.id;
     this.setState({
-      fetching: true,
+      spinner: true,
       shortsModalOpen: false
     });
     createEntity({
@@ -83,7 +83,7 @@ export default class DvdDetails extends React.Component {
     }).then((response) => {
       const { shorts, otherShorts } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         shorts,
         otherShorts
       });
@@ -93,7 +93,7 @@ export default class DvdDetails extends React.Component {
   clickX(option) {
     const dvdShortId = option.id;
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'dvd_shorts',
@@ -101,7 +101,7 @@ export default class DvdDetails extends React.Component {
     }).then((response) => {
       const { shorts, otherShorts } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         shorts,
         otherShorts,
       });
@@ -110,7 +110,7 @@ export default class DvdDetails extends React.Component {
 
   confirmDelete() {
     this.setState({
-      fetching: true,
+      spinner: true,
       deleteModalOpen: false
     });
     deleteEntity({
@@ -144,7 +144,7 @@ export default class DvdDetails extends React.Component {
   }
 
   render() {
-    const { fetching, justSaved, changesToSave, shorts, dvd } = this.state;
+    const { spinner, justSaved, changesToSave, shorts, dvd } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -187,7 +187,7 @@ export default class DvdDetails extends React.Component {
               <SaveButton
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
-                disabled={ fetching }
+                disabled={ spinner }
                 onClick={ () => { this.clickSave() } }
               />
               <DeleteButton
@@ -199,13 +199,13 @@ export default class DvdDetails extends React.Component {
               <Button
                 marginRight
                 float
-                disabled={ fetching }
+                disabled={ spinner }
                 text="Email HTML"
                 onClick={ () => { this.getHTML() } }
               />
             </div>
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
         <Modal isOpen={ this.state.shortsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>

@@ -14,7 +14,7 @@ export default class NewEntity extends React.Component {
     entityNamePlural = this.props.entityNamePlural || `${entityName}s`;
     directory = ChangeCase.snakeCase(entityNamePlural);
     let state_obj = {
-      fetching: !!fetchData,
+      spinner: !!fetchData,
       [entityName]: deepCopy(initialEntity),
       errors: {},
     }
@@ -39,7 +39,7 @@ export default class NewEntity extends React.Component {
     if (this.props.fetchData) {
       sendRequest(`/api/${directory}/new`).then((response) => {
         let entity = deepCopy(this.state[this.props.entityName]);
-        let obj = { fetching: false };
+        let obj = { spinner: false };
         this.props.fetchData.forEach((arrayName) => {
           obj[arrayName] = response[arrayName];
         })
@@ -57,7 +57,7 @@ export default class NewEntity extends React.Component {
     let entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
     let directory = ChangeCase.snakeCase(entityNamePlural);
     this.setState({
-      fetching: true
+      spinner: true
     });
     createEntity({
       directory,
@@ -76,7 +76,7 @@ export default class NewEntity extends React.Component {
       }
     }, (response) => {
       this.setState({
-        fetching: false,
+        spinner: false,
         errors: response.errors
       }, () => {
         resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
@@ -90,19 +90,19 @@ export default class NewEntity extends React.Component {
 
   render() {
     const { buttonText, entityName } = this.props;
-    const { fetching } = this.state;
+    const { spinner } = this.state;
     return (
       <div className="new-entity handy-component admin-modal">
         <form className="white-box">
           { this.renderFields() }
           <Button
             submit
-            disabled={ fetching }
+            disabled={ spinner }
             text={ buttonText || `Add ${ChangeCase.titleCase(entityName)}` }
             onClick={ () => { this.clickAdd() } }
           />
-          <GrayedOut visible={ fetching } />
-          <Spinner visible={ fetching } />
+          <GrayedOut visible={ spinner } />
+          <Spinner visible={ spinner } />
         </form>
       </div>
     );

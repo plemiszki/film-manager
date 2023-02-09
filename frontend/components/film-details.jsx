@@ -89,7 +89,7 @@ export default class FilmDetails extends React.Component {
       eduPlatformFilms: [],
       episodes: [],
       errors: {},
-      fetching: true,
+      spinner: true,
       film: {},
       filmCountries: [],
       filmFormats: [],
@@ -238,7 +238,7 @@ export default class FilmDetails extends React.Component {
     this.setState({
       percentageObject,
       percentageObjectSaved: deepCopy(percentageObject),
-      fetching: false
+      spinner: false
     });
   }
 
@@ -325,14 +325,14 @@ export default class FilmDetails extends React.Component {
       };
     }
     this.setState({
-      fetching: true
+      spinner: true
     });
     sendRequest(`/api/${directory}/rearrange`, {
       method: 'PATCH',
       data,
     }).then((response) => {
       this.setState({
-        fetching: false,
+        spinner: false,
         [entityArray]: response[entityArray]
       });
     });
@@ -398,7 +398,7 @@ export default class FilmDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       const { film, percentageObject } = this.state;
@@ -445,7 +445,7 @@ export default class FilmDetails extends React.Component {
       }, (response) => {
         const { errors } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           errors,
         });
       });
@@ -473,7 +473,7 @@ export default class FilmDetails extends React.Component {
     const entityNamePlural = ChangeCase.camelCase(directory);
     const { id } = this.state.film;
     this.setState({
-      fetching: true
+      spinner: true
     });
     createEntity({
       directory,
@@ -484,7 +484,7 @@ export default class FilmDetails extends React.Component {
       }
     }).then((response) => {
       let obj = {
-        fetching: false,
+        spinner: false,
         [entityNamePlural]: response[entityNamePlural]
       }
       otherArrays && otherArrays.forEach((arrayName) => {
@@ -499,14 +499,14 @@ export default class FilmDetails extends React.Component {
     const { directory, otherArrays, id } = args;
     const entityNamePlural = ChangeCase.camelCase(directory);
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory,
       id,
     }).then((response) => {
       let obj = {
-        fetching: false,
+        spinner: false,
         [entityNamePlural]: response[entityNamePlural]
       }
       otherArrays && otherArrays.forEach((arrayName) => {
@@ -518,7 +518,7 @@ export default class FilmDetails extends React.Component {
 
   confirmDelete() {
     this.setState({
-      fetching: true,
+      spinner: true,
       deleteModalOpen: false
     });
     const { id } = this.state.film;
@@ -612,7 +612,7 @@ export default class FilmDetails extends React.Component {
   }
 
   render() {
-    const { dvds, dvdTypes, film, tab, fetching } = this.state;
+    const { dvds, dvdTypes, film, tab, spinner } = this.state;
     const title = {
       'Short': 'Short',
       'Feature': 'Film',
@@ -643,8 +643,8 @@ export default class FilmDetails extends React.Component {
             </div>
             { this.renderTab(tab) }
             { this.renderButtons() }
-            <Spinner visible={ fetching } />
-            <GrayedOut visible={ fetching } />
+            <Spinner visible={ spinner } />
+            <GrayedOut visible={ spinner } />
           </div>
           <Modal isOpen={ this.state.crossedFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
             <ModalSelect options={ this.state.otherCrossedFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'crossed_films', entityName: 'crossedFilm', key: 'crossedFilmId', otherArrays: ['otherCrossedFilms'] }) } />
@@ -1687,13 +1687,13 @@ export default class FilmDetails extends React.Component {
   }
 
   renderButtons() {
-    const { justSaved, changesToSave, fetching } = this.state;
+    const { justSaved, changesToSave, spinner } = this.state;
     return (
       <div>
         <SaveButton
           justSaved={ justSaved }
           changesToSave={ changesToSave }
-          disabled={ fetching }
+          disabled={ spinner }
           onClick={ () => { this.clickSave() } }
         />
         { this.renderErrorGuide() }

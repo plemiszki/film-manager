@@ -13,7 +13,7 @@ export default class ReportDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       report: {},
       reportSaved: {},
       errors: {},
@@ -36,7 +36,7 @@ export default class ReportDetails extends React.Component {
         reportSaved: deepCopy(report),
         streams,
         streamsSaved: deepCopy(streams),
-        fetching: false,
+        spinner: false,
         films,
       }, () => {
         this.setState({
@@ -58,7 +58,7 @@ export default class ReportDetails extends React.Component {
       }
     });
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       const { report } = this.state;
@@ -77,7 +77,7 @@ export default class ReportDetails extends React.Component {
       }).then((response) => {
         const { report, streams, films } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           changesToSave: false,
           report,
           reportSaved: deepCopy(report),
@@ -88,7 +88,7 @@ export default class ReportDetails extends React.Component {
       }, (response) => {
         const { errors } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           errors,
         });
       });
@@ -111,7 +111,7 @@ export default class ReportDetails extends React.Component {
 
   clickExportUncrossed() {
     this.setState({
-      fetching: true
+      spinner: true
     }, () => {
       const { films, report } = this.state;
       sendRequest('/api/royalty_reports/export_uncrossed', {
@@ -123,7 +123,7 @@ export default class ReportDetails extends React.Component {
       }).then((response) => {
         const { job } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           job,
           jobModalOpen: true,
         });
@@ -148,7 +148,7 @@ export default class ReportDetails extends React.Component {
   }
 
   render() {
-    const { showJoined, report, streams, fetching, justSaved, changesToSave } = this.state;
+    const { showJoined, report, streams, spinner, justSaved, changesToSave } = this.state;
     const { dealId } = report;
     const crossedStatement = (report.id === 0);
 
@@ -703,25 +703,25 @@ export default class ReportDetails extends React.Component {
               <SaveButton
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
-                disabled={ fetching }
+                disabled={ spinner }
                 onClick={ () => { this.clickSave() } }
               />
               <Button
                 text="Export PDF"
                 onClick={ () => { this.clickExport() } }
-                disabled= { fetching }
+                disabled= { spinner }
                 float
               />
               <Button
                 text={ showJoined ? "Including Current Period" : "Not Including Current Period" }
                 onClick={ () => { this.clickToggle() } }
-                disabled= { fetching }
+                disabled= { spinner }
                 float
                 marginRight
               />
             </div>
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
           { Common.renderJobModal.call(this, this.state.job) }
         </div>
@@ -753,7 +753,7 @@ export default class ReportDetails extends React.Component {
   }
 
   renderHeader() {
-    const { fetching, films, report } = this.state;
+    const { spinner, films, report } = this.state;
     if (films.length === 0) {
       return null;
     } else if (films.length === 1) {
@@ -784,8 +784,8 @@ export default class ReportDetails extends React.Component {
           <h1 key="1">Crossed Films Statement</h1>
           <h3 key="2">{ report.year } - Q{ report.quarter }</h3>
           <div key="3" className="white-box crossed-statement-header">
-            <Spinner visible={ fetching } />
-            <GrayedOut visible={ fetching } />
+            <Spinner visible={ spinner } />
+            <GrayedOut visible={ spinner } />
             <div>
               { films.map((film, index) => {
                 return (
@@ -794,7 +794,7 @@ export default class ReportDetails extends React.Component {
               }) }
             </div>
             <Button
-              disabled={ fetching }
+              disabled={ spinner }
               text="Export Uncrossed Statements"
               onClick={ () => { this.clickExportUncrossed() } }
               style={ { marginTop: '20px' } }

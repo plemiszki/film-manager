@@ -9,7 +9,7 @@ export default class VirtualBookingDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       virtualBooking: {},
       virtualBookingSaved: {},
       calculations: {
@@ -32,7 +32,7 @@ export default class VirtualBookingDetails extends React.Component {
     fetchEntity().then((response) => {
       const { virtualBooking, films, venues, invoices, payments, calculations, job } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         virtualBooking,
         virtualBookingSaved: deepCopy(virtualBooking),
         films,
@@ -76,7 +76,7 @@ export default class VirtualBookingDetails extends React.Component {
 
   confirmDeleteInvoice() {
     this.setState({
-      fetching: true,
+      spinner: true,
       deleteInvoiceModalOpen: false
     });
     deleteEntity({
@@ -85,7 +85,7 @@ export default class VirtualBookingDetails extends React.Component {
     }).then((response) => {
       const { invoices } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         invoices,
       });
     });
@@ -115,7 +115,7 @@ export default class VirtualBookingDetails extends React.Component {
 
   clickDeletePayment(id) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'payments',
@@ -123,7 +123,7 @@ export default class VirtualBookingDetails extends React.Component {
     }).then((response) => {
       const { payments, calculations } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         payments,
         calculations,
       });
@@ -132,7 +132,7 @@ export default class VirtualBookingDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       updateEntity({
@@ -141,7 +141,7 @@ export default class VirtualBookingDetails extends React.Component {
       }).then((response) => {
         const { virtualBooking, calculations } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           virtualBooking,
           virtualBookingSaved: deepCopy(virtualBooking),
           calculations,
@@ -150,7 +150,7 @@ export default class VirtualBookingDetails extends React.Component {
       }, (response) => {
         const { errors } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           errors,
         });
       });
@@ -160,7 +160,7 @@ export default class VirtualBookingDetails extends React.Component {
   clickSendReport() {
     const { virtualBooking } = this.state;
     this.setState({
-      fetching: true
+      spinner: true
     });
     sendRequest(`/api/virtual_bookings/${virtualBooking.id}/send_report`, {
       method: 'POST',
@@ -168,7 +168,7 @@ export default class VirtualBookingDetails extends React.Component {
       const { job } = response;
       this.setState({
         job,
-        fetching: false,
+        spinner: false,
         jobModalOpen: true,
       });
     });
@@ -208,7 +208,7 @@ export default class VirtualBookingDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, fetching } = this.state;
+    const { justSaved, changesToSave, spinner } = this.state;
     return (
       <div className="handy-component">
         <h1>Virtual Booking Details</h1>
@@ -249,11 +249,11 @@ export default class VirtualBookingDetails extends React.Component {
             confirmDelete={ Details.confirmDelete.bind(this) }
             justSaved={ justSaved }
             changesToSave={ changesToSave }
-            disabled={ fetching }
+            disabled={ spinner }
             clickSave={ () => { this.clickSave() } }
           />
-          <GrayedOut visible={ fetching } />
-          <Spinner visible={ fetching } />
+          <GrayedOut visible={ spinner } />
+          <Spinner visible={ spinner } />
         </div>
         <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700, height: this.calculateNewInvoiceModalHeight() }) }>
           <NewInvoice
@@ -384,7 +384,7 @@ export default class VirtualBookingDetails extends React.Component {
   }
 
   renderReportSection() {
-    const { fetching, changesToSave, virtualBooking } = this.state;
+    const { spinner, changesToSave, virtualBooking } = this.state;
     if (this.state.virtualBooking.host == 'FM') {
       return (
         <div>
@@ -401,7 +401,7 @@ export default class VirtualBookingDetails extends React.Component {
                 <h2>&nbsp;</h2>
                 <Button
                   marginLeft
-                  disabled={ fetching || changesToSave }
+                  disabled={ spinner || changesToSave }
                   text={ changesToSave ? "Save to Send" : (virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
                   onClick={ () => { this.clickSendReport() } }
                   style={ {

@@ -6,7 +6,7 @@ export default class CreditMemoDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       creditMemo: {},
       rows: [],
     };
@@ -15,7 +15,7 @@ export default class CreditMemoDetails extends React.Component {
   componentDidMount() {
     fetchEntity().then((response) => {
       this.setState({
-        fetching: false,
+        spinner: false,
         creditMemo: response.creditMemo,
         rows: response.rows,
       });
@@ -27,7 +27,7 @@ export default class CreditMemoDetails extends React.Component {
   }
 
   render() {
-    const { fetching, creditMemo, rows } = this.state;
+    const { spinner, creditMemo, rows } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -84,10 +84,10 @@ export default class CreditMemoDetails extends React.Component {
             <Button
               text="Export"
               onClick={ () => { this.clickExport() } }
-              disabled={ fetching }
+              disabled={ spinner }
             />
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
         <style jsx>{`

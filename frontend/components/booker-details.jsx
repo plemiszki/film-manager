@@ -8,7 +8,7 @@ export default class BookerDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      fetching: true,
+      spinner: true,
       booker: {},
       bookerSaved: {},
       bookerVenues: [],
@@ -25,7 +25,7 @@ export default class BookerDetails extends React.Component {
     fetchEntity().then((response) => {
       const { booker, venues, bookerVenues } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         booker,
         bookerSaved: deepCopy(booker),
         venues,
@@ -43,7 +43,7 @@ export default class BookerDetails extends React.Component {
   selectVenue(option) {
     this.setState({
       venuesModalOpen: false,
-      fetching: true,
+      spinner: true,
     });
     createEntity({
       directory: 'booker_venues',
@@ -54,7 +54,7 @@ export default class BookerDetails extends React.Component {
       }
     }).then((response) => {
       this.setState({
-        fetching: false,
+        spinner: false,
         bookerVenues: response.bookerVenues,
       });
     });
@@ -62,7 +62,7 @@ export default class BookerDetails extends React.Component {
 
   clickDeleteVenue(id) {
     this.setState({
-      fetching: true
+      spinner: true
     });
     deleteEntity({
       directory: 'booker_venues',
@@ -70,7 +70,7 @@ export default class BookerDetails extends React.Component {
     }).then((response) => {
       const { bookerVenues } = response;
       this.setState({
-        fetching: false,
+        spinner: false,
         bookerVenues,
       });
     });
@@ -78,7 +78,7 @@ export default class BookerDetails extends React.Component {
 
   clickSave() {
     this.setState({
-      fetching: true,
+      spinner: true,
       justSaved: true
     }, () => {
       const { booker } = this.state;
@@ -88,14 +88,14 @@ export default class BookerDetails extends React.Component {
       }).then((response) => {
         const { booker } = response;
         this.setState({
-          fetching: false,
+          spinner: false,
           booker,
           bookerSaved: deepCopy(booker),
           changesToSave: false
         });
       }, (response) => {
         this.setState({
-          fetching: false,
+          spinner: false,
           errors: response.errors,
         });
       });
@@ -113,7 +113,7 @@ export default class BookerDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, fetching, bookerVenues } = this.state;
+    const { justSaved, changesToSave, spinner, bookerVenues } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -146,11 +146,11 @@ export default class BookerDetails extends React.Component {
               confirmDelete={ Details.confirmDelete.bind(this) }
               justSaved={ justSaved }
               changesToSave={ changesToSave }
-              disabled={ fetching }
+              disabled={ spinner }
               clickSave={ () => { this.clickSave() } }
             />
-            <GrayedOut visible={ fetching } />
-            <Spinner visible={ fetching } />
+            <GrayedOut visible={ spinner } />
+            <Spinner visible={ spinner } />
           </div>
         </div>
         <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
