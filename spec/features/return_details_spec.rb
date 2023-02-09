@@ -21,6 +21,7 @@ describe 'return_details', type: :feature do
 
   it 'displays information about the return' do
     visit return_path(@return, as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'Return Details'
     expect(find('input[data-field="number"]').value).to eq '012345678'
     expect(find('select[data-field="customerId"]', visible: false).value).to eq '1'
