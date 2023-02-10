@@ -38,7 +38,6 @@ export default class InvoiceDetails extends React.Component {
   render() {
     const { spinner } = this.props;
     const { invoice, rows, payments } = this.state;
-    console.log(rows);
     const dvdInvoice = invoice.invoiceType === "dvd";
     const bookingInvoice = invoice.invoiceType === "booking";
     const tableColumns = dvdInvoice ? [

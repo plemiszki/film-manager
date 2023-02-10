@@ -141,7 +141,6 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   clickSelectItem(option) {
-    console.log(option);
     this.setState({
       selectedItemId: option.id,
       selectedItemType: option.itemType,
