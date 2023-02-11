@@ -129,7 +129,7 @@ describe 'purchase_order_details_spec', type: :feature do
     visit purchase_order_path(@purchase_order, as: $admin_user)
     click_btn("Add Item")
     select_from_modal('A Movie - Retail')
-    within('.qty-modal') do
+    within('.content') do
       click_btn('OK', :submit)
     end
     expect(page).to have_no_css('.spinner')

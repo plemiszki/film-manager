@@ -65,7 +65,7 @@ describe 'return_details', type: :feature do
     visit return_path(@return, as: $admin_user)
     click_btn('Add Item')
     select_from_modal('Film 1')
-    within('.qty-modal') do
+    within('.content') do
       click_btn('OK', :submit)
     end
     expect(page).to have_no_css('.spinner')

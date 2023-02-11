@@ -3,6 +3,7 @@ import Modal from 'react-modal'
 import NewEntity from './new-entity.jsx'
 import { Common, Button, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner, ModalSelect, BottomButtons, Table, OutlineButton } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
+import QuantityModal from './quantity-modal.jsx'
 
 const AddAddressModalStyles = {
   overlay: {
@@ -54,7 +55,6 @@ export default class PurchaseOrderDetails extends React.Component {
       addAddressModalOpen: false,
       selectAddressModalOpen: false,
       selectedItemId: null,
-      selectedItemQty: null
     };
   }
 
@@ -146,20 +146,11 @@ export default class PurchaseOrderDetails extends React.Component {
       selectedItemType: option.itemType,
       selectItemModalOpen: false,
       qtyModalOpen: true,
-      selectedItemQty: 1
     });
   }
 
-  updateQty(e) {
-    if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
-      this.setState({
-        selectedItemQty: e.target.value
-      });
-    }
-  }
-
-  clickQtyOk() {
-    const { purchaseOrder, selectedItemId, selectedItemType, selectedItemQty } = this.state;
+  clickQtyOk(qty) {
+    const { purchaseOrder, selectedItemId, selectedItemType } = this.state;
     this.setState({
       spinner: true,
       qtyModalOpen: false
@@ -171,7 +162,7 @@ export default class PurchaseOrderDetails extends React.Component {
         purchaseOrderId: purchaseOrder.id,
         itemId: selectedItemId,
         itemType: selectedItemType,
-        qty: selectedItemQty
+        qty,
       }
     }).then((response) => {
       const { items, otherItems } = response;
@@ -223,16 +214,6 @@ export default class PurchaseOrderDetails extends React.Component {
     }
   }
 
-  findOtherItem(type, id) {
-    var result;
-    this.state.otherItems.forEach((otherItem, index) => {
-      if (otherItem.itemType == type && otherItem.id == id) {
-        result = otherItem;
-      }
-    });
-    return result;
-  }
-
   clickShip(args) {
     const { reportingOnly } = args;
     const { purchaseOrder, changesToSave } = this.state;
@@ -256,11 +237,13 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   render() {
-    const { purchaseOrder, dvdCustomers, spinner, justSaved, changesToSave } = this.state;
+    const { purchaseOrder, dvdCustomers, spinner, justSaved, changesToSave, qtyModalOpen, selectedItemId, selectedItemType, otherItems = [] } = this.state;
     const customer = this.getCustomerFromId(purchaseOrder.customerId);
     const canSendInvoice = this.canSendInvoice(customer);
     const unshippedPO = !purchaseOrder.shipDate;
     const shippedPO = !unshippedPO;
+
+    const selectedItem = otherItems.find(item => item.id == selectedItemId && item.itemType === selectedItemType)
 
     let tableColumns = [
       {
@@ -438,20 +421,12 @@ export default class PurchaseOrderDetails extends React.Component {
           <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
             <ModalSelect options={ this.state.otherItems } property="label" func={ this.clickSelectItem.bind(this) } />
           </Modal>
-          <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
-            <div className="qty-modal">
-              <h1>Enter Quantity</h1>
-              <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-              <form>
-                <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
-                <Button
-                  submit
-                  text="OK"
-                  onClick={ () => this.clickQtyOk() }
-                />
-              </form>
-            </div>
-          </Modal>
+          <QuantityModal
+            isOpen={ qtyModalOpen }
+            item={ selectedItem }
+            onClose={ () => { this.setState({ qtyModalOpen: false }) } }
+            clickOK={ qty => this.clickQtyOk(qty) }
+          />
         </div>
         <style jsx>{`
           .notification {

@@ -2,19 +2,7 @@ import React from 'react'
 import Modal from 'react-modal'
 import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, Button } from 'handy-components'
 import FM from '../../app/assets/javascripts/me/common.jsx'
-
-const qtyModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    width: 300,
-    height: 238
-  }
-};
+import QuantityModal from './quantity-modal.jsx'
 
 export default class ReturnDetails extends React.Component {
 
@@ -101,8 +89,8 @@ export default class ReturnDetails extends React.Component {
     }
   }
 
-  clickQtyOk() {
-    const { selectedItemId, selectedItemType, selectedItemQty } = this.state;
+  clickQtyOk(qty) {
+    const { selectedItemId, selectedItemType } = this.state;
     this.setState({
       spinner: true,
       qtyModalOpen: false
@@ -114,7 +102,7 @@ export default class ReturnDetails extends React.Component {
         returnId: this.state.return.id,
         itemId: selectedItemId,
         itemType: selectedItemType,
-        qty: selectedItemQty
+        qty,
       }
     }).then((response) => {
       const { items, otherItems } = response;
@@ -173,16 +161,6 @@ export default class ReturnDetails extends React.Component {
     }
   }
 
-  findOtherItem(type, id) {
-    var result;
-    this.state.otherItems.forEach((otherItem, index) => {
-      if (otherItem.itemType == type && otherItem.id == id) {
-        result = otherItem;
-      }
-    });
-    return result;
-  }
-
   modalCloseAndRefresh() {
     this.setState({
       noErrorsModalOpen: false
@@ -190,7 +168,9 @@ export default class ReturnDetails extends React.Component {
   }
 
   render() {
-    const { spinner, justSaved, changesToSave, items } = this.state;
+    const { spinner, justSaved, changesToSave, items, qtyModalOpen, selectedItemId, selectedItemType, otherItems = [] } = this.state;
+    const selectedItem = otherItems.find(item => item.id == selectedItemId && item.itemType === selectedItemType);
+
     return (
       <>
         <div className="handy-component">
@@ -244,52 +224,14 @@ export default class ReturnDetails extends React.Component {
         <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherItems } property="label" func={ this.selectItem.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.qtyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ qtyModalStyles }>
-          { this.renderQtyModal() }
-        </Modal>
+        <QuantityModal
+          isOpen={ qtyModalOpen }
+          item={ selectedItem }
+          onClose={ () => { this.setState({ qtyModalOpen: false }) } }
+          clickOK={ qty => this.clickQtyOk(qty) }
+        />
         { Common.renderJobModal.call(this, this.state.job) }
       </>
-    );
-  }
-
-  renderQtyModal() {
-    return (
-    <>
-      <div className="qty-modal">
-        <h1>Enter Quantity:</h1>
-        <h2>{ this.state.selectedItemId ? this.findOtherItem(this.state.selectedItemType, this.state.selectedItemId).label : '' }</h2>
-        <form>
-          <input onChange={ this.updateQty.bind(this) } value={ this.state.selectedItemQty || "" } /><br />
-          <Button
-            submit
-            text="OK"
-            onClick={ () => this.clickQtyOk() }
-          />
-        </form>
-      </div>
-      <style jsx>{`
-        .notification {
-          margin-bottom: 30px;
-        }
-        .qty-modal {
-          padding: 30px;
-          text-align: center;
-        }
-        .qty-modal h1 {
-          font-size: 16px;
-          margin-bottom: 14px;
-        }
-        .qty-modal h2 {
-          font-size: 12px;
-          margin-bottom: 20px;
-        }
-        .qty-modal input {
-          width: 170px;
-          padding: 13px;
-          margin-bottom: 20px;
-        }
-      `}</style>
-    </>
     );
   }
 
