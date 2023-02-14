@@ -81,6 +81,7 @@ json.film do
   json.pprPostStreetMember '$' + number_with_precision(@film.ppr_post_street_member, precision: 2, delimiter: ',')
   json.drlPostStreetMember '$' + number_with_precision(@film.drl_post_street_member, precision: 2, delimiter: ',')
   json.pprDrlPostStreetMember '$' + number_with_precision(@film.ppr_drl_post_street_member, precision: 2, delimiter: ',')
+  json.totalBoxOffice '$' + number_with_precision(@total_box_office, precision: 2, delimiter: ',')
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

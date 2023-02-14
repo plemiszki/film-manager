@@ -876,6 +876,7 @@ export default class FilmDetails extends React.Component {
       laurels,
       quotes,
       schedule,
+      searchText,
       subRights,
     } = this.state;
     if (tab === "contract") {
@@ -1020,15 +1021,16 @@ export default class FilmDetails extends React.Component {
             </div>
             <hr />
             <p className="section-header">Bookings</p>
+            <p className="total-box-office">Total Box Office: { film.totalBoxOffice }</p>
             <div style={ { position: 'relative', marginBottom: 40 } }>
               <ul className="bookings-count-list clearfix">
-                <li>Theatrical: { this.state.film.theatricalCount }</li>
-                <li>Festival: { this.state.film.festivalCount }</li>
-                <li>Non-Theatrical: { this.state.film.nonTheatricalCount }</li>
+                <li>Theatrical: { film.theatricalCount }</li>
+                <li>Festival: { film.festivalCount }</li>
+                <li>Non-Theatrical: { film.nonTheatricalCount }</li>
               </ul>
               <SearchBar
                 onChange={ FM.changeSearchText.bind(this) }
-                value={ this.state.searchText || "" }
+                value={ searchText || "" }
                 style={ {
                   float: 'none',
                   position: 'absolute',
@@ -1060,6 +1062,9 @@ export default class FilmDetails extends React.Component {
             <hr />
           </div>
           <style>{`
+            p.total-box-office {
+              margin-bottom: 30px;
+            }
             ul.bookings-count-list {
               display: inline-block;
               font-family: 'TeachableSans-Bold';

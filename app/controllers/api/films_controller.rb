@@ -346,8 +346,10 @@ class Api::FilmsController < AdminController
     @bookings = Booking.where(film_id: @film.id).includes(:venue, :payments)
     @virtual_bookings = VirtualBooking.where(film_id: @film.id).includes(:venue)
     @calculations = {}
+    @total_box_office = 0
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
+      @total_box_office += @calculations[booking.id][:total_gross]
     end
     @templates = DealTemplate.all
     @licensors = Licensor.all

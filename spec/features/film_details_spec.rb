@@ -868,6 +868,18 @@ describe 'film_details', type: :feature do
     end
   end
 
+  it "displays the total box office" do
+    create(:venue)
+    booking_1 = create(:booking)
+    booking_1.update(box_office: 1000)
+    booking_2 = create(:booking)
+    booking_2.update(box_office: 500)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Bookings').click
+    total_box_office = find('p.total-box-office').text
+    expect(total_box_office).to eq('Total Box Office: $1,500.00')
+  end
+
   # dvds tab
 
   it "displays the film's dvds" do
