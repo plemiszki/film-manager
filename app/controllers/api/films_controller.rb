@@ -347,9 +347,15 @@ class Api::FilmsController < AdminController
     @virtual_bookings = VirtualBooking.where(film_id: @film.id).includes(:venue)
     @calculations = {}
     @total_box_office = 0
+    @missing_reports = 0
     @bookings.each do |booking|
       @calculations[booking.id] = booking_calculations(booking)
       @total_box_office += @calculations[booking.id][:total_gross]
+      @missing_reports += 1 unless booking.box_office_received
+    end
+    @virtual_bookings.each do |booking|
+      @total_box_office += booking.box_office
+      @missing_reports += 1 unless booking.box_office_received
     end
     @templates = DealTemplate.all
     @licensors = Licensor.all

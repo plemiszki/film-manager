@@ -874,10 +874,26 @@ describe 'film_details', type: :feature do
     booking_1.update(box_office: 1000)
     booking_2 = create(:booking)
     booking_2.update(box_office: 500)
+    virtual_booking = create(:virtual_booking)
+    virtual_booking.update(box_office: 300)
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Bookings').click
     total_box_office = find('p.total-box-office').text
-    expect(total_box_office).to eq('Total Box Office: $1,500.00')
+    expect(total_box_office).to eq('Total Box Office: $1,800.00')
+  end
+
+  it "displays the number of missing box office reports" do
+    create(:venue)
+    booking_1 = create(:booking)
+    booking_1.update(box_office_received: true)
+    create(:booking)
+    virtual_booking_1 = create(:virtual_booking)
+    virtual_booking_1.update(box_office_received: true)
+    create(:virtual_booking)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Bookings').click
+    missing_reports = find('p.missing-reports').text
+    expect(missing_reports).to eq('Missing Box Office Reports: 2')
   end
 
   # dvds tab

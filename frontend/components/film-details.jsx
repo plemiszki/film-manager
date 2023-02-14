@@ -1022,11 +1022,13 @@ export default class FilmDetails extends React.Component {
             <hr />
             <p className="section-header">Bookings</p>
             <p className="total-box-office">Total Box Office: { film.totalBoxOffice }</p>
+            <p className="missing-reports">Missing Box Office Reports: { film.missingReports }</p>
             <div style={ { position: 'relative', marginBottom: 40 } }>
               <ul className="bookings-count-list clearfix">
                 <li>Theatrical: { film.theatricalCount }</li>
                 <li>Festival: { film.festivalCount }</li>
                 <li>Non-Theatrical: { film.nonTheatricalCount }</li>
+                <li>Virtual: { film.virtualCount }</li>
               </ul>
               <SearchBar
                 onChange={ FM.changeSearchText.bind(this) }
@@ -1063,6 +1065,9 @@ export default class FilmDetails extends React.Component {
           </div>
           <style>{`
             p.total-box-office {
+              margin-bottom: 10px;
+            }
+            p.missing-reports {
               margin-bottom: 30px;
             }
             ul.bookings-count-list {

@@ -45,6 +45,7 @@ json.film do
   json.theatricalCount @bookings.where(booking_type: 'Theatrical').count
   json.festivalCount @bookings.where(booking_type: 'Festival').count
   json.nonTheatricalCount @bookings.where(booking_type: 'Non-Theatrical').count
+  json.virtualCount @virtual_bookings.count
   json.avodRelease @film.avod_release ? (@film.avod_release.strftime("%-m/%-d/%y") + (@film.avod_tentative ? '?' : '')) : ""
   json.svodRelease @film.svod_release ? (@film.svod_release.strftime("%-m/%-d/%y") + (@film.svod_tentative ? '?' : '')) : ""
   json.tvodRelease @film.tvod_release ? (@film.tvod_release.strftime("%-m/%-d/%y") + (@film.tvod_tentative ? '?' : '')) : ""
@@ -82,6 +83,7 @@ json.film do
   json.drlPostStreetMember '$' + number_with_precision(@film.drl_post_street_member, precision: 2, delimiter: ',')
   json.pprDrlPostStreetMember '$' + number_with_precision(@film.ppr_drl_post_street_member, precision: 2, delimiter: ',')
   json.totalBoxOffice '$' + number_with_precision(@total_box_office, precision: 2, delimiter: ',')
+  json.missingReports @missing_reports
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
