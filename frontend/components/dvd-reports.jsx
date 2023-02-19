@@ -27,6 +27,7 @@ export default class DvdReports extends React.Component {
     };
     this.state = {
       spinner: true,
+      titlesReportCustomers: [],
       titlesReport: [],
       customersReport: [],
       year: (new Date).getFullYear(),
@@ -53,11 +54,12 @@ export default class DvdReports extends React.Component {
         year,
       },
     }).then((response) => {
-      const { customersReport, titlesReport } = response;
+      const { customersReport, titlesReport, titlesReportCustomers } = response;
       this.setState({
         spinner: false,
         customersReport,
         titlesReport,
+        titlesReportCustomers,
       });
     });
   }
@@ -116,10 +118,29 @@ export default class DvdReports extends React.Component {
     }
   }
 
-  render() {
-    const { spinner, customersReport, titlesReport, year, exportModalOpen, job } = this.state;
+  titlesReportColumns() {
     const UNITS_COLUMN_WIDTH = 60;
     const SALES_COLUMN_WIDTH = 120;
+    const { titlesReportCustomers } = this.state;
+    let result = [
+      { name: 'title', bold: true, width: 400 },
+      { name: 'type', bold: true, header: 'Format', width: 120 },
+      { name: 'retailDate', header: 'Street Date', date: true, width: 130 },
+      { name: 'totalUnits', header: 'TOTAL', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+      { name: 'totalSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+    ];
+    titlesReportCustomers.forEach((customer) => {
+      const prefix = customer.name.toLowerCase();
+      result = result.concat([
+        { name: `${prefix}Units`, header: customer.name, width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
+        { name: `${prefix}Sales`, blankHeader: true, width: SALES_COLUMN_WIDTH }
+      ])
+    });
+    return result;
+  }
+
+  render() {
+    const { spinner, customersReport, titlesReport, year, exportModalOpen, job } = this.state;
     return (
       <>
         <div>
@@ -190,21 +211,7 @@ export default class DvdReports extends React.Component {
                     hover={ false }
                     links={ false }
                     defaultSearchColumn="retailDate"
-                    columns={[
-                      { name: 'title', bold: true, width: 400 },
-                      { name: 'type', bold: true, header: 'Format', width: 120 },
-                      { name: 'retailDate', header: 'Street Date', date: true, width: 130 },
-                      { name: 'totalUnits', header: 'TOTAL', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
-                      { name: 'totalSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
-                      { name: 'aecUnits', header: 'AEC', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
-                      { name: 'aecSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
-                      { name: 'amazonUnits', header: 'Amazon', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
-                      { name: 'amazonSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
-                      { name: 'ingramUnits', header: 'Ingram', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
-                      { name: 'ingramSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
-                      { name: 'midwestUnits', header: 'Midwest', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
-                      { name: 'midwestSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
-                    ]}
+                    columns={ this.titlesReportColumns() }
                     rows={ titlesReport }
                   />
                 </div>

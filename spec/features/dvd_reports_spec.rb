@@ -61,14 +61,14 @@ describe 'dvd_reports', type: :feature do
       expect(find('div[data-test="0-4"]')).to have_content('$148.84')
       expect(find('div[data-test="0-5"]')).to have_content('4')
       expect(find('div[data-test="0-6"]')).to have_content('$99.20')
-      expect(find('div[data-test="0-11"]')).to have_content('2')
-      expect(find('div[data-test="0-12"]')).to have_content('$49.64')
+      expect(find('div[data-test="0-7"]')).to have_content('2')
+      expect(find('div[data-test="0-8"]')).to have_content('$49.64')
       expect(find('div[data-test="1-3"]')).to have_content('9')
       expect(find('div[data-test="1-4"]')).to have_content('$133.81')
       expect(find('div[data-test="1-5"]')).to have_content('2')
       expect(find('div[data-test="1-6"]')).to have_content('$29.72')
-      expect(find('div[data-test="1-11"]')).to have_content('7')
-      expect(find('div[data-test="1-12"]')).to have_content('$104.09')
+      expect(find('div[data-test="1-7"]')).to have_content('7')
+      expect(find('div[data-test="1-8"]')).to have_content('$104.09')
     end
   end
 

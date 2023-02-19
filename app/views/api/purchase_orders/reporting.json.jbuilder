@@ -1,3 +1,7 @@
+json.titlesReportCustomers @titles_report_dvd_customers do |dvd_customer|
+  json.id dvd_customer.id
+  json.name dvd_customer.get_name
+end
 json.customersReport @dvd_customers + [{
   id: nil,
   name: "TOTAL",
