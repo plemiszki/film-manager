@@ -168,7 +168,7 @@ export default class ReturnDetails extends React.Component {
   }
 
   render() {
-    const { spinner, justSaved, changesToSave, items, qtyModalOpen, selectedItemId, selectedItemType, otherItems = [] } = this.state;
+    const { spinner, justSaved, changesToSave, items, qtyModalOpen, selectedItemId, selectedItemType, otherItems = [], deleteModalOpen } = this.state;
     const selectedItem = otherItems.find(item => item.id == selectedItemId && item.itemType === selectedItemType);
 
     return (
@@ -214,13 +214,12 @@ export default class ReturnDetails extends React.Component {
             <Spinner visible={ spinner } />
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete
-            entityName="return"
-            confirmDelete={ Details.confirmDelete.bind(this) }
-            closeModal={ Common.closeModals.bind(this) }
-          />
-        </Modal>
+        <ConfirmDelete
+          isOpen={ deleteModalOpen }
+          entityName="return"
+          confirmDelete={ Details.confirmDelete.bind(this) }
+          closeModal={ Common.closeModals.bind(this) }
+        />
         <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
           <ModalSelect options={ this.state.otherItems } property="label" func={ this.selectItem.bind(this) } />
         </Modal>

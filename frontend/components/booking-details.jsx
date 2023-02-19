@@ -280,7 +280,7 @@ export default class BookingDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, spinner, payments, invoices } = this.state;
+    const { justSaved, changesToSave, spinner, payments, invoices, deleteInvoiceModalOpen } = this.state;
     NewInvoiceStyles.content.height = (238 + (34 * payments.length));
     return (
       <>
@@ -475,9 +475,12 @@ export default class BookingDetails extends React.Component {
             <Spinner visible={ spinner } />
           </div>
         </div>
-        <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="invoice" confirmDelete={ this.confirmDeleteInvoice.bind(this) } closeModal={ Common.closeModals.bind(this) } />
-        </Modal>
+        <ConfirmDelete
+          isOpen={ deleteInvoiceModalOpen }
+          entityName="invoice"
+          confirmDelete={ this.confirmDeleteInvoice.bind(this) }
+          closeModal={ Common.closeModals.bind(this) }
+        />
         <Modal isOpen={ this.state.copyModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 750 }, 1) }>
           <CopyEntity
             context={ this.props.context }

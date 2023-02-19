@@ -208,7 +208,7 @@ export default class VirtualBookingDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, spinner } = this.state;
+    const { justSaved, changesToSave, spinner, deleteInvoiceModalOpen } = this.state;
     return (
       <div className="handy-component">
         <h1>Virtual Booking Details</h1>
@@ -270,9 +270,12 @@ export default class VirtualBookingDetails extends React.Component {
         <Modal isOpen={ this.state.newPaymentModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700 }, 1) }>
           <NewEntity entityName="payment" initialEntity={ { bookingId: this.state.virtualBooking.id, bookingType: "VirtualBooking", date: stringifyDate(new Date), amount: "", notes: "" } } context={ this.props.context } callbackFullProps={ this.updatePayments.bind(this) } />
         </Modal>
-        <Modal isOpen={ this.state.deleteInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-          <ConfirmDelete entityName="invoice" confirmDelete={ this.confirmDeleteInvoice.bind(this) } closeModal={ Common.closeModals.bind(this) } />
-        </Modal>
+        <ConfirmDelete
+          isOpen={ deleteInvoiceModalOpen }
+          entityName="invoice"
+          confirmDelete={ this.confirmDeleteInvoice.bind(this) }
+          closeModal={ Common.closeModals.bind(this) }
+        />
         { Common.renderJobModal.call(this, this.state.job) }
       </div>
     );

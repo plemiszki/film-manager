@@ -612,7 +612,7 @@ export default class FilmDetails extends React.Component {
   }
 
   render() {
-    const { dvds, dvdTypes, film, tab, spinner } = this.state;
+    const { dvds, dvdTypes, film, tab, spinner, deleteModalOpen } = this.state;
     const title = {
       'Short': 'Short',
       'Feature': 'Film',
@@ -779,9 +779,12 @@ export default class FilmDetails extends React.Component {
             confirm={ () => this.confirmUpdateArtwork() }
             cancel={ Common.closeModals.bind(this) }
           />
-          <Modal isOpen={this.state.deleteModalOpen} onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.deleteModalStyles() }>
-            <ConfirmDelete entityName="film" confirmDelete={ Details.confirmDelete.bind(this) } closeModal={ Common.closeModals.bind(this) } />
-          </Modal>
+          <ConfirmDelete
+            isOpen={ deleteModalOpen }
+            entityName="film"
+            confirmDelete={ Details.confirmDelete.bind(this) }
+            closeModal={ Common.closeModals.bind(this) }
+          />
           { Common.renderJobModal.call(this, this.state.job) }
         </div>
         <style jsx>{`
