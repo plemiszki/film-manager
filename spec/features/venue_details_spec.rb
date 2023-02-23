@@ -26,6 +26,7 @@ describe 'venue_details', type: :feature do
 
   it 'displays information about the venue' do
     visit venue_path(@venue, as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'Venue Details'
     expect(find('input[data-field="label"]').value).to eq 'Film at Lincoln Center'
     expect(find('input[data-field="sageId"]').value).to eq 'LINCOLN'
