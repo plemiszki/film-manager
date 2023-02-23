@@ -27,6 +27,10 @@ class Booking < ActiveRecord::Base
     end
   end
 
+  def theatrical?
+    booking_type == 'Theatrical'
+  end
+
   def needs_reminder
     case booking_type
     when "Theatrical"
