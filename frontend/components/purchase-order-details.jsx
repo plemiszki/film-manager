@@ -18,19 +18,6 @@ const AddAddressModalStyles = {
   }
 };
 
-const qtyModalStyles = {
-  overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
-  },
-  content: {
-    background: '#F5F6F7',
-    padding: 0,
-    margin: 'auto',
-    width: 300,
-    height: 238
-  }
-};
-
 export default class PurchaseOrderDetails extends React.Component {
 
   constructor(props) {
