@@ -20,6 +20,7 @@ json.array!(@films) do |film|
   json.twitter_link film.twitter_link
   json.instagram_link film.instagram_link
   json.club_date film.club_date ? film.club_date.strftime("%-m/%-d/%y") : ""
+  json.tvod_release film.tvod_release ? film.tvod_release.strftime("%-m/%-d/%y") : ""
   json.edu_page film.edu_page
   json.video_page film.video_page
   json.now_playing_page film.now_playing_page
