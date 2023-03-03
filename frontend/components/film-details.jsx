@@ -1378,6 +1378,7 @@ export default class FilmDetails extends React.Component {
                   <p className="section-header">Digital Retailers</p>
                   <Table
                     rows={ this.state.digitalRetailerFilms }
+                    urlPrefix="digital_retailer_films"
                     columns={[
                       { name: "name", width: 200, bold: true },
                       { name: "url", header: "URL" },
