@@ -2,7 +2,7 @@ class Quote < ActiveRecord::Base
 
   validates :film_id, :text, presence: true
 
-  belongs_to :film
+  belongs_to :film, touch: true
 
   def self.detect_duplicate_order_values
     result = []

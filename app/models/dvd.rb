@@ -15,7 +15,8 @@ class Dvd < ActiveRecord::Base
     :feature,
     class_name: "Film",
     foreign_key: :feature_film_id,
-    primary_key: :id
+    primary_key: :id,
+    touch: true,
   )
 
   has_many :dvd_shorts
