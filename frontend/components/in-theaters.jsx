@@ -1,8 +1,6 @@
 import React from 'react'
-import Modal from 'react-modal'
 import InTheatersIndexItem from './in-theaters-index-item.jsx'
 import { Common, sendRequest, deleteEntity, createEntity, OutlineButton, Spinner, GrayedOut, ModalSelect } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class InTheatersIndex extends React.Component {
 
@@ -200,9 +198,13 @@ export default class InTheatersIndex extends React.Component {
             <Spinner visible={ spinner } />
             <GrayedOut visible={ spinner } />
           </div>
-          <Modal isOpen={ filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-            <ModalSelect options={ films } property="title" func={ this.selectFilm.bind(this) } />
-          </Modal>
+          <ModalSelect
+            isOpen={ filmsModalOpen }
+            options={ films }
+            property="title"
+            func={ this.selectFilm.bind(this) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
         </div>
         <style jsx>{`
           hr {

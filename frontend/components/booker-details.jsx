@@ -1,7 +1,5 @@
 import React from 'react'
-import Modal from 'react-modal'
 import { Common, BottomButtons, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity, Spinner, GrayedOut, OutlineButton, ModalSelect, ListBox } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class BookerDetails extends React.Component {
 
@@ -153,9 +151,13 @@ export default class BookerDetails extends React.Component {
             <Spinner visible={ spinner } />
           </div>
         </div>
-        <Modal isOpen={ this.state.venuesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.venues } property="name" func={ this.selectVenue.bind(this) } />
-        </Modal>
+        <ModalSelect
+          isOpen={ this.state.venuesModalOpen }
+          onRequestClose={ Common.closeModals.bind(this) }
+          options={ this.state.venues }
+          property="name"
+          func={ this.selectVenue.bind(this) }
+        />
       </>
     );
   }

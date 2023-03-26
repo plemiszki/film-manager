@@ -1,7 +1,5 @@
 import React from 'react'
-import Modal from 'react-modal'
 import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, OutlineButton, Spinner, GrayedOut, SaveButton, DeleteButton, Button, Table, ModalSelect } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class DvdDetails extends React.Component {
 
@@ -208,9 +206,13 @@ export default class DvdDetails extends React.Component {
             <Spinner visible={ spinner } />
           </div>
         </div>
-        <Modal isOpen={ this.state.shortsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.otherShorts } property="title" func={ this.selectShort.bind(this) } />
-        </Modal>
+        <ModalSelect
+          isOpen={ this.state.shortsModalOpen }
+          onRequestClose={ Common.closeModals.bind(this) }
+          options={ this.state.otherShorts }
+          property="title"
+          func={ this.selectShort.bind(this) }
+        />
       </>
     );
   }

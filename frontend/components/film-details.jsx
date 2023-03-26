@@ -646,33 +646,68 @@ export default class FilmDetails extends React.Component {
             <Spinner visible={ spinner } />
             <GrayedOut visible={ spinner } />
           </div>
-          <Modal isOpen={ this.state.crossedFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.otherCrossedFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'crossed_films', entityName: 'crossedFilm', key: 'crossedFilmId', otherArrays: ['otherCrossedFilms'] }) } />
-          </Modal>
-          <Modal isOpen={ this.state.countriesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.countries } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_countries', entityName: 'filmCountry', key: 'countryId', otherArrays: ['countries'] }) } />
-          </Modal>
-          <Modal isOpen={ this.state.languagesModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.languages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_languages', entityName: 'filmLanguage', key: 'languageId', otherArrays: ['languages'] }) } />
-          </Modal>
-          <Modal isOpen={ this.state.alternateAudioModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.audioLanguages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_audios', entityName: 'alternateAudio', key: 'languageId', otherArrays: ['audioLanguages'] }) } />
-          </Modal>
-          <Modal isOpen={ this.state.alternateSubsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.subtitleLanguages } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_subs', entityName: 'alternateSub', key: 'languageId', otherArrays: ['subtitleLanguages'] }) } />
-          </Modal>
-          <Modal isOpen={ this.state.genresModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.genres } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_genres', entityName: 'filmGenre', key: 'genreId', otherArrays: ['genres'] }) } />
-          </Modal>
-          <Modal isOpen={ this.state.topicsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.topics } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_topics', entityName: 'filmTopic', key: 'topicId', otherArrays: ['topics'] }) } />
-          </Modal>
-          <Modal isOpen={ this.state.relatedFilmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.otherFilms } property="title" func={ this.selectEntityToCreate.bind(this, { directory: 'related_films', entityName: 'relatedFilm', key: 'otherFilmId', otherArrays: ['otherFilms'] }) } />
-          </Modal>
-          <Modal isOpen={ this.state.formatsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.selectModalStyles() }>
-            <ModalSelect options={ this.state.formats } property="name" func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) } />
-          </Modal>
+          <ModalSelect
+            isOpen={ this.state.crossedFilmModalOpen }
+            options={ this.state.otherCrossedFilms }
+            property="title"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'crossed_films', entityName: 'crossedFilm', key: 'crossedFilmId', otherArrays: ['otherCrossedFilms'] }) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.countriesModalOpen }
+            options={ this.state.countries }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'film_countries', entityName: 'filmCountry', key: 'countryId', otherArrays: ['countries'] }) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.languagesModalOpen }
+            options={ this.state.languages }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'film_languages', entityName: 'filmLanguage', key: 'languageId', otherArrays: ['languages'] }) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.alternateAudioModalOpen }
+            options={ this.state.audioLanguages }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_audios', entityName: 'alternateAudio', key: 'languageId', otherArrays: ['audioLanguages'] }) }
+          />
+          <ModalSelect
+            isOpen={ this.state.alternateSubsModalOpen }
+            options={ this.state.subtitleLanguages }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_subs', entityName: 'alternateSub', key: 'languageId', otherArrays: ['subtitleLanguages'] }) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.genresModalOpen }
+            options={ this.state.genres }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'film_genres', entityName: 'filmGenre', key: 'genreId', otherArrays: ['genres'] }) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.topicsModalOpen }
+            options={ this.state.topics }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'film_topics', entityName: 'filmTopic', key: 'topicId', otherArrays: ['topics'] }) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.relatedFilmsModalOpen }
+            options={ this.state.otherFilms }
+            property="title"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'related_films', entityName: 'relatedFilm', key: 'otherFilmId', otherArrays: ['otherFilms'] }) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.formatsModalOpen }
+            options={ this.state.formats }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) }
+            onRequestClose={ Common.closeModals.bind(this) }
+          />
           <Modal isOpen={ this.state.episodeModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
             <NewEntity
               context={ this.props.context }

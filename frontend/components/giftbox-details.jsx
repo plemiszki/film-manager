@@ -1,7 +1,5 @@
 import React from 'react'
-import Modal from 'react-modal'
 import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, BottomButtons, Spinner, GrayedOut, ModalSelect, OutlineButton, Table } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 
 export default class GiftboxDetails extends React.Component {
 
@@ -158,9 +156,13 @@ export default class GiftboxDetails extends React.Component {
             <Spinner visible={ spinner } />
           </div>
         </div>
-        <Modal isOpen={ this.state.dvdsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.otherDvds } property={ "title" } func={ this.selectDvd.bind(this) } />
-        </Modal>
+        <ModalSelect
+          isOpen={ this.state.dvdsModalOpen }
+          options={ this.state.otherDvds }
+          property={ "title" }
+          func={ this.selectDvd.bind(this) }
+          onRequestClose={ Common.closeModals.bind(this) }
+        />
       </>
     );
   }

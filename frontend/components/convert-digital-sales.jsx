@@ -1,5 +1,4 @@
 import React from 'react'
-import Modal from 'react-modal'
 import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity, sendRequest, Spinner, GrayedOut, Table } from 'handy-components'
 
 export default class ConvertDigitalSales extends React.Component {
@@ -125,9 +124,13 @@ export default class ConvertDigitalSales extends React.Component {
                   <Spinner visible={ spinner } />
                   <GrayedOut visible={ spinner } />
                 </div>
-                <Modal isOpen={ filmsModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ ModalSelectStyles }>
-                  <ModalSelect options={ films } property="title" func={ this.selectFilm.bind(this) } />
-                </Modal>
+                <ModalSelect
+                  isOpen={ filmsModalOpen }
+                  onRequestClose={ Common.closeModals.bind(this) }
+                  options={ films }
+                  property="title"
+                  func={ this.selectFilm.bind(this) }
+                />
               </div>
               <style jsx>{`
                 .text-center {

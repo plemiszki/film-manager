@@ -1,7 +1,5 @@
 import React from 'react'
-import Modal from 'react-modal'
 import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, Button } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
 import QuantityModal from './quantity-modal.jsx'
 
 export default class ReturnDetails extends React.Component {
@@ -220,9 +218,13 @@ export default class ReturnDetails extends React.Component {
           confirmDelete={ Details.confirmDelete.bind(this) }
           closeModal={ Common.closeModals.bind(this) }
         />
-        <Modal isOpen={ this.state.selectItemModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ FM.selectModalStyles }>
-          <ModalSelect options={ this.state.otherItems } property="label" func={ this.selectItem.bind(this) } />
-        </Modal>
+        <ModalSelect
+          isOpen={ this.state.selectItemModalOpen }
+          options={ this.state.otherItems }
+          property="label"
+          func={ this.selectItem.bind(this) }
+          onRequestClose={ Common.closeModals.bind(this) }
+        />
         <QuantityModal
           isOpen={ qtyModalOpen }
           item={ selectedItem }
