@@ -41,6 +41,7 @@ export default class PurchaseOrderDetails extends React.Component {
       addAddressModalOpen: false,
       selectAddressModalOpen: false,
       selectedItemId: null,
+      otherItems: [],
     };
   }
 

@@ -23,7 +23,8 @@ export default class ReturnDetails extends React.Component {
         errors_text: ''
       },
       selectedItemId: null,
-      selectedItemQty: null
+      selectedItemQty: null,
+      otherItems: [],
     };
   }
 
