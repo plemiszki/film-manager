@@ -22,6 +22,7 @@ describe 'purchase_order_details_spec', type: :feature do
 
   it 'displays information about the purchase order' do
     visit purchase_order_path(@purchase_order, as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'Purchase Order Details'
     expect(find('input[data-field="number"]').value).to eq '450000'
     expect(find('input[data-field="orderDate"]').value).to eq Date.today.to_s

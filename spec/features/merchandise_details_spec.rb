@@ -17,6 +17,7 @@ describe 'merchandise_details', type: :feature do
 
   it 'displays information about the merchandise item' do
     visit merchandise_item_path(@merchandise_item, as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'Merchandise Details'
     expect(find('input[data-field="name"]').value).to eq "Film Movement Women's T-shirt"
     expect(find('select[data-field="merchandiseTypeId"]', visible: false).value).to eq '1'
