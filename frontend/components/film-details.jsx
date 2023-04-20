@@ -651,62 +651,63 @@ export default class FilmDetails extends React.Component {
             options={ this.state.otherCrossedFilms }
             property="title"
             func={ this.selectEntityToCreate.bind(this, { directory: 'crossed_films', entityName: 'crossedFilm', key: 'crossedFilmId', otherArrays: ['otherCrossedFilms'] }) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.countriesModalOpen }
             options={ this.state.countries }
             property="name"
             func={ this.selectEntityToCreate.bind(this, { directory: 'film_countries', entityName: 'filmCountry', key: 'countryId', otherArrays: ['countries'] }) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.languagesModalOpen }
             options={ this.state.languages }
             property="name"
             func={ this.selectEntityToCreate.bind(this, { directory: 'film_languages', entityName: 'filmLanguage', key: 'languageId', otherArrays: ['languages'] }) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.alternateAudioModalOpen }
             options={ this.state.audioLanguages }
             property="name"
             func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_audios', entityName: 'alternateAudio', key: 'languageId', otherArrays: ['audioLanguages'] }) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.alternateSubsModalOpen }
             options={ this.state.subtitleLanguages }
             property="name"
             func={ this.selectEntityToCreate.bind(this, { directory: 'alternate_subs', entityName: 'alternateSub', key: 'languageId', otherArrays: ['subtitleLanguages'] }) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.genresModalOpen }
             options={ this.state.genres }
             property="name"
             func={ this.selectEntityToCreate.bind(this, { directory: 'film_genres', entityName: 'filmGenre', key: 'genreId', otherArrays: ['genres'] }) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.topicsModalOpen }
             options={ this.state.topics }
             property="name"
             func={ this.selectEntityToCreate.bind(this, { directory: 'film_topics', entityName: 'filmTopic', key: 'topicId', otherArrays: ['topics'] }) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.relatedFilmsModalOpen }
             options={ this.state.otherFilms }
             property="title"
             func={ this.selectEntityToCreate.bind(this, { directory: 'related_films', entityName: 'relatedFilm', key: 'otherFilmId', otherArrays: ['otherFilms'] }) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.formatsModalOpen }
             options={ this.state.formats }
             property="name"
             func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <Modal isOpen={ this.state.episodeModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
             <NewEntity

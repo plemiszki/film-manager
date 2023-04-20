@@ -407,14 +407,14 @@ export default class PurchaseOrderDetails extends React.Component {
             options={ this.state.shippingAddresses }
             property="label"
             func={ this.clickSelectShippingAddress.bind(this) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.selectItemModalOpen }
             options={ this.state.otherItems }
             property="label"
             func={ this.clickSelectItem.bind(this) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
           <QuantityModal
             isOpen={ qtyModalOpen }

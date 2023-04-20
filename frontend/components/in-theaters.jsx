@@ -203,7 +203,7 @@ export default class InTheatersIndex extends React.Component {
             options={ films }
             property="title"
             func={ this.selectFilm.bind(this) }
-            onRequestClose={ Common.closeModals.bind(this) }
+            onClose={ Common.closeModals.bind(this) }
           />
         </div>
         <style jsx>{`

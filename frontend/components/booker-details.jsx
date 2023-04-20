@@ -153,7 +153,7 @@ export default class BookerDetails extends React.Component {
         </div>
         <ModalSelect
           isOpen={ this.state.venuesModalOpen }
-          onRequestClose={ Common.closeModals.bind(this) }
+          onClose={ Common.closeModals.bind(this) }
           options={ this.state.venues }
           property="name"
           func={ this.selectVenue.bind(this) }

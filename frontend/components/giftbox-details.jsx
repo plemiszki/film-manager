@@ -161,7 +161,7 @@ export default class GiftboxDetails extends React.Component {
           options={ this.state.otherDvds }
           property={ "title" }
           func={ this.selectDvd.bind(this) }
-          onRequestClose={ Common.closeModals.bind(this) }
+          onClose={ Common.closeModals.bind(this) }
         />
       </>
     );

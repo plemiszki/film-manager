@@ -208,7 +208,7 @@ export default class DvdDetails extends React.Component {
         </div>
         <ModalSelect
           isOpen={ this.state.shortsModalOpen }
-          onRequestClose={ Common.closeModals.bind(this) }
+          onClose={ Common.closeModals.bind(this) }
           options={ this.state.otherShorts }
           property="title"
           func={ this.selectShort.bind(this) }

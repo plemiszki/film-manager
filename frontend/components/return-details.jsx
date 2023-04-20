@@ -224,7 +224,7 @@ export default class ReturnDetails extends React.Component {
           options={ this.state.otherItems }
           property="label"
           func={ this.selectItem.bind(this) }
-          onRequestClose={ Common.closeModals.bind(this) }
+          onClose={ Common.closeModals.bind(this) }
         />
         <QuantityModal
           isOpen={ qtyModalOpen }

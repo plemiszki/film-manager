@@ -126,7 +126,7 @@ export default class ConvertDigitalSales extends React.Component {
                 </div>
                 <ModalSelect
                   isOpen={ filmsModalOpen }
-                  onRequestClose={ Common.closeModals.bind(this) }
+                  onClose={ Common.closeModals.bind(this) }
                   options={ films }
                   property="title"
                   func={ this.selectFilm.bind(this) }
