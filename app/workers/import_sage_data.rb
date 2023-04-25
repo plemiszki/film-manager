@@ -24,7 +24,7 @@ class ImportSageData
         next if film.ignore_sage_id
         report = RoyaltyReport.create!(film_id: film.id, deal_id: film.deal_type_id, quarter: quarter, year: year, mg: film.mg, e_and_o: film.e_and_o)
         report.create_empty_streams!
-        report.transfer_and_calculate_from_previous_report!
+        # report.transfer_and_calculate_from_previous_report!
         job.update!(current_value: index, total_value: films.length)
       end
     else
