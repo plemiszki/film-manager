@@ -20,7 +20,7 @@ class ImportSageData
     if reports.length == 0
       films = Film.where(film_type: ['Feature', 'TV Series'])
       job.update!(first_line: "Transferring Previous Revenue/Expenses", second_line: true, current_value: 0, total_value: films.length)
-      films.find_each.with_index do |film, index|
+      films.find_each(batch_size: 100).with_index do |film, index|
         next if film.ignore_sage_id
         report = RoyaltyReport.create!(film_id: film.id, deal_id: film.deal_type_id, quarter: quarter, year: year, mg: film.mg, e_and_o: film.e_and_o)
         report.create_empty_streams!
