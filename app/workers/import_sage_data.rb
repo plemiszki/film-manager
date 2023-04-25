@@ -18,17 +18,14 @@ class ImportSageData
     # create royalty_revenue_streams if we haven't seen this quarter before
 
     if reports.length == 0
-      film_batches = Film.where(film_type: ['Feature', 'TV Series']).find_in_batches(batch_size: 100)
-      job.update!(first_line: "Transferring Previous Revenue/Expenses", second_line: true, current_value: 0, total_value: 0)
-      film_batches.each do |films|
-        films.each_with_index do |film, index|
-          p film.title
-          next if film.ignore_sage_id
-          report = RoyaltyReport.create!(film_id: film.id, deal_id: film.deal_type_id, quarter: quarter, year: year, mg: film.mg, e_and_o: film.e_and_o)
-          report.create_empty_streams!
-          report.transfer_and_calculate_from_previous_report!
-          job.update!(current_value: index, total_value: films.length)
-        end
+      films = Film.where(film_type: ['Feature', 'TV Series'])
+      job.update!(first_line: "Transferring Previous Revenue/Expenses", second_line: true, current_value: 0, total_value: films.length)
+      films.find_each(batch_size: 100).with_index do |film, index|
+        next if film.ignore_sage_id
+        report = RoyaltyReport.create!(film_id: film.id, deal_id: film.deal_type_id, quarter: quarter, year: year, mg: film.mg, e_and_o: film.e_and_o)
+        report.create_empty_streams!
+        report.transfer_and_calculate_from_previous_report!
+        job.update!(current_value: index, total_value: films.length)
       end
     else
       if label == "revenue"
