@@ -308,7 +308,7 @@ GEM
     sentry-sidekiq (5.8.0)
       sentry-ruby (~> 5.8.0)
       sidekiq (>= 3.0)
-    sidekiq (7.0.7)
+    sidekiq (7.0.9)
       concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
       rack (>= 2.2.4)
@@ -394,7 +394,7 @@ DEPENDENCIES
   selenium-webdriver
   sentry-ruby
   sentry-sidekiq
-  sidekiq (= 7.0.7)
+  sidekiq (= 7.0.9)
   spring
   textacular
   timeliness
