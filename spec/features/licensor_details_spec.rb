@@ -16,6 +16,7 @@ describe 'licensor_details', type: :feature do
 
   it 'displays information about the licensor' do
     visit licensor_path(@licensor, as: $admin_user)
+    wait_for_ajax
     expect(page).to have_content 'Licensor Details'
     expect(find('input[data-field="name"]').value).to eq 'Visit Films'
     expect(find('input[data-field="email"]').value).to eq 'ryan@visitfilms.com'

@@ -22,6 +22,7 @@ describe 'bookings_index', type: :feature do
     create(:future_booking)
     create(:past_booking, film_id: 2, venue_id: 2)
     visit bookings_path(as: $admin_user)
+    wait_for_ajax
     within('#bookings-index', match: :first) do
       expect(page).to have_content 'Wilby Wonderful'
       expect(page).to have_content 'Film at Lincoln Center'

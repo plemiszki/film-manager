@@ -30,6 +30,7 @@ describe 'settings_details', type: :feature do
 
   it 'updates information about the settings' do
     visit setting_path(@settings, as: $admin_user)
+    wait_for_ajax
     new_info = {
       booking_confirmation_text: 'new booking confirmation text',
       dvd_invoice_email_text: 'new dvd invoice email text',
