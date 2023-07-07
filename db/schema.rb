@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_18_221622) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_07_232651) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -696,6 +696,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_18_221622) do
     t.string "credit_memo_email_text", default: ""
     t.integer "box_office_reminders_user_id"
     t.string "virtual_booking_report_text", default: ""
+    t.integer "payment_reminders_user_id"
   end
 
   create_table "shipping_addresses", id: :serial, force: :cascade do |t|

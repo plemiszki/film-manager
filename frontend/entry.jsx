@@ -162,7 +162,8 @@ document.addEventListener("DOMContentLoaded", () => {
         { columnWidth: 12, property: 'dvdInvoiceEmailText', columnHeader: 'DVD Invoice Email Copy', type: 'textbox', rows: 10 },
         { columnWidth: 12, property: 'creditMemoEmailText', columnHeader: 'Credit Memo Email Copy', type: 'textbox', rows: 8 },
         { columnWidth: 12, property: 'virtualBookingReportText', columnHeader: 'Virtual Booking Report Email Copy', type: 'textbox', rows: 6 },
-        { columnWidth: 5, columnHeader: 'Sender of Box Office Reminders', property: 'boxOfficeRemindersUserId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'users' }
+        { columnWidth: 5, columnHeader: 'Sender of Box Office Reminders', property: 'boxOfficeRemindersUserId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'users' },
+        { columnWidth: 5, columnHeader: 'Sender of Payment Reminders', property: 'paymentRemindersUserId', type: 'modal', optionDisplayProperty: 'name', optionsArrayName: 'users' },
       ]
     ],
   });

@@ -5,6 +5,7 @@ describe 'settings_details', type: :feature do
 
   before(:each) do
     @settings = create(:setting)
+    create(:booker_user)
   end
 
   it 'is gated' do
@@ -26,6 +27,8 @@ describe 'settings_details', type: :feature do
     expect(find('textarea[data-field="allBookingInvoicesEmailText"]').value).to eq 'all booking invoices email text'
     expect(find('textarea[data-field="shippingTermsEmailText"]').value).to eq 'shipping terms email text'
     expect(find('textarea[data-field="virtualBookingReportText"]').value).to eq 'virtual booking report text'
+    expect(find('input[data-field="boxOfficeRemindersUserId"]').value).to eq('Maxwell Wolkin')
+    expect(find('input[data-field="paymentRemindersUserId"]').value).to eq('Maxwell Wolkin')
   end
 
   it 'updates information about the settings' do

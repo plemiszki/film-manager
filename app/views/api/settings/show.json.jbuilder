@@ -10,6 +10,7 @@ json.settings do
   json.shippingTermsEmailText @settings.shipping_terms_email_text
   json.allBookingInvoicesEmailText @settings.all_booking_invoices_email_text
   json.boxOfficeRemindersUserId @settings.box_office_reminders_user_id || ""
+  json.paymentRemindersUserId @settings.payment_reminders_user_id || ""
   json.virtualBookingReportText @settings.virtual_booking_report_text
 end
 json.users @users do |user|
