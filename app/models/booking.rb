@@ -21,6 +21,8 @@ class Booking < ActiveRecord::Base
   has_many :payments, as: :booking, dependent: :destroy
   has_many :invoices, dependent: :destroy
 
+  scope :payment_reminders, -> { where(film_type: ['Feature', 'Non-Theatrical']) }
+
   def booker_id_or_old_booker_id
     unless booker_id || old_booker_id
       errors.add(:booker_id, "can't be blank")
@@ -42,21 +44,64 @@ class Booking < ActiveRecord::Base
     end
   end
 
+  def info
+    venue = self.venue
+    venue_name = (venue.billing_name.present? ? venue.billing_name : venue.label)
+    "#{self.film.title} at #{venue_name} (#{self.start_date.strftime("%-m/%-d/%y")})"
+  end
+
+  def send_payment_reminder(sender: nil)
+    sender = sender || Setting.first.payment_reminders_sender
+
+    email_body = <<~COPY
+    Hello,
+
+    This is an automated request to remind you that we have not received payment for this booking. Per company policy, we will not deliver film assets until payment has been processed.  Please send to my attention as soon as possible.
+
+    Our bank details are as follows for ACH or wire transfers:
+    Bank: Citibank NA
+    SWIFT: CITI US 33
+    Routing Number: 021000089
+    Account Number: 4985552536
+    Wire or transfer fees are the responsibility of the payer.
+
+    We accept checks sent to 505 8th Ave., Ste. 1102, New York, NY 10018.
+
+    To pay invoices totaling $500 or less via credit card, call us at 212.941.7744 and choose extension 3.
+
+    Kind Regards,
+
+    #{sender.name}
+    Film Movement
+
+    COPY
+
+    mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
+    message_params = {
+      from: sender.email,
+      to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : self.email),
+      bcc: (ENV['TEST_MODE'] == 'true' ? nil : sender.email),
+      subject: "Payment Reminder: #{self.info}",
+      text: email_body
+    }
+    mg_client.send_message 'filmmovement.com', message_params
+  end
+
   def self.send_box_office_reminders
     return unless Time.now.in_time_zone("America/New_York").strftime("%A") == "Friday"
     sender = Setting.first.box_office_reminders_sender
 
-email_body = <<-COPY
-Hello,
+    email_body = <<~COPY
+    Hello,
 
-This is an automated request to remind you that we have not received the box office report for this booking. Please send the report to my attention by end of day.
+    This is an automated request to remind you that we have not received the box office report for this booking. Please send the report to my attention by end of day.
 
-Kind Regards,
+    Kind Regards,
 
-#{sender.name}
-Film Movement
+    #{sender.name}
+    Film Movement
 
-COPY
+    COPY
 
     theatrical_bookings = Booking.where(booking_type: "Theatrical", status: "Confirmed", box_office_received: false, box_office: 0, terms_change: false)
     .where("end_date < ?", Date.today - 4.weeks)
