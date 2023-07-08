@@ -33,7 +33,7 @@ class Booking < ActiveRecord::Base
     booking_type == 'Theatrical'
   end
 
-  def needs_reminder
+  def needs_box_office_reminder
     case booking_type
     when "Theatrical"
       return true
@@ -119,7 +119,7 @@ class Booking < ActiveRecord::Base
     .where("end_date < ?", Date.today - 4.weeks)
     .where("end_date > ?", Date.today - 6.months)
     .order(:start_date).select do |booking|
-      booking.needs_reminder
+      booking.needs_box_office_reminder
     end
 
     all_bookings = theatrical_bookings + festival_bookings
