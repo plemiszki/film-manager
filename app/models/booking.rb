@@ -21,7 +21,15 @@ class Booking < ActiveRecord::Base
   has_many :payments, as: :booking, dependent: :destroy
   has_many :invoices, dependent: :destroy
 
-  scope :payment_reminders, -> { where(film_type: ['Feature', 'Non-Theatrical']) }
+  scope :payment_reminders, -> {
+    includes(:film, :venue)
+    .left_outer_joins(:payments)
+    .where("bookings.booking_type in ('Non-Theatrical', 'Festival')")
+    .where("bookings.start_date < ?", Date.today + 4.weeks)
+    .where("bookings.start_date > ?", Date.today)
+    .group("bookings.id")
+    .having("count(payments) = 0")
+  }
 
   def booker_id_or_old_booker_id
     unless booker_id || old_booker_id
@@ -48,6 +56,13 @@ class Booking < ActiveRecord::Base
     venue = self.venue
     venue_name = (venue.billing_name.present? ? venue.billing_name : venue.label)
     "#{self.film.title} at #{venue_name} (#{self.start_date.strftime("%-m/%-d/%y")})"
+  end
+
+  def self.send_payment_reminders
+    sender = Setting.first.payment_reminders_sender
+    Booking.payment_reminders.each do |booking|
+      booking.send_payment_reminder(sender: sender)
+    end
   end
 
   def send_payment_reminder(sender: nil)
