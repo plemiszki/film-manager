@@ -66,6 +66,7 @@ class Booking < ActiveRecord::Base
   end
 
   def send_payment_reminder(sender: nil)
+    return unless Time.now.in_time_zone("America/New_York").strftime("%A") == "Monday"
     sender = sender || Setting.first.payment_reminders_sender
 
     email_body = <<~COPY
@@ -92,13 +93,25 @@ class Booking < ActiveRecord::Base
     COPY
 
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
-    message_params = {
+
+    if ENV['TEST_MODE'] == 'true'
+      message_params = {
+        to: ENV['TEST_MODE_EMAIL'],
+      }
+    else
+      message_params = {
+        # to: self.email,
+        to: sender.email, # test first
+        cc: ENV['TEST_MODE_EMAIL'], # copy me on test
+        bcc: sender.email,
+      }
+    end
+
+    message_params = message_params.merge({
       from: sender.email,
-      to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : self.email),
-      bcc: (ENV['TEST_MODE'] == 'true' ? nil : sender.email),
       subject: "Payment Reminder: #{self.info}",
-      text: email_body
-    }
+      text: email_body,
+    })
     mg_client.send_message 'filmmovement.com', message_params
   end
 
