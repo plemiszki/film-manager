@@ -100,10 +100,8 @@ class Booking < ActiveRecord::Base
       }
     else
       message_params = {
-        # to: self.email,
-        to: sender.email, # test first
-        cc: ENV['TEST_MODE_EMAIL'], # copy me on test
-        bcc: sender.email,
+        to: self.email,
+        bcc: [sender.email, ENV['TEST_MODE_EMAIL']],
       }
     end
 
