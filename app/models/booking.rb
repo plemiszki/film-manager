@@ -58,7 +58,8 @@ class Booking < ActiveRecord::Base
     "#{self.film.title} at #{venue_name} (#{self.start_date.strftime("%-m/%-d/%y")})"
   end
 
-  def self.send_payment_reminders
+  def self.send_payment_reminders(force: false)
+    return unless force || Time.now.in_time_zone("America/New_York").strftime("%A") == "Monday"
     sender = Setting.first.payment_reminders_sender
     Booking.payment_reminders.each do |booking|
       booking.send_payment_reminder(sender: sender)
@@ -66,7 +67,6 @@ class Booking < ActiveRecord::Base
   end
 
   def send_payment_reminder(sender: nil)
-    return unless Time.now.in_time_zone("America/New_York").strftime("%A") == "Monday"
     sender = sender || Setting.first.payment_reminders_sender
 
     email_body = <<~COPY
