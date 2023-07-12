@@ -7,7 +7,9 @@ task :box_office_reminders => :environment do
 end
 
 task :payment_reminders => :environment do
-  Booking.send_payment_reminders
+  if Time.now.in_time_zone("America/New_York").strftime("%A") == "Monday"
+    Booking.send_payment_reminders
+  end
 end
 
 task :expiration_reminders => :environment do
