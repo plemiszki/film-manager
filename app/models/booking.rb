@@ -66,6 +66,10 @@ class Booking < ActiveRecord::Base
   end
 
   def send_payment_reminder(sender: nil)
+    if self.email.blank?
+      p "no email for #{self.info}"
+      return
+    end
     sender = sender || Setting.first.payment_reminders_sender
 
     email_body = <<~COPY
