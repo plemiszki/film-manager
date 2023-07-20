@@ -131,7 +131,7 @@ class ExportCreditMemos
           'FALSE',
           item.item_qty,
           '', '', '', '',
-          item.item_label,
+          { type: :String, value: item.item_label },
           '30200',
           '', # 50
           item.unit_price,
@@ -141,7 +141,7 @@ class ExportCreditMemos
           '', '', '', '', '',
           '1',
           '', '', '',
-          film.get_sage_id
+          { type: :String, value: film.get_sage_id },
         ])
       end
       job.update({ current_value: credit_memo_index + 1 })

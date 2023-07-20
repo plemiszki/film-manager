@@ -54,6 +54,7 @@ describe 'films_index', type: :feature do
 
   it 'can add new short films' do
     visit shorts_path(as: $admin_user)
+    wait_for_ajax
     click_btn('Add Short')
     info = {
       title: 'New Short',
