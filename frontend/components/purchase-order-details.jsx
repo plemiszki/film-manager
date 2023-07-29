@@ -224,7 +224,35 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   render() {
-    const { purchaseOrder, dvdCustomers, spinner, justSaved, changesToSave, qtyModalOpen, selectedItemId, selectedItemType, otherItems = [] } = this.state;
+    const {
+      purchaseOrder,
+      dvdCustomers,
+      spinner,
+      justSaved,
+      changesToSave,
+      qtyModalOpen,
+      selectedItemId,
+      selectedItemType,
+      otherItems,
+      addAddressModalOpen = [],
+      shippingAddresses,
+      selectItemModalOpen,
+      selectAddressModalOpen,
+    } = this.state;
+    const {
+      invoiceId,
+      invoiceNumber,
+      shipDate,
+      sourceDoc,
+      name,
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+      country,
+      customerId,
+    } = purchaseOrder;
     const customer = this.getCustomerFromId(purchaseOrder.customerId);
     const canSendInvoice = this.canSendInvoice(customer);
     const unshippedPO = !purchaseOrder.shipDate;
@@ -332,86 +360,114 @@ export default class PurchaseOrderDetails extends React.Component {
                 { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5 }) }
               </div>
               <hr />
-              <div className="row">
-                { Details.renderSwitch.bind(this)({
-                  columnWidth: 12,
-                  entity: 'purchaseOrder',
-                  property: 'sendInvoice',
-                  center: true,
-                  readOnly: shippedPO || !canSendInvoice,
-                  style: { marginBottom: 30 }
-                }) }
-              </div>
-              <div className="row">
-                <div className="col-xs-12 text-center">
-                  { unshippedPO && !customer && (
-                    <div className="notification">Invoice cannot be sent because no customer is selected.</div>
-                  ) }
-                  { unshippedPO && customer && customer.consignment && (
-                    <div className="notification">Invoice cannot be sent because { customer.name } sells on consignment.</div>
-                  ) }
-                  <div>
-                    <Button
-                      disabled= { spinner || changesToSave || shippedPO }
-                      text={ shippedPO ? `Shipped ${purchaseOrder.shipDate}` : (changesToSave ? "Save to Ship" : "Ship Now") }
-                      onClick={ () => this.clickShip({ reportingOnly: false }) }
-                      marginBottom
-                    />
-                    { unshippedPO && canSendInvoice && purchaseOrder.sendInvoice && (
-                      <Button
-                        disabled={ spinner || changesToSave }
-                        text={ changesToSave ? "Save to Ship" : "Send Invoice Only" }
-                        onClick={ () => this.clickShip({ reportingOnly: true }) }
-                        style={ { marginLeft: 20 } }
-                      />
-                    ) }
+              { unshippedPO ? (
+                <>
+                  <div className="row">
+                    { Details.renderSwitch.bind(this)({
+                      columnWidth: 12,
+                      entity: 'purchaseOrder',
+                      property: 'sendInvoice',
+                      center: true,
+                      readOnly: shippedPO || !canSendInvoice,
+                      style: { marginBottom: 30 }
+                    }) }
                   </div>
-                </div>
-              </div>
-              { unshippedPO && (
-                <BottomButtons
-                  entityName="purchaseOrder"
-                  confirmDelete={ Details.confirmDelete.bind(this) }
-                  justSaved={ justSaved }
-                  changesToSave={ changesToSave }
-                  disabled={ spinner }
-                  clickSave={ () => { this.clickSave() } }
-                />
+                  <div className="row">
+                    <div className="col-xs-12 text-center">
+                      { !customer && (
+                        <div className="notification">Invoice cannot be sent because no customer is selected.</div>
+                      ) }
+                      { customer && customer.consignment && (
+                        <div className="notification">Invoice cannot be sent because { customer.name } sells on consignment.</div>
+                      ) }
+                      <div>
+                        <Button
+                          disabled= { spinner || changesToSave }
+                          text={ changesToSave ? "Save to Ship" : "Ship Now" }
+                          onClick={ () => this.clickShip({ reportingOnly: false }) }
+                          marginBottom
+                        />
+                        { canSendInvoice && purchaseOrder.sendInvoice && (
+                          <Button
+                            disabled={ spinner || changesToSave }
+                            text={ changesToSave ? "Save to Ship" : "Send Invoice Only" }
+                            onClick={ () => this.clickShip({ reportingOnly: true }) }
+                            style={ { marginLeft: 20 } }
+                          />
+                        ) }
+                      </div>
+                    </div>
+                  </div>
+                  <BottomButtons
+                    entityName="purchaseOrder"
+                    confirmDelete={ Details.confirmDelete.bind(this) }
+                    justSaved={ justSaved }
+                    changesToSave={ changesToSave }
+                    disabled={ spinner }
+                    clickSave={ () => { this.clickSave() } }
+                  />
+                </>
+              ) : (
+                <>
+                  <p>This PO was shipped on {shipDate}.</p>
+                  { sourceDoc && (
+                    <>
+                      <p>Sales Order {sourceDoc}</p>
+                      <style>{`
+                        p {
+                          margin-top: 10px !important;
+                        }
+                      `}</style>
+                    </>
+                  ) }
+                  { invoiceNumber && (
+                    <>
+                      <a target="_blank" href={`/invoices/${invoiceId}`}>Invoice {invoiceNumber}</a>
+                      <style>{`
+                        a {
+                          margin-top: 10px !important;
+                          display: block;
+                          text-decoration: underline !important;
+                        }
+                      `}</style>
+                    </>
+                  ) }
+                </>
               ) }
               <GrayedOut visible={ spinner } />
               <Spinner visible={ spinner } />
             </div>
           </div>
-          <Modal isOpen={ this.state.addAddressModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ AddAddressModalStyles }>
+          <Modal isOpen={ addAddressModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ AddAddressModalStyles }>
             <NewEntity
               context={ this.props.context }
               entityName="shippingAddress"
               entityNamePlural="shippingAddresses"
               initialEntity={ {
                 label: "",
-                name: purchaseOrder.name,
-                address1: purchaseOrder.address1,
-                address2: purchaseOrder.address2,
-                city: purchaseOrder.city,
-                state: purchaseOrder.state,
-                zip: purchaseOrder.zip,
-                country: purchaseOrder.country,
-                customerId: purchaseOrder.customerId,
-                customerInfo: purchaseOrder.customerId !== '0' ? `Customer: ${customer.name}` : "No DVD Customer"
+                name,
+                address1,
+                address2,
+                city,
+                state,
+                zip,
+                country,
+                customerId,
+                customerInfo: customerId !== '0' ? `Customer: ${customer.name}` : "No DVD Customer"
               } }
               callback={ this.addShippingAddressCallback.bind(this) }
             />
           </Modal>
           <ModalSelect
-            isOpen={ this.state.selectAddressModalOpen }
-            options={ this.state.shippingAddresses }
+            isOpen={ selectAddressModalOpen }
+            options={ shippingAddresses }
             property="label"
             func={ this.clickSelectShippingAddress.bind(this) }
             onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
-            isOpen={ this.state.selectItemModalOpen }
-            options={ this.state.otherItems }
+            isOpen={ selectItemModalOpen }
+            options={ otherItems }
             property="label"
             func={ this.clickSelectItem.bind(this) }
             onClose={ Common.closeModals.bind(this) }
@@ -450,7 +506,8 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   getCustomerFromId(id) {
-    return this.state.dvdCustomers.find(customer => customer.id === +id);
+    const { dvdCustomers } = this.state;
+    return dvdCustomers.find(customer => customer.id === +id);
   }
 
   canSendInvoice(customer) {

@@ -25,6 +25,7 @@ class Api::PurchaseOrdersController < AdminController
 
   def show
     @purchase_order = PurchaseOrder.find(params[:id])
+    @invoice = @purchase_order.invoice
     @shipping_addresses = ShippingAddress.all.includes(:dvd_customer).order(:label)
     get_data_for_items
     render 'show', formats: [:json], handlers: [:jbuilder]

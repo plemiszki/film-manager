@@ -14,6 +14,9 @@ json.purchaseOrder do
   json.sendInvoice @purchase_order.send_invoice
   json.duplicate (PurchaseOrder.where(number: @purchase_order.number).length > 1)
   json.notes @purchase_order.notes
+  json.invoiceNumber @invoice.try(&:number) || ""
+  json.invoiceId @invoice.try(&:id) || ""
+  json.sourceDoc @purchase_order.source_doc || ""
 end
 json.dvdCustomers @dvd_customers do |dvd_customer|
   json.id dvd_customer.id
