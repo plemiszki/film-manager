@@ -408,31 +408,11 @@ export default class PurchaseOrderDetails extends React.Component {
                   />
                 </>
               ) : (
-                <>
+                <div className="shipped-info-section">
                   <p>This PO was shipped on {shipDate}.</p>
-                  { sourceDoc && (
-                    <>
-                      <p>Sales Order {sourceDoc}</p>
-                      <style>{`
-                        p {
-                          margin-top: 10px !important;
-                        }
-                      `}</style>
-                    </>
-                  ) }
-                  { invoiceNumber && (
-                    <>
-                      <a target="_blank" href={`/invoices/${invoiceId}`}>Invoice {invoiceNumber}</a>
-                      <style>{`
-                        a {
-                          margin-top: 10px !important;
-                          display: block;
-                          text-decoration: underline !important;
-                        }
-                      `}</style>
-                    </>
-                  ) }
-                </>
+                  { sourceDoc && <p>Sales Order {sourceDoc}</p> }
+                  { invoiceNumber && <a target="_blank" href={`/invoices/${invoiceId}`}>Invoice {invoiceNumber}</a> }
+                </div>
               ) }
               <GrayedOut visible={ spinner } />
               <Spinner visible={ spinner } />
@@ -499,6 +479,14 @@ export default class PurchaseOrderDetails extends React.Component {
             width: 170px;
             padding: 13px;
             margin-bottom: 20px;
+          }
+          .shipped-info-section p:not(:first-of-type) {
+            margin-top: 10px;
+          }
+          .shipped-info-section a {
+            margin-top: 10px;
+            display: block;
+            text-decoration: underline;
           }
         `}</style>
       </>
