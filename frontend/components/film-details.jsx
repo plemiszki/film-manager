@@ -1766,6 +1766,12 @@ export default class FilmDetails extends React.Component {
             float
             onClick={ () => { this.setState({ copyModalOpen: true }) } }
           />
+          <Button
+            text="Export XML"
+            marginRight
+            float
+            onClick={ () => { console.log('export xml') } }
+          />
         </>
       );
     }
