@@ -1770,11 +1770,27 @@ export default class FilmDetails extends React.Component {
             text="Export XML"
             marginRight
             float
-            onClick={ () => { console.log('export xml') } }
+            onClick={ () => this.exportXML() }
           />
         </>
       );
     }
+  }
+
+  exportXML() {
+    const { film } = this.state;
+    sendRequest('/api/films/export_xml', {
+      method: 'GET',
+      data: {
+        film_id: film.id,
+      },
+    }).then((response) => {
+      const { job } = response;
+      this.setState({
+        job,
+        jobModalOpen: true
+      });
+    });
   }
 
   percentageErrorsExist() {

@@ -143,6 +143,13 @@ class Api::FilmsController < AdminController
     end
   end
 
+  def export_xml
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "export xml", first_line: "Exporting XML", second_line: false)
+    # ExportXML.perform_async(params[:film_id], time_started)
+    render json: { job: job.render_json }
+  end
+
   def export
     if params[:film_ids]
       film_ids = params[:film_ids].to_a.map(&:to_i)

@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     get '/films/auto_renew' => '/api/films#auto_renew'
     get '/films/auto_renew/all' => '/api/films#auto_renew_all'
     get '/films/auto_renew/:id' => '/api/films#auto_renew_film'
+    get '/films/export_xml' => '/api/films#export_xml'
     resources :films, only: [:index, :show, :create, :update, :destroy]
     post '/films/export' => '/api/films#export'
     post '/films/copy' => '/api/films#copy'
