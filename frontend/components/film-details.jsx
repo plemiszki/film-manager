@@ -33,7 +33,7 @@ import {
 import FM from '../../app/assets/javascripts/me/common.jsx'
 import NewEntity from './new-entity.jsx'
 import CopyEntity from './copy-entity.jsx'
-import ChangeCase from 'change-case'
+import { camelCase } from 'change-case'
 
 const NewRightsModalStyles = {
   overlay: {
@@ -470,7 +470,7 @@ export default class FilmDetails extends React.Component {
 
   selectEntityToCreate(args, option) {
     const { directory, entityName, key, otherArrays } = args;
-    const entityNamePlural = ChangeCase.camelCase(directory);
+    const entityNamePlural = camelCase(directory);
     const { id } = this.state.film;
     this.setState({
       spinner: true
@@ -497,7 +497,7 @@ export default class FilmDetails extends React.Component {
 
   deleteFromList(args) {
     const { directory, otherArrays, id } = args;
-    const entityNamePlural = ChangeCase.camelCase(directory);
+    const entityNamePlural = camelCase(directory);
     this.setState({
       spinner: true
     });

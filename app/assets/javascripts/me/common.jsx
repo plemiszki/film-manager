@@ -1,8 +1,6 @@
 import React from 'react'
 import Modal from 'react-modal'
-import _ from 'lodash'
-import { Common } from 'handy-components'
-import ChangeCase from 'change-case'
+import { Common, titleCase } from 'handy-components'
 
 $(document).ready(function() {
   FM.initialize();
@@ -333,7 +331,7 @@ var FM = {
     var splitCityStateZipLine = function(input) {
       var result = {};
       var commaSplit = input.split(',');
-      result.city = ChangeCase.titleCase(commaSplit[0]);
+      result.city = titleCase(commaSplit[0]);
       var stateZipSplit = commaSplit[1].split(' ');
       result.state = stateZipSplit[1].toUpperCase();
       result.zip = stateZipSplit[2];

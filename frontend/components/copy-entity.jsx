@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import ChangeCase from 'change-case'
-import { Common, Details, sendRequest, Button, Spinner, GrayedOut } from 'handy-components'
+import { Details, sendRequest, Button, Spinner, GrayedOut, titleCase } from 'handy-components'
 
 export default class CopyEntity extends Component {
 
@@ -77,7 +76,7 @@ export default class CopyEntity extends Component {
           { this.renderFields() }
           <Button
             submit
-            text={ buttonText || `Copy ${ChangeCase.titleCase(entityName)}` }
+            text={ buttonText || `Copy ${titleCase(entityName)}` }
             onClick={ () => { this.clickCopy() } }
           />
           <Spinner visible={ spinner } />
