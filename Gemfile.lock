@@ -370,6 +370,7 @@ DEPENDENCIES
   aws-sdk-s3
   better_errors
   bootstrap-sass
+  builder
   byebug
   capybara
   clearance
