@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  # require 'sidekiq/web'
+  # mount Sidekiq::Web => '/sidekiq'
+
   root to: "films#index"
   resources :films, only: [:index, :show]
   resources :venues, only: [:index, :show]
