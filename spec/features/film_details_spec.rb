@@ -1066,4 +1066,10 @@ describe 'film_details', type: :feature do
     expect(page).to have_content('Updating Artwork')
   end
 
+  it 'starts the export XML job' do
+    visit film_path(@film, as: $admin_user)
+    click_btn('Export XML')
+    expect(page).to have_content('Exporting XML')
+  end
+
 end
