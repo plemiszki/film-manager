@@ -7,6 +7,18 @@ class ExportXml
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
 
+    film = Film.find(film_id)
+    case film.label.name
+    when "3rd Party"
+      raise "Film #{film.title} is a 3rd party film!"
+    when "Classics"
+      label_name = "Film Movement Classics"
+    when "Omnibus"
+      label_name = "Omnibus Entertainment"
+    else
+      label_name = film.label.name
+    end
+
     file = File.open("#{job_folder}/test.xml", 'w')
 
     require 'builder'
@@ -24,23 +36,23 @@ class ExportXml
         builder.tag!("md:LocalizedInfo", language: "en-US") do
           builder << "\n\n"
 
-          builder.tag!("md:TitleDisplayUnlimited") { builder << "Hunter Killer" }
+          builder.tag!("md:TitleDisplayUnlimited") { builder << film.title }
           builder << "\n\n"
 
           builder.tag!("md:TitleSort")
           builder << "\n\n"
 
-          builder.tag!("md:ArtReference", resolution: "1920x2560", purpose: "boxart") { builder << "Enter_the_3x4_boxart_file_name_here" }
+          builder.tag!("md:ArtReference", resolution: "1920x2560", purpose: "boxart") { builder << "#{film.title.camelize}_Box-Art_1920x2560" }
           builder << "\n"
-          builder.tag!("md:ArtReference", resolution: "3840x2160", purpose: "cover") { builder << "Enter_the_16x9_cover_file_name_here" }
+          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "cover") { builder << "#{film.title.camelize}_Cover-Art_1920x1080" }
           builder << "\n"
-          builder.tag!("md:ArtReference", resolution: "3840x2160", purpose: "hero") { builder << "Enter_the_16x9_hero_file_name_here" }
+          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "hero") { builder << "#{film.title.camelize}_Background-Art_1920x1080" }
           builder << "\n\n"
 
-          builder.tag!("md:Summary190") { builder << "Enter the short synopsis of the movie here" }
+          builder.tag!("md:Summary190") { builder << film.logline }
           builder << "\n\n"
 
-          builder.tag!("md:Summary400") { builder << "Enter the long synopsis of the movie here" }
+          builder.tag!("md:Summary400") { builder << film.synopsis }
           builder << "\n\n"
 
           builder.tag!("md:Genre", id: "av_genre_action")
@@ -48,7 +60,7 @@ class ExportXml
         end
         builder << "\n\n"
 
-        builder.tag!("md:ReleaseYear") { builder << "2021" }
+        builder.tag!("md:ReleaseYear") { builder << film.year }
         builder << "\n"
         builder.tag!("md:ReleaseDate") { builder << "2021-06-01" }
         builder << "\n\n"
@@ -139,7 +151,7 @@ class ExportXml
         builder.tag!("md:OriginalLanguage") { builder << "en-US" }
         builder << "\n"
 
-        builder.tag!("md:AssociatedOrg", "organizationID" => "Enter_your_partneralias_here", role: "licensor")
+        builder.tag!("md:AssociatedOrg", "organizationID" => "Film_Movement", role: "licensor")
         builder << "\n"
       end
       builder << "\n"
@@ -147,7 +159,7 @@ class ExportXml
       builder.tag!("mdmec:CompanyDisplayCredit") do
         builder << "\n"
 
-        builder.tag!("md:DisplayString", language: "en-US") { builder << "Enter Display credits name here" }
+        builder.tag!("md:DisplayString", language: "en-US") { builder << label_name }
         builder << "\n"
       end
       builder << "\n"
