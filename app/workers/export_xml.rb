@@ -22,6 +22,8 @@ class ExportXml
     directors = film.directors
     actors = film.actors
 
+    release_date = (film.theatrical_release || film.tvod_release || film.fm_plus_release).strftime("%Y-%m-%d")
+
     file = File.open("#{job_folder}/test.xml", 'w')
 
     require 'builder'
@@ -65,7 +67,7 @@ class ExportXml
 
         builder.tag!("md:ReleaseYear") { builder << film.year }
         builder << "\n"
-        builder.tag!("md:ReleaseDate") { builder << "2021-06-01" }
+        builder.tag!("md:ReleaseDate") { builder << release_date }
         builder << "\n\n"
         builder.tag!("md:WorkType") { builder << "movie" }
         builder << "\n\n"
@@ -75,7 +77,7 @@ class ExportXml
 
           builder.tag!("md:Namespace") { builder << "org" }
           builder << "\n\n"
-          builder.tag!("md:Identifier") { builder << "AS_Hunter_Killer_Movie" }
+          builder.tag!("md:Identifier") { builder << film.imdb_id }
           builder << "\n"
         end
         builder << "\n\n"
@@ -94,10 +96,10 @@ class ExportXml
             end
             builder << "\n"
 
-            builder.tag!("md:System") { builder << "MPAA" }
+            builder.tag!("md:System") { builder << "TVPG" }
             builder << "\n"
 
-            builder.tag!("md:Value") { builder << "PG" }
+            builder.tag!("md:Value") { builder << film.rating }
             builder << "\n"
           end
           builder << "\n"
@@ -105,7 +107,7 @@ class ExportXml
         end
         builder << "\n"
 
-        directors.each_with_index do |director, index|
+        directors[0..1].each_with_index do |director, index|
           builder.tag!("md:People") do
             builder << "\n"
 
@@ -130,7 +132,7 @@ class ExportXml
           builder << "\n"
         end
 
-        actors.each_with_index do |actor, index|
+        actors[0..1].each_with_index do |actor, index|
           builder.tag!("md:People") do
             builder << "\n"
 
@@ -155,8 +157,10 @@ class ExportXml
           builder << "\n"
         end
 
-        builder.tag!("md:OriginalLanguage") { builder << "en-US" }
-        builder << "\n"
+        film.languages.each do |language|
+          builder.tag!("md:OriginalLanguage") { builder << "en-US" }
+          builder << "\n"
+        end
 
         builder.tag!("md:AssociatedOrg", "organizationID" => "Film_Movement", role: "licensor")
         builder << "\n"
