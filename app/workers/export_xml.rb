@@ -10,7 +10,7 @@ class ExportXml
     film = Film.find(film_id)
     case film.label.name
     when "3rd Party"
-      raise "Film #{film.title} is a 3rd party film!"
+      label_name = "Film Movement Plus"
     when "Classics"
       label_name = "Film Movement Classics"
     when "Omnibus"
@@ -18,6 +18,9 @@ class ExportXml
     else
       label_name = film.label.name
     end
+
+    directors = film.directors
+    actors = film.actors
 
     file = File.open("#{job_folder}/test.xml", 'w')
 
@@ -102,51 +105,55 @@ class ExportXml
         end
         builder << "\n"
 
-        builder.tag!("md:People") do
-          builder << "\n"
-
-          builder.tag!("md:Job") do
+        directors.each_with_index do |director, index|
+          builder.tag!("md:People") do
             builder << "\n"
 
-            builder.tag!("md:JobFunction") { builder << "Director" }
-            builder << "\n"
-            builder.tag!("md:BillingBlockOrder") { builder << "1" }
-            builder << "\n"
-          end
-          builder << "\n"
+            builder.tag!("md:Job") do
+              builder << "\n"
 
-          builder.tag!("md:Name") do
-            builder << "\n"
-
-            builder.tag!("md:DisplayName", language: "en-US") { builder << "Enter_director_name_here" }
-            builder << "\n"
-          end
-          builder << "\n"
-        end
-        builder << "\n"
-
-        builder.tag!("md:People") do
-          builder << "\n"
-
-          builder.tag!("md:Job") do
+              builder.tag!("md:JobFunction") { builder << "Director" }
+              builder << "\n"
+              builder.tag!("md:BillingBlockOrder") { builder << (index + 1) }
+              builder << "\n"
+            end
             builder << "\n"
 
-            builder.tag!("md:JobFunction") { builder << "Actor" }
-            builder << "\n"
-            builder.tag!("md:BillingBlockOrder") { builder << "2" }
-            builder << "\n"
-          end
-          builder << "\n"
+            builder.tag!("md:Name") do
+              builder << "\n"
 
-          builder.tag!("md:Name") do
-            builder << "\n"
-
-            builder.tag!("md:DisplayName", language: "en-US") { builder << "Enter_actor_name_here" }
+              builder.tag!("md:DisplayName", language: "en-US") { builder << director.string }
+              builder << "\n"
+            end
             builder << "\n"
           end
           builder << "\n"
         end
-        builder << "\n"
+
+        actors.each_with_index do |actor, index|
+          builder.tag!("md:People") do
+            builder << "\n"
+
+            builder.tag!("md:Job") do
+              builder << "\n"
+
+              builder.tag!("md:JobFunction") { builder << "Actor" }
+              builder << "\n"
+              builder.tag!("md:BillingBlockOrder") { builder << (directors.length + index + 1) }
+              builder << "\n"
+            end
+            builder << "\n"
+
+            builder.tag!("md:Name") do
+              builder << "\n"
+
+              builder.tag!("md:DisplayName", language: "en-US") { builder << actor.string }
+              builder << "\n"
+            end
+            builder << "\n"
+          end
+          builder << "\n"
+        end
 
         builder.tag!("md:OriginalLanguage") { builder << "en-US" }
         builder << "\n"
