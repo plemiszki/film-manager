@@ -7,6 +7,8 @@ class ExportXml
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
 
+    errors = []
+
     film = Film.find(film_id)
     case film.label.name
     when "3rd Party"
@@ -158,7 +160,10 @@ class ExportXml
         end
 
         film.languages.each do |language|
-          builder.tag!("md:OriginalLanguage") { builder << "en-US" }
+          if language.prime_code.blank?
+            errors << "No Amazon Code for #{language.name}"
+          end
+          builder.tag!("md:OriginalLanguage") { builder << language.prime_code }
           builder << "\n"
         end
 
@@ -178,6 +183,11 @@ class ExportXml
 
     file.close
 
+    if errors.present?
+      job.update!({ status: :failed, first_line: "Errors Found", errors_text: errors.join("\n") })
+      return
+    end
+
     job.update({ first_line: "Uploading to AWS" })
     s3 = Aws::S3::Resource.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
@@ -186,6 +196,7 @@ class ExportXml
     bucket = s3.bucket(ENV['S3_BUCKET'])
     obj = bucket.object("#{time_started}/test.xml")
     obj.upload_file(file.path, acl:'public-read')
+
 
     job.update!({ status: 'success', first_line: '', metadata: { url: obj.public_url }, errors_text: '' })
   end
