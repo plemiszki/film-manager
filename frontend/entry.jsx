@@ -352,7 +352,8 @@ document.addEventListener("DOMContentLoaded", () => {
     entityName: 'genre',
     initialEntity: { name: '' },
     fields: [[
-      { columnWidth: 12, property: 'name' },
+      { columnWidth: 8, property: 'name' },
+      { columnWidth: 4, property: 'primeCode', columnHeader: 'Amazon Code' },
     ]],
     customDeletePath: '/settings',
   });
@@ -505,14 +506,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderFullIndex('genres-index', {
     entityName: 'genre',
-    columns: ['name'],
+    columns: ['name', 'primeCode'],
     modalRows: 1,
     modalDimensions: { width: 900 },
     includeNewButton: true,
     includeLinks: true,
     includeHover: true,
   }, { newEntity: {
-    initialEntity: { name: '' },
+    initialEntity: { name: '', primeCode: '' },
   }});
 
   renderFullIndex('giftboxes-index', {

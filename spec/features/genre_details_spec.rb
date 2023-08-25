@@ -22,7 +22,8 @@ describe 'genre_details', type: :feature do
   it 'updates information about the genre' do
     visit genre_path(@genre, as: $admin_user)
     new_info = {
-      name: 'Drama'
+      name: 'Drama',
+      prime_code: 'av_genre_drama',
     }
     fill_out_form(new_info)
     save_and_wait

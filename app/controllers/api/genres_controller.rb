@@ -41,7 +41,7 @@ class Api::GenresController < AdminController
   private
 
   def genre_params
-    params[:genre].permit(:name)
+    params[:genre].permit(:name, :prime_code)
   end
 
 end

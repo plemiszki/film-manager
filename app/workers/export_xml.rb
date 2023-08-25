@@ -59,11 +59,15 @@ class ExportXml
           builder.tag!("md:Summary190") { builder << film.logline }
           builder << "\n\n"
 
-          builder.tag!("md:Summary400") { builder << film.synopsis }
+          builder.tag!("md:Summary400") { builder << film.vod_synopsis }
           builder << "\n\n"
 
-          builder.tag!("md:Genre", id: "av_genre_action")
-          builder << "\n\n"
+          film.genres.each do |genre|
+            errors << "No Amazon Code for #{genre.name}" if genre.prime_code.blank?
+            builder.tag!("md:Genre", id: genre.prime_code)
+            builder << "\n\n"
+          end
+
         end
         builder << "\n\n"
 
@@ -160,9 +164,7 @@ class ExportXml
         end
 
         film.languages.each do |language|
-          if language.prime_code.blank?
-            errors << "No Amazon Code for #{language.name}"
-          end
+          errors << "No Amazon Code for #{language.name}" if language.prime_code.blank?
           builder.tag!("md:OriginalLanguage") { builder << language.prime_code }
           builder << "\n"
         end

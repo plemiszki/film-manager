@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_25_203533) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_25_210353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -416,6 +416,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_203533) do
 
   create_table "genres", id: :serial, force: :cascade do |t|
     t.string "name", null: false
+    t.string "prime_code", default: ""
   end
 
   create_table "giftbox_dvds", id: :serial, force: :cascade do |t|
