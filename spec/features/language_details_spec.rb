@@ -22,7 +22,8 @@ describe 'language_details', type: :feature do
   it 'updates information about the language' do
     visit language_path(@language, as: $admin_user)
     new_info = {
-      name: 'Spanish'
+      name: 'Spanish',
+      prime_code: 'es-ES',
     }
     fill_out_form(new_info)
     save_and_wait

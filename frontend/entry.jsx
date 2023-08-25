@@ -359,9 +359,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderSimpleDetails('language-details', {
     entityName: 'language',
-    initialEntity: { name: '' },
+    initialEntity: { name: '', prime_code: '' },
     fields: [[
-      { columnWidth: 12, property: 'name' }
+      { columnWidth: 8, property: 'name' },
+      { columnWidth: 4, property: 'primeCode', columnHeader: 'Amazon Code' },
     ]],
     customDeletePath: '/settings',
   });
@@ -529,7 +530,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderFullIndex('languages-index', {
     entityName: 'language',
-    columns: ['name'],
+    columns: ['name', 'prime_code'],
     modalRows: 1,
     modalDimensions: { width: 900 },
     includeNewButton: true,
