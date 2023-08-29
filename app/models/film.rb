@@ -234,4 +234,8 @@ class Film < ActiveRecord::Base
     result
   end
 
+  def title_for_xml
+    title.split(" ").map { |word| word.capitalize }.join("_")
+  end
+
 end
