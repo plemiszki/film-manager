@@ -166,6 +166,8 @@ Rails.application.routes.draw do
     resources :sub_rights, only: [:index, :new, :create, :show, :update, :destroy]
     resources :merchandise_types, only: [:index, :create, :show, :update, :destroy]
     resources :merchandise_items, only: [:index, :new, :create, :show, :update, :destroy]
+    resources :amazon_genres, only: [:index, :create, :show, :update, :destroy]
+    resources :amazon_languages, only: [:index, :create, :show, :update, :destroy]
 
     get '/website/films' => '/api/website#films'
     get '/website/bookings' => '/api/website#bookings'
