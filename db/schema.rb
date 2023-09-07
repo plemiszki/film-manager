@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_25_210353) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_07_194316) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -52,6 +52,36 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_210353) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["film_id", "language_id"], name: "index_alternate_subs_on_film_id_and_language_id", unique: true
+  end
+
+  create_table "amazon_genre_films", force: :cascade do |t|
+    t.integer "film_id", null: false
+    t.integer "amazon_genre_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["film_id", "amazon_genre_id"], name: "index_amazon_genre_films_on_film_id_and_amazon_genre_id", unique: true
+  end
+
+  create_table "amazon_genres", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_amazon_genres_on_name", unique: true
+  end
+
+  create_table "amazon_language_films", force: :cascade do |t|
+    t.integer "film_id", null: false
+    t.integer "amazon_language_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["film_id", "amazon_language_id"], name: "index_amazon_language_films_on_film_id_and_amazon_language_id", unique: true
+  end
+
+  create_table "amazon_languages", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_amazon_languages_on_name", unique: true
   end
 
   create_table "booker_venues", id: :serial, force: :cascade do |t|
