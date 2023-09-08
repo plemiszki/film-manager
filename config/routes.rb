@@ -50,6 +50,8 @@ Rails.application.routes.draw do
   resources :merchandise_types, only: [:show]
   resources :merchandise_items, only: [:index, :show]
   resources :aliases, only: [:index, :show]
+  resources :amazon_genres, only: [:show]
+  resources :amazon_languages, only: [:show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
