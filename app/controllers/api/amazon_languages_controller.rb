@@ -38,7 +38,7 @@ class Api::AmazonLanguagesController < AdminController
   private
 
   def amazon_language_params
-    params[:amazon_language].permit(:name)
+    params[:amazon_language].permit(:name, :code)
   end
 
 end

@@ -139,7 +139,8 @@ export default class NewEntity extends React.Component {
       case 'amazonLanguage':
         return([
           <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'amazonLanguage', property: 'name' }) }
+            { Details.renderField.bind(this)({ columnWidth: 8, entity: 'amazonLanguage', property: 'name' }) }
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'amazonLanguage', property: 'code' }) }
           </div>
         ]);
       case 'booker':

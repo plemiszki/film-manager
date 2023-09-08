@@ -25,7 +25,10 @@ describe 'amazon_languages_index', type: :feature do
     within('#amazon-languages-index') do
       click_btn('Add Amazon Language')
     end
-    info = { name: 'English (US)' }
+    info = {
+      name: 'English (US)',
+      code: 'en-US',
+    }
     fill_out_and_submit_modal(info, :input)
     verify_db(
       entity: AmazonLanguage.last,
@@ -33,6 +36,7 @@ describe 'amazon_languages_index', type: :feature do
     )
     within('#amazon-languages-index') do
       expect(page).to have_content('English (US)')
+      expect(page).to have_content('en-US')
     end
   end
 
@@ -43,6 +47,7 @@ describe 'amazon_languages_index', type: :feature do
     end
     fill_out_and_submit_modal({}, :input)
     expect(page).to have_content("Name can't be blank")
+    expect(page).to have_content("Code can't be blank")
   end
 
 end

@@ -295,7 +295,8 @@ document.addEventListener("DOMContentLoaded", () => {
     entityName: 'amazonLanguage',
     initialEntity: { name: '' },
     fields: [[
-      { columnWidth: 12, property: 'name' },
+      { columnWidth: 8, property: 'name' },
+      { columnWidth: 4, property: 'code' },
     ]],
     customDeletePath: '/settings',
   });
@@ -462,7 +463,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderFullIndex('amazon-languages-index', {
     entityName: 'amazonLanguage',
-    columns: ['name'],
+    columns: ['name', 'code'],
     modalRows: 1,
     modalDimensions: { width: 500 },
     includeLinks: true,

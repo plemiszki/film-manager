@@ -17,12 +17,14 @@ describe 'amazon_language_details', type: :feature do
     visit amazon_language_path(@amazon_language, as: $admin_user)
     wait_for_ajax
     expect(find('input[data-field="name"]').value).to eq('English (UK)')
+    expect(find('input[data-field="code"]').value).to eq('en-GB')
   end
 
   it 'updates information about the amazon language' do
     visit amazon_language_path(@amazon_language, as: $admin_user)
     new_info = {
-      name: 'English (US)'
+      name: 'English (US)',
+      code: 'en-US',
     }
     fill_out_form(new_info)
     save_and_wait
@@ -37,6 +39,7 @@ describe 'amazon_language_details', type: :feature do
     clear_form
     save_and_wait
     expect(page).to have_content("Name can't be blank")
+    expect(page).to have_content("Code can't be blank")
   end
 
   it 'deletes the amazon language' do
