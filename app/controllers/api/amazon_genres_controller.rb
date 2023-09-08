@@ -25,7 +25,7 @@ class Api::AmazonGenresController < AdminController
     if @amazon_genre.update(amazon_genre_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render_errors(@alias)
+      render_errors(@amazon_genre)
     end
   end
 

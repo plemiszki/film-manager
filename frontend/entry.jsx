@@ -282,6 +282,24 @@ document.addEventListener("DOMContentLoaded", () => {
     ]]
   });
 
+  renderSimpleDetails('amazon-genre-details', {
+    entityName: 'amazonGenre',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 12, property: 'name' },
+    ]],
+    customDeletePath: '/settings',
+  });
+
+  renderSimpleDetails('amazon-language-details', {
+    entityName: 'amazonLanguage',
+    initialEntity: { name: '' },
+    fields: [[
+      { columnWidth: 12, property: 'name' },
+    ]],
+    customDeletePath: '/settings',
+  });
+
   renderSimpleDetails('country-details', {
     entityName: 'country',
     initialEntity: { name: '' },

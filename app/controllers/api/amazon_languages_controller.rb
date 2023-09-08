@@ -25,7 +25,7 @@ class Api::AmazonLanguagesController < AdminController
     if @amazon_language.update(amazon_language_params)
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
-      render_errors(@alias)
+      render_errors(@amazon_language)
     end
   end
 
