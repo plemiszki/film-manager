@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderSimpleDetails('language-details', {
     entityName: 'language',
-    initialEntity: { name: '', prime_code: '' },
+    initialEntity: { name: '' },
     fields: [[
       { columnWidth: 8, property: 'name' },
       { columnWidth: 4, property: 'primeCode', columnHeader: 'Amazon Code' },
@@ -573,7 +573,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderFullIndex('languages-index', {
     entityName: 'language',
-    columns: ['name', 'prime_code'],
+    columns: ['name'],
     modalRows: 1,
     modalDimensions: { width: 900 },
     includeNewButton: true,

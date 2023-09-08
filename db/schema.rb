@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_07_194316) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_08_180601) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -81,6 +81,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_194316) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "code", null: false
+    t.index ["code"], name: "index_amazon_languages_on_code", unique: true
     t.index ["name"], name: "index_amazon_languages_on_name", unique: true
   end
 
@@ -446,7 +448,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_194316) do
 
   create_table "genres", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.string "prime_code", default: ""
   end
 
   create_table "giftbox_dvds", id: :serial, force: :cascade do |t|
@@ -538,7 +539,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_194316) do
 
   create_table "languages", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.string "prime_code", default: ""
   end
 
   create_table "laurels", id: :serial, force: :cascade do |t|

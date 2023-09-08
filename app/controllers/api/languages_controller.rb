@@ -41,7 +41,7 @@ class Api::LanguagesController < AdminController
   private
 
   def language_params
-    params[:language].permit(:name, :prime_code)
+    params[:language].permit(:name)
   end
 
 end
