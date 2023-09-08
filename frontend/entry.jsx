@@ -430,6 +430,30 @@ document.addEventListener("DOMContentLoaded", () => {
     initialEntity: { text: '', filmId: '' },
   }});
 
+  renderFullIndex('amazon-genres-index', {
+    entityName: 'amazonGenre',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 500 },
+    includeLinks: true,
+    includeHover: true,
+    includeNewButton: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
+  renderFullIndex('amazon-languages-index', {
+    entityName: 'amazonLanguage',
+    columns: ['name'],
+    modalRows: 1,
+    modalDimensions: { width: 500 },
+    includeLinks: true,
+    includeHover: true,
+    includeNewButton: true,
+  }, { newEntity: {
+    initialEntity: { name: '' },
+  }});
+
   renderFullIndex('bookers-index', {
     entityName: 'booker',
     columns: ['name', 'email', 'phone'],
