@@ -1,3 +1,4 @@
-json.amazonLanguages @amazon_langauges do |amazon_language|
+json.amazonLanguages @amazon_languages do |amazon_language|
+  json.id amazon_language.id
   json.name amazon_language.name
 end
