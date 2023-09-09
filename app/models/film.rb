@@ -97,6 +97,10 @@ class Film < ActiveRecord::Base
   has_many :alternate_audios, dependent: :destroy
   has_many :virtual_bookings
   has_many :aliases, dependent: :destroy
+  has_many :amazon_genre_films, dependent: :destroy
+  has_many :amazon_genres, through: :amazon_genre_films
+  has_many :amazon_language_films, dependent: :destroy
+  has_many :amazon_languages, through: :amazon_language_films
 
   scope :features, -> { where(film_type: 'Feature') }
   scope :shorts, -> { where(film_type: 'Short') }
