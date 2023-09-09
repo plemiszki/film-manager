@@ -138,7 +138,7 @@ class ExportXml
           builder << "\n"
         end
 
-        actors[0..1].each_with_index do |actor, index|
+        actors.each_with_index do |actor, index|
           builder.tag!("md:People") do
             builder << "\n"
 
