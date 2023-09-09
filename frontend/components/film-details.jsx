@@ -91,6 +91,8 @@ export default class FilmDetails extends React.Component {
       errors: {},
       spinner: true,
       film: {},
+      filmAmazonGenres: [],
+      filmAmazonLanguages: [],
       filmCountries: [],
       filmFormats: [],
       filmGenres: [],
@@ -906,6 +908,8 @@ export default class FilmDetails extends React.Component {
       dvds,
       episodes,
       film,
+      filmAmazonGenres,
+      filmAmazonLanguages,
       filmCountries,
       filmFormats,
       filmGenres,
@@ -1455,6 +1459,31 @@ export default class FilmDetails extends React.Component {
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'film', property: 'tvRating', columnHeader: 'TV Rating' }) }
               </div>
               <hr style={ { marginTop: 30 } } />
+                <div className="row">
+                  <div className="col-xs-6">
+                    <p className="section-header">Amazon Genres</p>
+                    <ListBox
+                      entityName="amazonGenre"
+                      displayProperty="name"
+                      entities={ alphabetizeArrayOfObjects(filmAmazonGenres, 'name') }
+                      clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
+                      clickAdd={ () => { this.setState({ formatsModalOpen: true }) } }
+                      style={ { marginBottom: 30 } }
+                    />
+                  </div>
+                  <div className="col-xs-6">
+                    <p className="section-header">Amazon Languages</p>
+                    <ListBox
+                      entityName="amazonLanguage"
+                      displayProperty="name"
+                      entities={ alphabetizeArrayOfObjects(filmAmazonLanguages, 'name') }
+                      clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
+                      clickAdd={ () => { this.setState({ formatsModalOpen: true }) } }
+                      style={ { marginBottom: 30 } }
+                    />
+                  </div>
+                </div>
+              <hr />
             </div>
             <style jsx>{`
               .badge-checkboxes {
