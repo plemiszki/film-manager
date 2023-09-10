@@ -1490,7 +1490,7 @@ export default class FilmDetails extends React.Component {
                       entityName="amazonGenre"
                       displayProperty="name"
                       entities={ alphabetizeArrayOfObjects(amazonGenreFilms, 'name') }
-                      clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
+                      clickDelete={ amazonGenreFilm => { this.deleteFromList({ id: amazonGenreFilm.id, directory: 'amazon_genre_films', otherArrays: ['amazonGenres'] }) }}
                       clickAdd={ () => { this.setState({ amazonGenresModalOpen: true }) } }
                       style={ { marginBottom: 30 } }
                     />
