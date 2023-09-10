@@ -1820,19 +1820,41 @@ export default class FilmDetails extends React.Component {
             onClick={ () => { this.setState({ copyModalOpen: true }) } }
           />
           <Button
-            text="Export XML"
+            text="XML - MMC"
             marginRight
             float
-            onClick={ () => this.exportXML() }
+            onClick={ () => this.exportMMC() }
+          />
+          <Button
+            text="XML - MEC"
+            marginRight
+            float
+            onClick={ () => this.exportMEC() }
           />
         </>
       );
     }
   }
 
-  exportXML() {
+  exportMEC() {
     const { film } = this.state;
     sendRequest('/api/films/export_xml', {
+      method: 'GET',
+      data: {
+        film_id: film.id,
+      },
+    }).then((response) => {
+      const { job } = response;
+      this.setState({
+        job,
+        jobModalOpen: true
+      });
+    });
+  }
+
+  exportMMC() {
+    const { film } = this.state;
+    sendRequest('/api/films/export_xml_mmc', {
       method: 'GET',
       data: {
         film_id: film.id,

@@ -145,8 +145,15 @@ class Api::FilmsController < AdminController
 
   def export_xml
     time_started = Time.now.to_s
-    job = Job.create!(job_id: time_started, name: "export xml", first_line: "Exporting XML", second_line: false)
+    job = Job.create!(job_id: time_started, name: "export xml (mec)", first_line: "Exporting XML (MEC)", second_line: false)
     ExportXml.perform_async(params[:film_id], time_started)
+    render json: { job: job.render_json }
+  end
+
+  def export_xml_mmc
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "export xml (mmc)", first_line: "Exporting XML (MMC)", second_line: false)
+    ExportXmlMmc.perform_async(params[:film_id], time_started)
     render json: { job: job.render_json }
   end
 
