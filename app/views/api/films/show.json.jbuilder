@@ -290,7 +290,15 @@ json.amazonLanguages @amazon_languages do |amazon_language|
   json.name amazon_language.name
   json.code amazon_language.code
 end
+json.amazonLanguageFilms @amazon_language_films do |amazon_language_film|
+  json.id amazon_language_film.id
+  json.name amazon_language_film.amazon_language.name
+end
 json.amazonGenres @amazon_genres do |amazon_genre|
   json.id amazon_genre.id
   json.name amazon_genre.name
+end
+json.amazonGenreFilms @amazon_genre_films do |amazon_genre_film|
+  json.id amazon_genre_film.id
+  json.name amazon_genre_film.amazon_genre.name
 end

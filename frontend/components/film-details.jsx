@@ -74,7 +74,9 @@ export default class FilmDetails extends React.Component {
       alternateLengths: [],
       alternateSubs: [],
       amazonGenres: [],
+      amazonGenreFilms: [],
       amazonLanguages: [],
+      amazonLanguageFilms: [],
       artworkModalOpen: false,
       audioLanguages: [],
       bookings:[],
@@ -93,8 +95,6 @@ export default class FilmDetails extends React.Component {
       errors: {},
       spinner: true,
       film: {},
-      filmAmazonGenres: [],
-      filmAmazonLanguages: [],
       filmCountries: [],
       filmFormats: [],
       filmGenres: [],
@@ -144,7 +144,9 @@ export default class FilmDetails extends React.Component {
         alternateLengths,
         alternateSubs,
         amazonGenres,
+        amazonGenreFilms,
         amazonLanguages,
+        amazonLanguageFilms,
         audioLanguages,
         bookings,
         countries,
@@ -190,7 +192,9 @@ export default class FilmDetails extends React.Component {
         alternateLengths,
         alternateSubs,
         amazonGenres,
+        amazonGenreFilms,
         amazonLanguages,
+        amazonLanguageFilms,
         audioLanguages,
         bookings,
         crossedFilms,
@@ -721,14 +725,14 @@ export default class FilmDetails extends React.Component {
             isOpen={ this.state.amazonGenresModalOpen }
             options={ this.state.amazonGenres }
             property="name"
-            func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) }
+            func={ this.selectEntityToCreate.bind(this, { directory: 'amazon_genre_films', entityName: 'amazonGenreFilm', key: 'amazonGenreId', otherArrays: ['amazonGenres'] }) }
             onClose={ Common.closeModals.bind(this) }
           />
           <ModalSelect
             isOpen={ this.state.amazonLanguagesModalOpen }
             options={ this.state.amazonLanguages }
             property="name"
-            func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) }
+            func={ this.selectEntityToCreate.bind(this, { directory: 'amazon_language_films', entityName: 'amazonLanguageFilm', key: 'amazonLanguageId', otherArrays: ['amazonLanguages'] }) }
             onClose={ Common.closeModals.bind(this) }
           />
           <Modal isOpen={ this.state.episodeModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
@@ -923,13 +927,13 @@ export default class FilmDetails extends React.Component {
       alternateAudios,
       alternateLengths,
       alternateSubs,
+      amazonGenreFilms,
+      amazonLanguageFilms,
       crossedFilms,
       directors,
       dvds,
       episodes,
       film,
-      filmAmazonGenres,
-      filmAmazonLanguages,
       filmCountries,
       filmFormats,
       filmGenres,
@@ -1485,7 +1489,7 @@ export default class FilmDetails extends React.Component {
                     <ListBox
                       entityName="amazonGenre"
                       displayProperty="name"
-                      entities={ alphabetizeArrayOfObjects(filmAmazonGenres, 'name') }
+                      entities={ alphabetizeArrayOfObjects(amazonGenreFilms, 'name') }
                       clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
                       clickAdd={ () => { this.setState({ amazonGenresModalOpen: true }) } }
                       style={ { marginBottom: 30 } }
@@ -1496,8 +1500,8 @@ export default class FilmDetails extends React.Component {
                     <ListBox
                       entityName="amazonLanguage"
                       displayProperty="name"
-                      entities={ alphabetizeArrayOfObjects(filmAmazonLanguages, 'name') }
-                      clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
+                      entities={ alphabetizeArrayOfObjects(amazonLanguageFilms, 'name') }
+                      clickDelete={ amazonLanguageFilm => { this.deleteFromList({ id: amazonLanguageFilm.id, directory: 'amazon_language_films', otherArrays: ['amazonLanguages'] }) }}
                       clickAdd={ () => { this.setState({ amazonLanguagesModalOpen: true }) } }
                       style={ { marginBottom: 30 } }
                     />
