@@ -285,12 +285,12 @@ json.audioLanguages @audio_languages do |language|
   json.id language.id
   json.name language.name
 end
-json.amazonLanguages @film.amazon_languages do |amazon_language|
+json.amazonLanguages @amazon_languages do |amazon_language|
   json.id amazon_language.id
   json.name amazon_language.name
   json.code amazon_language.code
 end
-json.amazonGenres @film.amazon_genres do |amazon_genre|
+json.amazonGenres @amazon_genres do |amazon_genre|
   json.id amazon_genre.id
   json.name amazon_genre.name
 end

@@ -404,6 +404,10 @@ class Api::FilmsController < AdminController
     @subtitle_languages = all_languages.filter { |language| @alternate_subs.map(&:language_id).include?(language.id) == false }
     @alternate_audios = @film.alternate_audios.includes(:language)
     @audio_languages = all_languages.filter { |language| @alternate_audios.map(&:language_id).include?(language.id) == false }
+    @amazon_genres = AmazonGenre.all.order(:name)
+    @amazon_languages = AmazonLanguage.all.order(:name)
+    @amazon_genre_films = @film.amazon_genre_films
+    @amazon_language_films = @film.amazon_language_films
   end
 
   def create_schedule

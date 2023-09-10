@@ -73,6 +73,8 @@ export default class FilmDetails extends React.Component {
       alternateAudios: [],
       alternateLengths: [],
       alternateSubs: [],
+      amazonGenres: [],
+      amazonLanguages: [],
       artworkModalOpen: false,
       audioLanguages: [],
       bookings:[],
@@ -141,6 +143,8 @@ export default class FilmDetails extends React.Component {
         alternateAudios,
         alternateLengths,
         alternateSubs,
+        amazonGenres,
+        amazonLanguages,
         audioLanguages,
         bookings,
         countries,
@@ -185,6 +189,8 @@ export default class FilmDetails extends React.Component {
         alternateAudios,
         alternateLengths,
         alternateSubs,
+        amazonGenres,
+        amazonLanguages,
         audioLanguages,
         bookings,
         crossedFilms,
@@ -707,6 +713,20 @@ export default class FilmDetails extends React.Component {
           <ModalSelect
             isOpen={ this.state.formatsModalOpen }
             options={ this.state.formats }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) }
+            onClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.amazonGenresModalOpen }
+            options={ this.state.amazonGenres }
+            property="name"
+            func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) }
+            onClose={ Common.closeModals.bind(this) }
+          />
+          <ModalSelect
+            isOpen={ this.state.amazonLanguagesModalOpen }
+            options={ this.state.amazonLanguages }
             property="name"
             func={ this.selectEntityToCreate.bind(this, { directory: 'film_formats', entityName: 'filmFormat', key: 'formatId', otherArrays: ['formats'] }) }
             onClose={ Common.closeModals.bind(this) }
@@ -1467,7 +1487,7 @@ export default class FilmDetails extends React.Component {
                       displayProperty="name"
                       entities={ alphabetizeArrayOfObjects(filmAmazonGenres, 'name') }
                       clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
-                      clickAdd={ () => { this.setState({ formatsModalOpen: true }) } }
+                      clickAdd={ () => { this.setState({ amazonGenresModalOpen: true }) } }
                       style={ { marginBottom: 30 } }
                     />
                   </div>
@@ -1478,7 +1498,7 @@ export default class FilmDetails extends React.Component {
                       displayProperty="name"
                       entities={ alphabetizeArrayOfObjects(filmAmazonLanguages, 'name') }
                       clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
-                      clickAdd={ () => { this.setState({ formatsModalOpen: true }) } }
+                      clickAdd={ () => { this.setState({ amazonLanguagesModalOpen: true }) } }
                       style={ { marginBottom: 30 } }
                     />
                   </div>
