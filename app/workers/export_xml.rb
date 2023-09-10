@@ -62,9 +62,8 @@ class ExportXml
           builder.tag!("md:Summary400") { builder << film.vod_synopsis }
           builder << "\n\n"
 
-          film.genres.each do |genre|
-            errors << "No Amazon Code for #{genre.name}" if genre.prime_code.blank?
-            builder.tag!("md:Genre", id: genre.prime_code)
+          film.amazon_genres.each do |amazon_genre|
+            builder.tag!("md:Genre", id: amazon_genre.name)
             builder << "\n\n"
           end
 
@@ -80,9 +79,17 @@ class ExportXml
 
         builder.tag!("md:AltIdentifier") do
           builder << "\n"
+          builder.tag!("md:Namespace") { builder << "ORG" }
+          builder << "\n"
+          builder.tag!("md:Identifier") { builder << film.title }
+          builder << "\n"
+        end
+        builder << "\n\n"
 
-          builder.tag!("md:Namespace") { builder << "org" }
-          builder << "\n\n"
+        builder.tag!("md:AltIdentifier") do
+          builder << "\n"
+          builder.tag!("md:Namespace") { builder << "IMDB" }
+          builder << "\n"
           builder.tag!("md:Identifier") { builder << film.imdb_id }
           builder << "\n"
         end
@@ -163,9 +170,8 @@ class ExportXml
           builder << "\n"
         end
 
-        film.languages.each do |language|
-          errors << "No Amazon Code for #{language.name}" if language.prime_code.blank?
-          builder.tag!("md:OriginalLanguage") { builder << language.prime_code }
+        film.amazon_languages.each do |amazon_language|
+          builder.tag!("md:OriginalLanguage") { builder << amazon_language.code }
           builder << "\n"
         end
 
