@@ -791,6 +791,58 @@ describe 'film_details', type: :feature do
     expect(page).to have_content 'Edu platform has already been taken'
   end
 
+  it 'adds amazon genres' do
+    create(:amazon_genre)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    click_btn("Add Amazon Genre")
+    select_from_modal('Action')
+    expect(page).to have_no_css('.spinner')
+    expect(AmazonGenreFilm.count).to eq(1)
+    within(list_box_selector("amazon-genres")) do
+      expect(page).to have_content('Action')
+    end
+  end
+
+  it 'removes amazon genres' do
+    create(:amazon_genre)
+    create(:amazon_genre_film)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within(list_box_selector("amazon-genres")) do
+      find('.x-gray-circle').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(AmazonGenreFilm.count).to eq(0)
+    expect(page).to have_no_content('Action')
+  end
+
+  it 'adds amazon languages' do
+    create(:amazon_language)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    click_btn("Add Amazon Language")
+    select_from_modal('English (UK)')
+    expect(page).to have_no_css('.spinner')
+    expect(AmazonLanguageFilm.count).to eq(1)
+    within(list_box_selector("amazon-languages")) do
+      expect(page).to have_content('English (UK)')
+    end
+  end
+
+  it 'removes amazon languages' do
+    create(:amazon_language)
+    create(:amazon_language_film)
+    visit film_path(@film, as: $admin_user)
+    find('div.tab', text: 'Marketing').click
+    within(list_box_selector("amazon-languages")) do
+      find('.x-gray-circle').click
+    end
+    expect(page).to have_no_css('.spinner')
+    expect(AmazonLanguageFilm.count).to eq(0)
+    expect(page).to have_no_content('English (UK)')
+  end
+
   # bookings tab
 
   it "displays the film's booking information" do
