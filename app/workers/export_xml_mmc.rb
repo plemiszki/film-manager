@@ -42,17 +42,55 @@ class ExportXmlMmc
       end
       builder.tag!("manifest:Inventory") do
         builder.comment! "video file"
-        builder.tag!("manifest:Video") do
+        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.video.en-US") do
+          builder.__send__('md:Type', 'primary')
+          builder.tag!("md:Picture") do
+            builder.__send__('md:AspectRatio', '16:9')
+            builder.__send__('md:WidthPixels', '1920')
+            builder.__send__('md:HeightPixels', '1080')
+          end
+          builder.__send__('md:Language', 'en-EN')
+          builder.tag!("manifest:ContainerReference") do
+            builder.__send__('manifest:ContainerLocation', 'filmmovement-Once_Were_Warriors_Movie-Full-mezz-en-US.mov')
+          end
         end
         builder.comment! "Embedded audio in the video file"
-        builder.tag!("manifest:Audio") do
+        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.audio.en-US") do
+          builder.__send__('md:Type', 'primary')
+          builder.__send__('md:Language', 'en-US')
+          builder.tag!("manifest:ContainerReference") do
+            builder.__send__('manifest:ContainerLocation', 'filmmovement-Once_Were_Warriors_Movie-Full-feature-en-US.mov')
+          end
         end
         builder.comment! "Feature subtitle File"
-        builder.tag!("manifest:Subtitle") do
+        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:caption.en-US") do
+          builder.__send__('md:Format', 'SCC')
+          builder.__send__('md:Type', 'SDH')
+          builder.__send__('md:Language', 'en-US')
+          builder.tag!("md:Encoding") do
+            builder.__send__('md:Framerate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
+          end
+          builder.tag!("manifest:ContainerReference") do
+            builder.__send__('manifest:ContainerLocation', 'filmmovement-FM_Once_Were_Warriors_Movie-Full-Caption2398NDF-en-US.scc')
+          end
         end
       end
       builder.comment! "Presentation section"
       builder.tag!("manifest:Presentations") do
+        builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.presentation") do
+          builder.tag!("manifest:TrackMetadata") do
+            builder.__send__('manifest:TrackSelectionNumber', '0')
+            builder.tag!('manifest:VideoTrackReference') do
+              builder.__send__('manifest:VideoTrackID', 'md:vidtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.video.en-US')
+            end
+            builder.tag!('manifest:AudioTrackReference') do
+              builder.__send__('manifest:AudioTrackID', 'md:audtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.audio.en-US')
+            end
+            builder.tag!('manifest:SubtitleTrackReference') do
+              builder.__send__('manifest:SubtitleTrackID', 'md:subtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:caption.en-US')
+            end
+          end
+        end
       end
       builder.comment! "Experiences"
       builder.tag!("manifest:Experiences") do
