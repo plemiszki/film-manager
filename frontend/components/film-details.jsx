@@ -1819,12 +1819,14 @@ export default class FilmDetails extends React.Component {
             float
             onClick={ () => { this.setState({ copyModalOpen: true }) } }
           />
-          <Button
-            text="XML - MMC"
-            marginRight
-            float
-            onClick={ () => this.exportMMC() }
-          />
+          {
+            // <Button
+            //   text="XML - MMC"
+            //   marginRight
+            //   float
+            //   onClick={ () => this.exportMMC() }
+            // />
+          }
           <Button
             text="XML - MEC"
             marginRight
