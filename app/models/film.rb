@@ -60,6 +60,10 @@ class Film < ActiveRecord::Base
     errors.add(:title, 'cannot contain /') if title.present? && title.include?('/')
   end
 
+  def title_snake_case
+    title.downcase.gsub(' ', '_')
+  end
+
   after_create :create_percentages
 
   belongs_to :licensor

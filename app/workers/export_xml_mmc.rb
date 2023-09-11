@@ -10,25 +10,7 @@ class ExportXmlMmc
     errors = []
 
     film = Film.find(film_id)
-    case film.label.name
-    when "3rd Party"
-      label_name = "Film Movement Plus"
-    when "Classics"
-      label_name = "Film Movement Classics"
-    when "Omnibus"
-      label_name = "Omnibus Entertainment"
-    else
-      label_name = film.label.name
-    end
-
-    directors = film.directors
-    actors = film.actors
-
-    newline = lambda { |builder| builder << "\n" }
-
-    release_date = (film.theatrical_release || film.tvod_release || film.fm_plus_release).strftime("%Y-%m-%d")
-
-    file = File.open("#{job_folder}/test.xml", 'w')
+    file = File.open("#{job_folder}/#{film.title_snake_case}.xml", 'w')
 
     require 'builder'
     builder = Builder::XmlMarkup.new(target: file, indent: 2)
@@ -68,7 +50,7 @@ class ExportXmlMmc
           builder.__send__('md:Type', 'SDH')
           builder.__send__('md:Language', 'en-US')
           builder.tag!("md:Encoding") do
-            builder.__send__('md:Framerate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
+            builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
           end
           builder.tag!("manifest:ContainerReference") do
             builder.__send__('manifest:ContainerLocation', 'filmmovement-FM_Once_Were_Warriors_Movie-Full-Caption2398NDF-en-US.scc')
@@ -104,8 +86,10 @@ class ExportXmlMmc
       end
       builder.comment! "ALIDExperienceMap"
       builder.tag!("manifest:ALIDExperienceMaps") do
-        builder.__send__('manifest:ALID', 'md:alid:org:filmmovement:FM_Once_Were_Warriors_Movie')
-        builder.__send__('manifest:ExperienceID', 'md:experienceid:org:filmmovement:FM_Once_Were_Warriors_Movie:experience')
+        builder.tag!("manifest:ALIDExperienceMap") do
+          builder.__send__('manifest:ALID', 'md:alid:org:filmmovement:FM_Once_Were_Warriors_Movie')
+          builder.__send__('manifest:ExperienceID', 'md:experienceid:org:filmmovement:FM_Once_Were_Warriors_Movie:experience')
+        end
       end
     end
 
@@ -122,7 +106,7 @@ class ExportXmlMmc
       region: 'us-east-1',
     )
     bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object("#{time_started}/test.xml")
+    obj = bucket.object("#{time_started}/#{film.title_snake_case}.xml")
     obj.upload_file(file.path, acl:'public-read')
 
 
