@@ -94,9 +94,18 @@ class ExportXmlMmc
       end
       builder.comment! "Experiences"
       builder.tag!("manifest:Experiences") do
+        builder.tag!("manifest:Experience", "ExperienceID" => "md:experienceid:org:filmmovement:FM_Once_Were_Warriors_Movie:experience", "version" => "1.0") do
+          builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_Once_Were_Warriors_Movie") do
+            builder.__send__('manifest:Type', 'Main')
+            builder.__send__('manifest:SubType', 'Feature')
+            builder.__send__('manifest:PresentationID', 'md:presentationid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.presentation')
+          end
+        end
       end
       builder.comment! "ALIDExperienceMap"
       builder.tag!("manifest:ALIDExperienceMaps") do
+        builder.__send__('manifest:ALID', 'md:alid:org:filmmovement:FM_Once_Were_Warriors_Movie')
+        builder.__send__('manifest:ExperienceID', 'md:experienceid:org:filmmovement:FM_Once_Were_Warriors_Movie:experience')
       end
     end
 
