@@ -10,7 +10,8 @@ class ExportXmlMmc
     errors = []
 
     film = Film.find(film_id)
-    file = File.open("#{job_folder}/#{film.title_snake_case}.xml", 'w')
+    filename = "#{film.title_amazon_export.downcase}_mmc.xml"
+    file = File.open(filename, 'w')
 
     title = film.title_amazon_export
 
@@ -82,15 +83,15 @@ class ExportXmlMmc
           builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_#{title}_Movie") do
             builder.__send__('manifest:Type', 'Main')
             builder.__send__('manifest:SubType', 'Feature')
-            builder.__send__('manifest:PresentationID', 'md:presentationid:org:filmmovement:FM_#{title}_Movie:feature.presentation')
+            builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Movie:feature.presentation")
           end
         end
       end
       builder.comment! "ALIDExperienceMap"
       builder.tag!("manifest:ALIDExperienceMaps") do
         builder.tag!("manifest:ALIDExperienceMap") do
-          builder.__send__('manifest:ALID', 'md:alid:org:filmmovement:FM_#{title}_Movie')
-          builder.__send__('manifest:ExperienceID', 'md:experienceid:org:filmmovement:FM_#{title}_Movie:experience')
+          builder.__send__('manifest:ALID', "md:alid:org:filmmovement:FM_#{title}_Movie")
+          builder.__send__('manifest:ExperienceID', "md:experienceid:org:filmmovement:FM_#{title}_Movie:experience")
         end
       end
     end
@@ -108,7 +109,7 @@ class ExportXmlMmc
       region: 'us-east-1',
     )
     bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object("#{time_started}/#{film.title_snake_case}.xml")
+    obj = bucket.object("#{time_started}/#{filename}")
     obj.upload_file(file.path, acl:'public-read')
 
 

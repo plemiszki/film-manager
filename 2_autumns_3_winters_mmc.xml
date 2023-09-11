@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:MediaManifest xmlns:manifest="http://www.movielabs.com/schema/manifest/v1.10/manifest" xmlns:md="http://www.movielabs.com/schema/md/v2.9/md" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.movielabs.com/schema/manifest/v1.10/manifest manifest-v1.10.xsd">
+  <manifest:Compatibility>
+    <manifest:SpecVersion>1.10</manifest:SpecVersion>
+    <manifest:Profile>MMC-1</manifest:Profile>
+  </manifest:Compatibility>
+  <manifest:Inventory>
+    <!-- video file -->
+    <manifest:Video VideoTrackID="md:vidtrackid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:feature.video.en-US">
+      <md:Type>primary</md:Type>
+      <md:Picture>
+        <md:AspectRatio>16:9</md:AspectRatio>
+        <md:WidthPixels>1920</md:WidthPixels>
+        <md:HeightPixels>1080</md:HeightPixels>
+      </md:Picture>
+      <md:Language>en-EN</md:Language>
+      <manifest:ContainerReference>
+        <manifest:ContainerLocation>filmmovement-2_Autumns_3_Winters_Movie-Full-mezz-en-US.mov</manifest:ContainerLocation>
+      </manifest:ContainerReference>
+    </manifest:Video>
+    <!-- Embedded audio in the video file -->
+    <manifest:Audio AudioTrackID="md:audtrackid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:feature.audio.en-US">
+      <md:Type>primary</md:Type>
+      <md:Language>en-US</md:Language>
+      <manifest:ContainerReference>
+        <manifest:ContainerLocation>filmmovement-2_Autumns_3_Winters_Movie-Full-feature-en-US.mov</manifest:ContainerLocation>
+      </manifest:ContainerReference>
+    </manifest:Audio>
+    <!-- Feature subtitle File -->
+    <manifest:Subtitle SubtitleTrackID="md:subtrackid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:caption.en-US">
+      <md:Format>SCC</md:Format>
+      <md:Type>SDH</md:Type>
+      <md:Language>en-US</md:Language>
+      <md:Encoding>
+        <md:FrameRate timecode="NonDrop" multiplier="1000/1001">24</md:FrameRate>
+      </md:Encoding>
+      <manifest:ContainerReference>
+        <manifest:ContainerLocation>filmmovement-FM_2_Autumns_3_Winters_Movie-Full-Caption2398NDF-en-US.scc</manifest:ContainerLocation>
+      </manifest:ContainerReference>
+    </manifest:Subtitle>
+  </manifest:Inventory>
+  <!-- Presentation section -->
+  <manifest:Presentations>
+    <manifest:Presentation PresentationID="md:presentationid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:feature.presentation">
+      <manifest:TrackMetadata>
+        <manifest:TrackSelectionNumber>0</manifest:TrackSelectionNumber>
+        <manifest:VideoTrackReference>
+          <manifest:VideoTrackID>md:vidtrackid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:feature.video.en-US</manifest:VideoTrackID>
+        </manifest:VideoTrackReference>
+        <manifest:AudioTrackReference>
+          <manifest:AudioTrackID>md:audtrackid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:feature.audio.en-US</manifest:AudioTrackID>
+        </manifest:AudioTrackReference>
+        <manifest:SubtitleTrackReference>
+          <manifest:SubtitleTrackID>md:subtrackid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:caption.en-US</manifest:SubtitleTrackID>
+        </manifest:SubtitleTrackReference>
+      </manifest:TrackMetadata>
+    </manifest:Presentation>
+  </manifest:Presentations>
+  <!-- Experiences -->
+  <manifest:Experiences>
+    <manifest:Experience ExperienceID="md:experienceid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:experience" version="1.0">
+      <manifest:Audiovisual ContentID="md:cid:org:filmmovement:FM_2_Autumns_3_Winters_Movie">
+        <manifest:Type>Main</manifest:Type>
+        <manifest:SubType>Feature</manifest:SubType>
+        <manifest:PresentationID>md:presentationid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:feature.presentation</manifest:PresentationID>
+      </manifest:Audiovisual>
+    </manifest:Experience>
+  </manifest:Experiences>
+  <!-- ALIDExperienceMap -->
+  <manifest:ALIDExperienceMaps>
+    <manifest:ALIDExperienceMap>
+      <manifest:ALID>md:alid:org:filmmovement:FM_2_Autumns_3_Winters_Movie</manifest:ALID>
+      <manifest:ExperienceID>md:experienceid:org:filmmovement:FM_2_Autumns_3_Winters_Movie:experience</manifest:ExperienceID>
+    </manifest:ALIDExperienceMap>
+  </manifest:ALIDExperienceMaps>
+</manifest:MediaManifest>

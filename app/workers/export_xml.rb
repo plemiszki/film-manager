@@ -26,7 +26,8 @@ class ExportXml
 
     release_date = (film.theatrical_release || film.tvod_release || film.fm_plus_release).strftime("%Y-%m-%d")
 
-    file = File.open("#{job_folder}/#{film.title_snake_case}.xml", 'w')
+    filename = "#{film.title_amazon_export.downcase}_mec.xml"
+    file = File.open("#{job_folder}/#{filename}", 'w')
 
     require 'builder'
     builder = Builder::XmlMarkup.new(target: file)
@@ -202,7 +203,7 @@ class ExportXml
       region: 'us-east-1',
     )
     bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object("#{time_started}/#{film.title_snake_case}.xml")
+    obj = bucket.object("#{time_started}/#{filename}")
     obj.upload_file(file.path, acl:'public-read')
 
 

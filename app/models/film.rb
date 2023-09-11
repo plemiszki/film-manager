@@ -60,10 +60,6 @@ class Film < ActiveRecord::Base
     errors.add(:title, 'cannot contain /') if title.present? && title.include?('/')
   end
 
-  def title_snake_case
-    title.downcase.gsub(' ', '_')
-  end
-
   def title_amazon_export
     title.split(" ").map { |word| word.capitalize }.join("_").gsub(/\W/, '')
   end
