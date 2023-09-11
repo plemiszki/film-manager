@@ -37,7 +37,7 @@ class ExportXml
     builder.tag!("mdmec:CoreMetadata", "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:md" => "http://www.movielabs.com/schema/md/v2.6/md", "xmlns:mdmec" => "http://www.movielabs.com/schema/mdmec/v2.6", "xsi:schemaLocation" => "http://www.movielabs.com/schema/mdmec/v2.6/mdmec-v2.6.xsd") do
       builder << "\n\n"
 
-      builder.tag!("mdmec:Basic", "ContentID" => "md:cid:org:amazonstudios:FM_#{film.title_for_xml}") do
+      builder.tag!("mdmec:Basic", "ContentID" => "md:cid:org:amazonstudios:FM_#{film.title_amazon_export}") do
         builder << "\n\n"
 
         builder.tag!("md:LocalizedInfo", language: "en-US") do
@@ -49,11 +49,11 @@ class ExportXml
           builder.tag!("md:TitleSort")
           builder << "\n\n"
 
-          builder.tag!("md:ArtReference", resolution: "1920x2560", purpose: "boxart") { builder << "#{film.title_for_xml}_Box-Art_1920x2560.jpg" }
+          builder.tag!("md:ArtReference", resolution: "1920x2560", purpose: "boxart") { builder << "#{film.title_amazon_export}_Box-Art_1920x2560.jpg" }
           builder << "\n"
-          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "cover") { builder << "#{film.title_for_xml}_Cover-Art_1920x1080.jpg" }
+          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "cover") { builder << "#{film.title_amazon_export}_Cover-Art_1920x1080.jpg" }
           builder << "\n"
-          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "hero") { builder << "#{film.title_for_xml}_Background-Art_1920x1080.jpg" }
+          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "hero") { builder << "#{film.title_amazon_export}_Background-Art_1920x1080.jpg" }
           builder << "\n\n"
 
           builder.tag!("md:Summary190") { builder << film.logline }

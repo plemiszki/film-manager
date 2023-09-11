@@ -12,6 +12,8 @@ class ExportXmlMmc
     film = Film.find(film_id)
     file = File.open("#{job_folder}/#{film.title_snake_case}.xml", 'w')
 
+    title = film.title_amazon_export
+
     require 'builder'
     builder = Builder::XmlMarkup.new(target: file, indent: 2)
 
@@ -24,7 +26,7 @@ class ExportXmlMmc
       end
       builder.tag!("manifest:Inventory") do
         builder.comment! "video file"
-        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.video.en-US") do
+        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:feature.video.en-US") do
           builder.__send__('md:Type', 'primary')
           builder.tag!("md:Picture") do
             builder.__send__('md:AspectRatio', '16:9')
@@ -33,19 +35,19 @@ class ExportXmlMmc
           end
           builder.__send__('md:Language', 'en-EN')
           builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', 'filmmovement-Once_Were_Warriors_Movie-Full-mezz-en-US.mov')
+            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-mezz-en-US.mov")
           end
         end
         builder.comment! "Embedded audio in the video file"
-        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.audio.en-US") do
+        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_#{title}_Movie:feature.audio.en-US") do
           builder.__send__('md:Type', 'primary')
           builder.__send__('md:Language', 'en-US')
           builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', 'filmmovement-Once_Were_Warriors_Movie-Full-feature-en-US.mov')
+            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-feature-en-US.mov")
           end
         end
         builder.comment! "Feature subtitle File"
-        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:caption.en-US") do
+        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US") do
           builder.__send__('md:Format', 'SCC')
           builder.__send__('md:Type', 'SDH')
           builder.__send__('md:Language', 'en-US')
@@ -53,42 +55,42 @@ class ExportXmlMmc
             builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
           end
           builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', 'filmmovement-FM_Once_Were_Warriors_Movie-Full-Caption2398NDF-en-US.scc')
+            builder.__send__('manifest:ContainerLocation', "filmmovement-FM_#{title}_Movie-Full-Caption2398NDF-en-US.scc")
           end
         end
       end
       builder.comment! "Presentation section"
       builder.tag!("manifest:Presentations") do
-        builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.presentation") do
+        builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_#{title}_Movie:feature.presentation") do
           builder.tag!("manifest:TrackMetadata") do
             builder.__send__('manifest:TrackSelectionNumber', '0')
             builder.tag!('manifest:VideoTrackReference') do
-              builder.__send__('manifest:VideoTrackID', 'md:vidtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.video.en-US')
+              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:feature.video.en-US")
             end
             builder.tag!('manifest:AudioTrackReference') do
-              builder.__send__('manifest:AudioTrackID', 'md:audtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.audio.en-US')
+              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:feature.audio.en-US")
             end
             builder.tag!('manifest:SubtitleTrackReference') do
-              builder.__send__('manifest:SubtitleTrackID', 'md:subtrackid:org:filmmovement:FM_Once_Were_Warriors_Movie:caption.en-US')
+              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US")
             end
           end
         end
       end
       builder.comment! "Experiences"
       builder.tag!("manifest:Experiences") do
-        builder.tag!("manifest:Experience", "ExperienceID" => "md:experienceid:org:filmmovement:FM_Once_Were_Warriors_Movie:experience", "version" => "1.0") do
-          builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_Once_Were_Warriors_Movie") do
+        builder.tag!("manifest:Experience", "ExperienceID" => "md:experienceid:org:filmmovement:FM_#{title}_Movie:experience", "version" => "1.0") do
+          builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_#{title}_Movie") do
             builder.__send__('manifest:Type', 'Main')
             builder.__send__('manifest:SubType', 'Feature')
-            builder.__send__('manifest:PresentationID', 'md:presentationid:org:filmmovement:FM_Once_Were_Warriors_Movie:feature.presentation')
+            builder.__send__('manifest:PresentationID', 'md:presentationid:org:filmmovement:FM_#{title}_Movie:feature.presentation')
           end
         end
       end
       builder.comment! "ALIDExperienceMap"
       builder.tag!("manifest:ALIDExperienceMaps") do
         builder.tag!("manifest:ALIDExperienceMap") do
-          builder.__send__('manifest:ALID', 'md:alid:org:filmmovement:FM_Once_Were_Warriors_Movie')
-          builder.__send__('manifest:ExperienceID', 'md:experienceid:org:filmmovement:FM_Once_Were_Warriors_Movie:experience')
+          builder.__send__('manifest:ALID', 'md:alid:org:filmmovement:FM_#{title}_Movie')
+          builder.__send__('manifest:ExperienceID', 'md:experienceid:org:filmmovement:FM_#{title}_Movie:experience')
         end
       end
     end

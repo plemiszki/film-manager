@@ -64,6 +64,10 @@ class Film < ActiveRecord::Base
     title.downcase.gsub(' ', '_')
   end
 
+  def title_amazon_export
+    title.split(" ").map { |word| word.capitalize }.join("_").gsub(/\W/, '')
+  end
+
   after_create :create_percentages
 
   belongs_to :licensor
@@ -240,10 +244,6 @@ class Film < ActiveRecord::Base
     end
     result += "\n"
     result
-  end
-
-  def title_for_xml
-    title.split(" ").map { |word| word.capitalize }.join("_")
   end
 
 end
