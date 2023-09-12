@@ -1,253 +1,337 @@
-Action
-Action - Comic
-Action - Crime
-Action - Disaster
-Action - Espionage
-Action - Future
-Action - Hong Kong
-Action - Law Enforcement
-Action - Martial Arts
-Action - Romantic
-Action - Superheroes
-Action - Sword and Sandal
-Action - War
-Adult 
-Adventure
-Adventure - Comic 
-Adventure - Romantic
-African American Cinema
-Animation
-Animation - Anime
-Animation - Cartoons
-Animation - Fairy Tales
-Animation - Science Fiction
-Animation - Sitcom
-Art House
-Award Winner
-Bollywood
-Book Adaptations
-Children’s Television
-Children’s Cinema
-Classics
-Comedy
-Comedy - Animation
-Comedy - Dark
-Comedy - British
-Comedy - Campy
-Comedy - Family Life
-Comedy - Farce
-Comedy - Mockumentary
-Comedy - Parody
-Comedy - Romantic
-Comedy - Satire
-Comedy - Screwball
-Comedy - Sitcom
-Comedy - Sketch
-Comedy - Slapstick
-Comedy - Sports
-Comedy - Stand-up
-Comedy - Teen
-Drama
-Drama - Biographical
-Drama - Coming of Age
-Drama - Courtroom 
-Drama - Crime
-Drama - Espionage
-Drama - Family Life
-Drama - Historical
-Drama - Political 
-Drama - Religious
-Drama - Romantic
-Drama - Sports
-Drama - Supernatural
-Epic
-Faith and Spirituality
-Family Cinema
-Family Television
-Fantasy
-Fitness
-Fitness - Advanced
-Fitness - Barre
-Fitness - Beginner
-Fitness - Cardio
-Fitness - Dance
-Fitness - Intermediate
-Fitness - Interval Training
-Fitness - Martial Arts and Boxing
-Fitness - Pilates 
-Fitness - Strength 
-Fitness - Stretch
-Fitness - Yoga
-Food and Wine
-Food and Wine - Beverages
-Food and Wine - Cooking Instruction
-Food and Wine - Food Stories
-Food and Wine - International
-Game Shows
-Gay Cinema
-Gay Television
-Holiday
-Horror 
-Horror - Body Horror
-Horror - Classic
-Horror - Comedy
-Horror - Creature Features
-Horror - Documentary
-Horror - Extreme
-Horror - Gothic Horror
-Horror - Haunted Houses
-Horror - Human Killers
-Horror - Monsters
-Horror - Paranormal
-Horror - Psychological Thriller
-Horror - Slashers
-Horror - Supernatural
-Horror - Teen
-Horror - Vampires
-Horror - Zombies
-Independent 
-International 
-International - American
-International - Argentine 
-International - Australian
-International - Brazilian
-International - British
-International - Canadian
-International - Chinese
-International - Czech
-International - Dutch
-International - French
-International - German
-International - Greek
-International - Hong Kong
-International - Indian
-International - Iranian
-International - Israeli
-International - Italian
-International - Japanese
-International - Korean
-International - Latino
-International - Mexican
-International - Philippino
-International - Polish
-International - Russian
-International - Spanish
-International - Swedish
-International - Taiwanese
-International - Thai
-Kids
-Kids - Educational
-Lesbian Cinema
-Lesbian Television
-LGBT
-Military
-Military - Action 
-Military - Comic
-Military - Dramatic
-Miniseries
-Mind and Body
-Mind and Body - Meditation
-Mind and Body - Spirituality
-Music Concert Footage
-Music Video
-Music Video - Alternative
-Music Video - Blues
-Music Video - Christian and Gospel
-Music Video - Classic Rock
-Music Video - Classical
-Music Video - Country
-Music Video - Hip Hop
-Music Video - Jazz 
-Music Video - Latin
-Music Video - Metal
-Music Video - Opera
-Music Video - Pop
-Music Video - Rock
-Music Video - Singer Songwriter
-Music Video - Soul
-Musicals
-Musical – Comic
-Musical – Dramatic
-Mystery
-Mystery - Comic 
-Mystery - Courtroom
-Mystery – Crime
-Mystery - Detectives
-Mystery - Film Noir
-Mystery - Procedural
-News Shows
-Nonfiction
-Nonfiction - Automotive
-Nonfiction - Award Winners
-Nonfiction - Business and Finance
-Nonfiction - Civilization
-Nonfiction – Crime
-Nonfiction - Documentary
-Nonfiction - Faith and Spirituality
-Nonfiction - Documentary - Biography
-Nonfiction - Educational
-Nonfiction - Health
-Nonfiction - History
-Nonfiction - Human Spirit
-Nonfiction - Instructional - Home Improvement
-Nonfiction - Instructional
-Nonfiction - Interviews
-Nonfiction - Lectures
-Nonfiction – LGBT
-Nonfiction - Military and War
-Nonfiction - Nature and Wildlife
-Nonfiction - Politics
-Nonfiction - Science
-Nonfiction - Self-Help
-Nonfiction - Sports
-Nonfiction - Technology
-Nonfiction - Travel
-Performing Arts
-Performing Arts - Dance Performance
-Performing Arts - Opera Performance
-Performing Arts - Theater
-Period Piece
-Reality TV
-Romantic Comedy
-Science Fiction
-Science Fiction - Action
-Science Fiction - Adventure
-Science Fiction - Comic 
-Science Fiction - Futuristic 
-Science Fiction - Space Adventure
-Sitcoms
-Sketch Comedy
-Soap Operas 
-Sports 
-Sports - Auto Racing
-Sports – Baseball
-Sports – Basketball
-Sports - BMX and Extreme Biking
-Sports - Boating and Sailing
-Sports – Boxing
-Sports – Cycling
-Sports - Extreme Sports
-Sports – Fishing
-Sports - Football
-Sports - General Martial Arts
-Sports – Golf
-Sports - Live Events
-Sports - Mixed Martial Arts
-Sports - Motorcycles and Motocross
-Sports - Skateboarding
-Sports – Skiing
-Sports - Snowboarding
-Sports – Soccer
-Sports - Surfing and Boardsports
-Sports – Tennis
-Sports - Wrestling
-Stand-up Comedy 
-Talk Shows
-Thrillers
-Video Games
-Westerns
-Westerns - Action 
-Westerns - Comic 
-Westerns - Dramatic
-Westerns - Musical 
-Westerns - Romantic
+av_genre_action
+av_subgenre_action_comedy
+av_subgenre_action_crime
+av_subgenre_action_disaster
+av_subgenre_action_epic
+av_subgenre_action_espionage_and_spies
+av_subgenre_action_fantasy
+av_subgenre_action_historical
+av_subgenre_action_martial_arts
+av_subgenre_action_military_and_war
+av_subgenre_action_peplum_sword_and_sandal
+av_subgenre_action_romance
+av_subgenre_action_science_fiction
+av_subgenre_action_superheroes
+av_subgenre_action_suspense
+av_subgenre_action_tokusatsu
+av_subgenre_action_western
+av_genre_adventure
+av_subgenre_adventure_comedy
+av_subgenre_adventure_eastern
+av_subgenre_adventure_epic
+av_subgenre_adventure_fantasy
+av_subgenre_adventure_historical
+av_subgenre_adventure_peplum_sword_and_sandal
+av_subgenre_adventure_romance
+av_genre_animation_adult_interest
+av_subgenre_animation_action
+av_subgenre_animation_adventure
+av_subgenre_animation_comedy
+av_subgenre_animation_drama
+av_subgenre_animation_fantasy
+av_subgenre_animation_horror
+av_subgenre_animation_romance
+av_subgenre_animation_science_fiction
+av_subgenre_animation_surreal
+av_genre_arthouse
+av_subgenre_arthouse_avant_garde
+av_subgenre_arthouse_erotic
+av_subgenre_arthouse_experimental
+av_subgenre_arthouse_surrealist
+av_genre_arts_entertainment_and_culture
+av_subgenre_arthouse_non_narrative_ambient
+av_subgenre_arts_entertainment_and_culture_dance
+av_subgenre_arts_entertainment_and_culture_musical
+av_subgenre_arts_entertainment_and_culture_opera
+av_subgenre_arts_entertainment_and_culture_standup_comedy
+av_subgenre_arts_entertainment_and_culture_theater
+av_genre_comedy
+av_subgenre_comedy_action
+av_subgenre_comedy_adventure
+av_subgenre_comedy_crime
+av_subgenre_comedy_dark
+av_subgenre_comedy_drama
+av_subgenre_comedy_fantasy
+av_subgenre_comedy_heimatfilm
+av_subgenre_comedy_high_school
+av_subgenre_comedy_horror
+av_subgenre_comedy_romance
+av_subgenre_comedy_political
+av_subgenre_comedy_satire
+av_subgenre_comedy_science_fiction
+av_subgenre_comedy_sitcom
+av_genre_documentary
+av_subgenre_documentary_art_entertainment_and_culture
+av_subgenre_documentary_biography
+av_subgenre_documentary_crime
+av_subgenre_documentary_food_drinks
+av_subgenre_documentary_history
+av_subgenre_documentary_hobby
+av_subgenre_documentary_military_and_war
+av_subgenre_documentary_music
+av_subgenre_documentary_nature_wildlife
+av_subgenre_documentary_politics
+av_subgenre_documentary_religion
+av_subgenre_documentary_science_technology
+av_subgenre_documentary_sports
+av_subgenre_documentary_transportation
+av_subgenre_documentary_travel
+av_genre_drama
+av_subgenre_drama_biopic
+av_subgenre_drama_comedy
+av_subgenre_drama_costume_drama
+av_subgenre_drama_crime
+av_subgenre_drama_family_drama
+av_subgenre_drama_heimatfilm
+av_subgenre_drama_high_school
+av_subgenre_drama_historical
+av_subgenre_drama_korean_drama
+av_subgenre_drama_medical
+av_subgenre_drama_melodrama
+av_subgenre_drama_military_and_war
+av_subgenre_drama_political
+av_subgenre_drama_psychological
+av_subgenre_drama_romance
+av_subgenre_drama_soap_opera
+av_subgenre_drama_suspense
+av_subgenre_drama_tear_jerker
+av_genre_epg
+av_genre_erotic
+av_subgenre_erotic_anime
+av_subgenre_erotic_comedy
+av_subgenre_erotic_documentary
+av_subgenre_erotic_drama
+av_subgenre_erotic_fantasy
+av_subgenre_erotic_horror
+av_subgenre_erotic_lgbtq
+av_subgenre_erotic_romance
+av_subgenre_erotic_thriller
+av_genre_faith_and_spirituality
+av_subgenre_faith_spirituality_buddhism
+av_subgenre_faith_spirituality_christianity
+av_subgenre_faith_spirituality_hinduism
+av_subgenre_faith_spirituality_islam
+av_subgenre_faith_spirituality_judaism
+av_subgenre_faith_spirituality_new_age
+av_subgenre_faith_spirituality_other
+av_subgenre_faith_spirituality_sikhism
+av_genre_fantasy
+av_subgenre_fantasy_action
+av_subgenre_fantasy_adventure
+av_subgenre_fantasy_comedy
+av_subgenre_fantasy_dark
+av_subgenre_fantasy_drama
+av_subgenre_fantasy_epic
+av_subgenre_fantasy_horror
+av_subgenre_fantasy_mythology
+av_subgenre_fantasy_romance
+av_subgenre_fantasy_science_fantasy
+av_subgenre_fantasy_sword_sorcery
+av_genre_historical
+av_subgenre_historical_action
+av_subgenre_historical_adventure
+av_subgenre_historical_comedy
+av_subgenre_historical_drama
+av_subgenre_historical_epic
+av_subgenre_historical_fantasy
+av_subgenre_historical_peplum_sword_and_sandal
+av_subgenre_historical_romance
+av_subgenre_historical_swashbuckler
+av_genre_horror
+av_subgenre_horror_action
+av_subgenre_horror_adventure
+av_subgenre_horror_comedy
+av_subgenre_horror_demons_exorcisms
+av_subgenre_horror_fantasy
+av_subgenre_horror_monsters
+av_subgenre_horror_mystery
+av_subgenre_horror_psychological
+av_subgenre_horror_science_fiction
+av_subgenre_horror_slasher
+av_subgenre_horror_supernatural_ghosts
+av_subgenre_horror_suspense
+av_genre_international
+av_subgenre_international_australia_and_new_zealand
+av_subgenre_international_canada
+av_subgenre_international_caribbean
+av_subgenre_international_central_africa
+av_subgenre_international_central_america
+av_subgenre_international_central_asia
+av_subgenre_international_china
+av_subgenre_international_east_africa
+av_subgenre_international_east_southeast_asia
+av_subgenre_international_eastern_europe
+av_subgenre_international_france
+av_subgenre_international_germany
+av_subgenre_international_india
+av_subgenre_international_israel
+av_subgenre_international_japan
+av_subgenre_international_korea
+av_subgenre_international_mexico
+av_subgenre_international_middle_east
+av_subgenre_international_north_africa
+av_subgenre_international_russia
+av_subgenre_international_scandinavia
+av_subgenre_international_south_america
+av_subgenre_international_southern_africa
+av_subgenre_international_southern_europe
+av_subgenre_international_turkey
+av_subgenre_international_uk
+av_subgenre_international_west_africa
+av_subgenre_international_western_europe
+av_genre_kids
+av_subgenre_kids_action
+av_subgenre_kids_adventure
+av_subgenre_kids_animation
+av_subgenre_kids_anime
+av_subgenre_kids_comedy
+av_subgenre_kids_competition_game_shows
+av_subgenre_kids_documentary
+av_subgenre_kids_edutainment
+av_subgenre_kids_family
+av_subgenre_kids_fantasy
+av_subgenre_kids_how_to
+av_subgenre_kids_lets_play
+av_subgenre_kids_musical
+av_subgenre_kids_mystery
+av_subgenre_kids_performance
+av_subgenre_kids_romance
+av_subgenre_kids_science_fiction
+av_subgenre_kids_spooky
+av_subgenre_kids_unscripted_reality_tv
+av_subgenre_kids_variety
+av_genre_lgbtq
+av_subgenre_lgbtq_asexual
+av_subgenre_lgbtq_bisexual
+av_subgenre_lgbtq_erotic
+av_subgenre_lgbtq_gay
+av_subgenre_lgbtq_gender_queer_and_nonbinary
+av_subgenre_lgbtq_lesbian
+av_subgenre_lgbtq_trans
+av_genre_military_and_war
+av_subgenre_military_and_war_action
+av_subgenre_military_and_war_adventure
+av_subgenre_military_and_war_biopic
+av_subgenre_military_and_war_comedy
+av_subgenre_military_and_war_drama
+av_subgenre_military_and_war_epic
+av_subgenre_military_and_war_pre_1800
+av_subgenre_military_and_war_1800_to_1850
+av_subgenre_military_and_war_1850_to_1900
+av_subgenre_military_and_war_1900_to_1939
+av_subgenre_military_and_war_1939_to_1955
+av_subgenre_military_and_war_1955_to_1975
+av_subgenre_military_and_war_1975_to_1992
+av_subgenre_military_and_war_1992_to_2001
+av_subgenre_military_and_war_2001_to_present
+av_subgenre_military_and_war_romance
+av_subgenre_military_and_war_science_fiction
+av_genre_romance
+av_subgenre_romance_action
+av_subgenre_romance_comedy
+av_subgenre_romance_drama_and_melodrama
+av_subgenre_romance_fantasy
+av_subgenre_romance_historical
+av_subgenre_romance_suspense
+av_subgenre_romance_tragedy
+av_genre_science_fiction
+av_subgenre_science_fiction_action
+av_subgenre_science_fiction_adventure
+av_subgenre_science_fiction_aliens
+av_subgenre_science_fiction_apocalyptic_postapocalyptic
+av_subgenre_science_fiction_cyberpunk
+av_subgenre_science_fiction_comedy
+av_subgenre_science_fiction_drama
+av_subgenre_science_fiction_dystopian
+av_subgenre_science_fiction_horror
+av_subgenre_science_fiction_monsters_and_mutants
+av_subgenre_science_fiction_psychological
+av_subgenre_science_fiction_robots_and_cyborgs
+av_subgenre_science_fiction_romance
+av_subgenre_science_fiction_suspense
+av_subgenre_science_fiction_time_travel_and_alternate_history
+av_genre_special_interest
+av_subgenre_special_interest_ambiance_meditation_and_screensavers
+av_subgenre_special_interest_art
+av_subgenre_special_interest_beauty_fashion
+av_subgenre_special_interest_business_finance
+av_subgenre_special_interest_clip
+av_subgenre_special_interest_crafts_hobbies
+av_subgenre_special_interest_educational_and_instructional
+av_subgenre_special_interest_food_drinks_and_cooking
+av_subgenre_special_interest_health
+av_subgenre_special_interest_home_garden
+av_subgenre_special_interest_parenting_childcare
+av_subgenre_special_interest_politics
+av_subgenre_special_interest_product_review
+av_subgenre_special_interest_sports
+av_subgenre_special_interest_technology
+av_subgenre_special_interest_film_trailer
+av_subgenre_special_interest_travel
+av_genre_sports
+av_subgenre_sports_american_football
+av_subgenre_sports_aquatic_sports
+av_subgenre_sports_auto_racing_and_formula_one
+av_subgenre_sports_badminton
+av_subgenre_sports_baseball
+av_subgenre_sports_basketball
+av_subgenre_sports_billiards_snooker
+av_subgenre_sports_combat_sports
+av_subgenre_sports_cricket
+av_subgenre_sports_curling
+av_subgenre_sports_cycling
+av_subgenre_sports_esports
+av_subgenre_sports_extreme_sports
+av_subgenre_sports_football_soccer
+av_subgenre_sports_games
+av_subgenre_sports_golf
+av_subgenre_sports_gymnastics
+av_subgenre_sports_handball
+av_subgenre_sports_hockey
+av_subgenre_sports_horse
+av_subgenre_sports_hunting_and_fishing
+av_subgenre_sports_lacrosse
+av_subgenre_sports_motorsports
+av_subgenre_sports_rugby
+av_subgenre_sports_skiing
+av_subgenre_sports_swimming
+av_subgenre_sports_table_tennis
+av_subgenre_sports_tennis
+av_subgenre_sports_volleyball
+av_subgenre_sports_winter_sports
+av_genre_suspense
+av_subgenre_suspense_action
+av_subgenre_suspense_comedy
+av_subgenre_suspense_crime
+av_subgenre_suspense_drama
+av_subgenre_suspense_espionage
+av_subgenre_suspense_giallo
+av_subgenre_suspense_horror
+av_subgenre_suspense_legal
+av_subgenre_suspense_medical
+av_subgenre_suspense_mystery
+av_subgenre_suspense_political
+av_subgenre_suspense_psychological
+av_subgenre_suspense_romance
+av_subgenre_suspense_science_fiction
+av_genre_western
+av_subgenre_western_action
+av_subgenre_western_adventure
+av_subgenre_western_comedy
+av_subgenre_western_crime
+av_subgenre_western_drama
+av_subgenre_western_horror
+av_subgenre_western_military_and_war
+av_subgenre_western_modern
+av_subgenre_western_romance
+av_subgenre_western_science_fiction
+av_genre_young_adult_audience
+av_subgenre_young_adult_action
+av_subgenre_young_adult_adventure
+av_subgenre_young_adult_comedy
+av_subgenre_young_adult_drama
+av_subgenre_young_adult_fantasy
+av_subgenre_young_adult_horror
+av_subgenre_young_adult_lgbtq
+av_subgenre_young_adult_romance
+av_subgenre_young_adult_science_fiction
