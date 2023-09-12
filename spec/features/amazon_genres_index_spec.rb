@@ -25,7 +25,10 @@ describe 'amazon_genres_index', type: :feature do
     within('#amazon-genres-index') do
       click_btn('Add Amazon Genre')
     end
-    info = { name: 'Art House' }
+    info = {
+      name: 'Art House',
+      code: 'av_genre_arthouse',
+    }
     fill_out_and_submit_modal(info, :input)
     verify_db(
       entity: AmazonGenre.last,

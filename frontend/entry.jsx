@@ -284,9 +284,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderSimpleDetails('amazon-genre-details', {
     entityName: 'amazonGenre',
-    initialEntity: { name: '' },
+    initialEntity: { name: '', code: '' },
     fields: [[
-      { columnWidth: 12, property: 'name' },
+      { columnWidth: 8, property: 'name' },
+      { columnWidth: 4, property: 'code' },
     ]],
     customDeletePath: '/settings',
   });
@@ -451,7 +452,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderFullIndex('amazon-genres-index', {
     entityName: 'amazonGenre',
-    columns: ['name'],
+    columns: ['name', 'code'],
     modalRows: 1,
     modalDimensions: { width: 500 },
     includeLinks: true,

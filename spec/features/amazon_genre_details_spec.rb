@@ -17,12 +17,14 @@ describe 'amazon_genre_details', type: :feature do
     visit amazon_genre_path(@amazon_genre, as: $admin_user)
     wait_for_ajax
     expect(find('input[data-field="name"]').value).to eq('Action')
+    expect(find('input[data-field="code"]').value).to eq('av_genre_action')
   end
 
   it 'updates information about the amazon genre' do
     visit amazon_genre_path(@amazon_genre, as: $admin_user)
     new_info = {
-      name: 'Art House'
+      name: 'Art House',
+      code: 'av_genre_arthouse',
     }
     fill_out_form(new_info)
     save_and_wait
@@ -37,6 +39,7 @@ describe 'amazon_genre_details', type: :feature do
     clear_form
     save_and_wait
     expect(page).to have_content("Name can't be blank")
+    expect(page).to have_content("Code can't be blank")
   end
 
   it 'deletes the amazon genre' do
