@@ -38,7 +38,7 @@ class ExportXml
     builder.tag!("mdmec:CoreMetadata", "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:md" => "http://www.movielabs.com/schema/md/v2.6/md", "xmlns:mdmec" => "http://www.movielabs.com/schema/mdmec/v2.6", "xsi:schemaLocation" => "http://www.movielabs.com/schema/mdmec/v2.6/mdmec-v2.6.xsd") do
       builder << "\n\n"
 
-      builder.tag!("mdmec:Basic", "ContentID" => "md:cid:org:amazonstudios:FM_#{film.title_amazon_export}") do
+      builder.tag!("mdmec:Basic", "ContentID" => "md:cid:org:filmmovement:FM_#{film.title_amazon_export}") do
         builder << "\n\n"
 
         builder.tag!("md:LocalizedInfo", language: "en-US") do
