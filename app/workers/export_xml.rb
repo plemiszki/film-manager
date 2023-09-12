@@ -64,7 +64,7 @@ class ExportXml
           builder << "\n\n"
 
           film.amazon_genres.each do |amazon_genre|
-            builder.tag!("md:Genre", id: amazon_genre.name)
+            builder.tag!("md:Genre", id: amazon_genre.code)
             builder << "\n\n"
           end
 
