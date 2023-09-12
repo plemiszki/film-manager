@@ -16,7 +16,7 @@ describe 'amazon_genres_index', type: :feature do
   it 'displays all amazon genres' do
     visit setting_path(as: $admin_user)
     within('#amazon-genres-index') do
-      expect(page).to have_content 'Action'
+      expect(page).to have_content 'av_genre_action'
     end
   end
 
@@ -26,7 +26,6 @@ describe 'amazon_genres_index', type: :feature do
       click_btn('Add Amazon Genre')
     end
     info = {
-      name: 'Art House',
       code: 'av_genre_arthouse',
     }
     fill_out_and_submit_modal(info, :input)
@@ -35,7 +34,7 @@ describe 'amazon_genres_index', type: :feature do
       data: info
     )
     within('#amazon-genres-index') do
-      expect(page).to have_content('Art House')
+      expect(page).to have_content('av_genre_arthouse')
     end
   end
 
@@ -45,7 +44,7 @@ describe 'amazon_genres_index', type: :feature do
       click_btn('Add Amazon Genre')
     end
     fill_out_and_submit_modal({}, :input)
-    expect(page).to have_content("Name can't be blank")
+    expect(page).to have_content("Code can't be blank")
   end
 
 end

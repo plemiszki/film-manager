@@ -38,7 +38,7 @@ class Api::AmazonGenresController < AdminController
   private
 
   def amazon_genre_params
-    params[:amazon_genre].permit(:name, :code)
+    params[:amazon_genre].permit(:code)
   end
 
 end

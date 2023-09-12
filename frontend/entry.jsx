@@ -286,8 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
     entityName: 'amazonGenre',
     initialEntity: { name: '', code: '' },
     fields: [[
-      { columnWidth: 8, property: 'name' },
-      { columnWidth: 4, property: 'code' },
+      { columnWidth: 12, property: 'code' },
     ]],
     customDeletePath: '/settings',
   });
@@ -452,7 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderFullIndex('amazon-genres-index', {
     entityName: 'amazonGenre',
-    columns: ['name', 'code'],
+    columns: ['code'],
     modalRows: 1,
     modalDimensions: { width: 500 },
     includeLinks: true,

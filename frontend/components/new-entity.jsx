@@ -133,8 +133,7 @@ export default class NewEntity extends React.Component {
       case 'amazonGenre':
         return([
           <div key="1" className="row">
-            { Details.renderField.bind(this)({ columnWidth: 8, entity: 'amazonGenre', property: 'name' }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'amazonGenre', property: 'code' }) }
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'amazonGenre', property: 'code' }) }
           </div>
         ]);
       case 'amazonLanguage':
