@@ -82,7 +82,7 @@ class ExportXml
           builder << "\n"
           builder.tag!("md:Namespace") { builder << "ORG" }
           builder << "\n"
-          builder.tag!("md:Identifier") { builder << film.title }
+          builder.tag!("md:Identifier") { builder << "FM_#{film.title}_Move. – FM_Film_Title_Movie" }
           builder << "\n"
         end
         builder << "\n\n"
@@ -176,7 +176,7 @@ class ExportXml
           builder << "\n"
         end
 
-        builder.tag!("md:AssociatedOrg", "organizationID" => "Film_Movement", role: "licensor")
+        builder.tag!("md:AssociatedOrg", "organizationID" => "filmmovement", role: "licensor")
         builder << "\n"
       end
       builder << "\n"
