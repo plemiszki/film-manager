@@ -82,7 +82,7 @@ class ExportXml
           builder << "\n"
           builder.tag!("md:Namespace") { builder << "ORG" }
           builder << "\n"
-          builder.tag!("md:Identifier") { builder << "FM_#{film.title}_Move. – FM_Film_Title_Movie" }
+          builder.tag!("md:Identifier") { builder << "FM_#{film.title}_Movie" }
           builder << "\n"
         end
         builder << "\n\n"
