@@ -724,7 +724,7 @@ export default class FilmDetails extends React.Component {
           <ModalSelect
             isOpen={ this.state.amazonGenresModalOpen }
             options={ this.state.amazonGenres }
-            property="name"
+            property="code"
             func={ this.selectEntityToCreate.bind(this, { directory: 'amazon_genre_films', entityName: 'amazonGenreFilm', key: 'amazonGenreId', otherArrays: ['amazonGenres'] }) }
             onClose={ Common.closeModals.bind(this) }
           />
@@ -1488,8 +1488,8 @@ export default class FilmDetails extends React.Component {
                     <p className="section-header">Amazon Genres</p>
                     <ListBox
                       entityName="amazonGenre"
-                      displayProperty="name"
-                      entities={ alphabetizeArrayOfObjects(amazonGenreFilms, 'name') }
+                      displayProperty="code"
+                      entities={ alphabetizeArrayOfObjects(amazonGenreFilms, 'code') }
                       clickDelete={ amazonGenreFilm => { this.deleteFromList({ id: amazonGenreFilm.id, directory: 'amazon_genre_films', otherArrays: ['amazonGenres'] }) }}
                       clickAdd={ () => { this.setState({ amazonGenresModalOpen: true }) } }
                       style={ { marginBottom: 30 } }

@@ -796,11 +796,11 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Marketing').click
     click_btn("Add Amazon Genre")
-    select_from_modal('Action')
+    select_from_modal('av_genre_action')
     expect(page).to have_no_css('.spinner')
     expect(AmazonGenreFilm.count).to eq(1)
     within(list_box_selector("amazon-genres")) do
-      expect(page).to have_content('Action')
+      expect(page).to have_content('av_genre_action')
     end
   end
 
@@ -814,7 +814,7 @@ describe 'film_details', type: :feature do
     end
     expect(page).to have_no_css('.spinner')
     expect(AmazonGenreFilm.count).to eq(0)
-    expect(page).to have_no_content('Action')
+    expect(page).to have_no_content('av_genre_action')
   end
 
   it 'adds amazon languages' do
@@ -1118,10 +1118,16 @@ describe 'film_details', type: :feature do
     expect(page).to have_content('Updating Artwork')
   end
 
-  it 'starts the export XML job' do
+  it 'starts the export XML MEC job' do
     visit film_path(@film, as: $admin_user)
-    click_btn('Export XML')
-    expect(page).to have_content('Exporting XML')
+    click_btn('XML - MEC')
+    expect(page).to have_content('Exporting XML (MEC)')
+  end
+
+  it 'starts the export XML MMC job' do
+    visit film_path(@film, as: $admin_user)
+    click_btn('XML - MMC')
+    expect(page).to have_content('Exporting XML (MMC)')
   end
 
 end
