@@ -1318,7 +1318,7 @@ export default class FilmDetails extends React.Component {
               <hr style={ { marginTop: 30 } } />
               <div className="row">
                 { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
-                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 500 characters', characterCount: true }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'vodSynopsis', rows: 8, columnHeader: 'Synopsis - 400 characters', characterCount: true }) }
                 { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'shortSynopsis', rows: 4, columnHeader: 'Synopsis - 240 characters', characterCount: true }) }
                 { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'logline', rows: 2, columnHeader: 'Synopsis - 150 characters', characterCount: true }) }
               </div>
