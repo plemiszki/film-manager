@@ -44,7 +44,7 @@ class ExportXml
         builder.tag!("md:LocalizedInfo", language: "en-US") do
           builder << "\n\n"
 
-          builder.tag!("md:TitleDisplayUnlimited") { builder << film.title }
+          builder.tag!("md:TitleDisplayUnlimited") { builder << film.title_amazon_export }
           builder << "\n\n"
 
           builder.tag!("md:TitleSort")
@@ -82,7 +82,7 @@ class ExportXml
           builder << "\n"
           builder.tag!("md:Namespace") { builder << "ORG" }
           builder << "\n"
-          builder.tag!("md:Identifier") { builder << "FM_#{film.title}_Movie" }
+          builder.tag!("md:Identifier") { builder << "FM_#{film.title_amazon_export}_Movie" }
           builder << "\n"
         end
         builder << "\n\n"
@@ -138,7 +138,7 @@ class ExportXml
             builder.tag!("md:Name") do
               builder << "\n"
 
-              builder.tag!("md:DisplayName", language: "en-US") { builder << director.string }
+              builder.tag!("md:DisplayName", language: "en-US") { builder << director.string.gsub(' ', '_') }
               builder << "\n"
             end
             builder << "\n"
@@ -163,7 +163,7 @@ class ExportXml
             builder.tag!("md:Name") do
               builder << "\n"
 
-              builder.tag!("md:DisplayName", language: "en-US") { builder << actor.string }
+              builder.tag!("md:DisplayName", language: "en-US") { builder << actor.string.gsub(' ', '_') }
               builder << "\n"
             end
             builder << "\n"
