@@ -28,6 +28,7 @@ class ExportXml
 
     filename = "#{film.title_amazon_export.downcase}_mec.xml"
     file = File.open("#{job_folder}/#{filename}", 'w')
+    identifier = "FM_#{film.title_amazon_export}_Movie"
 
     require 'builder'
     builder = Builder::XmlMarkup.new(target: file)
@@ -38,7 +39,7 @@ class ExportXml
     builder.tag!("mdmec:CoreMetadata", "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:md" => "http://www.movielabs.com/schema/md/v2.6/md", "xmlns:mdmec" => "http://www.movielabs.com/schema/mdmec/v2.6", "xsi:schemaLocation" => "http://www.movielabs.com/schema/mdmec/v2.6/mdmec-v2.6.xsd") do
       builder << "\n\n"
 
-      builder.tag!("mdmec:Basic", "ContentID" => "md:cid:org:filmmovement:FM_#{film.title_amazon_export}") do
+      builder.tag!("mdmec:Basic", "ContentID" => "md:cid:org:filmmovement:#{identifier}") do
         builder << "\n\n"
 
         builder.tag!("md:LocalizedInfo", language: "en-US") do
@@ -82,7 +83,7 @@ class ExportXml
           builder << "\n"
           builder.tag!("md:Namespace") { builder << "ORG" }
           builder << "\n"
-          builder.tag!("md:Identifier") { builder << "FM_#{film.title_amazon_export}_Movie" }
+          builder.tag!("md:Identifier") { builder << identifier }
           builder << "\n"
         end
         builder << "\n\n"
