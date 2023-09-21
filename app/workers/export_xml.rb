@@ -47,7 +47,7 @@ class ExportXml
         builder.tag!("md:LocalizedInfo", language: "en-US") do
           builder << "\n\n"
 
-          builder.tag!("md:TitleDisplayUnlimited") { builder << film.title_amazon_export }
+          builder.tag!("md:TitleDisplayUnlimited") { builder << film.title }
           builder << "\n\n"
 
           builder.tag!("md:TitleSort")
