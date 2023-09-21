@@ -51,11 +51,13 @@ class ExportXml
           builder.tag!("md:TitleSort")
           builder << "\n\n"
 
-          builder.tag!("md:ArtReference", resolution: "1920x2560", purpose: "boxart") { builder << "#{film.title_amazon_export.camelize}_Box-Art_1920x2560.jpg" }
+          builder.tag!("md:ArtReference", resolution: "1920x2560", purpose: "boxart") { builder << "#{film.title_amazon_export.camelize}_Box_1920x2560.jpg" }
           builder << "\n"
-          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "cover") { builder << "#{film.title_amazon_export.camelize}_Cover-Art_1920x1080.jpg" }
+          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "cover") { builder << "#{film.title_amazon_export.camelize}_Cover_1920x1080.jpg" }
           builder << "\n"
-          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "hero") { builder << "#{film.title_amazon_export.camelize}_Background-Art_1920x1080.jpg" }
+          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "hero") { builder << "#{film.title_amazon_export.camelize}_Background_1920x1080.jpg" }
+          builder << "\n"
+          builder.tag!("md:ArtReference", resolution: "2000x3000", purpose: "poster") { builder << "#{film.title_amazon_export.camelize}_Poster_2000x3000.jpg" }
           builder << "\n\n"
 
           builder.tag!("md:Summary190") { builder << film.logline }
