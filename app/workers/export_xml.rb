@@ -30,6 +30,8 @@ class ExportXml
     file = File.open("#{job_folder}/#{filename}", 'w')
     identifier = "FM_#{film.title_amazon_export}_Movie"
 
+    safe_characters = -> (input) { input.gsub('<', '&lt;').gsub('>', '&gt;').gsub('&', '&amp;').gsub("'", '&apos;').gsub("\"", "&quot;") }
+
     require 'builder'
     builder = Builder::XmlMarkup.new(target: file)
 
@@ -60,10 +62,10 @@ class ExportXml
           builder.tag!("md:ArtReference", resolution: "2000x3000", purpose: "poster") { builder << "#{film.title_amazon_export.camelize}_Poster_2000x3000.jpg" }
           builder << "\n\n"
 
-          builder.tag!("md:Summary190") { builder << film.logline }
+          builder.tag!("md:Summary190") { builder << safe_characters.(film.logline) }
           builder << "\n\n"
 
-          builder.tag!("md:Summary400") { builder << film.vod_synopsis }
+          builder.tag!("md:Summary400") { builder << safe_characters.(film.vod_synopsis) }
           builder << "\n\n"
 
           film.amazon_genres.each do |amazon_genre|
