@@ -44,7 +44,7 @@ class ExportXmlMmc
           builder.__send__('md:Type', 'primary')
           builder.__send__('md:Language', 'en-US')
           builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-feature-en-US.mov")
+            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-mezz-en-US.mov")
           end
         end
         builder.comment! "Feature subtitle File"
