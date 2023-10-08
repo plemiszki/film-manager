@@ -30,7 +30,6 @@ class ExportXmlMmc
         builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:feature.video.en-US") do
           builder.__send__('md:Type', 'primary')
           builder.tag!("md:Picture") do
-            builder.__send__('md:AspectRatio', '16:9')
             builder.__send__('md:WidthPixels', '1920')
             builder.__send__('md:HeightPixels', '1080')
           end
@@ -56,7 +55,18 @@ class ExportXmlMmc
             builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
           end
           builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', "filmmovement-FM_#{title}_Movie-Full-Caption2398NDF-en-US.scc")
+            builder.__send__('manifest:ContainerLocation', "filmmovement-FM_#{title}_Caption.scc")
+          end
+        end
+        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.en-US") do
+          builder.__send__('md:Format', 'SCC')
+          builder.__send__('md:Type', 'normal')
+          builder.__send__('md:Language', 'en-US')
+          builder.tag!("md:Encoding") do
+            builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
+          end
+          builder.tag!("manifest:ContainerReference") do
+            builder.__send__('manifest:ContainerLocation', "filmmovement-FM_#{title}_Subtitle.scc")
           end
         end
       end
