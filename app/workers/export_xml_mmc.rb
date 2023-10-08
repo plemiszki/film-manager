@@ -69,6 +69,24 @@ class ExportXmlMmc
             builder.__send__('manifest:ContainerLocation', "filmmovement-FM_#{title}_Subtitle.scc")
           end
         end
+        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.en-US") do
+          builder.__send__('md:Type', 'primary')
+          builder.tag!("md:Picture") do
+            builder.__send__('md:WidthPixels', '1920')
+            builder.__send__('md:HeightPixels', '1080')
+          end
+          builder.__send__('md:Language', 'en-EN')
+          builder.tag!("manifest:ContainerReference") do
+            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Trailer.mov")
+          end
+        end
+        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.en-US") do
+          builder.__send__('md:Type', 'primary')
+          builder.__send__('md:Language', 'en-US')
+          builder.tag!("manifest:ContainerReference") do
+            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Trailer.mov")
+          end
+        end
       end
       builder.comment! "Presentation section"
       builder.tag!("manifest:Presentations") do
