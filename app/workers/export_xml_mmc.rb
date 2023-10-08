@@ -104,6 +104,20 @@ class ExportXmlMmc
             end
           end
         end
+        builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_#{title}_Trailer:trailer.presentation") do
+          builder.tag!("manifest:TrackMetadata") do
+            builder.__send__('manifest:TrackSelectionNumber', '0')
+            builder.tag!('manifest:VideoTrackReference') do
+              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Trailer:trailer.video.en-US")
+            end
+            builder.tag!('manifest:AudioTrackReference') do
+              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Trailer:trailer.audio.en-US")
+            end
+            builder.tag!('manifest:SubtitleTrackReference') do
+              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Trailer:caption.en-US")
+            end
+          end
+        end
       end
       builder.comment! "Experiences"
       builder.tag!("manifest:Experiences") do
@@ -112,6 +126,11 @@ class ExportXmlMmc
             builder.__send__('manifest:Type', 'Main')
             builder.__send__('manifest:SubType', 'Feature')
             builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Movie:feature.presentation")
+          end
+          builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_#{title}_Trailer") do
+            builder.__send__('manifest:Type', 'Main')
+            builder.__send__('manifest:SubType', 'Feature')
+            builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Trailer:trailer.presentation")
           end
         end
       end
