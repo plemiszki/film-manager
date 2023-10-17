@@ -29,11 +29,7 @@ class ExportXmlMmc
         builder.comment! "video file"
         builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:feature.video.en-US") do
           builder.__send__('md:Type', 'primary')
-          builder.tag!("md:Picture") do
-            builder.__send__('md:WidthPixels', '1920')
-            builder.__send__('md:HeightPixels', '1080')
-          end
-          builder.__send__('md:Language', 'en-EN')
+          builder.__send__('md:Language', 'en-US')
           builder.tag!("manifest:ContainerReference") do
             builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-mezz-en-US.mov")
           end
@@ -71,11 +67,7 @@ class ExportXmlMmc
         end
         builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.en-US") do
           builder.__send__('md:Type', 'primary')
-          builder.tag!("md:Picture") do
-            builder.__send__('md:WidthPixels', '1920')
-            builder.__send__('md:HeightPixels', '1080')
-          end
-          builder.__send__('md:Language', 'en-EN')
+          builder.__send__('md:Language', 'en-US')
           builder.tag!("manifest:ContainerReference") do
             builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Trailer.mov")
           end
