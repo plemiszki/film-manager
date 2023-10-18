@@ -94,6 +94,9 @@ class ExportXmlMmc
             builder.tag!('manifest:SubtitleTrackReference') do
               builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US")
             end
+            builder.tag!('manifest:SubtitleTrackReference') do
+              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.en-US")
+            end
           end
         end
         builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_#{title}_Trailer:trailer.presentation") do
@@ -104,9 +107,6 @@ class ExportXmlMmc
             end
             builder.tag!('manifest:AudioTrackReference') do
               builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Trailer:trailer.audio.en-US")
-            end
-            builder.tag!('manifest:SubtitleTrackReference') do
-              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Trailer:caption.en-US")
             end
           end
         end
