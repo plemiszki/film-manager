@@ -155,6 +155,7 @@ class Booking < ActiveRecord::Base
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
     all_bookings.each_with_index do |booking, index|
       next if booking.terms.match(/^\$[\d\.]+$/) # don't need box office for flat fee bookings
+      next if booking.email.empty?
       venue = booking.venue
       venue_name = (venue.billing_name.present? ? venue.billing_name : venue.label)
       message_params = {
@@ -162,7 +163,7 @@ class Booking < ActiveRecord::Base
         to: booking.email,
         bcc: sender.email,
         subject: "Box Office Reminder: #{booking.film.title} at #{venue_name} (#{booking.start_date.strftime("%-m/%-d/%y")})",
-        text: email_body
+        text: email_body,
       }
       mg_client.send_message 'filmmovement.com', message_params
     end
