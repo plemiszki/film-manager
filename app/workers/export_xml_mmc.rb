@@ -99,6 +99,8 @@ class ExportXmlMmc
             end
           end
         end
+      end
+      builder.tag!("manifest:Presentations") do
         builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_#{title}_Trailer:trailer.presentation") do
           builder.tag!("manifest:TrackMetadata") do
             builder.__send__('manifest:TrackSelectionNumber', '0')
@@ -119,6 +121,12 @@ class ExportXmlMmc
             builder.__send__('manifest:SubType', 'Feature')
             builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Movie:feature.presentation")
           end
+          builder.tag!("manifest:ExperienceChild") do
+            builder.__send__('manifest:Relationship', "ispromotionfor")
+            builder.__send__('manifest:ExperienceID', "md:experienceid:org:filmmovement:FM_#{title}_Movie:trailer.experience")
+          end
+        end
+        builder.tag!("manifest:Experience", "ExperienceID" => "md:experienceid:org:filmmovement:FM_#{title}_Movie:trailer.experience", "version" => "1.0") do
           builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_#{title}_Trailer") do
             builder.__send__('manifest:Type', 'Main')
             builder.__send__('manifest:SubType', 'Feature')
