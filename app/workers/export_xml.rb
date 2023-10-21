@@ -57,7 +57,7 @@ class ExportXml
           builder << "\n"
           builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "cover") { builder << "#{film.title_amazon_export.camelize}_Cover_1920x1080.jpg" }
           builder << "\n"
-          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "hero") { builder << "#{film.title_amazon_export.camelize}_Background_1920x1080.jpg" }
+          builder.tag!("md:ArtReference", resolution: "1920x1080", purpose: "hero") { builder << "#{film.title_amazon_export.camelize}_Hero_1920x1080.jpg" }
           builder << "\n"
           builder.tag!("md:ArtReference", resolution: "2000x3000", purpose: "poster") { builder << "#{film.title_amazon_export.camelize}_Poster_2000x3000.jpg" }
           builder << "\n\n"
