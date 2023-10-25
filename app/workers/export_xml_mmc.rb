@@ -101,14 +101,14 @@ class ExportXmlMmc
         end
       end
       builder.tag!("manifest:Presentations") do
-        builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_#{title}_Trailer:trailer.presentation") do
+        builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_#{title}_Movie:trailer.presentation") do
           builder.tag!("manifest:TrackMetadata") do
             builder.__send__('manifest:TrackSelectionNumber', '0')
             builder.tag!('manifest:VideoTrackReference') do
-              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Trailer:trailer.video.en-US")
+              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.en-US")
             end
             builder.tag!('manifest:AudioTrackReference') do
-              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Trailer:trailer.audio.en-US")
+              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.en-US")
             end
           end
         end
@@ -127,10 +127,10 @@ class ExportXmlMmc
           end
         end
         builder.tag!("manifest:Experience", "ExperienceID" => "md:experienceid:org:filmmovement:FM_#{title}_Movie:trailer.experience", "version" => "1.0") do
-          builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_#{title}_Trailer") do
-            builder.__send__('manifest:Type', 'Main')
-            builder.__send__('manifest:SubType', 'Feature')
-            builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Trailer:trailer.presentation")
+          builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_#{title}_Movie") do
+            builder.__send__('manifest:Type', 'Promotion')
+            builder.__send__('manifest:SubType', 'Default Trailer')
+            builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Movie:trailer.presentation")
           end
         end
       end
