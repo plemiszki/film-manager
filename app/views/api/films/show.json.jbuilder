@@ -2,8 +2,8 @@ json.film do
   json.id @film.id
   json.title @film.title
   json.filmType @film.film_type
-  json.startDate @film.start_date ? @film.start_date.strftime("%-m/%-d/%y") : ""
-  json.endDate @film.end_date ? @film.end_date.strftime("%-m/%-d/%y") : ""
+  json.startDate @film.start_date ? @film.start_date.strftime("%-m/%-d/%Y") : ""
+  json.endDate @film.end_date ? @film.end_date.strftime("%-m/%-d/%Y") : ""
   json.licensorId @film.licensor_id || ""
   json.dealTypeId @film.deal_type_id.to_s
   json.daysStatementDue @film.days_statement_due.to_s
@@ -40,17 +40,17 @@ json.film do
   json.twitterLink @film.twitter_link || ""
   json.instagramLink @film.instagram_link || ""
   json.labelId @film.label_id.to_s
-  json.clubDate @film.club_date ? @film.club_date.strftime("%-m/%-d/%y") : ""
+  json.clubDate @film.club_date ? @film.club_date.strftime("%-m/%-d/%Y") : ""
   json.ignoreSageId @film.ignore_sage_id
   json.theatricalCount @bookings.where(booking_type: 'Theatrical').count
   json.festivalCount @bookings.where(booking_type: 'Festival').count
   json.nonTheatricalCount @bookings.where(booking_type: 'Non-Theatrical').count
   json.virtualCount @virtual_bookings.count
-  json.avodRelease @film.avod_release ? (@film.avod_release.strftime("%-m/%-d/%y") + (@film.avod_tentative ? '?' : '')) : ""
-  json.svodRelease @film.svod_release ? (@film.svod_release.strftime("%-m/%-d/%y") + (@film.svod_tentative ? '?' : '')) : ""
-  json.tvodRelease @film.tvod_release ? (@film.tvod_release.strftime("%-m/%-d/%y") + (@film.tvod_tentative ? '?' : '')) : ""
-  json.theatricalRelease @film.theatrical_release ? (@film.theatrical_release.strftime("%-m/%-d/%y") + (@film.theatrical_tentative ? '?' : '')) : ""
-  json.fmPlusRelease @film.fm_plus_release ? (@film.fm_plus_release.strftime("%-m/%-d/%y") + (@film.fm_plus_tentative ? '?' : '')) : ""
+  json.avodRelease @film.avod_release ? (@film.avod_release.strftime("%-m/%-d/%Y") + (@film.avod_tentative ? '?' : '')) : ""
+  json.svodRelease @film.svod_release ? (@film.svod_release.strftime("%-m/%-d/%Y") + (@film.svod_tentative ? '?' : '')) : ""
+  json.tvodRelease @film.tvod_release ? (@film.tvod_release.strftime("%-m/%-d/%Y") + (@film.tvod_tentative ? '?' : '')) : ""
+  json.theatricalRelease @film.theatrical_release ? (@film.theatrical_release.strftime("%-m/%-d/%Y") + (@film.theatrical_tentative ? '?' : '')) : ""
+  json.fmPlusRelease @film.fm_plus_release ? (@film.fm_plus_release.strftime("%-m/%-d/%Y") + (@film.fm_plus_tentative ? '?' : '')) : ""
   json.eduPage @film.edu_page
   json.videoPage @film.video_page
   json.nowPlayingPage @film.now_playing_page
@@ -62,7 +62,7 @@ json.film do
   json.certifiedFresh @film.certified_fresh
   json.criticsPick @film.critics_pick
   json.imdbId @film.imdb_id
-  json.acceptDelivery @film.accept_delivery ? @film.accept_delivery.strftime("%-m/%-d/%y") : ""
+  json.acceptDelivery @film.accept_delivery ? @film.accept_delivery.strftime("%-m/%-d/%Y") : ""
   json.rentalUrl @film.rental_url
   json.rentalPrice '$' + number_with_precision(@film.rental_price, precision: 2, delimiter: ',')
   json.rentalDays @film.rental_days.to_s
@@ -119,8 +119,8 @@ json.filmRights @rights do |right|
   json.name right.right.name
   json.order right.right.order
   json.territory right.territory.name
-  json.startDate right.start_date ? right.start_date.strftime("%-m/%-d/%y") : ''
-  json.endDate right.end_date ? right.end_date.strftime("%-m/%-d/%y") : ''
+  json.startDate right.start_date ? right.start_date.strftime("%-m/%-d/%Y") : ''
+  json.endDate right.end_date ? right.end_date.strftime("%-m/%-d/%Y") : ''
   json.exclusive right.exclusive ? 'Yes' : 'No'
 end
 json.subRights @sub_rights do |right|
@@ -129,8 +129,8 @@ json.subRights @sub_rights do |right|
   json.order right.right.order
   json.territory right.territory.name
   json.sublicensorName right.sublicensor.name
-  json.startDate right.start_date ? right.start_date.strftime("%-m/%-d/%y") : ''
-  json.endDate right.end_date ? right.end_date.strftime("%-m/%-d/%y") : ''
+  json.startDate right.start_date ? right.start_date.strftime("%-m/%-d/%Y") : ''
+  json.endDate right.end_date ? right.end_date.strftime("%-m/%-d/%Y") : ''
   json.exclusive right.exclusive ? 'Yes' : 'No'
 end
 json.dvds @dvds do |dvd|
@@ -229,7 +229,7 @@ end
 json.bookings @bookings do |booking|
   json.id booking.id
   json.venue booking.venue.label
-  json.startDate booking.start_date.strftime("%-m/%-d/%y")
+  json.startDate booking.start_date.strftime("%-m/%-d/%Y")
   json.type booking.booking_type
   json.valid @calculations[booking.id][:valid]
   json.owed dollarify(number_with_precision(@calculations[booking.id][:owed], precision: 2, delimiter: ','))
@@ -237,7 +237,7 @@ end
 json.virtualBookings @virtual_bookings do |booking|
   json.id booking.id
   json.venue booking.venue.label
-  json.startDate booking.start_date.strftime("%-m/%-d/%y")
+  json.startDate booking.start_date.strftime("%-m/%-d/%Y")
   json.type 'Virtual'
 end
 json.digitalRetailers @digital_retailers do |digital_retailer|

@@ -71,12 +71,12 @@ describe 'film_details', type: :feature do
     expect(find(list_box_selector("countries"))).to have_content('Canada')
     expect(find(list_box_selector("languages"))).to have_content('French')
     expect(find(list_box_selector("actors"))).to have_content('Brad Pitt')
-    expect(find('input[data-field="clubDate"]').value).to eq '11/1/02'
-    expect(find('input[data-field="theatricalRelease"]').value).to eq '12/1/02'
-    expect(find('input[data-field="svodRelease"]').value).to eq '1/1/03'
-    expect(find('input[data-field="tvodRelease"]').value).to eq '2/1/03'
-    expect(find('input[data-field="avodRelease"]').value).to eq '3/1/03'
-    expect(find('input[data-field="fmPlusRelease"]').value).to eq '4/1/03'
+    expect(find('input[data-field="clubDate"]').value).to eq '11/1/2002'
+    expect(find('input[data-field="theatricalRelease"]').value).to eq '12/1/2002'
+    expect(find('input[data-field="svodRelease"]').value).to eq '1/1/2003'
+    expect(find('input[data-field="tvodRelease"]').value).to eq '2/1/2003'
+    expect(find('input[data-field="avodRelease"]').value).to eq '3/1/2003'
+    expect(find('input[data-field="fmPlusRelease"]').value).to eq '4/1/2003'
   end
 
   it 'updates general information about the film' do
@@ -193,8 +193,8 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Contract').click
     expect(find('input[data-field="licensorId"]').value).to eq 'Hippo Entertainment'
-    expect(find('input[data-field="startDate"]').value).to eq '1/1/09'
-    expect(find('input[data-field="endDate"]').value).to eq '1/1/19'
+    expect(find('input[data-field="startDate"]').value).to eq '1/1/2009'
+    expect(find('input[data-field="endDate"]').value).to eq '1/1/2019'
     expect(find('input[data-field="sageId"]').value).to eq 'Sage ID'
     expect(find('select[data-field="dealTypeId"]', visible: false).value).to eq '1'
     expect(find('select[data-field="daysStatementDue"]', visible: false).value).to eq '30'
@@ -202,7 +202,7 @@ describe 'film_details', type: :feature do
     expect(find('input[data-field="eAndO"]').value).to eq '$2,000.00'
     expect(find('input[data-field="expenseCap"]').value).to eq '$50,000.00'
     expect(find('input[data-field="sellOffPeriod"]').value).to eq '6'
-    expect(find('input[data-field="acceptDelivery"]').value).to eq '4/1/20'
+    expect(find('input[data-field="acceptDelivery"]').value).to eq '4/1/2020'
     expect(find('textarea[data-field="royaltyNotes"]').value).to eq 'royalty notes'
     expect(find('input[data-field="1"]').value).to eq '0.0'
     expect(find('input[data-field="2"]').value).to eq '0.0'
@@ -283,8 +283,8 @@ describe 'film_details', type: :feature do
     end
     wait_for_ajax
     within('table') do
-      expect(page).to have_content('3/3/33')
-      expect(page).to have_content('4/4/34')
+      expect(page).to have_content('3/3/2033')
+      expect(page).to have_content('4/4/2034')
     end
     expect(@film.reload.film_rights.pluck(:start_date).uniq).to eq([Date.parse('3/3/2033')])
     expect(@film.reload.film_rights.pluck(:end_date).uniq).to eq([Date.parse('4/4/2034')])
