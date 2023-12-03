@@ -23,8 +23,8 @@ describe 'film_right_details', type: :feature do
     wait_for_ajax
     expect(find('select[data-field="rightId"]', visible: false).value).to eq '1'
     expect(find('select[data-field="territoryId"]', visible: false).value).to eq '1'
-    expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%-d/%y')
-    expect(find('input[data-field="endDate"]').value).to eq (Date.today + 1.year).strftime('%-m/%-d/%y')
+    expect(find('input[data-field="startDate"]').value).to eq Date.today.strftime('%-m/%-d/%Y')
+    expect(find('input[data-field="endDate"]').value).to eq (Date.today + 1.year).strftime('%-m/%-d/%Y')
     expect(find('select[data-field="exclusive"]', visible: false).value).to eq 't'
   end
 
@@ -33,8 +33,8 @@ describe 'film_right_details', type: :feature do
     new_info = {
       right_id: { value: 2, type: :select },
       territory_id: { value: 2, type: :select },
-      start_date: '12/1/20',
-      end_date: '12/15/30',
+      start_date: '12/1/2020',
+      end_date: '12/15/2030',
       exclusive: { value: 'f', type: :select }
     }
     fill_out_form(new_info)
@@ -42,7 +42,7 @@ describe 'film_right_details', type: :feature do
     verify_db_and_component(
       entity: @film_right,
       data: new_info,
-      db_data: { exclusive: false, start_date: Date.parse('12/1/20'), end_date: Date.parse('12/15/30') }
+      db_data: { exclusive: false, start_date: Date.parse('12/1/2020'), end_date: Date.parse('12/15/2030') }
     )
   end
 
@@ -51,8 +51,8 @@ describe 'film_right_details', type: :feature do
     visit film_right_path(@film_right, as: $admin_user)
     fill_out_form({
       territory_id: { value: 2, type: :select },
-      start_date: '2/1/20',
-      end_date: '1/1/20'
+      start_date: '2/1/2020',
+      end_date: '1/1/2020'
     })
     save_and_wait
     expect(page).to have_content('Right has already been taken')
