@@ -93,7 +93,7 @@ class CreditMemo < ActiveRecord::Base
 
     string += "<div class=\"upper-right\">"
     string +=   "<div class=\"invoice-header\">Credit Memo</div>"
-    string +=   "Date Sent: #{self.sent_date.strftime("%-m/%-d/%y")}<br>"
+    string +=   "Date Sent: #{self.sent_date.strftime("%-m/%-d/%Y")}<br>"
     string +=   "Credit Memo Number: #{self.number}<br>"
     string +=   "Return Number: #{self.return_number}<br>"
     string += "</div>"

@@ -196,12 +196,12 @@ class Invoice < ActiveRecord::Base
 
     string += "<div class=\"upper-right\">"
     string +=   "<div class=\"invoice-header\">INVOICE</div>"
-    string +=   "Date Sent: #{self.sent_date.strftime("%-m/%-d/%y")}<br>"
+    string +=   "Date Sent: #{self.sent_date.strftime("%-m/%-d/%Y")}<br>"
     string +=   "Invoice Number: #{self.number}<br>"
     if invoice_type == "dvd"
       string += "PO Number: #{self.po_number}<br>"
       string += "Payment Terms: Net #{self.payment_terms} Days<br>"
-      string += "Due Date: #{(self.sent_date + 30).strftime("%-m/%-d/%y")}<br />"
+      string += "Due Date: #{(self.sent_date + 30).strftime("%-m/%-d/%Y")}<br />"
     end
     string += "<div class=\"upper-right-bold\">"
     string += "Please write the invoice number on your check"
@@ -259,7 +259,7 @@ class Invoice < ActiveRecord::Base
       # item description
       description_text = row.try(:item_label_export) || row.item_label
       if row.item_label == "Advance" || row.item_label == "Overage"
-        string += "<td class='big-margin'>#{booking.film.title}<br>#{booking.start_date.strftime("%-m/%-d/%y")} - #{booking.end_date.strftime("%-m/%-d/%y")}<br>#{booking.screenings} screening#{booking.screenings > 1 ? 's' : ''}<br>#{booking.terms + (row.item_label == "Overage" ? " #{row.item_label_export[7..-1]}" : "")}<br>#{booking.format.name}<br>"
+        string += "<td class='big-margin'>#{booking.film.title}<br>#{booking.start_date.strftime("%-m/%-d/%Y")} - #{booking.end_date.strftime("%-m/%-d/%Y")}<br>#{booking.screenings} screening#{booking.screenings > 1 ? 's' : ''}<br>#{booking.terms + (row.item_label == "Overage" ? " #{row.item_label_export[7..-1]}" : "")}<br>#{booking.format.name}<br>"
         string += "Premiere: #{booking.premiere}<br>" unless booking.premiere.empty?
         string += '</td>'
       elsif row.item_label == "Shipping Fee"
@@ -292,7 +292,7 @@ class Invoice < ActiveRecord::Base
     if self.invoice_type == 'booking'
       self.invoice_payments.each_with_index do |payment, index|
         string += "<tr>"
-        string += "<td class=\"big-margin\">Payment#{!payment.notes.empty? ? " - #{payment.notes}" : ''} (#{payment.date.strftime("%-m/%-d/%y")})</td><td></td><td></td><td class=\"big-margin\">#{dollarify((payment.amount * -1).to_s)}</td>"
+        string += "<td class=\"big-margin\">Payment#{!payment.notes.empty? ? " - #{payment.notes}" : ''} (#{payment.date.strftime("%-m/%-d/%Y")})</td><td></td><td></td><td class=\"big-margin\">#{dollarify((payment.amount * -1).to_s)}</td>"
         string += "</tr>"
       end
     end

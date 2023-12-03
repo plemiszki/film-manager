@@ -1,6 +1,6 @@
 json.invoices @invoices do |invoice|
   json.id invoice.id
-  json.sentDate invoice.sent_date.strftime("%-m/%-d/%y")
+  json.sentDate invoice.sent_date.strftime("%-m/%-d/%Y")
   json.number invoice.number
   json.total dollarify(invoice.total)
   json.rows invoice.invoice_rows do |row|

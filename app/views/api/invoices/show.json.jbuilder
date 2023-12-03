@@ -31,7 +31,7 @@ json.rows @rows do |row|
   json.totalPrice dollarify(number_with_precision(row.total_price.to_s, precision: 2, delimiter: ','))
 end
 json.payments @payments do |payment|
-  json.date payment.date.strftime("%-m/%-d/%y")
+  json.date payment.date.strftime("%-m/%-d/%Y")
   json.amount dollarify(number_with_precision((payment.amount * -1).to_s, precision: 2, delimiter: ','))
   json.notes payment.notes
 end

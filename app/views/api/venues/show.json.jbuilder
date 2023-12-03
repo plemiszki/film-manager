@@ -26,7 +26,7 @@ end
 json.bookings @bookings do |booking|
   json.id booking.id
   json.film booking.film.title
-  json.startDate booking.start_date.strftime("%-m/%-d/%y")
+  json.startDate booking.start_date.strftime("%-m/%-d/%Y")
   json.valid @calculations[booking.id][:valid]
   json.totalGross dollarify(number_with_precision(@calculations[booking.id][:total_gross], precision: 2, delimiter: ','))
   json.ourShare dollarify(number_with_precision(@calculations[booking.id][:our_share], precision: 2, delimiter: ','))

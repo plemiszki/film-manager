@@ -12,8 +12,8 @@ json.dvd do
   json.discs @dvd.discs.to_s
   json.unitsShipped @dvd.units_shipped
   json.firstShipment @dvd.first_shipment || ""
-  json.preBookDate @dvd.pre_book_date ? @dvd.pre_book_date.strftime("%-m/%-d/%y") : ""
-  json.retailDate @dvd.retail_date ? @dvd.retail_date.strftime("%-m/%-d/%y") : ""
+  json.preBookDate @dvd.pre_book_date ? @dvd.pre_book_date.strftime("%-m/%-d/%Y") : ""
+  json.retailDate @dvd.retail_date ? @dvd.retail_date.strftime("%-m/%-d/%Y") : ""
 end
 json.dvdTypes @dvd_types
 json.shorts @dvd_shorts do |dvd_short|

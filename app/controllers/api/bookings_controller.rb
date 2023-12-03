@@ -223,7 +223,7 @@ class Api::BookingsController < AdminController
     string += "Please see the following booking confirmation for #{booking.film.title}"
     string += " on #{booking.format.name}"
     string += "\n\n"
-    string += "#{booking.start_date == booking.end_date ? "Screening" : "Start"} Date: #{booking.start_date.strftime("%-m/%-d/%y")}\n\n"
+    string += "#{booking.start_date == booking.end_date ? "Screening" : "Start"} Date: #{booking.start_date.strftime("%-m/%-d/%Y")}\n\n"
     string += "#{booking.shipping_name}\n"
     string += "#{booking.shipping_address1}\n"
     string += "#{booking.shipping_address2}\n" unless booking.shipping_address2.empty?

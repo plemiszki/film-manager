@@ -17,8 +17,8 @@ class SendVirtualBookingReport
     copy = Setting.first.virtual_booking_report_text
     copy += "\n\n"
     copy += "Title: #{virtual_booking.film.title}\n"
-    copy += "Start Date: #{virtual_booking.start_date.strftime("%-m/%-d/%y")}\n"
-    copy += "End Date: #{virtual_booking.end_date.strftime("%-m/%-d/%y")}\n"
+    copy += "Start Date: #{virtual_booking.start_date.strftime("%-m/%-d/%Y")}\n"
+    copy += "End Date: #{virtual_booking.end_date.strftime("%-m/%-d/%Y")}\n"
     copy += "\n"
     copy += "Total Gross: #{dollarify(calculations[:total_gross])}\n"
     copy += "Terms: #{virtual_booking.terms}\n"
@@ -46,7 +46,7 @@ class SendVirtualBookingReport
           showSuccessMessageModal: true,
           entityName: 'virtualBooking',
           updateEntity: {
-            reportSentDate: Date.today.strftime("%-m/%-d/%y")
+            reportSentDate: Date.today.strftime("%-m/%-d/%Y")
           }
         }
       })

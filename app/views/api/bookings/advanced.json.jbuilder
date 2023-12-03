@@ -1,10 +1,10 @@
 json.bookings @bookings do |booking|
   json.id booking.id
-  json.startDate booking.start_date.strftime("%-m/%-d/%y")
-  json.endDate booking.end_date.strftime("%-m/%-d/%y")
+  json.startDate booking.start_date.strftime("%-m/%-d/%Y")
+  json.endDate booking.end_date.strftime("%-m/%-d/%Y")
   json.film booking.film.title
   json.venue booking.venue.label
-  json.dateAdded booking.date_added.strftime("%-m/%-d/%y")
+  json.dateAdded booking.date_added.strftime("%-m/%-d/%Y")
   json.shippingCity booking.shipping_city
   json.shippingState booking.shipping_state
   json.terms booking.terms

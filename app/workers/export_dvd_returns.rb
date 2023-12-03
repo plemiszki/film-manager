@@ -38,7 +38,7 @@ class ExportDvdReturns
           price = Invoice.get_item_price(giftbox.id, 'giftbox', customer).to_f
         end
         sheet.add_row([
-          rtn.date.strftime("%m/%d/%y"),
+          rtn.date.strftime("%m/%d/%Y"),
           rtn.number,
           customer.name,
           licensor ? licensor.name : '',

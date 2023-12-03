@@ -25,7 +25,7 @@ describe 'returns_index', type: :feature do
     click_btn('Add Return')
     fill_out_and_submit_modal({
       customer_id: { value: 'DVD Vendor', type: :select_modal },
-      date: Date.today.strftime("%-m/%-d/%y"),
+      date: Date.today.strftime("%-m/%-d/%Y"),
       number: 'return order number'
     }, :input)
     new_return = Return.last

@@ -55,7 +55,7 @@ class Booking < ActiveRecord::Base
   def info
     venue = self.venue
     venue_name = (venue.billing_name.present? ? venue.billing_name : venue.label)
-    "#{self.film.title} at #{venue_name} (#{self.start_date.strftime("%-m/%-d/%y")})"
+    "#{self.film.title} at #{venue_name} (#{self.start_date.strftime("%-m/%-d/%Y")})"
   end
 
   def self.send_payment_reminders
@@ -162,7 +162,7 @@ class Booking < ActiveRecord::Base
         from: sender.email,
         to: booking.email,
         bcc: sender.email,
-        subject: "Box Office Reminder: #{booking.film.title} at #{venue_name} (#{booking.start_date.strftime("%-m/%-d/%y")})",
+        subject: "Box Office Reminder: #{booking.film.title} at #{venue_name} (#{booking.start_date.strftime("%-m/%-d/%Y")})",
         text: email_body,
       }
       mg_client.send_message 'filmmovement.com', message_params
