@@ -25,7 +25,7 @@ describe 'return_details', type: :feature do
     expect(page).to have_content 'Return Details'
     expect(find('input[data-field="number"]').value).to eq '012345678'
     expect(find('select[data-field="customerId"]', visible: false).value).to eq '1'
-    expect(find('input[data-field="date"]').value).to eq Date.today.strftime("%-m/%-d/%y")
+    expect(find('input[data-field="date"]').value).to eq Date.today.strftime("%-m/%-d/%Y")
   end
 
   it 'updates information about the return' do

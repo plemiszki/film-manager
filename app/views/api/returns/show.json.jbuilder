@@ -2,10 +2,10 @@ json.return do
   json.id @return.id
   json.number @return.number
   json.customerId @return.customer_id.to_s
-  json.date @return.date.strftime("%-m/%-d/%y")
+  json.date @return.date.strftime("%-m/%-d/%Y")
   json.creditMemoId @return.credit_memo.try(:id) || ''
   json.creditMemoNumber @return.credit_memo.try(:number) || ''
-  json.creditMemoDate @return.credit_memo.try(:sent_date).try(:strftime, "%-m/%-d/%y") || ''
+  json.creditMemoDate @return.credit_memo.try(:sent_date).try(:strftime, "%-m/%-d/%Y") || ''
 end
 json.customers @dvd_customers do |customer|
   json.id customer.id
