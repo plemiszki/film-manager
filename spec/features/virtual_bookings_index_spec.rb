@@ -31,8 +31,8 @@ describe 'virtual_bookings_index', type: :feature do
     info = {
       film_id: { value: 'Another Film', type: :select_modal },
       venue_id: { value: 'Another Venue', type: :select_modal },
-      start_date: Date.today.strftime('%-m/%d/%y'),
-      end_date: ((Date.today + 1.day).strftime('%-m/%d/%y')),
+      start_date: Date.today.strftime('%-m/%d/%Y'),
+      end_date: ((Date.today + 1.day).strftime('%-m/%d/%Y')),
       terms: '50%',
       url: 'https://www.someurl.com',
       host: { value: 'Venue', type: :select }

@@ -1,10 +1,10 @@
 json.virtualBookings @virtual_bookings do |booking|
   json.id booking.id
-  json.dateAdded booking.date_added.strftime("%-m/%-d/%y")
+  json.dateAdded booking.date_added.strftime("%-m/%-d/%Y")
   json.film booking.film.title
   json.venue booking.venue.label
-  json.startDate booking.start_date.strftime("%-m/%-d/%y")
-  json.endDate booking.end_date.strftime("%-m/%-d/%y")
+  json.startDate booking.start_date.strftime("%-m/%-d/%Y")
+  json.endDate booking.end_date.strftime("%-m/%-d/%Y")
   json.city booking.shipping_city
   json.state booking.shipping_state
   json.boxOfficeReceived booking.box_office_received ? 'Yes' : 'No'
