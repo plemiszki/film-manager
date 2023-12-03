@@ -37,8 +37,8 @@ describe 'bookings_index', type: :feature do
     info = {
       film_id: { value: 'Wilby Wonderful', type: :select_modal },
       venue_id: { value: 'Film at Lincoln Center', type: :select_modal },
-      start_date: Date.today.strftime('%-m/%d/%y'),
-      end_date: ((Date.today + 1.day).strftime('%-m/%d/%y')),
+      start_date: Date.today.strftime('%-m/%d/%Y'),
+      end_date: ((Date.today + 1.day).strftime('%-m/%d/%Y')),
       booking_type: { value: 'Theatrical', type: :select },
       status: { value: 'Confirmed', type: :select },
       format_id: { value: 1, type: :select },
@@ -70,8 +70,8 @@ describe 'bookings_index', type: :feature do
     VENUES = ['Film at Lincoln Center', 'New York Film Festival']
     CITIES = ['Wayland, MA', 'New York, NY']
     TYPES = ['Theatrical', 'Non-Theatrical']
-    START_DATES = ['21/1/1', '21/1/2']
-    ADDED_DATES = ['20/1/1', '20/1/2']
+    START_DATES = ['2021/1/1', '2021/1/2']
+    ADDED_DATES = ['2020/1/1', '2020/1/2']
     FORMATS = ['HD File', 'Blu-ray'].each { |name| create(:format, name: name) }
     STATUSES = ['Tentative', 'Confirmed']
     FILMS.each_with_index do |film, film_index|
@@ -130,8 +130,8 @@ describe 'bookings_index', type: :feature do
     expect(page).to have_content('Non-Theatrical').once
     expect(page).to have_content('Blu-ray').once
     expect(page).to have_content('Wayland').once
-    expect(page).to have_content('1/2/21').once
-    expect(page).to have_content('1/2/20').once
+    expect(page).to have_content('1/2/2021').once
+    expect(page).to have_content('1/2/2020').once
   end
 
   it 'starts the export job' do

@@ -22,8 +22,8 @@ describe 'booking_details', type: :feature do
     wait_for_ajax
     expect(find('input[data-field="filmId"]').value).to eq('Wilby Wonderful')
     expect(find('input[data-field="venueId"]').value).to eq('Film at Lincoln Center')
-    expect(find('input[data-field="startDate"]').value).to eq(Date.today.strftime('%-m/%-d/%y'))
-    expect(find('input[data-field="endDate"]').value).to eq((Date.today + 1.day).strftime('%-m/%-d/%y'))
+    expect(find('input[data-field="startDate"]').value).to eq(Date.today.strftime('%-m/%-d/%Y'))
+    expect(find('input[data-field="endDate"]').value).to eq((Date.today + 1.day).strftime('%-m/%-d/%Y'))
     expect(find('select[data-field="bookingType"]', visible: false).value).to eq('Theatrical')
     expect(find('select[data-field="status"]', visible: false).value).to eq('Confirmed')
     expect(find('input[data-field="screenings"]').value).to eq('1')
@@ -49,7 +49,7 @@ describe 'booking_details', type: :feature do
     expect(find('input[data-field="shippingZip"]').value).to eq('10023')
     expect(find('input[data-field="shippingCountry"]').value).to eq('USA')
     expect(find('textarea[data-field="notes"]').value).to eq('some notes')
-    expect(find('input[data-field="materialsSent"]').value).to eq((Date.today - 1.week).strftime('%-m/%-d/%y'))
+    expect(find('input[data-field="materialsSent"]').value).to eq((Date.today - 1.week).strftime('%-m/%-d/%Y'))
     expect(find('input[data-field="trackingNumber"]').value).to eq('123456789')
     expect(find('input[data-field="shippingNotes"]').value).to eq('some shipping notes')
     expect(find('input[data-field="boxOffice"]').value).to eq('$1,000.00')
@@ -64,8 +64,8 @@ describe 'booking_details', type: :feature do
     new_info = {
       film_id: { value: 'Another Film', type: :select_modal },
       venue_id: { value: 'Another Venue', type: :select_modal },
-      start_date: (Date.today + 1.week).strftime('%-m/%-d/%y'),
-      end_date: (Date.today + 1.day + 1.week).strftime('%-m/%-d/%y'),
+      start_date: (Date.today + 1.week).strftime('%-m/%-d/%Y'),
+      end_date: (Date.today + 1.day + 1.week).strftime('%-m/%-d/%Y'),
       booking_type: { value: 'Non-Theatrical', type: :select },
       screenings: 2,
       email: 'someoneelse@venue.com',
@@ -91,7 +91,7 @@ describe 'booking_details', type: :feature do
       shipping_zip: 'new shipping zip',
       shipping_country: 'new shipping country',
       notes: 'more notes!',
-      materials_sent: (Date.today - 2.weeks).strftime('%-m/%-d/%y'),
+      materials_sent: (Date.today - 2.weeks).strftime('%-m/%-d/%Y'),
       tracking_number: '987654321',
       shipping_notes: 'new shipping notes',
       box_office: '2000',
@@ -307,7 +307,7 @@ describe 'booking_details', type: :feature do
     create(:payment)
     visit booking_path(@booking, as: $admin_user)
     within(list_box_selector("payments")) do
-      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
+      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%Y')} - $50.00")
     end
   end
 
@@ -315,7 +315,7 @@ describe 'booking_details', type: :feature do
     visit booking_path(@booking, as: $admin_user)
     click_btn("Add Payment")
     info = {
-      date: Date.today.strftime('%-m/%-d/%y'),
+      date: Date.today.strftime('%-m/%-d/%Y'),
       amount: 20,
       notes: 'note about payment',
     }
@@ -323,7 +323,7 @@ describe 'booking_details', type: :feature do
     wait_for_ajax
     verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
     within(list_box_selector("payments")) do
-      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $20.00")
+      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%Y')} - $20.00")
     end
   end
 
@@ -347,7 +347,7 @@ describe 'booking_details', type: :feature do
     wait_for_ajax
     expect(Payment.count).to eq(0)
     within(list_box_selector("payments")) do
-      expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
+      expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%Y')} - $50.00")
     end
   end
 
@@ -357,7 +357,7 @@ describe 'booking_details', type: :feature do
     click_btn('Send Booking Confirmation')
     wait_for_ajax
     expect(@booking.reload.booking_confirmation_sent).to eq(Date.today)
-    expect(find('input[data-field="bookingConfirmationSent"]').value).to eq(Date.today.strftime('%-m/%-d/%y'))
+    expect(find('input[data-field="bookingConfirmationSent"]').value).to eq(Date.today.strftime('%-m/%-d/%Y'))
   end
 
   it 'calculates total gross' do

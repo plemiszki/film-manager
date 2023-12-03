@@ -2,11 +2,11 @@ json.booking do
   json.id @booking.id
   json.filmId @booking.film_id
   json.venueId @booking.venue_id
-  json.dateAdded @booking.date_added.strftime("%-m/%-d/%y")
+  json.dateAdded @booking.date_added.strftime("%-m/%-d/%Y")
   json.bookingType @booking.booking_type
   json.status @booking.status
-  json.startDate @booking.start_date.strftime("%-m/%-d/%y")
-  json.endDate @booking.end_date.strftime("%-m/%-d/%y")
+  json.startDate @booking.start_date.strftime("%-m/%-d/%Y")
+  json.endDate @booking.end_date.strftime("%-m/%-d/%Y")
   json.terms @booking.terms
   json.termsChange @booking.attributes["terms_change"] # <-- not sure why .terms_change method returns nil
   json.advance dollarify(number_with_precision(@booking.advance, precision: 2, delimiter: ','))
@@ -33,13 +33,13 @@ json.booking do
   json.format @booking.format
   json.formatId @booking.format_id.to_s
   json.email @booking.email
-  json.bookingConfirmationSent @booking.booking_confirmation_sent ? @booking.booking_confirmation_sent.strftime("%-m/%-d/%y") : ''
+  json.bookingConfirmationSent @booking.booking_confirmation_sent ? @booking.booking_confirmation_sent.strftime("%-m/%-d/%Y") : ''
   json.premiere @booking.premiere
-  json.importedAdvanceInvoiceSent @booking.imported_advance_invoice_sent ? @booking.imported_advance_invoice_sent.strftime("%-m/%-d/%y") : ''
+  json.importedAdvanceInvoiceSent @booking.imported_advance_invoice_sent ? @booking.imported_advance_invoice_sent.strftime("%-m/%-d/%Y") : ''
   json.importedAdvanceInvoiceNumber @booking.imported_advance_invoice_number || ''
-  json.importedOverageInvoiceSent @booking.imported_overage_invoice_sent ? @booking.imported_overage_invoice_sent.strftime("%-m/%-d/%y") : ''
+  json.importedOverageInvoiceSent @booking.imported_overage_invoice_sent ? @booking.imported_overage_invoice_sent.strftime("%-m/%-d/%Y") : ''
   json.importedOverageInvoiceNumber @booking.imported_overage_invoice_number || ''
-  json.materialsSent @booking.materials_sent ? @booking.materials_sent.strftime("%-m/%-d/%y") : ''
+  json.materialsSent @booking.materials_sent ? @booking.materials_sent.strftime("%-m/%-d/%Y") : ''
   json.noMaterials @booking.no_materials
   json.shippingNotes @booking.shipping_notes
   json.trackingNumber @booking.tracking_number
@@ -64,7 +64,7 @@ json.weeklyBoxOffices @weekly_box_offices do |weekly_box_office|
 end
 json.payments @payments do |payment|
   json.id payment.id
-  json.date payment.date.strftime("%-m/%-d/%y")
+  json.date payment.date.strftime("%-m/%-d/%Y")
   json.notes payment.notes
   json.amount dollarify(number_with_precision(payment.amount, precision: 2, delimiter: ','))
 end
@@ -87,7 +87,7 @@ json.formats @formats do |format|
 end
 json.invoices @invoices do |invoice|
   json.id invoice.id
-  json.sentDate invoice.sent_date.strftime("%-m/%-d/%y")
+  json.sentDate invoice.sent_date.strftime("%-m/%-d/%Y")
   json.number invoice.number
   json.total dollarify(number_with_precision(invoice.total, precision: 2, delimiter: ','))
   json.rows invoice.invoice_rows do |row|
