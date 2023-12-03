@@ -3,8 +3,8 @@ json.subRight do
   json.territoryId @sub_right.territory_id
   json.rightId @sub_right.right_id
   json.filmId @sub_right.film_id
-  json.startDate @sub_right.start_date ? @sub_right.start_date.strftime("%-m/%-d/%y") : ''
-  json.endDate @sub_right.end_date ? @sub_right.end_date.strftime("%-m/%-d/%y") : ''
+  json.startDate @sub_right.start_date ? @sub_right.start_date.strftime("%-m/%-d/%Y") : ''
+  json.endDate @sub_right.end_date ? @sub_right.end_date.strftime("%-m/%-d/%Y") : ''
   json.exclusive @sub_right.exclusive
   json.sublicensorId @sub_right.sublicensor_id
 end
