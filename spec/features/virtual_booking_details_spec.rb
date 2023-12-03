@@ -24,8 +24,8 @@ describe 'virtual_booking_details', type: :feature do
     expect(find('input[data-field="venueId"]').value).to eq('Film at Lincoln Center')
     expect(find('input[data-field="shippingCity"]').value).to eq('New York')
     expect(find('input[data-field="shippingState"]').value).to eq('NY')
-    expect(find('input[data-field="startDate"]').value).to eq(Date.today.strftime('%-m/%-d/%y'))
-    expect(find('input[data-field="endDate"]').value).to eq((Date.today + 1.day).strftime('%-m/%-d/%y'))
+    expect(find('input[data-field="startDate"]').value).to eq(Date.today.strftime('%-m/%-d/%Y'))
+    expect(find('input[data-field="endDate"]').value).to eq((Date.today + 1.day).strftime('%-m/%-d/%Y'))
     expect(find('input[data-field="terms"]').value).to eq('50%')
     expect(find('input[data-field="url"]').value).to eq('https://www.someurl.com')
     expect(find('input[data-field="deduction"]').value).to eq('$50.00')
@@ -60,8 +60,8 @@ describe 'virtual_booking_details', type: :feature do
     new_info = {
       film_id: { value: 'Another Film', type: :select_modal },
       venue_id: { value: 'Another Venue', type: :select_modal},
-      start_date: '1/1/20',
-      end_date: '2/1/20',
+      start_date: '1/1/2020',
+      end_date: '2/1/2020',
       shipping_city: 'Wayland',
       shipping_state: 'MA',
       terms: '100%',
@@ -160,7 +160,7 @@ describe 'virtual_booking_details', type: :feature do
     create(:virtual_booking_payment)
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     within(list_box_selector("payments")) do
-      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
+      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%Y')} - $50.00")
     end
   end
 
@@ -181,7 +181,7 @@ describe 'virtual_booking_details', type: :feature do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     click_btn("Add Payment")
     info = {
-      date: Date.today.strftime('%-m/%-d/%y'),
+      date: Date.today.strftime('%-m/%-d/%Y'),
       amount: 20,
       notes: 'note about payment'
     }
@@ -189,7 +189,7 @@ describe 'virtual_booking_details', type: :feature do
     wait_for_ajax
     verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
     within(list_box_selector("payments")) do
-      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%y')} - $20.00")
+      expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%Y')} - $20.00")
     end
   end
 
@@ -203,7 +203,7 @@ describe 'virtual_booking_details', type: :feature do
     wait_for_ajax
     expect(Payment.count).to eq(0)
     within(list_box_selector("payments")) do
-      expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%y')} - $50.00")
+      expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%Y')} - $50.00")
     end
   end
 

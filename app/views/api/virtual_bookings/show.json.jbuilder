@@ -2,9 +2,9 @@ json.virtualBooking do
   json.id @virtual_booking.id
   json.filmId @virtual_booking.film_id
   json.venueId @virtual_booking.venue_id
-  json.dateAdded @virtual_booking.date_added.strftime("%-m/%-d/%y")
-  json.startDate @virtual_booking.start_date.strftime("%-m/%-d/%y")
-  json.endDate @virtual_booking.end_date.strftime("%-m/%-d/%y")
+  json.dateAdded @virtual_booking.date_added.strftime("%-m/%-d/%Y")
+  json.startDate @virtual_booking.start_date.strftime("%-m/%-d/%Y")
+  json.endDate @virtual_booking.end_date.strftime("%-m/%-d/%Y")
   json.shippingCity @virtual_booking.shipping_city || ""
   json.shippingState @virtual_booking.shipping_state || ""
   json.terms @virtual_booking.terms || ""
@@ -15,7 +15,7 @@ json.virtualBooking do
   json.boxOfficeReceived @virtual_booking.box_office_received
   json.email @virtual_booking.email
   json.termsValid @calculations[:valid]
-  json.reportSentDate @virtual_booking.report_sent_date.present? ? @virtual_booking.report_sent_date.strftime("%-m/%-d/%y") : '(Not Sent)'
+  json.reportSentDate @virtual_booking.report_sent_date.present? ? @virtual_booking.report_sent_date.strftime("%-m/%-d/%Y") : '(Not Sent)'
   json.billingName @virtual_booking.billing_name
   json.billingAddress1 @virtual_booking.billing_address1
   json.billingAddress2 @virtual_booking.billing_address2
@@ -34,7 +34,7 @@ json.venues @venues do |venue|
 end
 json.invoices @virtual_booking.invoices do |invoice|
   json.id invoice.id
-  json.sentDate invoice.sent_date.strftime("%-m/%-d/%y")
+  json.sentDate invoice.sent_date.strftime("%-m/%-d/%Y")
   json.number invoice.number
   json.total dollarify(invoice.total)
   json.rows invoice.invoice_rows do |row|
@@ -48,7 +48,7 @@ end
 json.payments @virtual_booking.payments do |payment|
   json.id payment.id
   json.amount dollarify(payment.amount)
-  json.date payment.date.strftime("%-m/%-d/%y")
+  json.date payment.date.strftime("%-m/%-d/%Y")
   json.notes payment.notes
 end
 json.calculations do
