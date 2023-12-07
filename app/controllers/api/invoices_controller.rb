@@ -138,7 +138,7 @@ class Api::InvoicesController < AdminController
 
   def get_total(params, booking, calculations)
     total = 0
-    total += params[:rows].reduce(0) { |accum, row| accum + row[:amount].to_i } if params[:rows]
+    total += params[:rows].reduce(0) { |accum, row| accum + row[:amount].to_d } if params[:rows]
     total += booking.advance if params[:advance] == true
     total += calculations[:overage] if params[:overage] == true
     total += booking.shipping_fee if params[:ship_fee] == true
