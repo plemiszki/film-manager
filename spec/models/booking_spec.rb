@@ -51,4 +51,31 @@ RSpec.describe Booking do
     expect(@booking.errors.messages[:end_date]).to eq ['cannot be before start date']
   end
 
+  # payment reminders
+
+  it 'only triggers payment reminders for bookings with start dates in the next four weeks' do
+    upcoming_booking = create(:payment_reminder_booking)
+    distant_future = Date.today + 4.weeks + 1.day
+    upcoming_booking_distant_future = create(:payment_reminder_booking, start_date: distant_future, end_date: distant_future)
+    past = Date.today - 1.day
+    past_booking = create(:payment_reminder_booking, start_date: past, end_date: past)
+    reminder_booking_ids = Booking.payment_reminders.pluck(:id)
+    expect(reminder_booking_ids).to eq [upcoming_booking.id]
+  end
+
+  it 'only triggers payment reminders for non-theatrical/festival bookings' do
+    festival_booking = create(:payment_reminder_booking)
+    non_theatrical_booking = create(:payment_reminder_booking, booking_type: 'Non-Theatrical')
+    theatrical_booking = create(:payment_reminder_booking, booking_type: 'Theatrical')
+    reminder_booking_ids = Booking.payment_reminders.pluck(:id)
+    expect(reminder_booking_ids).to eq [festival_booking.id, non_theatrical_booking.id]
+  end
+
+  it 'only triggers payment reminders for bookings without payments' do
+    booking_with_payments = create(:payment_reminder_booking_with_payments)
+    booking_without_payments = create(:payment_reminder_booking)
+    reminder_booking_ids = Booking.payment_reminders.pluck(:id)
+    expect(reminder_booking_ids).to eq [booking_without_payments.id]
+  end
+
 end

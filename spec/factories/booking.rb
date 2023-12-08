@@ -43,6 +43,27 @@ FactoryBot.define do
       end_date { Date.today - 1.month }
     end
 
+    factory :festival_booking do
+      booking_type { 'Festival' }
+    end
+
+    factory :non_theatrical_booking do
+      booking_type { 'Non-Theatrical' }
+    end
+
+    factory :payment_reminder_booking do
+      booking_type { 'Festival' }
+      start_date { Date.today + 2.weeks }
+      end_date { Date.today + 2.weeks }
+
+      factory :payment_reminder_booking_with_payments do
+        after(:create) do |booking, context|
+          create_list(:payment, 1, booking: booking)
+          booking.reload
+        end
+      end
+    end
+
   end
 
 end
