@@ -24,11 +24,13 @@ class Booking < ActiveRecord::Base
   scope :payment_reminders, -> {
     includes(:film, :venue)
     .left_outer_joins(:payments)
+    .left_outer_joins(:invoices)
     .where("bookings.booking_type in ('Non-Theatrical', 'Festival')")
     .where("bookings.start_date < ?", Date.today + 4.weeks)
     .where("bookings.start_date > ?", Date.today)
     .group("bookings.id")
     .having("count(payments) = 0")
+    .having("count(invoices) > 0")
   }
 
   def booker_id_or_old_booker_id

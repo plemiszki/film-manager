@@ -26,8 +26,8 @@ FactoryBot.define do
     end
 
     factory :booking_invoice do
+      number { "#{Invoice.where(invoice_type: 'booking').count + 1}B"}
       invoice_type { 'booking' }
-      number { '1B' }
       billing_name { 'Guild Cinema' }
       billing_address1 { '3405 Central Avenue NE' }
       billing_address2 { 'Room 12' }

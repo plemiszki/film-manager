@@ -78,4 +78,12 @@ RSpec.describe Booking do
     expect(reminder_booking_ids).to eq [booking_without_payments.id]
   end
 
+  it 'only triggers payment reminders for bookings with invoices' do
+    booking_with_invoice = create(:payment_reminder_booking)
+    booking_without_invoice = create(:payment_reminder_booking)
+    booking_without_invoice.invoices.destroy_all
+    reminder_booking_ids = Booking.payment_reminders.pluck(:id)
+    expect(reminder_booking_ids).to eq [booking_with_invoice.id]
+  end
+
 end

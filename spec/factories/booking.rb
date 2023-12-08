@@ -56,6 +56,11 @@ FactoryBot.define do
       start_date { Date.today + 2.weeks }
       end_date { Date.today + 2.weeks }
 
+      after(:create) do |booking, context|
+        create_list(:booking_invoice, 1, booking: booking)
+        booking.reload
+      end
+
       factory :payment_reminder_booking_with_payments do
         after(:create) do |booking, context|
           create_list(:payment, 1, booking: booking)
