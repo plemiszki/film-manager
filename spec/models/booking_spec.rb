@@ -53,12 +53,13 @@ RSpec.describe Booking do
 
   # payment reminders
 
+  YESTERDAY = Date.today - 1.day
+  ONE_MONTH_PLUS_ONE_DAY = Date.today + 4.weeks + 1.day
+
   it 'only triggers payment reminders for bookings with start dates in the next four weeks' do
     upcoming_booking = create(:payment_reminder_booking)
-    distant_future = Date.today + 4.weeks + 1.day
-    upcoming_booking_distant_future = create(:payment_reminder_booking, start_date: distant_future, end_date: distant_future)
-    past = Date.today - 1.day
-    past_booking = create(:payment_reminder_booking, start_date: past, end_date: past)
+    upcoming_booking_distant_future = create(:payment_reminder_booking, start_date: ONE_MONTH_PLUS_ONE_DAY, end_date: ONE_MONTH_PLUS_ONE_DAY)
+    past_booking = create(:payment_reminder_booking, start_date: YESTERDAY, end_date: YESTERDAY)
     reminder_booking_ids = Booking.payment_reminders.pluck(:id)
     expect(reminder_booking_ids).to eq [upcoming_booking.id]
   end
@@ -84,6 +85,13 @@ RSpec.describe Booking do
     booking_without_invoice.invoices.destroy_all
     reminder_booking_ids = Booking.payment_reminders.pluck(:id)
     expect(reminder_booking_ids).to eq [booking_with_invoice.id]
+  end
+
+  it 'only triggers payment reminders for past bookings, if they have a percentage in their terms' do
+    future_booking = create(:payment_reminder_booking, terms: "50%")
+    past_booking = create(:payment_reminder_booking, terms: "50%", start_date: YESTERDAY, end_date: YESTERDAY)
+    reminder_booking_ids = Booking.payment_reminders.pluck(:id)
+    expect(reminder_booking_ids).to eq [past_booking.id]
   end
 
 end
