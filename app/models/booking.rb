@@ -29,7 +29,7 @@ class Booking < ActiveRecord::Base
     .left_outer_joins(:invoices)
     .where("bookings.booking_type in ('Non-Theatrical', 'Festival')")
     .where("bookings.start_date < ?", Date.today + 4.weeks)
-    .where("(terms not like :terms_pattern escape '!' and :today < bookings.start_date) or (terms like :terms_pattern escape '!' and bookings.end_date < :today)", terms_pattern: TERMS_PATTERN, today: Date.today)
+    .where("(terms not like :terms_pattern escape '!' and :today < bookings.start_date) or (terms like :terms_pattern escape '!' and bookings.end_date < :today and :four_weeks_ago < bookings.start_date)", terms_pattern: TERMS_PATTERN, today: Date.today, four_weeks_ago: Date.today - 4.weeks)
     .group("bookings.id")
     .having("count(payments) = 0")
     .having("count(invoices) > 0")

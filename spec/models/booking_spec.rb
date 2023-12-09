@@ -87,9 +87,10 @@ RSpec.describe Booking do
     expect(reminder_booking_ids).to eq [booking_with_invoice.id]
   end
 
-  it 'only triggers payment reminders for past bookings, if their terms include a percentage' do
+  it 'only triggers payment reminders for bookings in the recent past, if their terms include a percentage' do
     future_booking = create(:payment_reminder_booking, terms: "50%")
     past_booking = create(:payment_reminder_booking, terms: "50%", start_date: YESTERDAY, end_date: YESTERDAY)
+    ancient_booking = create(:payment_reminder_booking, terms: "50%", start_date: Date.today - 1.year, end_date: Date.today - 1.year)
     reminder_booking_ids = Booking.payment_reminders.pluck(:id)
     expect(reminder_booking_ids).to eq [past_booking.id]
   end
