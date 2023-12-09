@@ -55,6 +55,7 @@ FactoryBot.define do
       booking_type { 'Festival' }
       start_date { Date.today + 2.weeks }
       end_date { Date.today + 2.weeks }
+      terms { '$500' }
 
       after(:create) do |booking, context|
         create_list(:booking_invoice, 1, booking: booking)

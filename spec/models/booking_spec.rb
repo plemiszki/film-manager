@@ -58,7 +58,7 @@ RSpec.describe Booking do
 
   it 'only triggers payment reminders for bookings with start dates in the next four weeks' do
     upcoming_booking = create(:payment_reminder_booking)
-    upcoming_booking_distant_future = create(:payment_reminder_booking, start_date: ONE_MONTH_PLUS_ONE_DAY, end_date: ONE_MONTH_PLUS_ONE_DAY)
+    upcoming_booking_next_month = create(:payment_reminder_booking, start_date: ONE_MONTH_PLUS_ONE_DAY, end_date: ONE_MONTH_PLUS_ONE_DAY)
     past_booking = create(:payment_reminder_booking, start_date: YESTERDAY, end_date: YESTERDAY)
     reminder_booking_ids = Booking.payment_reminders.pluck(:id)
     expect(reminder_booking_ids).to eq [upcoming_booking.id]
@@ -68,8 +68,8 @@ RSpec.describe Booking do
     festival_booking = create(:payment_reminder_booking)
     non_theatrical_booking = create(:payment_reminder_booking, booking_type: 'Non-Theatrical')
     theatrical_booking = create(:payment_reminder_booking, booking_type: 'Theatrical')
-    reminder_booking_ids = Booking.payment_reminders.pluck(:id)
-    expect(reminder_booking_ids).to eq [festival_booking.id, non_theatrical_booking.id]
+    reminder_booking_ids = Booking.payment_reminders.pluck(:id).sort
+    expect(reminder_booking_ids).to eq [festival_booking.id, non_theatrical_booking.id].sort
   end
 
   it 'only triggers payment reminders for bookings without payments' do
@@ -87,7 +87,7 @@ RSpec.describe Booking do
     expect(reminder_booking_ids).to eq [booking_with_invoice.id]
   end
 
-  it 'only triggers payment reminders for past bookings, if they have a percentage in their terms' do
+  it 'only triggers payment reminders for past bookings, if their terms include a percentage' do
     future_booking = create(:payment_reminder_booking, terms: "50%")
     past_booking = create(:payment_reminder_booking, terms: "50%", start_date: YESTERDAY, end_date: YESTERDAY)
     reminder_booking_ids = Booking.payment_reminders.pluck(:id)

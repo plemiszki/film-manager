@@ -21,13 +21,15 @@ class Booking < ActiveRecord::Base
   has_many :payments, as: :booking, dependent: :destroy
   has_many :invoices, dependent: :destroy
 
+  TERMS_PATTERN = "%!%%"
+
   scope :payment_reminders, -> {
     includes(:film, :venue)
     .left_outer_joins(:payments)
     .left_outer_joins(:invoices)
     .where("bookings.booking_type in ('Non-Theatrical', 'Festival')")
     .where("bookings.start_date < ?", Date.today + 4.weeks)
-    .where("bookings.start_date > ?", Date.today)
+    .where("(terms not like :terms_pattern escape '!' and :today < bookings.start_date) or (terms like :terms_pattern escape '!' and bookings.end_date < :today)", terms_pattern: TERMS_PATTERN, today: Date.today)
     .group("bookings.id")
     .having("count(payments) = 0")
     .having("count(invoices) > 0")
