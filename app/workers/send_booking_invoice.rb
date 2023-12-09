@@ -42,12 +42,13 @@ class SendBookingInvoice
     text += "#{settings.all_booking_invoices_email_text.strip}\n\nKind Regards,\n\n#{current_user.email_signature}"
 
     # send invoice
+    is_test_mode = ENV['TEST_MODE'] == 'true'
     invoice.export!(pathname)
     attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r"), File.open(Rails.root.join('app', 'workers', 'Film Movement W9.pdf'), "r")]
     message_params = {
       from: current_user.email,
-      to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : args['email']),
-      cc: current_user.email,
+      to: (is_test_mode ? ENV['TEST_MODE_EMAIL'] : args['email']),
+      cc: (is_test_mode ? nil : current_user.email),
       subject: subject,
       text: text,
       attachment: attachments

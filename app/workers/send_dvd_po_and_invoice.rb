@@ -11,14 +11,15 @@ class SendDvdPoAndInvoice
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
 
     # send invoice
+    is_test_mode = ENV['TEST_MODE'] == 'true'
     if purchase_order.send_invoice
       invoice = Invoice.create_invoice_from_po(purchase_order)
       invoice.export!(pathname)
       attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]
       message_params = {
         from: current_user.email,
-        to: (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : dvd_customer.invoices_email),
-        cc: current_user.email,
+        to: (is_test_mode ? ENV['TEST_MODE_EMAIL'] : dvd_customer.invoices_email),
+        cc: (is_test_mode ? nil : current_user.email),
         subject: "Invoice for PO #{purchase_order.number}",
         text: "#{Setting.first.dvd_invoice_email_text.strip}\n\nKind Regards,\n\n#{current_user.email_signature}",
         attachment: attachments

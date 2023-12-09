@@ -19,16 +19,18 @@ class GenerateAndSendCreditMemo
     credit_memo.export(path)
 
     # Send
+    is_test_mode = ENV['TEST_MODE'] == 'true'
     job.update!({ first_line: 'Sending Credit Memo' })
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
     current_user = User.find(current_user_id)
     email_text = "#{Setting.first.credit_memo_email_text}\n\nKind Regards,\n\n#{current_user.email_signature}"
     dvd_customer = credit_memo.customer
-    recipient_email_address = (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : (dvd_customer.credit_memo_email.presence || dvd_customer.invoices_email))
+    recipient_email_address = (is_test_mode ? ENV['TEST_MODE_EMAIL'] : (dvd_customer.credit_memo_email.presence || dvd_customer.invoices_email))
+    cc_email_address = is_test_mode ? nil : current_user.email
     message_params = {
       from: current_user.email,
       to: recipient_email_address,
-      cc: current_user.email,
+      cc: cc_email_address,
       subject: 'Your Film Movement Credit Memo',
       text: email_text,
       attachment: [File.open(path, "r")]

@@ -6,11 +6,13 @@ class SendVirtualBookingReport
   sidekiq_options retry: false
 
   def perform(_, args = {})
+    is_test_mode = ENV['TEST_MODE'] == 'true'
     job = Job.find_by_job_id(args['time_started'])
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
     current_user = User.find(args['current_user_id'])
     virtual_booking = VirtualBooking.find(args['virtual_booking_id'])
-    recipient_email_address = (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : virtual_booking.email)
+    recipient_email_address = (is_test_mode ? ENV['TEST_MODE_EMAIL'] : virtual_booking.email)
+    cc_email_address = (is_test_mode ? nil : current_user.email)
     calculations = booking_calculations(virtual_booking)
     deduction_present = virtual_booking.deduction > 0
 
@@ -32,7 +34,7 @@ class SendVirtualBookingReport
     message_params = {
       from: current_user.email,
       to: recipient_email_address,
-      cc: current_user.email,
+      cc: cc_email_address,
       subject: "Booking Report",
       text: copy
     }

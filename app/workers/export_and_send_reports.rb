@@ -48,8 +48,9 @@ class ExportAndSendReports
         attachments = file_names.map { |string| File.open(Rails.root.join('tmp', "#{time_started}", entry, string), "r") }
         royalty_email_text = "Hello,\n\nPlease find attached your Q#{quarter} #{year} producer reports. Please let me know if you have any questions, or if this report should be sent to a different person.\n\nKind Regards,\n\nMichael Rosenberg\nPresident\nFilm Movement"
         mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
-        recipient_email_address = (ENV['TEST_MODE'] == 'true' ? ENV['TEST_MODE_EMAIL'] : licensor.email.strip)
-        cc_email_address = (ENV['TEST_MODE'] == 'true' ? nil : 'michael@filmmovement.com')
+        is_test_mode = ENV['TEST_MODE'] == 'true'
+        recipient_email_address = (is_test_mode ? ENV['TEST_MODE_EMAIL'] : licensor.email.strip)
+        cc_email_address = (is_test_mode ? nil : 'michael@filmmovement.com')
         message_params =  { from: 'michael@filmmovement.com',
                             to: recipient_email_address,
                             cc: cc_email_address,
