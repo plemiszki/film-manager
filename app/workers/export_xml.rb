@@ -24,7 +24,13 @@ class ExportXml
     directors = film.directors
     actors = film.actors
 
-    release_date = (film.theatrical_release || film.tvod_release || film.fm_plus_release).strftime("%Y-%m-%d")
+    release_date = (film.theatrical_release || film.tvod_release || film.fm_plus_release)
+    if release_date.nil?
+      errors << 'No Release Date (Theatrical, TVOD, or FM+)'
+      release_date_string = ""
+    else
+      release_date_string = release_date.strftime("%Y-%m-%d") : ""
+    end
 
     filename = "#{film.title_amazon_export.downcase}_mec.xml"
     file = File.open("#{job_folder}/#{filename}", 'w')
@@ -78,7 +84,7 @@ class ExportXml
 
         builder.tag!("md:ReleaseYear") { builder << film.year }
         builder << "\n"
-        builder.tag!("md:ReleaseDate") { builder << release_date }
+        builder.tag!("md:ReleaseDate") { builder << release_date_string }
         builder << "\n\n"
         builder.tag!("md:WorkType") { builder << "movie" }
         builder << "\n\n"
