@@ -29,7 +29,7 @@ class ExportXml
       errors << 'No Release Date (Theatrical, TVOD, or FM+)'
       release_date_string = ""
     else
-      release_date_string = release_date.strftime("%Y-%m-%d") : ""
+      release_date_string = release_date.strftime("%Y-%m-%d")
     end
 
     filename = "#{film.title_amazon_export.downcase}_mec.xml"
