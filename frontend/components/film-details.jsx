@@ -351,7 +351,6 @@ export default class FilmDetails extends React.Component {
   }
 
   changeFieldArgs() {
-    const { errors } = this.state;
     return {
       defaultErrorsKey: 'film',
       thing: "film",
