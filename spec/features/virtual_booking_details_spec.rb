@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'support/features_helper'
+require 'sidekiq/testing'
 
 describe 'virtual_booking_details', type: :feature do
 
@@ -102,42 +103,53 @@ describe 'virtual_booking_details', type: :feature do
 
   it 'adds invoices' do
     create(:setting)
-    @virtual_booking.update(host: 'Venue')
-    visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    click_btn("Add Invoice")
-    within('.admin-modal') do
-      click_btn("Send Invoice")
-    end
-    wait_for_ajax
-    expect(Invoice.count).to eq(1)
-    expect(Invoice.first.total).to eq(200)
-    expect(InvoiceRow.count).to eq(1)
-    expect(InvoiceRow.first.item_label).to eq('Amount Due')
-    expect(InvoiceRow.first.total_price).to eq(200)
-    within('table') do
-      expect(page).to have_content('1B')
+    Sidekiq::Testing.inline! do
+      @virtual_booking.update(host: 'Venue')
+      visit virtual_booking_path(@virtual_booking, as: $admin_user)
+      click_btn("Add Invoice")
+      within('.admin-modal') do
+        click_btn("Send Invoice")
+      end
+      Capybara.using_wait_time 20 do
+        expect(page).to have_content('Sending Invoice')
+        wait_for_ajax
+      end
+      expect(Invoice.count).to eq(1)
+      expect(Invoice.first.total).to eq(200)
+      expect(InvoiceRow.count).to eq(1)
+      expect(InvoiceRow.first.item_label).to eq('Amount Due')
+      expect(InvoiceRow.first.total_price).to eq(200)
+      within('table') do
+        expect(page).to have_content('1B')
+      end
     end
   end
 
   it 'edits invoices' do
     @virtual_booking.update(host: 'Venue')
+    create(:setting)
     create(:virtual_booking_invoice)
     create(:invoice_row, item_label: 'Amount Due', unit_price: 100, total_price: 100)
-    visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    fill_out_form({
-      box_office: 1000
-    })
-    save_and_wait
-    within('table') do
-      find('.edit-image').click
+    Sidekiq::Testing.inline! do
+      visit virtual_booking_path(@virtual_booking, as: $admin_user)
+      fill_out_form({
+        box_office: 1000
+      })
+      save_and_wait
+      within('table') do
+        find('.edit-image').click
+      end
+      within('.admin-modal') do
+        expect(page).to have_content('$100.00 → $450.00')
+        click_btn("Resend Invoice")
+      end
+      Capybara.using_wait_time 20 do
+        expect(page).to have_content('Sending Invoice')
+        wait_for_ajax
+      end
+      expect(InvoiceRow.first.item_label).to eq('Amount Due')
+      expect(InvoiceRow.first.total_price).to eq(450)
     end
-    within('.admin-modal') do
-      expect(page).to have_content('$100.00 → $450.00')
-      click_btn("Resend Invoice")
-    end
-    wait_for_ajax
-    expect(InvoiceRow.first.item_label).to eq('Amount Due')
-    expect(InvoiceRow.first.total_price).to eq(450)
   end
 
   it 'deletes invoices' do
