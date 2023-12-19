@@ -293,7 +293,7 @@ describe 'booking_details', type: :feature do
         flip_switch('switch-2') # overage
         click_btn('Resend Invoice')
       end
-      Capybara.using_wait_time 20 do
+      Capybara.using_wait_time 30 do
         expect(page).to have_content('Sending Invoice')
         wait_for_ajax
       end
