@@ -174,11 +174,26 @@ export default class VirtualBookingDetails extends React.Component {
     });
   }
 
-  sendInvoiceCallback(job) {
+  sendInvoice({ editMode, rows, invoiceToEdit, bookingId, bookingType }) {
     this.setState({
-      job,
       jobModalOpen: true,
       newInvoiceModalOpen: false,
+      job: {
+        firstLine: 'Sending Invoice',
+      },
+    });
+    sendRequest(`/api/invoices/${editMode ? invoiceToEdit.number : ''}`, {
+      method: (editMode ? 'PATCH' : 'POST'),
+      data: {
+        bookingId,
+        bookingType,
+        rows,
+      }
+    }).then((response) => {
+      const { job } = response;
+      this.setState({
+        job,
+      });
     });
   }
 
@@ -263,7 +278,7 @@ export default class VirtualBookingDetails extends React.Component {
             bookingType="virtualBooking"
             rows={ this.generateInvoiceRows() }
             payments={ this.state.payments }
-            callback={ this.sendInvoiceCallback.bind(this) }
+            callback={ this.sendInvoice.bind(this) }
             editMode={ this.state.editInvoiceMode }
             invoiceToEdit={ (this.state.editInvoiceMode && this.state.invoices.find(invoice => invoice.id === this.state.editInvoiceId)) || null }
           />
