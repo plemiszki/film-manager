@@ -1,5 +1,5 @@
 import React from 'react'
-import { Common, Details, convertObjectKeysToUnderscore, sendRequest, Button, Spinner, GrayedOut } from 'handy-components'
+import { Common, Details, convertObjectKeysToUnderscore, Button, Spinner, GrayedOut } from 'handy-components'
 
 export default class NewInvoice extends React.Component {
   constructor(props) {
@@ -85,6 +85,7 @@ export default class NewInvoice extends React.Component {
             <div className="button-container">
               <Button
                 disabled={ spinner || this.insufficientInvoiceRows() || !bookingEmail }
+                disabledTooltip={ bookingEmail ? null : 'Invoices cannot be sent without an email address for the booking.' }
                 onClick={ () => { this.clickSend(editMode) } }
                 text={ `${ editMode ? 'Resend' : 'Send' } Invoice` }
               />
