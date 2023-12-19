@@ -297,7 +297,15 @@ export default class BookingDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, spinner, payments, invoices, deleteInvoiceModalOpen } = this.state;
+    const {
+      booking,
+      changesToSave,
+      deleteInvoiceModalOpen,
+      invoices,
+      justSaved,
+      payments,
+      spinner,
+    } = this.state;
     NewInvoiceStyles.content.height = (238 + (34 * payments.length));
     return (
       <>
@@ -533,10 +541,11 @@ export default class BookingDetails extends React.Component {
         <Modal isOpen={ this.state.newInvoiceModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 700, height: this.calculateNewInvoiceModalHeight() }) }>
           <NewInvoice
             context={ this.props.context }
-            bookingId={ this.state.booking.id }
+            bookingEmail={ booking.email }
+            bookingId={ booking.id }
             bookingType="booking"
             rows={ this.generateInvoiceRows() }
-            payments={ this.state.payments }
+            payments={ payments }
             callback={ this.sendInvoice.bind(this) }
             editMode={ this.state.editInvoiceMode }
             invoiceToEdit={ (this.state.editInvoiceMode && this.state.invoices.find(invoice => invoice.id === this.state.editInvoiceId)) || null }

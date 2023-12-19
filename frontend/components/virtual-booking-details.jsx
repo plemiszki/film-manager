@@ -276,6 +276,7 @@ export default class VirtualBookingDetails extends React.Component {
             context={ this.props.context }
             bookingId={ this.state.virtualBooking.id }
             bookingType="virtualBooking"
+            bookingEmail={ this.state.virtualBooking.email }
             rows={ this.generateInvoiceRows() }
             payments={ this.state.payments }
             callback={ this.sendInvoice.bind(this) }

@@ -75,7 +75,7 @@ export default class NewInvoice extends React.Component {
   }
 
   render() {
-    const { editMode } = this.props;
+    const { editMode, bookingEmail } = this.props;
     const { spinner } = this.state;
     return (
       <>
@@ -84,7 +84,7 @@ export default class NewInvoice extends React.Component {
             { this.renderRows() }
             <div className="button-container">
               <Button
-                disabled={ spinner || this.insufficientInvoiceRows() }
+                disabled={ spinner || this.insufficientInvoiceRows() || !bookingEmail }
                 onClick={ () => { this.clickSend(editMode) } }
                 text={ `${ editMode ? 'Resend' : 'Send' } Invoice` }
               />
