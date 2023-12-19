@@ -73,16 +73,14 @@ class Api::InvoicesController < AdminController
         notes: booking.notes
       })
     end
-    invoice.update!(updated_invoice_data)
 
+    invoice.update!(updated_invoice_data)
     invoice.invoice_rows.destroy_all
     invoice.invoice_payments.destroy_all
     create_invoice_rows_and_payments(invoice, booking, calculations)
+    job = send_invoice(invoice, booking)
 
-    send_invoice(invoice, booking)
-
-    @invoices = booking.invoices.includes(:invoice_rows)
-    render 'booking', formats: [:json], handlers: [:jbuilder]
+    render json: { job: job.render_json }
   end
 
   def show
