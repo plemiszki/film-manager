@@ -53,19 +53,12 @@ export default class NewInvoice extends React.Component {
   clickSend(editMode) {
     const { bookingId, bookingType, invoiceToEdit } = this.props;
     const { rows } = this.state;
-    this.setState({
-      spinner: true,
-    });
-    sendRequest(`/api/invoices/${editMode ? invoiceToEdit.number : ''}`, {
-      method: (editMode ? 'PATCH' : 'POST'),
-      data: {
-        bookingId,
-        bookingType,
-        rows: this.convertAndFilterRows(rows),
-      }
-    }).then((response) => {
-      const { job } = response;
-      this.props.callback(job);
+    this.props.callback({
+      editMode,
+      invoiceToEdit,
+      bookingId,
+      bookingType,
+      rows: this.convertAndFilterRows(rows),
     });
   }
 

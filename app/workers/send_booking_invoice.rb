@@ -66,7 +66,7 @@ class SendBookingInvoice
       invoice.destroy
       job.update!({ status: :failed, first_line: "Failed to Send Invoice", errors_text: errors.join("\n") })
     else
-      job.update!({ status: 'success', first_line: '', metadata: {} })
+      job.update!({ status: :success, first_line: "Invoice Sent Successfully", metadata: { showSuccessMessageModal: true } })
     end
   end
 end
