@@ -64,8 +64,8 @@ export default class NewInvoice extends React.Component {
         rows: this.convertAndFilterRows(rows),
       }
     }).then((response) => {
-      const { invoices } = response;
-      this.props.callback(invoices);
+      const { job } = response;
+      this.props.callback(job);
     });
   }
 

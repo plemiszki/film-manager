@@ -43,14 +43,9 @@ class Api::InvoicesController < AdminController
 
     invoice = Invoice.create!(new_invoice_data)
     create_invoice_rows_and_payments(invoice, booking, calculations)
+    job = send_invoice(invoice, booking)
 
-    send_invoice(invoice, booking)
-
-    settings = Setting.first
-    settings.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1)
-
-    @invoices = booking.invoices.includes(:invoice_rows)
-    render 'booking', formats: [:json], handlers: [:jbuilder]
+    render json: { job: job.render_json }
   end
 
   def update
@@ -167,13 +162,17 @@ class Api::InvoicesController < AdminController
   end
 
   def send_invoice(invoice, booking)
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "send booking invoice", first_line: "Sending Invoice", second_line: false)
     SendBookingInvoice.perform_async(0, {
+      time_started: time_started,
       invoice_id: invoice.id,
       user_id: current_user.id,
       email: booking.email,
       overage: params[:overage],
       shipping_terms: (params[:advance] && booking.booking_type.strip != "Theatrical"),
     }.stringify_keys)
+    job
   end
 
 end

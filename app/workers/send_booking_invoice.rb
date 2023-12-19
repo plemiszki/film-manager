@@ -3,6 +3,7 @@ class SendBookingInvoice
   sidekiq_options retry: false
 
   def perform(_, args = {})
+    job = Job.find_by_job_id(args['time_started'])
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
@@ -54,5 +55,11 @@ class SendBookingInvoice
       attachment: attachments
     }
     mg_client.send_message 'filmmovement.com', message_params
+
+    # update next booking invoice number
+    settings = Setting.first
+    settings.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1)
+
+    job.update!({ status: 'success', first_line: '', metadata: {} })
   end
 end

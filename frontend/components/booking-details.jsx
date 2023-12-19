@@ -50,6 +50,7 @@ export default class BookingDetails extends React.Component {
         owed: "$0.00",
         overage: "$0.00"
       },
+      jobModalOpen: false,
     };
   }
 
@@ -75,10 +76,11 @@ export default class BookingDetails extends React.Component {
     });
   }
 
-  sendInvoiceCallback(invoices) {
+  sendInvoiceCallback(job) {
     this.setState({
+      job,
+      jobModalOpen: true,
       newInvoiceModalOpen: false,
-      invoices
     });
   }
 
@@ -525,6 +527,7 @@ export default class BookingDetails extends React.Component {
             invoiceToEdit={ (this.state.editInvoiceMode && this.state.invoices.find(invoice => invoice.id === this.state.editInvoiceId)) || null }
           />
         </Modal>
+        { Common.renderJobModal.call(this, this.state.job) }
       </>
     );
   }
@@ -683,5 +686,21 @@ export default class BookingDetails extends React.Component {
         </div>
       );
     }
+  }
+
+  componentDidUpdate() {
+    const { booking } = this.state;
+    Common.updateJobModal.call(this, { successCallback: () => {
+      this.setState({
+        spinner: true,
+      });
+      sendRequest(`/api/bookings/${booking.id}/invoices`).then((response) => {
+        const { invoices } = response;
+        this.setState({
+          spinner: false,
+          invoices,
+        });
+      });
+    }});
   }
 }

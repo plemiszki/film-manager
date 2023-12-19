@@ -57,6 +57,11 @@ class Api::BookingsController < AdminController
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
+  def invoices
+    @invoices = Booking.find(params[:id]).invoices.includes(:invoice_rows)
+    render 'invoices', formats: [:json], handlers: [:jbuilder]
+  end
+
   def create
     @booking = Booking.new(booking_params)
     @booking.user_id = current_user.id
