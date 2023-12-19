@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     get '/virtual_bookings/export' => '/api/virtual_bookings#export'
     resources :virtual_bookings, only: [:index, :new, :create, :show, :update, :destroy]
     post '/virtual_bookings/:id/send_report' => '/api/virtual_bookings#send_report'
+    get '/virtual_bookings/:id/invoices' => '/api/virtual_bookings#invoices'
     resources :bookers, only: [:index, :show, :create, :update, :destroy]
     resources :booker_venues, only: [:create, :destroy]
     resources :giftboxes, only: [:index, :show, :create, :update, :destroy]

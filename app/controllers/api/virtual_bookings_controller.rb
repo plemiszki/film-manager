@@ -53,6 +53,11 @@ class Api::VirtualBookingsController < AdminController
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
+  def invoices
+    @invoices = VirtualBooking.find(params[:id]).invoices.includes(:invoice_rows)
+    render 'invoices', formats: [:json], handlers: [:jbuilder]
+  end
+
   def update
     @virtual_booking = VirtualBooking.find(params[:id])
     if @virtual_booking.update(virtual_booking_params)

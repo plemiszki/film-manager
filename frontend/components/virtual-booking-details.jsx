@@ -174,10 +174,11 @@ export default class VirtualBookingDetails extends React.Component {
     });
   }
 
-  sendInvoiceCallback(invoices) {
+  sendInvoiceCallback(job) {
     this.setState({
+      job,
+      jobModalOpen: true,
       newInvoiceModalOpen: false,
-      invoices
     });
   }
 
@@ -450,6 +451,18 @@ export default class VirtualBookingDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.updateJobModal.call(this);
+    const { virtualBooking } = this.state;
+    Common.updateJobModal.call(this, { successCallback: () => {
+      this.setState({
+        spinner: true,
+      });
+      sendRequest(`/api/virtual_bookings/${virtualBooking.id}/invoices`).then((response) => {
+        const { invoices } = response;
+        this.setState({
+          spinner: false,
+          invoices,
+        });
+      });
+    }});
   }
 }
