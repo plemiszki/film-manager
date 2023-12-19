@@ -11,6 +11,7 @@ class SendBookingInvoice
     invoice = Invoice.find(args['invoice_id'])
     current_user = User.find(args['user_id'])
     settings = Setting.first
+    errors = []
 
     if invoice.total_minus_payments <= 0
       payment_status = 'paid'
@@ -54,12 +55,18 @@ class SendBookingInvoice
       text: text,
       attachment: attachments
     }
-    mg_client.send_message 'filmmovement.com', message_params
+    begin
+      mg_client.send_message 'filmmovement.com', message_params
+      Setting.first.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1) # update next booking invoice number
+    rescue
+      errors << "Unable to send invoice to #{args['email']}"
+    end
 
-    # update next booking invoice number
-    settings = Setting.first
-    settings.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1)
-
-    job.update!({ status: 'success', first_line: '', metadata: {} })
+    if errors.present?
+      invoice.destroy
+      job.update!({ status: :failed, first_line: "Failed to Send Invoice", errors_text: errors.join("\n") })
+    else
+      job.update!({ status: 'success', first_line: '', metadata: {} })
+    end
   end
 end

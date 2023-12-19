@@ -54,7 +54,7 @@ export default class NewInvoice extends React.Component {
     const { bookingId, bookingType, invoiceToEdit } = this.props;
     const { rows } = this.state;
     this.setState({
-      spinner: true
+      spinner: true,
     });
     sendRequest(`/api/invoices/${editMode ? invoiceToEdit.number : ''}`, {
       method: (editMode ? 'PATCH' : 'POST'),
