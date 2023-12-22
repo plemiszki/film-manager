@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   resources :aliases, only: [:index, :show]
   resources :amazon_genres, only: [:show]
   resources :amazon_languages, only: [:show]
+  resources :institutions, only: [:index, :show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
@@ -70,6 +71,7 @@ Rails.application.routes.draw do
     post '/films/copy' => '/api/films#copy'
     post '/films/update_artwork' => '/api/films#update_artwork'
     resources :venues, only: [:index, :show, :create, :update, :destroy]
+    resources :institutions, only: [:index, :show, :create, :update, :destroy]
     get '/bookings/advanced' => '/api/bookings#advanced'
     get '/bookings/export' => '/api/bookings#export'
     resources :bookings, only: [:index, :new, :show, :create, :update, :destroy]
