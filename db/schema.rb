@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_12_145607) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_22_182204) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -469,6 +469,32 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_12_145607) do
     t.integer "film_id", null: false
     t.integer "order", null: false
     t.text "section", null: false
+  end
+
+  create_table "institutions", force: :cascade do |t|
+    t.string "label", null: false
+    t.string "billing_name", default: ""
+    t.string "billing_address_1", default: ""
+    t.string "billing_address_2", default: ""
+    t.string "billing_city", default: ""
+    t.string "billing_state", default: ""
+    t.string "billing_zip", default: ""
+    t.string "billing_country", default: ""
+    t.string "shipping_name", default: ""
+    t.string "shipping_address_1", default: ""
+    t.string "shipping_address_2", default: ""
+    t.string "shipping_city", default: ""
+    t.string "shipping_state", default: ""
+    t.string "shipping_zip", default: ""
+    t.string "shipping_country", default: ""
+    t.string "contact_name", default: ""
+    t.string "email", default: ""
+    t.string "phone", default: ""
+    t.string "notes", default: ""
+    t.string "sage_id", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["label"], name: "index_institutions_on_label", unique: true
   end
 
   create_table "invoice_payments", id: :serial, force: :cascade do |t|
