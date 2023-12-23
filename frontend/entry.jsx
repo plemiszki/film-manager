@@ -30,6 +30,7 @@ import RoyaltyReportDetails from './components/royalty-report-details.jsx'
 import RoyaltyReportsIndex from './components/reports-index.jsx'
 import VenueDetails from './components/venue-details.jsx'
 import VirtualBookingDetails from './components/virtual-booking-details.jsx'
+import InstitutionDetails from './components/institution-details.jsx'
 
 const renderIf = (id, component, props = {}) => {
   const node = document.getElementById(id);
@@ -94,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderIf('dvd-customer-details', DvdCustomerDetails);
   renderIf('dvd-details', DvdDetails);
   renderIf('import-inventory', ImportInventory);
+  renderIf('institution-details', InstitutionDetails);
   renderIf('purchase-order-details', PurchaseOrderDetails);
   renderIf('invoice-details', InvoiceDetails);
   renderIf('credit-memo-details', CreditMemoDetails);
