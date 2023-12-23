@@ -1,0 +1,23 @@
+json.institution do
+  json.id @institution.id
+  json.label @institution.label
+  json.billing_name @institution.billing_name
+  json.billing_address_1 @institution.billing_address_1
+  json.billing_address_2 @institution.billing_address_2
+  json.billing_city @institution.billing_city
+  json.billing_state @institution.billing_state
+  json.billing_zip @institution.billing_zip
+  json.billing_country @institution.billing_country
+  json.shipping_name @institution.shipping_name
+  json.shipping_address_1 @institution.shipping_address_1
+  json.shipping_address_2 @institution.shipping_address_2
+  json.shipping_city @institution.shipping_city
+  json.shipping_state @institution.shipping_state
+  json.shipping_zip @institution.shipping_zip
+  json.shipping_country @institution.shipping_country
+  json.contact_name @institution.contact_name
+  json.email @institution.email
+  json.phone @institution.phone
+  json.notes @institution.notes
+  json.sage_id @institution.sage_id
+end
