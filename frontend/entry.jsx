@@ -572,6 +572,19 @@ document.addEventListener("DOMContentLoaded", () => {
     initialEntity: { name: '', upc: '' },
   }});
 
+  renderFullIndex('institutions-index', {
+    entityName: 'institution',
+    header: 'Educational Institutions',
+    columns: ['label'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    initialEntity: { label: '' },
+  }});
+
   renderFullIndex('languages-index', {
     entityName: 'language',
     columns: ['name'],

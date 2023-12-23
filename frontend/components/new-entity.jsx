@@ -288,6 +288,12 @@ export default class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'giftbox', property: 'upc', columnHeader: 'UPC' }) }
           </div>
         ]);
+      case 'institution':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 12, entity: 'institution', property: 'label' }) }
+          </div>
+        ]);
       case 'language':
         return([
           <div key="1" className="row">
