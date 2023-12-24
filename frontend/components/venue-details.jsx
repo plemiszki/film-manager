@@ -195,8 +195,8 @@ export default class VenueDetails extends React.Component {
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'sageId', columnHeader: 'Sage ID' }) }
               </div>
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'contactName' }) }
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'email' }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'contactName' }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'email' }) }
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'phone' }) }
               </div>
               <hr />
