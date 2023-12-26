@@ -294,6 +294,22 @@ export default class NewEntity extends React.Component {
             { Details.renderField.bind(this)({ columnWidth: 12, entity: 'institution', property: 'label' }) }
           </div>
         ]);
+      case 'institutionOrder':
+        return([
+          <div key="1" className="row">
+            { Details.renderDropDown.bind(this)({
+              columnWidth: 4,
+              entity: 'institutionOrder',
+              property: 'institutionId',
+              options: this.state.institutions,
+              optionDisplayProperty: 'label',
+              columnHeader: 'Customer',
+              maxOptions: 3
+            }) }
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'number' }) }
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'orderDate' }) }
+          </div>
+        ]);
       case 'language':
         return([
           <div key="1" className="row">

@@ -1,4 +1,4 @@
-json.institution_order do
+json.institutionOrder do
   json.id @institution_order.id
   json.institutionId @institution_order.institution_id
   json.orderDate @institution_order.order_date.strftime("%-m/%-d/%Y")

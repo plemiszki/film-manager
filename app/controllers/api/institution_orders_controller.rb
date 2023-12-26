@@ -1,8 +1,13 @@
 class Api::InstitutionOrdersController < AdminController
 
   def index
-    @institution_orders = InstitutionOrder.all
+    @institution_orders = InstitutionOrder.all.includes(:institution)
     render 'index', formats: [:json], handlers: [:jbuilder]
+  end
+
+  def new
+    @institutions = Institution.all
+    render 'new', formats: [:json], handlers: [:jbuilder]
   end
 
   def show
@@ -13,8 +18,7 @@ class Api::InstitutionOrdersController < AdminController
   def create
     @institution_order = InstitutionOrder.new(institution_order_params)
     if @institution_order.save
-      @institution_orders = InstitutionOrder.all
-      render 'index', formats: [:json], handlers: [:jbuilder]
+      render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render_errors(@institution_order)
     end

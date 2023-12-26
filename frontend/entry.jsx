@@ -587,6 +587,23 @@ document.addEventListener("DOMContentLoaded", () => {
     initialEntity: { label: '' },
   }});
 
+  renderFullIndex('institution-orders-index', {
+    entityName: 'institutionOrder',
+    header: 'Educational Orders',
+    columns: ['orderDate', 'number', 'customer'],
+    modalRows: 1,
+    modalDimensions: { width: 900 },
+    includeNewButton: true,
+    addButtonText: 'Add Order',
+    includeLinks: true,
+    includeHover: true,
+  }, { newEntity: {
+    buttonText: 'Add Order',
+    initialEntity: { orderDate: '', number: '', institutionId: '' },
+    fetchData: ['institutions'],
+    redirectAfterCreate: true,
+  }});
+
   renderFullIndex('languages-index', {
     entityName: 'language',
     columns: ['name'],
