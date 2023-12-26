@@ -73,6 +73,7 @@ Rails.application.routes.draw do
     post '/films/update_artwork' => '/api/films#update_artwork'
     resources :venues, only: [:index, :show, :create, :update, :destroy]
     resources :institutions, only: [:index, :show, :create, :update, :destroy]
+    resources :institution_orders, only: [:index, :show, :create, :update, :destroy]
     get '/bookings/advanced' => '/api/bookings#advanced'
     get '/bookings/export' => '/api/bookings#export'
     resources :bookings, only: [:index, :new, :show, :create, :update, :destroy]
