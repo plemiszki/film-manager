@@ -53,6 +53,7 @@ Rails.application.routes.draw do
   resources :amazon_genres, only: [:show]
   resources :amazon_languages, only: [:show]
   resources :institutions, only: [:index, :show]
+  resources :institution_orders, only: [:index, :show]
 
   namespace :api do
     get '/users' => '/api/users#api_index'
