@@ -1,5 +1,5 @@
 import React from 'react'
-import { Details, deepCopy, fetchEntity, updateEntity, Spinner, GrayedOut, BottomButtons, objectsAreEqual } from 'handy-components'
+import { Details, deepCopy, fetchEntity, updateEntity, Spinner, GrayedOut, BottomButtons, objectsAreEqual, Table } from 'handy-components'
 
 export default class InstitutionDetails extends React.Component {
 
@@ -11,16 +11,18 @@ export default class InstitutionDetails extends React.Component {
       institution: {
         label: "",
       },
+      orders: [],
     };
   }
 
   componentDidMount() {
     fetchEntity().then((response) => {
-      const { institution } = response;
+      const { institution, orders } = response;
       this.setState({
         spinner: false,
         institution,
         institutionSaved: deepCopy(institution),
+        orders,
       });
     });
   }
@@ -64,7 +66,7 @@ export default class InstitutionDetails extends React.Component {
   }
 
   render() {
-    const { spinner, justSaved, changesToSave } = this.state;
+    const { spinner, justSaved, changesToSave, orders } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -125,6 +127,28 @@ export default class InstitutionDetails extends React.Component {
             <Spinner visible={ spinner } />
           </div>
         </div>
+        <div className="handy-component">
+            <h1>Orders</h1>
+            <div className="white-box">
+              <GrayedOut visible={ spinner } />
+              <Spinner visible={ spinner } />
+              <div className="row">
+                <div className="col-xs-12">
+                  <Table
+                    columns={[
+                      {
+                        name: 'orderDate',
+                        date: true,
+                      },
+                      { name: 'number' },
+                    ]}
+                    rows={ orders }
+                    urlPrefix="institution_orders"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
       </>
     );
   }

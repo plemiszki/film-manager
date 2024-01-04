@@ -7,6 +7,7 @@ class Api::InstitutionsController < AdminController
 
   def show
     @institution = Institution.find(params[:id])
+    @orders = InstitutionOrder.where(institution: @institution)
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 
