@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_26_154115) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_04_173009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -490,12 +490,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_26_154115) do
     t.string "shipping_zip", default: ""
     t.string "shipping_country", default: ""
     t.decimal "shipping_fee", precision: 5, scale: 2, default: "0.0"
-    t.boolean "materials_sent", default: false
     t.string "tracking_number", default: ""
     t.boolean "delivered", default: false
     t.string "notes", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "materials_sent"
     t.index ["institution_id", "number"], name: "index_institution_orders_on_institution_id_and_number", unique: true
   end
 

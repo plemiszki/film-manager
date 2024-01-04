@@ -12,6 +12,7 @@ class Api::InstitutionOrdersController < AdminController
 
   def show
     @institution_order = InstitutionOrder.find(params[:id])
+    @institutions = Institution.all
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 

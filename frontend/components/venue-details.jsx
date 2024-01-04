@@ -216,13 +216,10 @@ export default class VenueDetails extends React.Component {
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingCountry', columnHeader: 'Country' }) }
                 <div className="col-xs-4">
                   <Button
-                    text={ 'Copy to Shipping Address' }
+                    text="Copy to Shipping Address"
                     onClick={ () => { this.clickCopyAddress() } }
                     style={ {
-                      width: '100%',
                       marginTop: '28px',
-                      padding: '14px 0',
-                      maxWidth: '250px',
                     } }
                   />
                 </div>

@@ -18,6 +18,7 @@ import FilmsIndex from './components/films-index.jsx'
 import FilmRightsNew from './components/film-rights-new.jsx'
 import GiftBoxDetails from './components/giftbox-details.jsx'
 import ImportInventory from './components/import-inventory.jsx'
+import InstitutionOrderDetails from './components/institution-order-details.jsx'
 import InTheatersIndex from './components/in-theaters.jsx'
 import InvoiceDetails from './components/invoice-details.jsx'
 import CreditMemoDetails from './components/credit-memo-details.jsx'
@@ -96,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderIf('dvd-details', DvdDetails);
   renderIf('import-inventory', ImportInventory);
   renderIf('institution-details', InstitutionDetails);
+  renderIf('institution-order-details', InstitutionOrderDetails);
   renderIf('purchase-order-details', PurchaseOrderDetails);
   renderIf('invoice-details', InvoiceDetails);
   renderIf('credit-memo-details', CreditMemoDetails);
