@@ -17,10 +17,11 @@ json.institutionOrder do
   json.shippingState @institution_order.shipping_state
   json.shippingZip @institution_order.shipping_zip
   json.shippingCountry @institution_order.shipping_country
+  json.licensedRights @institution_order.licensed_rights
+  json.price dollarify(number_with_precision(@institution_order.shipping_fee, precision: 2, delimiter: ','))
   json.shippingFee dollarify(number_with_precision(@institution_order.shipping_fee, precision: 2, delimiter: ','))
   json.materialsSent @institution_order.materials_sent ? @institution_order.materials_sent.strftime("%-m/%-d/%Y") : ''
   json.trackingNumber @institution_order.tracking_number
-  json.delivered @institution_order.delivered
   json.notes @institution_order.notes
 end
 json.institutions @institutions do |institution|

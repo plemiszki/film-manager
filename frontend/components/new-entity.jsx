@@ -306,7 +306,7 @@ export default class NewEntity extends React.Component {
               columnHeader: 'Customer',
               maxOptions: 3
             }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'number' }) }
+            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'number', columnHeader: 'Order Number' }) }
             { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'orderDate' }) }
           </div>
         ]);

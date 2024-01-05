@@ -86,7 +86,7 @@ export default class InstitutionOrderDetails extends React.Component {
                   optionDisplayProperty: 'label',
                   columnHeader: 'Customer',
                 }) }
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'number' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'number', columnHeader: 'Order Number' }) }
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'orderDate' }) }
               </div>
               <hr />
@@ -121,6 +121,20 @@ export default class InstitutionOrderDetails extends React.Component {
               </div>
               <hr />
               <div className="row">
+                { Details.renderDropDown.bind(this)({
+                  columnWidth: 2,
+                  entity: 'institutionOrder',
+                  property: 'licensedRights',
+                  type: 'dropdown',
+                  options: [
+                    { value: "disc_only", label: "Disc Only" },
+                    { value: "ppr", label: "PRR" },
+                    { value: "drl", label: "DRL" },
+                    { value: "ppr_and_drl", label: "PPR and DRL" },
+                  ],
+                  optionDisplayProperty: 'label',
+                }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'price' }) }
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee' }) }
               </div>
               <hr />

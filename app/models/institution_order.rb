@@ -2,6 +2,8 @@ class InstitutionOrder < ActiveRecord::Base
 
   include DateFieldYearsConverter
 
+  enum licensed_rights: [:disc_only, :ppr, :drl, :ppr_and_drl]
+
   after_create :add_addresses
 
   belongs_to :institution
