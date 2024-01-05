@@ -121,6 +121,15 @@ export default class InstitutionOrderDetails extends React.Component {
               </div>
               <hr />
               <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee' }) }
+              </div>
+              <hr />
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'materialsSent' }) }
+                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'trackingNumber' }) }
+              </div>
+              <hr />
+              <div className="row">
                 { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'institutionOrder', property: 'notes', rows: 5 }) }
               </div>
               <BottomButtons
