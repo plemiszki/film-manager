@@ -592,7 +592,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderFullIndex('institution-orders-index', {
     entityName: 'institutionOrder',
     header: 'Educational Orders',
-    columns: ['orderDate', { name: 'number', columnHeader: 'Order Number' }, 'customer'],
+    columns: ['orderDate', { name: 'number', header: 'Order Number' }, 'customer'],
     modalRows: 1,
     modalDimensions: { width: 900 },
     includeNewButton: true,
@@ -720,7 +720,7 @@ document.addEventListener("DOMContentLoaded", () => {
     entityNamePlural: 'purchaseOrders',
     columns: [
       { name: 'orderDate', sortDir: 'desc', width: 162 },
-      { name: 'number', columnHeader: 'PO Number', width: 191 },
+      { name: 'number', header: 'PO Number', width: 191 },
       { name: 'customer', dbName: 'dvd_customers.name', width: 221 },
       { name: 'shipDate', sortDir: 'desc', width: 162 },
       { name: 'salesOrder', dbName: 'source_doc', sortDir: 'desc', width: 155 },
