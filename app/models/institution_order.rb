@@ -16,7 +16,7 @@ class InstitutionOrder < ActiveRecord::Base
 
   validates :institution_id, presence: true
   validates :order_date, date: true
-  validates :materials_sent, date: true, allow_nil: true
+  validates :materials_sent, date: { blank_ok: true }
   validates :number, uniqueness: { scope: :institution_id }
 
   def add_addresses

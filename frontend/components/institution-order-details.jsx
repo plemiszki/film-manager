@@ -128,7 +128,7 @@ export default class InstitutionOrderDetails extends React.Component {
                   type: 'dropdown',
                   options: [
                     { value: "disc_only", label: "Disc Only" },
-                    { value: "ppr", label: "PRR" },
+                    { value: "ppr", label: "PPR" },
                     { value: "drl", label: "DRL" },
                     { value: "ppr_and_drl", label: "PPR and DRL" },
                   ],

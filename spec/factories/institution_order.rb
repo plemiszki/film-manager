@@ -2,8 +2,8 @@ FactoryBot.define do
 
   factory :institution_order do
     institution_id { 1 }
-    order_date { Date.new(2024, 1, 3) }
     number { 1000 }
+    order_date { Date.new(2024, 1, 3) }
     billing_name { 'Harvard University' }
     billing_address_1 { 'Massachusetts Hall' }
     billing_address_2 { '' }
@@ -18,6 +18,11 @@ FactoryBot.define do
     shipping_state { 'MA' }
     shipping_zip { '02138' }
     shipping_country { 'USA' }
+    licensed_rights { 2 }
+    materials_sent { Date.new(2024, 1, 5) }
+    price { 500 }
+    shipping_fee { 15 }
+    notes { 'order notes' }
   end
 
 end
