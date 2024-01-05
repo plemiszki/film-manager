@@ -9,6 +9,9 @@ class InstitutionOrder < ActiveRecord::Base
   belongs_to :institution
   alias_attribute :customer, :institution
 
+  has_many :institution_order_films
+  has_many :films, through: :institution_order_films
+
   before_validation :convert_date_field_years
 
   validates :institution_id, presence: true
