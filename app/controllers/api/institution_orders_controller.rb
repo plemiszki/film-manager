@@ -27,7 +27,12 @@ class Api::InstitutionOrdersController < AdminController
 
   def update
     @institution_order = InstitutionOrder.find(params[:id])
-    if @institution_order.update(institution_order_params)
+    if @institution_order.update(institution_order_params.merge({
+      billing_address_1: institution_order_params[:billing_address1],
+      billing_address_2: institution_order_params[:billing_address2],
+      shipping_address_1: institution_order_params[:shipping_address1],
+      shipping_address_2: institution_order_params[:shipping_address2],
+    }).except(:billing_address1, :billing_address2, :shipping_address1, :shipping_address2))
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render_errors(@institution_order)
@@ -48,8 +53,8 @@ class Api::InstitutionOrdersController < AdminController
   def institution_order_params
     params[:institution_order].permit(
       :institution_id,
-      :order_date,
       :number,
+      :order_date,
       :billing_name,
       :billing_address1,
       :billing_address2,
@@ -64,10 +69,11 @@ class Api::InstitutionOrdersController < AdminController
       :shipping_state,
       :shipping_zip,
       :shipping_country,
+      :licensed_rights,
+      :price,
       :shipping_fee,
       :materials_sent,
       :tracking_number,
-      :delivered,
       :notes,
     )
   end
