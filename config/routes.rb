@@ -74,6 +74,8 @@ Rails.application.routes.draw do
     resources :venues, only: [:index, :show, :create, :update, :destroy]
     resources :institutions, only: [:index, :show, :create, :update, :destroy]
     resources :institution_orders, only: [:index, :new, :show, :create, :update, :destroy]
+    resources :institution_order_films, only: [:create, :destroy]
+    resources :institution_order_formats, only: [:create, :destroy]
     get '/bookings/advanced' => '/api/bookings#advanced'
     get '/bookings/export' => '/api/bookings#export'
     resources :bookings, only: [:index, :new, :show, :create, :update, :destroy]
