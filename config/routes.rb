@@ -76,6 +76,7 @@ Rails.application.routes.draw do
     resources :institution_orders, only: [:index, :new, :show, :create, :update, :destroy]
     resources :institution_order_films, only: [:create, :destroy]
     resources :institution_order_formats, only: [:create, :destroy]
+    post '/institution_orders/:id/send_invoice' => 'institution_orders#send_invoice'
     get '/bookings/advanced' => '/api/bookings#advanced'
     get '/bookings/export' => '/api/bookings#export'
     resources :bookings, only: [:index, :new, :show, :create, :update, :destroy]

@@ -1,5 +1,5 @@
 import React from 'react'
-import { deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity, Button } from 'handy-components'
+import { sendRequest, deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity, Button } from 'handy-components'
 
 export default class InstitutionOrderDetails extends React.Component {
 
@@ -157,8 +157,26 @@ export default class InstitutionOrderDetails extends React.Component {
     });
   }
 
+  sendInvoice() {
+    const { institutionOrder } = this.state;
+    this.setState({
+      jobModalOpen: true,
+      job: {
+        firstLine: 'Sending Invoice',
+      },
+    });
+    sendRequest(`/api/institution_orders/${institutionOrder.id}/send_invoice`, {
+      method: 'POST',
+    }).then((response) => {
+      const { job } = response;
+      this.setState({
+        job,
+      });
+    });
+  }
+
   render() {
-    const { spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
+    const { job, spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
     return (
       <>
         <div>
@@ -274,11 +292,11 @@ export default class InstitutionOrderDetails extends React.Component {
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ spinner }
-                clickSave={ () => { this.clickSave() } }
+                clickSave={ () => this.clickSave() }
               >
                 <Button
                   text="Send Invoice"
-                  onClick={ () => console.log('send invoice') }
+                  onClick={ () => this.sendInvoice() }
                   marginLeft
                 />
               </BottomButtons>
@@ -301,7 +319,12 @@ export default class InstitutionOrderDetails extends React.Component {
           func={ this.selectFormat.bind(this) }
           onClose={ Common.closeModals.bind(this) }
         />
+        { Common.renderJobModal.call(this, job) }
       </>
     );
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this, {});
   }
 }
