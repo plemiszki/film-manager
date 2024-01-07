@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_05_162829) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_07_121520) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -477,6 +477,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_05_162829) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["film_id", "institution_order_id"], name: "index_inst_order_films_on_film_id_and_inst_order_id", unique: true
+  end
+
+  create_table "institution_order_formats", force: :cascade do |t|
+    t.integer "institution_order_id", null: false
+    t.integer "format_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["format_id", "institution_order_id"], name: "index_inst_order_formats_on_format_id_and_inst_order_id", unique: true
   end
 
   create_table "institution_orders", force: :cascade do |t|
