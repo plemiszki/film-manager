@@ -13,6 +13,8 @@ class Api::InstitutionOrdersController < AdminController
   def show
     @institution_order = InstitutionOrder.find(params[:id])
     @institutions = Institution.all
+    @institution_order_films = @institution_order.institution_order_films.includes(:film)
+    @films = Film.where.not(id: @institution_order_films.pluck(:film_id))
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 

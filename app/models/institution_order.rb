@@ -10,6 +10,7 @@ class InstitutionOrder < ActiveRecord::Base
   alias_attribute :customer, :institution
 
   has_many :institution_order_films
+  alias_attribute :order_films, :institution_order_films
   has_many :films, through: :institution_order_films
 
   before_validation :convert_date_field_years

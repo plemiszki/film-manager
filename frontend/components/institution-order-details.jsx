@@ -1,5 +1,5 @@
 import React from 'react'
-import { deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons } from 'handy-components'
+import { deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity } from 'handy-components'
 
 export default class InstitutionOrderDetails extends React.Component {
 
@@ -10,6 +10,10 @@ export default class InstitutionOrderDetails extends React.Component {
       institutionOrder: {},
       institutionOrderSaved: {},
       institutions: [],
+      orderFilms: [],
+      films: [],
+      orderFormats: [],
+      formats: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -18,11 +22,13 @@ export default class InstitutionOrderDetails extends React.Component {
 
   componentDidMount() {
     fetchEntity().then((response) => {
-      const { institutionOrder, institutions } = response;
+      const { institutionOrder, institutions, institutionOrderFilms, films } = response;
       this.setState({
         institutionOrder,
         institutionOrderSaved: deepCopy(institutionOrder),
         institutions,
+        orderFilms: institutionOrderFilms,
+        films,
         spinner: false,
       }, () => {
         setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
@@ -69,8 +75,31 @@ export default class InstitutionOrderDetails extends React.Component {
     }
   }
 
+  selectFilm(option) {
+    const { institutionOrder } = this.state;
+    this.setState({
+      spinner: true,
+      selectFilmModalOpen: false,
+    });
+    createEntity({
+      directory: 'institution_order_films',
+      entityName: 'institutionOrderFilm',
+      entity: {
+        institutionOrderId: institutionOrder.id,
+        filmId: option.id,
+      },
+    }).then((response) => {
+      const { institutionOrderFilms, films } = response;
+      this.setState({
+        spinner: false,
+        films,
+        orderFilms: institutionOrderFilms,
+      });
+    });
+  }
+
   render() {
-    const { spinner, justSaved, changesToSave, institutions } = this.state;
+    const { spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen } = this.state;
     return (
       <>
         <div>
@@ -138,6 +167,22 @@ export default class InstitutionOrderDetails extends React.Component {
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee' }) }
               </div>
               <hr />
+              <Table
+                rows={ orderFilms }
+                links={ false }
+                columns={[
+                  { name: 'filmTitle', header: 'Title' },
+                ]}
+                clickDelete={ false ? null : item => this.deleteFilm(film.id) }
+                sortable={ false }
+                style={ { marginBottom: 15 } }
+              />
+              <OutlineButton
+                text="Add Film"
+                onClick={ () => this.setState({ selectFilmModalOpen: true }) }
+                marginBottom
+              />
+              <hr />
               <div className="row">
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'materialsSent' }) }
                 { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'trackingNumber' }) }
@@ -159,6 +204,13 @@ export default class InstitutionOrderDetails extends React.Component {
             </div>
           </div>
         </div>
+        <ModalSelect
+          isOpen={ selectFilmModalOpen }
+          options={ films }
+          property="title"
+          func={ this.selectFilm.bind(this) }
+          onClose={ Common.closeModals.bind(this) }
+        />
       </>
     );
   }

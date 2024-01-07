@@ -1,6 +1,6 @@
-json.institutionalOrderFilms @institutional_order_films do |institutional_order_film|
-  json.id institutional_order_film.id
-  json.filmTitle institutional_order_film.film.title
+json.institutionOrderFilms @institution_order_films do |institution_order_film|
+  json.id institution_order_film.id
+  json.filmTitle institution_order_film.film.title
 end
 json.films @films do |film|
   json.id film.id
