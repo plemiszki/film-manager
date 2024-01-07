@@ -22,13 +22,15 @@ export default class InstitutionOrderDetails extends React.Component {
 
   componentDidMount() {
     fetchEntity().then((response) => {
-      const { institutionOrder, institutions, institutionOrderFilms, films } = response;
+      const { institutionOrder, institutions, institutionOrderFilms, films, institutionOrderFormats, formats } = response;
       this.setState({
         institutionOrder,
         institutionOrderSaved: deepCopy(institutionOrder),
         institutions,
         orderFilms: institutionOrderFilms,
+        orderFormats: institutionOrderFormats,
         films,
+        formats,
         spinner: false,
       }, () => {
         setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
@@ -115,8 +117,48 @@ export default class InstitutionOrderDetails extends React.Component {
     });
   }
 
+  selectFormat(option) {
+    // const { institutionOrder } = this.state;
+    // this.setState({
+    //   spinner: true,
+    //   selectFilmModalOpen: false,
+    // });
+    // createEntity({
+    //   directory: 'institution_order_films',
+    //   entityName: 'institutionOrderFilm',
+    //   entity: {
+    //     institutionOrderId: institutionOrder.id,
+    //     filmId: option.id,
+    //   },
+    // }).then((response) => {
+    //   const { institutionOrderFilms, films } = response;
+    //   this.setState({
+    //     spinner: false,
+    //     films,
+    //     orderFilms: institutionOrderFilms,
+    //   });
+    // });
+  }
+
+  deleteFormat(id) {
+    // this.setState({
+    //   spinner: true,
+    // });
+    // deleteEntity({
+    //   directory: 'institution_order_films',
+    //   id,
+    // }).then((response) => {
+    //   const { institutionOrderFilms, films } = response;
+    //   this.setState({
+    //     spinner: false,
+    //     films,
+    //     orderFilms: institutionOrderFilms,
+    //   });
+    // });
+  }
+
   render() {
-    const { spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen } = this.state;
+    const { spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
     return (
       <>
         <div>
@@ -201,6 +243,23 @@ export default class InstitutionOrderDetails extends React.Component {
                 marginBottom
               />
               <hr />
+              <Table
+                rows={ orderFormats }
+                links={ false }
+                alphabetize
+                columns={[
+                  { name: 'formatName', header: 'Format' },
+                ]}
+                clickDelete={ false ? null : format => this.deleteFormat(format.id) } // TODO: read-only if invoice sent
+                sortable={ false }
+                style={ { marginBottom: 15 } }
+              />
+              <OutlineButton
+                text="Add Format"
+                onClick={ () => this.setState({ selectFormatModalOpen: true }) }
+                marginBottom
+              />
+              <hr />
               <div className="row">
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'materialsSent' }) }
                 { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'trackingNumber' }) }
@@ -227,6 +286,13 @@ export default class InstitutionOrderDetails extends React.Component {
           options={ films }
           property="title"
           func={ this.selectFilm.bind(this) }
+          onClose={ Common.closeModals.bind(this) }
+        />
+        <ModalSelect
+          isOpen={ selectFormatModalOpen }
+          options={ formats }
+          property="name"
+          func={ this.selectFormat.bind(this) }
           onClose={ Common.closeModals.bind(this) }
         />
       </>
