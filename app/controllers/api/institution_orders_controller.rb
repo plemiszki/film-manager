@@ -53,12 +53,40 @@ class Api::InstitutionOrdersController < AdminController
   end
 
   def send_invoice
+    institution_order = InstitutionOrder.find(params[:id]).includes(order_films: [:films])
+    new_invoice_data = {
+      invoice_type: 'institution',
+      sent_date: Date.today,
+      # number: "#{Setting.first.next_booking_invoice_number}B",
+      number: "1E",
+      # num: Setting.first.next_booking_invoice_number,
+      num: 1,
+      billing_name: institution_order.billing_name,
+      billing_address1: institution_order.billing_address_1,
+      billing_address2: institution_order.billing_address_2,
+      billing_city: institution_order.billing_city,
+      billing_state: institution_order.billing_state,
+      billing_zip: institution_order.billing_zip,
+      billing_country: institution_order.billing_country,
+      shipping_name: institution_order.shipping_name,
+      shipping_address1: institution_order.shipping_address_1,
+      shipping_address2: institution_order.shipping_address_2,
+      shipping_city: institution_order.shipping_city,
+      shipping_state: institution_order.shipping_state,
+      shipping_zip: institution_order.shipping_zip,
+      shipping_country: institution_order.shipping_country,
+      total: 100,
+    }
+    invoice = Invoice.create!(new_invoice_data)
+    InvoiceRow.create!(
+      invoice: invoice,
+      label: institution_order.films.pluck(:title).join("\n"),
+    )
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "send institution invoice", first_line: "Sending Invoice", second_line: false)
-    institution_order = InstitutionOrder.find(params[:id])
     SendInstitutionInvoice.perform_async(0, {
       time_started: time_started,
-      # invoice_id: invoice.id,
+      invoice_id: invoice.id,
       user_id: current_user.id,
       email: institution_order.customer.email,
     }.stringify_keys)

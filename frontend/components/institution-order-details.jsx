@@ -46,7 +46,7 @@ export default class InstitutionOrderDetails extends React.Component {
       const { institutionOrder } = this.state;
       updateEntity({
         entityName: 'institutionOrder',
-        entity: institutionOrder,
+        entity: Details.removeFinanceSymbolsFromEntity({ entity: institutionOrder, fields: ['price', 'shippingFee'] })
       }).then((response) => {
         const { institutionOrder } = response;
         this.setState({

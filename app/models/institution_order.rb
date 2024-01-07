@@ -23,6 +23,7 @@ class InstitutionOrder < ActiveRecord::Base
   validates :order_date, date: true
   validates :materials_sent, date: { blank_ok: true }
   validates :number, uniqueness: { scope: :institution_id }
+  validates_numericality_of :price, :shipping_fee, :greater_than_or_equal_to => 0
 
   def add_addresses
     institution = Institution.find(institution_id)
