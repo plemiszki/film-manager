@@ -4,5 +4,5 @@ json.institutionOrderFormats @institution_order_formats do |institution_order_fo
 end
 json.formats @formats do |format|
   json.id format.id
-  json.title format.name
+  json.name format.name
 end
