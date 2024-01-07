@@ -1,5 +1,5 @@
 import React from 'react'
-import { deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity } from 'handy-components'
+import { deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity, Button } from 'handy-components'
 
 export default class InstitutionOrderDetails extends React.Component {
 
@@ -269,13 +269,19 @@ export default class InstitutionOrderDetails extends React.Component {
                 { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'institutionOrder', property: 'notes', rows: 5 }) }
               </div>
               <BottomButtons
-                entityName="institutionOrder"
+                entityName="educationalOrder"
                 confirmDelete={ Details.confirmDelete.bind(this) }
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ spinner }
                 clickSave={ () => { this.clickSave() } }
-              />
+              >
+                <Button
+                  text="Send Invoice"
+                  onClick={ () => console.log('send invoice') }
+                  marginLeft
+                />
+              </BottomButtons>
               <GrayedOut visible={ spinner } />
               <Spinner visible={ spinner } />
             </div>
