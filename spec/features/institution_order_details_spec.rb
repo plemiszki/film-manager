@@ -118,4 +118,27 @@ describe 'institution_order_details', type: :feature do
     expect(InstitutionOrder.find_by_id(@institution_order.id)).to be(nil)
   end
 
+  it 'adds films to the order' do
+    create(:label)
+    create(:film)
+    visit institution_order_path(@institution_order, as: $admin_user)
+    click_btn('Add Film')
+    select_from_modal('Wilby Wonderful')
+    wait_for_ajax
+    expect(@institution_order.reload.order_films.length).to eq(1)
+    expect(@institution_order.reload.order_films.first.film_id).to eq(1)
+    expect(page).to have_content('Wilby Wonderful')
+  end
+
+  it 'removes films from the order' do
+    create(:label)
+    create(:film)
+    create(:institution_order_film)
+    visit institution_order_path(@institution_order, as: $admin_user)
+    wait_for_ajax
+    find('.x-gray-circle').click
+    wait_for_ajax
+    expect(@institution_order.reload.order_films.length).to eq(0)
+  end
+
 end
