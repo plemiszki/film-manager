@@ -141,4 +141,27 @@ describe 'institution_order_details', type: :feature do
     expect(@institution_order.reload.order_films.length).to eq(0)
   end
 
+  it 'adds formats to the order' do
+    create(:label)
+    create(:format)
+    visit institution_order_path(@institution_order, as: $admin_user)
+    click_btn('Add Format')
+    select_from_modal('35mm')
+    wait_for_ajax
+    expect(@institution_order.reload.order_formats.length).to eq(1)
+    expect(@institution_order.reload.order_formats.first.format_id).to eq(1)
+    expect(page).to have_content('35mm')
+  end
+
+  it 'removes formats from the order' do
+    create(:label)
+    create(:format)
+    create(:institution_order_format)
+    visit institution_order_path(@institution_order, as: $admin_user)
+    wait_for_ajax
+    find('.x-gray-circle').click
+    wait_for_ajax
+    expect(@institution_order.reload.order_formats.length).to eq(0)
+  end
+
 end
