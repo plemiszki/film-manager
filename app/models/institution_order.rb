@@ -44,4 +44,15 @@ class InstitutionOrder < ActiveRecord::Base
     self.save!
   end
 
+  def licensed_rights_for_invoice
+    case licensed_rights
+    when "disc_only"
+      licensed_rights.titleize
+    when "ppr_and_drl"
+      "PPR and DRL"
+    else
+      licensed_rights.upcase
+    end
+  end
+
 end

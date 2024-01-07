@@ -53,7 +53,7 @@ class Api::InstitutionOrdersController < AdminController
   end
 
   def send_invoice
-    institution_order = InstitutionOrder.find(params[:id]).includes(order_films: [:films])
+    institution_order = InstitutionOrder.includes(institution_order_films: [:film]).find(params[:id])
     new_invoice_data = {
       invoice_type: 'institution',
       sent_date: Date.today,
@@ -75,13 +75,28 @@ class Api::InstitutionOrdersController < AdminController
       shipping_state: institution_order.shipping_state,
       shipping_zip: institution_order.shipping_zip,
       shipping_country: institution_order.shipping_country,
-      total: 100,
+      total: institution_order.price + institution_order.shipping_fee,
     }
     invoice = Invoice.create!(new_invoice_data)
+    description_lines = institution_order.films.pluck(:title)
+    description_lines << "\n"
+    description_lines << institution_order.licensed_rights_for_invoice
+    description_lines << "\n"
+    description_lines << "Formats: #{institution_order.formats.pluck(:name).join(", ")}"
     InvoiceRow.create!(
       invoice: invoice,
-      label: institution_order.films.pluck(:title).join("\n"),
+      item_label: description_lines.join("\n"),
+      item_qty: 1,
+      total_price: institution_order.price,
     )
+    unless institution_order.shipping_fee.zero?
+      InvoiceRow.create!(
+        invoice: invoice,
+        item_label: "Shipping Fee",
+        item_qty: 1,
+        total_price: institution_order.shipping_fee,
+      )
+    end
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "send institution invoice", first_line: "Sending Invoice", second_line: false)
     SendInstitutionInvoice.perform_async(0, {
