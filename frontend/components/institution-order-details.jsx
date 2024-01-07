@@ -1,5 +1,5 @@
 import React from 'react'
-import { deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity } from 'handy-components'
+import { deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity } from 'handy-components'
 
 export default class InstitutionOrderDetails extends React.Component {
 
@@ -98,6 +98,23 @@ export default class InstitutionOrderDetails extends React.Component {
     });
   }
 
+  deleteFilm(id) {
+    this.setState({
+      spinner: true,
+    });
+    deleteEntity({
+      directory: 'institution_order_films',
+      id,
+    }).then((response) => {
+      const { institutionOrderFilms, films } = response;
+      this.setState({
+        spinner: false,
+        films,
+        orderFilms: institutionOrderFilms,
+      });
+    });
+  }
+
   render() {
     const { spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen } = this.state;
     return (
@@ -170,10 +187,11 @@ export default class InstitutionOrderDetails extends React.Component {
               <Table
                 rows={ orderFilms }
                 links={ false }
+                alphabetize
                 columns={[
                   { name: 'filmTitle', header: 'Title' },
                 ]}
-                clickDelete={ false ? null : item => this.deleteFilm(film.id) }
+                clickDelete={ false ? null : film => this.deleteFilm(film.id) } // TODO: read-only if invoice sent
                 sortable={ false }
                 style={ { marginBottom: 15 } }
               />
