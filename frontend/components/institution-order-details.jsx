@@ -141,20 +141,20 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   deleteFormat(id) {
-    // this.setState({
-    //   spinner: true,
-    // });
-    // deleteEntity({
-    //   directory: 'institution_order_films',
-    //   id,
-    // }).then((response) => {
-    //   const { institutionOrderFilms, films } = response;
-    //   this.setState({
-    //     spinner: false,
-    //     films,
-    //     orderFilms: institutionOrderFilms,
-    //   });
-    // });
+    this.setState({
+      spinner: true,
+    });
+    deleteEntity({
+      directory: 'institution_order_formats',
+      id,
+    }).then((response) => {
+      const { institutionOrderFormats, formats } = response;
+      this.setState({
+        spinner: false,
+        formats,
+        orderFormats: institutionOrderFormats,
+      });
+    });
   }
 
   render() {
