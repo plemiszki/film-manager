@@ -1,5 +1,5 @@
 import React from 'react'
-import { sendRequest, deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity, Button } from 'handy-components'
+import { objectsAreEqual, sendRequest, deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity, Button } from 'handy-components'
 
 export default class InstitutionOrderDetails extends React.Component {
 
@@ -66,13 +66,15 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.institutionOrder, this.state.institutionOrderSaved);
+    const { institutionOrder, institutionOrderSaved } = this.state;
+    return !objectsAreEqual(institutionOrder, institutionOrderSaved);
   }
 
   changeFieldArgs() {
+    const { errors } = this.state;
     return {
       thing: "institutionOrder",
-      errorsArray: this.state.errors,
+      errorsArray: errors,
       changesFunction: this.checkForChanges.bind(this)
     }
   }
@@ -177,6 +179,7 @@ export default class InstitutionOrderDetails extends React.Component {
 
   render() {
     const { job, spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
+    const unsavedChanges = this.checkForChanges();
     return (
       <>
         <div>
@@ -298,6 +301,7 @@ export default class InstitutionOrderDetails extends React.Component {
                   text="Send Invoice"
                   onClick={ () => this.sendInvoice() }
                   marginLeft
+                  disabled={ unsavedChanges }
                 />
               </BottomButtons>
               <GrayedOut visible={ spinner } />

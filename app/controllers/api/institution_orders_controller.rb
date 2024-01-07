@@ -55,14 +55,13 @@ class Api::InstitutionOrdersController < AdminController
   def send_invoice
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "send institution invoice", first_line: "Sending Invoice", second_line: false)
-    # SendBookingInvoice.perform_async(0, {
-    #   time_started: time_started,
-    #   invoice_id: invoice.id,
-    #   user_id: current_user.id,
-    #   email: booking.email,
-    #   overage: params[:overage],
-    #   shipping_terms: (params[:advance] && booking.booking_type.strip != "Theatrical"),
-    # }.stringify_keys)
+    institution_order = InstitutionOrder.find(params[:id])
+    SendInstitutionInvoice.perform_async(0, {
+      time_started: time_started,
+      # invoice_id: invoice.id,
+      user_id: current_user.id,
+      email: institution_order.customer.email,
+    }.stringify_keys)
     render json: { job: job.render_json }
   end
 
