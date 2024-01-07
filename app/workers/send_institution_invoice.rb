@@ -8,7 +8,7 @@ class SendInstitutionInvoice
     FileUtils.mkdir_p("#{pathname}")
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
 
-    # invoice = Invoice.find(args['invoice_id'])
+    invoice = Invoice.find(args['invoice_id'])
     current_user = User.find(args['user_id'])
     settings = Setting.first
     errors = []
@@ -20,15 +20,15 @@ class SendInstitutionInvoice
 
     # send invoice
     is_test_mode = ENV['TEST_MODE'] == 'true'
-    # invoice.export!(pathname)
-    # attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r"), File.open(Rails.root.join('app', 'workers', 'Film Movement W9.pdf'), "r")]
+    invoice.export!(pathname)
+    attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r"), File.open(Rails.root.join('app', 'workers', 'Film Movement W9.pdf'), "r")]
     message_params = {
       from: current_user.email,
       to: (is_test_mode ? ENV['TEST_MODE_EMAIL'] : args['email']),
       cc: (is_test_mode ? nil : current_user.email),
       subject: subject,
       text: text,
-      # attachment: attachments
+      attachment: attachments
     }
     begin
       mg_client.send_message 'filmmovement.com', message_params
