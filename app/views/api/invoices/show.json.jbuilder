@@ -25,7 +25,7 @@ json.invoice do
   json.notes @invoice.notes
 end
 json.rows @rows do |row|
-  json.label row.item_label
+  json.label row.item_label_first_line
   json.price dollarify(number_with_precision(row.unit_price.to_s, precision: 2, delimiter: ','))
   json.qty row.item_qty
   json.totalPrice dollarify(number_with_precision(row.total_price.to_s, precision: 2, delimiter: ','))
