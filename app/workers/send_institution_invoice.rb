@@ -14,8 +14,7 @@ class SendInstitutionInvoice
     errors = []
 
     subject = "Your Film Movement Invoice"
-    # text = "#{settings.institutional_invoice_email_text.strip}\n\n"
-    text = "copy will go here\n\n"
+    text = "#{settings.institution_order_invoice_email_text.strip}\n\n"
     text += "Kind Regards,\n\n#{current_user.email_signature}"
 
     # send invoice
@@ -28,11 +27,11 @@ class SendInstitutionInvoice
       cc: (is_test_mode ? nil : current_user.email),
       subject: subject,
       text: text,
-      attachment: attachments
+      attachment: attachments,
     }
     begin
       mg_client.send_message 'filmmovement.com', message_params
-      # Setting.first.update(next_institution_invoice_number: settings.next_institution_invoice_number + 1) # update next institution invoice number
+      Setting.first.update!(next_institution_invoice_number: settings.next_institution_invoice_number + 1) # update next institution invoice number
     rescue
       errors << "Unable to send invoice to #{args['email']}"
     end

@@ -17,6 +17,9 @@ class Invoice < ActiveRecord::Base
   belongs_to :customer, class_name: 'DvdCustomer'
   belongs_to :booking, polymorphic: true
 
+  belongs_to :institution
+  belongs_to :institution_order
+
   alias_attribute :rows, :invoice_rows
 
   scope :bookings, -> { where(invoice_type: 'booking') }
@@ -33,6 +36,15 @@ class Invoice < ActiveRecord::Base
       total - invoice_payments.reduce(0) { |sum, ip| sum += ip.amount }
     else
       total
+    end
+  end
+
+  def invoice_type_display_text
+    case invoice_type
+    when "dvd"
+      "DVD"
+    else
+      invoice_type.titleize
     end
   end
 

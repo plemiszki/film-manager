@@ -57,10 +57,8 @@ class Api::InstitutionOrdersController < AdminController
     new_invoice_data = {
       invoice_type: 'institution',
       sent_date: Date.today,
-      # number: "#{Setting.first.next_booking_invoice_number}B",
-      number: "1E",
-      # num: Setting.first.next_booking_invoice_number,
-      num: 1,
+      number: "#{Setting.first.next_institution_invoice_number}E",
+      num: Setting.first.next_institution_invoice_number,
       billing_name: institution_order.billing_name,
       billing_address1: institution_order.billing_address_1,
       billing_address2: institution_order.billing_address_2,
@@ -76,6 +74,9 @@ class Api::InstitutionOrdersController < AdminController
       shipping_zip: institution_order.shipping_zip,
       shipping_country: institution_order.shipping_country,
       total: institution_order.price + institution_order.shipping_fee,
+      institution_id: institution_order.institution_id,
+      institution_order_id: institution_order.id,
+      po_number: institution_order.number,
     }
     invoice = Invoice.create!(new_invoice_data)
     description_lines = institution_order.films.pluck(:title)

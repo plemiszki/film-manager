@@ -63,7 +63,7 @@ export default class InvoiceDetails extends React.Component {
                 <h2>Sent Date</h2>
                 { invoice.sentDate }
               </div>
-              { dvdInvoice && (
+              { !bookingInvoice && (
                 <div className="col-xs-4">
                   <h2>PO Number</h2>
                   { invoice.poNumber }
