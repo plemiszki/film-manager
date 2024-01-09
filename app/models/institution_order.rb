@@ -44,7 +44,7 @@ class InstitutionOrder < ActiveRecord::Base
     self.save!
   end
 
-  def licensed_rights_for_invoice
+  def licensed_rights_display_text
     case licensed_rights
     when "disc_only"
       licensed_rights.titleize

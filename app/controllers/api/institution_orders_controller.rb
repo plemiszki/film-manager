@@ -81,7 +81,7 @@ class Api::InstitutionOrdersController < AdminController
     invoice = Invoice.create!(new_invoice_data)
     description_lines = institution_order.films.pluck(:title)
     description_lines << "\n"
-    description_lines << institution_order.licensed_rights_for_invoice
+    description_lines << institution_order.licensed_rights_display_text
     description_lines << "\n"
     description_lines << "Formats: #{institution_order.formats.pluck(:name).join(", ")}"
     InvoiceRow.create!(
