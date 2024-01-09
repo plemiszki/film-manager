@@ -25,13 +25,18 @@ json.institutionOrder do
   json.notes @institution_order.notes
   json.customerEmail @customer_email
 end
+if @invoice
+  json.invoice do
+    json.id @invoice.id
+    json.number @invoice.number
+    json.sentDate @invoice.sent_date.strftime("%-m/%-d/%Y")
+  end
+else
+  json.invoice nil
+end
 json.institutions @institutions do |institution|
   json.id institution.id
   json.label institution.label
-end
-json.films @films do |film|
-  json.id film.id
-  json.title film.title
 end
 json.institutionOrderFilms @institution_order_films do |institution_order_film|
   json.id institution_order_film.id
@@ -44,4 +49,8 @@ end
 json.institutionOrderFormats @institution_order_formats do |institution_order_format|
   json.id institution_order_format.id
   json.formatName institution_order_format.format.name
+end
+json.films @films do |film|
+  json.id film.id
+  json.title film.title
 end

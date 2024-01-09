@@ -357,7 +357,7 @@ export default class PurchaseOrderDetails extends React.Component {
               ) }
               <hr />
               <div className="row">
-                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5 }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'purchaseOrder', property: 'notes', rows: 5, readOnly: !!purchaseOrder.shipDate }) }
               </div>
               <hr />
               { unshippedPO ? (

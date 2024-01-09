@@ -22,7 +22,7 @@ export default class InstitutionOrderDetails extends React.Component {
 
   componentDidMount() {
     fetchEntity().then((response) => {
-      const { institutionOrder, institutions, institutionOrderFilms, films, institutionOrderFormats, formats } = response;
+      const { institutionOrder, institutions, institutionOrderFilms, films, institutionOrderFormats, formats, invoice } = response;
       this.setState({
         institutionOrder,
         institutionOrderSaved: deepCopy(institutionOrder),
@@ -31,6 +31,7 @@ export default class InstitutionOrderDetails extends React.Component {
         orderFormats: institutionOrderFormats,
         films,
         formats,
+        invoice,
         spinner: false,
       }, () => {
         setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
@@ -178,7 +179,7 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   render() {
-    const { institutionOrder, job, spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
+    const { invoice, institutionOrder, job, spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
     const unsavedChanges = this.checkForChanges();
     return (
       <>
@@ -281,6 +282,16 @@ export default class InstitutionOrderDetails extends React.Component {
                 marginBottom
               />
               <hr />
+              { invoice ? (
+                <>
+                  <div className="row">
+                    <div className="col-xs-12">
+                      <p style={{ marginBottom: 30 }}><a href={ `/invoices/${invoice.id}` } target="_blank" style={{ textDecoration: 'underline' }}>Invoice { invoice.number }</a> was sent on { invoice.sentDate }.</p>
+                    </div>
+                  </div>
+                  <hr />
+                </>
+              ) : null }
               <div className="row">
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'materialsSent' }) }
                 { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'trackingNumber' }) }
