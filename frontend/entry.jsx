@@ -775,11 +775,12 @@ document.addEventListener("DOMContentLoaded", () => {
           name: 'invoiceType',
           type: 'static dropdown',
           options: [
+            { value: 'booking', text: 'Booking' },
             { value: 'dvd', text: 'DVD' },
-            { value: 'booking', text: 'Booking' }
+            { value: 'institution', text: 'Institution' },
           ],
           columnHeader: 'Type',
-          columnWidth: 3
+          columnWidth: 4,
         },
         { name: 'sentDate', type: 'date range', columnWidth: 10 },
       ]
