@@ -17,6 +17,8 @@ class InstitutionOrder < ActiveRecord::Base
   alias_attribute :order_formats, :institution_order_formats
   has_many :formats, through: :institution_order_formats
 
+  has_one :invoice
+
   before_validation :convert_date_field_years
 
   validates :institution_id, presence: true
