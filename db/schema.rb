@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_07_121520) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_09_001058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -588,6 +588,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_07_121520) do
     t.integer "booking_id"
     t.integer "num"
     t.string "booking_type", default: "Booking"
+    t.integer "institution_order_id"
+    t.integer "institution_id"
     t.index ["booking_id"], name: "index_invoices_on_booking_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
   end
@@ -800,6 +802,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_07_121520) do
     t.integer "box_office_reminders_user_id"
     t.string "virtual_booking_report_text", default: ""
     t.integer "payment_reminders_user_id"
+    t.string "institution_order_invoice_email_text", default: ""
+    t.integer "next_institution_invoice_number", default: 1
   end
 
   create_table "shipping_addresses", id: :serial, force: :cascade do |t|

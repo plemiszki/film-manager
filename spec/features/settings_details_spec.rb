@@ -27,6 +27,7 @@ describe 'settings_details', type: :feature do
     expect(find('textarea[data-field="allBookingInvoicesEmailText"]').value).to eq 'all booking invoices email text'
     expect(find('textarea[data-field="shippingTermsEmailText"]').value).to eq 'shipping terms email text'
     expect(find('textarea[data-field="virtualBookingReportText"]').value).to eq 'virtual booking report text'
+    expect(find('textarea[data-field="institutionOrderInvoiceEmailText"]').value).to eq 'institution order invoice email text'
     expect(find('input[data-field="boxOfficeRemindersUserId"]').value).to eq('Maxwell Wolkin')
     expect(find('input[data-field="paymentRemindersUserId"]').value).to eq('Maxwell Wolkin')
   end
@@ -44,7 +45,8 @@ describe 'settings_details', type: :feature do
       booking_invoice_payment_info_email_text: 'new booking invoice payment info email text',
       shipping_terms_email_text: 'new shipping terms email text',
       all_booking_invoices_email_text: 'new all booking invoices email text',
-      virtual_booking_report_text: 'virtual booking report text'
+      virtual_booking_report_text: 'new virtual booking report text',
+      institution_order_invoice_email_text: 'new institution order invoice email text',
     }
     fill_out_form(new_info)
     save_and_wait

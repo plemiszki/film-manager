@@ -12,6 +12,7 @@ json.settings do
   json.boxOfficeRemindersUserId @settings.box_office_reminders_user_id || ""
   json.paymentRemindersUserId @settings.payment_reminders_user_id || ""
   json.virtualBookingReportText @settings.virtual_booking_report_text
+  json.institutionOrderInvoiceEmailText @settings.institution_order_invoice_email_text
 end
 json.users @users do |user|
   json.id user.id

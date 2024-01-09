@@ -13,6 +13,7 @@ FactoryBot.define do
     shipping_terms_email_text { 'shipping terms email text' }
     all_booking_invoices_email_text { 'all booking invoices email text' }
     virtual_booking_report_text { 'virtual booking report text' }
+    institution_order_invoice_email_text { 'institution order invoice email text' }
     box_office_reminders_user_id { 2 }
     payment_reminders_user_id { 2 }
   end

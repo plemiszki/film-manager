@@ -32,7 +32,8 @@ class Api::SettingsController < AdminController
       :all_booking_invoices_email_text,
       :box_office_reminders_user_id,
       :payment_reminders_user_id,
-      :virtual_booking_report_text
+      :virtual_booking_report_text,
+      :institution_order_invoice_email_text,
     )
   end
 
