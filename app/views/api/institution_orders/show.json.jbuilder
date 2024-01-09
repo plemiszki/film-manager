@@ -23,6 +23,7 @@ json.institutionOrder do
   json.materialsSent @institution_order.materials_sent ? @institution_order.materials_sent.strftime("%-m/%-d/%Y") : ''
   json.trackingNumber @institution_order.tracking_number
   json.notes @institution_order.notes
+  json.customerEmail @customer_email
 end
 json.institutions @institutions do |institution|
   json.id institution.id

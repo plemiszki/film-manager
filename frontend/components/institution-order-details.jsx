@@ -178,7 +178,7 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   render() {
-    const { job, spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
+    const { institutionOrder, job, spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
     const unsavedChanges = this.checkForChanges();
     return (
       <>
@@ -301,7 +301,8 @@ export default class InstitutionOrderDetails extends React.Component {
                   text="Send Invoice"
                   onClick={ () => this.sendInvoice() }
                   marginLeft
-                  disabled={ unsavedChanges }
+                  disabled={ spinner || unsavedChanges || !institutionOrder.customerEmail }
+                  disabledTooltip={ institutionOrder.customerEmail ? null : 'Invoices cannot be sent without an email address for the customer.' }
                 />
               </BottomButtons>
               <GrayedOut visible={ spinner } />

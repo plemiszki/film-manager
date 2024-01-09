@@ -12,6 +12,7 @@ class Api::InstitutionOrdersController < AdminController
 
   def show
     @institution_order = InstitutionOrder.find(params[:id])
+    @customer_email = @institution_order.customer.email
     @institutions = Institution.all
     @institution_order_films = @institution_order.institution_order_films.includes(:film)
     @institution_order_formats = @institution_order.institution_order_formats.includes(:format)
