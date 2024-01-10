@@ -35,17 +35,29 @@ export default class NewEntity extends React.Component {
   }
 
   componentDidMount() {
+    const { fetchData, entityName } = this.props;
     setUpNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
-    if (this.props.fetchData) {
+    if (fetchData) {
       sendRequest(`/api/${directory}/new`).then((response) => {
-        let entity = deepCopy(this.state[this.props.entityName]);
+        let entity = deepCopy(this.state[entityName]);
         let obj = { spinner: false };
-        this.props.fetchData.forEach((arrayName) => {
+        fetchData.forEach((arrayName) => {
           obj[arrayName] = response[arrayName];
         })
-        obj[this.props.entityName] = entity;
+        obj[entityName] = entity;
         this.setState(obj, () => {
           resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
+
+          // update entity foreign keys from fetched data
+          if (entityName === 'institutionOrder') {
+            const { institutions } = this.state;
+            this.setState({
+              institutionOrder: {
+                ...entity,
+                institutionId: institutions[0].id,
+              },
+            });
+          }
         });
       });
     } else {
