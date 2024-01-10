@@ -349,6 +349,21 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   componentDidUpdate() {
-    Common.updateJobModal.call(this, {});
+    Common.updateJobModal.call(this, {
+      successCallback: () => {
+        this.setState({
+          spinner: true,
+        });
+        fetchEntity().then((response) => {
+          const { institutionOrder, invoice } = response;
+          this.setState({
+            institutionOrder,
+            institutionOrderSaved: deepCopy(institutionOrder),
+            invoice,
+            spinner: false,
+          });
+        });
+      }
+    });
   }
 }

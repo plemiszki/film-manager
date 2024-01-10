@@ -39,6 +39,7 @@ class Api::InstitutionOrdersController < AdminController
       shipping_address_1: institution_order_params[:shipping_address1],
       shipping_address_2: institution_order_params[:shipping_address2],
     }).except(:billing_address1, :billing_address2, :shipping_address1, :shipping_address2))
+      @customer_email = @institution_order.customer.email
       render 'show', formats: [:json], handlers: [:jbuilder]
     else
       render_errors(@institution_order)
