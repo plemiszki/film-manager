@@ -195,39 +195,40 @@ export default class InstitutionOrderDetails extends React.Component {
                   options: institutions,
                   optionDisplayProperty: 'label',
                   columnHeader: 'Customer',
+                  readOnly: invoice,
                 }) }
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'number', columnHeader: 'Order Number' }) }
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'orderDate' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'number', columnHeader: 'Order Number', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'orderDate', readOnly: invoice }) }
               </div>
               <hr />
               <div className="address-block">
                 <p className="section-header">Billing Address</p>
                 <div className="row">
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'billingName', columnHeader: 'Name' }) }
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'billingAddress1', columnHeader: 'Address 1' }) }
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'billingAddress2', columnHeader: 'Address 2' }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'billingName', columnHeader: 'Name', readOnly: invoice }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'billingAddress1', columnHeader: 'Address 1', readOnly: invoice }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'billingAddress2', columnHeader: 'Address 2', readOnly: invoice }) }
                 </div>
               </div>
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'billingCity', columnHeader: 'City' }) }
-                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'institutionOrder', property: 'billingState', columnHeader: 'State' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'billingZip', columnHeader: 'Zip' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'billingCountry', columnHeader: 'Country' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'billingCity', columnHeader: 'City', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'institutionOrder', property: 'billingState', columnHeader: 'State', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'billingZip', columnHeader: 'Zip', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'billingCountry', columnHeader: 'Country', readOnly: invoice }) }
               </div>
               <hr />
               <div className="address-block">
                 <p className="section-header">Shipping Address</p>
                 <div className="row">
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'shippingName', columnHeader: 'Name' }) }
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'shippingAddress1', columnHeader: 'Address 1' }) }
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'shippingAddress2', columnHeader: 'Address 2' }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'shippingName', columnHeader: 'Name', readOnly: invoice }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'shippingAddress1', columnHeader: 'Address 1', readOnly: invoice }) }
+                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'shippingAddress2', columnHeader: 'Address 2', readOnly: invoice }) }
                 </div>
               </div>
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'shippingCity', columnHeader: 'City' }) }
-                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'institutionOrder', property: 'shippingState', columnHeader: 'State' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingZip', columnHeader: 'Zip' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingCountry', columnHeader: 'Country' }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'shippingCity', columnHeader: 'City', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'institutionOrder', property: 'shippingState', columnHeader: 'State', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingZip', columnHeader: 'Zip', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingCountry', columnHeader: 'Country', readOnly: invoice }) }
               </div>
               <hr />
               <div className="row">
@@ -243,9 +244,10 @@ export default class InstitutionOrderDetails extends React.Component {
                     { value: "ppr_and_drl", label: "PPR and DRL" },
                   ],
                   optionDisplayProperty: 'label',
+                  readOnly: invoice,
                 }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'price' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee' }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'price', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee', readOnly: invoice }) }
               </div>
               <hr />
               <Table
@@ -253,34 +255,38 @@ export default class InstitutionOrderDetails extends React.Component {
                 links={ false }
                 alphabetize
                 columns={[
-                  { name: 'filmTitle', header: 'Title' },
+                  { name: 'filmTitle', header: 'Films' },
                 ]}
-                clickDelete={ false ? null : film => this.deleteFilm(film.id) } // TODO: read-only if invoice sent
+                clickDelete={ invoice ? null : film => this.deleteFilm(film.id) }
                 sortable={ false }
                 style={ { marginBottom: 15 } }
               />
-              <OutlineButton
-                text="Add Film"
-                onClick={ () => this.setState({ selectFilmModalOpen: true }) }
-                marginBottom
-              />
+              { invoice ? null : (
+                <OutlineButton
+                  text="Add Film"
+                  onClick={ () => this.setState({ selectFilmModalOpen: true }) }
+                  marginBottom
+                />
+              ) }
               <hr />
               <Table
                 rows={ orderFormats }
                 links={ false }
                 alphabetize
                 columns={[
-                  { name: 'formatName', header: 'Format' },
+                  { name: 'formatName', header: 'Formats' },
                 ]}
-                clickDelete={ false ? null : format => this.deleteFormat(format.id) } // TODO: read-only if invoice sent
+                clickDelete={ invoice ? null : format => this.deleteFormat(format.id) }
                 sortable={ false }
                 style={ { marginBottom: 15 } }
               />
-              <OutlineButton
-                text="Add Format"
-                onClick={ () => this.setState({ selectFormatModalOpen: true }) }
-                marginBottom
-              />
+              { invoice ? null : (
+                <OutlineButton
+                  text="Add Format"
+                  onClick={ () => this.setState({ selectFormatModalOpen: true }) }
+                  marginBottom
+                />
+              ) }
               <hr />
               { invoice ? (
                 <>
@@ -308,13 +314,15 @@ export default class InstitutionOrderDetails extends React.Component {
                 disabled={ spinner }
                 clickSave={ () => this.clickSave() }
               >
-                <Button
-                  text="Send Invoice"
-                  onClick={ () => this.sendInvoice() }
-                  marginLeft
-                  disabled={ spinner || unsavedChanges || !institutionOrder.customerEmail }
-                  disabledTooltip={ institutionOrder.customerEmail ? null : 'Invoices cannot be sent without an email address for the customer.' }
-                />
+                { invoice ? null : (
+                  <Button
+                    text="Send Invoice"
+                    onClick={ () => this.sendInvoice() }
+                    marginLeft
+                    disabled={ spinner || unsavedChanges || !institutionOrder.customerEmail }
+                    disabledTooltip={ institutionOrder.customerEmail ? null : 'Invoices cannot be sent without an email address for the customer.' }
+                  />
+                ) }
               </BottomButtons>
               <GrayedOut visible={ spinner } />
               <Spinner visible={ spinner } />
