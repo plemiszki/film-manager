@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'support/features_helper'
+require 'sidekiq/testing'
 
 describe 'institution_order_details', type: :feature do
 
@@ -142,7 +143,6 @@ describe 'institution_order_details', type: :feature do
   end
 
   it 'adds formats to the order' do
-    create(:label)
     create(:format)
     visit institution_order_path(@institution_order, as: $admin_user)
     click_btn('Add Format')
@@ -154,7 +154,6 @@ describe 'institution_order_details', type: :feature do
   end
 
   it 'removes formats from the order' do
-    create(:label)
     create(:format)
     create(:institution_order_format)
     visit institution_order_path(@institution_order, as: $admin_user)
@@ -162,6 +161,25 @@ describe 'institution_order_details', type: :feature do
     find('.x-gray-circle').click
     wait_for_ajax
     expect(@institution_order.reload.order_formats.length).to eq(0)
+  end
+
+  it 'sends invoices' do
+    create(:setting)
+    Sidekiq::Testing.inline! do
+      visit institution_order_path(@institution_order, as: $admin_user)
+      wait_for_ajax
+      find('a', text: 'Send Invoice').click
+      Capybara.using_wait_time 20 do
+        expect(page).to have_content('Sending Invoice')
+        wait_for_ajax
+      end
+      expect(page).to have_content('Invoice Sent Successfully')
+      expect(Invoice.count).to eq(1)
+      find('a', text: 'OK').click
+      wait_for_ajax
+      expect(page).to have_content('Invoice 1E was sent on')
+      expect(page).to have_no_content('Send Invoice')
+    end
   end
 
 end
