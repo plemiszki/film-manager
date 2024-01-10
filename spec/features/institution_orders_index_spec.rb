@@ -5,7 +5,8 @@ describe 'institution_orders_index', type: :feature do
 
   before(:each) do
     create(:institution)
-    create(:institution_order)
+    order = create(:institution_order)
+    create(:invoice, invoice_type: "institution", number: "1E", sent_date: Date.new(2024, 1, 4), institution_order: order)
   end
 
   it 'is gated' do
@@ -19,6 +20,8 @@ describe 'institution_orders_index', type: :feature do
       expect(page).to have_content '1/3/2024' # order date
       expect(page).to have_content '1000' # order number
       expect(page).to have_content 'Harvard University' # customer name
+      expect(page).to have_content '1/4/2024' # invoice sent date
+      expect(page).to have_content '1E' # invoice number
     end
   end
 
