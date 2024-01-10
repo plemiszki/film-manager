@@ -594,7 +594,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderFullIndex('institution-orders-index', {
     entityName: 'institutionOrder',
     header: 'Educational Orders',
-    columns: ['orderDate', { name: 'number', header: 'Order Number' }, 'customer'],
+    columns: ['orderDate', { name: 'number', header: 'Order Number' }, 'customer', 'invoiceSent', 'invoiceNumber'],
     modalRows: 1,
     modalDimensions: { width: 900 },
     includeNewButton: true,

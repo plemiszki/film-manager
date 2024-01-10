@@ -1,7 +1,7 @@
 class Api::InstitutionOrdersController < AdminController
 
   def index
-    @institution_orders = InstitutionOrder.all.includes(:institution)
+    @institution_orders = InstitutionOrder.all.includes(:institution, :invoice)
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 
