@@ -51,12 +51,14 @@ export default class NewEntity extends React.Component {
           // update entity foreign keys from fetched data
           if (entityName === 'institutionOrder') {
             const { institutions } = this.state;
-            this.setState({
-              institutionOrder: {
-                ...entity,
-                institutionId: institutions[0].id,
-              },
-            });
+            if (institutions.length > 0) {
+              this.setState({
+                institutionOrder: {
+                  ...entity,
+                  institutionId: institutions[0].id,
+                },
+              });
+            }
           }
         });
       });
