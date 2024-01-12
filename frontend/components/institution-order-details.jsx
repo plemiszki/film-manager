@@ -1,4 +1,6 @@
 import React from 'react'
+import Modal from 'react-modal'
+import NewEntity from './new-entity.jsx'
 import { objectsAreEqual, sendRequest, deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity, Button } from 'handy-components'
 
 export default class InstitutionOrderDetails extends React.Component {
@@ -80,29 +82,6 @@ export default class InstitutionOrderDetails extends React.Component {
     }
   }
 
-  selectFilm(option) {
-    const { institutionOrder } = this.state;
-    this.setState({
-      spinner: true,
-      selectFilmModalOpen: false,
-    });
-    createEntity({
-      directory: 'institution_order_films',
-      entityName: 'institutionOrderFilm',
-      entity: {
-        institutionOrderId: institutionOrder.id,
-        filmId: option.id,
-      },
-    }).then((response) => {
-      const { institutionOrderFilms, films } = response;
-      this.setState({
-        spinner: false,
-        films,
-        orderFilms: institutionOrderFilms,
-      });
-    });
-  }
-
   deleteFilm(id) {
     this.setState({
       spinner: true,
@@ -179,7 +158,7 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   render() {
-    const { invoice, institutionOrder, job, spinner, justSaved, changesToSave, institutions, orderFilms, films, selectFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
+    const { invoice, institutionOrder, job, spinner, justSaved, changesToSave, institutions, orderFilms, films, addFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
     const unsavedChanges = this.checkForChanges();
     return (
       <>
@@ -248,7 +227,7 @@ export default class InstitutionOrderDetails extends React.Component {
               { invoice ? null : (
                 <OutlineButton
                   text="Add Film"
-                  onClick={ () => this.setState({ selectFilmModalOpen: true }) }
+                  onClick={ () => this.setState({ addFilmModalOpen: true }) }
                   marginBottom
                 />
               ) }
@@ -335,19 +314,32 @@ export default class InstitutionOrderDetails extends React.Component {
           </div>
         </div>
         <ModalSelect
-          isOpen={ selectFilmModalOpen }
-          options={ films }
-          property="title"
-          func={ this.selectFilm.bind(this) }
-          onClose={ Common.closeModals.bind(this) }
-        />
-        <ModalSelect
           isOpen={ selectFormatModalOpen }
           options={ formats }
           property="name"
           func={ this.selectFormat.bind(this) }
           onClose={ Common.closeModals.bind(this) }
         />
+        <Modal isOpen={ addFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 800 }, 2) }>
+          <NewEntity
+            context={ this.props.context }
+            entityName="institutionOrderFilm"
+            initialEntity={{
+              institutionOrderId: institutionOrder.id,
+              price: '',
+              licensedRights: 0,
+            }}
+            passData={{ films }}
+            callbackFullProps={ response => {
+              const { institutionOrderFilms, films } = response;
+              this.setState({
+                orderFilms: institutionOrderFilms,
+                films,
+                addFilmModalOpen: false,
+              });
+            } }
+          />
+        </Modal>
         { Common.renderJobModal.call(this, job) }
       </>
     );

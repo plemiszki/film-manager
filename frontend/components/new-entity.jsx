@@ -68,30 +68,32 @@ export default class NewEntity extends React.Component {
   }
 
   clickAdd() {
-    let entityNamePlural = this.props.entityNamePlural || `${this.props.entityName}s`;
+    const { entityName, entityNamePlural: passedEntityNamePlural, callback, redirectAfterCreate, callbackFullProps } = this.props;
+    let entityNamePlural = passedEntityNamePlural || `${entityName}s`;
     let directory = snakeCase(entityNamePlural);
     this.setState({
-      spinner: true
+      spinner: true,
     });
     createEntity({
       directory,
-      entityName: this.props.entityName,
-      entity: this.state[this.props.entityName],
+      entityName,
+      entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state[entityName], fields: ['price'] }),
     }).then((response) => {
-      if (this.props.redirectAfterCreate) {
-        window.location.href = `/${directory}/${response[this.props.entityName].id}`;
+      if (redirectAfterCreate) {
+        window.location.href = `/${directory}/${response[entityName].id}`;
       } else {
-        if (this.props.callback) {
-          this.props.callback(response[entityNamePlural], entityNamePlural);
+        if (callback) {
+          callback(response[entityNamePlural], entityNamePlural);
         }
-        if (this.props.callbackFullProps) {
-          this.props.callbackFullProps(response, entityNamePlural);
+        if (callbackFullProps) {
+          callbackFullProps(response, entityNamePlural);
         }
       }
     }, (response) => {
+      const { errors } = response;
       this.setState({
         spinner: false,
-        errors: response.errors
+        errors,
       }, () => {
         resetNiceSelect({ selector: '.admin-modal select', func: Details.changeField.bind(this, this.changeFieldArgs()) });
       });
@@ -322,6 +324,36 @@ export default class NewEntity extends React.Component {
             }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'number', columnHeader: 'Order Number' }) }
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'orderDate' }) }
+          </div>
+        ]);
+      case 'institutionOrderFilm':
+        return([
+          <div key="1" className="row">
+            { Details.renderField.bind(this)({
+              columnWidth: 9,
+              entity: 'institutionOrderFilm',
+              property: 'filmId',
+              columnHeader: 'Film',
+              type: 'modal',
+              optionDisplayProperty: 'title',
+              optionsArrayName: 'films',
+            }) }
+            { Details.renderDropDown.bind(this)({
+              columnWidth: 3,
+              entity: 'institutionOrderFilm',
+              property: 'licensedRights',
+              type: 'dropdown',
+              options: [
+                { value: "disc_only", label: "Disc Only" },
+                { value: "ppr", label: "PPR" },
+                { value: "drl", label: "DRL" },
+                { value: "ppr_and_drl", label: "PPR and DRL" },
+              ],
+              optionDisplayProperty: 'label',
+            }) }
+          </div>,
+          <div key="2" className="row">
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrderFilm', property: 'price' }) }
           </div>
         ]);
       case 'language':
