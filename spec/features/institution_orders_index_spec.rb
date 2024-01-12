@@ -32,7 +32,7 @@ describe 'institution_orders_index', type: :feature do
       click_btn("Add Order")
     end
     info = {
-      institution_id: { label: 'Columbia University', type: :select },
+      institution_id: { value: 'Columbia University', type: :select_modal },
       order_date: '2/1/2024',
       number: '2000',
     }
@@ -43,7 +43,7 @@ describe 'institution_orders_index', type: :feature do
     )
   end
 
-  it 'adds institution orders without changing customer dropdown' do
+  it 'adds institution orders without changing customer' do
     create(:institution, label: 'Columbia University', sage_id: 'COLUMBIA')
     visit institution_orders_path(as: $admin_user)
     within('#institution-orders-index') do
