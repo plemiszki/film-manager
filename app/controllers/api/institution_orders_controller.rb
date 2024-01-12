@@ -76,23 +76,20 @@ class Api::InstitutionOrdersController < AdminController
       shipping_state: institution_order.shipping_state,
       shipping_zip: institution_order.shipping_zip,
       shipping_country: institution_order.shipping_country,
-      total: institution_order.price + institution_order.shipping_fee,
+      total: institution_order.total,
       institution_id: institution_order.institution_id,
       institution_order_id: institution_order.id,
       po_number: institution_order.number,
     }
     invoice = Invoice.create!(new_invoice_data)
-    description_lines = institution_order.films.pluck(:title)
-    description_lines << "\n"
-    description_lines << institution_order.licensed_rights_display_text
-    description_lines << "\n"
-    description_lines << "Formats: #{institution_order.formats.pluck(:name).join(", ")}"
-    InvoiceRow.create!(
-      invoice: invoice,
-      item_label: description_lines.join("\n"),
-      item_qty: 1,
-      total_price: institution_order.price,
-    )
+    institution_order.films.each do |order_film|
+      InvoiceRow.create!(
+        invoice: invoice,
+        item_label: "#{order_film.title} - #{order_film.licensed_rights_display_text}",
+        item_qty: 1,
+        total_price: order_film.price,
+      )
+    end
     unless institution_order.shipping_fee.zero?
       InvoiceRow.create!(
         invoice: invoice,
