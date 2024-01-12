@@ -69,13 +69,16 @@ describe 'institution_orders_index', type: :feature do
     within('#institution-orders-index') do
       click_btn("Add Order")
     end
+    fill_out_and_submit_modal({}, :input)
+    expect(page).to have_content("Institution can't be blank")
+    expect(page).to have_content("Order date can't be blank")
+
     info = {
-      institution_id: { label: 'Harvard University', type: :select }, # TODO: remove when initial value bug fixed
+      institution_id: { value: 'Harvard University', type: :select_modal },
       number: '1000',
     }
     fill_out_and_submit_modal(info, :input)
     expect(page).to have_content("Number has already been taken")
-    expect(page).to have_content("Order date can't be blank")
   end
 
 end
