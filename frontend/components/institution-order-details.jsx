@@ -232,31 +232,14 @@ export default class InstitutionOrderDetails extends React.Component {
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingCountry', columnHeader: 'Country', readOnly: invoice }) }
               </div>
               <hr />
-              <div className="row">
-                { Details.renderDropDown.bind(this)({
-                  columnWidth: 2,
-                  entity: 'institutionOrder',
-                  property: 'licensedRights',
-                  type: 'dropdown',
-                  options: [
-                    { value: "disc_only", label: "Disc Only" },
-                    { value: "ppr", label: "PPR" },
-                    { value: "drl", label: "DRL" },
-                    { value: "ppr_and_drl", label: "PPR and DRL" },
-                  ],
-                  optionDisplayProperty: 'label',
-                  readOnly: invoice,
-                }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'price', readOnly: invoice }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee', readOnly: invoice }) }
-              </div>
-              <hr />
               <Table
                 rows={ orderFilms }
                 links={ false }
                 alphabetize
                 columns={[
-                  { name: 'filmTitle', header: 'Films' },
+                  { name: 'filmTitle', header: 'Film' },
+                  { name: 'licensedRights' },
+                  { name: 'price' },
                 ]}
                 clickDelete={ invoice ? null : film => this.deleteFilm(film.id) }
                 sortable={ false }
@@ -288,6 +271,27 @@ export default class InstitutionOrderDetails extends React.Component {
                   marginBottom
                 />
               ) }
+              <hr />
+              <div className="row">
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'price', columnHeader: 'Subtotal', value: 'TODO', readOnly: true }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee', readOnly: invoice }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'price', columnHeader: 'Total', value: 'TODO', readOnly: true }) }
+                { Details.renderDropDown.bind(this)({
+                  columnWidth: 2,
+                  entity: 'institutionOrder',
+                  property: 'licensedRights',
+                  type: 'dropdown',
+                  options: [
+                    { value: "disc_only", label: "Disc Only" },
+                    { value: "ppr", label: "PPR" },
+                    { value: "drl", label: "DRL" },
+                    { value: "ppr_and_drl", label: "PPR and DRL" },
+                  ],
+                  optionDisplayProperty: 'label',
+                  readOnly: invoice,
+                }) }
+                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'price', readOnly: invoice }) }
+              </div>
               <hr />
               { invoice ? (
                 <>
