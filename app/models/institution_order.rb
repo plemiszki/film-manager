@@ -57,4 +57,12 @@ class InstitutionOrder < ActiveRecord::Base
     end
   end
 
+  def subtotal
+    order_films.reduce(0) { |accum, order_film| accum + order_film.price }
+  end
+
+  def total
+    subtotal + shipping_fee
+  end
+
 end

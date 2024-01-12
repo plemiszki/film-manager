@@ -24,6 +24,8 @@ json.institutionOrder do
   json.trackingNumber @institution_order.tracking_number
   json.notes @institution_order.notes
   json.customerEmail @customer_email
+  json.subtotal dollarify(number_with_precision(@institution_order.subtotal, precision: 2, delimiter: ','))
+  json.total dollarify(number_with_precision(@institution_order.total, precision: 2, delimiter: ','))
 end
 if @invoice
   json.invoice do

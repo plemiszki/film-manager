@@ -252,9 +252,9 @@ export default class InstitutionOrderDetails extends React.Component {
               ) }
               <hr />
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'price', columnHeader: 'Subtotal', value: 'TODO', readOnly: true }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'subtotal', readOnly: true }) }
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee', readOnly: invoice }) }
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'price', columnHeader: 'Total', value: 'TODO', readOnly: true }) }
+                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'total', readOnly: true }) }
                 { Details.renderDropDown.bind(this)({
                   columnWidth: 2,
                   entity: 'institutionOrder',
