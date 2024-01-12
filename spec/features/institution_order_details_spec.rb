@@ -40,9 +40,8 @@ describe 'institution_order_details', type: :feature do
     expect(find('input[data-field="shippingZip"]').value).to eq '02138'
     expect(find('input[data-field="shippingCountry"]').value).to eq 'USA'
 
-    expect(find('select[data-field="licensedRights"]', visible: false).value).to eq 'drl'
-    expect(find('input[data-field="price"]').value).to eq '$500.00'
     expect(find('input[data-field="shippingFee"]').value).to eq '$15.00'
+    # TODO: check subtotal/total
 
     expect(find('textarea[data-field="notes"]').value).to eq 'order notes'
   end
@@ -67,8 +66,6 @@ describe 'institution_order_details', type: :feature do
       shipping_state: 'Shipping State',
       shipping_zip: '90210',
       shipping_country: 'USA',
-      licensed_rights: { label: 'PPR and DRL', type: :select },
-      price: "200",
       shipping_fee: "20",
       materials_sent: "4/15/24",
       tracking_number: "12345",
@@ -82,16 +79,12 @@ describe 'institution_order_details', type: :feature do
       db_data: {
         institution_id: 2,
         order_date: Date.new(2024, 2, 1),
-        materials_sent: Date.new(2024, 4, 15),
         shipping_fee: 20,
-        price: 200,
-        licensed_rights: "ppr_and_drl",
+        materials_sent: Date.new(2024, 4, 15),
       },
       component_data: {
         institution_id: "Columbia University",
-        licensed_rights: "ppr_and_drl",
         order_date: "2/1/2024",
-        price: "$200.00",
         shipping_fee: "$20.00",
         materials_sent: "4/15/2024",
       },

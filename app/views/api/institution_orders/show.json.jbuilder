@@ -17,15 +17,13 @@ json.institutionOrder do
   json.shippingState @institution_order.shipping_state
   json.shippingZip @institution_order.shipping_zip
   json.shippingCountry @institution_order.shipping_country
-  json.licensedRights @institution_order.licensed_rights
-  json.price dollarify(number_with_precision(@institution_order.price, precision: 2, delimiter: ','))
+  json.subtotal dollarify(number_with_precision(@institution_order.subtotal, precision: 2, delimiter: ','))
   json.shippingFee dollarify(number_with_precision(@institution_order.shipping_fee, precision: 2, delimiter: ','))
+  json.total dollarify(number_with_precision(@institution_order.total, precision: 2, delimiter: ','))
   json.materialsSent @institution_order.materials_sent ? @institution_order.materials_sent.strftime("%-m/%-d/%Y") : ''
   json.trackingNumber @institution_order.tracking_number
   json.notes @institution_order.notes
   json.customerEmail @customer_email
-  json.subtotal dollarify(number_with_precision(@institution_order.subtotal, precision: 2, delimiter: ','))
-  json.total dollarify(number_with_precision(@institution_order.total, precision: 2, delimiter: ','))
 end
 if @invoice
   json.invoice do
