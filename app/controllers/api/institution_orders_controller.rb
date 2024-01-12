@@ -82,10 +82,10 @@ class Api::InstitutionOrdersController < AdminController
       po_number: institution_order.number,
     }
     invoice = Invoice.create!(new_invoice_data)
-    institution_order.films.each do |order_film|
+    institution_order.order_films.each do |order_film|
       InvoiceRow.create!(
         invoice: invoice,
-        item_label: "#{order_film.title} - #{order_film.licensed_rights_display_text}",
+        item_label: "#{order_film.film.title} - #{order_film.licensed_rights_display_text}",
         item_qty: 1,
         total_price: order_film.price,
       )
