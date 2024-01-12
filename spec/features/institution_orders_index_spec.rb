@@ -4,8 +4,11 @@ require 'support/features_helper'
 describe 'institution_orders_index', type: :feature do
 
   before(:each) do
+    create(:label)
+    create(:film)
     create(:institution)
-    order = create(:institution_order)
+    order = create(:institution_order, shipping_fee: 20)
+    create(:institution_order_film, price: 1150)
     create(:invoice, invoice_type: "institution", number: "1E", sent_date: Date.new(2024, 1, 4), institution_order: order)
   end
 
@@ -20,6 +23,7 @@ describe 'institution_orders_index', type: :feature do
       expect(page).to have_content '1/3/2024' # order date
       expect(page).to have_content '1000' # order number
       expect(page).to have_content 'Harvard University' # customer name
+      expect(page).to have_content '$1,170.00' # total
       expect(page).to have_content '1/4/2024' # invoice sent date
       expect(page).to have_content '1E' # invoice number
     end

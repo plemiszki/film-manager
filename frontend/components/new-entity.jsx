@@ -47,19 +47,6 @@ export default class NewEntity extends React.Component {
         obj[entityName] = entity;
         this.setState(obj, () => {
           resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
-
-          // update entity foreign keys from fetched data
-          if (entityName === 'institutionOrder') {
-            const { institutions } = this.state;
-            if (institutions.length > 0) {
-              this.setState({
-                institutionOrder: {
-                  ...entity,
-                  institutionId: institutions[0].id,
-                },
-              });
-            }
-          }
         });
       });
     } else {
