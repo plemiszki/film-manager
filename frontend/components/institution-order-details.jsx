@@ -188,13 +188,14 @@ export default class InstitutionOrderDetails extends React.Component {
             <h1>Educational Order Details</h1>
             <div className="white-box">
               <div className="row">
-                { Details.renderDropDown.bind(this)({
-                  columnWidth: 3,
+                { Details.renderField.bind(this)({
+                  columnHeader: 'Customer',
+                  columnWidth: 6,
+                  type: 'modal',
                   entity: 'institutionOrder',
                   property: 'institutionId',
                   options: institutions,
                   optionDisplayProperty: 'label',
-                  columnHeader: 'Customer',
                   readOnly: invoice,
                 }) }
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'number', columnHeader: 'Order Number', readOnly: invoice }) }

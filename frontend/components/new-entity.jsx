@@ -311,17 +311,17 @@ export default class NewEntity extends React.Component {
       case 'institutionOrder':
         return([
           <div key="1" className="row">
-            { Details.renderDropDown.bind(this)({
-              columnWidth: 4,
+            { Details.renderField.bind(this)({
+              columnHeader: 'Customer',
+              columnWidth: 6,
+              type: 'modal',
               entity: 'institutionOrder',
               property: 'institutionId',
               options: this.state.institutions,
               optionDisplayProperty: 'label',
-              columnHeader: 'Customer',
-              maxOptions: 3
             }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'number', columnHeader: 'Order Number' }) }
-            { Details.renderField.bind(this)({ columnWidth: 4, entity: 'institutionOrder', property: 'orderDate' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'number', columnHeader: 'Order Number' }) }
+            { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'orderDate' }) }
           </div>
         ]);
       case 'language':
