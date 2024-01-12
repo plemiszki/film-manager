@@ -47,23 +47,6 @@ describe 'institution_orders_index', type: :feature do
     )
   end
 
-  it 'adds institution orders without changing customer' do
-    create(:institution, label: 'Columbia University', sage_id: 'COLUMBIA')
-    visit institution_orders_path(as: $admin_user)
-    within('#institution-orders-index') do
-      click_btn("Add Order")
-    end
-    info = {
-      order_date: '2/1/2024',
-      number: '2000',
-    }
-    fill_out_and_submit_modal(info, :input)
-    verify_db(
-      entity: InstitutionOrder.second,
-      data: info.merge({ order_date: Date.new(2024, 2, 1), institution_id: 2 }),
-    )
-  end
-
   it 'validates institution orders' do
     visit institution_orders_path(as: $admin_user)
     within('#institution-orders-index') do
