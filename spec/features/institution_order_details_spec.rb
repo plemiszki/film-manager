@@ -20,7 +20,7 @@ describe 'institution_order_details', type: :feature do
     wait_for_ajax
     expect(page).to have_content 'Educational Order Details'
 
-    expect(find('select[data-field="institutionId"]', visible: false).value).to eq '1'
+    expect(find('input[data-field="institutionId"]').value).to eq 'Harvard University'
     expect(find('input[data-field="number"]').value).to eq '1000'
     expect(find('input[data-field="orderDate"]').value).to eq '1/3/2024'
 
@@ -50,7 +50,7 @@ describe 'institution_order_details', type: :feature do
   it 'updates information about the institution_order' do
     visit institution_order_path(@institution_order, as: $admin_user)
     new_info = {
-      institution_id: { label: 'Columbia', type: :select },
+      institution_id: { value: 'Columbia', type: :select_modal },
       number: '2000',
       order_date: "2/1/24",
       billing_name: 'Billing Name',
@@ -88,7 +88,7 @@ describe 'institution_order_details', type: :feature do
         licensed_rights: "ppr_and_drl",
       },
       component_data: {
-        institution_id: "2",
+        institution_id: "Columbia University",
         licensed_rights: "ppr_and_drl",
         order_date: "2/1/2024",
         price: "$200.00",
@@ -124,11 +124,19 @@ describe 'institution_order_details', type: :feature do
     create(:film)
     visit institution_order_path(@institution_order, as: $admin_user)
     click_btn('Add Film')
-    select_from_modal('Wilby Wonderful')
+    fill_out_and_submit_modal({
+      film_id: { value: 'Wilby Wonderful', type: :select_modal },
+      licensed_rights: { label: 'PPR and DRL', type: :select },
+      price: 100,
+    }, :input)
     wait_for_ajax
     expect(@institution_order.reload.order_films.length).to eq(1)
     expect(@institution_order.reload.order_films.first.film_id).to eq(1)
+    expect(@institution_order.reload.order_films.first.price).to eq(100)
+    expect(@institution_order.reload.order_films.first.licensed_rights).to eq("ppr_and_drl")
     expect(page).to have_content('Wilby Wonderful')
+    expect(page).to have_content('PPR and DRL')
+    expect(page).to have_content('$100.00')
   end
 
   it 'removes films from the order' do
