@@ -82,22 +82,7 @@ class Api::InstitutionOrdersController < AdminController
       po_number: institution_order.number,
     }
     invoice = Invoice.create!(new_invoice_data)
-    institution_order.order_films.each do |order_film|
-      InvoiceRow.create!(
-        invoice: invoice,
-        item_label: "#{order_film.film.title} - #{order_film.licensed_rights_display_text}",
-        item_qty: 1,
-        total_price: order_film.price,
-      )
-    end
-    unless institution_order.shipping_fee.zero?
-      InvoiceRow.create!(
-        invoice: invoice,
-        item_label: "Shipping Fee",
-        item_qty: 1,
-        total_price: institution_order.shipping_fee,
-      )
-    end
+    institution_order.create_or_update_invoice_rows!
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "send institution invoice", first_line: "Sending Invoice", second_line: false)
     SendInstitutionInvoice.perform_async(0, {

@@ -65,4 +65,25 @@ class InstitutionOrder < ActiveRecord::Base
     subtotal + shipping_fee
   end
 
+  def create_or_update_invoice_rows!
+    raise "no invoice found for this order" if invoice.nil?
+    invoice.rows.destroy_all
+    order_films.each do |order_film|
+      InvoiceRow.create!(
+        invoice: invoice,
+        item_label: "#{order_film.film.title} - #{order_film.licensed_rights_display_text}",
+        item_qty: 1,
+        total_price: order_film.price,
+      )
+    end
+    if shipping_fee > 0
+      InvoiceRow.create!(
+        invoice: invoice,
+        item_label: "Shipping Fee",
+        item_qty: 1,
+        total_price: shipping_fee,
+      )
+    end
+  end
+
 end
