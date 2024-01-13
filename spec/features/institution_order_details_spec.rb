@@ -136,7 +136,7 @@ describe 'institution_order_details', type: :feature do
     verify_component(
       data: {
         subtotal: "$100.00",
-        total: "$100.00",
+        total: "$115.00",
       },
     )
   end
@@ -153,7 +153,7 @@ describe 'institution_order_details', type: :feature do
     verify_component(
       data: {
         subtotal: "$0.00",
-        total: "$0.00",
+        total: "$15.00",
       },
     )
   end

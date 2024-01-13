@@ -78,7 +78,7 @@ def verify_db_and_component(entity:, data:, db_data: {}, component_data: {})
   db_data = data.merge(db_data)
   component_data = data.merge(component_data)
   verify_db(entity: entity, data: db_data)
-  verify_component(entity: entity, data: component_data)
+  verify_component(data: component_data)
 end
 
 def verify_db(entity:, data:)

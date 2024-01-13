@@ -90,11 +90,15 @@ export default class InstitutionOrderDetails extends React.Component {
       directory: 'institution_order_films',
       id,
     }).then((response) => {
-      const { institutionOrderFilms, films } = response;
+      const { institutionOrderFilms, films, institutionOrder } = response;
       this.setState({
         spinner: false,
         films,
         orderFilms: institutionOrderFilms,
+        institutionOrder: {
+          ...this.state.institutionOrder,
+          ...institutionOrder,
+        },
       });
     });
   }
@@ -317,11 +321,15 @@ export default class InstitutionOrderDetails extends React.Component {
             }}
             passData={{ films }}
             callbackFullProps={ response => {
-              const { institutionOrderFilms, films } = response;
+              const { institutionOrderFilms, films, institutionOrder } = response;
               this.setState({
                 orderFilms: institutionOrderFilms,
                 films,
                 addFilmModalOpen: false,
+                institutionOrder: {
+                  ...this.state.institutionOrder,
+                  ...institutionOrder,
+                },
               });
             } }
           />

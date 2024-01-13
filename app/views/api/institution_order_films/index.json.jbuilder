@@ -8,3 +8,7 @@ json.films @films do |film|
   json.id film.id
   json.title film.title
 end
+json.institutionOrder do
+  json.subtotal dollarify(number_with_precision(@institution_order.subtotal, precision: 2, delimiter: ','))
+  json.total dollarify(number_with_precision(@institution_order.total, precision: 2, delimiter: ','))
+end
