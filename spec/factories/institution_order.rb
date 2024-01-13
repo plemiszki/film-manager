@@ -18,11 +18,10 @@ FactoryBot.define do
     shipping_state { 'MA' }
     shipping_zip { '02138' }
     shipping_country { 'USA' }
-    licensed_rights { 2 }
-    materials_sent { Date.new(2024, 1, 5) }
-    price { 500 }
     shipping_fee { 15 }
-    notes { 'order notes' }
+    invoice_notes { 'invoice notes' }
+    materials_sent { Date.new(2024, 1, 5) }
+    internal_notes { 'internal notes' }
   end
 
 end

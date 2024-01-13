@@ -22,7 +22,8 @@ json.institutionOrder do
   json.total dollarify(number_with_precision(@institution_order.total, precision: 2, delimiter: ','))
   json.materialsSent @institution_order.materials_sent ? @institution_order.materials_sent.strftime("%-m/%-d/%Y") : ''
   json.trackingNumber @institution_order.tracking_number
-  json.notes @institution_order.notes
+  json.internalNotes @institution_order.internal_notes
+  json.invoiceNotes @institution_order.invoice_notes
   json.customerEmail @customer_email
 end
 if @invoice

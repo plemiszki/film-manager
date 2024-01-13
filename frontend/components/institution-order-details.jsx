@@ -263,6 +263,9 @@ export default class InstitutionOrderDetails extends React.Component {
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee', readOnly: invoice }) }
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'total', readOnly: true }) }
               </div>
+              <div className="row">
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'institutionOrder', property: 'invoiceNotes', rows: 5, readOnly: invoice }) }
+              </div>
               <hr />
               { invoice ? (
                 <>
@@ -280,7 +283,7 @@ export default class InstitutionOrderDetails extends React.Component {
               </div>
               <hr />
               <div className="row">
-                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'institutionOrder', property: 'notes', rows: 5 }) }
+                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'institutionOrder', property: 'internalNotes', rows: 5 }) }
               </div>
               <BottomButtons
                 entityName="educationalOrder"

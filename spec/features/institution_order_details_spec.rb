@@ -40,10 +40,12 @@ describe 'institution_order_details', type: :feature do
     expect(find('input[data-field="shippingZip"]').value).to eq '02138'
     expect(find('input[data-field="shippingCountry"]').value).to eq 'USA'
 
+    expect(find('input[data-field="subtotal"]').value).to eq '$0.00'
     expect(find('input[data-field="shippingFee"]').value).to eq '$15.00'
-    # TODO: check subtotal/total
+    expect(find('input[data-field="total"]').value).to eq '$15.00'
+    expect(find('textarea[data-field="invoiceNotes"]').value).to eq 'invoice notes'
 
-    expect(find('textarea[data-field="notes"]').value).to eq 'order notes'
+    expect(find('textarea[data-field="internalNotes"]').value).to eq 'internal notes'
   end
 
   it 'updates information about the institution_order' do
@@ -69,7 +71,8 @@ describe 'institution_order_details', type: :feature do
       shipping_fee: "20",
       materials_sent: "4/15/24",
       tracking_number: "12345",
-      notes: 'new notes',
+      invoice_notes: 'new invoice notes',
+      internal_notes: 'new internal notes',
     }
     fill_out_form(new_info)
     save_and_wait

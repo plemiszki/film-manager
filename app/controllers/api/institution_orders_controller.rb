@@ -115,12 +115,11 @@ class Api::InstitutionOrdersController < AdminController
       :shipping_state,
       :shipping_zip,
       :shipping_country,
-      :licensed_rights,
-      :price,
       :shipping_fee,
       :materials_sent,
       :tracking_number,
-      :notes,
+      :internal_notes,
+      :invoice_notes,
     )
   end
 

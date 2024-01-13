@@ -2,9 +2,19 @@ class InstitutionOrder < ActiveRecord::Base
 
   include DateFieldYearsConverter
 
-  enum licensed_rights: [:disc_only, :ppr, :drl, :ppr_and_drl]
+  # validations
+
+  before_validation :convert_date_field_years
+
+  validates :institution_id, presence: true
+  validates :order_date, date: true
+  validates :materials_sent, date: { blank_ok: true }
+  validates :number, uniqueness: { scope: :institution_id }
+  validates_numericality_of :shipping_fee, :greater_than_or_equal_to => 0
 
   after_create :add_addresses
+
+  # associations
 
   belongs_to :institution
   alias_attribute :customer, :institution
@@ -18,14 +28,6 @@ class InstitutionOrder < ActiveRecord::Base
   has_many :formats, through: :institution_order_formats
 
   has_one :invoice
-
-  before_validation :convert_date_field_years
-
-  validates :institution_id, presence: true
-  validates :order_date, date: true
-  validates :materials_sent, date: { blank_ok: true }
-  validates :number, uniqueness: { scope: :institution_id }
-  validates_numericality_of :price, :shipping_fee, :greater_than_or_equal_to => 0
 
   def add_addresses
     institution = Institution.find(institution_id)
