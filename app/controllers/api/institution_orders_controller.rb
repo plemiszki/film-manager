@@ -80,6 +80,7 @@ class Api::InstitutionOrdersController < AdminController
       institution_id: institution_order.institution_id,
       institution_order_id: institution_order.id,
       po_number: institution_order.number,
+      notes: institution_order.invoice_notes,
     }
     invoice = Invoice.create!(new_invoice_data)
     institution_order.create_or_update_invoice_rows!

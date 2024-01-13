@@ -183,6 +183,7 @@ describe 'institution_order_details', type: :feature do
   end
 
   it 'sends invoices' do
+    INVOICE_NOTES = "some notes"
     create(:setting)
     create(:label)
     create(:film)
@@ -196,6 +197,10 @@ describe 'institution_order_details', type: :feature do
         price: 100,
       }, :input)
       wait_for_ajax
+      fill_out_form({
+        invoice_notes: INVOICE_NOTES,
+      })
+      save_and_wait
       find('a', text: 'Send Invoice').click
       Capybara.using_wait_time 20 do
         expect(page).to have_content('Sending Invoice')
@@ -205,6 +210,7 @@ describe 'institution_order_details', type: :feature do
       expect(Invoice.count).to eq(1)
       invoice = Invoice.first
       expect(invoice.total). to eql(115)
+      expect(invoice.notes). to eql(INVOICE_NOTES)
       expect(invoice.rows.pluck(:total_price)). to eql([100, 15])
       find('a', text: 'OK').click
       wait_for_ajax
