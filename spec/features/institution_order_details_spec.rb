@@ -123,13 +123,22 @@ describe 'institution_order_details', type: :feature do
       price: 100,
     }, :input)
     wait_for_ajax
-    expect(@institution_order.reload.order_films.length).to eq(1)
-    expect(@institution_order.reload.order_films.first.film_id).to eq(1)
-    expect(@institution_order.reload.order_films.first.price).to eq(100)
-    expect(@institution_order.reload.order_films.first.licensed_rights).to eq("ppr_and_drl")
-    expect(page).to have_content('Wilby Wonderful')
-    expect(page).to have_content('PPR and DRL')
-    expect(page).to have_content('$100.00')
+    @institution_order = @institution_order.reload
+    expect(@institution_order.order_films.length).to eq(1)
+    expect(@institution_order.order_films.first.film_id).to eq(1)
+    expect(@institution_order.order_films.first.price).to eq(100)
+    expect(@institution_order.order_films.first.licensed_rights).to eq("ppr_and_drl")
+    within('table[data-test="films"]') do
+      expect(page).to have_content('Wilby Wonderful')
+      expect(page).to have_content('PPR and DRL')
+      expect(page).to have_content('$100.00')
+    end
+    verify_component(
+      data: {
+        subtotal: "$100.00",
+        total: "$100.00",
+      },
+    )
   end
 
   it 'removes films from the order' do
@@ -141,6 +150,12 @@ describe 'institution_order_details', type: :feature do
     find('.x-gray-circle').click
     wait_for_ajax
     expect(@institution_order.reload.order_films.length).to eq(0)
+    verify_component(
+      data: {
+        subtotal: "$0.00",
+        total: "$0.00",
+      },
+    )
   end
 
   it 'adds formats to the order' do

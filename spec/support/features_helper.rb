@@ -78,7 +78,16 @@ def verify_db_and_component(entity:, data:, db_data: {}, component_data: {})
   db_data = data.merge(db_data)
   component_data = data.merge(component_data)
   verify_db(entity: entity, data: db_data)
-  component_data.each do |key, value|
+  verify_component(entity: entity, data: component_data)
+end
+
+def verify_db(entity:, data:)
+  arrow_syntax = data.map { |key, value| [key.to_s, get_value(value)] }.to_h
+  expect(entity.reload.attributes).to include(arrow_syntax)
+end
+
+def verify_component(data:)
+  data.each do |key, value|
     field = find("[data-field=\"#{key.to_s.camelize(:lower)}\"]", visible: :all)
     if field['type'] == 'checkbox'
       expect(field.checked?).to eq get_value(value)
@@ -86,11 +95,6 @@ def verify_db_and_component(entity:, data:, db_data: {}, component_data: {})
       expect(field.value).to eq get_value(value).to_s
     end
   end
-end
-
-def verify_db(entity:, data:)
-  arrow_syntax = data.map { |key, value| [key.to_s, get_value(value)] }.to_h
-  expect(entity.reload.attributes).to include(arrow_syntax)
 end
 
 def click_btn(text, type = :link)

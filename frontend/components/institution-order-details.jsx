@@ -223,6 +223,7 @@ export default class InstitutionOrderDetails extends React.Component {
                 clickDelete={ invoice ? null : film => this.deleteFilm(film.id) }
                 sortable={ false }
                 style={ { marginBottom: 15 } }
+                test="films"
               />
               { invoice ? null : (
                 <OutlineButton
