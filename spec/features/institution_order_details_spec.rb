@@ -181,8 +181,17 @@ describe 'institution_order_details', type: :feature do
 
   it 'sends invoices' do
     create(:setting)
+    create(:label)
+    create(:film)
     Sidekiq::Testing.inline! do
       visit institution_order_path(@institution_order, as: $admin_user)
+      wait_for_ajax
+      click_btn('Add Film')
+      fill_out_and_submit_modal({
+        film_id: { value: 'Wilby Wonderful', type: :select_modal },
+        licensed_rights: { label: 'PPR and DRL', type: :select },
+        price: 100,
+      }, :input)
       wait_for_ajax
       find('a', text: 'Send Invoice').click
       Capybara.using_wait_time 20 do
@@ -191,6 +200,9 @@ describe 'institution_order_details', type: :feature do
       end
       expect(page).to have_content('Invoice Sent Successfully')
       expect(Invoice.count).to eq(1)
+      invoice = Invoice.first
+      expect(invoice.total). to eql(115)
+      expect(invoice.rows.pluck(:total_price)). to eql([100, 15])
       find('a', text: 'OK').click
       wait_for_ajax
       expect(page).to have_content('Invoice 1E was sent on')

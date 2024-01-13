@@ -90,15 +90,17 @@ export default class InstitutionOrderDetails extends React.Component {
       directory: 'institution_order_films',
       id,
     }).then((response) => {
-      const { institutionOrderFilms, films, institutionOrder } = response;
+      const { institutionOrderFilms, films } = response;
+      const institutionOrder = {
+        ...this.state.institutionOrder,
+        ...response.institutionOrder,
+      };
       this.setState({
         spinner: false,
-        films,
         orderFilms: institutionOrderFilms,
-        institutionOrder: {
-          ...this.state.institutionOrder,
-          ...institutionOrder,
-        },
+        films,
+        institutionOrder,
+        institutionOrderSaved: deepCopy(institutionOrder),
       });
     });
   }
@@ -321,15 +323,17 @@ export default class InstitutionOrderDetails extends React.Component {
             }}
             passData={{ films }}
             callbackFullProps={ response => {
-              const { institutionOrderFilms, films, institutionOrder } = response;
+              const { institutionOrderFilms, films } = response;
+              const institutionOrder = {
+                ...this.state.institutionOrder,
+                ...response.institutionOrder,
+              };
               this.setState({
                 orderFilms: institutionOrderFilms,
                 films,
                 addFilmModalOpen: false,
-                institutionOrder: {
-                  ...this.state.institutionOrder,
-                  ...institutionOrder,
-                },
+                institutionOrder,
+                institutionOrderSaved: deepCopy(institutionOrder),
               });
             } }
           />
