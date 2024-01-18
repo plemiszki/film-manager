@@ -76,6 +76,7 @@ class InstitutionOrder < ActiveRecord::Base
         item_label: "#{order_film.film.title} - #{order_film.licensed_rights_display_text}",
         item_qty: 1,
         total_price: order_film.price,
+        item_id: order_film.film.id,
       )
     end
     if shipping_fee > 0
