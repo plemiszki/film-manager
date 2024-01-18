@@ -67,9 +67,11 @@ class InstitutionOrder < ActiveRecord::Base
     raise "no invoice found for this order" if invoice.nil?
     invoice.rows.destroy_all
     order_films.each do |order_film|
+      label = "#{order_film.film.title} - #{order_film.licensed_rights_display_text}"
+      label += " (#{order_film.formats})" unless order_film.formats.empty?
       InvoiceRow.create!(
         invoice: invoice,
-        item_label: "#{order_film.film.title} - #{order_film.licensed_rights_display_text}",
+        item_label: label,
         item_qty: 1,
         total_price: order_film.price,
         item_id: order_film.film.id,
