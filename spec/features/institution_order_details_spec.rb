@@ -124,17 +124,21 @@ describe 'institution_order_details', type: :feature do
       film_id: { value: 'Wilby Wonderful', type: :select_modal },
       licensed_rights: { label: 'PPR and DRL', type: :select },
       price: 100,
+      formats: "HD Cam",
     }, :input)
     wait_for_ajax
     @institution_order = @institution_order.reload
     expect(@institution_order.order_films.length).to eq(1)
-    expect(@institution_order.order_films.first.film_id).to eq(1)
-    expect(@institution_order.order_films.first.price).to eq(100)
-    expect(@institution_order.order_films.first.licensed_rights).to eq("ppr_and_drl")
+    institution_order_film = @institution_order.order_films.first
+    expect(institution_order_film.film_id).to eq(1)
+    expect(institution_order_film.price).to eq(100)
+    expect(institution_order_film.licensed_rights).to eq("ppr_and_drl")
+    expect(institution_order_film.formats).to eq("HD Cam")
     within('table[data-test="films"]') do
       expect(page).to have_content('Wilby Wonderful')
       expect(page).to have_content('PPR and DRL')
       expect(page).to have_content('$100.00')
+      expect(page).to have_content('HD Cam')
     end
     verify_component(
       data: {
