@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_18_111839) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_18_123515) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -478,6 +478,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_18_111839) do
     t.datetime "updated_at", null: false
     t.decimal "price", precision: 7, scale: 2, default: "0.0"
     t.integer "licensed_rights", default: 0
+    t.string "formats", default: ""
     t.index ["film_id", "institution_order_id"], name: "index_inst_order_films_on_film_id_and_inst_order_id", unique: true
   end
 
