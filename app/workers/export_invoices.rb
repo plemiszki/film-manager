@@ -164,7 +164,7 @@ class ExportInvoices
             "Job ID": { type: :String, value: item.item_label == 'Shipping Fee' ? '' : Film.find(item.item_id).get_sage_id },
           })
         end
-        sheet.add_row(COLUMNS.map { |column| rowData.fetch(column.to_sym, "" })
+        sheet.add_row(COLUMNS.map { |column| rowData.fetch(column.to_sym, "") })
       end
       job.update({ current_value: invoice_index + 1 })
     end
