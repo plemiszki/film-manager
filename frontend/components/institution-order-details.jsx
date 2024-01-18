@@ -254,6 +254,7 @@ export default class InstitutionOrderDetails extends React.Component {
               institutionOrderId: institutionOrder.id,
               price: '',
               licensedRights: 0,
+              formats: '',
             }}
             passData={{ films }}
             callbackFullProps={ response => {

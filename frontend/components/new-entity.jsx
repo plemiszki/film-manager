@@ -341,6 +341,7 @@ export default class NewEntity extends React.Component {
           </div>,
           <div key="2" className="row">
             { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrderFilm', property: 'price' }) }
+            { Details.renderField.bind(this)({ columnWidth: 9, entity: 'institutionOrderFilm', property: 'formats', columnHeader: "Format(s)" }) }
           </div>
         ]);
       case 'language':
