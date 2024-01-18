@@ -144,24 +144,26 @@ class ExportInvoices
           booking_film = booking.film
           booking_gl_code = get_gl_code(booking)
           errors << "No Sage ID for #{booking_venue.label}" if booking_venue.sage_id.empty?
+          is_shipping_fee = item.item_label == 'Shipping Fee'
           rowData = rowData.merge({
             "Customer ID": { type: :String, value: booking_venue.sage_id },
             "Date Due": invoice.sent_date + 30,
             "Displayed Terms": "Net 30",
             "Description": { type: :String, value: "#{booking_film.title} #{booking.start_date.strftime("%-m/%-d/%Y")} - #{booking.end_date.strftime("%-m/%-d/%Y")}" },
-            "G/L Account": item.item_label == 'Shipping Fee' ? '40069' : booking_gl_code,
-            "Job ID": { type: :String, value: item.item_label == 'Shipping Fee' ? '' : booking_film.get_sage_id },
+            "G/L Account": is_shipping_fee ? '40069' : booking_gl_code,
+            "Job ID": { type: :String, value: is_shipping_fee ? '' : booking_film.get_sage_id },
           })
         when 'institution'
           institution = invoice.institution
           errors << "No Sage ID for #{institution.label}" if institution.sage_id.empty?
+          is_shipping_fee = item.item_label == 'Shipping Fee'
           rowData = rowData.merge({
             "Customer ID": { type: :String, value: institution.sage_id },
             "Date Due": invoice.sent_date + 30,
             "Displayed Terms": "Net 30",
             "Description": { type: :String, value: item.item_label },
-            "G/L Account": "30440",
-            "Job ID": { type: :String, value: item.item_label == 'Shipping Fee' ? '' : Film.find(item.item_id).get_sage_id },
+            "G/L Account": is_shipping_fee ? '40069' : "30440",
+            "Job ID": { type: :String, value: is_shipping_fee ? '' : Film.find(item.item_id).get_sage_id },
           })
         end
         sheet.add_row(COLUMNS.map { |column| rowData.fetch(column.to_sym, "") })
