@@ -126,7 +126,7 @@ class ExportInvoices
 
         case invoice.invoice_type
         when 'dvd'
-          rowData.merge({
+          rowData = rowData.merge({
             "Customer ID": { type: :String, value: invoice.customer.sage_id },
             "Date Due": invoice.sent_date + invoice.payment_terms,
             "Displayed Terms": "Net #{invoice.payment_terms}",
@@ -144,7 +144,7 @@ class ExportInvoices
           booking_film = booking.film
           booking_gl_code = get_gl_code(booking)
           errors << "No Sage ID for #{booking_venue.label}" if booking_venue.sage_id.empty?
-          rowData.merge({
+          rowData = rowData.merge({
             "Customer ID": { type: :String, value: booking_venue.sage_id },
             "Date Due": invoice.sent_date + 30,
             "Displayed Terms": "Net 30",
@@ -155,7 +155,7 @@ class ExportInvoices
         when 'institution'
           institution = invoice.institution
           errors << "No Sage ID for #{institution.label}" if institution.sage_id.empty?
-          rowData.merge({
+          rowData = rowData.merge({
             "Customer ID": { type: :String, value: institution.sage_id },
             "Date Due": invoice.sent_date + 30,
             "Displayed Terms": "Net 30",
@@ -164,7 +164,7 @@ class ExportInvoices
             "Job ID": { type: :String, value: item.item_label == 'Shipping Fee' ? '' : Film.find(item.item_id).get_sage_id },
           })
         end
-        sheet.add_row(COLUMNS.map { |column| rowData.fetch(column, "") })
+        sheet.add_row(COLUMNS.map { |column| rowData.fetch(column.to_sym, "" })
       end
       job.update({ current_value: invoice_index + 1 })
     end
