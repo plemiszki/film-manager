@@ -163,7 +163,7 @@ class ExportInvoices
             "Displayed Terms": "Net 30",
             "Description": { type: :String, value: item.item_label },
             "G/L Account": "30440",
-            "Job ID": { type: :String, value: item.item_label == 'Shipping Fee' ? '' : Film.find(item.id).get_sage_id },
+            "Job ID": { type: :String, value: item.item_label == 'Shipping Fee' ? '' : Film.find(item.item_id).get_sage_id },
           })
         end
         sheet.add_row(COLUMNS.map { |column| rowData.fetch(column, "") })
