@@ -45,14 +45,6 @@ json.institutionOrderFilms @institution_order_films do |institution_order_film|
   json.licensedRights institution_order_film.licensed_rights_display_text
   json.price dollarify(number_with_precision(institution_order_film.price, precision: 2, delimiter: ','))
 end
-json.formats @formats do |format|
-  json.id format.id
-  json.name format.name
-end
-json.institutionOrderFormats @institution_order_formats do |institution_order_format|
-  json.id institution_order_format.id
-  json.formatName institution_order_format.format.name
-end
 json.films @films do |film|
   json.id film.id
   json.title film.title

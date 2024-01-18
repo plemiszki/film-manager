@@ -16,9 +16,7 @@ class Api::InstitutionOrdersController < AdminController
     @invoice = @institution_order.invoice
     @institutions = Institution.all
     @institution_order_films = @institution_order.institution_order_films.includes(:film)
-    @institution_order_formats = @institution_order.institution_order_formats.includes(:format)
     @films = Film.where.not(id: @institution_order_films.pluck(:film_id))
-    @formats = Format.where.not(id: @institution_order_formats.pluck(:format_id))
     render 'show', formats: [:json], handlers: [:jbuilder]
   end
 

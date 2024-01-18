@@ -14,8 +14,6 @@ export default class InstitutionOrderDetails extends React.Component {
       institutions: [],
       orderFilms: [],
       films: [],
-      orderFormats: [],
-      formats: [],
       errors: [],
       changesToSave: false,
       justSaved: false,
@@ -24,15 +22,13 @@ export default class InstitutionOrderDetails extends React.Component {
 
   componentDidMount() {
     fetchEntity().then((response) => {
-      const { institutionOrder, institutions, institutionOrderFilms, films, institutionOrderFormats, formats, invoice } = response;
+      const { institutionOrder, institutions, institutionOrderFilms, films, invoice } = response;
       this.setState({
         institutionOrder,
         institutionOrderSaved: deepCopy(institutionOrder),
         institutions,
         orderFilms: institutionOrderFilms,
-        orderFormats: institutionOrderFormats,
         films,
-        formats,
         invoice,
         spinner: false,
       }, () => {
@@ -105,46 +101,6 @@ export default class InstitutionOrderDetails extends React.Component {
     });
   }
 
-  selectFormat(option) {
-    const { institutionOrder } = this.state;
-    this.setState({
-      spinner: true,
-      selectFormatModalOpen: false,
-    });
-    createEntity({
-      directory: 'institution_order_formats',
-      entityName: 'institutionOrderFormat',
-      entity: {
-        institutionOrderId: institutionOrder.id,
-        formatId: option.id,
-      },
-    }).then((response) => {
-      const { institutionOrderFormats, formats } = response;
-      this.setState({
-        spinner: false,
-        formats,
-        orderFormats: institutionOrderFormats,
-      });
-    });
-  }
-
-  deleteFormat(id) {
-    this.setState({
-      spinner: true,
-    });
-    deleteEntity({
-      directory: 'institution_order_formats',
-      id,
-    }).then((response) => {
-      const { institutionOrderFormats, formats } = response;
-      this.setState({
-        spinner: false,
-        formats,
-        orderFormats: institutionOrderFormats,
-      });
-    });
-  }
-
   sendInvoice() {
     const { institutionOrder } = this.state;
     this.setState({
@@ -164,7 +120,7 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   render() {
-    const { invoice, institutionOrder, job, spinner, justSaved, changesToSave, institutions, orderFilms, films, addFilmModalOpen, orderFormats, formats, selectFormatModalOpen } = this.state;
+    const { invoice, institutionOrder, job, spinner, justSaved, changesToSave, institutions, orderFilms, films, addFilmModalOpen } = this.state;
     const unsavedChanges = this.checkForChanges();
     return (
       <>
@@ -239,25 +195,6 @@ export default class InstitutionOrderDetails extends React.Component {
                 />
               ) }
               <hr />
-              <Table
-                rows={ orderFormats }
-                links={ false }
-                alphabetize
-                columns={[
-                  { name: 'formatName', header: 'Formats' },
-                ]}
-                clickDelete={ invoice ? null : format => this.deleteFormat(format.id) }
-                sortable={ false }
-                style={ { marginBottom: 15 } }
-              />
-              { invoice ? null : (
-                <OutlineButton
-                  text="Add Format"
-                  onClick={ () => this.setState({ selectFormatModalOpen: true }) }
-                  marginBottom
-                />
-              ) }
-              <hr />
               <div className="row">
                 { Details.renderField.bind(this)({ columnWidth: 3, entity: 'institutionOrder', property: 'subtotal', readOnly: true }) }
                 { Details.renderField.bind(this)({ columnWidth: 2, entity: 'institutionOrder', property: 'shippingFee', readOnly: invoice }) }
@@ -308,13 +245,6 @@ export default class InstitutionOrderDetails extends React.Component {
             </div>
           </div>
         </div>
-        <ModalSelect
-          isOpen={ selectFormatModalOpen }
-          options={ formats }
-          property="name"
-          func={ this.selectFormat.bind(this) }
-          onClose={ Common.closeModals.bind(this) }
-        />
         <Modal isOpen={ addFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 800 }, 2) }>
           <NewEntity
             context={ this.props.context }
