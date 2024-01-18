@@ -23,7 +23,7 @@ class Api::InstitutionOrderFilmsController < AdminController
   private
 
   def institution_order_film_params
-    params.require(:institution_order_film).permit(:film_id, :institution_order_id, :price, :licensed_rights)
+    params.require(:institution_order_film).permit(:film_id, :institution_order_id, :price, :licensed_rights, :formats)
   end
 
 end

@@ -181,6 +181,7 @@ export default class InstitutionOrderDetails extends React.Component {
                   { name: 'filmTitle', header: 'Film' },
                   { name: 'licensedRights' },
                   { name: 'price' },
+                  { name: 'formats', header: 'Format(s)' },
                 ]}
                 clickDelete={ invoice ? null : film => this.deleteFilm(film.id) }
                 sortable={ false }
