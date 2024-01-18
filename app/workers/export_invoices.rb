@@ -103,16 +103,6 @@ class ExportInvoices
 
     invoices = Invoice.where(id: invoice_ids).order(:id)
     invoices.each_with_index do |invoice, invoice_index|
-      if invoice.invoice_type == 'booking'
-        booking = invoice.booking
-        unless booking
-          errors << "Missing Booking for Invoice #{invoice.number}"
-          next
-        end
-        booking_venue = booking.venue
-        booking_film = booking.film
-        booking_gl_code = get_gl_code(booking)
-      end
       items = invoice.invoice_rows
       items.each_with_index do |item, index|
 
@@ -145,6 +135,14 @@ class ExportInvoices
             "Job ID": { type: :String, value: (item.item_type == 'dvd' ? Film.find(item.item_id).get_sage_id : Giftbox.find(item.item_id).sage_id) },
           })
         when 'booking'
+          booking = invoice.booking
+          unless booking
+            errors << "Missing Booking for Invoice #{invoice.number}"
+            next
+          end
+          booking_venue = booking.venue
+          booking_film = booking.film
+          booking_gl_code = get_gl_code(booking)
           errors << "No Sage ID for #{booking_venue.label}" if booking_venue.sage_id.empty?
           rowData.merge({
             "Customer ID": { type: :String, value: booking_venue.sage_id },
