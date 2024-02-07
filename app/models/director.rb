@@ -4,7 +4,7 @@ class Director < ActiveRecord::Base
 
   belongs_to :film, touch: true
 
-  def string
+  def full_name
     "#{first_name} #{last_name}"
   end
 

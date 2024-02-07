@@ -4,7 +4,7 @@ class Actor < ActiveRecord::Base
 
   belongs_to :actorable, polymorphic: true, touch: true
 
-  def string
+  def full_name
     "#{first_name} #{last_name}"
   end
 

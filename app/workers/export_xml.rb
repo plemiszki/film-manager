@@ -149,7 +149,7 @@ class ExportXml
             builder.tag!("md:Name") do
               builder << "\n"
 
-              builder.tag!("md:DisplayName", language: "en-US") { builder << director.string.gsub(' ', '_') }
+              builder.tag!("md:DisplayName", language: "en-US") { builder << director.full_name }
               builder << "\n"
             end
             builder << "\n"
@@ -174,7 +174,7 @@ class ExportXml
             builder.tag!("md:Name") do
               builder << "\n"
 
-              builder.tag!("md:DisplayName", language: "en-US") { builder << actor.string.gsub(' ', '_') }
+              builder.tag!("md:DisplayName", language: "en-US") { builder << actor.full_name }
               builder << "\n"
             end
             builder << "\n"
