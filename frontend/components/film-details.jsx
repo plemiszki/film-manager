@@ -943,6 +943,7 @@ export default class FilmDetails extends React.Component {
       quotes,
       schedule,
       searchText,
+      spinner,
       subRights,
     } = this.state;
     if (tab === "contract") {
@@ -1495,13 +1496,13 @@ export default class FilmDetails extends React.Component {
                     />
                   </div>
                   <div className="col-xs-6">
-                    <p className="section-header">Amazon Languages</p>
+                    <p className="section-header">Amazon Language</p>
                     <ListBox
                       entityName="amazonLanguage"
                       displayProperty="name"
                       entities={ alphabetizeArrayOfObjects(amazonLanguageFilms, 'name') }
                       clickDelete={ amazonLanguageFilm => { this.deleteFromList({ id: amazonLanguageFilm.id, directory: 'amazon_language_films', otherArrays: ['amazonLanguages'] }) }}
-                      clickAdd={ () => { this.setState({ amazonLanguagesModalOpen: true }) } }
+                      clickAdd={ (spinner || amazonLanguageFilms.length > 0) ? null : () => { this.setState({ amazonLanguagesModalOpen: true }) } }
                       style={ { marginBottom: 30 } }
                     />
                   </div>
