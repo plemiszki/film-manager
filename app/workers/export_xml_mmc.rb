@@ -14,6 +14,7 @@ class ExportXmlMmc
     file = File.open(filename, 'w')
 
     title = film.title_amazon_export
+    language_code = film.amazon_languages.first.code
 
     require 'builder'
     builder = Builder::XmlMarkup.new(target: file, indent: 2)
@@ -27,26 +28,26 @@ class ExportXmlMmc
       end
       builder.tag!("manifest:Inventory") do
         builder.comment! "video file"
-        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:feature.video.en-US") do
+        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:feature.video.#{language_code}") do
           builder.__send__('md:Type', 'primary')
-          builder.__send__('md:Language', 'en-US')
+          builder.__send__('md:Language', language_code)
           builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-mezz-en-US.mov")
+            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-mezz-#{language_code}.mov")
           end
         end
         builder.comment! "Embedded audio in the video file"
-        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_#{title}_Movie:feature.audio.en-US") do
+        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_#{title}_Movie:feature.audio.#{language_code}") do
           builder.__send__('md:Type', 'primary')
-          builder.__send__('md:Language', 'en-US')
+          builder.__send__('md:Language', language_code)
           builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-mezz-en-US.mov")
+            builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Movie-Full-mezz-#{language_code}.mov")
           end
         end
         builder.comment! "Feature subtitle File"
-        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US") do
+        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.#{language_code}") do
           builder.__send__('md:Format', 'SCC')
           builder.__send__('md:Type', 'SDH')
-          builder.__send__('md:Language', 'en-US')
+          builder.__send__('md:Language', language_code)
           builder.tag!("md:Encoding") do
             builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
           end
@@ -54,10 +55,10 @@ class ExportXmlMmc
             builder.__send__('manifest:ContainerLocation', "filmmovement-FM_#{title}_Caption.scc")
           end
         end
-        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.en-US") do
+        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.#{language_code}") do
           builder.__send__('md:Format', 'SCC')
           builder.__send__('md:Type', 'normal')
-          builder.__send__('md:Language', 'en-US')
+          builder.__send__('md:Language', language_code)
           builder.tag!("md:Encoding") do
             builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
           end
@@ -65,16 +66,16 @@ class ExportXmlMmc
             builder.__send__('manifest:ContainerLocation', "filmmovement-FM_#{title}_Subtitle.scc")
           end
         end
-        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.en-US") do
+        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.#{language_code}") do
           builder.__send__('md:Type', 'primary')
-          builder.__send__('md:Language', 'en-US')
+          builder.__send__('md:Language', language_code)
           builder.tag!("manifest:ContainerReference") do
             builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Trailer.mov")
           end
         end
-        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.en-US") do
+        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.#{language_code}") do
           builder.__send__('md:Type', 'primary')
-          builder.__send__('md:Language', 'en-US')
+          builder.__send__('md:Language', language_code)
           builder.tag!("manifest:ContainerReference") do
             builder.__send__('manifest:ContainerLocation', "filmmovement-#{title}_Trailer.mov")
           end
@@ -86,16 +87,16 @@ class ExportXmlMmc
           builder.tag!("manifest:TrackMetadata") do
             builder.__send__('manifest:TrackSelectionNumber', '0')
             builder.tag!('manifest:VideoTrackReference') do
-              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:feature.video.en-US")
+              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:feature.video.#{language_code}")
             end
             builder.tag!('manifest:AudioTrackReference') do
-              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:feature.audio.en-US")
+              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:feature.audio.#{language_code}")
             end
             builder.tag!('manifest:SubtitleTrackReference') do
-              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US")
+              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.#{language_code}")
             end
             builder.tag!('manifest:SubtitleTrackReference') do
-              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.en-US")
+              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.#{language_code}")
             end
           end
         end
@@ -105,10 +106,10 @@ class ExportXmlMmc
           builder.tag!("manifest:TrackMetadata") do
             builder.__send__('manifest:TrackSelectionNumber', '0')
             builder.tag!('manifest:VideoTrackReference') do
-              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.en-US")
+              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.#{language_code}")
             end
             builder.tag!('manifest:AudioTrackReference') do
-              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.en-US")
+              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.#{language_code}")
             end
           end
         end
