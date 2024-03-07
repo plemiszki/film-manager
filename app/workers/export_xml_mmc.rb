@@ -14,7 +14,16 @@ class ExportXmlMmc
     file = File.open(filename, 'w')
 
     title = film.title_amazon_export
-    language_code = film.amazon_languages.first.code
+
+    language = film.amazon_languages.first
+
+    if language.nil?
+      errors << 'Missing Amazon Language'
+      job.update!({ status: :failed, first_line: "Errors Found", errors_text: errors.join("\n") })
+      return
+    else
+      language_code = language.code
+    end
 
     require 'builder'
     builder = Builder::XmlMarkup.new(target: file, indent: 2)
