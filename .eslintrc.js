@@ -1,6 +1,9 @@
 module.exports = {
+	"env": {
+		"browser": true, // works with 'document'
+	},
 	"extends": [
-		"plugin:react/recommended" // works with tags
+		"plugin:react/recommended" // works with JSX tags
 	],
 	"settings": {
 		"react": {
