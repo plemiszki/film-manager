@@ -17,5 +17,6 @@ module.exports = {
 	"rules": {
 		"semi": "warn",
 		"eqeqeq": "warn",
+		"react/prop-types": "off",
 	}
-}
+};
