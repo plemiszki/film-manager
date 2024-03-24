@@ -1,37 +1,37 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import ReactModal from 'react-modal'
-import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria, todayDMY, parseUrl } from 'handy-components'
-import FM from '../app/assets/javascripts/me/common.jsx'
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import ReactModal from 'react-modal';
+import { FullIndex, SearchIndex, SimpleDetails, SearchCriteria, todayDMY, parseUrl } from 'handy-components';
+import FM from '../app/assets/javascripts/me/common.jsx';
 
-import BookerDetails from './components/booker-details.jsx'
-import BookingDetails from './components/booking-details.jsx'
-import Calendar from './components/calendar.jsx'
-import ConvertDigitalSales from './components/convert-digital-sales.jsx'
-import CurrentUserDropDown from './components/current-user-dropdown.jsx'
-import DvdCustomerDetails from './components/dvd-customer-details.jsx'
-import DvdDetails from './components/dvd-details.jsx'
-import DvdReports from './components/dvd-reports.jsx'
-import EpisodeDetails from './components/episode-details.jsx'
-import FilmDetails from './components/film-details.jsx'
-import FilmsIndex from './components/films-index.jsx'
-import FilmRightsNew from './components/film-rights-new.jsx'
-import GiftBoxDetails from './components/giftbox-details.jsx'
-import ImportInventory from './components/import-inventory.jsx'
-import InstitutionOrderDetails from './components/institution-order-details.jsx'
-import InTheatersIndex from './components/in-theaters.jsx'
-import InvoiceDetails from './components/invoice-details.jsx'
-import CreditMemoDetails from './components/credit-memo-details.jsx'
-import JobsIndex from './components/jobs-index.jsx'
-import LicensorDetails from './components/licensor-details.jsx'
-import NewEntity from './components/new-entity.jsx'
-import PurchaseOrderDetails from './components/purchase-order-details.jsx'
-import ReturnDetails from './components/return-details.jsx'
-import RoyaltyReportDetails from './components/royalty-report-details.jsx'
-import RoyaltyReportsIndex from './components/reports-index.jsx'
-import VenueDetails from './components/venue-details.jsx'
-import VirtualBookingDetails from './components/virtual-booking-details.jsx'
-import InstitutionDetails from './components/institution-details.jsx'
+import BookerDetails from './components/booker-details.jsx';
+import BookingDetails from './components/booking-details.jsx';
+import Calendar from './components/calendar.jsx';
+import ConvertDigitalSales from './components/convert-digital-sales.jsx';
+import CurrentUserDropDown from './components/current-user-dropdown.jsx';
+import DvdCustomerDetails from './components/dvd-customer-details.jsx';
+import DvdDetails from './components/dvd-details.jsx';
+import DvdReports from './components/dvd-reports.jsx';
+import EpisodeDetails from './components/episode-details.jsx';
+import FilmDetails from './components/film-details.jsx';
+import FilmsIndex from './components/films-index.jsx';
+import FilmRightsNew from './components/film-rights-new.jsx';
+import GiftBoxDetails from './components/giftbox-details.jsx';
+import ImportInventory from './components/import-inventory.jsx';
+import InstitutionOrderDetails from './components/institution-order-details.jsx';
+import InTheatersIndex from './components/in-theaters.jsx';
+import InvoiceDetails from './components/invoice-details.jsx';
+import CreditMemoDetails from './components/credit-memo-details.jsx';
+import JobsIndex from './components/jobs-index.jsx';
+import LicensorDetails from './components/licensor-details.jsx';
+import NewEntity from './components/new-entity.jsx';
+import PurchaseOrderDetails from './components/purchase-order-details.jsx';
+import ReturnDetails from './components/return-details.jsx';
+import RoyaltyReportDetails from './components/royalty-report-details.jsx';
+import RoyaltyReportsIndex from './components/reports-index.jsx';
+import VenueDetails from './components/venue-details.jsx';
+import VirtualBookingDetails from './components/virtual-booking-details.jsx';
+import InstitutionDetails from './components/institution-details.jsx';
 
 const renderIf = (id, component, props = {}) => {
   const node = document.getElementById(id);
@@ -39,7 +39,7 @@ const renderIf = (id, component, props = {}) => {
     const root = createRoot(node);
     root.render(React.createElement(component, props));
   }
-}
+};
 
 const renderSimpleDetails = (id, props = {}) => {
   const node = document.getElementById(id);
@@ -47,7 +47,7 @@ const renderSimpleDetails = (id, props = {}) => {
     const root = createRoot(node);
     root.render(<SimpleDetails csrfToken={ true } { ...props } />);
   }
-}
+};
 
 const renderFullIndex = (id, props = {}, args = {}) => {
   const { newEntity: newEntityProps } = args;
@@ -60,7 +60,7 @@ const renderFullIndex = (id, props = {}, args = {}) => {
       </FullIndex>
     );
   }
-}
+};
 
 const renderSearchIndex = (id, props = {}, args = {}) => {
   const { searchCriteria: searchCriteriaProps, newEntity: newEntityProps } = args;
@@ -74,7 +74,7 @@ const renderSearchIndex = (id, props = {}, args = {}) => {
       </SearchIndex>
     );
   }
-}
+};
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { columnWidth: 6, property: 'publication' }
       ]
     ],
-    deleteCallback: function () { window.location.pathname = `/films/${this.state.quote.filmId}` }, // arrow function won't work here
+    deleteCallback: function () { window.location.pathname = `/films/${this.state.quote.filmId}`; }, // arrow function won't work here
   });
 
   renderSimpleDetails('film-right-details', {
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { columnWidth: 2, property: 'exclusive', type: 'dropdown', boolean: true }
       ]
     ],
-    deleteCallback: function () { window.location.pathname = `/films/${this.state.filmRight.filmId}` }, // arrow function won't work here
+    deleteCallback: function () { window.location.pathname = `/films/${this.state.filmRight.filmId}`; }, // arrow function won't work here
   });
 
   renderSimpleDetails('sublicensor-details', {
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { columnWidth: 7, columnHeader: 'URL', property: 'url' },
       ]
     ],
-    deleteCallback: function() { window.location.pathname = `/films/${this.state.digitalRetailerFilm.filmId}` },
+    deleteCallback: function() { window.location.pathname = `/films/${this.state.digitalRetailerFilm.filmId}`; },
   });
 
   renderSimpleDetails('sub-right-details', {
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { columnWidth: 2, property: 'exclusive', type: 'dropdown', boolean: true }
       ]
     ],
-    deleteCallback: function() { window.location.pathname = `/sublicensors/${this.state.subRight.sublicensorId}` },
+    deleteCallback: function() { window.location.pathname = `/sublicensors/${this.state.subRight.sublicensorId}`; },
   });
 
   renderSimpleDetails('merchandise-item-details', {
@@ -360,7 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { columnWidth: 7, columnHeader: 'URL', property: 'url' },
       ]
     ],
-    deleteCallback: function() { window.location.pathname = `/films/${this.state.eduPlatformFilm.filmId}` },
+    deleteCallback: function() { window.location.pathname = `/films/${this.state.eduPlatformFilm.filmId}`; },
   });
 
   renderSimpleDetails('format-details', {
