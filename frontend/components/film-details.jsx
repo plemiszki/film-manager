@@ -1353,7 +1353,7 @@ export default class FilmDetails extends React.Component {
                     return (
                       <div key={ quote.id } className="quote-container">
                         <div className="quote" onClick={ this.clickQuote } data-id={ quote.id } data-index={ index } data-section={ 'quotes' }>
-                          <p data-id={ quote.id }>{ FM.user.id === 1 ? (<span>({ quote.order })&nbsp;&nbsp;</span>) : null }"{ quote.text }"</p>
+                          <p data-id={ quote.id }>{ FM.user.id === 1 ? (<span>({ quote.order })&nbsp;&nbsp;</span>) : null }&quot;{ quote.text }&quot;</p>
                           <p data-id={ quote.id }>- { bottomLine }</p>
                           <div className="handle" onMouseDown={ this.mouseDownHandle.bind(this) } onMouseUp={ this.mouseUpHandle.bind(this) }></div>
                         </div>

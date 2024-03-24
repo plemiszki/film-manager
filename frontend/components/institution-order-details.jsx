@@ -209,7 +209,7 @@ export default class InstitutionOrderDetails extends React.Component {
                 <>
                   <div className="row">
                     <div className="col-xs-12">
-                      <p style={{ marginBottom: 30 }}><a href={ `/invoices/${invoice.id}` } target="_blank" style={{ textDecoration: 'underline' }}>Invoice { invoice.number }</a> was sent on { invoice.sentDate }.</p>
+                      <p style={{ marginBottom: 30 }}><a href={ `/invoices/${invoice.id}` } target="_blank" rel="noreferrer" style={{ textDecoration: 'underline' }}>Invoice { invoice.number }</a> was sent on { invoice.sentDate }.</p>
                     </div>
                   </div>
                   <hr />
