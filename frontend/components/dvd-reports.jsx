@@ -65,8 +65,9 @@ export default class DvdReports extends React.Component {
   }
 
   clickPrev() {
+    const { year } = this.state;
     this.setState({
-      year: (this.state.year -= 1),
+      year: year - 1,
       spinner: true
     }, () => {
       this.fetchReportData();
@@ -74,8 +75,9 @@ export default class DvdReports extends React.Component {
   }
 
   clickNext() {
+    const { year } = this.state;
     this.setState({
-      year: (this.state.year += 1),
+      year: year + 1,
       spinner: true
     }, () => {
       this.fetchReportData();

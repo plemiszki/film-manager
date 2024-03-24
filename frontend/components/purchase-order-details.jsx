@@ -411,7 +411,7 @@ export default class PurchaseOrderDetails extends React.Component {
                 <div className="shipped-info-section">
                   <p>This PO was shipped on {shipDate}.</p>
                   { sourceDoc && <p>Sales Order {sourceDoc}</p> }
-                  { invoiceNumber && <a target="_blank" href={`/invoices/${invoiceId}`}>Invoice {invoiceNumber}</a> }
+                  { invoiceNumber && <a href={`/invoices/${invoiceId}`} target="_blank" rel="noreferrer">Invoice {invoiceNumber}</a> }
                 </div>
               ) }
               <GrayedOut visible={ spinner } />
