@@ -2,7 +2,8 @@
   "name": "film-manager",
   "scripts": {
     "heroku-postbuild": "webpack --mode production",
-    "dev": "webpack --watch"
+    "dev": "webpack --watch",
+    "lint": "npx eslint './frontend/**'"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
