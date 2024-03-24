@@ -1,10 +1,10 @@
-import React from 'react'
-import { Details, deepCopy, fetchEntity, updateEntity, Table, BottomButtons, GrayedOut, Spinner } from 'handy-components'
+import React from 'react';
+import { Details, deepCopy, fetchEntity, updateEntity, Table, BottomButtons, GrayedOut, Spinner } from 'handy-components';
 
 export default class LicensorDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       licensor: {},
@@ -64,7 +64,7 @@ export default class LicensorDetails extends React.Component {
   changeFieldArgs() {
     return {
       changesFunction: this.checkForChanges.bind(this),
-    }
+    };
   }
 
   render() {
@@ -99,7 +99,7 @@ export default class LicensorDetails extends React.Component {
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ spinner }
-                clickSave={ () => { this.clickSave() } }
+                clickSave={ () => { this.clickSave(); } }
               />
               <GrayedOut visible={ spinner } />
               <Spinner visible={ spinner } />

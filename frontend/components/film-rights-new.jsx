@@ -1,10 +1,10 @@
-import React from 'react'
-import { Button, setUpNiceSelect, Details, sendRequest, Spinner, GrayedOut, OutlineButton } from 'handy-components'
+import React from 'react';
+import { Button, setUpNiceSelect, Details, sendRequest, Spinner, GrayedOut, OutlineButton } from 'handy-components';
 
 export default class FilmRightsNew extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       filmRight: {
@@ -85,7 +85,7 @@ export default class FilmRightsNew extends React.Component {
             }
           }).then((response) => {
             this.props.callback(response.filmRights);
-          })
+          });
         } else {
           sendRequest('/api/sub_rights', {
             method: 'POST',
@@ -111,7 +111,7 @@ export default class FilmRightsNew extends React.Component {
   changeFieldArgs() {
     return {
       thing: 'filmRight',
-    }
+    };
   }
 
   changeArrayCheckbox(e) {
@@ -161,7 +161,7 @@ export default class FilmRightsNew extends React.Component {
     const { spinner } = this.state;
     const outlineButtonStyles = {
       minWidth: 75,
-    }
+    };
     return (
       <>
         <div className="handy-component admin-modal">
@@ -348,7 +348,7 @@ export default class FilmRightsNew extends React.Component {
     if (this.props.search) {
       return (
         <>
-          <a className="and-or-button" onClick={ () => { this.changeOperator(which, value) } }>
+          <a className="and-or-button" onClick={ () => { this.changeOperator(which, value); } }>
             { value }
           </a>
           <style jsx>{`

@@ -1,10 +1,10 @@
-import React from 'react'
-import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity, sendRequest, Spinner, GrayedOut, Table } from 'handy-components'
+import React from 'react';
+import { Common, deepCopy, removeFromArray, ModalSelect, ModalSelectStyles, fetchEntity, createEntity, sendRequest, Spinner, GrayedOut, Table } from 'handy-components';
 
 export default class ConvertDigitalSales extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       errors: [],
       films: [],
@@ -79,7 +79,7 @@ export default class ConvertDigitalSales extends React.Component {
   render() {
     const { spinner, job, filmsModalOpen, errors, films } = this.state;
     const mappedErrors = errors.map(error => {
-      return { title: error }
+      return { title: error };
     });
     if (job) {
       const { status } = job;

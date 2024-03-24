@@ -1,11 +1,11 @@
-import React from 'react'
-import InTheatersIndexItem from './in-theaters-index-item.jsx'
-import { Common, sendRequest, deleteEntity, createEntity, OutlineButton, Spinner, GrayedOut, ModalSelect } from 'handy-components'
+import React from 'react';
+import InTheatersIndexItem from './in-theaters-index-item.jsx';
+import { Common, sendRequest, deleteEntity, createEntity, OutlineButton, Spinner, GrayedOut, ModalSelect } from 'handy-components';
 
 export default class InTheatersIndex extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       inTheaters: [],

@@ -1,11 +1,11 @@
-import React from 'react'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, Button } from 'handy-components'
-import QuantityModal from './quantity-modal.jsx'
+import React from 'react';
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, Button } from 'handy-components';
+import QuantityModal from './quantity-modal.jsx';
 
 export default class ReturnDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       return: {
@@ -157,7 +157,7 @@ export default class ReturnDetails extends React.Component {
     return {
       thing: "return",
       changesFunction: this.checkForChanges.bind(this),
-    }
+    };
   }
 
   modalCloseAndRefresh() {
@@ -204,7 +204,7 @@ export default class ReturnDetails extends React.Component {
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ spinner }
-              clickSave={ () => { this.clickSave() } }
+              clickSave={ () => { this.clickSave(); } }
               marginBottom
             />
             <hr />
@@ -229,7 +229,7 @@ export default class ReturnDetails extends React.Component {
         <QuantityModal
           isOpen={ qtyModalOpen }
           item={ selectedItem }
-          onClose={ () => { this.setState({ qtyModalOpen: false }) } }
+          onClose={ () => { this.setState({ qtyModalOpen: false }); } }
           clickOK={ qty => this.clickQtyOk(qty) }
         />
         { Common.renderJobModal.call(this, this.state.job) }
@@ -248,7 +248,7 @@ export default class ReturnDetails extends React.Component {
         <Button
           text="Generate and Send Credit Memo"
           disabled={ spinner || changesToSave || items.length === 0 }
-          onClick={ () => { this.clickGenerateButton() } }
+          onClick={ () => { this.clickGenerateButton(); } }
         />
       );
     }

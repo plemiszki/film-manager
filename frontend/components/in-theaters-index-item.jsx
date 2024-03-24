@@ -1,11 +1,11 @@
-import React from 'react'
-import { sendRequest, rearrangeFields } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
+import React from 'react';
+import { sendRequest, rearrangeFields } from 'handy-components';
+import FM from '../../app/assets/javascripts/me/common.jsx';
 
 export default class InTheatersIndexItem extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {};
   }
 

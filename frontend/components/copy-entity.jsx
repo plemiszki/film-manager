@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import { Details, sendRequest, Button, Spinner, GrayedOut, titleCase } from 'handy-components'
+import React, { Component } from 'react';
+import { Details, sendRequest, Button, Spinner, GrayedOut, titleCase } from 'handy-components';
 
 export default class CopyEntity extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       spinner: false,
@@ -17,7 +17,7 @@ export default class CopyEntity extends Component {
   changeFieldArgs() {
     return {
       thing: this.props.entityName,
-    }
+    };
   }
 
   clickCopy() {
@@ -77,7 +77,7 @@ export default class CopyEntity extends Component {
           <Button
             submit
             text={ buttonText || `Copy ${titleCase(entityName)}` }
-            onClick={ () => { this.clickCopy() } }
+            onClick={ () => { this.clickCopy(); } }
           />
           <Spinner visible={ spinner } />
           <GrayedOut visible={ spinner } />

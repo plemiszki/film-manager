@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Common, sendRequest, Button, Spinner, GrayedOut } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
-import Modal from 'react-modal'
+import React, { Component } from 'react';
+import { Common, sendRequest, Button, Spinner, GrayedOut } from 'handy-components';
+import FM from '../../app/assets/javascripts/me/common.jsx';
+import Modal from 'react-modal';
 
 export default class CurrentUserDropDown extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       autoRenewFilms: [],
       autoRenewModalOpen: false,
@@ -61,7 +61,7 @@ export default class CurrentUserDropDown extends Component {
         autoRenewFilms: films,
         spinner: false,
         autoRenewModalPage: 1,
-      })
+      });
     });
   }
 
@@ -188,7 +188,7 @@ export default class CurrentUserDropDown extends Component {
         color: 'black',
         lineHeight: '30px'
       }
-    }
+    };
     if (spinner) {
       modalStyles.content.overflow = 'hidden';
     }
@@ -221,7 +221,7 @@ export default class CurrentUserDropDown extends Component {
                       <td className="text-center">
                         <Button
                           text="Renew"
-                          onClick={ () => { this.clickRenew(film) } }
+                          onClick={ () => { this.clickRenew(film); } }
                           style={
                             {
                               display: 'inline',
@@ -238,7 +238,7 @@ export default class CurrentUserDropDown extends Component {
           </table>
           <Button
             text="Renew All"
-            onClick={ () => { this.clickRenewAll() } }
+            onClick={ () => { this.clickRenewAll(); } }
             style={
               {
                 display: 'block',

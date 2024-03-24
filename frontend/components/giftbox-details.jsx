@@ -1,10 +1,10 @@
-import React from 'react'
-import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, BottomButtons, Spinner, GrayedOut, ModalSelect, OutlineButton, Table } from 'handy-components'
+import React from 'react';
+import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, BottomButtons, Spinner, GrayedOut, ModalSelect, OutlineButton, Table } from 'handy-components';
 
 export default class GiftboxDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       giftbox: {},
@@ -109,7 +109,7 @@ export default class GiftboxDetails extends React.Component {
     return {
       thing: "giftbox",
       changesFunction: this.checkForChanges.bind(this),
-    }
+    };
   }
 
   render() {
@@ -135,7 +135,7 @@ export default class GiftboxDetails extends React.Component {
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ spinner }
-              clickSave={ () => { this.clickSave() } }
+              clickSave={ () => { this.clickSave(); } }
               marginBottom
             />
             <hr />
@@ -150,7 +150,7 @@ export default class GiftboxDetails extends React.Component {
             />
             <OutlineButton
               text="Add DVD"
-              onClick={ () => { this.setState({ dvdsModalOpen: true }) } }
+              onClick={ () => { this.setState({ dvdsModalOpen: true }); } }
             />
             <GrayedOut visible={ spinner } />
             <Spinner visible={ spinner } />

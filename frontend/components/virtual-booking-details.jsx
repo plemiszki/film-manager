@@ -1,13 +1,13 @@
-import React from 'react'
-import Modal from 'react-modal'
-import NewEntity from './new-entity.jsx'
-import NewInvoice from './new-invoice.jsx'
-import { Common, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, BottomButtons, Button, Spinner, GrayedOut, OutlineButton, ListBox, Table, ConfirmDelete } from 'handy-components'
+import React from 'react';
+import Modal from 'react-modal';
+import NewEntity from './new-entity.jsx';
+import NewInvoice from './new-invoice.jsx';
+import { Common, Details, deepCopy, setUpNiceSelect, pluckFromObjectsArray, stringifyDate, objectsAreEqual, fetchEntity, updateEntity, deleteEntity, sendRequest, BottomButtons, Button, Spinner, GrayedOut, OutlineButton, ListBox, Table, ConfirmDelete } from 'handy-components';
 
 export default class VirtualBookingDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       virtualBooking: {},
@@ -52,7 +52,7 @@ export default class VirtualBookingDetails extends React.Component {
   changeFieldArgs() {
     return {
       changesFunction: this.checkForChanges.bind(this)
-    }
+    };
   }
 
   checkForChanges() {
@@ -127,7 +127,7 @@ export default class VirtualBookingDetails extends React.Component {
         payments,
         calculations,
       });
-    })
+    });
   }
 
   clickSave() {
@@ -266,7 +266,7 @@ export default class VirtualBookingDetails extends React.Component {
             justSaved={ justSaved }
             changesToSave={ changesToSave }
             disabled={ spinner }
-            clickSave={ () => { this.clickSave() } }
+            clickSave={ () => { this.clickSave(); } }
           />
           <GrayedOut visible={ spinner } />
           <Spinner visible={ spinner } />
@@ -357,7 +357,7 @@ export default class VirtualBookingDetails extends React.Component {
               />
               <OutlineButton
                 text="Add Invoice"
-                onClick={ () => { this.clickAddInvoice() } }
+                onClick={ () => { this.clickAddInvoice(); } }
                 marginBottom
               />
             </div>
@@ -383,13 +383,13 @@ export default class VirtualBookingDetails extends React.Component {
               <ListBox
                 entityName="payment"
                 entities={ payments }
-                clickDelete={ (payment) => { this.clickDeletePayment(payment.id) } }
+                clickDelete={ (payment) => { this.clickDeletePayment(payment.id); } }
                 displayFunction={ payment => `${payment.date} - ${payment.amount}${payment.notes && ` (${payment.notes})`}` }
                 style={ { marginBottom: 15 } }
               />
               <OutlineButton
                 text="Add Payment"
-                onClick={ () => { this.clickAddPayment() } }
+                onClick={ () => { this.clickAddPayment(); } }
                 marginBottom
               />
             </div>
@@ -423,7 +423,7 @@ export default class VirtualBookingDetails extends React.Component {
                   marginLeft
                   disabled={ spinner || changesToSave }
                   text={ changesToSave ? "Save to Send" : (virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
-                  onClick={ () => { this.clickSendReport() } }
+                  onClick={ () => { this.clickSendReport(); } }
                   style={ {
                     paddingTop: 14,
                     paddingBottom: 14,

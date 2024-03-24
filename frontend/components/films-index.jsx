@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import Modal from 'react-modal'
-import NewEntity from './new-entity.jsx'
-import FilmRightsNew from './film-rights-new.jsx'
-import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button, Spinner, GrayedOut, SearchBar, Table } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
+import React, { Component } from 'react';
+import Modal from 'react-modal';
+import NewEntity from './new-entity.jsx';
+import FilmRightsNew from './film-rights-new.jsx';
+import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button, Spinner, GrayedOut, SearchBar, Table } from 'handy-components';
+import FM from '../../app/assets/javascripts/me/common.jsx';
 
 const FilterModalStyles = {
   overlay: {
@@ -34,7 +34,7 @@ const NewRightsModalStyles = {
 export default class FilmsIndex extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
 
     let job = {
       errors_text: ""
@@ -189,7 +189,7 @@ export default class FilmsIndex extends Component {
                 square
                 disabled={ spinner }
                 text="Export All"
-                onClick={ () => { this.clickExportAll() } }
+                onClick={ () => { this.clickExportAll(); } }
                 style={ { marginLeft: 20 } }
               />
             ) }
@@ -199,7 +199,7 @@ export default class FilmsIndex extends Component {
                 square
                 disabled={ spinner }
                 text="Export Custom"
-                onClick={ () => { this.setState({ searchModalOpen: true }) } }
+                onClick={ () => { this.setState({ searchModalOpen: true }); } }
                 style={ { marginLeft: 20 } }
               />
             ) }
@@ -209,7 +209,7 @@ export default class FilmsIndex extends Component {
                 square
                 disabled={ spinner }
                 text="Filter"
-                onClick={ () => { this.setState({ filterModalOpen: true }) } }
+                onClick={ () => { this.setState({ filterModalOpen: true }); } }
                 style={ {
                   marginLeft: 20,
                   backgroundColor: filterActive ? 'green' : null,
@@ -222,7 +222,7 @@ export default class FilmsIndex extends Component {
                 square
                 disabled={ spinner }
                 text={ `Add ${filmType === 'Feature' ? 'Film' : filmType}` }
-                onClick={ () => { this.setState({ newFilmModalOpen: true }) } }
+                onClick={ () => { this.setState({ newFilmModalOpen: true }); } }
                 style={ { marginLeft: 20 } }
               />
             ) }
@@ -324,7 +324,7 @@ export default class FilmsIndex extends Component {
             </div>
           </div>
           <div className="row text-center">
-            <Button text="Close Filter" onClick={ () => { this.updateFilter() } } />
+            <Button text="Close Filter" onClick={ () => { this.updateFilter(); } } />
           </div>
         </div>
         <style jsx>{`

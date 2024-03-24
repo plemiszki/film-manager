@@ -1,10 +1,10 @@
-import React from 'react'
-import { fetchEntity, GrayedOut, Spinner, Table, Button } from 'handy-components'
+import React from 'react';
+import { fetchEntity, GrayedOut, Spinner, Table, Button } from 'handy-components';
 
 export default class CreditMemoDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       creditMemo: {},
@@ -83,7 +83,7 @@ export default class CreditMemoDetails extends React.Component {
             </div>
             <Button
               text="Export"
-              onClick={ () => { this.clickExport() } }
+              onClick={ () => { this.clickExport(); } }
               disabled={ spinner }
             />
             <GrayedOut visible={ spinner } />

@@ -1,8 +1,8 @@
-import React from 'react'
-import Modal from 'react-modal'
-import NewEntity from './new-entity.jsx'
-import { Common, Button, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner, ModalSelect, BottomButtons, Table, OutlineButton } from 'handy-components'
-import QuantityModal from './quantity-modal.jsx'
+import React from 'react';
+import Modal from 'react-modal';
+import NewEntity from './new-entity.jsx';
+import { Common, Button, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, GrayedOut, Spinner, ModalSelect, BottomButtons, Table, OutlineButton } from 'handy-components';
+import QuantityModal from './quantity-modal.jsx';
 
 const AddAddressModalStyles = {
   overlay: {
@@ -20,7 +20,7 @@ const AddAddressModalStyles = {
 export default class PurchaseOrderDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       purchaseOrder: {
@@ -190,7 +190,7 @@ export default class PurchaseOrderDetails extends React.Component {
       thing: "purchaseOrder",
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: this.beforeSave
-    }
+    };
   }
 
   beforeSave(newThing, key, value) {
@@ -258,7 +258,7 @@ export default class PurchaseOrderDetails extends React.Component {
     const unshippedPO = !purchaseOrder.shipDate;
     const shippedPO = !unshippedPO;
 
-    const selectedItem = otherItems.find(item => item.id == selectedItemId && item.itemType === selectedItemType)
+    const selectedItem = otherItems.find(item => item.id == selectedItemId && item.itemType === selectedItemType);
 
     let tableColumns = [
       {
@@ -404,7 +404,7 @@ export default class PurchaseOrderDetails extends React.Component {
                     justSaved={ justSaved }
                     changesToSave={ changesToSave }
                     disabled={ spinner }
-                    clickSave={ () => { this.clickSave() } }
+                    clickSave={ () => { this.clickSave(); } }
                   />
                 </>
               ) : (
@@ -455,7 +455,7 @@ export default class PurchaseOrderDetails extends React.Component {
           <QuantityModal
             isOpen={ qtyModalOpen }
             item={ selectedItem }
-            onClose={ () => { this.setState({ qtyModalOpen: false }) } }
+            onClose={ () => { this.setState({ qtyModalOpen: false }); } }
             clickOK={ qty => this.clickQtyOk(qty) }
           />
         </div>

@@ -1,10 +1,10 @@
-import React from 'react'
-import { Button, Details, sendRequest, Spinner, GrayedOut } from 'handy-components'
+import React from 'react';
+import { Button, Details, sendRequest, Spinner, GrayedOut } from 'handy-components';
 
 export default class FilmRightsChangeDates extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: false,
       obj: {
@@ -37,11 +37,11 @@ export default class FilmRightsChangeDates extends React.Component {
         spinner: false,
         errors
       });
-    })
+    });
   }
 
   changeFieldArgs() {
-    return {}
+    return {};
   }
 
   render() {
@@ -55,7 +55,7 @@ export default class FilmRightsChangeDates extends React.Component {
           </div>
           <Button
             text="Change All Dates"
-            onClick={ () => { this.clickChange() } }
+            onClick={ () => { this.clickChange(); } }
             disabled={ spinner || (obj.startDate === '' && obj.endDate === '') }
           />
           <Spinner visible={ spinner } />

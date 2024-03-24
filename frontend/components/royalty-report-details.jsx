@@ -1,5 +1,5 @@
-import React from 'react'
-import { Common, removeFinanceSymbols, Details, fetchEntity, updateEntity, deepCopy, sendRequest, Spinner, GrayedOut, Button, SaveButton } from 'handy-components'
+import React from 'react';
+import { Common, removeFinanceSymbols, Details, fetchEntity, updateEntity, deepCopy, sendRequest, Spinner, GrayedOut, Button, SaveButton } from 'handy-components';
 
 const NO_EXPENSES_DEAL_ID = 1;
 const EXPENSES_FROM_TOP_DEAL_ID = 2;
@@ -11,7 +11,7 @@ const GR_PERCENTAGE_THEATRICAL_DEAL_ID = 6;
 export default class ReportDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       report: {},
@@ -47,7 +47,7 @@ export default class ReportDetails extends React.Component {
   }
 
   clickSave() {
-    let newStreams = {}
+    let newStreams = {};
     this.state.streams.forEach((stream) => {
       newStreams[stream.id] = {
         licensor_percentage: stream.licensorPercentage,
@@ -55,7 +55,7 @@ export default class ReportDetails extends React.Component {
         current_expense: removeFinanceSymbols(stream.currentExpense),
         cume_revenue: removeFinanceSymbols(stream.cumeRevenue),
         cume_expense: removeFinanceSymbols(stream.cumeExpense)
-      }
+      };
     });
     this.setState({
       spinner: true,
@@ -144,7 +144,7 @@ export default class ReportDetails extends React.Component {
       thing: "report",
       errorsArray: errors || this.state.reportErrors,
       changesFunction: this.checkForChanges.bind(this)
-    }
+    };
   }
 
   render() {
@@ -167,7 +167,7 @@ export default class ReportDetails extends React.Component {
     const inputStyles = {
       padding: '8px',
       marginBottom: '10px',
-    }
+    };
 
     return (
       <>
@@ -259,7 +259,7 @@ export default class ReportDetails extends React.Component {
                     inputStyles,
                   }) }
                 </div>
-              )
+              );
             }) }
 
             { /* Current Period Totals */ }
@@ -474,7 +474,7 @@ export default class ReportDetails extends React.Component {
                     inputStyles,
                   }) }
                 </div>
-              )
+              );
             }) }
 
             { /* Cume Totals */ }
@@ -704,17 +704,17 @@ export default class ReportDetails extends React.Component {
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ spinner }
-                onClick={ () => { this.clickSave() } }
+                onClick={ () => { this.clickSave(); } }
               />
               <Button
                 text="Export PDF"
-                onClick={ () => { this.clickExport() } }
+                onClick={ () => { this.clickExport(); } }
                 disabled= { spinner }
                 float
               />
               <Button
                 text={ showJoined ? "Including Current Period" : "Not Including Current Period" }
-                onClick={ () => { this.clickToggle() } }
+                onClick={ () => { this.clickToggle(); } }
                 disabled= { spinner }
                 float
                 marginRight
@@ -796,7 +796,7 @@ export default class ReportDetails extends React.Component {
             <Button
               disabled={ spinner }
               text="Export Uncrossed Statements"
-              onClick={ () => { this.clickExportUncrossed() } }
+              onClick={ () => { this.clickExportUncrossed(); } }
               style={ { marginTop: '20px' } }
             />
           </div>

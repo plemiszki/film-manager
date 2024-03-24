@@ -1,7 +1,7 @@
-import React from 'react'
-import Modal from 'react-modal'
-import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity, Button, SearchBar, Spinner, GrayedOut, Table, ConfirmModal } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
+import React from 'react';
+import Modal from 'react-modal';
+import { Common, setUpNiceSelect, ellipsis, pluralize, sendRequest, fetchEntities, fetchEntity, Button, SearchBar, Spinner, GrayedOut, Table, ConfirmModal } from 'handy-components';
+import FM from '../../app/assets/javascripts/me/common.jsx';
 
 const importModalStyles = {
   overlay: {
@@ -38,7 +38,7 @@ const sendModalStyles = {
 export default class ReportsIndex extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     let date = new Date;
     let job = {
       errorsText: ""
@@ -61,7 +61,7 @@ export default class ReportsIndex extends React.Component {
   }
 
   componentDidMount() {
-    setUpNiceSelect({ selector: 'select', func: (e) => { this.setState({ daysDue: e.target.value }) } });
+    setUpNiceSelect({ selector: 'select', func: (e) => { this.setState({ daysDue: e.target.value }); } });
     $('#upload-form-sage #user_file').on('change', this.pickFile.bind(this));
     this.fetchReports();
     let jobId = null;
@@ -340,7 +340,7 @@ export default class ReportsIndex extends React.Component {
               float
               style={ { marginRight: 15 } }
               disabled={ spinner || daysDue === 'all' || reports.length === 0 }
-              onClick={ () => { this.clickExport() } }
+              onClick={ () => { this.clickExport(); } }
             />
             <Button
               square
@@ -348,7 +348,7 @@ export default class ReportsIndex extends React.Component {
               float
               style={ { marginRight: 15 } }
               disabled={ spinner || reports.length === 0 }
-              onClick={ () => { this.clickSummary() } }
+              onClick={ () => { this.clickSummary(); } }
             />
             <Button
               square
@@ -356,7 +356,7 @@ export default class ReportsIndex extends React.Component {
               float
               style={ { marginRight: 15 } }
               disabled={ spinner || reports.length === 0 }
-              onClick={ () => { this.clickTotals() } }
+              onClick={ () => { this.clickTotals(); } }
             />
             <Button
               square
@@ -364,7 +364,7 @@ export default class ReportsIndex extends React.Component {
               float
               style={ { marginRight: 15 } }
               disabled={ spinner || reports.length === 0 }
-              onClick={ () => { this.clickErrorCheck() } }
+              onClick={ () => { this.clickErrorCheck(); } }
             />
             <Button
               square
@@ -398,7 +398,7 @@ export default class ReportsIndex extends React.Component {
                   { position: 'absolute', right: '32px', top: '12px' }
                 }
               />
-              <select className="days-filter" onChange={ (e) => { this.setState({ daysDue: e.target.value }) } } value={ this.state.daysDue }>
+              <select className="days-filter" onChange={ (e) => { this.setState({ daysDue: e.target.value }); } } value={ this.state.daysDue }>
                 <option value="all">All</option>
                 <option value="30">30 days</option>
                 <option value="45">45 days</option>
@@ -424,7 +424,7 @@ export default class ReportsIndex extends React.Component {
                   {
                     header: "",
                     displayFunction: (report) => {
-                      return report.sendReport ? (report.dateSent ? Tools.formatDate(new Date(report.dateSent + " 0:00")) : "Not Sent") : "Do Not Send"
+                      return report.sendReport ? (report.dateSent ? Tools.formatDate(new Date(report.dateSent + " 0:00")) : "Not Sent") : "Do Not Send";
                     },
                     width: "15%",
                   },
@@ -437,8 +437,8 @@ export default class ReportsIndex extends React.Component {
           <Modal isOpen={ this.state.importModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ importModalStyles }>
             <div className="handy-component admin-modal">
               <h1>Import File</h1>
-              <Button onClick={ () => { this.clickImportRevenue() } } text="Import Revenue" style={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
-              <Button onClick={ () => { this.clickImportExpenses() } } text="Import Expenses" style={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
+              <Button onClick={ () => { this.clickImportRevenue(); } } text="Import Revenue" style={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
+              <Button onClick={ () => { this.clickImportExpenses(); } } text="Import Expenses" style={ { marginTop: 30, marginRight: 20, marginLeft: 20 } } />
             </div>
           </Modal>
           { this.renderSendModalHeader() }
@@ -475,7 +475,7 @@ export default class ReportsIndex extends React.Component {
           confirm={ this.clickConfirmSend.bind(this) }
           cancel={ Common.closeModals.bind(this) }
         />
-      )
+      );
     } else if (unsent === 0) {
       return (
         <ConfirmModal

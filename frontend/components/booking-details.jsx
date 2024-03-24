@@ -1,9 +1,9 @@
-import React from 'react'
-import Modal from 'react-modal'
-import NewEntity from './new-entity.jsx'
-import CopyEntity from './copy-entity.jsx'
-import NewInvoice from './new-invoice.jsx'
-import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, sendRequest, SaveButton, DeleteButton, Button, OutlineButton, Spinner, GrayedOut, ListBox, Table, removeFinanceSymbols } from 'handy-components'
+import React from 'react';
+import Modal from 'react-modal';
+import NewEntity from './new-entity.jsx';
+import CopyEntity from './copy-entity.jsx';
+import NewInvoice from './new-invoice.jsx';
+import { Common, ConfirmDelete, Details, stringifyDate, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, sendRequest, SaveButton, DeleteButton, Button, OutlineButton, Spinner, GrayedOut, ListBox, Table, removeFinanceSymbols } from 'handy-components';
 
 const NewInvoiceStyles = {
   overlay: {
@@ -20,7 +20,7 @@ const NewInvoiceStyles = {
 export default class BookingDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       booking: {},
@@ -101,7 +101,7 @@ export default class BookingDetails extends React.Component {
 
   generateInvoiceRows() {
     const { bookingSaved, calculations, films } = this.state;
-    const film = films.find(film => film.id === bookingSaved.filmId)
+    const film = films.find(film => film.id === bookingSaved.filmId);
     const filmTitle = film && film.title;
     const { overage, totalGross } = calculations;
     return [
@@ -264,7 +264,7 @@ export default class BookingDetails extends React.Component {
           }
         }
       }
-    }
+    };
   }
 
   clickEdit(invoice) {
@@ -449,7 +449,7 @@ export default class BookingDetails extends React.Component {
                 />
                 <OutlineButton
                   text="Add Invoice"
-                  onClick={ () => { this.setState({ newInvoiceModalOpen: true }) } }
+                  onClick={ () => { this.setState({ newInvoiceModalOpen: true }); } }
                   marginBottom
                 />
               </div>
@@ -467,7 +467,7 @@ export default class BookingDetails extends React.Component {
                 />
                 <OutlineButton
                   text="Add Payment"
-                  onClick={ () => { this.setState({ newPaymentModalOpen: true }) } }
+                  onClick={ () => { this.setState({ newPaymentModalOpen: true }); } }
                   marginBottom
                 />
               </div>
@@ -482,7 +482,7 @@ export default class BookingDetails extends React.Component {
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ spinner }
-                onClick={ () => { this.clickSave() } }
+                onClick={ () => { this.clickSave(); } }
               />
               <DeleteButton
                 entityName="booking"
@@ -493,7 +493,7 @@ export default class BookingDetails extends React.Component {
                 float
                 disabled={ spinner }
                 text="Copy Booking"
-                onClick={ () => { this.setState({ copyModalOpen: true }) } }
+                onClick={ () => { this.setState({ copyModalOpen: true }); } }
               />
             </div>
             <GrayedOut visible={ spinner } />
@@ -589,7 +589,7 @@ export default class BookingDetails extends React.Component {
           />
           <OutlineButton
             text="Add Week"
-            onClick={ () => { this.setState({ newWeeklyTermsModalOpen: true }) } }
+            onClick={ () => { this.setState({ newWeeklyTermsModalOpen: true }); } }
             marginBottom
           />
         </div>
@@ -635,7 +635,7 @@ export default class BookingDetails extends React.Component {
                 <Button
                   text={ changesToSave ? "Save to Send" : "Send Booking Confirmation" }
                   disabled={ spinner || changesToSave }
-                  onClick={ () => { this.clickSendConfirmation() } }
+                  onClick={ () => { this.clickSendConfirmation(); } }
                   marginBottom
                 />
               </div>
@@ -685,7 +685,7 @@ export default class BookingDetails extends React.Component {
           />
           <OutlineButton
             text="Add Weekly Box Office"
-            onClick={ () => { this.setState({ newWeeklyBoxOfficeModalOpen: true }) } }
+            onClick={ () => { this.setState({ newWeeklyBoxOfficeModalOpen: true }); } }
             marginBottom
           />
         </div>

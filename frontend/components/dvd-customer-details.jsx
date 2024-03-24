@@ -1,10 +1,10 @@
-import React from 'react'
-import { Details, deepCopy, fetchEntity, updateEntity, BottomButtons, Spinner, GrayedOut } from 'handy-components'
+import React from 'react';
+import { Details, deepCopy, fetchEntity, updateEntity, BottomButtons, Spinner, GrayedOut } from 'handy-components';
 
 export default class DvdCustomerDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       dvdCustomer: {},
@@ -63,7 +63,7 @@ export default class DvdCustomerDetails extends React.Component {
       thing: "dvdCustomer",
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: this.beforeSave.bind(this),
-    }
+    };
   }
 
   beforeSave(newThing, key, value) {
@@ -72,7 +72,7 @@ export default class DvdCustomerDetails extends React.Component {
       newThing.invoicesEmail = "";
       newThing.sageId = "";
       newThing.paymentTerms = "";
-      Details.removeFieldErrors(errors, ['invoicesEmail', 'sageId', 'paymentTerms'])
+      Details.removeFieldErrors(errors, ['invoicesEmail', 'sageId', 'paymentTerms']);
     }
   }
 
@@ -121,7 +121,7 @@ export default class DvdCustomerDetails extends React.Component {
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ spinner }
-              clickSave={ () => { this.clickSave() } }
+              clickSave={ () => { this.clickSave(); } }
             />
             <GrayedOut visible={ spinner } />
             <Spinner visible={ spinner } />

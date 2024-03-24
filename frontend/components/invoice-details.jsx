@@ -1,10 +1,10 @@
-import React from 'react'
-import { Common, fetchEntity, Spinner, GrayedOut, Table, Button } from 'handy-components'
+import React from 'react';
+import { Common, fetchEntity, Spinner, GrayedOut, Table, Button } from 'handy-components';
 
 export default class InvoiceDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       invoice: {},
@@ -20,7 +20,7 @@ export default class InvoiceDetails extends React.Component {
         return {
           label: 'Payment' + (payment.notes ? (' - ' + payment.notes) : '') + ' (' + payment.date + ')',
           totalPrice: payment.amount
-        }
+        };
       });
       this.setState({
         spinner: false,
@@ -48,7 +48,7 @@ export default class InvoiceDetails extends React.Component {
     ] : [
       { name: 'label', header: 'Description' },
       { name: 'totalPrice', header: 'Amount' },
-    ]
+    ];
     return (
       <>
         <div className="handy-component">
@@ -134,7 +134,7 @@ export default class InvoiceDetails extends React.Component {
             <Button
               text="Export"
               disabled={ spinner }
-              onClick={ () => { this.clickExport() } }
+              onClick={ () => { this.clickExport(); } }
             />
             <Spinner visible={ spinner } />
             <GrayedOut visible={ spinner } />

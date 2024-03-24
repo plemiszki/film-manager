@@ -1,7 +1,7 @@
-import React from 'react'
-import Modal from 'react-modal'
-import FilmRightsNew from './film-rights-new.jsx'
-import FilmRightsChangeDates from './film-rights-change-dates.jsx'
+import React from 'react';
+import Modal from 'react-modal';
+import FilmRightsNew from './film-rights-new.jsx';
+import FilmRightsChangeDates from './film-rights-change-dates.jsx';
 import {
   alphabetizeArrayOfObjects,
   Button,
@@ -29,11 +29,11 @@ import {
   updateEntity,
   Table,
   SearchBar,
-} from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
-import NewEntity from './new-entity.jsx'
-import CopyEntity from './copy-entity.jsx'
-import { camelCase } from 'change-case'
+} from 'handy-components';
+import FM from '../../app/assets/javascripts/me/common.jsx';
+import NewEntity from './new-entity.jsx';
+import CopyEntity from './copy-entity.jsx';
+import { camelCase } from 'change-case';
 
 const NewRightsModalStyles = {
   overlay: {
@@ -64,7 +64,7 @@ const ChangeDatesModalStyles = {
 export default class FilmDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     let job = {
       errors_text: ""
     };
@@ -296,27 +296,27 @@ export default class FilmDetails extends React.Component {
       case 'countries':
         entityArray = 'filmCountries';
         directory = 'film_countries';
-        break
+        break;
       case 'languages':
         entityArray = 'filmLanguages';
         directory = 'film_languages';
-        break
+        break;
       case 'actors':
         entityArray = 'actors';
-        break
+        break;
       case 'laurels':
         entityArray = 'laurels';
-        break
+        break;
       case 'quotes':
         entityArray = 'quotes';
-        break
+        break;
       case 'genres':
         entityArray = 'filmGenres';
-        directory = 'film_genres'
-        break
+        directory = 'film_genres';
+        break;
       case 'directors':
         entityArray = 'directors';
-        directory = 'directors'
+        directory = 'directors';
     }
     this.state[entityArray].forEach((entity) => {
       currentOrder[entity.order] = entity.id;
@@ -373,7 +373,7 @@ export default class FilmDetails extends React.Component {
         return newEntity;
       },
       changesFunction: this.checkForChanges.bind(this)
-    }
+    };
   }
 
   checkForChanges() {
@@ -497,7 +497,7 @@ export default class FilmDetails extends React.Component {
       let obj = {
         spinner: false,
         [entityNamePlural]: response[entityNamePlural]
-      }
+      };
       otherArrays && otherArrays.forEach((arrayName) => {
         obj[arrayName] = response[arrayName];
       });
@@ -519,7 +519,7 @@ export default class FilmDetails extends React.Component {
       let obj = {
         spinner: false,
         [entityNamePlural]: response[entityNamePlural]
-      }
+      };
       otherArrays && otherArrays.forEach((arrayName) => {
         obj[arrayName] = response[arrayName];
       });
@@ -981,7 +981,7 @@ export default class FilmDetails extends React.Component {
           />
           <OutlineButton
             text="Add Episode"
-            onClick={ () => { this.setState({ episodeModalOpen: true }) }}
+            onClick={ () => { this.setState({ episodeModalOpen: true }); }}
             style={ { marginBottom: '30px' } }
           />
           <hr />
@@ -1004,7 +1004,7 @@ export default class FilmDetails extends React.Component {
           { dvds.length < 6 && (
             <OutlineButton
               text="Add DVD"
-              onClick={ () => { this.setState({ dvdModalOpen: true }) }}
+              onClick={ () => { this.setState({ dvdModalOpen: true }); }}
               style={ { marginBottom: '30px' } }
             />
           ) }
@@ -1074,8 +1074,8 @@ export default class FilmDetails extends React.Component {
                   entityName="format"
                   displayProperty="format"
                   entities={ alphabetizeArrayOfObjects(filmFormats, 'format') }
-                  clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }) }}
-                  clickAdd={ () => { this.setState({ formatsModalOpen: true }) } }
+                  clickDelete={ filmFormat => { this.deleteFromList({ id: filmFormat.id, directory: 'film_formats', otherArrays: ['formats'] }); }}
+                  clickAdd={ () => { this.setState({ formatsModalOpen: true }); } }
                   style={ { marginBottom: 30 } }
                 />
               </div>
@@ -1124,7 +1124,7 @@ export default class FilmDetails extends React.Component {
                 if (booking.type === 'Virtual') {
                   this.redirect.call(this, "virtual_bookings", booking.id);
                 } else {
-                  this.redirect.call(this, "bookings", booking.id)
+                  this.redirect.call(this, "bookings", booking.id);
                 }
               } }
             />
@@ -1172,8 +1172,8 @@ export default class FilmDetails extends React.Component {
                 buttonText="Add Film"
                 displayProperty="title"
                 entities={ crossedFilms }
-                clickDelete={ crossedFilm => { this.deleteFromList({ id: crossedFilm.id, directory: 'crossed_films', otherArrays: ['otherCrossedFilms'] }) }}
-                clickAdd={ () => { this.setState({ crossedFilmModalOpen: true }) } }
+                clickDelete={ crossedFilm => { this.deleteFromList({ id: crossedFilm.id, directory: 'crossed_films', otherArrays: ['otherCrossedFilms'] }); }}
+                clickAdd={ () => { this.setState({ crossedFilmModalOpen: true }); } }
                 style={ { marginBottom: 30 } }
               />
             </div>
@@ -1204,8 +1204,8 @@ export default class FilmDetails extends React.Component {
                 entityName="director"
                 entities={ directors }
                 displayFunction={ director => `${director.firstName} ${director.lastName}` }
-                clickAdd={ () => { this.setState({ directorModalOpen: true }) } }
-                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'directors' }) }}
+                clickAdd={ () => { this.setState({ directorModalOpen: true }); } }
+                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'directors' }); }}
                 style={ { marginBottom: '30px' } }
               />
             </div>
@@ -1222,8 +1222,8 @@ export default class FilmDetails extends React.Component {
                 entityNamePlural="countries"
                 entities={ filmCountries }
                 displayProperty="country"
-                clickAdd={ () => { this.setState({ countriesModalOpen: true }) } }
-                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_countries', otherArrays: ['countries'] }) }}
+                clickAdd={ () => { this.setState({ countriesModalOpen: true }); } }
+                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_countries', otherArrays: ['countries'] }); }}
                 style={ { marginBottom: '30px' } }
               />
             </div>
@@ -1233,8 +1233,8 @@ export default class FilmDetails extends React.Component {
                 entityName="language"
                 entities={ filmLanguages }
                 displayProperty="language"
-                clickAdd={ () => { this.setState({ languagesModalOpen: true }) } }
-                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_languages', otherArrays: ['languages'] }) }}
+                clickAdd={ () => { this.setState({ languagesModalOpen: true }); } }
+                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_languages', otherArrays: ['languages'] }); }}
                 style={ { marginBottom: '30px' } }
               />
             </div>
@@ -1247,8 +1247,8 @@ export default class FilmDetails extends React.Component {
                 entityName="actor"
                 entities={ actors }
                 displayFunction={ actor => `${actor.firstName} ${actor.lastName}` }
-                clickAdd={ () => { this.setState({ actorModalOpen: true }) } }
-                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'actors' }) }}
+                clickAdd={ () => { this.setState({ actorModalOpen: true }); } }
+                clickDelete={ (id) => { this.deleteFromList({ id, directory: 'actors' }); }}
                 style={ { marginBottom: '30px' } }
               />
             </div>
@@ -1302,7 +1302,7 @@ export default class FilmDetails extends React.Component {
               { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'film', property: 'synopsis', rows: 8, characterCount: true }) }
             </div>
           </div>
-        )
+        );
       } else {
         return (
           <>
@@ -1330,8 +1330,8 @@ export default class FilmDetails extends React.Component {
                     entityName="laurel"
                     entities={ laurels }
                     displayFunction={ laurel => `${laurel.result}${laurel.awardName ? ` - ${laurel.awardName}` : '' } - ${laurel.festival}` }
-                    clickAdd={ () => { this.setState({ laurelModalOpen: true }) } }
-                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'laurels' }) }}
+                    clickAdd={ () => { this.setState({ laurelModalOpen: true }); } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'laurels' }); }}
                     style={ { marginBottom: '30px' } }
                   />
                   <div className="row row-of-checkboxes badge-checkboxes">
@@ -1367,7 +1367,7 @@ export default class FilmDetails extends React.Component {
                 <div className="col-xs-12">
                   <OutlineButton
                     text="Add Quote"
-                    onClick={ () => { this.setState({ quoteModalOpen: true }) }}
+                    onClick={ () => { this.setState({ quoteModalOpen: true }); }}
                     style={ { marginBottom: '30px' } }
                   />
                 </div>
@@ -1380,8 +1380,8 @@ export default class FilmDetails extends React.Component {
                     entityName="genre"
                     entities={ filmGenres }
                     displayProperty="genre"
-                    clickAdd={ () => { this.setState({ genresModalOpen: true }) } }
-                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_genres', otherArrays: ['genres'] }) }}
+                    clickAdd={ () => { this.setState({ genresModalOpen: true }); } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'film_genres', otherArrays: ['genres'] }); }}
                     style={ { marginBottom: '30px' } }
                   />
                 </div>
@@ -1391,8 +1391,8 @@ export default class FilmDetails extends React.Component {
                     entityName="relatedFilm"
                     entities={ this.state.relatedFilms }
                     displayProperty="title"
-                    clickAdd={ () => { this.setState({ relatedFilmsModalOpen: true }) } }
-                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'related_films', otherArrays: ['otherFilms'] }) }}
+                    clickAdd={ () => { this.setState({ relatedFilmsModalOpen: true }); } }
+                    clickDelete={ (id) => { this.deleteFromList({ id, directory: 'related_films', otherArrays: ['otherFilms'] }); }}
                     style={ { marginBottom: '30px' } }
                   />
                 </div>
@@ -1406,8 +1406,8 @@ export default class FilmDetails extends React.Component {
                     buttonText="Add Length"
                     entities={ alternateLengths }
                     displayProperty="length"
-                    clickAdd={ () => { this.setState({ newAltLengthModalOpen: true }) } }
-                    clickDelete={ (length) => { this.deleteFromList({ id: length.id, directory: 'alternate_lengths' }) }}
+                    clickAdd={ () => { this.setState({ newAltLengthModalOpen: true }); } }
+                    clickDelete={ (length) => { this.deleteFromList({ id: length.id, directory: 'alternate_lengths' }); }}
                     style={ { marginBottom: '30px' } }
                   />
                 </div>
@@ -1418,8 +1418,8 @@ export default class FilmDetails extends React.Component {
                     buttonText="Add Audio Track"
                     entities={ alternateAudios }
                     displayProperty="languageName"
-                    clickAdd={ () => { this.setState({ alternateAudioModalOpen: true }) } }
-                    clickDelete={ (audio) => { this.deleteFromList({ id: audio.id, directory: 'alternate_audios', otherArrays: ['audioLanguages'] }) }}
+                    clickAdd={ () => { this.setState({ alternateAudioModalOpen: true }); } }
+                    clickDelete={ (audio) => { this.deleteFromList({ id: audio.id, directory: 'alternate_audios', otherArrays: ['audioLanguages'] }); }}
                     style={ { marginBottom: '30px' } }
                   />
                 </div>
@@ -1430,8 +1430,8 @@ export default class FilmDetails extends React.Component {
                     buttonText="Add Subtitles"
                     entities={ alternateSubs }
                     displayProperty="languageName"
-                    clickAdd={ () => { this.setState({ alternateSubsModalOpen: true }) } }
-                    clickDelete={ (sub) => { this.deleteFromList({ id: sub.id, directory: 'alternate_subs', otherArrays: ['audioLanguages'] }) }}
+                    clickAdd={ () => { this.setState({ alternateSubsModalOpen: true }); } }
+                    clickDelete={ (sub) => { this.deleteFromList({ id: sub.id, directory: 'alternate_subs', otherArrays: ['audioLanguages'] }); }}
                     style={ { marginBottom: '30px' } }
                   />
                 </div>
@@ -1450,7 +1450,7 @@ export default class FilmDetails extends React.Component {
                     style={ { marginBottom: 30 } }
                   />
                   <OutlineButton
-                    onClick={ () => { this.setState({ newDigitalRetailerModalOpen: true }) } }
+                    onClick={ () => { this.setState({ newDigitalRetailerModalOpen: true }); } }
                     text="Add Digital Retailer"
                     style={ { marginBottom: 30 } }
                   />
@@ -1490,8 +1490,8 @@ export default class FilmDetails extends React.Component {
                       entityName="amazonGenre"
                       displayProperty="code"
                       entities={ alphabetizeArrayOfObjects(amazonGenreFilms, 'code') }
-                      clickDelete={ amazonGenreFilm => { this.deleteFromList({ id: amazonGenreFilm.id, directory: 'amazon_genre_films', otherArrays: ['amazonGenres'] }) }}
-                      clickAdd={ () => { this.setState({ amazonGenresModalOpen: true }) } }
+                      clickDelete={ amazonGenreFilm => { this.deleteFromList({ id: amazonGenreFilm.id, directory: 'amazon_genre_films', otherArrays: ['amazonGenres'] }); }}
+                      clickAdd={ () => { this.setState({ amazonGenresModalOpen: true }); } }
                       style={ { marginBottom: 30 } }
                     />
                   </div>
@@ -1501,8 +1501,8 @@ export default class FilmDetails extends React.Component {
                       entityName="amazonLanguage"
                       displayProperty="name"
                       entities={ alphabetizeArrayOfObjects(amazonLanguageFilms, 'name') }
-                      clickDelete={ amazonLanguageFilm => { this.deleteFromList({ id: amazonLanguageFilm.id, directory: 'amazon_language_films', otherArrays: ['amazonLanguages'] }) }}
-                      clickAdd={ (spinner || amazonLanguageFilms.length > 0) ? null : () => { this.setState({ amazonLanguagesModalOpen: true }) } }
+                      clickDelete={ amazonLanguageFilm => { this.deleteFromList({ id: amazonLanguageFilm.id, directory: 'amazon_language_films', otherArrays: ['amazonLanguages'] }); }}
+                      clickAdd={ (spinner || amazonLanguageFilms.length > 0) ? null : () => { this.setState({ amazonLanguagesModalOpen: true }); } }
                       style={ { marginBottom: 30 } }
                     />
                   </div>
@@ -1612,8 +1612,8 @@ export default class FilmDetails extends React.Component {
                   entityName="topic"
                   entities={ filmTopics }
                   sort
-                  clickAdd={ () => { this.setState({ topicsModalOpen: true }) } }
-                  clickDelete={ filmTopic => { this.deleteFromList({ id: filmTopic.id, directory: 'film_topics', otherArrays: ['topics'] }) }}
+                  clickAdd={ () => { this.setState({ topicsModalOpen: true }); } }
+                  clickDelete={ filmTopic => { this.deleteFromList({ id: filmTopic.id, directory: 'film_topics', otherArrays: ['topics'] }); }}
                   displayProperty="topic"
                   style={ { marginBottom: 15 } }
                 />
@@ -1640,7 +1640,7 @@ export default class FilmDetails extends React.Component {
                   text="Add Platform"
                   onClick={ () => { this.setState({
                     newEduPlatformModalOpen: true,
-                  }) } }
+                  }); } }
                   marginBottom
                 />
               </div>
@@ -1726,12 +1726,12 @@ export default class FilmDetails extends React.Component {
               { FM.user.hasAdminAccess && (
                 <>
                   <OutlineButton
-                    onClick={ () => { this.setState({ newRightsModalOpen: true }) } }
+                    onClick={ () => { this.setState({ newRightsModalOpen: true }); } }
                     text="Add Rights"
                     style={ { marginBottom: '30px' } }
                   />
                   <OutlineButton
-                    onClick={ () => { this.setState({ changeDatesModalOpen: true }) } }
+                    onClick={ () => { this.setState({ changeDatesModalOpen: true }); } }
                     text="Change All Dates"
                     style={ { marginBottom: '30px' } }
                     float
@@ -1797,7 +1797,7 @@ export default class FilmDetails extends React.Component {
           justSaved={ justSaved }
           changesToSave={ changesToSave }
           disabled={ spinner }
-          onClick={ () => { this.clickSave() } }
+          onClick={ () => { this.clickSave(); } }
         />
         { this.renderErrorGuide() }
         { this.renderCopyAndDeleteButtons() }
@@ -1817,7 +1817,7 @@ export default class FilmDetails extends React.Component {
             text="Copy Film"
             marginRight
             float
-            onClick={ () => { this.setState({ copyModalOpen: true }) } }
+            onClick={ () => { this.setState({ copyModalOpen: true }); } }
           />
           <Button
             text="XML - MMC"
@@ -1876,7 +1876,7 @@ export default class FilmDetails extends React.Component {
       for (var i = 0; i < keys.length; i++) {
         if (this.state.percentageErrors[keys[i]].length > 0) {
           result = true;
-          break
+          break;
         }
       }
     }
@@ -1907,7 +1907,7 @@ export default class FilmDetails extends React.Component {
           FM.errors.tvodRelease,
           FM.errors.clubDate
         ]
-      }
+      };
       let result = [];
       if (this.percentageErrorsExist()) {
         result.push("Contract Tab");

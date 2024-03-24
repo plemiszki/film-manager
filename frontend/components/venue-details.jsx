@@ -1,7 +1,7 @@
-import React from 'react'
-import Modal from 'react-modal'
-import { Common, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button, GrayedOut, Spinner, Table, BottomButtons } from 'handy-components'
-import FM from '../../app/assets/javascripts/me/common.jsx'
+import React from 'react';
+import Modal from 'react-modal';
+import { Common, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button, GrayedOut, Spinner, Table, BottomButtons } from 'handy-components';
+import FM from '../../app/assets/javascripts/me/common.jsx';
 
 const ShredderModalStyles = {
   overlay: {
@@ -22,7 +22,7 @@ const ShredderModalStyles = {
 export default class VenueDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       venue: {},
@@ -111,7 +111,7 @@ export default class VenueDetails extends React.Component {
             messageModalOpen: true,
             deleteError: response,
             spinner: false,
-          })
+          });
         }
       );
     });
@@ -135,7 +135,7 @@ export default class VenueDetails extends React.Component {
       thing: "venue",
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this)
-    }
+    };
   }
 
   clickSplitAddress() {
@@ -201,7 +201,7 @@ export default class VenueDetails extends React.Component {
               </div>
               <hr />
               <div className="address-block">
-                <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'billing' }) } } />
+                <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'billing' }); } } />
                 <p className="section-header">Billing Address</p>
                 <div className="row">
                   { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingName', columnHeader: 'Name' }) }
@@ -217,7 +217,7 @@ export default class VenueDetails extends React.Component {
                 <div className="col-xs-4">
                   <Button
                     text="Copy to Shipping Address"
-                    onClick={ () => { this.clickCopyAddress() } }
+                    onClick={ () => { this.clickCopyAddress(); } }
                     style={ {
                       marginTop: '28px',
                     } }
@@ -226,7 +226,7 @@ export default class VenueDetails extends React.Component {
               </div>
               <hr />
               <div className="address-block">
-                <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'shipping' }) } } />
+                <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'shipping' }); } } />
                 <p className="section-header">Shipping Address</p>
                 <div className="row">
                   { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingName', columnHeader: 'Name' }) }
@@ -253,7 +253,7 @@ export default class VenueDetails extends React.Component {
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ spinner }
-                clickSave={ () => { this.clickSave() } }
+                clickSave={ () => { this.clickSave(); } }
               />
               <GrayedOut visible={ spinner } />
               <Spinner visible={ spinner } />

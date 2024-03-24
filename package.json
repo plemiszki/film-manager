@@ -3,7 +3,8 @@
   "scripts": {
     "heroku-postbuild": "webpack --mode production",
     "dev": "webpack --watch",
-    "lint": "npx eslint './frontend/**'"
+    "lint": "npx eslint './frontend/**'",
+    "lint-fix": "npx eslint './frontend/**' --fix"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",

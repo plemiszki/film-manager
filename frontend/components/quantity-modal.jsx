@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import Modal from 'react-modal'
-import { Button } from 'handy-components'
+import React, { useState } from 'react';
+import Modal from 'react-modal';
+import { Button } from 'handy-components';
 
 export default function QuantityModal(props) {
   const { isOpen, onClose, clickOK, item } = props;
@@ -10,7 +10,7 @@ export default function QuantityModal(props) {
     <>
       <Modal
         isOpen={isOpen}
-        onAfterOpen={ () => { setQty(1) } }
+        onAfterOpen={ () => { setQty(1); } }
         onRequestClose={ onClose }
         contentLabel="Modal"
         style={{

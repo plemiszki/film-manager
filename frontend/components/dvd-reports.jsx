@@ -1,6 +1,6 @@
-import React from 'react'
-import Modal from 'react-modal'
-import { Common, stringifyDate, Details, sendRequest, Button, GrayedOut, Spinner, Table } from 'handy-components'
+import React from 'react';
+import Modal from 'react-modal';
+import { Common, stringifyDate, Details, sendRequest, Button, GrayedOut, Spinner, Table } from 'handy-components';
 
 const exportModalStyles = {
   overlay: {
@@ -21,7 +21,7 @@ const exportModalStyles = {
 export default class DvdReports extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     var job = {
       errorsText: ""
     };
@@ -117,7 +117,7 @@ export default class DvdReports extends React.Component {
     return {
       thing: "export",
       changesFunction: this.checkForChanges,
-    }
+    };
   }
 
   titlesReportColumns() {
@@ -136,7 +136,7 @@ export default class DvdReports extends React.Component {
       result = result.concat([
         { name: `${prefix}Units`, header: customer.name, width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
         { name: `${prefix}Sales`, blankHeader: true, width: SALES_COLUMN_WIDTH }
-      ])
+      ]);
     });
     return result;
   }
@@ -152,19 +152,19 @@ export default class DvdReports extends React.Component {
                 <Button
                   disabled={ spinner }
                   text="<<"
-                  onClick={ () => { this.clickPrev() } }
+                  onClick={ () => { this.clickPrev(); } }
                 />
                 <h1>DVD Reports - { year }</h1>
                 <Button
                   disabled={ spinner }
                   text=">>"
-                  onClick={ () => { this.clickNext() } }
+                  onClick={ () => { this.clickNext(); } }
                 />
               </div>
               <Button
                 disabled={ spinner }
                 text="Export"
-                onClick={ () => { this.setState({ exportModalOpen: true }) } }
+                onClick={ () => { this.setState({ exportModalOpen: true }); } }
                 style={{
                   position: 'absolute',
                   right: 0,
@@ -240,7 +240,7 @@ export default class DvdReports extends React.Component {
                 <div className="col-xs-12">
                   <Button
                     text="Export Sales Report"
-                    onClick={ () => { this.clickExport() } }
+                    onClick={ () => { this.clickExport(); } }
                   />
                 </div>
               </div>

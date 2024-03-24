@@ -1,10 +1,10 @@
-import React from 'react'
-import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, OutlineButton, Spinner, GrayedOut, SaveButton, DeleteButton, Button, Table, ModalSelect } from 'handy-components'
+import React from 'react';
+import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, OutlineButton, Spinner, GrayedOut, SaveButton, DeleteButton, Button, Table, ModalSelect } from 'handy-components';
 
 export default class DvdDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       dvd: {
@@ -138,7 +138,7 @@ export default class DvdDetails extends React.Component {
     return {
       thing: "dvd",
       changesFunction: this.checkForChanges.bind(this),
-    }
+    };
   }
 
   render() {
@@ -177,7 +177,7 @@ export default class DvdDetails extends React.Component {
             />
             <OutlineButton
               text="Add Short"
-              onClick={ () => { this.setState({ shortsModalOpen: true }) } }
+              onClick={ () => { this.setState({ shortsModalOpen: true }); } }
               marginBottom
             />
             <hr />
@@ -186,7 +186,7 @@ export default class DvdDetails extends React.Component {
                 justSaved={ justSaved }
                 changesToSave={ changesToSave }
                 disabled={ spinner }
-                onClick={ () => { this.clickSave() } }
+                onClick={ () => { this.clickSave(); } }
               />
               <DeleteButton
                 entityName="dvd"
@@ -199,7 +199,7 @@ export default class DvdDetails extends React.Component {
                 float
                 disabled={ spinner }
                 text="Email HTML"
-                onClick={ () => { this.getHTML() } }
+                onClick={ () => { this.getHTML(); } }
               />
             </div>
             <GrayedOut visible={ spinner } />

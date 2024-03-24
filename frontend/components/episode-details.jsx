@@ -1,12 +1,12 @@
-import React from 'react'
-import Modal from 'react-modal'
-import NewEntity from './new-entity.jsx'
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, ListBox, BottomButtons, Spinner, GrayedOut } from 'handy-components'
+import React from 'react';
+import Modal from 'react-modal';
+import NewEntity from './new-entity.jsx';
+import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, ListBox, BottomButtons, Spinner, GrayedOut } from 'handy-components';
 
 export default class EpisodeDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       episode: {},
@@ -93,7 +93,7 @@ export default class EpisodeDetails extends React.Component {
       thing: "episode",
       errorsArray: this.state.errors,
       changesFunction: this.checkForChanges.bind(this)
-    }
+    };
   }
 
   render() {
@@ -120,7 +120,7 @@ export default class EpisodeDetails extends React.Component {
                   entityName="actor"
                   entities={ this.state.actors }
                   displayFunction={ actor => `${actor.firstName} ${actor.lastName}` }
-                  clickAdd={ () => { this.setState({ actorModalOpen: true }) }}
+                  clickAdd={ () => { this.setState({ actorModalOpen: true }); }}
                   clickDelete={ actor => this.clickDeleteActor(actor.id) }
                   sort
                   style={ { marginBottom: '30px' } }
@@ -136,7 +136,7 @@ export default class EpisodeDetails extends React.Component {
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ spinner }
-              clickSave={ () => { this.clickSave() } }
+              clickSave={ () => { this.clickSave(); } }
             />
             <Spinner visible={ spinner } />
             <GrayedOut visible={ spinner } />

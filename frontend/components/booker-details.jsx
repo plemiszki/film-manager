@@ -1,10 +1,10 @@
-import React from 'react'
-import { Common, BottomButtons, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity, Spinner, GrayedOut, OutlineButton, ModalSelect, ListBox } from 'handy-components'
+import React from 'react';
+import { Common, BottomButtons, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity, Spinner, GrayedOut, OutlineButton, ModalSelect, ListBox } from 'handy-components';
 
 export default class BookerDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       booker: {},
@@ -107,7 +107,7 @@ export default class BookerDetails extends React.Component {
   changeFieldArgs() {
     return {
       changesFunction: this.checkForChanges.bind(this)
-    }
+    };
   }
 
   render() {
@@ -128,13 +128,13 @@ export default class BookerDetails extends React.Component {
                 <ListBox
                   entityName="bookerVenue"
                   entities={ bookerVenues }
-                  clickDelete={ (bookerVenue) => { this.clickDeleteVenue(bookerVenue.id) } }
+                  clickDelete={ (bookerVenue) => { this.clickDeleteVenue(bookerVenue.id); } }
                   displayProperty="venue"
                   style={ { marginBottom: 15 } }
                 />
                 <OutlineButton
                   text="Add Venue"
-                  onClick={ () => { this.clickAddVenue() } }
+                  onClick={ () => { this.clickAddVenue(); } }
                   marginBottom
                 />
               </div>
@@ -145,7 +145,7 @@ export default class BookerDetails extends React.Component {
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ spinner }
-              clickSave={ () => { this.clickSave() } }
+              clickSave={ () => { this.clickSave(); } }
             />
             <GrayedOut visible={ spinner } />
             <Spinner visible={ spinner } />

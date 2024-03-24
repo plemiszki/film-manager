@@ -1,12 +1,12 @@
-import React from 'react'
-import Modal from 'react-modal'
-import NewEntity from './new-entity.jsx'
-import { objectsAreEqual, sendRequest, deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity, Button } from 'handy-components'
+import React from 'react';
+import Modal from 'react-modal';
+import NewEntity from './new-entity.jsx';
+import { objectsAreEqual, sendRequest, deepCopy, Details, setUpNiceSelect, fetchEntity, updateEntity, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, ModalSelect, Common, createEntity, deleteEntity, Button } from 'handy-components';
 
 export default class InstitutionOrderDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       institutionOrder: {},
@@ -75,7 +75,7 @@ export default class InstitutionOrderDetails extends React.Component {
       thing: "institutionOrder",
       errorsArray: errors,
       changesFunction: this.checkForChanges.bind(this)
-    }
+    };
   }
 
   deleteFilm(id) {

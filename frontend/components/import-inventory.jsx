@@ -1,10 +1,10 @@
-import React from 'react'
-import { Common, sendRequest } from 'handy-components'
+import React from 'react';
+import { Common, sendRequest } from 'handy-components';
 
 export default class ImportInventory extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       errorsModalOpen: false,
       noErrorsModalOpen: false,

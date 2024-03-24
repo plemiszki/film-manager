@@ -1,6 +1,6 @@
-import React from 'react'
-import { snakeCase } from 'change-case'
-import { Details, deepCopy, setUpNiceSelect, resetNiceSelect, createEntity, sendRequest, GrayedOut, Spinner, Button, titleCase } from 'handy-components'
+import React from 'react';
+import { snakeCase } from 'change-case';
+import { Details, deepCopy, setUpNiceSelect, resetNiceSelect, createEntity, sendRequest, GrayedOut, Spinner, Button, titleCase } from 'handy-components';
 
 let entityNamePlural;
 let directory;
@@ -17,7 +17,7 @@ export default class NewEntity extends React.Component {
       spinner: !!fetchData,
       [entityName]: deepCopy(initialEntity),
       errors: {},
-    }
+    };
 
     if (passData) {
       Object.keys(passData).forEach((arrayName) => {
@@ -43,7 +43,7 @@ export default class NewEntity extends React.Component {
         let obj = { spinner: false };
         fetchData.forEach((arrayName) => {
           obj[arrayName] = response[arrayName];
-        })
+        });
         obj[entityName] = entity;
         this.setState(obj, () => {
           resetNiceSelect({ selector: '.admin-modal select', func: Details.changeDropdownField.bind(this) });
@@ -88,7 +88,7 @@ export default class NewEntity extends React.Component {
   }
 
   changeFieldArgs() {
-    return {}
+    return {};
   }
 
   render() {
@@ -102,7 +102,7 @@ export default class NewEntity extends React.Component {
             submit
             disabled={ spinner }
             text={ buttonText || `Add ${titleCase(entityName)}` }
-            onClick={ () => { this.clickAdd() } }
+            onClick={ () => { this.clickAdd(); } }
           />
           <GrayedOut visible={ spinner } />
           <Spinner visible={ spinner } />

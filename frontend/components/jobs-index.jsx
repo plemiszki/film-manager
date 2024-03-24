@@ -1,10 +1,10 @@
-import React from 'react'
-import { deepCopy, fetchEntities, updateEntity, GrayedOut, Spinner, OutlineButton, Table } from 'handy-components'
+import React from 'react';
+import { deepCopy, fetchEntities, updateEntity, GrayedOut, Spinner, OutlineButton, Table } from 'handy-components';
 
 export default class JobsIndex extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: false,
       jobs: []

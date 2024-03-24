@@ -1,10 +1,10 @@
-import React from 'react'
-import { Details, deepCopy, fetchEntity, updateEntity, Spinner, GrayedOut, BottomButtons, objectsAreEqual, Table } from 'handy-components'
+import React from 'react';
+import { Details, deepCopy, fetchEntity, updateEntity, Spinner, GrayedOut, BottomButtons, objectsAreEqual, Table } from 'handy-components';
 
 export default class InstitutionDetails extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       errors: [],
@@ -62,7 +62,7 @@ export default class InstitutionDetails extends React.Component {
   changeFieldArgs() {
     return {
       changesFunction: this.checkForChanges.bind(this)
-    }
+    };
   }
 
   render() {
@@ -121,7 +121,7 @@ export default class InstitutionDetails extends React.Component {
               justSaved={ justSaved }
               changesToSave={ changesToSave }
               disabled={ spinner }
-              clickSave={ () => { this.clickSave() } }
+              clickSave={ () => { this.clickSave(); } }
             />
             <GrayedOut visible={ spinner } />
             <Spinner visible={ spinner } />

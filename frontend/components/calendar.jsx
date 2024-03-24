@@ -1,10 +1,10 @@
-import React from 'react'
-import { Common, MONTHS, sendRequest, GrayedOut, Spinner, Button } from 'handy-components'
+import React from 'react';
+import { Common, MONTHS, sendRequest, GrayedOut, Spinner, Button } from 'handy-components';
 
 export default class Calendar extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       spinner: true,
       year: (new Date).getFullYear(),
@@ -56,13 +56,13 @@ export default class Calendar extends React.Component {
           <Button
             float
             disabled={ spinner }
-            onClick={ () => { this.clickNext() } }
+            onClick={ () => { this.clickNext(); } }
             text="&#62;&#62;"
           />
           <Button
             float
             disabled={ spinner }
-            onClick={ () => { this.clickPrev() } }
+            onClick={ () => { this.clickPrev(); } }
             text="&#60;&#60;"
             marginRight
           />
