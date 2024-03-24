@@ -1,11 +1,6 @@
 module.exports = {
-	"env": {
-		"browser": true,
-		"es2021": true
-	},
 	"extends": [
-		"eslint:recommended",
-		"plugin:react/recommended"
+		"plugin:react/recommended" // works with tags
 	],
 	"settings": {
 		"react": {
@@ -14,6 +9,10 @@ module.exports = {
 	},
 	"parserOptions": {
 		"ecmaVersion": "latest",
-		"sourceType": "module"
+		"sourceType": "module" // works with 'import'
 	},
+	"rules": {
+		"semi": "warn",
+		"eqeqeq": "warn",
+	}
 }
