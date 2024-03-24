@@ -7,7 +7,7 @@ module.exports = {
 	],
 	"settings": {
 		"react": {
-			"version": "detect"
+			"version": "detect" // silence warning
 		}
 	},
 	"parserOptions": {
@@ -18,5 +18,6 @@ module.exports = {
 		"semi": "warn",
 		"eqeqeq": "warn",
 		"react/prop-types": "off",
+		"react/no-unknown-property": ["error", { "ignore": ["jsx"] }]
 	}
 };
