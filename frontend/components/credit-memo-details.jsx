@@ -58,7 +58,7 @@ export default class CreditMemoDetails extends React.Component {
                 <p>{ creditMemo.billingAddress1 }</p>
                 <p>{ creditMemo.billingAddress2 }</p>
                 <p>{ creditMemo.billingCity }, { creditMemo.billingState } { creditMemo.billingZip }</p>
-                <p>{ creditMemo.billingCountry == 'USA' ? '' : creditMemo.billingCountry }</p>
+                <p>{ creditMemo.billingCountry === 'USA' ? '' : creditMemo.billingCountry }</p>
               </div>
             </div>
             <hr />

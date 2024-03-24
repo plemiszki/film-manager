@@ -257,7 +257,7 @@ export default class BookingDetails extends React.Component {
       thing: "booking",
       changesFunction: this.checkForChanges.bind(this),
       beforeSave: function(newThing, key, value) {
-        if (key == "terms") {
+        if (key === "terms") {
           if (value !== "90/10") {
             newThing.houseExpense = "$0.00";
             Details.removeFieldError(this.state.errors, "houseExpense");
@@ -648,7 +648,7 @@ export default class BookingDetails extends React.Component {
   }
 
   renderBookedByField() {
-    if (JSON.stringify(this.state.booking) == "{}" || this.state.booking.pastBooker) {
+    if (JSON.stringify(this.state.booking) === "{}" || this.state.booking.pastBooker) {
       return(
         <>
           { Details.renderField.bind(this)({ columnWidth: 3, entity: 'booking', property: 'pastBooker', columnHeader: 'Booked By', readOnly: true }) }

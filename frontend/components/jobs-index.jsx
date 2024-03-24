@@ -23,7 +23,7 @@ export default class JobsIndex extends React.Component {
 
   killJob(id) {
     const { jobs } = this.state;
-    let job = deepCopy(jobs.find(job => job.id == id));
+    let job = deepCopy(jobs.find(job => job.id === id));
     job.status = 'killed';
     this.setState({
       spinner: true

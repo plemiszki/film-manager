@@ -82,7 +82,7 @@ export default class InTheatersIndexItem extends React.Component {
       <>
         <tr>
           <td id={"index-" + film.order} className="indent" data-index={ film.order } data-section={ section }>
-            <div className={ "top-drop-zone" + (film.order == 0 ? '' : ' hidden') } data-index="-1" data-section={ section }></div>
+            <div className={ "top-drop-zone" + (film.order === 0 ? '' : ' hidden') } data-index="-1" data-section={ section }></div>
             <div>
               { film.film }
             </div>

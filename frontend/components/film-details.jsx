@@ -324,7 +324,7 @@ export default class FilmDetails extends React.Component {
     let newOrder = rearrangeFields({ currentOrder, draggedIndex, dropZoneIndex });
     let data;
     directory = directory || entityArray;
-    if (directory == 'actors') {
+    if (directory === 'actors') {
       data = {
         new_order: newOrder,
         actorable_id: filmId,
@@ -355,18 +355,18 @@ export default class FilmDetails extends React.Component {
       defaultErrorsKey: 'film',
       thing: "film",
       beforeSave: (newEntity, key, value) => {
-        if (key == "dealTypeId") {
+        if (key === "dealTypeId") {
           if (value <= 4) {
             newEntity.grPercentage = "";
           } else {
             newEntity.grPercentage = "0";
           }
         }
-        if (key == 'reserve' && value == false) {
+        if (key === 'reserve' && value === false) {
           newEntity.reservePercentage = 0;
           newEntity.reserveQuarters = 0;
         }
-        if (key == 'autoRenew' && value == false) {
+        if (key === 'autoRenew' && value === false) {
           newEntity.autoRenewTerm = 0;
           newEntity.autoRenewDaysNotice = 0;
         }
@@ -378,7 +378,7 @@ export default class FilmDetails extends React.Component {
 
   checkForChanges() {
     const { film, filmSaved, percentageObject, percentageObjectSaved } = this.state;
-    if (Tools.objectsAreEqual(film, filmSaved) == false) {
+    if (Tools.objectsAreEqual(film, filmSaved) === false) {
       return true;
     } else {
       return !Tools.objectsAreEqual(percentageObject, percentageObjectSaved);
@@ -633,7 +633,7 @@ export default class FilmDetails extends React.Component {
       <>
         <div className="handy-component">
           <h1>{ title } Details</h1>
-          <div className={ `tabs-row${film.filmType == 'TV Series' ? ' tv' : ''}` }>
+          <div className={ `tabs-row${film.filmType === 'TV Series' ? ' tv' : ''}` }>
             { this.renderTopTab("General") }
             { this.renderTopTab("Contract") }
             { this.renderTopTab("Marketing") }
@@ -884,8 +884,8 @@ export default class FilmDetails extends React.Component {
     const { film, tab } = this.state;
     if (film.id) {
       if (['General', 'Contract', 'Educational', 'DVDs', 'Bookings', 'Marketing'].indexOf(label) > -1 ||
-          (['Statements', 'Sublicensing'].indexOf(label) > -1 && (film.filmType == 'Feature' || film.filmType == 'TV Series')) ||
-          (label == 'Episodes' && film.filmType == 'TV Series'))
+          (['Statements', 'Sublicensing'].indexOf(label) > -1 && (film.filmType === 'Feature' || film.filmType === 'TV Series')) ||
+          (label === 'Episodes' && film.filmType === 'TV Series'))
       {
         return (
           <>
@@ -1252,16 +1252,16 @@ export default class FilmDetails extends React.Component {
                 style={ { marginBottom: '30px' } }
               />
             </div>
-            <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
+            <div className={ "col-xs-3" + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
               <p className="section-header">Release Dates</p>
               { Details.renderField.bind(this)({ entity: 'film', property: 'theatricalRelease', readOnly: !FM.user.hasAdminAccess }) }
               { Details.renderField.bind(this)({ entity: 'film', property: 'svodRelease', columnHeader: 'SVOD Release', readOnly: !FM.user.hasAdminAccess }) }
               { Details.renderField.bind(this)({ entity: 'film', property: 'tvodRelease', columnHeader: 'TVOD/EST Release', readOnly: !FM.user.hasAdminAccess }) }
             </div>
-            <div className={ "col-xs-3" + (this.state.film.filmType == 'Short' ? ' hidden' : '') }>
+            <div className={ "col-xs-3" + (this.state.film.filmType === 'Short' ? ' hidden' : '') }>
               <div style={ { width: '100%', height: '47px' } }></div>
               { Details.renderField.bind(this)({ entity: 'film', property: 'fmPlusRelease', columnHeader: 'FM Plus Release', readOnly: !FM.user.hasAdminAccess }) }
-              <div className={ film.filmType == 'Short' ? ' hidden' : '' }>
+              <div className={ film.filmType === 'Short' ? ' hidden' : '' }>
                 { Details.renderField.bind(this)({ entity: 'film', property: 'avodRelease', columnHeader: 'AVOD Release', readOnly: !FM.user.hasAdminAccess }) }
                 { Details.renderField.bind(this)({ entity: 'film', property: 'clubDate', readOnly: !FM.user.hasAdminAccess }) }
               </div>
@@ -1671,10 +1671,10 @@ export default class FilmDetails extends React.Component {
     return (
       <>
         <div>
-          <div className={ film.filmType == 'Short' ? 'hidden' : '' }>
+          <div className={ film.filmType === 'Short' ? 'hidden' : '' }>
             <div className="row">
               { Details.renderDropDown.bind(this)({ columnWidth: 5, entity: 'film', property: 'dealTypeId', columnHeader: 'Deal Type', options: dealTemplates, optionDisplayProperty: 'name', readOnly: !FM.user.hasAdminAccess }) }
-              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'film', property: 'grPercentage', columnHeader: 'GR %', readOnly: !FM.user.hasAdminAccess, hidden: film.dealTypeId != "5" && film.dealTypeId != "6" }) }
+              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'film', property: 'grPercentage', columnHeader: 'GR %', readOnly: !FM.user.hasAdminAccess, hidden: film.dealTypeId !== "5" && film.dealTypeId !== "6" }) }
               { Details.renderDropDown.bind(this)({
                 columnWidth: 3,
                 entity: 'film',
@@ -1740,13 +1740,13 @@ export default class FilmDetails extends React.Component {
               ) }
             </div>
           </div>
-          <div className={ this.state.film.filmType == 'Short' ? 'hidden' : '' }>
+          <div className={ this.state.film.filmType === 'Short' ? 'hidden' : '' }>
             <hr />
             <p className="section-header">Revenue Splits</p>
             <div className="row">
               { filmRevenuePercentages.map((revenuePercentage, index) => {
                 const properErrorsArray = percentageErrors[revenuePercentage.id] ? percentageErrors[revenuePercentage.id] : [];
-                const revenueStream = revenueStreams.find(stream => stream.id == revenuePercentage.revenueStreamId);
+                const revenueStream = revenueStreams.find(stream => stream.id === revenuePercentage.revenueStreamId);
                 return (
                   <div key={ index }>
                     { Details.renderField.bind(this)({

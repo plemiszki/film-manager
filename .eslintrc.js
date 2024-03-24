@@ -3,7 +3,8 @@ module.exports = {
 		"browser": true, // works with 'document'
 	},
 	"extends": [
-		"plugin:react/recommended" // works with JSX tags
+		"plugin:react/recommended", // works with JSX tags
+		"plugin:eqeqeq-fix/recommended" // fix eqeqeq warning, which eslint does not do by default
 	],
 	"settings": {
 		"react": {

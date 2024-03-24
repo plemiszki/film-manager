@@ -258,7 +258,7 @@ export default class PurchaseOrderDetails extends React.Component {
     const unshippedPO = !purchaseOrder.shipDate;
     const shippedPO = !unshippedPO;
 
-    const selectedItem = otherItems.find(item => item.id == selectedItemId && item.itemType === selectedItemType);
+    const selectedItem = otherItems.find(item => item.id === selectedItemId && item.itemType === selectedItemType);
 
     let tableColumns = [
       {

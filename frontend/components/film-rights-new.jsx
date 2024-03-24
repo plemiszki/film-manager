@@ -152,7 +152,7 @@ export default class FilmRightsNew extends React.Component {
 
   changeOperator(which, value) {
     this.setState({
-      [`${which}Operator`]: (value == 'AND' ? 'OR' : 'AND')
+      [`${which}Operator`]: (value === 'AND' ? 'OR' : 'AND')
     });
   }
 

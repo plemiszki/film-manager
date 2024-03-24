@@ -132,7 +132,7 @@ export default class ReportDetails extends React.Component {
   }
 
   checkForChanges() {
-    if (Tools.objectsAreEqual(this.state.report, this.state.reportSaved) == false) {
+    if (Tools.objectsAreEqual(this.state.report, this.state.reportSaved) === false) {
       return true;
     } else {
       return !Tools.objectsAreEqual(this.state.streams, this.state.streamsSaved);

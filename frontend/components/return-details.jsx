@@ -168,7 +168,7 @@ export default class ReturnDetails extends React.Component {
 
   render() {
     const { spinner, justSaved, changesToSave, items, qtyModalOpen, selectedItemId, selectedItemType, otherItems = [], deleteModalOpen } = this.state;
-    const selectedItem = otherItems.find(item => item.id == selectedItemId && item.itemType === selectedItemType);
+    const selectedItem = otherItems.find(item => item.id === selectedItemId && item.itemType === selectedItemType);
 
     return (
       <>

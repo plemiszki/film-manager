@@ -67,7 +67,7 @@ export default class ReportsIndex extends React.Component {
     let jobId = null;
     if (FM.params.job_id) {
       jobId = FM.params.job_id;
-    } else if ($('#sage-import-id').length == 1) {
+    } else if ($('#sage-import-id').length === 1) {
       jobId = $('#sage-import-id')[0].innerHTML;
     }
     if (jobId) {
@@ -104,7 +104,7 @@ export default class ReportsIndex extends React.Component {
   clickPrev() {
     var newQuarter = this.state.quarter - 1;
     var newYear = this.state.year;
-    if (newQuarter == 0) {
+    if (newQuarter === 0) {
       newYear -= 1;
       newQuarter = 4;
     }
@@ -120,7 +120,7 @@ export default class ReportsIndex extends React.Component {
   clickNext() {
     var newQuarter = this.state.quarter + 1;
     var newYear = this.state.year;
-    if (newQuarter == 5) {
+    if (newQuarter === 5) {
       newYear += 1;
       newQuarter = 1;
     }

@@ -299,7 +299,7 @@ export default class VirtualBookingDetails extends React.Component {
   }
 
   renderBillingAddressSection() {
-    if (this.state.virtualBooking.host == 'Venue') {
+    if (this.state.virtualBooking.host === 'Venue') {
       return(
         <>
           <hr className="divider" />
@@ -322,7 +322,7 @@ export default class VirtualBookingDetails extends React.Component {
 
   renderInvoicesSection() {
     const { invoices, virtualBooking } = this.state;
-    if (virtualBooking.host == 'Venue') {
+    if (virtualBooking.host === 'Venue') {
       return (
         <>
           <hr className="divider" style={ { marginTop: 30 } } />
@@ -369,7 +369,7 @@ export default class VirtualBookingDetails extends React.Component {
 
   renderPaymentsSection() {
     const { payments } = this.state;
-    if (this.state.virtualBooking.host == 'Venue') {
+    if (this.state.virtualBooking.host === 'Venue') {
       return (
         <>
           <hr className="divider" style={ { marginTop: 30 } } />
@@ -405,7 +405,7 @@ export default class VirtualBookingDetails extends React.Component {
 
   renderReportSection() {
     const { spinner, changesToSave, virtualBooking } = this.state;
-    if (this.state.virtualBooking.host == 'FM') {
+    if (this.state.virtualBooking.host === 'FM') {
       return (
         <div>
           <hr className="divider" style={ { marginTop: 30 } } />
@@ -422,7 +422,7 @@ export default class VirtualBookingDetails extends React.Component {
                 <Button
                   marginLeft
                   disabled={ spinner || changesToSave }
-                  text={ changesToSave ? "Save to Send" : (virtualBooking.reportSentDate == "(Not Sent)" ? "Send Report" : "Send Another Report") }
+                  text={ changesToSave ? "Save to Send" : (virtualBooking.reportSentDate === "(Not Sent)" ? "Send Report" : "Send Another Report") }
                   onClick={ () => { this.clickSendReport(); } }
                   style={ {
                     paddingTop: 14,
@@ -443,7 +443,7 @@ export default class VirtualBookingDetails extends React.Component {
       return(
         <div className="no-column-padding">
           { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'totalGross', readOnly: true }) }
-          { virtualBooking.host == 'FM' ? Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'venueShare', readOnly: true }) : null }
+          { virtualBooking.host === 'FM' ? Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'venueShare', readOnly: true }) : null }
           { this.renderVenueHostCalculations() }
         </div>
       );
@@ -455,7 +455,7 @@ export default class VirtualBookingDetails extends React.Component {
   }
 
   renderVenueHostCalculations() {
-    if (this.state.virtualBooking.host == 'Venue') {
+    if (this.state.virtualBooking.host === 'Venue') {
       return(
         <>
           { Details.renderField.bind(this)({ columnWidth: 12, entity: 'calculations', property: 'ourShare', readOnly: true }) }

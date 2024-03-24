@@ -89,7 +89,7 @@ export default class InvoiceDetails extends React.Component {
                 <p>{ invoice.billingAddress1 }</p>
                 <p>{ invoice.billingAddress2 }</p>
                 <p>{ invoice.billingCity }, { invoice.billingState } { invoice.billingZip }</p>
-                <p>{ invoice.billingCountry == 'USA' ? '' : invoice.billingCountry }</p>
+                <p>{ invoice.billingCountry === 'USA' ? '' : invoice.billingCountry }</p>
               </div>
               { invoice.shippingAddress1 && (
                 <div className="col-xs-4">
@@ -98,7 +98,7 @@ export default class InvoiceDetails extends React.Component {
                   <p>{ invoice.shippingAddress1 }</p>
                   <p>{ invoice.shippingAddress2 }</p>
                   <p>{ invoice.shippingCity }, { invoice.shippingState } { invoice.shippingZip }</p>
-                  <p>{ invoice.shippingCountry == 'USA' ? '' : invoice.shippingCountry }</p>
+                  <p>{ invoice.shippingCountry === 'USA' ? '' : invoice.shippingCountry }</p>
                 </div>
               ) }
             </div>
@@ -150,7 +150,7 @@ export default class InvoiceDetails extends React.Component {
   }
 
   renderTableHeaders() {
-    if (this.state.invoice.invoiceType == "dvd") {
+    if (this.state.invoice.invoiceType === "dvd") {
       return(
         <tr>
           <th>Item</th>
@@ -170,7 +170,7 @@ export default class InvoiceDetails extends React.Component {
   }
 
   renderTableColumns(row, index) {
-    if (this.state.invoice.invoiceType == "dvd") {
+    if (this.state.invoice.invoiceType === "dvd") {
       return (
         <tr key={ index }>
           <td>
