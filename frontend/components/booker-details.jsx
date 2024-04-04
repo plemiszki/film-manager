@@ -1,8 +1,22 @@
-import React from 'react';
-import { Common, BottomButtons, Details, deepCopy, objectsAreEqual, fetchEntity, createEntity, updateEntity, deleteEntity, Spinner, GrayedOut, OutlineButton, ModalSelect, ListBox } from 'handy-components';
+import React from "react";
+import {
+  Common,
+  BottomButtons,
+  Details,
+  deepCopy,
+  objectsAreEqual,
+  fetchEntity,
+  createEntity,
+  updateEntity,
+  deleteEntity,
+  Spinner,
+  GrayedOut,
+  OutlineButton,
+  ModalSelect,
+  ListBox,
+} from "handy-components";
 
 export default class BookerDetails extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -15,7 +29,7 @@ export default class BookerDetails extends React.Component {
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
-      venuesModalOpen: false
+      venuesModalOpen: false,
     };
   }
 
@@ -34,7 +48,7 @@ export default class BookerDetails extends React.Component {
 
   clickAddVenue() {
     this.setState({
-      venuesModalOpen: true
+      venuesModalOpen: true,
     });
   }
 
@@ -44,12 +58,12 @@ export default class BookerDetails extends React.Component {
       spinner: true,
     });
     createEntity({
-      directory: 'booker_venues',
-      entityName: 'booker_venue',
+      directory: "booker_venues",
+      entityName: "booker_venue",
       entity: {
         bookerId: this.state.booker.id,
         venueId: option.id,
-      }
+      },
     }).then((response) => {
       this.setState({
         spinner: false,
@@ -60,10 +74,10 @@ export default class BookerDetails extends React.Component {
 
   clickDeleteVenue(id) {
     this.setState({
-      spinner: true
+      spinner: true,
     });
     deleteEntity({
-      directory: 'booker_venues',
+      directory: "booker_venues",
       id,
     }).then((response) => {
       const { bookerVenues } = response;
@@ -75,29 +89,35 @@ export default class BookerDetails extends React.Component {
   }
 
   clickSave() {
-    this.setState({
-      spinner: true,
-      justSaved: true
-    }, () => {
-      const { booker } = this.state;
-      updateEntity({
-        entityName: 'booker',
-        entity: booker
-      }).then((response) => {
-        const { booker } = response;
-        this.setState({
-          spinner: false,
-          booker,
-          bookerSaved: deepCopy(booker),
-          changesToSave: false
-        });
-      }, (response) => {
-        this.setState({
-          spinner: false,
-          errors: response.errors,
-        });
-      });
-    });
+    this.setState(
+      {
+        spinner: true,
+        justSaved: true,
+      },
+      () => {
+        const { booker } = this.state;
+        updateEntity({
+          entityName: "booker",
+          entity: booker,
+        }).then(
+          (response) => {
+            const { booker } = response;
+            this.setState({
+              spinner: false,
+              booker,
+              bookerSaved: deepCopy(booker),
+              changesToSave: false,
+            });
+          },
+          (response) => {
+            this.setState({
+              spinner: false,
+              errors: response.errors,
+            });
+          },
+        );
+      },
+    );
   }
 
   checkForChanges() {
@@ -106,7 +126,7 @@ export default class BookerDetails extends React.Component {
 
   changeFieldArgs() {
     return {
-      changesFunction: this.checkForChanges.bind(this)
+      changesFunction: this.checkForChanges.bind(this),
     };
   }
 
@@ -118,45 +138,63 @@ export default class BookerDetails extends React.Component {
           <h1>Booker Details</h1>
           <div className="white-box">
             <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'name' }) }
-              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'email' }) }
-              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'booker', property: 'phone' }) }
+              {Details.renderField.bind(this)({
+                columnWidth: 4,
+                entity: "booker",
+                property: "name",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 4,
+                entity: "booker",
+                property: "email",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 4,
+                entity: "booker",
+                property: "phone",
+              })}
             </div>
             <div className="row">
               <div className="col-xs-12">
                 <p className="section-header">Venues</p>
                 <ListBox
                   entityName="bookerVenue"
-                  entities={ bookerVenues }
-                  clickDelete={ (bookerVenue) => { this.clickDeleteVenue(bookerVenue.id); } }
+                  entities={bookerVenues}
+                  clickDelete={(bookerVenue) => {
+                    this.clickDeleteVenue(bookerVenue.id);
+                  }}
                   displayProperty="venue"
-                  style={ { marginBottom: 15 } }
+                  style={{ marginBottom: 15 }}
                 />
                 <OutlineButton
                   text="Add Venue"
-                  onClick={ () => { this.clickAddVenue(); } }
+                  onClick={() => {
+                    this.clickAddVenue();
+                  }}
                   marginBottom
                 />
               </div>
             </div>
             <BottomButtons
               entityName="booker"
-              confirmDelete={ Details.confirmDelete.bind(this) }
-              justSaved={ justSaved }
-              changesToSave={ changesToSave }
-              disabled={ spinner }
-              clickSave={ () => { this.clickSave(); } }
+              confirmDelete={Details.confirmDelete.bind(this)}
+              justSaved={justSaved}
+              changesToSave={changesToSave}
+              disabled={spinner}
+              clickSave={() => {
+                this.clickSave();
+              }}
             />
-            <GrayedOut visible={ spinner } />
-            <Spinner visible={ spinner } />
+            <GrayedOut visible={spinner} />
+            <Spinner visible={spinner} />
           </div>
         </div>
         <ModalSelect
-          isOpen={ this.state.venuesModalOpen }
-          onClose={ Common.closeModals.bind(this) }
-          options={ this.state.venues }
+          isOpen={this.state.venuesModalOpen}
+          onClose={Common.closeModals.bind(this)}
+          options={this.state.venues}
           property="name"
-          func={ this.selectVenue.bind(this) }
+          func={this.selectVenue.bind(this)}
         />
       </>
     );

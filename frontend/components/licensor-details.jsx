@@ -1,8 +1,16 @@
-import React from 'react';
-import { Details, deepCopy, fetchEntity, updateEntity, Table, BottomButtons, GrayedOut, Spinner } from 'handy-components';
+import React from "react";
+import {
+  Details,
+  deepCopy,
+  fetchEntity,
+  updateEntity,
+  Table,
+  BottomButtons,
+  GrayedOut,
+  Spinner,
+} from "handy-components";
 
 export default class LicensorDetails extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -23,34 +31,40 @@ export default class LicensorDetails extends React.Component {
         spinner: false,
         licensor,
         licensorSaved: deepCopy(licensor),
-        films
+        films,
       });
     });
   }
 
   clickSave() {
-    this.setState({
-      spinner: true,
-      justSaved: true
-    }, () => {
-      updateEntity({
-        entityName: 'licensor',
-        entity: this.state.licensor
-      }).then((response) => {
-        const { licensor } = response;
-        this.setState({
-          spinner: false,
-          licensor,
-          licensorSaved: deepCopy(licensor),
-          changesToSave: false
-        });
-      }, (response) => {
-        this.setState({
-          spinner: false,
-          errors: response.errors
-        });
-      });
-    });
+    this.setState(
+      {
+        spinner: true,
+        justSaved: true,
+      },
+      () => {
+        updateEntity({
+          entityName: "licensor",
+          entity: this.state.licensor,
+        }).then(
+          (response) => {
+            const { licensor } = response;
+            this.setState({
+              spinner: false,
+              licensor,
+              licensorSaved: deepCopy(licensor),
+              changesToSave: false,
+            });
+          },
+          (response) => {
+            this.setState({
+              spinner: false,
+              errors: response.errors,
+            });
+          },
+        );
+      },
+    );
   }
 
   redirect(id) {
@@ -58,7 +72,10 @@ export default class LicensorDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.licensor, this.state.licensorSaved);
+    return !Tools.objectsAreEqual(
+      this.state.licensor,
+      this.state.licensorSaved,
+    );
   }
 
   changeFieldArgs() {
@@ -76,33 +93,50 @@ export default class LicensorDetails extends React.Component {
             <h1>Licensor Details</h1>
             <div className="white-box">
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'name' }) }
-                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'licensor', property: 'email', columnHeader: 'Royalty Emails' }) }
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "licensor",
+                  property: "name",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "licensor",
+                  property: "email",
+                  columnHeader: "Royalty Emails",
+                })}
               </div>
               <div className="row">
-                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'licensor', property: 'address', rows: 5 }) }
+                {Details.renderField.bind(this)({
+                  type: "textbox",
+                  columnWidth: 12,
+                  entity: "licensor",
+                  property: "address",
+                  rows: 5,
+                })}
               </div>
               <div className="row">
                 <div className="col-xs-12">
                   <Table
-                    style={ { marginBottom: 60 } }
-                    columns={ ['title'] }
-                    rows={ this.state.films }
+                    style={{ marginBottom: 60 }}
+                    columns={["title"]}
+                    rows={this.state.films}
                     urlPrefix="films"
-                    sortable={ false }
+                    sortable={false}
                   />
                 </div>
               </div>
               <BottomButtons
                 entityName="licensor"
-                confirmDelete={ Details.confirmDelete.bind(this) }
-                justSaved={ justSaved }
-                changesToSave={ changesToSave }
-                disabled={ spinner }
-                clickSave={ () => { this.clickSave(); } }
+                confirmDelete={Details.confirmDelete.bind(this)}
+                justSaved={justSaved}
+                changesToSave={changesToSave}
+                disabled={spinner}
+                clickSave={() => {
+                  this.clickSave();
+                }}
               />
-              <GrayedOut visible={ spinner } />
-              <Spinner visible={ spinner } />
+              <GrayedOut visible={spinner} />
+              <Spinner visible={spinner} />
             </div>
           </div>
         </div>

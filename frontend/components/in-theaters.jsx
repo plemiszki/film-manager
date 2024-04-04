@@ -1,9 +1,17 @@
-import React from 'react';
-import InTheatersIndexItem from './in-theaters-index-item.jsx';
-import { Common, sendRequest, deleteEntity, createEntity, OutlineButton, Spinner, GrayedOut, ModalSelect } from 'handy-components';
+import React from "react";
+import InTheatersIndexItem from "./in-theaters-index-item.jsx";
+import {
+  Common,
+  sendRequest,
+  deleteEntity,
+  createEntity,
+  OutlineButton,
+  Spinner,
+  GrayedOut,
+  ModalSelect,
+} from "handy-components";
 
 export default class InTheatersIndex extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -12,19 +20,19 @@ export default class InTheatersIndex extends React.Component {
       comingSoon: [],
       repertory: [],
       filmsModalOpen: false,
-      films: []
+      films: [],
     };
   }
 
   componentDidMount() {
-    sendRequest('/api/in_theaters').then((response) => {
+    sendRequest("/api/in_theaters").then((response) => {
       const { films, inTheaters, comingSoon, repertory } = response;
       this.setState({
         spinner: false,
         inTheaters,
         comingSoon,
         repertory,
-        films
+        films,
       });
     });
   }
@@ -32,10 +40,10 @@ export default class InTheatersIndex extends React.Component {
   clickX(e) {
     const id = e.target.dataset.id;
     this.setState({
-      spinner: true
+      spinner: true,
     });
     deleteEntity({
-      directory: 'in_theaters',
+      directory: "in_theaters",
       id,
     }).then((response) => {
       const { films, inTheaters, comingSoon, repertory } = response;
@@ -44,7 +52,7 @@ export default class InTheatersIndex extends React.Component {
         inTheaters,
         comingSoon,
         repertory,
-        films
+        films,
       });
     });
   }
@@ -52,21 +60,21 @@ export default class InTheatersIndex extends React.Component {
   clickAddComingSoonFilm() {
     this.setState({
       filmsModalOpen: true,
-      addSection: 'Coming Soon'
+      addSection: "Coming Soon",
     });
   }
 
   clickAddInTheatersFilm() {
     this.setState({
       filmsModalOpen: true,
-      addSection: 'In Theaters'
+      addSection: "In Theaters",
     });
   }
 
   clickAddRepertoryFilm() {
     this.setState({
       filmsModalOpen: true,
-      addSection: 'Repertory'
+      addSection: "Repertory",
     });
   }
 
@@ -74,15 +82,15 @@ export default class InTheatersIndex extends React.Component {
     const filmId = option.id;
     this.setState({
       filmsModalOpen: false,
-      spinner: true
+      spinner: true,
     });
     createEntity({
-      directory: 'in_theaters',
-      entityName: 'film',
+      directory: "in_theaters",
+      entityName: "film",
       entity: {
         filmId,
-        section: this.state.addSection
-      }
+        section: this.state.addSection,
+      },
     }).then((response) => {
       const { films, inTheaters, comingSoon, repertory } = response;
       this.setState({
@@ -90,7 +98,7 @@ export default class InTheatersIndex extends React.Component {
         inTheaters,
         comingSoon,
         repertory,
-        films
+        films,
       });
     });
   }
@@ -113,27 +121,29 @@ export default class InTheatersIndex extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td></tr>
-                { inTheaters.map((film, index) => {
-                  return(
+                <tr>
+                  <td></td>
+                </tr>
+                {inTheaters.map((film, index) => {
+                  return (
                     <InTheatersIndexItem
-                      context={ this.props.context }
-                      key={ film.id }
-                      index={ index }
-                      film={ film }
-                      section={ 'in theaters' }
-                      clickXButton={ this.clickX.bind(this) }
-                      renderHandle={ inTheaters.length > 1 }
-                      sectionFilms={ inTheaters }
-                      updateFilms={ this.updateFilms.bind(this) }
+                      context={this.props.context}
+                      key={film.id}
+                      index={index}
+                      film={film}
+                      section={"in theaters"}
+                      clickXButton={this.clickX.bind(this)}
+                      renderHandle={inTheaters.length > 1}
+                      sectionFilms={inTheaters}
+                      updateFilms={this.updateFilms.bind(this)}
                     />
                   );
-                }) }
+                })}
               </tbody>
             </table>
             <OutlineButton
               text="Add Film"
-              onClick={ () => this.clickAddInTheatersFilm() }
+              onClick={() => this.clickAddInTheatersFilm()}
             />
             <hr />
             <table className="fm-admin-table no-hover no-highlight coming-soon">
@@ -143,27 +153,29 @@ export default class InTheatersIndex extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td></tr>
-                { this.state.comingSoon.map((film, index) => {
-                  return(
+                <tr>
+                  <td></td>
+                </tr>
+                {this.state.comingSoon.map((film, index) => {
+                  return (
                     <InTheatersIndexItem
-                      context={ this.props.context }
-                      key={ film.id }
-                      index={ index }
-                      film={ film }
-                      section={ 'coming soon' }
-                      clickXButton={ this.clickX.bind(this) }
-                      renderHandle={ this.state.comingSoon.length > 1 }
-                      sectionFilms={ this.state.comingSoon }
-                      updateFilms={ this.updateFilms.bind(this) }
+                      context={this.props.context}
+                      key={film.id}
+                      index={index}
+                      film={film}
+                      section={"coming soon"}
+                      clickXButton={this.clickX.bind(this)}
+                      renderHandle={this.state.comingSoon.length > 1}
+                      sectionFilms={this.state.comingSoon}
+                      updateFilms={this.updateFilms.bind(this)}
                     />
                   );
-                }) }
+                })}
               </tbody>
             </table>
             <OutlineButton
               text="Add Film"
-              onClick={ () => this.clickAddComingSoonFilm() }
+              onClick={() => this.clickAddComingSoonFilm()}
             />
             <hr />
             <table className="fm-admin-table no-hover no-highlight repertory">
@@ -173,37 +185,39 @@ export default class InTheatersIndex extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                <tr><td></td></tr>
-                { this.state.repertory.map((film, index) => {
-                  return(
+                <tr>
+                  <td></td>
+                </tr>
+                {this.state.repertory.map((film, index) => {
+                  return (
                     <InTheatersIndexItem
-                      context={ this.props.context }
-                      key={ film.id }
-                      index={ index }
-                      film={ film }
-                      section={ 'repertory' }
-                      clickXButton={ this.clickX.bind(this) }
-                      renderHandle={ this.state.repertory.length > 1 }
-                      sectionFilms={ this.state.repertory }
-                      updateFilms={ this.updateFilms.bind(this) }
+                      context={this.props.context}
+                      key={film.id}
+                      index={index}
+                      film={film}
+                      section={"repertory"}
+                      clickXButton={this.clickX.bind(this)}
+                      renderHandle={this.state.repertory.length > 1}
+                      sectionFilms={this.state.repertory}
+                      updateFilms={this.updateFilms.bind(this)}
                     />
                   );
-                }) }
+                })}
               </tbody>
             </table>
             <OutlineButton
               text="Add Film"
-              onClick={ () => this.clickAddRepertoryFilm() }
+              onClick={() => this.clickAddRepertoryFilm()}
             />
-            <Spinner visible={ spinner } />
-            <GrayedOut visible={ spinner } />
+            <Spinner visible={spinner} />
+            <GrayedOut visible={spinner} />
           </div>
           <ModalSelect
-            isOpen={ filmsModalOpen }
-            options={ films }
+            isOpen={filmsModalOpen}
+            options={films}
             property="title"
-            func={ this.selectFilm.bind(this) }
-            onClose={ Common.closeModals.bind(this) }
+            func={this.selectFilm.bind(this)}
+            onClose={Common.closeModals.bind(this)}
           />
         </div>
         <style jsx>{`
@@ -219,7 +233,7 @@ export default class InTheatersIndex extends React.Component {
             border-bottom: solid 1px #dadee2;
           }
           th {
-            font-family: 'TeachableSans-SemiBold';
+            font-family: "TeachableSans-SemiBold";
             color: black;
             padding-bottom: 20px;
           }

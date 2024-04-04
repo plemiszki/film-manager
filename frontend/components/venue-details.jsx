@@ -1,26 +1,38 @@
-import React from 'react';
-import Modal from 'react-modal';
-import { Common, ModalMessage, Details, setUpNiceSelect, fetchEntity, updateEntity, deleteEntity, Button, GrayedOut, Spinner, Table, BottomButtons } from 'handy-components';
-import FM from '../../app/assets/javascripts/me/common.jsx';
+import React from "react";
+import Modal from "react-modal";
+import {
+  Common,
+  ModalMessage,
+  Details,
+  setUpNiceSelect,
+  fetchEntity,
+  updateEntity,
+  deleteEntity,
+  Button,
+  GrayedOut,
+  Spinner,
+  Table,
+  BottomButtons,
+} from "handy-components";
+import FM from "../../app/assets/javascripts/me/common.jsx";
 
 const ShredderModalStyles = {
   overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
+    background: "rgba(0, 0, 0, 0.50)",
   },
   content: {
-    background: '#FFFFFF',
-    margin: 'auto',
+    background: "#FFFFFF",
+    margin: "auto",
     maxWidth: 570,
-    height: '273px',
-    border: 'solid 1px #5F5F5F',
-    borderRadius: '6px',
-    textAlign: 'center',
-    color: '#5F5F5F'
-  }
+    height: "273px",
+    border: "solid 1px #5F5F5F",
+    borderRadius: "6px",
+    textAlign: "center",
+    color: "#5F5F5F",
+  },
 };
 
 export default class VenueDetails extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -31,21 +43,27 @@ export default class VenueDetails extends React.Component {
       errors: [],
       changesToSave: false,
       justSaved: false,
-      deleteError: {}
+      deleteError: {},
     };
   }
 
   componentDidMount() {
     fetchEntity().then((response) => {
       const { venue, bookings } = response;
-      this.setState({
-        venue,
-        venueSaved: Tools.deepCopy(venue),
-        bookings,
-        spinner: false
-      }, () => {
-        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
-      });
+      this.setState(
+        {
+          venue,
+          venueSaved: Tools.deepCopy(venue),
+          bookings,
+          spinner: false,
+        },
+        () => {
+          setUpNiceSelect({
+            selector: "select",
+            func: Details.changeDropdownField.bind(this),
+          });
+        },
+      );
     });
   }
 
@@ -58,63 +76,76 @@ export default class VenueDetails extends React.Component {
     venue["shippingState"] = this.state.venue.billingState;
     venue["shippingZip"] = this.state.venue.billingZip;
     venue["shippingCountry"] = this.state.venue.billingCountry;
-    this.setState({
-      venue: venue
-    }, () => {
-      this.setState({
-        changesToSave: this.checkForChanges()
-      });
-    });
+    this.setState(
+      {
+        venue: venue,
+      },
+      () => {
+        this.setState({
+          changesToSave: this.checkForChanges(),
+        });
+      },
+    );
   }
 
   clickSave() {
-    this.setState({
-      spinner: true,
-      justSaved: true
-    }, () => {
-      updateEntity({
-        entityName: 'venue',
-        entity: this.state.venue
-      }).then((response) => {
-        const { venue } = response;
-        this.setState({
-          spinner: false,
-          changesToSave: false,
-          venue,
-          venueSaved: Tools.deepCopy(venue)
-        });
-      }, (response) => {
-        this.setState({
-          spinner: false,
-          errors: response.errors
-        });
-      });
-    });
+    this.setState(
+      {
+        spinner: true,
+        justSaved: true,
+      },
+      () => {
+        updateEntity({
+          entityName: "venue",
+          entity: this.state.venue,
+        }).then(
+          (response) => {
+            const { venue } = response;
+            this.setState({
+              spinner: false,
+              changesToSave: false,
+              venue,
+              venueSaved: Tools.deepCopy(venue),
+            });
+          },
+          (response) => {
+            this.setState({
+              spinner: false,
+              errors: response.errors,
+            });
+          },
+        );
+      },
+    );
   }
 
   clickDelete() {
     this.setState({
-      deleteModalOpen: true
+      deleteModalOpen: true,
     });
   }
 
   confirmDelete() {
-    this.setState({
-      spinner: true,
-      deleteModalOpen: false
-    }, () => {
-      deleteEntity().then(
-        () => {
-          window.location.pathname = '/venues';
-        }, (response) => {
-          this.setState({
-            messageModalOpen: true,
-            deleteError: response,
-            spinner: false,
-          });
-        }
-      );
-    });
+    this.setState(
+      {
+        spinner: true,
+        deleteModalOpen: false,
+      },
+      () => {
+        deleteEntity().then(
+          () => {
+            window.location.pathname = "/venues";
+          },
+          (response) => {
+            this.setState({
+              messageModalOpen: true,
+              deleteError: response,
+              spinner: false,
+            });
+          },
+        );
+      },
+    );
   }
 
   closeModal() {
@@ -122,7 +153,7 @@ export default class VenueDetails extends React.Component {
       deleteModalOpen: false,
       dvdsModalOpen: false,
       shredderModalOpen: false,
-      messageModalOpen: false
+      messageModalOpen: false,
     });
   }
 
@@ -134,38 +165,42 @@ export default class VenueDetails extends React.Component {
     return {
       thing: "venue",
       errorsArray: this.state.errors,
-      changesFunction: this.checkForChanges.bind(this)
+      changesFunction: this.checkForChanges.bind(this),
     };
   }
 
   clickSplitAddress() {
     try {
-      var result = FM.splitAddress($('.shredder-modal textarea')[0].value);
+      var result = FM.splitAddress($(".shredder-modal textarea")[0].value);
       var venue = this.state.venue;
       venue[this.state.shredderModalAddress + "Name"] = result.name;
       venue[this.state.shredderModalAddress + "Address1"] = result.address1;
-      venue[this.state.shredderModalAddress + "Address2"] = result.address2 || "";
+      venue[this.state.shredderModalAddress + "Address2"] =
+        result.address2 || "";
       venue[this.state.shredderModalAddress + "City"] = result.city;
       venue[this.state.shredderModalAddress + "State"] = result.state;
       venue[this.state.shredderModalAddress + "Zip"] = result.zip;
       venue[this.state.shredderModalAddress + "Country"] = result.country;
-      this.setState({
-        shredderModalOpen: false,
-        venue: venue
-      }, () => {
-        this.setState({
-          changesToSave: this.checkForChanges()
-        });
-      });
-    } catch(e) {
-      $('.shredder-modal textarea').addClass('error');
-      $('.shredder-modal .error-message').text(e);
+      this.setState(
+        {
+          shredderModalOpen: false,
+          venue: venue,
+        },
+        () => {
+          this.setState({
+            changesToSave: this.checkForChanges(),
+          });
+        },
+      );
+    } catch (e) {
+      $(".shredder-modal textarea").addClass("error");
+      $(".shredder-modal .error-message").text(e);
     }
   }
 
   clearShredderError() {
-    $('.shredder-modal textarea').removeClass('error');
-    $('.shredder-modal .error-message').text('');
+    $(".shredder-modal textarea").removeClass("error");
+    $(".shredder-modal .error-message").text("");
   }
 
   redirect(directory, id) {
@@ -181,138 +216,280 @@ export default class VenueDetails extends React.Component {
             <h1>Venue Details</h1>
             <div className="white-box">
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 6, entity: 'venue', property: 'label' }) }
-                { Details.renderDropDown.bind(this)({
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "venue",
+                  property: "label",
+                })}
+                {Details.renderDropDown.bind(this)({
                   columnWidth: 3,
-                  entity: 'venue',
-                  property: 'venueType',
+                  entity: "venue",
+                  property: "venueType",
                   options: [
-                    { value: 'Theater', text: 'Theater' },
-                    { value: 'Non-Theatrical', text: 'Non-Theatrical' },
-                    { value: 'Festival', text: 'Festival' },
-                  ]
-                }) }
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'sageId', columnHeader: 'Sage ID' }) }
+                    { value: "Theater", text: "Theater" },
+                    { value: "Non-Theatrical", text: "Non-Theatrical" },
+                    { value: "Festival", text: "Festival" },
+                  ],
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 3,
+                  entity: "venue",
+                  property: "sageId",
+                  columnHeader: "Sage ID",
+                })}
               </div>
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'contactName' }) }
-                { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'email' }) }
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'phone' }) }
+                {Details.renderField.bind(this)({
+                  columnWidth: 4,
+                  entity: "venue",
+                  property: "contactName",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 4,
+                  entity: "venue",
+                  property: "email",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 3,
+                  entity: "venue",
+                  property: "phone",
+                })}
               </div>
               <hr />
               <div className="address-block">
-                <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'billing' }); } } />
+                <img
+                  src={Images.shredder}
+                  onClick={() => {
+                    this.setState({
+                      shredderModalOpen: true,
+                      shredderModalAddress: "billing",
+                    });
+                  }}
+                />
                 <p className="section-header">Billing Address</p>
                 <div className="row">
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingName', columnHeader: 'Name' }) }
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingAddress1', columnHeader: 'Address 1' }) }
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'billingAddress2', columnHeader: 'Address 2' }) }
+                  {Details.renderField.bind(this)({
+                    columnWidth: 4,
+                    entity: "venue",
+                    property: "billingName",
+                    columnHeader: "Name",
+                  })}
+                  {Details.renderField.bind(this)({
+                    columnWidth: 4,
+                    entity: "venue",
+                    property: "billingAddress1",
+                    columnHeader: "Address 1",
+                  })}
+                  {Details.renderField.bind(this)({
+                    columnWidth: 4,
+                    entity: "venue",
+                    property: "billingAddress2",
+                    columnHeader: "Address 2",
+                  })}
                 </div>
               </div>
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'billingCity', columnHeader: 'City' }) }
-                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'venue', property: 'billingState', columnHeader: 'State' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingZip', columnHeader: 'Zip' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'billingCountry', columnHeader: 'Country' }) }
+                {Details.renderField.bind(this)({
+                  columnWidth: 3,
+                  entity: "venue",
+                  property: "billingCity",
+                  columnHeader: "City",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 1,
+                  entity: "venue",
+                  property: "billingState",
+                  columnHeader: "State",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 2,
+                  entity: "venue",
+                  property: "billingZip",
+                  columnHeader: "Zip",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 2,
+                  entity: "venue",
+                  property: "billingCountry",
+                  columnHeader: "Country",
+                })}
                 <div className="col-xs-4">
                   <Button
                     text="Copy to Shipping Address"
-                    onClick={ () => { this.clickCopyAddress(); } }
-                    style={ {
-                      marginTop: '28px',
-                    } }
+                    onClick={() => {
+                      this.clickCopyAddress();
+                    }}
+                    style={{
+                      marginTop: "28px",
+                    }}
                   />
                 </div>
               </div>
               <hr />
               <div className="address-block">
-                <img src={ Images.shredder } onClick={ () => { this.setState({ shredderModalOpen: true, shredderModalAddress: 'shipping' }); } } />
+                <img
+                  src={Images.shredder}
+                  onClick={() => {
+                    this.setState({
+                      shredderModalOpen: true,
+                      shredderModalAddress: "shipping",
+                    });
+                  }}
+                />
                 <p className="section-header">Shipping Address</p>
                 <div className="row">
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingName', columnHeader: 'Name' }) }
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingAddress1', columnHeader: 'Address 1' }) }
-                  { Details.renderField.bind(this)({ columnWidth: 4, entity: 'venue', property: 'shippingAddress2', columnHeader: 'Address 2' }) }
+                  {Details.renderField.bind(this)({
+                    columnWidth: 4,
+                    entity: "venue",
+                    property: "shippingName",
+                    columnHeader: "Name",
+                  })}
+                  {Details.renderField.bind(this)({
+                    columnWidth: 4,
+                    entity: "venue",
+                    property: "shippingAddress1",
+                    columnHeader: "Address 1",
+                  })}
+                  {Details.renderField.bind(this)({
+                    columnWidth: 4,
+                    entity: "venue",
+                    property: "shippingAddress2",
+                    columnHeader: "Address 2",
+                  })}
                 </div>
               </div>
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 3, entity: 'venue', property: 'shippingCity', columnHeader: 'City' }) }
-                { Details.renderField.bind(this)({ columnWidth: 1, entity: 'venue', property: 'shippingState', columnHeader: 'State' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'shippingZip', columnHeader: 'Zip' }) }
-                { Details.renderField.bind(this)({ columnWidth: 2, entity: 'venue', property: 'shippingCountry', columnHeader: 'Country' }) }
+                {Details.renderField.bind(this)({
+                  columnWidth: 3,
+                  entity: "venue",
+                  property: "shippingCity",
+                  columnHeader: "City",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 1,
+                  entity: "venue",
+                  property: "shippingState",
+                  columnHeader: "State",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 2,
+                  entity: "venue",
+                  property: "shippingZip",
+                  columnHeader: "Zip",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 2,
+                  entity: "venue",
+                  property: "shippingCountry",
+                  columnHeader: "Country",
+                })}
               </div>
               <hr />
               <div className="row">
-                { Details.renderField.bind(this)({ columnWidth: 12, entity: 'venue', property: 'website' }) }
+                {Details.renderField.bind(this)({
+                  columnWidth: 12,
+                  entity: "venue",
+                  property: "website",
+                })}
               </div>
               <div className="row">
-                { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 12, entity: 'venue', property: 'notes', rows: 5 }) }
+                {Details.renderField.bind(this)({
+                  type: "textbox",
+                  columnWidth: 12,
+                  entity: "venue",
+                  property: "notes",
+                  rows: 5,
+                })}
               </div>
               <BottomButtons
                 entityName="venue"
-                confirmDelete={ this.confirmDelete.bind(this) }
-                justSaved={ justSaved }
-                changesToSave={ changesToSave }
-                disabled={ spinner }
-                clickSave={ () => { this.clickSave(); } }
+                confirmDelete={this.confirmDelete.bind(this)}
+                justSaved={justSaved}
+                changesToSave={changesToSave}
+                disabled={spinner}
+                clickSave={() => {
+                  this.clickSave();
+                }}
               />
-              <GrayedOut visible={ spinner } />
-              <Spinner visible={ spinner } />
+              <GrayedOut visible={spinner} />
+              <Spinner visible={spinner} />
             </div>
           </div>
           <div className="handy-component">
             <h1>Venue Bookings</h1>
             <div className="white-box">
-              <GrayedOut visible={ spinner } />
-              <Spinner visible={ spinner } />
+              <GrayedOut visible={spinner} />
+              <Spinner visible={spinner} />
               <div className="row">
                 <div className="col-xs-12">
                   <Table
                     columns={[
                       {
-                        name: 'startDate',
+                        name: "startDate",
                         date: true,
                       },
-                      { name: 'film' },
+                      { name: "film" },
                       {
-                        name: 'totalGross',
-                        displayFunction: row => row.valid ? row.totalGross : 'Invalid',
+                        name: "totalGross",
+                        displayFunction: (row) =>
+                          row.valid ? row.totalGross : "Invalid",
                       },
                       {
-                        name: 'ourShare',
-                        displayFunction: row => row.valid ? row.ourShare : 'Invalid',
+                        name: "ourShare",
+                        displayFunction: (row) =>
+                          row.valid ? row.ourShare : "Invalid",
                       },
                       {
-                        name: 'received',
-                        displayFunction: row => row.valid ? row.received : 'Invalid',
+                        name: "received",
+                        displayFunction: (row) =>
+                          row.valid ? row.received : "Invalid",
                       },
                       {
-                        name: 'owed',
-                        displayFunction: row => row.valid ? row.owed : 'Invalid',
+                        name: "owed",
+                        displayFunction: (row) =>
+                          row.valid ? row.owed : "Invalid",
                       },
                     ]}
-                    rows={ this.state.bookings }
+                    rows={this.state.bookings}
                     urlPrefix="bookings"
                   />
                 </div>
               </div>
             </div>
           </div>
-          <Modal isOpen={ this.state.messageModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ Common.messageModalStyles() }>
-            <ModalMessage message={ this.state.deleteError.message } memo={ this.state.deleteError.memo } />
+          <Modal
+            isOpen={this.state.messageModalOpen}
+            onRequestClose={this.closeModal.bind(this)}
+            contentLabel="Modal"
+            style={Common.messageModalStyles()}
+          >
+            <ModalMessage
+              message={this.state.deleteError.message}
+              memo={this.state.deleteError.memo}
+            />
           </Modal>
-          <Modal isOpen={ this.state.shredderModalOpen } onRequestClose={ this.closeModal.bind(this) } contentLabel="Modal" style={ ShredderModalStyles }>
+          <Modal
+            isOpen={this.state.shredderModalOpen}
+            onRequestClose={this.closeModal.bind(this)}
+            contentLabel="Modal"
+            style={ShredderModalStyles}
+          >
             <div className="shredder-modal handy-component admin-modal">
-              <textarea onChange={ this.clearShredderError.bind(this) }></textarea>
+              <textarea
+                onChange={this.clearShredderError.bind(this)}
+              ></textarea>
               <div className="error-message"></div>
               <Button
                 text="Split Address"
-                onClick={ this.clickSplitAddress.bind(this) }
+                onClick={this.clickSplitAddress.bind(this)}
               />
             </div>
           </Modal>
         </div>
         <style jsx>{`
-          .address-block { position: relative; }
+          .address-block {
+            position: relative;
+          }
           img {
             position: absolute;
             cursor: pointer;

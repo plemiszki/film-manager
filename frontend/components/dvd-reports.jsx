@@ -1,55 +1,63 @@
-import React from 'react';
-import Modal from 'react-modal';
-import { Common, stringifyDate, Details, sendRequest, Button, GrayedOut, Spinner, Table } from 'handy-components';
+import React from "react";
+import Modal from "react-modal";
+import {
+  Common,
+  stringifyDate,
+  Details,
+  sendRequest,
+  Button,
+  GrayedOut,
+  Spinner,
+  Table,
+} from "handy-components";
 
 const exportModalStyles = {
   overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
+    background: "rgba(0, 0, 0, 0.50)",
   },
   content: {
-    background: '#FFFFFF',
-    margin: 'auto',
+    background: "#FFFFFF",
+    margin: "auto",
     maxWidth: 540,
     height: 250,
-    border: 'solid 1px black',
-    borderRadius: '6px',
-    color: '#5F5F5F',
-    padding: '30px'
-  }
+    border: "solid 1px black",
+    borderRadius: "6px",
+    color: "#5F5F5F",
+    padding: "30px",
+  },
 };
 
 export default class DvdReports extends React.Component {
-
   constructor(props) {
     super(props);
     var job = {
-      errorsText: ""
+      errorsText: "",
     };
     this.state = {
       spinner: true,
       titlesReportCustomers: [],
       titlesReport: [],
       customersReport: [],
-      year: (new Date).getFullYear(),
+      year: new Date().getFullYear(),
       exportModalOpen: false,
       export: {
-        startDate: stringifyDate(new Date),
-        endDate: stringifyDate(new Date)
+        startDate: stringifyDate(new Date()),
+        endDate: stringifyDate(new Date()),
       },
       errors: [],
       jobModalOpen: !!job.id,
-      job: job
+      job: job,
     };
   }
 
   componentDidMount() {
-    $('#admin-right-column-content').css('padding', '30px 20px');
+    $("#admin-right-column-content").css("padding", "30px 20px");
     this.fetchReportData();
   }
 
   fetchReportData() {
     const { year } = this.state;
-    sendRequest('/api/dvd_reports', {
+    sendRequest("/api/dvd_reports", {
       data: {
         year,
       },
@@ -66,30 +74,36 @@ export default class DvdReports extends React.Component {
 
   clickPrev() {
     const { year } = this.state;
-    this.setState({
-      year: year - 1,
-      spinner: true
-    }, () => {
-      this.fetchReportData();
-    });
+    this.setState(
+      {
+        year: year - 1,
+        spinner: true,
+      },
+      () => {
+        this.fetchReportData();
+      },
+    );
   }
 
   clickNext() {
     const { year } = this.state;
-    this.setState({
-      year: year + 1,
-      spinner: true
-    }, () => {
-      this.fetchReportData();
-    });
+    this.setState(
+      {
+        year: year + 1,
+        spinner: true,
+      },
+      () => {
+        this.fetchReportData();
+      },
+    );
   }
 
   clickExport() {
     this.setState({
       exportModalOpen: false,
-      spinner: true
+      spinner: true,
     });
-    sendRequest('/api/dvd_reports/export', {
+    sendRequest("/api/dvd_reports/export", {
       data: {
         start_date: this.state.export.startDate,
         end_date: this.state.export.endDate,
@@ -98,14 +112,14 @@ export default class DvdReports extends React.Component {
       this.setState({
         jobModalOpen: true,
         job: response.job,
-        spinner: false
+        spinner: false,
       });
     });
   }
 
   modalCloseAndRefresh() {
     this.setState({
-      errorsModalOpen: false
+      errorsModalOpen: false,
     });
   }
 
@@ -125,24 +139,45 @@ export default class DvdReports extends React.Component {
     const SALES_COLUMN_WIDTH = 120;
     const { titlesReportCustomers } = this.state;
     let result = [
-      { name: 'title', bold: true, width: 400 },
-      { name: 'type', bold: true, header: 'Format', width: 120 },
-      { name: 'retailDate', header: 'Street Date', date: true, width: 130 },
-      { name: 'totalUnits', header: 'TOTAL', width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
-      { name: 'totalSales', blankHeader: true, width: SALES_COLUMN_WIDTH },
+      { name: "title", bold: true, width: 400 },
+      { name: "type", bold: true, header: "Format", width: 120 },
+      { name: "retailDate", header: "Street Date", date: true, width: 130 },
+      {
+        name: "totalUnits",
+        header: "TOTAL",
+        width: UNITS_COLUMN_WIDTH,
+        sortDir: "desc",
+      },
+      { name: "totalSales", blankHeader: true, width: SALES_COLUMN_WIDTH },
     ];
     titlesReportCustomers.forEach((customer) => {
       const prefix = customer.name.toLowerCase();
       result = result.concat([
-        { name: `${prefix}Units`, header: customer.name, width: UNITS_COLUMN_WIDTH, sortDir: 'desc' },
-        { name: `${prefix}Sales`, blankHeader: true, width: SALES_COLUMN_WIDTH }
+        {
+          name: `${prefix}Units`,
+          header: customer.name,
+          width: UNITS_COLUMN_WIDTH,
+          sortDir: "desc",
+        },
+        {
+          name: `${prefix}Sales`,
+          blankHeader: true,
+          width: SALES_COLUMN_WIDTH,
+        },
       ]);
     });
     return result;
   }
 
   render() {
-    const { spinner, customersReport, titlesReport, year, exportModalOpen, job } = this.state;
+    const {
+      spinner,
+      customersReport,
+      titlesReport,
+      year,
+      exportModalOpen,
+      job,
+    } = this.state;
     return (
       <>
         <div>
@@ -150,23 +185,29 @@ export default class DvdReports extends React.Component {
             <div className="text-center">
               <div className="header">
                 <Button
-                  disabled={ spinner }
+                  disabled={spinner}
                   text="<<"
-                  onClick={ () => { this.clickPrev(); } }
+                  onClick={() => {
+                    this.clickPrev();
+                  }}
                 />
-                <h1>DVD Reports - { year }</h1>
+                <h1>DVD Reports - {year}</h1>
                 <Button
-                  disabled={ spinner }
+                  disabled={spinner}
                   text=">>"
-                  onClick={ () => { this.clickNext(); } }
+                  onClick={() => {
+                    this.clickNext();
+                  }}
                 />
               </div>
               <Button
-                disabled={ spinner }
+                disabled={spinner}
                 text="Export"
-                onClick={ () => { this.setState({ exportModalOpen: true }); } }
+                onClick={() => {
+                  this.setState({ exportModalOpen: true });
+                }}
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   right: 0,
                 }}
               />
@@ -175,32 +216,48 @@ export default class DvdReports extends React.Component {
               <div className="row">
                 <div className="col-xs-3">
                   <Table
-                    hover={ false }
-                    links={ false }
-                    sortable={ false }
-                    columns={[{
-                      name: 'name',
-                      header: 'Customer',
-                      bold: true,
-                    }]}
-                    rows={ customersReport }
+                    hover={false}
+                    links={false}
+                    sortable={false}
+                    columns={[
+                      {
+                        name: "name",
+                        header: "Customer",
+                        bold: true,
+                      },
+                    ]}
+                    rows={customersReport}
                   />
                 </div>
                 <div className="col-xs-9">
                   <Table
                     fixed
                     test="customers-report"
-                    defaultColumnWidth={ 120 }
-                    hover={ false }
-                    links={ false }
-                    sortable={ false }
-                    columns={ [{ name: 'total', header: 'TOTAL', bold: true }, 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] }
-                    rows={ customersReport }
+                    defaultColumnWidth={120}
+                    hover={false}
+                    links={false}
+                    sortable={false}
+                    columns={[
+                      { name: "total", header: "TOTAL", bold: true },
+                      "jan",
+                      "feb",
+                      "mar",
+                      "apr",
+                      "may",
+                      "jun",
+                      "jul",
+                      "aug",
+                      "sep",
+                      "oct",
+                      "nov",
+                      "dec",
+                    ]}
+                    rows={customersReport}
                   />
                 </div>
               </div>
-              <GrayedOut visible={ spinner } />
-              <Spinner visible={ spinner } />
+              <GrayedOut visible={spinner} />
+              <Spinner visible={spinner} />
             </div>
           </div>
           <div className="handy-component">
@@ -210,43 +267,50 @@ export default class DvdReports extends React.Component {
                   <Table
                     fixed
                     test="titles-report"
-                    hover={ false }
-                    links={ false }
+                    hover={false}
+                    links={false}
                     defaultSearchColumn="retailDate"
-                    columns={ this.titlesReportColumns() }
-                    rows={ titlesReport }
+                    columns={this.titlesReportColumns()}
+                    rows={titlesReport}
                   />
                 </div>
               </div>
-              <Spinner visible={ spinner } />
-              <GrayedOut visible={ spinner } />
+              <Spinner visible={spinner} />
+              <GrayedOut visible={spinner} />
             </div>
           </div>
-          <Modal isOpen={ exportModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ exportModalStyles }>
+          <Modal
+            isOpen={exportModalOpen}
+            onRequestClose={Common.closeModals.bind(this)}
+            contentLabel="Modal"
+            style={exportModalStyles}
+          >
             <div className="handy-component admin-modal">
               <div className="row">
-                { Details.renderField.bind(this)({
+                {Details.renderField.bind(this)({
                   columnWidth: 6,
-                  entity: 'export',
-                  property: 'startDate'
-                }) }
-                { Details.renderField.bind(this)({
+                  entity: "export",
+                  property: "startDate",
+                })}
+                {Details.renderField.bind(this)({
                   columnWidth: 6,
-                  entity: 'export',
-                  property: 'endDate'
-                }) }
+                  entity: "export",
+                  property: "endDate",
+                })}
               </div>
               <div className="row button-row">
                 <div className="col-xs-12">
                   <Button
                     text="Export Sales Report"
-                    onClick={ () => { this.clickExport(); } }
+                    onClick={() => {
+                      this.clickExport();
+                    }}
                   />
                 </div>
               </div>
             </div>
           </Modal>
-          { Common.renderJobModal.call(this, job) }
+          {Common.renderJobModal.call(this, job)}
         </div>
         <style jsx>{`
           .white-box {

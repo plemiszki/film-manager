@@ -1,26 +1,25 @@
-import React from 'react';
-import { Common, sendRequest } from 'handy-components';
+import React from "react";
+import { Common, sendRequest } from "handy-components";
 
 export default class ImportInventory extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       errorsModalOpen: false,
       noErrorsModalOpen: false,
       jobModalOpen: false,
-      checkedJobs: false
+      checkedJobs: false,
     };
   }
 
   componentDidMount() {
-    $('#upload-form-inventory #user_file').on('change', this.pickFile);
-    sendRequest('/api/purchase_orders/check_jobs').then((response) => {
+    $("#upload-form-inventory #user_file").on("change", this.pickFile);
+    sendRequest("/api/purchase_orders/check_jobs").then((response) => {
       let { needToUpdate, job } = response;
       this.setState({
         needToUpdate,
         job,
-        jobModalOpen: !!job
+        jobModalOpen: !!job,
       });
     });
   }
@@ -30,22 +29,25 @@ export default class ImportInventory extends React.Component {
   }
 
   clickUpdateStock() {
-    $('#upload-form-inventory #user_file').click();
+    $("#upload-form-inventory #user_file").click();
   }
 
   pickFile() {
-    $('#upload-form-inventory #submit-button-inventory').click();
+    $("#upload-form-inventory #submit-button-inventory").click();
   }
 
   render() {
-    return(
+    return (
       <>
         <div>
-          <a onClick={ this.clickUpdateStock.bind(this) }>
-            <img className={ this.state.needToUpdate ? "" : "hidden" } src={ Images.attention } />
+          <a onClick={this.clickUpdateStock.bind(this)}>
+            <img
+              className={this.state.needToUpdate ? "" : "hidden"}
+              src={Images.attention}
+            />
             Update Stock
           </a>
-          { Common.renderJobModal.call(this, this.state.job) }
+          {Common.renderJobModal.call(this, this.state.job)}
         </div>
         <style jsx>{`
           a {

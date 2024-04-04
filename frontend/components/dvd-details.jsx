@@ -1,15 +1,31 @@
-import React from 'react';
-import { Common, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, OutlineButton, Spinner, GrayedOut, SaveButton, DeleteButton, Button, Table, ModalSelect } from 'handy-components';
+import React from "react";
+import {
+  Common,
+  Details,
+  deepCopy,
+  setUpNiceSelect,
+  fetchEntity,
+  createEntity,
+  updateEntity,
+  deleteEntity,
+  OutlineButton,
+  Spinner,
+  GrayedOut,
+  SaveButton,
+  DeleteButton,
+  Button,
+  Table,
+  ModalSelect,
+} from "handy-components";
 
 export default class DvdDetails extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       spinner: true,
       dvd: {
         stock: "",
-        unitsShipped: ""
+        unitsShipped: "",
       },
       dvdSaved: {},
       films: [],
@@ -20,70 +36,85 @@ export default class DvdDetails extends React.Component {
       changesToSave: false,
       justSaved: false,
       deleteModalOpen: false,
-      shortsModalOpen: false
+      shortsModalOpen: false,
     };
   }
 
   componentDidMount() {
     fetchEntity().then((response) => {
       const { dvd, shorts, otherShorts, dvdTypes } = response;
-      this.setState({
-        spinner: false,
-        dvd,
-        dvdSaved: deepCopy(dvd),
-        shorts,
-        otherShorts,
-        dvdTypes
-      }, () => {
-        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
-      });
+      this.setState(
+        {
+          spinner: false,
+          dvd,
+          dvdSaved: deepCopy(dvd),
+          shorts,
+          otherShorts,
+          dvdTypes,
+        },
+        () => {
+          setUpNiceSelect({
+            selector: "select",
+            func: Details.changeDropdownField.bind(this),
+          });
+        },
+      );
     });
   }
 
   clickSave() {
-    this.setState({
-      spinner: true,
-      justSaved: true
-    }, () => {
-      updateEntity({
-        entityName: 'dvd',
-        entity: Details.removeFinanceSymbolsFromEntity({ entity: this.state.dvd, fields: ['price'] })
-      }).then((response) => {
-        const { dvd } = response;
-        this.setState({
-          spinner: false,
-          dvd,
-          dvdSaved: deepCopy(dvd),
-          changesToSave: false
-        });
-      }, (response) => {
-        this.setState({
-          spinner: false,
-          errors: response.errors
-        });
-      });
-    });
+    this.setState(
+      {
+        spinner: true,
+        justSaved: true,
+      },
+      () => {
+        updateEntity({
+          entityName: "dvd",
+          entity: Details.removeFinanceSymbolsFromEntity({
+            entity: this.state.dvd,
+            fields: ["price"],
+          }),
+        }).then(
+          (response) => {
+            const { dvd } = response;
+            this.setState({
+              spinner: false,
+              dvd,
+              dvdSaved: deepCopy(dvd),
+              changesToSave: false,
+            });
+          },
+          (response) => {
+            this.setState({
+              spinner: false,
+              errors: response.errors,
+            });
+          },
+        );
+      },
+    );
   }
 
   selectShort(option) {
     const shortId = option.id;
     this.setState({
       spinner: true,
-      shortsModalOpen: false
+      shortsModalOpen: false,
     });
     createEntity({
-      directory: 'dvd_shorts',
-      entityName: 'dvdShort',
+      directory: "dvd_shorts",
+      entityName: "dvdShort",
       entity: {
         dvdId: this.state.dvd.id,
-        shortId
-      }
+        shortId,
+      },
     }).then((response) => {
       const { shorts, otherShorts } = response;
       this.setState({
         spinner: false,
         shorts,
-        otherShorts
+        otherShorts,
       });
     });
   }
@@ -91,10 +122,10 @@ export default class DvdDetails extends React.Component {
   clickX(option) {
     const dvdShortId = option.id;
     this.setState({
-      spinner: true
+      spinner: true,
     });
     deleteEntity({
-      directory: 'dvd_shorts',
+      directory: "dvd_shorts",
       id: dvdShortId,
     }).then((response) => {
       const { shorts, otherShorts } = response;
@@ -109,10 +140,10 @@ export default class DvdDetails extends React.Component {
   confirmDelete() {
     this.setState({
       spinner: true,
-      deleteModalOpen: false
+      deleteModalOpen: false,
     });
     deleteEntity({
-      directory: 'dvds',
+      directory: "dvds",
       id: this.state.dvd.id,
     }).then((response) => {
       const dvd = response;
@@ -121,13 +152,13 @@ export default class DvdDetails extends React.Component {
   }
 
   getHTML() {
-    var textArea = document.createElement('textarea');
-    textArea.value = $.trim($('#email').html().replace(/>\s+</g, "><"));
+    var textArea = document.createElement("textarea");
+    textArea.value = $.trim($("#email").html().replace(/>\s+</g, "><"));
     document.body.appendChild(textArea);
     textArea.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     document.body.removeChild(textArea);
-    alert('HTML copied to clipboard');
+    alert("HTML copied to clipboard");
   }
 
   checkForChanges() {
@@ -149,69 +180,134 @@ export default class DvdDetails extends React.Component {
           <h1>DVD Details</h1>
           <div className="white-box">
             <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 6, entity: 'dvd', property: 'title', readOnly: true }) }
-              { Details.renderDropDown.bind(this)({ columnWidth: 3, entity: 'dvd', property: 'dvdTypeId', columnHeader: 'DVD Type', options: this.state.dvdTypes, optionDisplayProperty: 'name' }) }
-              { Details.renderField.bind(this)({ columnWidth: 3, entity: 'dvd', property: 'upc', columnHeader: 'UPC' }) }
+              {Details.renderField.bind(this)({
+                columnWidth: 6,
+                entity: "dvd",
+                property: "title",
+                readOnly: true,
+              })}
+              {Details.renderDropDown.bind(this)({
+                columnWidth: 3,
+                entity: "dvd",
+                property: "dvdTypeId",
+                columnHeader: "DVD Type",
+                options: this.state.dvdTypes,
+                optionDisplayProperty: "name",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 3,
+                entity: "dvd",
+                property: "upc",
+                columnHeader: "UPC",
+              })}
             </div>
             <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'preBookDate' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'retailDate' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'price' }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'unitsShipped', readOnly: true }) }
-              { Details.renderField.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'stock', readOnly: true }) }
-              { Details.renderSwitch.bind(this)({ columnWidth: 2, entity: 'dvd', property: 'repressing' }) }
+              {Details.renderField.bind(this)({
+                columnWidth: 2,
+                entity: "dvd",
+                property: "preBookDate",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 2,
+                entity: "dvd",
+                property: "retailDate",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 2,
+                entity: "dvd",
+                property: "price",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 2,
+                entity: "dvd",
+                property: "unitsShipped",
+                readOnly: true,
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 2,
+                entity: "dvd",
+                property: "stock",
+                readOnly: true,
+              })}
+              {Details.renderSwitch.bind(this)({
+                columnWidth: 2,
+                entity: "dvd",
+                property: "repressing",
+              })}
             </div>
             <div className="row">
-              { Details.renderField.bind(this)({ columnWidth: 1, entity: 'dvd', property: 'discs' }) }
-              { Details.renderField.bind(this)({ columnWidth: 5, entity: 'dvd', property: 'soundConfig', columnHeader: 'Sound Configuration' }) }
-              { Details.renderField.bind(this)({ type: 'textbox', columnWidth: 6, entity: 'dvd', property: 'specialFeatures', rows: 5 }) }
+              {Details.renderField.bind(this)({
+                columnWidth: 1,
+                entity: "dvd",
+                property: "discs",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 5,
+                entity: "dvd",
+                property: "soundConfig",
+                columnHeader: "Sound Configuration",
+              })}
+              {Details.renderField.bind(this)({
+                type: "textbox",
+                columnWidth: 6,
+                entity: "dvd",
+                property: "specialFeatures",
+                rows: 5,
+              })}
             </div>
             <Table
-              columns={ [{ header: 'Short Films', name: 'title' }] }
-              rows={ shorts }
-              clickDelete={ (entity) => this.clickX(entity) }
+              columns={[{ header: "Short Films", name: "title" }]}
+              rows={shorts}
+              clickDelete={(entity) => this.clickX(entity)}
               urlPrefix="films"
               urlProperty="filmId"
-              sortable={ false }
-              style={ { marginBottom: 15 } }
+              sortable={false}
+              style={{ marginBottom: 15 }}
             />
             <OutlineButton
               text="Add Short"
-              onClick={ () => { this.setState({ shortsModalOpen: true }); } }
+              onClick={() => {
+                this.setState({ shortsModalOpen: true });
+              }}
               marginBottom
             />
             <hr />
             <div>
               <SaveButton
-                justSaved={ justSaved }
-                changesToSave={ changesToSave }
-                disabled={ spinner }
-                onClick={ () => { this.clickSave(); } }
+                justSaved={justSaved}
+                changesToSave={changesToSave}
+                disabled={spinner}
+                onClick={() => {
+                  this.clickSave();
+                }}
               />
               <DeleteButton
                 entityName="dvd"
-                confirmDelete={ Details.confirmDelete.bind(this, {
-                  callback: () => window.location.href = `/films/${dvd.featureFilmId}?tab=dvds`,
-                }) }
+                confirmDelete={Details.confirmDelete.bind(this, {
+                  callback: () =>
+                    (window.location.href = `/films/${dvd.featureFilmId}?tab=dvds`),
+                })}
               />
               <Button
                 marginRight
                 float
-                disabled={ spinner }
+                disabled={spinner}
                 text="Email HTML"
-                onClick={ () => { this.getHTML(); } }
+                onClick={() => {
+                  this.getHTML();
+                }}
               />
             </div>
-            <GrayedOut visible={ spinner } />
-            <Spinner visible={ spinner } />
+            <GrayedOut visible={spinner} />
+            <Spinner visible={spinner} />
           </div>
         </div>
         <ModalSelect
-          isOpen={ this.state.shortsModalOpen }
-          onClose={ Common.closeModals.bind(this) }
-          options={ this.state.otherShorts }
+          isOpen={this.state.shortsModalOpen}
+          onClose={Common.closeModals.bind(this)}
+          options={this.state.otherShorts}
           property="title"
-          func={ this.selectShort.bind(this) }
+          func={this.selectShort.bind(this)}
         />
       </>
     );

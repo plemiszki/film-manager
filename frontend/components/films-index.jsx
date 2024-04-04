@@ -1,48 +1,58 @@
-import React, { Component } from 'react';
-import Modal from 'react-modal';
-import NewEntity from './new-entity.jsx';
-import FilmRightsNew from './film-rights-new.jsx';
-import { Common, convertObjectKeysToUnderscore, removeFromArray, fetchEntities, sendRequest, Button, Spinner, GrayedOut, SearchBar, Table } from 'handy-components';
-import FM from '../../app/assets/javascripts/me/common.jsx';
+import React, { Component } from "react";
+import Modal from "react-modal";
+import NewEntity from "./new-entity.jsx";
+import FilmRightsNew from "./film-rights-new.jsx";
+import {
+  Common,
+  convertObjectKeysToUnderscore,
+  removeFromArray,
+  fetchEntities,
+  sendRequest,
+  Button,
+  Spinner,
+  GrayedOut,
+  SearchBar,
+  Table,
+} from "handy-components";
+import FM from "../../app/assets/javascripts/me/common.jsx";
 
 const FilterModalStyles = {
   overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
+    background: "rgba(0, 0, 0, 0.50)",
   },
   content: {
-    background: '#F5F6F7',
+    background: "#F5F6F7",
     padding: 0,
-    margin: 'auto',
+    margin: "auto",
     maxWidth: 1000,
-    height: 420
-  }
+    height: 420,
+  },
 };
 
 const NewRightsModalStyles = {
   overlay: {
-    background: 'rgba(0, 0, 0, 0.50)'
+    background: "rgba(0, 0, 0, 0.50)",
   },
   content: {
-    background: '#F5F6F7',
+    background: "#F5F6F7",
     padding: 0,
-    margin: 'auto',
+    margin: "auto",
     maxWidth: 1000,
-    height: 598
-  }
+    height: 598,
+  },
 };
 
 export default class FilmsIndex extends Component {
-
   constructor(props) {
     super(props);
 
     let job = {
-      errors_text: ""
+      errors_text: "",
     };
     this.state = {
       spinner: true,
-      searchText: '',
-      sortBy: 'title',
+      searchText: "",
+      sortBy: "title",
       filterActive: false,
       films: [],
       allAltLengths: [],
@@ -52,38 +62,39 @@ export default class FilmsIndex extends Component {
       allAltSubs: [],
       selectedAltSubs: [],
       jobModalOpen: !!job.id,
-      job: job
+      job: job,
     };
   }
 
   componentDidMount() {
     fetchEntities({
-      directory: 'films',
+      directory: "films",
       data: {
-        filmType: this.props.filmType
-      }
+        filmType: this.props.filmType,
+      },
     }).then((response) => {
-      const { films, alternateAudios, alternateSubs, alternateLengths } = response;
+      const { films, alternateAudios, alternateSubs, alternateLengths } =
+        response;
       this.setState({
         spinner: false,
         films,
         allAltAudios: alternateAudios,
         allAltSubs: alternateSubs,
-        allAltLengths: alternateLengths
+        allAltLengths: alternateLengths,
       });
     });
   }
 
   clickExportAll() {
     this.setState({
-      spinner: true
+      spinner: true,
     });
-    sendRequest('/api/films/export', {
-      method: 'POST',
+    sendRequest("/api/films/export", {
+      method: "POST",
       data: {
         filmType: this.props.filmType,
-        filmIds: this.state.films.map(film => film.id),
-      }
+        filmIds: this.state.films.map((film) => film.id),
+      },
     }).then((response) => {
       const { job } = response;
       this.setState({
@@ -98,12 +109,12 @@ export default class FilmsIndex extends Component {
     this.setState({
       spinner: true,
     });
-    sendRequest('/api/films/export', {
-      method: 'POST',
+    sendRequest("/api/films/export", {
+      method: "POST",
       data: {
         filmType: this.props.filmType,
         searchCriteria: convertObjectKeysToUnderscore(searchCriteria),
-      }
+      },
     }).then((response) => {
       const { job } = response;
       this.setState({
@@ -119,18 +130,18 @@ export default class FilmsIndex extends Component {
     let array;
     let arrayName;
     let value = e.target.parentElement.children[1].innerHTML;
-    switch(e.target.parentElement.parentElement.dataset.array) {
-      case 'lengths':
+    switch (e.target.parentElement.parentElement.dataset.array) {
+      case "lengths":
         array = selectedAltLengths;
-        arrayName = 'selectedAltLengths';
+        arrayName = "selectedAltLengths";
         break;
-      case 'audios':
+      case "audios":
         array = selectedAltAudios;
-        arrayName = 'selectedAltAudios';
+        arrayName = "selectedAltAudios";
         break;
-      case 'subtitles':
+      case "subtitles":
         array = selectedAltSubs;
-        arrayName = 'selectedAltSubs';
+        arrayName = "selectedAltSubs";
     }
     if (e.target.checked) {
       array.push(value);
@@ -138,12 +149,13 @@ export default class FilmsIndex extends Component {
       removeFromArray(array, value);
     }
     this.setState({
-      [arrayName]: array
+      [arrayName]: array,
     });
   }
 
   updateFilter() {
-    let { films, selectedAltSubs, selectedAltAudios, selectedAltLengths } = this.state;
+    let { films, selectedAltSubs, selectedAltAudios, selectedAltLengths } =
+      this.state;
     let filteredFilms = [];
     let includeFilm;
     films.forEach((film) => {
@@ -170,70 +182,83 @@ export default class FilmsIndex extends Component {
     Common.closeModals.call(this);
     this.setState({
       filteredFilms,
-      filterActive: (selectedAltLengths.length > 0 || selectedAltAudios.length > 0 || selectedAltSubs.length > 0)
+      filterActive:
+        selectedAltLengths.length > 0 ||
+        selectedAltAudios.length > 0 ||
+        selectedAltSubs.length > 0,
     });
   }
 
   render() {
     const { filmType, advanced } = this.props;
     const { searchText, spinner, filterActive } = this.state;
-    var filteredFilms = this.state[this.state.filterActive ? 'filteredFilms' : 'films'].filterSearchText(this.state.searchText, this.state.sortBy);
+    var filteredFilms = this.state[
+      this.state.filterActive ? "filteredFilms" : "films"
+    ].filterSearchText(this.state.searchText, this.state.sortBy);
     return (
       <>
         <div className="handy-component">
           <div>
-            <h1>{ filmType === 'TV Series' ? 'TV Series' : `${filmType}s` }</h1>
-            { filmType !== 'TV Series' && (
+            <h1>{filmType === "TV Series" ? "TV Series" : `${filmType}s`}</h1>
+            {filmType !== "TV Series" && (
               <Button
                 float
                 square
-                disabled={ spinner }
+                disabled={spinner}
                 text="Export All"
-                onClick={ () => { this.clickExportAll(); } }
-                style={ { marginLeft: 20 } }
+                onClick={() => {
+                  this.clickExportAll();
+                }}
+                style={{ marginLeft: 20 }}
               />
-            ) }
-            { filmType !== 'TV Series' && (
+            )}
+            {filmType !== "TV Series" && (
               <Button
                 float
                 square
-                disabled={ spinner }
+                disabled={spinner}
                 text="Export Custom"
-                onClick={ () => { this.setState({ searchModalOpen: true }); } }
-                style={ { marginLeft: 20 } }
+                onClick={() => {
+                  this.setState({ searchModalOpen: true });
+                }}
+                style={{ marginLeft: 20 }}
               />
-            ) }
-            { filmType === 'Feature' && (
+            )}
+            {filmType === "Feature" && (
               <Button
                 float
                 square
-                disabled={ spinner }
+                disabled={spinner}
                 text="Filter"
-                onClick={ () => { this.setState({ filterModalOpen: true }); } }
-                style={ {
+                onClick={() => {
+                  this.setState({ filterModalOpen: true });
+                }}
+                style={{
                   marginLeft: 20,
-                  backgroundColor: filterActive ? 'green' : null,
-                } }
+                  backgroundColor: filterActive ? "green" : null,
+                }}
               />
-            ) }
-            { FM.user.hasAdminAccess && !advanced && (
+            )}
+            {FM.user.hasAdminAccess && !advanced && (
               <Button
                 float
                 square
-                disabled={ spinner }
-                text={ `Add ${filmType === 'Feature' ? 'Film' : filmType}` }
-                onClick={ () => { this.setState({ newFilmModalOpen: true }); } }
-                style={ { marginLeft: 20 } }
+                disabled={spinner}
+                text={`Add ${filmType === "Feature" ? "Film" : filmType}`}
+                onClick={() => {
+                  this.setState({ newFilmModalOpen: true });
+                }}
+                style={{ marginLeft: 20 }}
               />
-            ) }
+            )}
             <SearchBar
-              onChange={ FM.changeSearchText.bind(this) }
-              value={ searchText || "" }
+              onChange={FM.changeSearchText.bind(this)}
+              value={searchText || ""}
             />
           </div>
           <div className="white-box">
             <Table
-              rows={ filteredFilms }
+              rows={filteredFilms}
               columns={[
                 {
                   name: "title",
@@ -241,44 +266,68 @@ export default class FilmsIndex extends Component {
                 },
                 {
                   name: "endDate",
-                  header: 'Expiration Date',
+                  header: "Expiration Date",
                   date: true,
                   dateSortLast: [""],
-                  redIf: film => new Date(film.endDate) < Date.now(),
+                  redIf: (film) => new Date(film.endDate) < Date.now(),
                 },
               ]}
               urlPrefix="films"
             />
-            <Spinner visible={ spinner } />
-            <GrayedOut visible={ spinner } />
+            <Spinner visible={spinner} />
+            <GrayedOut visible={spinner} />
           </div>
-          <Modal isOpen={ this.state.newFilmModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ Common.newEntityModalStyles({ width: 1000 }, 1) }>
+          <Modal
+            isOpen={this.state.newFilmModalOpen}
+            onRequestClose={Common.closeModals.bind(this)}
+            contentLabel="Modal"
+            style={Common.newEntityModalStyles({ width: 1000 }, 1)}
+          >
             <NewEntity
-              context={ this.props.context }
+              context={this.props.context}
               entityName="film"
-              initialEntity={ { title: "", filmType: this.props.filmType, labelId: 1, year: "" } }
-              redirectAfterCreate={ true }
+              initialEntity={{
+                title: "",
+                filmType: this.props.filmType,
+                labelId: 1,
+                year: "",
+              }}
+              redirectAfterCreate={true}
             />
           </Modal>
-          <Modal isOpen={ this.state.searchModalOpen } onRequestClose={ Common.closeModals.bind(this) } contentLabel="Modal" style={ NewRightsModalStyles }>
+          <Modal
+            isOpen={this.state.searchModalOpen}
+            onRequestClose={Common.closeModals.bind(this)}
+            contentLabel="Modal"
+            style={NewRightsModalStyles}
+          >
             <FilmRightsNew
-              context={ this.props.context }
-              search={ true }
-              filmType={ this.props.filmType }
-              availsExport={ this.clickExportCustom.bind(this) }
+              context={this.props.context}
+              search={true}
+              filmType={this.props.filmType}
+              availsExport={this.clickExportCustom.bind(this)}
             />
           </Modal>
-          <Modal isOpen={ this.state.filterModalOpen } onRequestClose={ this.updateFilter.bind(this) } contentLabel="Modal" style={ FilterModalStyles }>
-            { this.renderFilter() }
+          <Modal
+            isOpen={this.state.filterModalOpen}
+            onRequestClose={this.updateFilter.bind(this)}
+            contentLabel="Modal"
+            style={FilterModalStyles}
+          >
+            {this.renderFilter()}
           </Modal>
-          { Common.renderJobModal.call(this, this.state.job) }
+          {Common.renderJobModal.call(this, this.state.job)}
         </div>
       </>
     );
   }
 
   filterActive() {
-    return this.state.selectedAltSubs.length > 0 || this.state.selectedAltAudios.length > 0 || this.state.selectedAltLengths.length > 0;
+    return (
+      this.state.selectedAltSubs.length > 0 ||
+      this.state.selectedAltAudios.length > 0 ||
+      this.state.selectedAltLengths.length > 0
+    );
   }
 
   renderFilter() {
@@ -289,42 +338,71 @@ export default class FilmsIndex extends Component {
             <div className="col-xs-4">
               <h2>Alternate Lengths</h2>
               <div className="checkbox-list" data-array="lengths">
-                { this.state.allAltLengths.map((length, index) => {
-                  return(
-                    <div key={ index } className="checkbox-container">
-                      <input id={ length } type="checkbox" checked={ this.state.selectedAltLengths.indexOf(length.toString()) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ length }>{ length }</label>
+                {this.state.allAltLengths.map((length, index) => {
+                  return (
+                    <div key={index} className="checkbox-container">
+                      <input
+                        id={length}
+                        type="checkbox"
+                        checked={
+                          this.state.selectedAltLengths.indexOf(
+                            length.toString(),
+                          ) > -1
+                        }
+                        onChange={this.clickFilterCheckBox.bind(this)}
+                      />
+                      <label htmlFor={length}>{length}</label>
                     </div>
                   );
-                }) }
+                })}
               </div>
             </div>
             <div className="col-xs-4">
               <h2>Alternate Audio Tracks</h2>
               <div className="checkbox-list" data-array="audios">
-                { this.state.allAltAudios.map((audio, index) => {
-                  return(
-                    <div key={ index } className="checkbox-container">
-                      <input id={ audio } type="checkbox" checked={ this.state.selectedAltAudios.indexOf(audio) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ audio }>{ audio }</label>
+                {this.state.allAltAudios.map((audio, index) => {
+                  return (
+                    <div key={index} className="checkbox-container">
+                      <input
+                        id={audio}
+                        type="checkbox"
+                        checked={
+                          this.state.selectedAltAudios.indexOf(audio) > -1
+                        }
+                        onChange={this.clickFilterCheckBox.bind(this)}
+                      />
+                      <label htmlFor={audio}>{audio}</label>
                     </div>
                   );
-                }) }
+                })}
               </div>
             </div>
             <div className="col-xs-4">
               <h2>Alternate Subtitles</h2>
               <div className="checkbox-list" data-array="subtitles">
-                { this.state.allAltSubs.map((sub, index) => {
-                  return(
-                    <div key={ index } className="checkbox-container">
-                      <input id={ sub } type="checkbox" checked={ this.state.selectedAltSubs.indexOf(sub) > -1 } onChange={ this.clickFilterCheckBox.bind(this) } /><label htmlFor={ sub }>{ sub }</label>
+                {this.state.allAltSubs.map((sub, index) => {
+                  return (
+                    <div key={index} className="checkbox-container">
+                      <input
+                        id={sub}
+                        type="checkbox"
+                        checked={this.state.selectedAltSubs.indexOf(sub) > -1}
+                        onChange={this.clickFilterCheckBox.bind(this)}
+                      />
+                      <label htmlFor={sub}>{sub}</label>
                     </div>
                   );
-                }) }
+                })}
               </div>
             </div>
           </div>
           <div className="row text-center">
-            <Button text="Close Filter" onClick={ () => { this.updateFilter(); } } />
+            <Button
+              text="Close Filter"
+              onClick={() => {
+                this.updateFilter();
+              }}
+            />
           </div>
         </div>
         <style jsx>{`
@@ -333,14 +411,14 @@ export default class FilmsIndex extends Component {
             background-color: white;
           }
           .checkbox-list {
-            border: 1px solid #E4E9ED;
+            border: 1px solid #e4e9ed;
             border-radius: 3px;
             height: 253px;
             margin-bottom: 30px;
             overflow-y: scroll;
           }
           label {
-            font-family: 'TeachableSans-SemiBold';
+            font-family: "TeachableSans-SemiBold";
             color: black;
             margin-right: 10px;
             margin-left: 20px;

@@ -1,9 +1,26 @@
-import React from 'react';
-import { Common, ConfirmDelete, Details, deepCopy, setUpNiceSelect, fetchEntity, createEntity, updateEntity, deleteEntity, sendRequest, ModalSelect, GrayedOut, Spinner, BottomButtons, Table, OutlineButton, Button } from 'handy-components';
-import QuantityModal from './quantity-modal.jsx';
+import React from "react";
+import {
+  Common,
+  ConfirmDelete,
+  Details,
+  deepCopy,
+  setUpNiceSelect,
+  fetchEntity,
+  createEntity,
+  updateEntity,
+  deleteEntity,
+  sendRequest,
+  ModalSelect,
+  GrayedOut,
+  Spinner,
+  BottomButtons,
+  Table,
+  OutlineButton,
+  Button,
+} from "handy-components";
+import QuantityModal from "./quantity-modal.jsx";
 
 export default class ReturnDetails extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -20,7 +37,7 @@ export default class ReturnDetails extends React.Component {
       deleteModalOpen: false,
       jobModalOpen: false,
       job: {
-        errors_text: ''
+        errors_text: "",
       },
       selectedItemId: null,
       selectedItemQty: null,
@@ -31,43 +48,55 @@ export default class ReturnDetails extends React.Component {
   componentDidMount() {
     fetchEntity().then((response) => {
       const { items, otherItems, customers, return: returnRecord } = response;
-      this.setState({
-        spinner: false,
-        return: returnRecord,
-        returnSaved: deepCopy(returnRecord),
-        items,
-        otherItems,
-        customers
-      }, () => {
-        setUpNiceSelect({ selector: 'select', func: Details.changeDropdownField.bind(this) });
-      });
+      this.setState(
+        {
+          spinner: false,
+          return: returnRecord,
+          returnSaved: deepCopy(returnRecord),
+          items,
+          otherItems,
+          customers,
+        },
+        () => {
+          setUpNiceSelect({
+            selector: "select",
+            func: Details.changeDropdownField.bind(this),
+          });
+        },
+      );
     });
   }
 
   clickSave() {
-    this.setState({
-      spinner: true,
-      justSaved: true
-    }, () => {
-      updateEntity({
-        entityName: 'return',
-        entity: this.state.return
-      }).then((response) => {
-        const { return: returnRecord } = response;
-        this.setState({
-          spinner: false,
-          return: returnRecord,
-          returnSaved: deepCopy(returnRecord),
-          changesToSave: false
-        });
-      }, (response) => {
-        const { errors } = response;
-        this.setState({
-          spinner: false,
-          errors,
-        });
-      });
-    });
+    this.setState(
+      {
+        spinner: true,
+        justSaved: true,
+      },
+      () => {
+        updateEntity({
+          entityName: "return",
+          entity: this.state.return,
+        }).then(
+          (response) => {
+            const { return: returnRecord } = response;
+            this.setState({
+              spinner: false,
+              return: returnRecord,
+              returnSaved: deepCopy(returnRecord),
+              changesToSave: false,
+            });
+          },
+          (response) => {
+            const { errors } = response;
+            this.setState({
+              spinner: false,
+              errors,
+            });
+          },
+        );
+      },
+    );
   }
 
   selectItem(option) {
@@ -76,14 +105,14 @@ export default class ReturnDetails extends React.Component {
       selectedItemType: option.itemType,
       selectItemModalOpen: false,
       qtyModalOpen: true,
-      selectedItemQty: 1
+      selectedItemQty: 1,
     });
   }
 
   updateQty(e) {
-    if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
+    if (e.target.value === "" || /^\d+$/.test(e.target.value)) {
       this.setState({
-        selectedItemQty: e.target.value
+        selectedItemQty: e.target.value,
       });
     }
   }
@@ -92,17 +121,17 @@ export default class ReturnDetails extends React.Component {
     const { selectedItemId, selectedItemType } = this.state;
     this.setState({
       spinner: true,
-      qtyModalOpen: false
+      qtyModalOpen: false,
     });
     createEntity({
-      directory: 'return_items',
-      entityName: 'returnItem',
+      directory: "return_items",
+      entityName: "returnItem",
       entity: {
         returnId: this.state.return.id,
         itemId: selectedItemId,
         itemType: selectedItemType,
         qty,
-      }
+      },
     }).then((response) => {
       const { items, otherItems } = response;
       this.setState({
@@ -111,17 +140,17 @@ export default class ReturnDetails extends React.Component {
         otherItems,
         selectedItemId: null,
         selectedItemQty: null,
-        selectedItemType: null
+        selectedItemType: null,
       });
     });
   }
 
   deleteItem(id) {
     this.setState({
-      spinner: true
+      spinner: true,
     });
     deleteEntity({
-      directory: 'return_items',
+      directory: "return_items",
       id,
     }).then((response) => {
       const { items, otherItems } = response;
@@ -135,10 +164,10 @@ export default class ReturnDetails extends React.Component {
 
   clickGenerateButton() {
     this.setState({
-      spinner: true
+      spinner: true,
     });
     sendRequest(`/api/returns/${this.state.return.id}/send_credit_memo`, {
-      method: 'POST',
+      method: "POST",
     }).then((response) => {
       const { job } = response;
       this.setState({
@@ -162,13 +191,26 @@ export default class ReturnDetails extends React.Component {
 
   modalCloseAndRefresh() {
     this.setState({
-      noErrorsModalOpen: false
+      noErrorsModalOpen: false,
     });
   }
 
   render() {
-    const { spinner, justSaved, changesToSave, items, qtyModalOpen, selectedItemId, selectedItemType, otherItems = [], deleteModalOpen } = this.state;
-    const selectedItem = otherItems.find(item => item.id === selectedItemId && item.itemType === selectedItemType);
+    const {
+      spinner,
+      justSaved,
+      changesToSave,
+      items,
+      qtyModalOpen,
+      selectedItemId,
+      selectedItemType,
+      otherItems = [],
+      deleteModalOpen,
+    } = this.state;
+    const selectedItem = otherItems.find(
+      (item) =>
+        item.id === selectedItemId && item.itemType === selectedItemType,
+    );
 
     return (
       <>
@@ -176,63 +218,86 @@ export default class ReturnDetails extends React.Component {
           <h1>Return Details</h1>
           <div className="white-box">
             <div className="row">
-              { Details.renderDropDown.bind(this)({ columnWidth: 4, entity: 'return', property: 'customerId', columnHeader: 'Customer', options: this.state.customers, optionDisplayProperty: 'name' }) }
-              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'return', property: 'number' }) }
-              { Details.renderField.bind(this)({ columnWidth: 4, entity: 'return', property: 'date' }) }
+              {Details.renderDropDown.bind(this)({
+                columnWidth: 4,
+                entity: "return",
+                property: "customerId",
+                columnHeader: "Customer",
+                options: this.state.customers,
+                optionDisplayProperty: "name",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 4,
+                entity: "return",
+                property: "number",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 4,
+                entity: "return",
+                property: "date",
+              })}
             </div>
             <hr />
             <Table
-              rows={ items }
+              rows={items}
               columns={[
-                { name: 'label', header: 'Item' },
-                { name: 'qty' },
-                { name: 'amount' },
+                { name: "label", header: "Item" },
+                { name: "qty" },
+                { name: "amount" },
               ]}
-              clickDelete={ this.state.return.creditMemoDate ? null : item => this.deleteItem(item.id) }
-              sortable={ false }
-              style={ { marginBottom: 15 } }
+              clickDelete={
+                this.state.return.creditMemoDate
+                  ? null
+                  : (item) => this.deleteItem(item.id)
+              }
+              sortable={false}
+              style={{ marginBottom: 15 }}
             />
             <OutlineButton
               text="Add Item"
-              onClick={ () => this.setState({ selectItemModalOpen: true }) }
+              onClick={() => this.setState({ selectItemModalOpen: true })}
               marginBottom
             />
             <hr />
             <BottomButtons
               entityName="return"
-              confirmDelete={ Details.confirmDelete.bind(this) }
-              justSaved={ justSaved }
-              changesToSave={ changesToSave }
-              disabled={ spinner }
-              clickSave={ () => { this.clickSave(); } }
+              confirmDelete={Details.confirmDelete.bind(this)}
+              justSaved={justSaved}
+              changesToSave={changesToSave}
+              disabled={spinner}
+              clickSave={() => {
+                this.clickSave();
+              }}
               marginBottom
             />
             <hr />
-            { this.renderCreditMemoSection() }
-            <GrayedOut visible={ spinner } />
-            <Spinner visible={ spinner } />
+            {this.renderCreditMemoSection()}
+            <GrayedOut visible={spinner} />
+            <Spinner visible={spinner} />
           </div>
         </div>
         <ConfirmDelete
-          isOpen={ deleteModalOpen }
+          isOpen={deleteModalOpen}
           entityName="return"
-          confirmDelete={ Details.confirmDelete.bind(this) }
-          closeModal={ Common.closeModals.bind(this) }
+          confirmDelete={Details.confirmDelete.bind(this)}
+          closeModal={Common.closeModals.bind(this)}
         />
         <ModalSelect
-          isOpen={ this.state.selectItemModalOpen }
-          options={ this.state.otherItems }
+          isOpen={this.state.selectItemModalOpen}
+          options={this.state.otherItems}
           property="label"
-          func={ this.selectItem.bind(this) }
-          onClose={ Common.closeModals.bind(this) }
+          func={this.selectItem.bind(this)}
+          onClose={Common.closeModals.bind(this)}
         />
         <QuantityModal
-          isOpen={ qtyModalOpen }
-          item={ selectedItem }
-          onClose={ () => { this.setState({ qtyModalOpen: false }); } }
-          clickOK={ qty => this.clickQtyOk(qty) }
+          isOpen={qtyModalOpen}
+          item={selectedItem}
+          onClose={() => {
+            this.setState({ qtyModalOpen: false });
+          }}
+          clickOK={(qty) => this.clickQtyOk(qty)}
         />
-        { Common.renderJobModal.call(this, this.state.job) }
+        {Common.renderJobModal.call(this, this.state.job)}
       </>
     );
   }
@@ -241,14 +306,24 @@ export default class ReturnDetails extends React.Component {
     const { spinner, changesToSave, items } = this.state;
     if (this.state.return.creditMemoId) {
       return (
-        <div><a style={ { textDecoration: 'underline' } } href={ `/credit_memos/${this.state.return.creditMemoId}` }>Credit Memo { this.state.return.creditMemoNumber }</a> was sent on { this.state.return.creditMemoDate }.</div>
+        <div>
+          <a
+            style={{ textDecoration: "underline" }}
+            href={`/credit_memos/${this.state.return.creditMemoId}`}
+          >
+            Credit Memo {this.state.return.creditMemoNumber}
+          </a>{" "}
+          was sent on {this.state.return.creditMemoDate}.
+        </div>
       );
     } else if (this.state.return.id) {
       return (
         <Button
           text="Generate and Send Credit Memo"
-          disabled={ spinner || changesToSave || items.length === 0 }
-          onClick={ () => { this.clickGenerateButton(); } }
+          disabled={spinner || changesToSave || items.length === 0}
+          onClick={() => {
+            this.clickGenerateButton();
+          }}
         />
       );
     }
@@ -266,7 +341,7 @@ export default class ReturnDetails extends React.Component {
           return: r,
           returnSaved: deepCopy(r),
         });
-      }
+      },
     });
   }
 }
