@@ -30,6 +30,7 @@
     "eslint-plugin-eqeqeq-fix": "^1.0.3",
     "eslint-plugin-react": "^7.34.1",
     "prettier": "^3.2.5",
+    "ts-loader": "^9.5.1",
     "typescript": "^5.4.4"
   }
 }
