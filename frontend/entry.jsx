@@ -11,7 +11,7 @@ import {
 } from "handy-components";
 import FM from "../app/assets/javascripts/me/common.jsx";
 
-import BookerDetails from "./components/booker-details.jsx";
+import BookerDetails from "./components/booker-details.tsx";
 import BookingDetails from "./components/booking-details.jsx";
 import Calendar from "./components/calendar.jsx";
 import ConvertDigitalSales from "./components/convert-digital-sales.jsx";

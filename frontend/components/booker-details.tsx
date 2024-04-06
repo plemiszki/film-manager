@@ -16,7 +16,21 @@ import {
   ListBox,
 } from "handy-components";
 
-export default class BookerDetails extends React.Component {
+export default class BookerDetails extends React.Component<
+  {},
+  {
+    booker: any;
+    bookerSaved: any;
+    bookerVenues: any;
+    changesToSave: boolean;
+    deleteModalOpen: boolean;
+    errors: any;
+    justSaved: boolean;
+    spinner: boolean;
+    venues: any;
+    venuesModalOpen: boolean;
+  }
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -132,6 +146,7 @@ export default class BookerDetails extends React.Component {
 
   render() {
     const { justSaved, changesToSave, spinner, bookerVenues } = this.state;
+    console.log(this.state.errors);
     return (
       <>
         <div className="handy-component">
