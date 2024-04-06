@@ -10,7 +10,7 @@
     "@babel/core": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^9.0.0",
-    "change-case": "^4.0.0",
+    "change-case": "^5.0.0",
     "handy-components": "^3.0.0",
     "jquery": "^3.0.0",
     "jquery-match-height": "^0.7.0",
@@ -26,7 +26,7 @@
     "node": "20.12.0"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
+    "eslint": "^8.0.0",
     "eslint-plugin-eqeqeq-fix": "^1.0.3",
     "eslint-plugin-react": "^7.34.1",
     "prettier": "^3.2.5"
