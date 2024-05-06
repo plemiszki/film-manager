@@ -358,77 +358,77 @@ export default class ReportsIndex extends React.Component {
             <h1>
               Statements - Q{this.state.quarter}, {this.state.year}
             </h1>
-            <Button
-              square
-              text="Send All"
-              float
-              disabled={spinner || daysDue === "all" || reports.length === 0}
-              onClick={Common.changeState.bind(this, "sendModalOpen", true)}
-            />
-            <Button
-              square
-              text="Export All"
-              float
-              style={{ marginRight: 15 }}
-              disabled={spinner || daysDue === "all" || reports.length === 0}
-              onClick={() => {
-                this.clickExport();
-              }}
-            />
-            <Button
-              square
-              text="Summary"
-              float
-              style={{ marginRight: 15 }}
-              disabled={spinner || reports.length === 0}
-              onClick={() => {
-                this.clickSummary();
-              }}
-            />
-            <Button
-              square
-              text="Totals"
-              float
-              style={{ marginRight: 15 }}
-              disabled={spinner || reports.length === 0}
-              onClick={() => {
-                this.clickTotals();
-              }}
-            />
-            <Button
-              square
-              text="Error Check"
-              float
-              style={{ marginRight: 15 }}
-              disabled={spinner || reports.length === 0}
-              onClick={() => {
-                this.clickErrorCheck();
-              }}
-            />
-            <Button
-              square
-              text="Import"
-              float
-              style={{ marginRight: 15 }}
-              disabled={spinner}
-              onClick={Common.changeState.bind(this, "importModalOpen", true)}
-            />
-            <Button
-              square
-              text=">>"
-              float
-              style={{ marginRight: 15 }}
-              disabled={spinner}
-              onClick={this.clickNext.bind(this)}
-            />
-            <Button
-              square
-              text="<<"
-              float
-              style={{ marginRight: 15 }}
-              disabled={spinner}
-              onClick={this.clickPrev.bind(this)}
-            />
+            <div className="buttons">
+              <Button
+                square
+                text="<<"
+                style={{ marginRight: 15 }}
+                disabled={spinner}
+                onClick={this.clickPrev.bind(this)}
+              />
+              <Button
+                square
+                text=">>"
+                style={{ marginRight: 15 }}
+                disabled={spinner}
+                onClick={this.clickNext.bind(this)}
+              />
+              <Button
+                square
+                text="Import"
+                style={{ marginRight: 15 }}
+                disabled={spinner}
+                onClick={Common.changeState.bind(this, "importModalOpen", true)}
+              />
+              <Button
+                square
+                text="Error Check"
+                style={{ marginRight: 15 }}
+                disabled={spinner || reports.length === 0}
+                onClick={() => {
+                  this.clickErrorCheck();
+                }}
+              />
+              <Button
+                square
+                text="Totals"
+                style={{ marginRight: 15 }}
+                disabled={spinner || reports.length === 0}
+                onClick={() => {
+                  this.clickTotals();
+                }}
+              />
+              <Button
+                square
+                text="Summary"
+                style={{ marginRight: 15 }}
+                disabled={spinner || reports.length === 0}
+                onClick={() => {
+                  this.clickSummary();
+                }}
+              />
+              <Button
+                square
+                text="Export All"
+                style={{ marginRight: 15 }}
+                disabled={spinner || daysDue === "all" || reports.length === 0}
+                onClick={() => {
+                  this.clickExport();
+                }}
+              />
+              <Button
+                square
+                text="Send All"
+                style={{ marginRight: 15 }}
+                disabled={spinner || daysDue === "all" || reports.length === 0}
+                onClick={Common.changeState.bind(this, "sendModalOpen", true)}
+              />
+              <Button
+                square
+                text="Licensor Invoices"
+                onClick={() => console.log("click licensor invoices")}
+              />
+            </div>
             <div className="white-box">
               <SearchBar
                 onChange={FM.changeSearchText.bind(this)}
@@ -511,6 +511,9 @@ export default class ReportsIndex extends React.Component {
           {Common.renderJobModal.call(this, job)}
         </div>
         <style jsx>{`
+          h1 {
+            margin-bottom: 10px;
+          }
           .white-box {
             position: relative;
           }
@@ -519,6 +522,9 @@ export default class ReportsIndex extends React.Component {
             width: 100px;
             top: 14px;
             right: 300px;
+          }
+          .buttons {
+            margin-bottom: 10px;
           }
         `}</style>
       </>
