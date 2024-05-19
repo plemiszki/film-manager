@@ -231,7 +231,7 @@ export default class ReportsIndex extends React.Component {
   }
 
   clickLicensorInvoices() {
-    const { quarter, year } = this.state;
+    const { quarter, year, daysDue } = this.state;
     this.setState({
       spinner: true,
     });
@@ -240,6 +240,7 @@ export default class ReportsIndex extends React.Component {
       data: {
         quarter,
         year,
+        daysDue,
       },
     }).then((response) => {
       const { job } = response;

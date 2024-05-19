@@ -1,14 +1,26 @@
-FILENAME = "Licensor Invoices.xlsx"
-
 class CreateLicensorInvoices
   include Sidekiq::Worker
   include ActionView::Helpers::NumberHelper
   sidekiq_options retry: false
 
-  def perform(quarter, year, time_started)
+  FILENAME = "Licensor Invoices.xlsx"
+
+  def perform(quarter, year, days_due, time_started)
+
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
+
+    if days_due == 'all'
+      reports = RoyaltyReport.where(quarter: quarter, year: year).includes(:film)
+    else
+      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { days_statement_due: days_due }).includes(film: [:licensor])
+    end
+
+    amount_due_reports = reports.where('joined_amount_due > 0')
+    job.update({ second_line: true, total_value: amount_due_reports.count })
+
+    sorted_reports = amount_due_reports.to_a.sort_by { |report| report.film.title }
 
     require 'xlsx_writer'
     doc = XlsxWriter.new
@@ -16,14 +28,8 @@ class CreateLicensorInvoices
     column_names = []
     sheet.add_row(column_names)
 
-    # if days_due == 'all'
-    #   reports = RoyaltyReport.where(quarter: quarter, year: year).includes(:film)
-    # else
-    #   reports = RoyaltyReport.where(quarter: quarter, year: year, films: { days_statement_due: days_due }).includes(film: [:licensor])
-    # end
-    # reports = reports.to_a.sort_by { |report| report.film.title }
-    # reports.each do |report|
-    #   film = report.film
+    sorted_reports.each do |report|
+      film = report.film
     #   reserves_breakdown = report.get_reserves_breakdown
     #   quarter_string = "Q#{report.quarter} #{report.year}"
     #   sheet.add_row([
@@ -33,8 +39,8 @@ class CreateLicensorInvoices
     #     reserves_breakdown[quarter_string]['liquidated_this_quarter'],
     #     reserves_breakdown[quarter_string]['total_reserves']
     #   ])
-    #   job.update({ current_value: job.current_value + 1 })
-    # end
+      job.update({ current_value: job.current_value + 1 })
+    end
 
     job.update({ first_line: 'Saving Spreadsheet', second_line: false })
     file_path = "#{job_folder}/#{FILENAME}"
