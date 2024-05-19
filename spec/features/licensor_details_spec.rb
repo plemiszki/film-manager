@@ -4,7 +4,7 @@ require 'support/features_helper'
 describe 'licensor_details', type: :feature do
 
   before(:each) do
-    @licensor = Licensor.create!(name: 'Visit Films', email: 'ryan@visitfilms.com')
+    @licensor = Licensor.create!(name: 'Visit Films', email: 'ryan@visitfilms.com', sage_id: 'VISIT')
     create(:label)
     create(:film, title: 'Some Film From This Licensor', licensor_id: @licensor.id)
   end
@@ -20,21 +20,23 @@ describe 'licensor_details', type: :feature do
     expect(page).to have_content 'Licensor Details'
     expect(find('input[data-field="name"]').value).to eq 'Visit Films'
     expect(find('input[data-field="email"]').value).to eq 'ryan@visitfilms.com'
+    expect(find('input[data-field="sageId"]').value).to eq 'VISIT'
     expect(page).to have_content 'Some Film From This Licensor'
   end
 
   it 'updates information about the licensor' do
     visit licensor_path(@licensor, as: $admin_user)
-    fill_out_form({
+    new_info = {
       name: 'New Name',
       email: 'newemail@visitfilms.com',
-      address: "Visit Films\n1300 Main Street\nNew York, NY 10001"
-    })
+      address: "Visit Films\n1300 Main Street\nNew York, NY 10001",
+      sage_id: 'VISIIIIT',
+    }
+    fill_out_form(new_info)
     save_and_wait
-    expect(@licensor.reload.attributes).to include(
-      'name' => 'New Name',
-      'email' => 'newemail@visitfilms.com',
-      'address' => "Visit Films\n1300 Main Street\nNew York, NY 10001"
+    verify_db_and_component(
+      entity: @licensor,
+      data: new_info,
     )
   end
 
@@ -43,7 +45,8 @@ describe 'licensor_details', type: :feature do
     fill_out_form({
       name: '',
       email: '',
-      address: ''
+      address: '',
+      sage_id: '',
     })
     save_and_wait
     expect(page).to have_content("Name can't be blank")
