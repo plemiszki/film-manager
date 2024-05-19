@@ -1,3 +1,5 @@
+require 'support/invoice_import_columns'
+
 class CreateLicensorInvoices
   include Sidekiq::Worker
   include ActionView::Helpers::NumberHelper
@@ -25,8 +27,7 @@ class CreateLicensorInvoices
     require 'xlsx_writer'
     doc = XlsxWriter.new
     sheet = doc.add_sheet('Invoices')
-    column_names = []
-    sheet.add_row(column_names)
+    sheet.add_row(INVOICE_IMPORT_COLUMNS)
 
     sorted_reports.each do |report|
       film = report.film
