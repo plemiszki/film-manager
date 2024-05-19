@@ -32,20 +32,21 @@ class CreateLicensorInvoices
 
     sorted_reports.each do |report|
       film = report.film
+      days_due = film.days_statement_due
       licensor = film.licensor
       quarter_string = "Q#{report.quarter} #{report.year}"
 
       rowData = INVOICE_IMPORT_CONSTANT_DATA.merge({
-        "Customer ID": "?",
+        "Customer ID": licensor.sage_id,
         "Date Due": "?",
-        "Displayed Terms": "Net ?",
-        "Description": quarter_string,
+        "Displayed Terms": "?",
+        "Description": "#{film.title} - #{quarter_string}",
         "G/L Account": "?",
         "Job ID": film.get_sage_id,
         "Invoice/CM Distribution": "1",
         "Number of Distributions": "1",
-        "Date": "?",
-        "Amount": "?",
+        "Date": Date.today,
+        "Amount": report.joined_amount_due,
       })
 
       sheet.add_row(INVOICE_IMPORT_COLUMNS.map { |column| rowData.fetch(column.to_sym, "") })
