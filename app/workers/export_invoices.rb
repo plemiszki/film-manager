@@ -1,5 +1,5 @@
-require 'support/invoice_import_columns'
-require 'support/invoice_import_constant_data'
+require "#{Rails.root}/app/workers/support/invoice_import_columns"
+require "#{Rails.root}/app/workers/support/invoice_import_constant_data"
 
 class ExportInvoices
   include Sidekiq::Worker
