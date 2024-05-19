@@ -1,5 +1,4 @@
-require "#{Rails.root}/app/workers/support/invoice_import_columns"
-require "#{Rails.root}/app/workers/support/invoice_import_constant_data"
+include InvoiceImportHelper
 
 class CreateLicensorInvoices
   include Sidekiq::Worker
@@ -28,7 +27,7 @@ class CreateLicensorInvoices
     require 'xlsx_writer'
     doc = XlsxWriter.new
     sheet = doc.add_sheet('Invoices')
-    sheet.add_row(INVOICE_IMPORT_COLUMNS)
+    sheet.add_row(COLUMN_HEADERS)
 
     sorted_reports.each do |report|
       film = report.film
@@ -36,7 +35,7 @@ class CreateLicensorInvoices
       licensor = film.licensor
       quarter_string = "Q#{report.quarter} #{report.year}"
 
-      rowData = INVOICE_IMPORT_CONSTANT_DATA.merge({
+      rowData = CONSTANT_DATA.merge({
         "Customer ID": licensor.sage_id,
         "Date Due": "?",
         "Displayed Terms": "?",
@@ -49,7 +48,7 @@ class CreateLicensorInvoices
         "Amount": report.joined_amount_due,
       })
 
-      sheet.add_row(INVOICE_IMPORT_COLUMNS.map { |column| rowData.fetch(column.to_sym, "") })
+      sheet.add_row(COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
       job.update({ current_value: job.current_value + 1 })
     end
 

@@ -1,5 +1,4 @@
-require "#{Rails.root}/app/workers/support/invoice_import_columns"
-require "#{Rails.root}/app/workers/support/invoice_import_constant_data"
+include InvoiceImportHelper
 
 class ExportInvoices
   include Sidekiq::Worker
@@ -14,14 +13,14 @@ class ExportInvoices
     require 'xlsx_writer'
     doc = XlsxWriter.new
     sheet = doc.add_sheet("Invoices")
-    sheet.add_row(INVOICE_IMPORT_COLUMNS)
+    sheet.add_row(COLUMN_HEADERS)
 
     invoices = Invoice.where(id: invoice_ids).order(:id)
     invoices.each_with_index do |invoice, invoice_index|
       items = invoice.invoice_rows
       items.each_with_index do |item, index|
 
-        rowData = INVOICE_IMPORT_CONSTANT_DATA.merge({
+        rowData = CONSTANT_DATA.merge({
           "Invoice/CM #": invoice.number,
           "Invoice/CM Distribution": index,
           "Number of Distributions": items.length,
@@ -81,7 +80,7 @@ class ExportInvoices
             "Job ID": { type: :String, value: is_shipping_fee ? '' : Film.find(item.item_id).get_sage_id },
           })
         end
-        sheet.add_row(INVOICE_IMPORT_COLUMNS.map { |column| rowData.fetch(column.to_sym, "") })
+        sheet.add_row(COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
       end
       job.update({ current_value: invoice_index + 1 })
     end
