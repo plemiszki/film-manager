@@ -99,6 +99,7 @@ Rails.application.routes.draw do
     post '/royalty_reports/export_all' => '/api/royalty_reports#export_all'
     post '/royalty_reports/send_all' => '/api/royalty_reports#send_all'
     post '/royalty_reports/error_check' => '/api/royalty_reports#error_check'
+    post '/royalty_reports/licensor_invoices' => '/api/royalty_reports#licensor_invoices'
     post '/royalty_reports/totals' => '/api/royalty_reports#totals'
     resources :jobs, only: [:index, :show, :update]
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]

@@ -230,6 +230,27 @@ export default class ReportsIndex extends React.Component {
     });
   }
 
+  clickLicensorInvoices() {
+    const { quarter, year } = this.state;
+    this.setState({
+      spinner: true,
+    });
+    sendRequest("/api/royalty_reports/licensor_invoices", {
+      method: "POST",
+      data: {
+        quarter,
+        year,
+      },
+    }).then((response) => {
+      const { job } = response;
+      this.setState({
+        job,
+        spinner: false,
+        jobModalOpen: true,
+      });
+    });
+  }
+
   clickTotals() {
     const { quarter, year, daysDue } = this.state;
     this.setState({
@@ -426,7 +447,7 @@ export default class ReportsIndex extends React.Component {
               <Button
                 square
                 text="Licensor Invoices"
-                onClick={() => console.log("click licensor invoices")}
+                onClick={() => this.clickLicensorInvoices()}
               />
             </div>
             <div className="white-box">
