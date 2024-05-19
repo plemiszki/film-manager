@@ -3,6 +3,7 @@ json.licensor do
   json.name @licensor.name
   json.email @licensor.email || ""
   json.address @licensor.address || ""
+  json.sageId @licensor.sage_id
 end
 json.films @films do |film|
   json.id film.id

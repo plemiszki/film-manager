@@ -94,15 +94,21 @@ export default class LicensorDetails extends React.Component {
             <div className="white-box">
               <div className="row">
                 {Details.renderField.bind(this)({
-                  columnWidth: 6,
+                  columnWidth: 4,
                   entity: "licensor",
                   property: "name",
                 })}
                 {Details.renderField.bind(this)({
-                  columnWidth: 6,
+                  columnWidth: 5,
                   entity: "licensor",
                   property: "email",
                   columnHeader: "Royalty Emails",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 3,
+                  entity: "licensor",
+                  property: "sageId",
+                  columnHeader: "Sage ID",
                 })}
               </div>
               <div className="row">

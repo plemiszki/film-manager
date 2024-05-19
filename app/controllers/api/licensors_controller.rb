@@ -43,7 +43,7 @@ class Api::LicensorsController < AdminController
   private
 
   def licensor_params
-    params[:licensor].permit(:name, :email, :address)
+    params[:licensor].permit(:name, :email, :address, :sage_id)
   end
 
 end

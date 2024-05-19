@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_18_123515) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_19_154349) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -620,6 +620,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_18_123515) do
     t.string "name", null: false
     t.string "email"
     t.string "address"
+    t.string "sage_id", default: ""
     t.index ["name"], name: "index_licensors_on_name", unique: true
   end
 
