@@ -1,4 +1,5 @@
 require 'support/invoice_import_columns'
+require 'support/invoice_import_constant_data'
 
 class CreateLicensorInvoices
   include Sidekiq::Worker
@@ -31,15 +32,23 @@ class CreateLicensorInvoices
 
     sorted_reports.each do |report|
       film = report.film
-    #   reserves_breakdown = report.get_reserves_breakdown
-    #   quarter_string = "Q#{report.quarter} #{report.year}"
-    #   sheet.add_row([
-    #     film.title,
-    #     film.licensor.try(:name) || '(None)',
-    #     report.joined_amount_due,
-    #     reserves_breakdown[quarter_string]['liquidated_this_quarter'],
-    #     reserves_breakdown[quarter_string]['total_reserves']
-    #   ])
+      licensor = film.licensor
+      quarter_string = "Q#{report.quarter} #{report.year}"
+
+      rowData = INVOICE_IMPORT_CONSTANT_DATA.merge({
+        "Customer ID": "?",
+        "Date Due": "?",
+        "Displayed Terms": "Net ?",
+        "Description": quarter_string,
+        "G/L Account": "?",
+        "Job ID": film.get_sage_id,
+        "Invoice/CM Distribution": "1",
+        "Number of Distributions": "1",
+        "Date": "?",
+        "Amount": "?",
+      })
+
+      sheet.add_row(INVOICE_IMPORT_COLUMNS.map { |column| rowData.fetch(column.to_sym, "") })
       job.update({ current_value: job.current_value + 1 })
     end
 
