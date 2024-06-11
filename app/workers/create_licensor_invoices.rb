@@ -24,32 +24,39 @@ class CreateLicensorInvoices
 
     sorted_reports = amount_due_reports.to_a.sort_by { |report| report.film.title }
 
+    reports_by_licensor = Hash.new { |hash, key| hash[key] = [] }
+    sorted_reports.each do |report|
+      reports_by_licensor[report.film.licensor_id] << report
+    end
+
     require 'xlsx_writer'
     doc = XlsxWriter.new
     sheet = doc.add_sheet('Invoices')
     sheet.add_row(COLUMN_HEADERS)
 
-    sorted_reports.each do |report|
-      film = report.film
-      days_due = film.days_statement_due
-      licensor = film.licensor
-      quarter_string = "Q#{report.quarter} #{report.year}"
+    reports_by_licensor.each do |licensor_id, licensor_reports|
+      licensor_reports.each_with_index do |report, index|
+        film = report.film
+        days_due = film.days_statement_due
+        licensor = film.licensor
+        quarter_string = "Q#{report.quarter} #{report.year}"
 
-      rowData = CONSTANT_DATA.merge({
-        "Customer ID": licensor.sage_id,
-        "Date Due": "?",
-        "Displayed Terms": "?",
-        "Description": "#{film.title} - #{quarter_string}",
-        "G/L Account": "?",
-        "Job ID": film.get_sage_id,
-        "Invoice/CM Distribution": "1",
-        "Number of Distributions": "1",
-        "Date": Date.today,
-        "Amount": report.joined_amount_due,
-      })
+        rowData = CONSTANT_DATA.merge({
+          "Customer ID": licensor.sage_id,
+          "Invoice/CM #": quarter_string,
+          "Date Due": Date.today + 30.days,
+          "Description": film.title,
+          "G/L Account": "49000",
+          "Job ID": film.get_sage_id,
+          "Invoice/CM Distribution": index + 1,
+          "Number of Distributions": reports.length,
+          "Date": Date.today,
+          "Amount": report.joined_amount_due,
+        })
 
-      sheet.add_row(COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
-      job.update({ current_value: job.current_value + 1 })
+        sheet.add_row(COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
+        job.update({ current_value: job.current_value + 1 })
+      end
     end
 
     job.update({ first_line: 'Saving Spreadsheet', second_line: false })
