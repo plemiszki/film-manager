@@ -42,10 +42,10 @@ class CreateLicensorInvoices
         quarter_string = "Q#{report.quarter} #{report.year}"
 
         rowData = CONSTANT_DATA.merge({
-          "Customer ID": (licensor.sage_id.presence || licensor.id),
+          "Customer ID": { type: :String, value: licensor.sage_id },
           "Invoice/CM #": quarter_string,
           "Date Due": Date.today + 30.days,
-          "Description": film.title,
+          "Description": { type: :String, value: film.title },
           "G/L Account": "49000",
           "Job ID": film.get_sage_id,
           "Invoice/CM Distribution": index + 1,
