@@ -42,7 +42,7 @@ class CreateLicensorInvoices
         quarter_string = "Q#{report.quarter} #{report.year}"
 
         rowData = CONSTANT_DATA.merge({
-          "Customer ID": licensor.sage_id,
+          "Customer ID": (licensor.sage_id || licensor.id),
           "Invoice/CM #": quarter_string,
           "Date Due": Date.today + 30.days,
           "Description": film.title,
