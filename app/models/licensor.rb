@@ -24,4 +24,24 @@ class Licensor < ActiveRecord::Base
     result
   end
 
+  def self.export_sage_id_csv
+    CSV.open("licensor_sage_ids.csv", "w") do |csv|
+      csv << ["ID", "Name", "Sage ID"]
+      all.order(:id).each do |licensor|
+        csv << [licensor.id, licensor.name, licensor.sage_id]
+      end
+    end
+  end
+
+  def self.import_sage_ids!
+    data = CSV.read("data_files/licensor_sage_ids.csv")
+    data[1..-1].each do |row|
+      id, name, sage_id = row
+      licensor = Licensor.find(id)
+      if sage_id.present?
+        licensor.update!(sage_id: sage_id)
+      end
+    end
+  end
+
 end

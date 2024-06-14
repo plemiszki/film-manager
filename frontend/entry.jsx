@@ -972,7 +972,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "licensors-index",
     {
       entityName: "licensor",
-      columns: ["name"],
+      columns: ["name", { name: "sageId", header: "Sage ID" }],
       modalRows: 1,
       modalDimensions: { width: 500 },
       includeNewButton: true,
