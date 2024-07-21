@@ -13,7 +13,7 @@ class CreateLicensorInvoices
     'Drop Ship',
     'Customer SO#',
     'Waiting on Bill',
-    'Cusotmer ID',
+    'Customer ID',
     'Ship to Invoice #',
     'Ship to Name',
     'Ship to Address-Line One',
@@ -55,7 +55,17 @@ class CreateLicensorInvoices
     'Recur Frequency',
   ]
 
-  CONSTANT_DATA = {}
+  CONSTANT_DATA = {
+    'Drop Ship': "FALSE",
+    'Waiting on Bill': "FALSE",
+    'Note Prints After Line Items': "FALSE",
+    'Beginning Balance Transaction': "FALSE",
+    'Applied to Purchase Order': "FALSE",
+    'Used for Reimbursable Expense': "FALSE",
+    'Credit Memo': "FALSE",
+    'Recur Number': 0,
+    'Recur Frequency': 0,
+  }
 
   def perform(quarter, year, days_due, time_started)
 
@@ -91,20 +101,18 @@ class CreateLicensorInvoices
         licensor = film.licensor
         quarter_string = "Q#{report.quarter} #{report.year}"
 
-        rowData = {}
-
-        # rowData = CONSTANT_DATA.merge({
-        #   "Customer ID": { type: :String, value: licensor.sage_id },
-        #   "Invoice/CM #": quarter_string,
-        #   "Date Due": Date.today + 30.days,
-        #   "Description": { type: :String, value: film.title },
-        #   "G/L Account": "49000",
-        #   "Job ID": film.get_sage_id,
-        #   "Invoice/CM Distribution": index + 1,
-        #   "Number of Distributions": reports.length,
-        #   "Date": Date.today,
-        #   "Amount": report.joined_amount_due,
-        # })
+        rowData = CONSTANT_DATA.merge({
+          "Vendor ID": { type: :String, value: licensor.sage_id },
+          "Invoice #": quarter_string,
+          "Date Due": Date.today + 30.days,
+          "Description": { type: :String, value: film.title },
+          "G/L Account": "49000",
+          "Job ID": film.get_sage_id,
+          "Invoice/CM Distribution": index + 1,
+          "Number of Distributions": reports.length,
+          "Date": Date.today,
+          "Amount": report.joined_amount_due,
+        })
 
         sheet.add_row(COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
         job.update({ current_value: job.current_value + 1 })
