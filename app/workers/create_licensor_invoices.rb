@@ -1,11 +1,61 @@
-include InvoiceImportHelper
-
 class CreateLicensorInvoices
   include Sidekiq::Worker
   include ActionView::Helpers::NumberHelper
   sidekiq_options retry: false
 
   FILENAME = "Licensor Invoices.xlsx"
+
+  COLUMN_HEADERS = [
+    'Vendor ID',
+    'Invoice #',
+    'Apply to Invoice #',
+    'Date',
+    'Drop Ship',
+    'Customer SO#',
+    'Waiting on Bill',
+    'Cusotmer ID',
+    'Ship to Invoice #',
+    'Ship to Name',
+    'Ship to Address-Line One',
+    'Ship to Address-Line Two',
+    'Ship to City',
+    'Ship to State',
+    'Ship to Zipcode',
+    'Ship to Country',
+    'Date Due',
+    'Discount Date',
+    'Discount Amount',
+    'Accounts Payable Account',
+    'Ship Via',
+    'PO Note',
+    'Note Prints After Line Items',
+    'Beginning Balance Transaction',
+    'Applied to Purchase Order',
+    'Number of Distributions',
+    'Invoice/CM Distribution',
+    'Apply to Invoice Distribution',
+    'PO Number',
+    'PO Distribution',
+    'Quantity',
+    'Item ID',
+    'Serial Number',
+    'U/M ID',
+    'U/M No. of Stocking Units',
+    'Description',
+    'G/L Account',
+    'Unit Price',
+    'Amount',
+    'Job ID',
+    'Used for Reimbursable Expense',
+    'Displayed Terms',
+    'Return Authorization',
+    'Row Type',
+    'Credit Memo',
+    'Recur Number',
+    'Recur Frequency',
+  ]
+
+  CONSTANT_DATA = {}
 
   def perform(quarter, year, days_due, time_started)
 
@@ -41,18 +91,20 @@ class CreateLicensorInvoices
         licensor = film.licensor
         quarter_string = "Q#{report.quarter} #{report.year}"
 
-        rowData = CONSTANT_DATA.merge({
-          "Customer ID": { type: :String, value: licensor.sage_id },
-          "Invoice/CM #": quarter_string,
-          "Date Due": Date.today + 30.days,
-          "Description": { type: :String, value: film.title },
-          "G/L Account": "49000",
-          "Job ID": film.get_sage_id,
-          "Invoice/CM Distribution": index + 1,
-          "Number of Distributions": reports.length,
-          "Date": Date.today,
-          "Amount": report.joined_amount_due,
-        })
+        rowData = {}
+
+        # rowData = CONSTANT_DATA.merge({
+        #   "Customer ID": { type: :String, value: licensor.sage_id },
+        #   "Invoice/CM #": quarter_string,
+        #   "Date Due": Date.today + 30.days,
+        #   "Description": { type: :String, value: film.title },
+        #   "G/L Account": "49000",
+        #   "Job ID": film.get_sage_id,
+        #   "Invoice/CM Distribution": index + 1,
+        #   "Number of Distributions": reports.length,
+        #   "Date": Date.today,
+        #   "Amount": report.joined_amount_due,
+        # })
 
         sheet.add_row(COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
         job.update({ current_value: job.current_value + 1 })
