@@ -7,6 +7,7 @@ class CreateLicensorInvoices
 
   COLUMN_HEADERS = [
     'Vendor ID',
+    'Vendor Name',
     'Invoice #',
     'Apply to Invoice #',
     'Date',
@@ -26,10 +27,12 @@ class CreateLicensorInvoices
     'Discount Date',
     'Discount Amount',
     'Accounts Payable Account',
+    'Accounts Payable Amount',
     'Ship Via',
     'PO Note',
     'Note Prints After Line Items',
     'Beginning Balance Transaction',
+    'AP Date Cleared in Bank Rec',
     'Applied to Purchase Order',
     'Number of Distributions',
     'Invoice/CM Distribution',
@@ -37,16 +40,23 @@ class CreateLicensorInvoices
     'PO Number',
     'PO Distribution',
     'Quantity',
+    'Stocking Quantity',
     'Item ID',
     'Serial Number',
     'U/M ID',
     'U/M No. of Stocking Units',
     'Description',
     'G/L Account',
+    'GL Date Cleared in Bank Rec',
     'Unit Price',
+    'Stocking Unit Price',
+    'UPC/SKU',
+    'Weight',
     'Amount',
     'Job ID',
     'Used for Reimbursable Expense',
+    'Transaction Period',
+    'Transaction Number',
     'Displayed Terms',
     'Return Authorization',
     'Row Type',
@@ -74,9 +84,9 @@ class CreateLicensorInvoices
     FileUtils.mkdir_p("#{job_folder}")
 
     if days_due == 'all'
-      reports = RoyaltyReport.where(quarter: quarter, year: year).includes(:film)
+      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { send_reports: true }).includes(film: [:licensor])
     else
-      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { days_statement_due: days_due }).includes(film: [:licensor])
+      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { send_reports: true, days_statement_due: days_due }).includes(film: [:licensor])
     end
 
     amount_due_reports = reports.where('joined_amount_due > 0')
