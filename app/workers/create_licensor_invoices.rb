@@ -119,7 +119,7 @@ class CreateLicensorInvoices
           "G/L Account": "49000",
           "Job ID": film.get_sage_id,
           "Invoice/CM Distribution": index + 1,
-          "Number of Distributions": reports.length,
+          "Number of Distributions": licensor_reports.length,
           "Date": Date.today,
           "Amount": report.joined_amount_due,
         })
