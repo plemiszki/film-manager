@@ -10,6 +10,7 @@ class CreateLicensorInvoices
     'Vendor Name',
     'Invoice #',
     'Apply to Invoice #',
+    'Credit Memo',
     'Date',
     'Drop Ship',
     'Customer SO#',
@@ -60,7 +61,6 @@ class CreateLicensorInvoices
     'Displayed Terms',
     'Return Authorization',
     'Row Type',
-    'Credit Memo',
     'Recur Number',
     'Recur Frequency',
   ]
@@ -75,6 +75,7 @@ class CreateLicensorInvoices
     'Credit Memo': "FALSE",
     'Recur Number': 0,
     'Recur Frequency': 0,
+    'Accounts Payable Account': '20100',
   }
 
   def perform(quarter, year, days_due, time_started)
