@@ -85,9 +85,9 @@ class CreateLicensorInvoices
     FileUtils.mkdir_p("#{job_folder}")
 
     if days_due == 'all'
-      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { send_reports: true }).includes(film: [:licensor])
+      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { send_reports: true, export_reports: true }).includes(film: [:licensor])
     else
-      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { send_reports: true, days_statement_due: days_due }).includes(film: [:licensor])
+      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { send_reports: true, export_reports: true,  days_statement_due: days_due }).includes(film: [:licensor])
     end
 
     amount_due_reports = reports.where('joined_amount_due > 0')
