@@ -13,6 +13,9 @@ json.settings do
   json.paymentRemindersUserId @settings.payment_reminders_user_id || ""
   json.virtualBookingReportText @settings.virtual_booking_report_text
   json.institutionOrderInvoiceEmailText @settings.institution_order_invoice_email_text
+  json.nextDvdInvoiceNumber @settings.next_dvd_invoice_number.to_s
+  json.nextBookingInvoiceNumber @settings.next_booking_invoice_number.to_s
+  json.nextInstitutionInvoiceNumber @settings.next_institution_invoice_number.to_s
 end
 json.users @users do |user|
   json.id user.id

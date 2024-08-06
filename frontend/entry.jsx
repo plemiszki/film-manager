@@ -176,6 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
       credit_memo_email_text: "",
       virtual_booking_report_text: "",
       institution_order_invoice_email_text: "",
+      next_booking_invoice_number: "",
+      next_dvd_invoice_number: "",
     },
     fields: [
       [
@@ -269,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
           rows: 6,
         },
         {
-          columnWidth: 5,
+          columnWidth: 6,
           columnHeader: "Sender of Box Office Reminders",
           property: "boxOfficeRemindersUserId",
           type: "modal",
@@ -277,12 +279,27 @@ document.addEventListener("DOMContentLoaded", () => {
           optionsArrayName: "users",
         },
         {
-          columnWidth: 5,
+          columnWidth: 6,
           columnHeader: "Sender of Payment Reminders",
           property: "paymentRemindersUserId",
           type: "modal",
           optionDisplayProperty: "name",
           optionsArrayName: "users",
+        },
+        {
+          columnWidth: 3,
+          columnHeader: "Next DVD Invoice Number",
+          property: "nextDvdInvoiceNumber",
+        },
+        {
+          columnWidth: 3,
+          columnHeader: "Next Booking Invoice Number",
+          property: "nextBookingInvoiceNumber",
+        },
+        {
+          columnWidth: 3,
+          columnHeader: "Next Institution Invoice Number",
+          property: "nextInstitutionInvoiceNumber",
         },
       ],
     ],
