@@ -1492,7 +1492,7 @@ export default class FilmDetails extends React.Component {
               columnWidth: 3,
               entity: "film",
               property: "sendReports",
-              hidden: !this.state.film.exportReports,
+              visible: this.state.film.exportReports,
             })}
             {Details.renderSwitch.bind(this)({
               columnWidth: 3,
@@ -2224,7 +2224,7 @@ export default class FilmDetails extends React.Component {
                   property: "xmlCaptionFilename",
                   columnHeader: "Captions Filename",
                   placeholder: film.xmlExportFilenameDefaults.captions,
-                  hidden: !film.xmlIncludeCaptions,
+                  visible: film.xmlIncludeCaptions,
                 })}
               </div>
               <div className="row" style={{ height: 103 }}>
@@ -2240,7 +2240,7 @@ export default class FilmDetails extends React.Component {
                   property: "xmlTrailerFilename",
                   columnHeader: "Trailer Filename",
                   placeholder: film.xmlExportFilenameDefaults.trailer,
-                  hidden: !film.xmlIncludeTrailer,
+                  visible: film.xmlIncludeTrailer,
                 })}
               </div>
               <div className="row">
