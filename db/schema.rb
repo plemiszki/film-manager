@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_19_154349) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_10_163307) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
@@ -434,6 +435,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_19_154349) do
     t.decimal "ppr_drl_post_street_member", precision: 7, scale: 2, default: "0.0"
     t.boolean "auto_renew_opt_out", default: false
     t.boolean "now_playing_page", default: false
+    t.string "xml_video_filename", default: ""
+    t.string "xml_trailer_filename", default: ""
+    t.string "xml_subtitles_filename", default: ""
+    t.string "xml_caption_filename", default: ""
+    t.boolean "xml_include_trailer", default: true
+    t.boolean "xml_include_captions", default: true
+    t.string "xml_mmc_filename", default: ""
+    t.string "xml_mec_filename", default: ""
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
     t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"

@@ -2159,7 +2159,21 @@ export default class FilmDetails extends React.Component {
                   />
                 </div>
               </div>
-              <hr />
+              <div className="row">
+                <div className="col-xs-12">
+                  <Button
+                    text="Export MEC File"
+                    marginRight
+                    onClick={() => this.exportMEC()}
+                  />
+                  <Button
+                    text="Export MMC File"
+                    marginRight
+                    onClick={() => this.exportMMC()}
+                  />
+                </div>
+              </div>
+              <hr style={{ marginTop: 30 }} />
             </div>
             <style jsx>{`
               .badge-checkboxes {
@@ -2691,18 +2705,6 @@ export default class FilmDetails extends React.Component {
             onClick={() => {
               this.setState({ copyModalOpen: true });
             }}
-          />
-          <Button
-            text="XML - MMC"
-            marginRight
-            float
-            onClick={() => this.exportMMC()}
-          />
-          <Button
-            text="XML - MEC"
-            marginRight
-            float
-            onClick={() => this.exportMEC()}
           />
         </>
       );
