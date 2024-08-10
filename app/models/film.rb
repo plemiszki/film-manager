@@ -64,6 +64,31 @@ class Film < ActiveRecord::Base
     title.split(" ").map { |word| word.capitalize }.join("_").gsub(/\W/, '')
   end
 
+  def xml_mmc_filename_default
+    "#{self.title_amazon_export.downcase}_mmc.xml"
+  end
+
+  def xml_mec_filename_default
+    "#{self.title_amazon_export.downcase}_mec.xml"
+  end
+
+  def xml_video_filename_default
+    language = self.amazon_languages.first
+    language ? "filmmovement-#{title_amazon_export}_Movie-Full-mezz-#{language.code}.mov" : ""
+  end
+
+  def xml_trailer_filename_default
+    "filmmovement-#{title_amazon_export}_Trailer.mov"
+  end
+
+  def xml_subtitles_filename_default
+    "filmmovement-FM_#{title_amazon_export}_Subtitle.scc"
+  end
+
+  def xml_captions_filename_default
+    "filmmovement-FM_#{title_amazon_export}_Caption.scc"
+  end
+
   after_create :create_percentages
   after_save :update_film_rights_end_date_calc
 

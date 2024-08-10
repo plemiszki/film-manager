@@ -93,7 +93,9 @@ export default class FilmDetails extends React.Component {
       episodes: [],
       errors: {},
       spinner: true,
-      film: {},
+      film: {
+        xmlExportFilenameDefaults: {},
+      },
       filmCountries: [],
       filmFormats: [],
       filmGenres: [],
@@ -2165,12 +2167,14 @@ export default class FilmDetails extends React.Component {
                   entity: "film",
                   property: "xmlMecFilename",
                   columnHeader: "MEC Filename",
+                  placeholder: film.xmlExportFilenameDefaults.mec,
                 })}
                 {Details.renderField.bind(this)({
                   columnWidth: 6,
                   entity: "film",
                   property: "xmlMmcFilename",
                   columnHeader: "MMC Filename",
+                  placeholder: film.xmlExportFilenameDefaults.mmc,
                 })}
               </div>
               <div className="row">
@@ -2179,12 +2183,14 @@ export default class FilmDetails extends React.Component {
                   entity: "film",
                   property: "xmlVideoFilename",
                   columnHeader: "Video Filename",
+                  placeholder: film.xmlExportFilenameDefaults.video,
                 })}
                 {Details.renderField.bind(this)({
                   columnWidth: 6,
                   entity: "film",
                   property: "xmlSubtitlesFilename",
                   columnHeader: "Subtitles Filename",
+                  placeholder: film.xmlExportFilenameDefaults.subtitles,
                 })}
               </div>
               <div className="row">
@@ -2199,6 +2205,7 @@ export default class FilmDetails extends React.Component {
                   entity: "film",
                   property: "xmlCaptionFilename",
                   columnHeader: "Captions Filename",
+                  placeholder: film.xmlExportFilenameDefaults.captions,
                 })}
               </div>
               <div className="row">
@@ -2213,6 +2220,7 @@ export default class FilmDetails extends React.Component {
                   entity: "film",
                   property: "xmlTrailerFilename",
                   columnHeader: "Trailer Filename",
+                  placeholder: film.xmlExportFilenameDefaults.trailer,
                 })}
               </div>
               <div className="row">

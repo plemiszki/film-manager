@@ -92,6 +92,14 @@ json.film do
   json.xmlSubtitlesFilename @film.xml_subtitles_filename
   json.xmlMmcFilename @film.xml_mmc_filename
   json.xmlMecFilename @film.xml_mec_filename
+  json.xmlExportFilenameDefaults do
+    json.mmc @film.xml_mmc_filename_default
+    json.mec @film.xml_mec_filename_default
+    json.video @film.xml_video_filename_default
+    json.trailer @film.xml_trailer_filename_default
+    json.subtitles @film.xml_subtitles_filename_default
+    json.captions @film.xml_captions_filename_default
+  end
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|
