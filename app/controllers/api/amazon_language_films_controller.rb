@@ -18,6 +18,7 @@ class Api::AmazonLanguageFilmsController < AdminController
   def generate_response(film_id)
     @amazon_language_films = AmazonLanguageFilm.where(film_id: film_id).includes(:amazon_language)
     @amazon_languages = AmazonLanguage.where.not(id: @amazon_language_films.pluck(:amazon_language_id))
+    @film = Film.find(film_id)
     render 'index', formats: [:json], handlers: [:jbuilder]
   end
 

@@ -527,6 +527,7 @@ export default class FilmDetails extends React.Component {
         [key]: option.id,
       },
     }).then((response) => {
+      const { videoFilenameExport } = response;
       let obj = {
         spinner: false,
         [entityNamePlural]: response[entityNamePlural],
@@ -535,6 +536,14 @@ export default class FilmDetails extends React.Component {
         otherArrays.forEach((arrayName) => {
           obj[arrayName] = response[arrayName];
         });
+      if (videoFilenameExport) {
+        const { film } = this.state;
+        film.xmlExportFilenameDefaults = {
+          ...film.xmlExportFilenameDefaults,
+          video: videoFilenameExport,
+        };
+        obj.film = film;
+      }
       this.setState(obj);
       Common.closeModals.call(this);
     });
@@ -550,6 +559,7 @@ export default class FilmDetails extends React.Component {
       directory,
       id,
     }).then((response) => {
+      const { videoFilenameExport } = response;
       let obj = {
         spinner: false,
         [entityNamePlural]: response[entityNamePlural],
@@ -558,6 +568,14 @@ export default class FilmDetails extends React.Component {
         otherArrays.forEach((arrayName) => {
           obj[arrayName] = response[arrayName];
         });
+      if (response.hasOwnProperty("videoFilenameExport")) {
+        const { film } = this.state;
+        film.xmlExportFilenameDefaults = {
+          ...film.xmlExportFilenameDefaults,
+          video: videoFilenameExport,
+        };
+        obj.film = film;
+      }
       this.setState(obj);
     });
   }

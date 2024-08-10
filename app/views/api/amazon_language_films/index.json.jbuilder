@@ -6,3 +6,4 @@ json.amazonLanguages @amazon_languages do |amazon_language|
   json.id amazon_language.id
   json.name amazon_language.name
 end
+json.videoFilenameExport @film.xml_video_filename_default
