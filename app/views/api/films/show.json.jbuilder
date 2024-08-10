@@ -84,6 +84,14 @@ json.film do
   json.pprDrlPostStreetMember '$' + number_with_precision(@film.ppr_drl_post_street_member, precision: 2, delimiter: ',')
   json.totalBoxOffice '$' + number_with_precision(@total_box_office, precision: 2, delimiter: ',')
   json.missingReports @missing_reports
+  json.xmlIncludeCaptions @film.xml_include_captions
+  json.xmlIncludeTrailer @film.xml_include_trailer
+  json.xmlVideoFilename @film.xml_video_filename
+  json.xmlTrailerFilename @film.xml_trailer_filename
+  json.xmlCaptionFilename @film.xml_caption_filename
+  json.xmlSubtitlesFilename @film.xml_subtitles_filename
+  json.xmlMmcFilename @film.xml_mmc_filename
+  json.xmlMecFilename @film.xml_mec_filename
 end
 json.dealTemplates @templates
 json.licensors @licensors do |licensor|

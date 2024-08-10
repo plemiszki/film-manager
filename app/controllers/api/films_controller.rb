@@ -348,6 +348,14 @@ class Api::FilmsController < AdminController
       :drl_post_street_member,
       :ppr_drl_pre_street_member,
       :ppr_drl_post_street_member,
+      :xml_video_filename,
+      :xml_trailer_filename,
+      :xml_subtitles_filename,
+      :xml_caption_filename,
+      :xml_include_trailer,
+      :xml_include_captions,
+      :xml_mmc_filename,
+      :xml_mec_filename
     )
     result[:licensor_id] = nil unless params[:film][:licensor_id]
     result

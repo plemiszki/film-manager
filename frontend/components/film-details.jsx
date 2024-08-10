@@ -2160,6 +2160,62 @@ export default class FilmDetails extends React.Component {
                 </div>
               </div>
               <div className="row">
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "film",
+                  property: "xmlMecFilename",
+                  columnHeader: "MEC Filename",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "film",
+                  property: "xmlMmcFilename",
+                  columnHeader: "MMC Filename",
+                })}
+              </div>
+              <div className="row">
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "film",
+                  property: "xmlVideoFilename",
+                  columnHeader: "Video Filename",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "film",
+                  property: "xmlSubtitlesFilename",
+                  columnHeader: "Subtitles Filename",
+                })}
+              </div>
+              <div className="row">
+                {Details.renderSwitch.bind(this)({
+                  columnWidth: 2,
+                  entity: "film",
+                  property: "xmlIncludeCaptions",
+                  columnHeader: "Include Captions",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "film",
+                  property: "xmlCaptionFilename",
+                  columnHeader: "Captions Filename",
+                })}
+              </div>
+              <div className="row">
+                {Details.renderSwitch.bind(this)({
+                  columnWidth: 2,
+                  entity: "film",
+                  property: "xmlIncludeTrailer",
+                  columnHeader: "Include Trailer",
+                })}
+                {Details.renderField.bind(this)({
+                  columnWidth: 6,
+                  entity: "film",
+                  property: "xmlTrailerFilename",
+                  columnHeader: "Trailer Filename",
+                })}
+              </div>
+              <div className="row">
                 <div className="col-xs-12">
                   <Button
                     text="Export MEC File"
