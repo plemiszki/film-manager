@@ -65,6 +65,7 @@ class Film < ActiveRecord::Base
   end
 
   after_create :create_percentages
+  after_save :update_film_rights_end_date_calc
 
   belongs_to :licensor
   belongs_to :label
@@ -119,10 +120,20 @@ class Film < ActiveRecord::Base
     expiration_reminders.select { |sent_date| sent_date >= start_date_of_window }
   end
 
+  # after create
   def create_percentages
     unless film_type == 'Short'
       RevenueStream.all.each do |revenue_stream|
         FilmRevenuePercentage.create!(film_id: id, revenue_stream_id: revenue_stream.id)
+      end
+    end
+  end
+
+  # after save
+  def update_film_rights_end_date_calc
+    if saved_change_to_auto_renew?
+      self.film_rights.each do |film_right|
+        film_right.save! # trigger calculate_end_date in before_save hook
       end
     end
   end

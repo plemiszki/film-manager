@@ -61,4 +61,19 @@ RSpec.describe Film do
     expect(@film.errors.messages[:end_date]).to eq ['cannot be before start date']
   end
 
+  it 'updates associated film_right end dates correctly when auto-renew is toggled' do
+    create(:label)
+    film = create(:film, auto_renew: false)
+    create(:territory)
+    create(:right)
+    film_right = create(:film_right)
+    expect(film_right.end_date_calc).to eq(Date.today + 1.year)
+
+    film.update!(auto_renew: true, auto_renew_term: 12)
+    expect(film_right.reload.end_date_calc).to eq(Date.today + 2.years)
+
+    film.update!(auto_renew: false)
+    expect(film_right.reload.end_date_calc).to eq(Date.today + 1.year)
+  end
+
 end
