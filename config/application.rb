@@ -27,5 +27,7 @@ module FilmManager
       g.skip_routes = true
     end
 
+    config.active_record.legacy_connection_handling = false
+
   end
 end
