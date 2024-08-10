@@ -1126,13 +1126,15 @@ describe 'film_details', type: :feature do
 
   it 'starts the export XML MEC job' do
     visit film_path(@film, as: $admin_user)
-    click_btn('XML - MEC')
+    find('div.tab', text: 'Marketing').click
+    click_btn('Export MEC File')
     expect(page).to have_content('Exporting XML (MEC)')
   end
 
   it 'starts the export XML MMC job' do
     visit film_path(@film, as: $admin_user)
-    click_btn('XML - MMC')
+    find('div.tab', text: 'Marketing').click
+    click_btn('Export MMC File')
     expect(page).to have_content('Exporting XML (MMC)')
   end
 
