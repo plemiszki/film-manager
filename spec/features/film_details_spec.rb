@@ -457,7 +457,13 @@ describe 'film_details', type: :feature do
       rental_url: 'https://www.filmmovement.com/rentals/vilbyvonderful',
       rental_days: 4,
       rental_price: 20,
-      tv_rating: 'G'
+      tv_rating: 'G',
+      xml_mec_filename: 'MEC filename',
+      xml_mmc_filename: 'MMC filename',
+      xml_video_filename: 'video filename',
+      xml_trailer_filename: 'trailer filename',
+      xml_subtitles_filename: 'subtitles filename',
+      xml_caption_filename: 'caption filename',
     }
     fill_out_form(new_info)
     save_and_wait
