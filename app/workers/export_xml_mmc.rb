@@ -80,18 +80,20 @@ class ExportXmlMmc
             builder.__send__('manifest:ContainerLocation', subtitles_filename)
           end
         end
-        builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.#{language_code}") do
-          builder.__send__('md:Type', 'primary')
-          builder.__send__('md:Language', language_code)
-          builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', trailer_filename)
+        if film.xml_include_trailer
+          builder.tag!("manifest:Video", "VideoTrackID" => "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.#{language_code}") do
+            builder.__send__('md:Type', 'primary')
+            builder.__send__('md:Language', language_code)
+            builder.tag!("manifest:ContainerReference") do
+              builder.__send__('manifest:ContainerLocation', trailer_filename)
+            end
           end
-        end
-        builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.#{language_code}") do
-          builder.__send__('md:Type', 'primary')
-          builder.__send__('md:Language', language_code)
-          builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', trailer_filename)
+          builder.tag!("manifest:Audio", "AudioTrackID" => "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.#{language_code}") do
+            builder.__send__('md:Type', 'primary')
+            builder.__send__('md:Language', language_code)
+            builder.tag!("manifest:ContainerReference") do
+              builder.__send__('manifest:ContainerLocation', trailer_filename)
+            end
           end
         end
       end
@@ -115,15 +117,17 @@ class ExportXmlMmc
           end
         end
       end
-      builder.tag!("manifest:Presentations") do
-        builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_#{title}_Movie:trailer.presentation") do
-          builder.tag!("manifest:TrackMetadata") do
-            builder.__send__('manifest:TrackSelectionNumber', '0')
-            builder.tag!('manifest:VideoTrackReference') do
-              builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.#{language_code}")
-            end
-            builder.tag!('manifest:AudioTrackReference') do
-              builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.#{language_code}")
+      if film.xml_include_trailer
+        builder.tag!("manifest:Presentations") do
+          builder.tag!("manifest:Presentation", "PresentationID" => "md:presentationid:org:filmmovement:FM_#{title}_Movie:trailer.presentation") do
+            builder.tag!("manifest:TrackMetadata") do
+              builder.__send__('manifest:TrackSelectionNumber', '0')
+              builder.tag!('manifest:VideoTrackReference') do
+                builder.__send__('manifest:VideoTrackID', "md:vidtrackid:org:filmmovement:FM_#{title}_Movie:trailer.video.#{language_code}")
+              end
+              builder.tag!('manifest:AudioTrackReference') do
+                builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:trailer.audio.#{language_code}")
+              end
             end
           end
         end
@@ -136,16 +140,20 @@ class ExportXmlMmc
             builder.__send__('manifest:SubType', 'Feature')
             builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Movie:feature.presentation")
           end
-          builder.tag!("manifest:ExperienceChild") do
-            builder.__send__('manifest:Relationship', "ispromotionfor")
-            builder.__send__('manifest:ExperienceID', "md:experienceid:org:filmmovement:FM_#{title}_Movie:trailer.experience")
+          if film.xml_include_trailer
+            builder.tag!("manifest:ExperienceChild") do
+              builder.__send__('manifest:Relationship', "ispromotionfor")
+              builder.__send__('manifest:ExperienceID', "md:experienceid:org:filmmovement:FM_#{title}_Movie:trailer.experience")
+            end
           end
         end
-        builder.tag!("manifest:Experience", "ExperienceID" => "md:experienceid:org:filmmovement:FM_#{title}_Movie:trailer.experience", "version" => "1.0") do
-          builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_#{title}_Movie") do
-            builder.__send__('manifest:Type', 'Promotion')
-            builder.__send__('manifest:SubType', 'Default Trailer')
-            builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Movie:trailer.presentation")
+        if film.xml_include_trailer
+          builder.tag!("manifest:Experience", "ExperienceID" => "md:experienceid:org:filmmovement:FM_#{title}_Movie:trailer.experience", "version" => "1.0") do
+            builder.tag!("manifest:Audiovisual", "ContentID" => "md:cid:org:filmmovement:FM_#{title}_Movie") do
+              builder.__send__('manifest:Type', 'Promotion')
+              builder.__send__('manifest:SubType', 'Default Trailer')
+              builder.__send__('manifest:PresentationID', "md:presentationid:org:filmmovement:FM_#{title}_Movie:trailer.presentation")
+            end
           end
         end
       end
