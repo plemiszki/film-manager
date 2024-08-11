@@ -10,7 +10,7 @@ class ExportXmlMmc
     errors = []
 
     film = Film.find(film_id)
-    filename = "#{film.title_amazon_export.downcase}_mmc.xml"
+    filename = film.xml_mmc_filename.presence || "#{film.title_amazon_export.downcase}_mmc.xml"
     file = File.open(filename, 'w')
 
     title = film.title_amazon_export
