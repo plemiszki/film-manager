@@ -2797,7 +2797,7 @@ export default class FilmDetails extends React.Component {
 
   exportMEC() {
     const { film } = this.state;
-    sendRequest("/api/films/export_xml", {
+    sendRequest("/api/films/export_xml_mec", {
       method: "GET",
       data: {
         film_id: film.id,

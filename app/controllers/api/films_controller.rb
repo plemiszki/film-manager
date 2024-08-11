@@ -143,10 +143,10 @@ class Api::FilmsController < AdminController
     end
   end
 
-  def export_xml
+  def export_xml_mec
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, name: "export xml (mec)", first_line: "Exporting XML (MEC)", second_line: false)
-    ExportXml.perform_async(params[:film_id], time_started)
+    ExportXmlMec.perform_async(params[:film_id], time_started)
     render json: { job: job.render_json }
   end
 

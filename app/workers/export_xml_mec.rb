@@ -1,4 +1,4 @@
-class ExportXml
+class ExportXmlMec
   include Sidekiq::Worker
   sidekiq_options retry: false
 
@@ -32,7 +32,8 @@ class ExportXml
       release_date_string = release_date.strftime("%Y-%m-%d")
     end
 
-    filename = "#{film.title_amazon_export.downcase}_mec.xml"
+    filename = film.xml_mec_filename.presence || "#{film.title_amazon_export.downcase}_mec.xml"
+    p filename
     file = File.open("#{job_folder}/#{filename}", 'w')
     identifier = "FM_#{film.title_amazon_export}_Movie"
 
