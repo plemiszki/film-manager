@@ -58,15 +58,17 @@ class ExportXmlMmc
           end
         end
         builder.comment! "Feature subtitle File"
-        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US") do
-          builder.__send__('md:Format', 'SCC')
-          builder.__send__('md:Type', 'SDH')
-          builder.__send__('md:Language', 'en-US')
-          builder.tag!("md:Encoding") do
-            builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
-          end
-          builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', captions_filename)
+        if film.xml_include_captions
+          builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US") do
+            builder.__send__('md:Format', 'SCC')
+            builder.__send__('md:Type', 'SDH')
+            builder.__send__('md:Language', 'en-US')
+            builder.tag!("md:Encoding") do
+              builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
+            end
+            builder.tag!("manifest:ContainerReference") do
+              builder.__send__('manifest:ContainerLocation', captions_filename)
+            end
           end
         end
         builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.en-US") do
@@ -108,8 +110,10 @@ class ExportXmlMmc
             builder.tag!('manifest:AudioTrackReference') do
               builder.__send__('manifest:AudioTrackID', "md:audtrackid:org:filmmovement:FM_#{title}_Movie:feature.audio.#{language_code}")
             end
-            builder.tag!('manifest:SubtitleTrackReference') do
-              builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US")
+            if film.xml_include_captions
+              builder.tag!('manifest:SubtitleTrackReference') do
+                builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:caption.en-US")
+              end
             end
             builder.tag!('manifest:SubtitleTrackReference') do
               builder.__send__('manifest:SubtitleTrackID', "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.en-US")
