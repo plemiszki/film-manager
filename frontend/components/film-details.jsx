@@ -1183,6 +1183,7 @@ export default class FilmDetails extends React.Component {
       dvds,
       episodes,
       film,
+      filmSaved,
       filmCountries,
       filmFormats,
       filmGenres,
@@ -2249,11 +2250,24 @@ export default class FilmDetails extends React.Component {
                     text="Export MEC File"
                     marginRight
                     onClick={() => this.exportMEC()}
+                    disabled={filmSaved.xmlMecFilename !== film.xmlMecFilename}
                   />
                   <Button
                     text="Export MMC File"
                     marginRight
                     onClick={() => this.exportMMC()}
+                    disabled={
+                      film.xmlMmcFilename !== filmSaved.xmlMmcFilename ||
+                      film.xmlVideoFilename !== filmSaved.xmlVideoFilename ||
+                      film.xmlTrailerFilename !==
+                        filmSaved.xmlTrailerFilename ||
+                      film.xmlSubtitlesFilename !==
+                        filmSaved.xmlSubtitlesFilename ||
+                      film.xmlCaptionFilename !==
+                        filmSaved.xmlCaptionFilename ||
+                      film.xmlIncludeTrailer !== filmSaved.xmlIncludeTrailer ||
+                      film.xmlIncludeCaptions !== filmSaved.xmlIncludeCaptions
+                    }
                   />
                 </div>
               </div>
