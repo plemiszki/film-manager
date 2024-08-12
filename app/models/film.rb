@@ -98,6 +98,7 @@ class Film < ActiveRecord::Base
   has_many :film_rights, dependent: :destroy
   has_many :royalty_reports, -> { order(:year, :quarter) }, dependent: :destroy
   has_many :dvds, foreign_key: :feature_film_id, dependent: :destroy
+  has_many :active_dvds, -> { Dvd.active }, class_name: 'Dvd', foreign_key: :feature_film_id
   has_many :quotes, dependent: :destroy
   has_many :laurels, dependent: :destroy
   has_many :related_films, dependent: :destroy

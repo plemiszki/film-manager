@@ -107,7 +107,7 @@ json.cache! [@films], expires_in: 10.minutes do
       json.order related_film.order
       json.other_film_id related_film.other_film_id
     end
-    json.dvds film.dvds do |dvd|
+    json.dvds film.active_dvds do |dvd|
       json.id dvd.id
       json.dvd_type dvd.dvd_type.name
       json.feature_film_id dvd.feature_film_id
