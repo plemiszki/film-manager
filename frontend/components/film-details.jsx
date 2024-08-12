@@ -1275,7 +1275,12 @@ export default class FilmDetails extends React.Component {
             columns={[
               {
                 name: "type",
-                bold: true,
+              },
+              {
+                name: "upc",
+              },
+              {
+                name: "price",
               },
             ]}
             rows={dvds}
@@ -1283,15 +1288,13 @@ export default class FilmDetails extends React.Component {
             urlPrefix="dvds"
             style={{ marginBottom: 30 }}
           />
-          {dvds.length < 6 && (
-            <OutlineButton
-              text="Add DVD"
-              onClick={() => {
-                this.setState({ dvdModalOpen: true });
-              }}
-              style={{ marginBottom: "30px" }}
-            />
-          )}
+          <OutlineButton
+            text="Add DVD"
+            onClick={() => {
+              this.setState({ dvdModalOpen: true });
+            }}
+            style={{ marginBottom: "30px" }}
+          />
           <hr />
         </div>
       );

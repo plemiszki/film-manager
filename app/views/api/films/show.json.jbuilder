@@ -153,6 +153,8 @@ json.dvds @dvds do |dvd|
   json.id dvd.id
   json.type dvd.dvd_type.name
   json.featureTitle dvd.feature.title
+  json.upc dvd.upc
+  json.price '$' + number_with_precision(dvd.price, precision: 2, delimiter: ',')
 end
 json.dvdTypes @dvd_types do |dvd_type|
   json.id dvd_type.id
