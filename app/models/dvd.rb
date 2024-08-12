@@ -7,7 +7,6 @@ class Dvd < ActiveRecord::Base
   validates :feature_film_id, presence: true
   validates_numericality_of :price, :greater_than_or_equal_to => 0
   validates_numericality_of :discs, :greater_than_or_equal_to => 1
-  validates :dvd_type_id, uniqueness: { scope: :feature_film_id }
   validates :pre_book_date, :retail_date, :first_shipment, date: { blank_ok: true }
 
   belongs_to :dvd_type

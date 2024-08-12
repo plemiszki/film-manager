@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_10_163307) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_12_003747) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -271,7 +271,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_10_163307) do
     t.date "first_shipment"
     t.date "pre_book_date"
     t.date "retail_date"
-    t.index ["dvd_type_id", "feature_film_id"], name: "index_dvds_on_dvd_type_id_and_feature_film_id", unique: true
     t.index ["dvd_type_id"], name: "index_dvds_on_dvd_type_id"
     t.index ["feature_film_id"], name: "index_dvds_on_feature_film_id"
   end
