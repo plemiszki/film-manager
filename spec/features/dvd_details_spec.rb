@@ -42,7 +42,8 @@ describe 'dvd_details', type: :feature do
       repressing: { value: true, type: :switch },
       discs: 2,
       soundConfig: 'stereo',
-      specialFeatures: 'making of documentary'
+      specialFeatures: 'making of documentary',
+      active: { value: false, type: :switch },
     })
     save_and_wait
     expect(@dvd.reload.attributes).to include(
@@ -54,7 +55,8 @@ describe 'dvd_details', type: :feature do
       'repressing' => true,
       'discs' => 2,
       'sound_config' => 'stereo',
-      'special_features' => 'making of documentary'
+      'special_features' => 'making of documentary',
+      'active' => false,
     )
   end
 
