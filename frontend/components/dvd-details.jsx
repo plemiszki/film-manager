@@ -187,7 +187,7 @@ export default class DvdDetails extends React.Component {
                 readOnly: true,
               })}
               {Details.renderDropDown.bind(this)({
-                columnWidth: 3,
+                columnWidth: 2,
                 entity: "dvd",
                 property: "dvdTypeId",
                 columnHeader: "DVD Type",
@@ -195,10 +195,15 @@ export default class DvdDetails extends React.Component {
                 optionDisplayProperty: "name",
               })}
               {Details.renderField.bind(this)({
-                columnWidth: 3,
+                columnWidth: 2,
                 entity: "dvd",
                 property: "upc",
                 columnHeader: "UPC",
+              })}
+              {Details.renderSwitch.bind(this)({
+                columnWidth: 2,
+                entity: "dvd",
+                property: "active",
               })}
             </div>
             <div className="row">

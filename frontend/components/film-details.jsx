@@ -1282,6 +1282,9 @@ export default class FilmDetails extends React.Component {
               {
                 name: "price",
               },
+              {
+                name: "active",
+              },
             ]}
             rows={dvds}
             sortable={false}
