@@ -77,12 +77,13 @@ class Api::FilmRightsController < AdminController
           right_id: (Right.maximum(:id).next),
           territory_id: (Territory.maximum(:id).next),
           start_date: start_date,
-          end_date: end_date
+          end_date: end_date,
         })
         if test_film_right.valid?
           update_object = {}
           update_object[:start_date] = start_date unless start_date.empty?
           update_object[:end_date] = end_date unless end_date.empty?
+          update_object[:end_date_calc] = end_date unless end_date.empty?
           FilmRight.where(film_id: film_id).each do |film_right|
             film_right.update!(update_object)
           end
