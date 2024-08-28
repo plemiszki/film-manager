@@ -97,7 +97,7 @@ export default class DvdCustomerDetails extends React.Component {
   }
 
   render() {
-    const { justSaved, changesToSave, spinner } = this.state;
+    const { justSaved, changesToSave, spinner, dvdCustomer } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -144,16 +144,21 @@ export default class DvdCustomerDetails extends React.Component {
                 columnHeader: "Payment Terms (in days)",
               })}
             </div>
-            <div
-              className={
-                "row" + (this.state.dvdCustomer.consignment ? " hidden" : "")
-              }
-            >
+            <div className={"row" + (dvdCustomer.consignment ? " hidden" : "")}>
               {Details.renderField.bind(this)({
                 columnWidth: 6,
                 entity: "dvdCustomer",
                 property: "creditMemoEmail",
                 columnHeader: "Credit Memos Email",
+              })}
+              {Details.renderField.bind(this)({
+                columnWidth: 3,
+                entity: "dvdCustomer",
+                property: "stripeId",
+                columnHeader: "Stripe ID",
+                readOnly: true,
+                linkText: "View in Stripe",
+                linkUrl: `https://dashboard.stripe.com/customers/${dvdCustomer.stripeId}`,
               })}
             </div>
             <hr />

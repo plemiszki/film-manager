@@ -17,4 +17,5 @@ json.dvdCustomer do
   json.country @dvd_customer.country || ""
   json.includeInTitleReport @dvd_customer.include_in_title_report
   json.nickname @dvd_customer.nickname
+  json.stripeId @dvd_customer.stripe_id
 end
