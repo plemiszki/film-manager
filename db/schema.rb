@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_12_004701) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_28_231506) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -245,6 +245,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_12_004701) do
     t.boolean "include_in_title_report", default: false
     t.string "nickname", default: ""
     t.string "credit_memo_email", default: ""
+    t.string "stripe_id", default: ""
+    t.index ["stripe_id"], name: "index_dvd_customers_on_stripe_id", unique: true, where: "((stripe_id)::text <> ''::text)"
   end
 
   create_table "dvd_shorts", id: :serial, force: :cascade do |t|
