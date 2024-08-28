@@ -14,4 +14,9 @@ class DvdCustomer < ActiveRecord::Base
     self.nickname.presence || self.name
   end
 
+  def create_stripe_customer!
+    stripe_customer = Stripe::Customer.create(email: self.invoices_email)
+    p stripe_customer.id
+  end
+
 end
