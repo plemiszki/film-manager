@@ -7,6 +7,7 @@ import {
   BottomButtons,
   Spinner,
   GrayedOut,
+  Button,
 } from "handy-components";
 
 export default class DvdCustomerDetails extends React.Component {
@@ -151,22 +152,34 @@ export default class DvdCustomerDetails extends React.Component {
                 property: "creditMemoEmail",
                 columnHeader: "Credit Memos Email",
               })}
-              {Details.renderField.bind(this)({
-                columnWidth: 3,
-                entity: "dvdCustomer",
-                property: "stripeId",
-                columnHeader: "Stripe ID",
-                readOnly: true,
-                linkText: "View in Stripe",
-                linkUrl: `https://dashboard.stripe.com/customers/${dvdCustomer.stripeId}`,
-              })}
-              {Details.renderSwitch.bind(this)({
-                columnWidth: 3,
-                entity: "dvdCustomer",
-                property: "useStripe",
-                columnHeader: "Use Stripe",
-                visible: dvdCustomer.stripeId,
-              })}
+              {dvdCustomer.stripeId ? (
+                <>
+                  {Details.renderField.bind(this)({
+                    columnWidth: 3,
+                    entity: "dvdCustomer",
+                    property: "stripeId",
+                    columnHeader: "Stripe ID",
+                    readOnly: true,
+                    linkText: "View in Stripe",
+                    linkUrl: `https://dashboard.stripe.com/customers/${dvdCustomer.stripeId}`,
+                  })}
+                  {Details.renderSwitch.bind(this)({
+                    columnWidth: 3,
+                    entity: "dvdCustomer",
+                    property: "useStripe",
+                    columnHeader: "Use Stripe",
+                    visible: dvdCustomer.stripeId,
+                  })}
+                </>
+              ) : (
+                <div className="col-xs-3">
+                  <Button
+                    style={{ marginTop: 28, paddingTop: 14, paddingBottom: 14 }}
+                    onClick={() => console.log("create stripe customer")}
+                    text="Create Stripe Customer"
+                  />
+                </div>
+              )}
             </div>
             <hr />
             <p className="section-header">Billing Address</p>
