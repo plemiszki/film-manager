@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_28_231506) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_01_190652) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -246,6 +246,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_28_231506) do
     t.string "nickname", default: ""
     t.string "credit_memo_email", default: ""
     t.string "stripe_id", default: ""
+    t.boolean "use_stripe", default: false
     t.index ["stripe_id"], name: "index_dvd_customers_on_stripe_id", unique: true, where: "((stripe_id)::text <> ''::text)"
   end
 
@@ -595,6 +596,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_28_231506) do
     t.string "booking_type", default: "Booking"
     t.integer "institution_order_id"
     t.integer "institution_id"
+    t.string "stripe_id", default: ""
     t.index ["booking_id"], name: "index_invoices_on_booking_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
   end
