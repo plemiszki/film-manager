@@ -160,6 +160,13 @@ export default class DvdCustomerDetails extends React.Component {
                 linkText: "View in Stripe",
                 linkUrl: `https://dashboard.stripe.com/customers/${dvdCustomer.stripeId}`,
               })}
+              {Details.renderSwitch.bind(this)({
+                columnWidth: 3,
+                entity: "dvdCustomer",
+                property: "useStripe",
+                columnHeader: "Use Stripe",
+                visible: dvdCustomer.stripeId,
+              })}
             </div>
             <hr />
             <p className="section-header">Billing Address</p>

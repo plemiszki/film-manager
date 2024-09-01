@@ -59,7 +59,8 @@ class Api::DvdCustomersController < AdminController
       :zip,
       :country,
       :include_in_title_report,
-      :nickname
+      :nickname,
+      :use_stripe,
     )
     if result[:discount].to_s.gsub(' ', '').include?("/unit")
       result[:per_unit] = result[:discount].gsub(/[^\d.]/, '')
