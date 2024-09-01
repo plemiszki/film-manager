@@ -16,7 +16,8 @@ class DvdCustomer < ActiveRecord::Base
   end
 
   def create_stripe_customer!
-    stripe_customer = Stripe::Customer.create(email: self.invoices_email)
+    email = self.invoices_email.split(",")[0]
+    stripe_customer = Stripe::Customer.create(email: email)
     self.update!(stripe_id: stripe_customer.id)
   end
 

@@ -103,6 +103,7 @@ Rails.application.routes.draw do
     post '/royalty_reports/totals' => '/api/royalty_reports#totals'
     resources :jobs, only: [:index, :show, :update]
     resources :dvd_customers, only: [:index, :show, :create, :update, :destroy]
+    post '/dvd_customers/:id/create_in_stripe' => '/api/dvd_customers#create_in_stripe'
     resources :sublicensors, only: [:index, :show, :create, :update, :destroy]
     resources :dvds, only: [:show, :create, :update, :destroy]
     resources :dvd_shorts, only: [:create, :destroy]

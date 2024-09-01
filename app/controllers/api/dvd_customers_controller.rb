@@ -39,6 +39,12 @@ class Api::DvdCustomersController < AdminController
     end
   end
 
+  def create_in_stripe
+    @dvd_customer = DvdCustomer.find(params[:id])
+    @dvd_customer.create_stripe_customer!
+    render 'show', formats: [:json], handlers: [:jbuilder]
+  end
+
   private
 
   def dvd_customer_params

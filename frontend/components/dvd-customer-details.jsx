@@ -8,6 +8,7 @@ import {
   Spinner,
   GrayedOut,
   Button,
+  sendRequest,
 } from "handy-components";
 
 export default class DvdCustomerDetails extends React.Component {
@@ -97,6 +98,21 @@ export default class DvdCustomerDetails extends React.Component {
     }
   }
 
+  createStripeCustomer() {
+    const { dvdCustomer } = this.state;
+    this.setState({ spinner: true });
+    sendRequest(`/api/dvd_customers/${dvdCustomer.id}/create_in_stripe`, {
+      method: "post",
+    }).then((response) => {
+      const { dvdCustomer } = response;
+      this.setState({
+        spinner: false,
+        dvdCustomer,
+        dvdCustomerSaved: deepCopy(dvdCustomer),
+      });
+    });
+  }
+
   render() {
     const { justSaved, changesToSave, spinner, dvdCustomer } = this.state;
     return (
@@ -175,8 +191,9 @@ export default class DvdCustomerDetails extends React.Component {
                 <div className="col-xs-3">
                   <Button
                     style={{ marginTop: 28, paddingTop: 14, paddingBottom: 14 }}
-                    onClick={() => console.log("create stripe customer")}
+                    onClick={this.createStripeCustomer.bind(this)}
                     text="Create Stripe Customer"
+                    disabled={changesToSave}
                   />
                 </div>
               )}
