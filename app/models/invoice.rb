@@ -135,6 +135,13 @@ class Invoice < ActiveRecord::Base
     (price * ((100 - dvd_customer.discount) / 100)).floor(2)
   end
 
+  def create_in_stripe!
+    customer = self.customer
+    raise "invoice #{self.number} is not a DVD invoice" if customer.nil?
+    raise "customer #{customer.name} is missing stripe ID" if customer.stripe_id.blank?
+    Stripe::Invoice.create(customer: customer.stripe_id)
+  end
+
   def export!(path)
     string = "<style>"
     string += "@import url('https://fonts.googleapis.com/css2?family=Tinos:wght@700&display=swap');"
