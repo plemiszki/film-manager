@@ -23,6 +23,7 @@ json.invoice do
   json.subTotal dollarify(number_with_precision(@invoice.sub_total.to_s, precision: 2, delimiter: ','))
   json.total dollarify(number_with_precision(@invoice.total_minus_payments.to_s, precision: 2, delimiter: ','))
   json.notes @invoice.notes
+  json.stripeId @invoice.stripe_id
 end
 json.rows @rows do |row|
   json.label row.item_label_first_line

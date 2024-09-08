@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Common,
   fetchEntity,
   Spinner,
   GrayedOut,
@@ -43,15 +42,16 @@ export default class InvoiceDetails extends React.Component {
   }
 
   clickExport() {
-    window.location.pathname =
-      "api/invoices/" + this.state.invoice.id + "/export";
+    window.location.pathname = `api/invoices/${this.state.invoice.id}/export`;
   }
 
   render() {
     const { spinner } = this.props;
     const { invoice, rows, payments } = this.state;
-    const dvdInvoice = invoice.invoiceType === "dvd";
-    const bookingInvoice = invoice.invoiceType === "booking";
+    const { stripeId, invoiceType } = invoice;
+    const dvdInvoice = invoiceType === "dvd";
+    const bookingInvoice = invoiceType === "booking";
+
     const tableColumns = dvdInvoice
       ? [
           { name: "label", header: "Item" },
@@ -63,6 +63,7 @@ export default class InvoiceDetails extends React.Component {
           { name: "label", header: "Description" },
           { name: "totalPrice", header: "Amount" },
         ];
+
     return (
       <>
         <div className="handy-component">
@@ -129,6 +130,19 @@ export default class InvoiceDetails extends React.Component {
                   </p>
                 </div>
               )}
+              {stripeId ? (
+                <div className="col-xs-4">
+                  <h2>Stripe ID</h2>
+                  <a
+                    href={`https://dashboard.stripe.com/invoices/${stripeId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ textDecoration: "underline" }}
+                  >
+                    {stripeId}
+                  </a>
+                </div>
+              ) : null}
             </div>
             <hr />
             <Table
