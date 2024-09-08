@@ -175,13 +175,15 @@ class Invoice < ActiveRecord::Base
       },
     )
     self.update!(stripe_id: stripe_invoice.id)
-    Stripe::InvoiceItem.create(
-      customer: customer.stripe_id,
-      invoice: stripe_invoice.id,
-      description: 'hi there',
-      unit_amount: 30,
-      quantity: 3,
-    )
+    self.rows.each do |row|
+      response = Stripe::InvoiceItem.create(
+        customer: customer.stripe_id,
+        invoice: stripe_invoice.id,
+        description: row.item_label,
+        unit_amount: row.unit_price_cents,
+        quantity: row.item_qty,
+      )
+    end
   end
 
   def export!(path)
