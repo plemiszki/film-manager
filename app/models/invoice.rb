@@ -32,6 +32,24 @@ class Invoice < ActiveRecord::Base
     end
   end
 
+  def billing_address
+    return <<~HEREDOC
+      #{self.billing_name}
+      #{self.billing_address1}#{self.billing_address2.present? ? "\n#{self.billing_address2}" : nil}
+      #{self.billing_city}, #{self.billing_state} #{self.billing_zip}
+      #{self.billing_country}
+    HEREDOC
+  end
+
+  def shipping_address
+    return <<~HEREDOC
+      #{self.shipping_name}
+      #{self.shipping_address1}#{self.shipping_address2.present? ? "\n#{self.shipping_address2}" : nil}
+      #{self.shipping_city}, #{self.shipping_state} #{self.shipping_zip}
+      #{self.shipping_country}
+    HEREDOC
+  end
+
   def total_minus_payments
     if invoice_type == 'booking'
       total - invoice_payments.reduce(0) { |sum, ip| sum += ip.amount }
@@ -139,7 +157,23 @@ class Invoice < ActiveRecord::Base
     customer = self.customer
     raise "invoice #{self.number} is not a DVD invoice" if customer.nil?
     raise "customer #{customer.name} is missing stripe ID" if customer.stripe_id.blank?
-    stripe_invoice = Stripe::Invoice.create(customer: customer.stripe_id)
+    stripe_invoice = Stripe::Invoice.create(
+      collection_method: 'send_invoice',
+      customer: customer.stripe_id,
+      number: self.number,
+      description: "PO Number: #{self.po_number}",
+      due_date: (self.sent_date + self.payment_terms).to_time.to_i,
+      shipping_details: {
+        name: self.shipping_name,
+        address: {
+          line1: self.shipping_address1,
+          line2: self.shipping_address2,
+          city: self.shipping_city,
+          state: self.shipping_state,
+          postal_code: self.shipping_zip,
+        },
+      },
+    )
     self.update!(stripe_id: stripe_invoice.id)
   end
 
