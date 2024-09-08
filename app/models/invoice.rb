@@ -158,11 +158,11 @@ class Invoice < ActiveRecord::Base
     raise "invoice #{self.number} is not a DVD invoice" if customer.nil?
     raise "customer #{customer.name} is missing stripe ID" if customer.stripe_id.blank?
     stripe_invoice = Stripe::Invoice.create(
-      collection_method: 'send_invoice',
+      # collection_method: 'send_invoice',
       customer: customer.stripe_id,
       number: self.number,
       description: "PO Number: #{self.po_number}",
-      due_date: (self.sent_date + self.payment_terms).to_time.to_i,
+      # due_date: (self.sent_date + self.payment_terms).to_time.to_i,
       shipping_details: {
         name: self.shipping_name,
         address: {
@@ -175,6 +175,13 @@ class Invoice < ActiveRecord::Base
       },
     )
     self.update!(stripe_id: stripe_invoice.id)
+    Stripe::InvoiceItem.create(
+      customer: customer.stripe_id,
+      invoice: stripe_invoice.id,
+      description: 'hi there',
+      unit_amount: 30,
+      quantity: 3,
+    )
   end
 
   def export!(path)
