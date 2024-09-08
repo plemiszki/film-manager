@@ -139,7 +139,8 @@ class Invoice < ActiveRecord::Base
     customer = self.customer
     raise "invoice #{self.number} is not a DVD invoice" if customer.nil?
     raise "customer #{customer.name} is missing stripe ID" if customer.stripe_id.blank?
-    Stripe::Invoice.create(customer: customer.stripe_id)
+    stripe_invoice = Stripe::Invoice.create(customer: customer.stripe_id)
+    self.update!(stripe_id: stripe_invoice.id)
   end
 
   def export!(path)
