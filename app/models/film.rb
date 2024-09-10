@@ -120,7 +120,7 @@ class Film < ActiveRecord::Base
   has_many :edu_platform_films
   has_many :edu_platforms, through: :edu_platform_films
   has_many :sub_rights, dependent: :destroy
-  has_many :crossed_films
+  has_many :crossed_films, dependent: :destroy
   has_many :episodes
   has_many :in_theaters_films, dependent: :destroy
   has_many :alternate_lengths, dependent: :destroy
