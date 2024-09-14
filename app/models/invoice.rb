@@ -3,6 +3,8 @@ class Invoice < ActiveRecord::Base
   DVDS_ON_FIRST_PAGE = 37
   DVDS_PER_PAGE = 46
 
+  EDU_INVOICES_DAYS_DUE = 30 # for Stripe
+
   include Dollarify
 
   include DateFieldYearsConverter
@@ -187,7 +189,7 @@ class Invoice < ActiveRecord::Base
       })
     elsif institution
       invoice_params.merge!({
-        due_date: (self.sent_date + 30).to_time.to_i,
+        due_date: (self.sent_date + EDU_INVOICES_DAYS_DUE).to_time.to_i,
       })
     end
 
