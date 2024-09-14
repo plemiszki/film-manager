@@ -68,6 +68,7 @@ class Api::InstitutionsController < AdminController
       :shipping_zip,
       :shipping_country,
       :notes,
+      :use_stripe,
     )
   end
 

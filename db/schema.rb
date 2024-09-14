@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_01_190652) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_14_145149) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -545,7 +545,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_01_190652) do
     t.string "sage_id", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "stripe_id", default: ""
+    t.boolean "use_stripe", default: false
     t.index ["label"], name: "index_institutions_on_label", unique: true
+    t.index ["stripe_id"], name: "index_institutions_on_stripe_id", unique: true, where: "((stripe_id)::text <> ''::text)"
   end
 
   create_table "invoice_payments", id: :serial, force: :cascade do |t|

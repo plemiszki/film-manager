@@ -20,6 +20,8 @@ json.institution do
   json.shippingZip @institution.shipping_zip
   json.shippingCountry @institution.shipping_country
   json.notes @institution.notes
+  json.stripeId @institution.stripe_id
+  json.useStripe @institution.use_stripe
 end
 json.orders @orders do |order|
   json.id order.id
