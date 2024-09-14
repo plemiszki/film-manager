@@ -21,6 +21,7 @@ export default class InstitutionDetails extends React.Component {
       errors: [],
       institution: {
         label: "",
+        email: "",
       },
       orders: [],
     };
@@ -161,7 +162,7 @@ export default class InstitutionDetails extends React.Component {
                     style={{ marginBottom: 30 }}
                     onClick={this.createStripeCustomer.bind(this)}
                     text="Create Stripe Customer"
-                    disabled={changesToSave}
+                    disabled={changesToSave || institution.email.trim() === ""}
                   />
                 </div>
               )}

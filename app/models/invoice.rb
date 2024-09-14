@@ -154,15 +154,20 @@ class Invoice < ActiveRecord::Base
   end
 
   def create_in_stripe!
-    customer = self.customer
-    raise "invoice #{self.number} is not a DVD invoice" if customer.nil?
-    raise "customer #{customer.name} is missing stripe ID" if customer.stripe_id.blank?
-    stripe_invoice = Stripe::Invoice.create(
+    if dvd_customer = self.customer
+      raise "dvd customer #{dvd_customer.name} is missing stripe ID" if dvd_customer.stripe_id.blank?
+      stripe_customer = dvd_customer
+    elsif institution = self.institution
+      raise "institution #{institution.label} is missing stripe ID" if institution.stripe_id.blank?
+      stripe_customer = institution
+    else
+      raise "invoice #{self.number} is a booking invoice"
+    end
+
+    invoice_params = {
       collection_method: 'send_invoice',
-      customer: customer.stripe_id,
+      customer: stripe_customer.stripe_id,
       number: self.number,
-      description: "PO Number: #{self.po_number}",
-      due_date: (self.sent_date + self.payment_terms).to_time.to_i,
       shipping_details: {
         name: self.shipping_name,
         address: {
@@ -173,11 +178,20 @@ class Invoice < ActiveRecord::Base
           postal_code: self.shipping_zip,
         },
       },
-    )
+    }
+
+    if dvd_customer
+      invoice_params.merge!({
+        description: "PO Number: #{self.po_number}",
+        due_date: (self.sent_date + self.payment_terms).to_time.to_i,
+      })
+    end
+
+    stripe_invoice = Stripe::Invoice.create(invoice_params)
     self.update!(stripe_id: stripe_invoice.id)
     self.rows.each do |row|
       response = Stripe::InvoiceItem.create(
-        customer: customer.stripe_id,
+        customer: stripe_customer.stripe_id,
         invoice: stripe_invoice.id,
         description: row.item_label,
         unit_amount: row.unit_price_cents,
