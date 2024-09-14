@@ -44,6 +44,12 @@ class Api::InstitutionsController < AdminController
     end
   end
 
+  def create_in_stripe
+    @institution = Institution.find(params[:id])
+    @institution.create_stripe_customer!
+    render 'show', formats: [:json], handlers: [:jbuilder]
+  end
+
   private
 
   def institution_params

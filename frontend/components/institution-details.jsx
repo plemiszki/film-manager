@@ -1,14 +1,16 @@
 import React from "react";
 import {
-  Details,
-  deepCopy,
-  fetchEntity,
-  updateEntity,
-  Spinner,
-  GrayedOut,
   BottomButtons,
+  Button,
+  deepCopy,
+  Details,
+  fetchEntity,
+  GrayedOut,
   objectsAreEqual,
+  sendRequest,
+  Spinner,
   Table,
+  updateEntity,
 } from "handy-components";
 
 export default class InstitutionDetails extends React.Component {
@@ -80,8 +82,24 @@ export default class InstitutionDetails extends React.Component {
     };
   }
 
+  createStripeCustomer() {
+    const { institution } = this.state;
+    this.setState({ spinner: true });
+    sendRequest(`/api/institutions/${institution.id}/create_in_stripe`, {
+      method: "post",
+    }).then((response) => {
+      const { institution } = response;
+      this.setState({
+        spinner: false,
+        institution,
+        institutionSaved: deepCopy(institution),
+      });
+    });
+  }
+
   render() {
-    const { spinner, justSaved, changesToSave, orders } = this.state;
+    const { spinner, justSaved, changesToSave, orders, institution } =
+      this.state;
     return (
       <>
         <div className="handy-component">
@@ -116,6 +134,37 @@ export default class InstitutionDetails extends React.Component {
                 entity: "institution",
                 property: "phone",
               })}
+            </div>
+            <div className="row">
+              {institution.stripeId ? (
+                <>
+                  {Details.renderField.bind(this)({
+                    columnWidth: 3,
+                    entity: "institution",
+                    property: "stripeId",
+                    columnHeader: "Stripe ID",
+                    readOnly: true,
+                    linkText: "View in Stripe",
+                    linkUrl: `https://dashboard.stripe.com/customers/${institution.stripeId}`,
+                  })}
+                  {Details.renderSwitch.bind(this)({
+                    columnWidth: 3,
+                    entity: "institution",
+                    property: "useStripe",
+                    columnHeader: "Use Stripe",
+                    visible: institution.stripeId,
+                  })}
+                </>
+              ) : (
+                <div className="col-xs-3">
+                  <Button
+                    style={{ marginBottom: 30 }}
+                    onClick={this.createStripeCustomer.bind(this)}
+                    text="Create Stripe Customer"
+                    disabled={changesToSave}
+                  />
+                </div>
+              )}
             </div>
             <hr />
             <div data-test-label="billing-address">
