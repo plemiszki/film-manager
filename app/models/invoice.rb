@@ -185,18 +185,33 @@ class Invoice < ActiveRecord::Base
         description: "PO Number: #{self.po_number}",
         due_date: (self.sent_date + self.payment_terms).to_time.to_i,
       })
+    elsif institution
+      invoice_params.merge!({
+        due_date: (self.sent_date + 30).to_time.to_i,
+      })
     end
 
     stripe_invoice = Stripe::Invoice.create(invoice_params)
     self.update!(stripe_id: stripe_invoice.id)
     self.rows.each do |row|
-      response = Stripe::InvoiceItem.create(
+      invoice_row_params = {
         customer: stripe_customer.stripe_id,
         invoice: stripe_invoice.id,
         description: row.item_label,
-        unit_amount: row.unit_price_cents,
         quantity: row.item_qty,
-      )
+      }
+
+      if dvd_customer
+        invoice_row_params.merge!({
+          unit_amount: row.unit_price_cents,
+        })
+      elsif institution
+        invoice_row_params.merge!({
+          unit_amount: row.total_price_cents,
+        })
+      end
+
+      response = Stripe::InvoiceItem.create(invoice_row_params)
     end
   end
 

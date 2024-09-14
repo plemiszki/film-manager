@@ -16,4 +16,8 @@ class InvoiceRow < ActiveRecord::Base
     self.unit_price.*(100).to_i
   end
 
+  def total_price_cents
+    self.total_price.*(100).to_i
+  end
+
 end
