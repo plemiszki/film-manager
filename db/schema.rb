@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_14_145149) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_16_205430) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -902,6 +902,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_14_145149) do
     t.string "notes", default: ""
     t.string "venue_type", null: false
     t.string "contact_name", default: ""
+    t.string "stripe_id", default: ""
+    t.boolean "use_stripe", default: false
+    t.index ["stripe_id"], name: "index_venues_on_stripe_id", unique: true, where: "((stripe_id)::text <> ''::text)"
   end
 
   create_table "virtual_bookings", force: :cascade do |t|
