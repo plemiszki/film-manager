@@ -52,6 +52,12 @@ class Api::VenuesController < AdminController
     end
   end
 
+  def create_in_stripe
+    @venue = Venue.find(params[:id])
+    @venue.create_stripe_customer!
+    render 'show', formats: [:json], handlers: [:jbuilder]
+  end
+
   private
 
   def venue_params

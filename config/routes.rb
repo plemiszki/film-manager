@@ -72,6 +72,7 @@ Rails.application.routes.draw do
     post '/films/copy' => '/api/films#copy'
     post '/films/update_artwork' => '/api/films#update_artwork'
     resources :venues, only: [:index, :show, :create, :update, :destroy]
+    post '/venues/:id/create_in_stripe' => '/api/venues#create_in_stripe'
     resources :institutions, only: [:index, :show, :create, :update, :destroy]
     post '/institutions/:id/create_in_stripe' => '/api/institutions#create_in_stripe'
     resources :institution_orders, only: [:index, :new, :show, :create, :update, :destroy]
