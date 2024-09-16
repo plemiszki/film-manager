@@ -1,18 +1,20 @@
 import React from "react";
 import Modal from "react-modal";
 import {
-  Common,
-  ModalMessage,
-  Details,
-  setUpNiceSelect,
-  fetchEntity,
-  updateEntity,
-  deleteEntity,
+  BottomButtons,
   Button,
+  Common,
+  deleteEntity,
+  deepCopy,
+  Details,
+  fetchEntity,
   GrayedOut,
+  ModalMessage,
+  sendRequest,
+  setUpNiceSelect,
   Spinner,
   Table,
-  BottomButtons,
+  updateEntity,
 } from "handy-components";
 import FM from "../../app/assets/javascripts/me/common.jsx";
 
@@ -37,7 +39,9 @@ export default class VenueDetails extends React.Component {
     super(props);
     this.state = {
       spinner: true,
-      venue: {},
+      venue: {
+        email: "",
+      },
       venueSaved: {},
       bookings: [],
       errors: [],
@@ -207,8 +211,23 @@ export default class VenueDetails extends React.Component {
     window.location.pathname = directory + "/" + id;
   }
 
+  createStripeCustomer() {
+    const { venue } = this.state;
+    this.setState({ spinner: true });
+    sendRequest(`/api/venues/${venue.id}/create_in_stripe`, {
+      method: "post",
+    }).then((response) => {
+      const { venue } = response;
+      this.setState({
+        spinner: false,
+        venue,
+        venueSaved: deepCopy(venue),
+      });
+    });
+  }
+
   render() {
-    const { spinner, justSaved, changesToSave } = this.state;
+    const { spinner, justSaved, changesToSave, venue } = this.state;
     return (
       <>
         <div>
@@ -254,6 +273,37 @@ export default class VenueDetails extends React.Component {
                   entity: "venue",
                   property: "phone",
                 })}
+              </div>
+              <div className="row">
+                {venue.stripeId ? (
+                  <>
+                    {Details.renderField.bind(this)({
+                      columnWidth: 3,
+                      entity: "venue",
+                      property: "stripeId",
+                      columnHeader: "Stripe ID",
+                      readOnly: true,
+                      linkText: "View in Stripe",
+                      linkUrl: `https://dashboard.stripe.com/customers/${venue.stripeId}`,
+                    })}
+                    {Details.renderSwitch.bind(this)({
+                      columnWidth: 3,
+                      entity: "venue",
+                      property: "useStripe",
+                      columnHeader: "Use Stripe",
+                      visible: venue.stripeId,
+                    })}
+                  </>
+                ) : (
+                  <div className="col-xs-3">
+                    <Button
+                      style={{ marginBottom: 30 }}
+                      onClick={this.createStripeCustomer.bind(this)}
+                      text="Create Stripe Customer"
+                      disabled={changesToSave || venue.email.trim() === ""}
+                    />
+                  </div>
+                )}
               </div>
               <hr />
               <div className="address-block">

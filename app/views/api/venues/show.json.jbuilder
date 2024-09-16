@@ -22,6 +22,8 @@ json.venue do
   json.notes @venue.notes
   json.contactName @venue.contact_name
   json.website @venue.website
+  json.stripeId @venue.stripe_id
+  json.useStripe @venue.use_stripe
 end
 json.bookings @bookings do |booking|
   json.id booking.id
