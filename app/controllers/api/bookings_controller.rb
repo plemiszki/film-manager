@@ -82,7 +82,6 @@ class Api::BookingsController < AdminController
       @booking.shipping_zip = venue.shipping_zip
       @booking.shipping_country = venue.shipping_country
       @booking.email = venue.email
-      @booking.stripe_customer_id = venue.stripe_id
       @booking.save!
       render 'create', formats: [:json], handlers: [:jbuilder]
     else
