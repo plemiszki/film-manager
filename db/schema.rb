@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_21_225029) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_21_235500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -148,7 +148,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_21_225029) do
     t.boolean "box_office_received", default: false
     t.integer "format_id", default: 1
     t.boolean "exclude_from_bo_requests", default: false
-    t.string "stripe_customer_id", default: ""
+    t.string "stripe_id", default: ""
+    t.boolean "use_stripe", default: false
     t.index ["booker_id"], name: "index_bookings_on_booker_id"
     t.index ["film_id"], name: "index_bookings_on_film_id"
     t.index ["format_id"], name: "index_bookings_on_format_id"
