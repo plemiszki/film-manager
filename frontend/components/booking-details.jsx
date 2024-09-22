@@ -42,7 +42,9 @@ export default class BookingDetails extends React.Component {
     super(props);
     this.state = {
       spinner: true,
-      booking: {},
+      booking: {
+        email: "",
+      },
       bookingSaved: {},
       films: [],
       venues: [],
@@ -468,6 +470,49 @@ export default class BookingDetails extends React.Component {
                 property: "deduction",
               })}
               {this.renderHouseExpense()}
+            </div>
+            <hr
+              style={
+                booking.useVenueStripeColumns && !booking.stripeId
+                  ? { marginBottom: 15 }
+                  : {}
+              }
+            />
+            <div className="row">
+              {booking.stripeId ? (
+                <>
+                  {Details.renderField.bind(this)({
+                    columnWidth: 3,
+                    entity: "booking",
+                    property: "stripeId",
+                    columnHeader: "Stripe ID",
+                    readOnly: true,
+                    linkText: "View in Stripe",
+                    linkUrl: `https://dashboard.stripe.com/customers/${booking.stripeId}`,
+                  })}
+                  {Details.renderSwitch.bind(this)({
+                    columnWidth: 3,
+                    entity: "booking",
+                    property: "useStripe",
+                    columnHeader: "Use Stripe",
+                    visible: booking.stripeId,
+                    readOnly: booking.useVenueStripeColumns,
+                  })}
+                </>
+              ) : booking.useVenueStripeColumns ? (
+                <div className="col-xs-3">
+                  <h2>This venue has no Stripe ID.</h2>
+                </div>
+              ) : (
+                <div className="col-xs-3">
+                  <Button
+                    style={{ marginBottom: 30 }}
+                    onClick={() => console.log("click")}
+                    text="Create Stripe Customer"
+                    disabled={changesToSave || booking.email.trim() === ""}
+                  />
+                </div>
+              )}
             </div>
             <hr />
             <div className="row">
