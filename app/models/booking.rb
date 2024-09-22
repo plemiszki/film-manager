@@ -185,4 +185,9 @@ class Booking < ActiveRecord::Base
     end
   end
 
+  def create_stripe_customer!
+    stripe_customer = Stripe::Customer.create(email: self.email)
+    self.update!(stripe_id: stripe_customer.id)
+  end
+
 end
