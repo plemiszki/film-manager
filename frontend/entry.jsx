@@ -946,11 +946,11 @@ document.addEventListener("DOMContentLoaded", () => {
       entityName: "institutionOrder",
       header: "Educational Orders",
       columns: [
-        "orderDate",
+        { name: "orderDate", sortDir: "desc" },
         { name: "number", header: "Order No." },
         "customer",
         "total",
-        "invoiceSent",
+        { name: "invoiceSent", sortDir: "desc" },
         { name: "invoiceNumber", header: "Invoice No." },
       ],
       modalRows: 1,
