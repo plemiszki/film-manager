@@ -3,7 +3,9 @@ class Invoice < ActiveRecord::Base
   DVDS_ON_FIRST_PAGE = 37
   DVDS_PER_PAGE = 46
 
-  EDU_INVOICES_DAYS_DUE = 30 # for Stripe
+  # for Stripe
+  EDU_INVOICES_DAYS_DUE = 30
+  BOOKING_INVOICES_DAYS_DUE = 30
 
   include Dollarify
 
@@ -156,20 +158,23 @@ class Invoice < ActiveRecord::Base
   end
 
   def create_in_stripe!
+    test_mode = ENV['TEST_MODE'] == 'true'
+
     if dvd_customer = self.customer
       raise "dvd customer #{dvd_customer.name} is missing stripe ID" if dvd_customer.stripe_id.blank?
       stripe_customer = dvd_customer
     elsif institution = self.institution
       raise "institution #{institution.label} is missing stripe ID" if institution.stripe_id.blank?
       stripe_customer = institution
-    else
-      raise "invoice #{self.number} is a booking invoice"
+    elsif booking = self.booking
+      raise "booking #{booking.id} is missing stripe ID" if booking.get_stripe_id.blank?
+      stripe_customer = booking.use_venue_stripe_columns? ? booking.venue : booking
     end
 
     invoice_params = {
       collection_method: 'send_invoice',
       customer: stripe_customer.stripe_id,
-      number: self.number,
+      number: test_mode ? "#{self.number}-TEST-#{rand(1000)}" : self.number,
       shipping_details: {
         name: self.shipping_name,
         address: {
@@ -191,6 +196,10 @@ class Invoice < ActiveRecord::Base
       invoice_params.merge!({
         due_date: (self.sent_date + EDU_INVOICES_DAYS_DUE).to_time.to_i,
       })
+    elsif booking
+      invoice_params.merge!({
+        due_date: (self.sent_date + BOOKING_INVOICES_DAYS_DUE).to_time.to_i,
+      })
     end
 
     stripe_invoice = Stripe::Invoice.create(invoice_params)
@@ -201,15 +210,16 @@ class Invoice < ActiveRecord::Base
         invoice: stripe_invoice.id,
         description: row.item_label,
         quantity: row.item_qty,
+        unit_amount: row.total_price_cents,
       }
 
       if dvd_customer
         invoice_row_params.merge!({
           unit_amount: row.unit_price_cents,
         })
-      elsif institution
+      elsif booking
         invoice_row_params.merge!({
-          unit_amount: row.total_price_cents,
+          description: "#{booking.film.title} - #{row.item_label}",
         })
       end
 
