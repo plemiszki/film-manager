@@ -21,4 +21,14 @@ class DvdCustomer < ActiveRecord::Base
     self.update!(stripe_id: stripe_customer.id)
   end
 
+  def get_stripe_id
+    email_address = self.invoices_email.split(",")[0]
+    results = Stripe::Customer.search({query: "email:'#{email_address}'"}).data
+    if results.present?
+      results.first.id
+    else
+      ""
+    end
+  end
+
 end
