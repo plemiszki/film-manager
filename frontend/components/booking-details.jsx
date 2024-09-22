@@ -177,10 +177,14 @@ export default class BookingDetails extends React.Component {
         justSaved: true,
       },
       () => {
+        const { booking } = this.state;
+        if (booking.useVenueStripeColumns) {
+          delete booking.useStripe;
+        }
         updateEntity({
           entityName: "booking",
           entity: Details.removeFinanceSymbolsFromEntity({
-            entity: this.state.booking,
+            entity: booking,
             fields: [
               "advance",
               "shippingFee",
