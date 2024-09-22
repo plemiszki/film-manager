@@ -45,6 +45,7 @@ class Api::BookingsController < AdminController
 
   def show
     @booking = Booking.find(params[:id])
+    venue = @booking.venue
     @invoices = @booking.invoices.includes(:invoice_rows)
     @weekly_terms = WeeklyTerm.where(booking_id: params[:id])
     @weekly_box_offices = WeeklyBoxOffice.where(booking_id: params[:id])

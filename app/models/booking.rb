@@ -56,6 +56,18 @@ class Booking < ActiveRecord::Base
     end
   end
 
+  def use_venue_stripe_columns?
+    self.email === self.venue.email
+  end
+
+  def get_stripe_id
+    use_venue_stripe_columns? ? self.venue.stripe_id : self.stripe_id
+  end
+
+  def get_use_stripe
+    use_venue_stripe_columns? ? self.venue.use_stripe : self.use_stripe
+  end
+
   def info
     venue = self.venue
     venue_name = (venue.billing_name.present? ? venue.billing_name : venue.label)
