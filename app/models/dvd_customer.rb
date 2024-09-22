@@ -1,5 +1,7 @@
 class DvdCustomer < ActiveRecord::Base
 
+  include StripeHelpers
+
   validates :name, :billing_name, :address1, :city, :state, :zip, :country, presence: true
   validates :name, uniqueness: true
   validates_numericality_of :discount, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 100, allow_blank: true
@@ -23,12 +25,7 @@ class DvdCustomer < ActiveRecord::Base
 
   def get_stripe_id
     email_address = self.invoices_email.split(",")[0]
-    results = Stripe::Customer.search({query: "email:'#{email_address}'"}).data
-    if results.present?
-      results.first.id
-    else
-      ""
-    end
+    StripeHelpers.fetch_stripe_id(email_address)
   end
 
 end

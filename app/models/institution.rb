@@ -11,4 +11,8 @@ class Institution < ActiveRecord::Base
     self.update!(stripe_id: stripe_customer.id)
   end
 
+  def get_stripe_id
+    StripeHelpers.fetch_stripe_id(self.email)
+  end
+
 end

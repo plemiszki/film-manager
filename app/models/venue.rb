@@ -1,5 +1,7 @@
 class Venue < ActiveRecord::Base
 
+  include StripeHelpers
+
   validates :label, :venue_type, presence: true
   validates :label, uniqueness: true
 
@@ -15,6 +17,10 @@ class Venue < ActiveRecord::Base
   def create_stripe_customer!
     stripe_customer = Stripe::Customer.create(email: self.email)
     self.update!(stripe_id: stripe_customer.id)
+  end
+
+  def get_stripe_id
+    StripeHelpers.fetch_stripe_id(self.email)
   end
 
 end
