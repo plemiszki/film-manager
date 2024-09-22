@@ -117,7 +117,7 @@ export default class NewEntity extends React.Component {
           () => {
             resetNiceSelect({
               selector: ".admin-modal select",
-              func: Details.changeField.bind(this, this.changeFieldArgs()),
+              func: Details.changeDropdownField.bind(this),
             });
           },
         );
