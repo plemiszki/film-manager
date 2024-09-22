@@ -7,7 +7,7 @@ describe 'booking_details', type: :feature do
   before(:each) do
     create(:label)
     create(:film)
-    create(:venue)
+    @venue = create(:venue)
     create(:format)
     create(:booker_user)
     @booking = create(:booking, booker_id: 2, premiere: 'New York', deduction: 50)
@@ -442,6 +442,23 @@ describe 'booking_details', type: :feature do
     click_delete_and_confirm
     expect(page).to have_current_path('/bookings', ignore_query: true)
     expect(Booking.find_by_id(@booking.id)).to be(nil)
+  end
+
+  it 'if the email matches the venue, and the venue has a stripe ID, it displays the venue stripe ID ' do
+    @venue.update!(
+      stripe_id: "venuestripeid",
+      use_stripe: true,
+    )
+    @booking.update!(
+      email: @venue.email,
+    )
+
+    visit booking_path(@booking, as: $admin_user)
+    verify_component(
+      data: {
+        stripe_id: "venuestripeid",
+      },
+    )
   end
 
 end
