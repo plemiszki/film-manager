@@ -189,6 +189,13 @@ class Api::BookingsController < AdminController
     render json: { job: job.render_json }
   end
 
+  def create_in_stripe
+    @booking = Booking.find(params[:id])
+    @booking.create_stripe_customer!
+    @calculations = booking_calculations(@booking)
+    render 'show', formats: [:json], handlers: [:jbuilder]
+  end
+
   private
 
   def get_bookings

@@ -81,6 +81,7 @@ Rails.application.routes.draw do
     get '/bookings/advanced' => '/api/bookings#advanced'
     get '/bookings/export' => '/api/bookings#export'
     resources :bookings, only: [:index, :new, :show, :create, :update, :destroy]
+    post '/bookings/:id/create_in_stripe' => '/api/bookings#create_in_stripe'
     post '/bookings/copy' => 'bookings#copy'
     post '/bookings/:id/confirm' => '/api/bookings#send_confirmation'
     get '/bookings/:id/invoices' => '/api/bookings#invoices'

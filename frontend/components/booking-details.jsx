@@ -356,6 +356,21 @@ export default class BookingDetails extends React.Component {
     return rowHeight * rows + padding * 2 + border * 2 + buttonHeight;
   }
 
+  createStripeCustomer() {
+    const { booking } = this.state;
+    this.setState({ spinner: true });
+    sendRequest(`/api/bookings/${booking.id}/create_in_stripe`, {
+      method: "post",
+    }).then((response) => {
+      const { booking } = response;
+      this.setState({
+        spinner: false,
+        booking,
+        bookingSaved: deepCopy(booking),
+      });
+    });
+  }
+
   render() {
     const {
       booking,
@@ -511,7 +526,7 @@ export default class BookingDetails extends React.Component {
                 <div className="col-xs-3">
                   <Button
                     style={{ marginBottom: 30 }}
-                    onClick={() => console.log("click")}
+                    onClick={this.createStripeCustomer.bind(this)}
                     text="Create Stripe Customer"
                     disabled={changesToSave || booking.email.trim() === ""}
                   />
