@@ -35,6 +35,7 @@ gem 'xlsx_writer'
 
 group :test do
   gem 'rails-controller-testing'
+  gem 'webmock'
 end
 
 group :development, :test do
