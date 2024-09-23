@@ -161,19 +161,17 @@ class Invoice < ActiveRecord::Base
     test_mode = ENV['TEST_MODE'] == 'true'
 
     if dvd_customer = self.customer
-      raise "dvd customer #{dvd_customer.name} is missing stripe ID" if dvd_customer.stripe_id.blank?
-      stripe_customer = dvd_customer
+      stripe_customer_id = dvd_customer.get_stripe_id
     elsif institution = self.institution
-      raise "institution #{institution.label} is missing stripe ID" if institution.stripe_id.blank?
-      stripe_customer = institution
+      stripe_customer_id = institution.get_stripe_id
     elsif booking = self.booking
-      raise "booking #{booking.id} is missing stripe ID" if booking.get_stripe_id.blank?
-      stripe_customer = booking.use_venue_stripe_columns? ? booking.venue : booking
+      stripe_customer_id = booking.get_stripe_id
     end
+    raise "no stripe customer found!" if stripe_customer_id.blank?
 
     invoice_params = {
       collection_method: 'send_invoice',
-      customer: stripe_customer.stripe_id,
+      customer: stripe_customer_id,
       number: test_mode ? "#{self.number}-TEST-#{rand(1000)}" : self.number,
       shipping_details: {
         name: self.shipping_name,
@@ -206,7 +204,7 @@ class Invoice < ActiveRecord::Base
     self.update!(stripe_id: stripe_invoice.id)
     self.rows.each do |row|
       invoice_row_params = {
-        customer: stripe_customer.stripe_id,
+        customer: stripe_customer_id,
         invoice: stripe_invoice.id,
         description: row.item_label,
         quantity: row.item_qty,

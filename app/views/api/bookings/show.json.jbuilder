@@ -52,8 +52,7 @@ json.booking do
   json.termsValid @calculations[:valid]
   json.excludeFromBoRequests @booking.exclude_from_bo_requests
   json.stripeId @booking.get_stripe_id
-  json.useStripe @booking.get_use_stripe
-  json.useVenueStripeColumns @booking.use_venue_stripe_columns?
+  json.useStripe @booking.use_stripe
 end
 json.weeklyTerms @weekly_terms do |weekly_term|
   json.id weekly_term.id

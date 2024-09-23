@@ -490,13 +490,6 @@ export default class BookingDetails extends React.Component {
               })}
               {this.renderHouseExpense()}
             </div>
-            <hr
-              style={
-                booking.useVenueStripeColumns && !booking.stripeId
-                  ? { marginBottom: 15 }
-                  : {}
-              }
-            />
             <div className="row">
               {booking.stripeId ? (
                 <>
@@ -515,13 +508,8 @@ export default class BookingDetails extends React.Component {
                     property: "useStripe",
                     columnHeader: "Use Stripe",
                     visible: booking.stripeId,
-                    readOnly: booking.useVenueStripeColumns,
                   })}
                 </>
-              ) : booking.useVenueStripeColumns ? (
-                <div className="col-xs-3">
-                  <h2>This venue has no Stripe ID.</h2>
-                </div>
               ) : (
                 <div className="col-xs-3">
                   <Button

@@ -1,6 +1,8 @@
 class Booking < ActiveRecord::Base
 
+  include StripeHelpers
   include DateFieldYearsConverter
+
   before_validation :convert_date_field_years
 
   validates :film_id, :venue_id, :booking_type, :status, :format_id, presence: true
@@ -56,16 +58,8 @@ class Booking < ActiveRecord::Base
     end
   end
 
-  def use_venue_stripe_columns?
-    self.email === self.venue.email
-  end
-
   def get_stripe_id
-    use_venue_stripe_columns? ? self.venue.stripe_id : self.stripe_id
-  end
-
-  def get_use_stripe
-    use_venue_stripe_columns? ? self.venue.use_stripe : self.use_stripe
+    StripeHelpers.fetch_stripe_id(self.email)
   end
 
   def info
