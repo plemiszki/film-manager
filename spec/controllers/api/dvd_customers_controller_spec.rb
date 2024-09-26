@@ -1,7 +1,12 @@
 require 'rails_helper'
 require 'support/controllers_helper'
+require 'webmock/rspec'
 
 RSpec.describe Api::DvdCustomersController do
+
+  before do
+    WebMock.enable!
+  end
 
   before(:each) do
     stub_request(
@@ -32,6 +37,10 @@ RSpec.describe Api::DvdCustomersController do
         id: "asdf",
       }.to_json
     )
+  end
+
+  after do
+    WebMock.disable!
   end
 
   context '#show' do
