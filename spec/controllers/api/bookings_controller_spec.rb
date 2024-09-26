@@ -23,6 +23,15 @@ RSpec.describe Api::BookingsController do
         }],
       }.to_json
     )
+
+    stub_request(
+      :post,
+      "https://api.stripe.com/v1/customers"
+    ).to_return(
+      body: {
+        id: "asdf",
+      }.to_json
+    )
   end
 
   context '#show' do
@@ -63,6 +72,19 @@ RSpec.describe Api::BookingsController do
       expect(parsed_response["booking"]["stripeId"]).to eq("")
     end
 
+  end
+
+  context '#create_in_stripe' do
+    render_views
+
+    it 'creates a new stripe customer' do
+      institution = create(:booking, email: "bob@somevenue.com")
+      get :create_in_stripe, params: { id: institution.id }
+      expect(response).to render_template('api/bookings/show', formats: [:json], handlers: [:jbuilder])
+      expect(response.status).to eq(200)
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response["booking"]["stripeId"]).to eq("asdf")
+    end
   end
 
 end
