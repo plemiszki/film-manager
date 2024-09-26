@@ -23,6 +23,15 @@ RSpec.describe Api::VenuesController do
         }],
       }.to_json
     )
+
+    stub_request(
+      :post,
+      "https://api.stripe.com/v1/customers"
+    ).to_return(
+      body: {
+        id: "asdf",
+      }.to_json
+    )
   end
 
   context '#show' do
@@ -63,6 +72,19 @@ RSpec.describe Api::VenuesController do
       expect(parsed_response["venue"]["stripeId"]).to eq("")
     end
 
+  end
+
+  context '#create_in_stripe' do
+    render_views
+
+    it 'creates a new stripe customer' do
+      venue = create(:venue, email: "bobbyjoe@lincolncenter.com")
+      get :create_in_stripe, params: { id: venue.id }
+      expect(response).to render_template('api/venues/show', formats: [:json], handlers: [:jbuilder])
+      expect(response.status).to eq(200)
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response["venue"]["stripeId"]).to eq("asdf")
+    end
   end
 
 end
