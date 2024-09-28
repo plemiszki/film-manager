@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_21_235500) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_28_141202) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -148,7 +148,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_21_235500) do
     t.boolean "box_office_received", default: false
     t.integer "format_id", default: 1
     t.boolean "exclude_from_bo_requests", default: false
-    t.string "stripe_id", default: ""
     t.boolean "use_stripe", default: false
     t.index ["booker_id"], name: "index_bookings_on_booker_id"
     t.index ["film_id"], name: "index_bookings_on_film_id"
@@ -247,9 +246,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_21_235500) do
     t.boolean "include_in_title_report", default: false
     t.string "nickname", default: ""
     t.string "credit_memo_email", default: ""
-    t.string "stripe_id", default: ""
     t.boolean "use_stripe", default: false
-    t.index ["stripe_id"], name: "index_dvd_customers_on_stripe_id", unique: true, where: "((stripe_id)::text <> ''::text)"
   end
 
   create_table "dvd_shorts", id: :serial, force: :cascade do |t|
@@ -547,10 +544,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_21_235500) do
     t.string "sage_id", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "stripe_id", default: ""
     t.boolean "use_stripe", default: false
     t.index ["label"], name: "index_institutions_on_label", unique: true
-    t.index ["stripe_id"], name: "index_institutions_on_stripe_id", unique: true, where: "((stripe_id)::text <> ''::text)"
   end
 
   create_table "invoice_payments", id: :serial, force: :cascade do |t|
@@ -904,9 +899,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_21_235500) do
     t.string "notes", default: ""
     t.string "venue_type", null: false
     t.string "contact_name", default: ""
-    t.string "stripe_id", default: ""
     t.boolean "use_stripe", default: false
-    t.index ["stripe_id"], name: "index_venues_on_stripe_id", unique: true, where: "((stripe_id)::text <> ''::text)"
   end
 
   create_table "virtual_bookings", force: :cascade do |t|
