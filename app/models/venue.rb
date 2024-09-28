@@ -15,8 +15,7 @@ class Venue < ActiveRecord::Base
   end
 
   def create_stripe_customer!
-    stripe_customer = Stripe::Customer.create(email: self.email)
-    self.update!(stripe_id: stripe_customer.id)
+    Stripe::Customer.create(email: self.email)
   end
 
   def get_stripe_id
