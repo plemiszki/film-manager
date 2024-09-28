@@ -4,6 +4,10 @@ require 'sidekiq/testing'
 
 describe 'virtual_booking_details', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     create(:label)
     create(:film)

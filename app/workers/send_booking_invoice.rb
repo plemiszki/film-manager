@@ -47,7 +47,7 @@ class SendBookingInvoice
     # send invoice
     is_test_mode = ENV['TEST_MODE'] == 'true'
 
-    if booking.use_stripe
+    if booking.is_a?(Booking) && booking.use_stripe
       invoice.create_in_stripe!
       invoice.email_through_stripe!
       job.update!({ status: :success, first_line: "Invoice Sent Successfully", metadata: { showSuccessMessageModal: true } })
@@ -60,7 +60,7 @@ class SendBookingInvoice
         cc: (is_test_mode ? nil : current_user.email),
         subject: subject,
         text: text,
-        attachment: attachments
+        attachment: attachments,
       }
       begin
         mg_client.send_message 'filmmovement.com', message_params
