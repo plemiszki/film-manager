@@ -190,10 +190,11 @@ class Api::BookingsController < AdminController
   end
 
   def create_in_stripe
-    @booking = Booking.find(params[:id])
-    @booking.create_stripe_customer!
-    @calculations = booking_calculations(@booking)
-    render 'show', formats: [:json], handlers: [:jbuilder]
+    booking = Booking.find(params[:id])
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "create stripe customer", first_line: "Creating Stripe Customer", second_line: false)
+    CreateStripeCustomer.perform_async(time_started, booking.email)
+    render json: { job: job.render_json }
   end
 
   private

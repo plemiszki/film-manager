@@ -362,11 +362,11 @@ export default class BookingDetails extends React.Component {
     sendRequest(`/api/bookings/${booking.id}/create_in_stripe`, {
       method: "post",
     }).then((response) => {
-      const { booking } = response;
+      const { job } = response;
       this.setState({
         spinner: false,
-        booking,
-        bookingSaved: deepCopy(booking),
+        job,
+        jobModalOpen: true,
       });
     });
   }
@@ -491,7 +491,7 @@ export default class BookingDetails extends React.Component {
               {this.renderHouseExpense()}
             </div>
             <div className="row">
-              {booking.stripeId ? (
+              {spinner ? null : booking.stripeId ? (
                 <>
                   {Details.renderField.bind(this)({
                     columnWidth: 3,
@@ -501,6 +501,7 @@ export default class BookingDetails extends React.Component {
                     readOnly: true,
                     linkText: "View in Stripe",
                     linkUrl: `https://dashboard.stripe.com/customers/${booking.stripeId}`,
+                    linkNewWindow: true,
                   })}
                   {Details.renderSwitch.bind(this)({
                     columnWidth: 3,
@@ -1134,17 +1135,28 @@ export default class BookingDetails extends React.Component {
   componentDidUpdate() {
     const { booking } = this.state;
     Common.updateJobModal.call(this, {
-      successCallback: () => {
-        this.setState({
-          spinner: true,
-        });
-        sendRequest(`/api/bookings/${booking.id}/invoices`).then((response) => {
-          const { invoices } = response;
+      successCallback: (obj) => {
+        if (obj.metadata.stripeId) {
+          // create stripe customer
+          const stripeId = obj.metadata.stripeId;
+          const { booking } = this.state;
+          booking.stripeId = stripeId;
+          this.setState({ booking });
+        } else {
+          // send invoice
           this.setState({
-            spinner: false,
-            invoices,
+            spinner: true,
           });
-        });
+          sendRequest(`/api/bookings/${booking.id}/invoices`).then(
+            (response) => {
+              const { invoices } = response;
+              this.setState({
+                spinner: false,
+                invoices,
+              });
+            },
+          );
+        }
       },
     });
   }
