@@ -17,6 +17,7 @@ class CreateStripeCustomer
       first_line: 'Stripe Customer Created',
       metadata: {
         stripe_id: stripe_id,
+        show_success_message_modal: true,
       }
     })
   end

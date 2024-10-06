@@ -2,6 +2,7 @@ import React from "react";
 import {
   BottomButtons,
   Button,
+  Common,
   deepCopy,
   Details,
   fetchEntity,
@@ -24,6 +25,7 @@ export default class InstitutionDetails extends React.Component {
         email: "",
       },
       orders: [],
+      job: {},
     };
   }
 
@@ -89,17 +91,17 @@ export default class InstitutionDetails extends React.Component {
     sendRequest(`/api/institutions/${institution.id}/create_in_stripe`, {
       method: "post",
     }).then((response) => {
-      const { institution } = response;
+      const { job } = response;
       this.setState({
         spinner: false,
-        institution,
-        institutionSaved: deepCopy(institution),
+        job,
+        jobModalOpen: true,
       });
     });
   }
 
   render() {
-    const { spinner, justSaved, changesToSave, orders, institution } =
+    const { spinner, justSaved, changesToSave, orders, institution, job } =
       this.state;
     return (
       <>
@@ -136,38 +138,42 @@ export default class InstitutionDetails extends React.Component {
                 property: "phone",
               })}
             </div>
-            <div className="row">
-              {institution.stripeId ? (
-                <>
-                  {Details.renderField.bind(this)({
-                    columnWidth: 3,
-                    entity: "institution",
-                    property: "stripeId",
-                    columnHeader: "Stripe ID",
-                    readOnly: true,
-                    linkText: "View in Stripe",
-                    linkUrl: `https://dashboard.stripe.com/customers/${institution.stripeId}`,
-                    linkNewWindow: true,
-                  })}
-                  {Details.renderSwitch.bind(this)({
-                    columnWidth: 3,
-                    entity: "institution",
-                    property: "useStripe",
-                    columnHeader: "Use Stripe",
-                    visible: institution.stripeId,
-                  })}
-                </>
-              ) : (
-                <div className="col-xs-3">
-                  <Button
-                    style={{ marginBottom: 30 }}
-                    onClick={this.createStripeCustomer.bind(this)}
-                    text="Create Stripe Customer"
-                    disabled={changesToSave || institution.email.trim() === ""}
-                  />
-                </div>
-              )}
-            </div>
+            {!institution.stripeId && spinner ? null : (
+              <div className="row">
+                {institution.stripeId ? (
+                  <>
+                    {Details.renderField.bind(this)({
+                      columnWidth: 3,
+                      entity: "institution",
+                      property: "stripeId",
+                      columnHeader: "Stripe ID",
+                      readOnly: true,
+                      linkText: "View in Stripe",
+                      linkUrl: `https://dashboard.stripe.com/customers/${institution.stripeId}`,
+                      linkNewWindow: true,
+                    })}
+                    {Details.renderSwitch.bind(this)({
+                      columnWidth: 3,
+                      entity: "institution",
+                      property: "useStripe",
+                      columnHeader: "Use Stripe",
+                      visible: institution.stripeId,
+                    })}
+                  </>
+                ) : (
+                  <div className="col-xs-3">
+                    <Button
+                      style={{ marginBottom: 30 }}
+                      onClick={this.createStripeCustomer.bind(this)}
+                      text="Create Stripe Customer"
+                      disabled={
+                        changesToSave || institution.email.trim() === ""
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            )}
             <hr />
             <div data-test-label="billing-address">
               <p className="section-header">Billing Address</p>
@@ -314,7 +320,19 @@ export default class InstitutionDetails extends React.Component {
             </div>
           </div>
         </div>
+        {Common.renderJobModal.call(this, job)}
       </>
     );
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this, {
+      successCallback: (obj) => {
+        const stripeId = obj.metadata.stripeId;
+        const { institution } = this.state;
+        institution.stripeId = stripeId;
+        this.setState({ institution });
+      },
+    });
   }
 }
