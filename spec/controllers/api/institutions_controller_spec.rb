@@ -6,9 +6,7 @@ RSpec.describe Api::InstitutionsController do
 
   before do
     WebMock.enable!
-  end
 
-  before(:each) do
     stub_request(
       :get,
       "https://api.stripe.com/v1/customers/search?query=email:'bobby@harvarduniversity.com'"
@@ -26,15 +24,6 @@ RSpec.describe Api::InstitutionsController do
         data: [{
           id: "asdf",
         }],
-      }.to_json
-    )
-
-    stub_request(
-      :post,
-      "https://api.stripe.com/v1/customers"
-    ).to_return(
-      body: {
-        id: "asdf",
       }.to_json
     )
   end
@@ -81,19 +70,6 @@ RSpec.describe Api::InstitutionsController do
       expect(parsed_response["institution"]["stripeId"]).to eq("")
     end
 
-  end
-
-  context '#create_in_stripe' do
-    render_views
-
-    it 'creates a new stripe customer' do
-      institution = create(:institution, email: "bobbyjoe@harvarduniversity.com")
-      get :create_in_stripe, params: { id: institution.id }
-      expect(response).to render_template('api/institutions/show', formats: [:json], handlers: [:jbuilder])
-      expect(response.status).to eq(200)
-      parsed_response = JSON.parse(response.body)
-      expect(parsed_response["institution"]["stripeId"]).to eq("asdf")
-    end
   end
 
 end

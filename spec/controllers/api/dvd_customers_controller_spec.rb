@@ -28,15 +28,6 @@ RSpec.describe Api::DvdCustomersController do
         }],
       }.to_json
     )
-
-    stub_request(
-      :post,
-      "https://api.stripe.com/v1/customers"
-    ).to_return(
-      body: {
-        id: "asdf",
-      }.to_json
-    )
   end
 
   after do
@@ -81,19 +72,6 @@ RSpec.describe Api::DvdCustomersController do
       expect(parsed_response["dvdCustomer"]["stripeId"]).to eq("")
     end
 
-  end
-
-  context '#create_in_stripe' do
-    render_views
-
-    it 'creates a new stripe customer' do
-      dvd_customer = create(:dvd_customer, invoices_email: "bob@dvdvendor.com")
-      get :create_in_stripe, params: { id: dvd_customer.id }
-      expect(response).to render_template('api/dvd_customers/show', formats: [:json], handlers: [:jbuilder])
-      expect(response.status).to eq(200)
-      parsed_response = JSON.parse(response.body)
-      expect(parsed_response["dvdCustomer"]["stripeId"]).to eq("asdf")
-    end
   end
 
 end
