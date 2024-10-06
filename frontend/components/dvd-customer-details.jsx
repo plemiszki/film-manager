@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Common,
   Details,
   deepCopy,
   fetchEntity,
@@ -104,17 +105,17 @@ export default class DvdCustomerDetails extends React.Component {
     sendRequest(`/api/dvd_customers/${dvdCustomer.id}/create_in_stripe`, {
       method: "post",
     }).then((response) => {
-      const { dvdCustomer } = response;
+      const { job } = response;
       this.setState({
         spinner: false,
-        dvdCustomer,
-        dvdCustomerSaved: deepCopy(dvdCustomer),
+        job,
+        jobModalOpen: true,
       });
     });
   }
 
   render() {
-    const { justSaved, changesToSave, spinner, dvdCustomer } = this.state;
+    const { justSaved, changesToSave, spinner, dvdCustomer, job } = this.state;
     return (
       <>
         <div className="handy-component">
@@ -168,7 +169,7 @@ export default class DvdCustomerDetails extends React.Component {
                 property: "creditMemoEmail",
                 columnHeader: "Credit Memos Email",
               })}
-              {dvdCustomer.stripeId ? (
+              {spinner ? null : dvdCustomer.stripeId ? (
                 <>
                   {Details.renderField.bind(this)({
                     columnWidth: 3,
@@ -178,6 +179,7 @@ export default class DvdCustomerDetails extends React.Component {
                     readOnly: true,
                     linkText: "View in Stripe",
                     linkUrl: `https://dashboard.stripe.com/customers/${dvdCustomer.stripeId}`,
+                    linkNewWindow: true,
                   })}
                   {Details.renderSwitch.bind(this)({
                     columnWidth: 3,
@@ -276,7 +278,19 @@ export default class DvdCustomerDetails extends React.Component {
             <Spinner visible={spinner} />
           </div>
         </div>
+        {Common.renderJobModal.call(this, job)}
       </>
     );
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this, {
+      successCallback: (obj) => {
+        const stripeId = obj.metadata.stripeId;
+        const { dvdCustomer } = this.state;
+        dvdCustomer.stripeId = stripeId;
+        this.setState({ dvdCustomer });
+      },
+    });
   }
 }

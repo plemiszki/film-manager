@@ -40,9 +40,11 @@ class Api::DvdCustomersController < AdminController
   end
 
   def create_in_stripe
-    @dvd_customer = DvdCustomer.find(params[:id])
-    @dvd_customer.create_stripe_customer!
-    render 'show', formats: [:json], handlers: [:jbuilder]
+    dvd_customer = DvdCustomer.find(params[:id])
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "create stripe customer", first_line: "Creating Stripe Customer", second_line: false)
+    CreateStripeCustomer.perform_async(time_started, dvd_customer.get_first_invoices_email)
+    render json: { job: job.render_json }
   end
 
   private

@@ -16,14 +16,16 @@ class DvdCustomer < ActiveRecord::Base
     self.nickname.presence || self.name
   end
 
+  def get_first_invoices_email
+    self.invoices_email.split(",")[0].strip
+  end
+
   def create_stripe_customer!
-    email = self.invoices_email.split(",")[0]
-    Stripe::Customer.create(email: email)
+    Stripe::Customer.create(email: self.get_first_invoices_email)
   end
 
   def get_stripe_id
-    email_address = self.invoices_email.split(",")[0]
-    StripeHelpers.fetch_stripe_id(email_address)
+    StripeHelpers.fetch_stripe_id(self.get_first_invoices_email)
   end
 
 end
