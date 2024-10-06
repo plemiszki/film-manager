@@ -53,9 +53,11 @@ class Api::VenuesController < AdminController
   end
 
   def create_in_stripe
-    @venue = Venue.find(params[:id])
-    @venue.create_stripe_customer!
-    render 'show', formats: [:json], handlers: [:jbuilder]
+    venue = Venue.find(params[:id])
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "create stripe customer", first_line: "Creating Stripe Customer", second_line: false)
+    CreateStripeCustomer.perform_async(time_started, venue.email)
+    render json: { job: job.render_json }
   end
 
   private

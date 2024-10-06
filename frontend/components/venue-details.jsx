@@ -5,7 +5,6 @@ import {
   Button,
   Common,
   deleteEntity,
-  deepCopy,
   Details,
   fetchEntity,
   GrayedOut,
@@ -217,17 +216,17 @@ export default class VenueDetails extends React.Component {
     sendRequest(`/api/venues/${venue.id}/create_in_stripe`, {
       method: "post",
     }).then((response) => {
-      const { venue } = response;
+      const { job } = response;
       this.setState({
         spinner: false,
-        venue,
-        venueSaved: deepCopy(venue),
+        job,
+        jobModalOpen: true,
       });
     });
   }
 
   render() {
-    const { spinner, justSaved, changesToSave, venue } = this.state;
+    const { spinner, justSaved, changesToSave, venue, job } = this.state;
     return (
       <>
         <div>
@@ -275,7 +274,7 @@ export default class VenueDetails extends React.Component {
                 })}
               </div>
               <div className="row">
-                {venue.stripeId ? (
+                {spinner ? null : venue.stripeId ? (
                   <>
                     {Details.renderField.bind(this)({
                       columnWidth: 3,
@@ -285,6 +284,7 @@ export default class VenueDetails extends React.Component {
                       readOnly: true,
                       linkText: "View in Stripe",
                       linkUrl: `https://dashboard.stripe.com/customers/${venue.stripeId}`,
+                      linkNewWindow: true,
                     })}
                     {Details.renderSwitch.bind(this)({
                       columnWidth: 3,
@@ -535,6 +535,7 @@ export default class VenueDetails extends React.Component {
               />
             </div>
           </Modal>
+          {Common.renderJobModal.call(this, job)}
         </div>
         <style jsx>{`
           .address-block {
@@ -559,5 +560,16 @@ export default class VenueDetails extends React.Component {
         `}</style>
       </>
     );
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this, {
+      successCallback: (obj) => {
+        const stripeId = obj.metadata.stripeId;
+        const { venue } = this.state;
+        venue.stripeId = stripeId;
+        this.setState({ venue });
+      },
+    });
   }
 }
