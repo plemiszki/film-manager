@@ -45,9 +45,11 @@ class Api::InstitutionsController < AdminController
   end
 
   def create_in_stripe
-    @institution = Institution.find(params[:id])
-    @institution.create_stripe_customer!
-    render 'show', formats: [:json], handlers: [:jbuilder]
+    institution = Institution.find(params[:id])
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "create stripe customer", first_line: "Creating Stripe Customer", second_line: false)
+    CreateStripeCustomer.perform_async(time_started, institution.email)
+    render json: { job: job.render_json }
   end
 
   private

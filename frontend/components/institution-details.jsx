@@ -147,6 +147,7 @@ export default class InstitutionDetails extends React.Component {
                     readOnly: true,
                     linkText: "View in Stripe",
                     linkUrl: `https://dashboard.stripe.com/customers/${institution.stripeId}`,
+                    linkNewWindow: true,
                   })}
                   {Details.renderSwitch.bind(this)({
                     columnWidth: 3,
