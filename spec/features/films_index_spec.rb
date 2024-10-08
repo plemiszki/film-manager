@@ -3,6 +3,10 @@ require 'support/features_helper'
 
 describe 'films_index', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     create(:label)
     Film.create!(title: 'Wilby Wonderful', label_id: 1, year: 2002, length: 90, film_type: 'Feature')

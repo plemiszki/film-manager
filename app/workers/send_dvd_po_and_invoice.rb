@@ -11,36 +11,8 @@ class SendDvdPoAndInvoice
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
 
     # send invoice
-    is_test_mode = ENV['TEST_MODE'] == 'true'
     if purchase_order.send_invoice
-      invoice = Invoice.create_invoice_from_po(purchase_order)
-      invoice.export!(pathname)
-      attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]
-
-      message_params = {
-        from: current_user.email,
-        subject: "Invoice for PO #{purchase_order.number}",
-        text: "#{Setting.first.dvd_invoice_email_text.strip}\n\nKind Regards,\n\n#{current_user.email_signature}",
-        attachment: attachments,
-      }
-
-      if dvd_customer.use_stripe
-        invoice.create_in_stripe!
-        invoice.email_through_stripe!
-        message_params.merge!(
-          to: is_test_mode ? ENV['TEST_MODE_EMAIL'] : current_user.email
-        )
-      else
-        message_params.merge!(
-          to: is_test_mode ? ENV['TEST_MODE_EMAIL'] : dvd_customer.invoices_email,
-          cc: is_test_mode ? nil : current_user.email
-        )
-      end
-
-      mg_client.send_message 'filmmovement.com', message_params unless Rails.env.test?
-
-      settings = Setting.first
-      settings.update(next_dvd_invoice_number: settings.next_dvd_invoice_number + 1)
+      purchase_order.create_and_send_invoice!(sender: current_user)
     end
 
     # send shipping files

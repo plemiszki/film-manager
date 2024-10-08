@@ -3,6 +3,10 @@ require 'support/features_helper'
 
 describe 'institution_orders_index', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     create(:label)
     create(:film)
