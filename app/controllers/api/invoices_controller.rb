@@ -11,11 +11,12 @@ class Api::InvoicesController < AdminController
   end
 
   def create
+    invoice_number = "#{Setting.first.next_booking_invoice_number}B"
     booking, calculations, total = get_data
     new_invoice_data = {
       invoice_type: 'booking',
       sent_date: Date.today,
-      number: "#{Setting.first.next_booking_invoice_number}B",
+      number: invoice_number,
       num: Setting.first.next_booking_invoice_number,
       billing_name: booking.billing_name,
       billing_address1: booking.billing_address1,
@@ -41,11 +42,24 @@ class Api::InvoicesController < AdminController
       })
     end
 
-    invoice = Invoice.create!(new_invoice_data)
-    create_invoice_rows_and_payments(invoice, booking, calculations)
-    job = send_invoice(invoice, booking)
+    begin
+      invoice = Invoice.create!(new_invoice_data)
+      create_invoice_rows_and_payments(invoice, booking, calculations)
+      job = send_invoice(invoice, booking)
+      render json: { job: job.render_json }
+    rescue => e
+      if e.message == "Validation failed: Number has already been taken"
+        errors_text = "Invoice number #{invoice_number} has already been taken."
+      else
+        errors_text = "Unknown Error."
+      end
+      render json: { job: {
+        status: "failed",
+        errorsText: errors_text,
+        firstLine: "Failed to Send Invoice"
+      } }
+    end
 
-    render json: { job: job.render_json }
   end
 
   def update
