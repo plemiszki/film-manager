@@ -698,7 +698,9 @@ class RoyaltyReport < ActiveRecord::Base
     if titles.length > 1
       filename = "#{licensor_name} package #{Time.now.to_i} - Q#{self.quarter} #{self.year}"
     else
-      filename = "#{titles.first} - Q#{self.quarter} #{self.year}"
+      first_title = titles.first
+      first_title = first_title[0..-2] if first_title.chars.last == "?"
+      filename = "#{first_title} - Q#{self.quarter} #{self.year}"
     end
     filename = filename[0..249] if filename.length > 250
     "#{filename}.pdf"
