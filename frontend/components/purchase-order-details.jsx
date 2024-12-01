@@ -247,7 +247,12 @@ export default class PurchaseOrderDetails extends React.Component {
     if (!purchaseOrder.shipDate && changesToSave === false) {
       this.setState(
         {
-          spinner: true,
+          jobModalOpen: true,
+          job: {
+            firstLine: purchaseOrder.sendInvoice
+              ? "Sending Invoice"
+              : "Sending Shipping Files",
+          },
         },
         () => {
           sendRequest("/api/purchase_orders/ship", {
@@ -258,8 +263,11 @@ export default class PurchaseOrderDetails extends React.Component {
               },
               reportingOnly,
             },
-          }).then(() => {
-            window.location.href = "/purchase_orders";
+          }).then((response) => {
+            const { job } = response;
+            this.setState({
+              job,
+            });
           });
         },
       );
@@ -281,6 +289,7 @@ export default class PurchaseOrderDetails extends React.Component {
       shippingAddresses,
       selectItemModalOpen,
       selectAddressModalOpen,
+      job,
     } = this.state;
     const {
       invoiceId,
@@ -591,6 +600,7 @@ export default class PurchaseOrderDetails extends React.Component {
             }}
             clickOK={(qty) => this.clickQtyOk(qty)}
           />
+          {Common.renderJobModal.call(this, job)}
         </div>
         <style jsx>{`
           .notification {
@@ -624,6 +634,14 @@ export default class PurchaseOrderDetails extends React.Component {
         `}</style>
       </>
     );
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this, {
+      successCallback: (obj) => {
+        console.log("success!");
+      },
+    });
   }
 
   getCustomerFromId(id) {

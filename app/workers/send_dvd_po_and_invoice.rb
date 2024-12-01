@@ -10,10 +10,14 @@ class SendDvdPoAndInvoice
     FileUtils.mkdir_p("#{pathname}")
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
 
+    sent_invoice = false
+    sent_shipping_files = false
+
     # send invoice
     if purchase_order.send_invoice
       job.update!({ first_line: "Sending Invoice" })
       purchase_order.create_and_send_invoice!(sender: current_user)
+      sent_invoice = true
     end
 
     # send shipping files
@@ -33,9 +37,18 @@ class SendDvdPoAndInvoice
       }
       mg_client.send_message 'filmmovement.com', message_params unless Rails.env.test?
       purchase_order.decrement_stock!
+      sent_shipping_files = true
+    end
+
+    if sent_invoice && sent_shipping_files
+      success_message = "Invoice and Shipping Files Sent Successfully"
+    elsif sent_invoice
+      success_message = "Invoice Sent Successfully"
+    elsif sent_shipping_files
+      success_message = "Shipping Files Sent Successfully"
     end
 
     purchase_order.update({ ship_date: Date.today, source_doc: source_doc, reporting_only: args["reporting_only"] })
-    job.update!({ status: :success, first_line: "Done", metadata: { showSuccessMessageModal: true } })
+    job.update!({ status: :success, first_line: success_message, metadata: { showSuccessMessageModal: true } })
   end
 end
