@@ -81,8 +81,17 @@ class Api::PurchaseOrdersController < AdminController
   end
 
   def ship
-    SendDvdPoAndInvoice.perform_async(params[:purchase_order][:id], current_user.id, params[:reporting_only])
-    render json: { message: 'ok' }, status: 200
+    purchase_order_id = params[:purchase_order][:id]
+    purchase_order = PurchaseOrder.find(purchase_order_id)
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "ship purchase order", first_line: purchase_order.send_invoice ? "Sending Invoice" : "Sending Shipping Files", second_line: false)
+    SendDvdPoAndInvoice.perform_async(0, {
+      time_started: time_started,
+      purchase_order_id: purchase_order_id,
+      user_id: current_user.id,
+      reporting_only: params[:reporting_only],
+    }.stringify_keys)
+    render json: { job: job.render_json }
   end
 
   def reporting
