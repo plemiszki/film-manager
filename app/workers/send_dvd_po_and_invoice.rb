@@ -16,8 +16,18 @@ class SendDvdPoAndInvoice
     # send invoice
     if purchase_order.send_invoice
       job.update!({ first_line: "Sending Invoice" })
-      purchase_order.create_and_send_invoice!(sender: current_user)
-      sent_invoice = true
+      begin
+        purchase_order.create_and_send_invoice!(sender: current_user)
+        sent_invoice = true
+      rescue => e
+        if e.message == "Validation failed: Number has already been taken"
+          errors_text = "Invoice number #{Setting.first.next_dvd_invoice_number}D has already been taken."
+        else
+          errors_text = "Failed to send invoice."
+        end
+        job.update!({ status: :failed, first_line: "Error", errors_text: errors_text })
+        return
+      end
     end
 
     # send shipping files
