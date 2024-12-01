@@ -639,7 +639,19 @@ export default class PurchaseOrderDetails extends React.Component {
   componentDidUpdate() {
     Common.updateJobModal.call(this, {
       successCallback: (obj) => {
-        console.log("success!");
+        this.setState({
+          spinner: true,
+        });
+        fetchEntity().then((response) => {
+          let { purchaseOrder, items, otherItems } = response;
+          this.setState({
+            spinner: false,
+            purchaseOrder,
+            purchaseOrderSaved: deepCopy(purchaseOrder),
+            items,
+            otherItems,
+          });
+        });
       },
     });
   }
