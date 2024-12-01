@@ -4,6 +4,10 @@ require 'sidekiq/testing'
 
 describe 'purchase_order_details_spec', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     create(:dvd_customer)
     create(:dvd_customer, name: 'DVD Customer 2')
@@ -158,7 +162,7 @@ describe 'purchase_order_details_spec', type: :feature do
       visit purchase_order_path(@purchase_order, as: $admin_user)
       click_btn('Ship Now')
       expect(page).to have_no_css('.spinner', wait: 10)
-      expect(page).to have_current_path('/purchase_orders', ignore_query: true)
+      expect(page).to have_content('Invoice and Shipping Files Sent Successfully')
       expect(@purchase_order.reload.attributes).to include(
         'ship_date' => Date.today,
         'source_doc' => '5533'
