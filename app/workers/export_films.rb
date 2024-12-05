@@ -120,7 +120,7 @@ class ExportFilms
             end
           end
 
-          sheet.add_row(base_array)
+          sheet.add_row(base_array, types: [:string, :string])
           job.update({ current_value: film_index + 1 })
         end
         job.update({ first_line: 'Saving Spreadsheet', second_line: false })
