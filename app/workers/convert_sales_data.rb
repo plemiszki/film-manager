@@ -6,10 +6,10 @@ class ConvertSalesData
 
   def add_row(sheet, data)
     values = data.map do |datum|
-      datum
+      datum.is_a?(Hash) ? datum[:value] : datum
     end
     types = data.map do |datum|
-      :string
+      datum.is_a?(Hash) ? datum[:type] : :string
     end
     sheet.add_row(values, types: types)
   end
@@ -198,7 +198,7 @@ class ConvertSalesData
                 '',
                 '',
                 '',
-                { :type => :String, :value => (sage_id == 'SHORTS' ? 'Shorts' : film.title) },
+                (sage_id == 'SHORTS' ? 'Shorts' : film.title),
                 gl_code,
                 '',
                 (amount.fdiv(100) * -1),
@@ -209,7 +209,7 @@ class ConvertSalesData
                 '', '', '', '', '',
                 '1',
                 '', '', '',
-                { :type => :String, :value => sage_id }
+                sage_id
               ])
               job.update!(current_value: invoice_row_index)
             end
