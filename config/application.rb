@@ -29,5 +29,7 @@ module FilmManager
 
     config.active_record.legacy_connection_handling = false
 
+    config.autoload_paths += %W(#{config.root}/app/workers/concerns)
+
   end
 end
