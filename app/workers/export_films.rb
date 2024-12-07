@@ -1,6 +1,7 @@
 class ExportFilms
   include Sidekiq::Worker
   include ActionView::Helpers::NumberHelper
+  include ExportSpreadsheetHelpers
   sidekiq_options retry: false
 
   def perform(film_ids, time_started, search_criteria)
@@ -61,7 +62,7 @@ class ExportFilms
 
     Axlsx::Package.new do |p|
       p.workbook.add_worksheet(:name => "Films") do |sheet|
-        sheet.add_row(base_array)
+        add_row(sheet, base_array)
         films = Film.where(id: film_ids).order(:title).includes(:licensor, :label, :laurels, :film_rights)
         films.each_with_index do |film, film_index|
           retail_dvd = Dvd.find_by({ feature_film_id: film.id, dvd_type_id: 1 })
@@ -120,7 +121,7 @@ class ExportFilms
             end
           end
 
-          sheet.add_row(base_array, types: [:string, :string])
+          add_row(sheet, base_array)
           job.update({ current_value: film_index + 1 })
         end
         job.update({ first_line: 'Saving Spreadsheet', second_line: false })
