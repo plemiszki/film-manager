@@ -3,7 +3,6 @@ class ExportCreditMemos
   sidekiq_options retry: false
 
   def perform(credit_memo_ids, time_started)
-    errors = []
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
