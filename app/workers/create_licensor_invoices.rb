@@ -1,6 +1,7 @@
 class CreateLicensorInvoices
   include Sidekiq::Worker
   include ActionView::Helpers::NumberHelper
+  include ExportSpreadsheetHelpers
   sidekiq_options retry: false
 
   FILENAME = "Licensor Invoices.xlsx"
@@ -82,6 +83,7 @@ class CreateLicensorInvoices
 
     job = Job.find_by_job_id(time_started)
     job_folder = "#{Rails.root}/tmp/#{time_started}"
+    file_path = "#{job_folder}/#{FILENAME}"
     FileUtils.mkdir_p("#{job_folder}")
 
     if days_due == 'all'
@@ -100,40 +102,37 @@ class CreateLicensorInvoices
       reports_by_licensor[report.film.licensor_id] << report
     end
 
-    require 'xlsx_writer'
-    doc = XlsxWriter.new
-    sheet = doc.add_sheet('Invoices')
-    sheet.add_row(COLUMN_HEADERS)
+    Axlsx::Package.new do |p|
+      p.workbook.add_worksheet(:name => "Invoices") do |sheet|
+        add_row(sheet, COLUMN_HEADERS)
+        reports_by_licensor.each do |licensor_id, licensor_reports|
+          licensor_reports.each_with_index do |report, index|
+            film = report.film
+            days_due = film.days_statement_due
+            licensor = film.licensor
+            quarter_string = "Q#{report.quarter} #{report.year}"
 
-    reports_by_licensor.each do |licensor_id, licensor_reports|
-      licensor_reports.each_with_index do |report, index|
-        film = report.film
-        days_due = film.days_statement_due
-        licensor = film.licensor
-        quarter_string = "Q#{report.quarter} #{report.year}"
+            rowData = CONSTANT_DATA.merge({
+              "Vendor ID": licensor.sage_id,
+              "Invoice #": quarter_string,
+              "Date Due": Date.today + 30.days,
+              "Description": film.title,
+              "G/L Account": "49000",
+              "Job ID": film.get_sage_id,
+              "Invoice/CM Distribution": index + 1,
+              "Number of Distributions": licensor_reports.length,
+              "Date": Date.today,
+              "Amount": report.joined_amount_due,
+            })
 
-        rowData = CONSTANT_DATA.merge({
-          "Vendor ID": { type: :String, value: licensor.sage_id },
-          "Invoice #": quarter_string,
-          "Date Due": Date.today + 30.days,
-          "Description": { type: :String, value: film.title },
-          "G/L Account": "49000",
-          "Job ID": film.get_sage_id,
-          "Invoice/CM Distribution": index + 1,
-          "Number of Distributions": licensor_reports.length,
-          "Date": Date.today,
-          "Amount": report.joined_amount_due,
-        })
-
-        sheet.add_row(COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
-        job.update({ current_value: job.current_value + 1 })
+            add_row(sheet, COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
+            job.update({ current_value: job.current_value + 1 })
+          end
+        end
+        job.update({ first_line: 'Saving Spreadsheet', second_line: false })
+        p.serialize(file_path)
       end
     end
-
-    job.update({ first_line: 'Saving Spreadsheet', second_line: false })
-    file_path = "#{job_folder}/#{FILENAME}"
-    FileUtils.mv doc.path, file_path
-    doc.cleanup
 
     job.update({ first_line: 'Uploading to AWS' })
     s3 = Aws::S3::Resource.new(
