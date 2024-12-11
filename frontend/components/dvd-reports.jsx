@@ -206,10 +206,7 @@ export default class DvdReports extends React.Component {
                 onClick={() => {
                   this.setState({ exportModalOpen: true });
                 }}
-                style={{
-                  position: "absolute",
-                  right: 0,
-                }}
+                float
               />
             </div>
             <div className="white-box">
