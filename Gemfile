@@ -32,7 +32,6 @@ gem 'textacular'
 gem 'timeliness'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
-gem 'xlsx_writer'
 
 group :test do
   gem 'rails-controller-testing'
