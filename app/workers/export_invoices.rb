@@ -23,7 +23,7 @@ class ExportInvoices
               "Invoice/CM #": invoice.number,
               "Invoice/CM Distribution": index,
               "Number of Distributions": items.length,
-              "Date": invoice.sent_date,
+              "Date": invoice.sent_date.strftime("%-m/%-d/%Y"),
               "Ship to Name": invoice.shipping_name,
               "Ship to Address-Line One": invoice.shipping_address1,
               "Ship to Address-Line Two": invoice.shipping_address2,
@@ -41,7 +41,7 @@ class ExportInvoices
             when 'dvd'
               rowData = rowData.merge({
                 "Customer ID": invoice.customer.sage_id,
-                "Date Due": invoice.sent_date + invoice.payment_terms,
+                "Date Due": (invoice.sent_date + invoice.payment_terms).strftime("%-m/%-d/%Y"),
                 "Displayed Terms": "Net #{invoice.payment_terms}",
                 "Description": item.item_label,
                 "G/L Account": "30200",
@@ -60,7 +60,7 @@ class ExportInvoices
               is_shipping_fee = item.item_label == 'Shipping Fee'
               rowData = rowData.merge({
                 "Customer ID": booking_venue.sage_id,
-                "Date Due": invoice.sent_date + 30,
+                "Date Due": (invoice.sent_date + 30).strftime("%-m/%-d/%Y"),
                 "Displayed Terms": "Net 30",
                 "Description": "#{booking_film.title} #{booking.start_date.strftime("%-m/%-d/%Y")} - #{booking.end_date.strftime("%-m/%-d/%Y")}",
                 "G/L Account": is_shipping_fee ? '40069' : booking_gl_code,
@@ -72,7 +72,7 @@ class ExportInvoices
               is_shipping_fee = item.item_label == 'Shipping Fee'
               rowData = rowData.merge({
                 "Customer ID": institution.sage_id,
-                "Date Due": invoice.sent_date + 30,
+                "Date Due": (invoice.sent_date + 30).strftime("%-m/%-d/%Y"),
                 "Displayed Terms": "Net 30",
                 "Description": item.item_label,
                 "G/L Account": is_shipping_fee ? '40069' : "30440",
