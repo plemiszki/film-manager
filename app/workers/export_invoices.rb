@@ -32,9 +32,9 @@ class ExportInvoices
               "Ship to Zipcode": invoice.shipping_zip,
               "Ship to Country": invoice.shipping_country,
               "Customer PO": invoice.po_number,
-              "Quantity": item.item_qty,
-              "Unit Price": (item.unit_price * -1),
-              "Amount": (item.total_price * -1),
+              "Quantity": { value: item.item_qty, type: :integer },
+              "Unit Price": { value: (item.unit_price * -1), type: :float },
+              "Amount": { value: (item.total_price * -1), type: :float },
             })
 
             case invoice.invoice_type
