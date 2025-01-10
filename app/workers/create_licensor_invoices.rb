@@ -115,13 +115,13 @@ class CreateLicensorInvoices
             rowData = CONSTANT_DATA.merge({
               "Vendor ID": licensor.sage_id,
               "Invoice #": quarter_string,
-              "Date Due": Date.today + 30.days,
+              "Date Due": (Date.today + 30.days).strftime("%-m/%-d/%Y"),
               "Description": film.title,
               "G/L Account": "49000",
               "Job ID": film.get_sage_id,
               "Invoice/CM Distribution": index + 1,
               "Number of Distributions": licensor_reports.length,
-              "Date": Date.today,
+              "Date": Date.today.strftime("%-m/%-d/%Y"),
               "Amount": report.joined_amount_due,
             })
 
