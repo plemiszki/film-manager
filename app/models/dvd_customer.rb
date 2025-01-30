@@ -17,7 +17,8 @@ class DvdCustomer < ActiveRecord::Base
   end
 
   def get_first_invoices_email
-    self.invoices_email.split(",")[0].strip
+    emails = self.invoices_email.split(",")
+    emails.present? ? emails[0].strip : nil
   end
 
   def create_stripe_customer!
