@@ -23,7 +23,7 @@
     "webpack-cli": "^5.0.0"
   },
   "engines": {
-    "node": "20.17.0"
+    "node": "22.13.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.74",
