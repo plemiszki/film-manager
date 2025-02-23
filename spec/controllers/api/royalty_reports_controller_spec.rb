@@ -736,7 +736,7 @@ RSpec.describe Api::RoyaltyReportsController do
       q1_report.create_empty_streams!
 
       time_started = Time.now.to_s
-      job = Job.create!(job_id: time_started)
+      Job.create!(job_id: time_started)
       q1_report.royalty_revenue_streams.each_with_index do |stream, index|
         stream.update!(current_revenue: 100 + index, joined_revenue: 100 + index)
       end
