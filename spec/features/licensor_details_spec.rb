@@ -3,6 +3,10 @@ require 'support/features_helper'
 
 describe 'licensor_details', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     @licensor = Licensor.create!(name: 'Visit Films', email: 'ryan@visitfilms.com', sage_id: 'VISIT')
     create(:label)
@@ -57,6 +61,12 @@ describe 'licensor_details', type: :feature do
     click_delete_and_confirm
     expect(page).to have_current_path('/licensors', ignore_query: true)
     expect(Licensor.find_by_id(@licensor.id)).to be(nil)
+  end
+
+  it 'starts the generate statements summary job' do
+    visit licensor_path(@licensor, as: $admin_user)
+    click_btn('Statements Summary')
+    expect(page).to have_content('Generating Statements Summary')
   end
 
 end
