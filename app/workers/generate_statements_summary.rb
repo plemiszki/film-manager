@@ -25,8 +25,8 @@ class GenerateStatementsSummary
           statement.calculate!
           add_row(sheet, [
             statement.film.title,
-            statement.cume_total_revenue,
-            statement.cume_difference,
+            statement.joined_total_revenue,
+            statement.joined_total,
           ])
         end
         p.serialize(file_path)
