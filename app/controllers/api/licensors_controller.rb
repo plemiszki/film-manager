@@ -40,6 +40,16 @@ class Api::LicensorsController < AdminController
     end
   end
 
+  def generate_statements_summary
+    time_started = Time.now.to_s
+    job = Job.create!(job_id: time_started, name: "generate statements summary", first_line: "Generating Statements Summary", second_line: false)
+    GenerateStatementsSummary.perform_async(0, {
+      time_started: time_started,
+      licensor_id: params[:id],
+    }.stringify_keys)
+    render json: { job: job.render_json }
+  end
+
   private
 
   def licensor_params

@@ -10,6 +10,7 @@ import {
   BottomButtons,
   GrayedOut,
   Spinner,
+  sendRequest,
 } from "handy-components";
 
 export default class LicensorDetails extends React.Component {
@@ -36,6 +37,10 @@ export default class LicensorDetails extends React.Component {
         films,
       });
     });
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this);
   }
 
   clickSave() {
@@ -79,14 +84,14 @@ export default class LicensorDetails extends React.Component {
     const { licensor } = this.state;
     this.setState({
       jobModalOpen: true,
-      job: { firstLine: "Generating Statement Summary" },
+      job: { firstLine: "Generating Statements Summary" },
     });
-    // sendRequest(`/api/institution_orders/${institutionOrder.id}/send_invoice`, {
-    //   method: "POST",
-    // }).then((response) => {
-    //   const { job } = response;
-    //   this.setState({ job });
-    // });
+    sendRequest(
+      `/api/licensors/${licensor.id}/generate_statements_summary`,
+    ).then((response) => {
+      const { job } = response;
+      this.setState({ job });
+    });
   }
 
   render() {

@@ -61,6 +61,7 @@ Rails.application.routes.draw do
     post '/users' => '/api/users#api_create'
     patch '/users/:id' => '/api/users#api_update'
     delete '/users/:id' => '/api/users#api_destroy'
+    get '/licensors/:id/generate_statements_summary' => '/api/licensors#generate_statements_summary'
     resources :licensors, only: [:index, :show, :create, :update, :destroy]
     get '/films/auto_renew' => '/api/films#auto_renew'
     get '/films/auto_renew/all' => '/api/films#auto_renew_all'
