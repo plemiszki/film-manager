@@ -55,7 +55,6 @@ class RoyaltyReport < ActiveRecord::Base
   def self.get_reserves(quarter, year)
     reports = RoyaltyReport.includes(:film).where(quarter: quarter, year: year, films: { reserve: true, export_reports: true, send_reports: true })
     sum = 0
-    result = {}
     reports.each do |report|
       sum += report.current_reserve
     end
@@ -115,7 +114,6 @@ class RoyaltyReport < ActiveRecord::Base
     result = {}
     film = self.film
     total_past_reserves = self.get_total_past_reserves
-    quarters_with_reserves = total_past_reserves.length
     total_reserves = 0
     total_past_reserves.each_with_index do |(quarter_string, amount), index|
       year = quarter_string.split(' ')[-1].to_i
@@ -611,7 +609,6 @@ class RoyaltyReport < ActiveRecord::Base
     end
 
     pdf = WickedPdf.new.pdf_from_string(string)
-    subfolder = self.joined_amount_due > 0 ? 'amount due' : 'no amount due'
     licensor_name = @film.licensor.name if titles.length > 1
     report_name = report_name(titles, licensor_name)
     save_path = "#{directory}/#{report_name}"
