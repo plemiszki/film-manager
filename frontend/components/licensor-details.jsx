@@ -1,5 +1,7 @@
 import React from "react";
 import {
+  Button,
+  Common,
   Details,
   deepCopy,
   fetchEntity,
@@ -37,34 +39,25 @@ export default class LicensorDetails extends React.Component {
   }
 
   clickSave() {
-    this.setState(
-      {
-        spinner: true,
-        justSaved: true,
-      },
-      () => {
-        updateEntity({
-          entityName: "licensor",
-          entity: this.state.licensor,
-        }).then(
-          (response) => {
-            const { licensor } = response;
-            this.setState({
-              spinner: false,
-              licensor,
-              licensorSaved: deepCopy(licensor),
-              changesToSave: false,
-            });
-          },
-          (response) => {
-            this.setState({
-              spinner: false,
-              errors: response.errors,
-            });
-          },
-        );
-      },
-    );
+    this.setState({ spinner: true, justSaved: true }, () => {
+      updateEntity({
+        entityName: "licensor",
+        entity: this.state.licensor,
+      }).then(
+        (response) => {
+          const { licensor } = response;
+          this.setState({
+            spinner: false,
+            licensor,
+            licensorSaved: deepCopy(licensor),
+            changesToSave: false,
+          });
+        },
+        (response) => {
+          this.setState({ spinner: false, errors: response.errors });
+        },
+      );
+    });
   }
 
   redirect(id) {
@@ -79,13 +72,25 @@ export default class LicensorDetails extends React.Component {
   }
 
   changeFieldArgs() {
-    return {
-      changesFunction: this.checkForChanges.bind(this),
-    };
+    return { changesFunction: this.checkForChanges.bind(this) };
+  }
+
+  generateStatementsSummary() {
+    const { licensor } = this.state;
+    this.setState({
+      jobModalOpen: true,
+      job: { firstLine: "Generating Statement Summary" },
+    });
+    // sendRequest(`/api/institution_orders/${institutionOrder.id}/send_invoice`, {
+    //   method: "POST",
+    // }).then((response) => {
+    //   const { job } = response;
+    //   this.setState({ job });
+    // });
   }
 
   render() {
-    const { justSaved, changesToSave, spinner } = this.state;
+    const { justSaved, changesToSave, spinner, job } = this.state;
     return (
       <div className="licensor-details">
         <div className="handy-component">
@@ -140,11 +145,20 @@ export default class LicensorDetails extends React.Component {
               clickSave={() => {
                 this.clickSave();
               }}
-            />
+            >
+              <Button
+                float
+                marginRight
+                text="Statements Summary"
+                onClick={() => this.generateStatementsSummary()}
+                disabled={spinner}
+              />
+            </BottomButtons>
             <GrayedOut visible={spinner} />
             <Spinner visible={spinner} />
           </div>
         </div>
+        {Common.renderJobModal.call(this, job)}
       </div>
     );
   }

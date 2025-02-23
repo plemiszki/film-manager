@@ -14,9 +14,7 @@ import {
   BottomButtons,
   Table,
   OutlineButton,
-  ModalSelect,
   Common,
-  createEntity,
   deleteEntity,
   Button,
 } from "handy-components";
@@ -67,39 +65,30 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   clickSave() {
-    this.setState(
-      {
-        spinner: true,
-        justSaved: true,
-      },
-      () => {
-        const { institutionOrder } = this.state;
-        updateEntity({
-          entityName: "institutionOrder",
-          entity: Details.removeFinanceSymbolsFromEntity({
-            entity: institutionOrder,
-            fields: ["price", "shippingFee"],
-          }),
-        }).then(
-          (response) => {
-            const { institutionOrder } = response;
-            this.setState({
-              spinner: false,
-              changesToSave: false,
-              institutionOrder,
-              institutionOrderSaved: deepCopy(institutionOrder),
-            });
-          },
-          (response) => {
-            const { errors } = response;
-            this.setState({
-              spinner: false,
-              errors,
-            });
-          },
-        );
-      },
-    );
+    this.setState({ spinner: true, justSaved: true }, () => {
+      const { institutionOrder } = this.state;
+      updateEntity({
+        entityName: "institutionOrder",
+        entity: Details.removeFinanceSymbolsFromEntity({
+          entity: institutionOrder,
+          fields: ["price", "shippingFee"],
+        }),
+      }).then(
+        (response) => {
+          const { institutionOrder } = response;
+          this.setState({
+            spinner: false,
+            changesToSave: false,
+            institutionOrder,
+            institutionOrderSaved: deepCopy(institutionOrder),
+          });
+        },
+        (response) => {
+          const { errors } = response;
+          this.setState({ spinner: false, errors });
+        },
+      );
+    });
   }
 
   checkForChanges() {
@@ -117,43 +106,36 @@ export default class InstitutionOrderDetails extends React.Component {
   }
 
   deleteFilm(id) {
-    this.setState({
-      spinner: true,
-    });
-    deleteEntity({
-      directory: "institution_order_films",
-      id,
-    }).then((response) => {
-      const { institutionOrderFilms, films } = response;
-      const institutionOrder = {
-        ...this.state.institutionOrder,
-        ...response.institutionOrder,
-      };
-      this.setState({
-        spinner: false,
-        orderFilms: institutionOrderFilms,
-        films,
-        institutionOrder,
-        institutionOrderSaved: deepCopy(institutionOrder),
-      });
-    });
+    this.setState({ spinner: true });
+    deleteEntity({ directory: "institution_order_films", id }).then(
+      (response) => {
+        const { institutionOrderFilms, films } = response;
+        const institutionOrder = {
+          ...this.state.institutionOrder,
+          ...response.institutionOrder,
+        };
+        this.setState({
+          spinner: false,
+          orderFilms: institutionOrderFilms,
+          films,
+          institutionOrder,
+          institutionOrderSaved: deepCopy(institutionOrder),
+        });
+      },
+    );
   }
 
   sendInvoice() {
     const { institutionOrder } = this.state;
     this.setState({
       jobModalOpen: true,
-      job: {
-        firstLine: "Sending Invoice",
-      },
+      job: { firstLine: "Sending Invoice" },
     });
     sendRequest(`/api/institution_orders/${institutionOrder.id}/send_invoice`, {
       method: "POST",
     }).then((response) => {
       const { job } = response;
-      this.setState({
-        job,
-      });
+      this.setState({ job });
     });
   }
 
@@ -486,9 +468,7 @@ export default class InstitutionOrderDetails extends React.Component {
   componentDidUpdate() {
     Common.updateJobModal.call(this, {
       successCallback: () => {
-        this.setState({
-          spinner: true,
-        });
+        this.setState({ spinner: true });
         fetchEntity().then((response) => {
           const { institutionOrder, invoice } = response;
           this.setState({
