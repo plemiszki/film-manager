@@ -5,7 +5,10 @@ class GenerateStatementsSummary
 
   HEADERS = [
     "Title",
-    "Gross Receipts",
+    "Royalty Period",
+    "Gross Receipts (Cumulative)",
+    "Gross Receipts (Period)",
+    "MG",
     "Net Receipts",
   ]
 
@@ -25,8 +28,11 @@ class GenerateStatementsSummary
           statement.calculate!
           add_row(sheet, [
             statement.film.title,
+            "Q#{statement.quarter} #{statement.year}",
             statement.joined_total_revenue,
-            statement.joined_total,
+            statement.current_total_revenue,
+            statement.film.mg,
+            statement.joined_total - statement.film.mg,
           ])
         end
         p.serialize(file_path)
