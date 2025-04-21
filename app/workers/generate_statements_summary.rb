@@ -21,6 +21,9 @@ class GenerateStatementsSummary
     licensor = Licensor.find(args['licensor_id'])
     statements = licensor.most_recent_statements
 
+    show_percentage_column = licensor.licensor_share_constant_across_all_revenue_streams?
+    HEADERS.insert(4, "Royalty Percentage") if show_percentage_column
+
     Axlsx::Package.new do |p|
       p.workbook.add_worksheet(:name => "Summary") do |sheet|
         add_row(sheet, HEADERS)
@@ -31,6 +34,7 @@ class GenerateStatementsSummary
             "Q#{statement.quarter} #{statement.year}",
             statement.joined_total_revenue,
             statement.current_total_revenue,
+            show_percentage_column ? statement.film.film_revenue_percentages.reject { |film_revenue_percentage| film_revenue_percentage.value.zero? }.first.value : nil,
             statement.film.mg,
             statement.joined_total - statement.film.mg,
           ])

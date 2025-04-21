@@ -51,4 +51,8 @@ class Licensor < ActiveRecord::Base
     RoyaltyReport.joins(:film).where(film: { licensor_id: id }, quarter: most_recent_quarter, year: most_recent_year)
   end
 
+  def licensor_share_constant_across_all_revenue_streams?
+    films.map { |film| film.film_revenue_percentages.pluck(:value).reject { |value| value.zero? } }.flatten.uniq.length == 1
+  end
+
 end
