@@ -3,16 +3,16 @@ class GenerateStatementsSummary
   include ExportSpreadsheetHelpers
   sidekiq_options retry: false
 
-  HEADERS = [
-    "Title",
-    "Royalty Period",
-    "Gross Receipts (Cumulative)",
-    "Gross Receipts (Period)",
-    "MG",
-    "Net Receipts",
-  ]
-
   def perform(_, args = {})
+    headers = [
+      "Title",
+      "Royalty Period",
+      "Gross Receipts (Cumulative)",
+      "Gross Receipts (Period)",
+      "MG",
+      "Net Receipts",
+    ]
+
     job = Job.find_by_job_id(args['time_started'])
     job_folder = "#{Rails.root}/tmp/#{args['time_started']}"
     FileUtils.mkdir_p("#{job_folder}")
@@ -22,11 +22,11 @@ class GenerateStatementsSummary
     statements = licensor.most_recent_statements
 
     show_percentage_column = licensor.licensor_share_constant_across_all_revenue_streams?
-    HEADERS.insert(4, "Royalty Percentage") if show_percentage_column
+    headers.insert(4, "Royalty Percentage") if show_percentage_column
 
     Axlsx::Package.new do |p|
       p.workbook.add_worksheet(:name => "Summary") do |sheet|
-        add_row(sheet, HEADERS)
+        add_row(sheet, headers)
         statements.each do |statement|
           statement.calculate!
           add_row(sheet, [
@@ -37,7 +37,7 @@ class GenerateStatementsSummary
             show_percentage_column ? statement.film.film_revenue_percentages.reject { |film_revenue_percentage| film_revenue_percentage.value.zero? }.first.value : nil,
             statement.film.mg,
             statement.joined_total - statement.film.mg,
-          ])
+          ].compact)
         end
         p.serialize(file_path)
       end
