@@ -122,7 +122,7 @@ class CreateLicensorInvoices
               "Invoice/CM Distribution": index + 1,
               "Number of Distributions": licensor_reports.length,
               "Date": Date.today.strftime("%-m/%-d/%Y"),
-              "Amount": report.joined_amount_due,
+              "Amount": { value: report.joined_amount_due, type: :float },
             })
 
             add_row(sheet, COLUMN_HEADERS.map { |column| rowData.fetch(column.to_sym, "") })
