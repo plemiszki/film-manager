@@ -32,11 +32,11 @@ class GenerateStatementsSummary
           add_row(sheet, [
             statement.film.title,
             "Q#{statement.quarter} #{statement.year}",
-            statement.joined_total_revenue,
-            statement.current_total_revenue,
+            { value: statement.joined_total_revenue, type: :float },
+            { value: statement.current_total_revenue, type: :float },
             show_percentage_column ? statement.film.film_revenue_percentages.reject { |film_revenue_percentage| film_revenue_percentage.value.zero? }.first.value : nil,
-            statement.film.mg,
-            statement.joined_total - statement.film.mg,
+            { value: statement.film.mg, type: :float },
+            { value: statement.joined_total - statement.film.mg, type: :float },
           ].compact)
         end
         p.serialize(file_path)
