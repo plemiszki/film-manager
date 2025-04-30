@@ -203,9 +203,9 @@ class ConvertSalesData
                 '', '', '',
                 sage_id
               ])
+              invoice_row_index += 1
               job.update!(current_value: invoice_row_index)
             end
-            invoice_row_index += 1
           end
 
           if unknown_films.present?
