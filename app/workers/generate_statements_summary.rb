@@ -4,40 +4,78 @@ class GenerateStatementsSummary
   sidekiq_options retry: false
 
   def perform(_, args = {})
-    headers = [
-      "Title",
-      "Royalty Period",
-      "Gross Receipts (Cumulative)",
-      "Gross Receipts (Period)",
-      "MG",
-      "Net Receipts",
-    ]
-
     job = Job.find_by_job_id(args['time_started'])
     job_folder = "#{Rails.root}/tmp/#{args['time_started']}"
     FileUtils.mkdir_p("#{job_folder}")
     file_path = "#{job_folder}/statements_summary.xlsx"
 
     licensor = Licensor.find(args['licensor_id'])
-    statements = licensor.most_recent_statements
-
     show_percentage_column = licensor.licensor_share_constant_across_all_revenue_streams?
-    headers.insert(4, "Royalty Percentage") if show_percentage_column
+
+    columns = {
+      title: {
+        label: 'Title',
+      },
+      period: {
+        label: 'Royalty Period',
+      },
+      current_gross: {
+        label: 'Gross Receipts (Period)',
+      },
+      cume_gross: {
+        label: 'Gross Receipts (Cumulative)'
+      },
+      royalty_percentage: {
+        label: 'Royalty Percentage',
+        hide: !show_percentage_column,
+      },
+      current_net: {
+        label: 'Net Receipts (Period)',
+      },
+      cume_net: {
+        label: 'Net Receipts (Cumulative)',
+      },
+      expenses: {
+        label: 'Expenses',
+      },
+      mg: {
+        label: 'MG'
+      },
+      amount_paid: {
+        label: 'Amount Paid',
+      },
+      amount_due: {
+        label: 'Amount Due',
+      },
+    }
+
+    visible_column_keys = columns.reduce([]) do |result, (key, value)|
+      result << key unless value[:hide]
+      result
+    end
+
+    statements = licensor.most_recent_statements
 
     Axlsx::Package.new do |p|
       p.workbook.add_worksheet(:name => "Summary") do |sheet|
-        add_row(sheet, headers)
+        add_row(sheet, visible_column_keys.map { |key| columns[key][:label]})
         statements.each do |statement|
           statement.calculate!
-          add_row(sheet, [
-            statement.film.title,
-            "Q#{statement.quarter} #{statement.year}",
-            { value: statement.joined_total_revenue, type: :float },
-            { value: statement.current_total_revenue, type: :float },
-            show_percentage_column ? statement.film.film_revenue_percentages.reject { |film_revenue_percentage| film_revenue_percentage.value.zero? }.first.value : nil,
-            { value: statement.film.mg, type: :float },
-            { value: statement.joined_total - statement.film.mg, type: :float },
-          ].compact)
+          film = statement.film
+          mg = film.mg
+          columns[:title][:value] = film.title
+          columns[:period][:value] = "Q#{statement.quarter} #{statement.year}"
+          columns[:current_gross][:value] = { value: statement.current_total_revenue, type: :float }
+          columns[:cume_gross][:value] = { value: statement.joined_total_revenue, type: :float }
+          columns[:royalty_percentage][:value] = film.film_revenue_percentages.reject { |film_revenue_percentage| film_revenue_percentage.value.zero? }.first.value
+          columns[:current_net][:value] = { value: statement.current_total, type: :float }
+          columns[:cume_net][:value] = { value: statement.joined_total, type: :float }
+          columns[:expenses][:value] = { value: statement.joined_total_expenses, type: :float }
+          columns[:mg][:value] = { value: mg, type: :float }
+          columns[:amount_paid][:value] = { value: statement.amount_paid, type: :float }
+          columns[:amount_due][:value] = { value: statement.joined_amount_due, type: :float }
+
+          add_row(sheet, visible_column_keys.map { |key| columns[key][:value] })
         end
         p.serialize(file_path)
       end
