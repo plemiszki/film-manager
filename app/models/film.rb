@@ -132,6 +132,7 @@ class Film < ActiveRecord::Base
   has_many :amazon_genres, through: :amazon_genre_films
   has_many :amazon_language_films, dependent: :destroy
   has_many :amazon_languages, through: :amazon_language_films
+  has_many :dvd_shorts, foreign_key: :short_id, dependent: :destroy
 
   scope :features, -> { where(film_type: 'Feature') }
   scope :shorts, -> { where(film_type: 'Short') }
