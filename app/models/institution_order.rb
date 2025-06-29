@@ -17,10 +17,10 @@ class InstitutionOrder < ActiveRecord::Base
   # associations
 
   belongs_to :institution
-  alias_attribute :customer, :institution
+  alias_method :customer, :institution
 
   has_many :institution_order_films
-  alias_attribute :order_films, :institution_order_films
+  alias_method :order_films, :institution_order_films
   has_many :films, through: :institution_order_films
 
   has_one :invoice

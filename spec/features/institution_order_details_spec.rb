@@ -17,8 +17,8 @@ describe 'institution_order_details', type: :feature do
 
   it 'displays information about the institution_order' do
     visit institution_order_path(@institution_order, as: $admin_user)
-    wait_for_ajax
     expect(page).to have_content 'Educational Order Details'
+    wait_for_ajax
 
     expect(find('input[data-field="institutionId"]').value).to eq 'Harvard University'
     expect(find('input[data-field="number"]').value).to eq '1000'

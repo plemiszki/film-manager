@@ -25,7 +25,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :institution
   belongs_to :institution_order
 
-  alias_attribute :rows, :invoice_rows
+  alias_method :rows, :invoice_rows
 
   scope :bookings, -> { where(invoice_type: 'booking') }
   scope :dvds, -> { where(invoice_type: 'dvd') }

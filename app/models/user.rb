@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
 
   include Clearance::User
 
-  enum access: { user: 50, admin: 100, super_admin: 150 }
+  enum(:access, { user: 50, admin: 100, super_admin: 150 })
 
   validates :name, presence: true
 

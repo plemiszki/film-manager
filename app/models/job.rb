@@ -1,6 +1,6 @@
 class Job < ActiveRecord::Base
 
-  enum status: [:running, :success, :failed, :killed]
+  enum(:status, [:running, :success, :failed, :killed])
 
   def self.clear_s3_objects
     s3 = Aws::S3::Resource.new(

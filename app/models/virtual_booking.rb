@@ -1,6 +1,6 @@
 class VirtualBooking < ActiveRecord::Base
 
-  enum host: ['FM', 'Venue']
+  enum(:host, ['FM', 'Venue'])
 
   include DateFieldYearsConverter
   before_validation :convert_date_field_years
