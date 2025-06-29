@@ -7,6 +7,13 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 require 'support/factory_bot'
 require 'clearance/rspec'
+require 'rack/handler/puma'
+
+Capybara.register_server :puma do |app, port, host|
+  Rack::Handler::Puma.run(app, Host: host, Port: port, Threads: "0:1")
+end
+
+Capybara.server = :puma
 
 Capybara.default_driver = :selenium_chrome
 

@@ -3,6 +3,10 @@ require 'support/features_helper'
 
 describe 'amazon_genres_index', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     create(:setting)
     create(:amazon_genre)

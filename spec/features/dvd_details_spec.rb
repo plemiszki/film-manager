@@ -3,6 +3,10 @@ require 'support/features_helper'
 
 describe 'dvd_details', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     create(:label)
     @film = create(:film, title: 'Some Film')
@@ -19,6 +23,7 @@ describe 'dvd_details', type: :feature do
   it 'displays information about the dvd' do
     visit dvd_path(@dvd, as: $admin_user)
     expect(page).to have_content 'DVD Details'
+    wait_for_ajax
     expect(find('select[data-field="dvdTypeId"]', visible: false).value).to eq '1'
     expect(find('input[data-field="upc"]').value).to eq '616892087410'
     expect(find('input[data-field="preBookDate"]').value).to eq '1/1/2000'

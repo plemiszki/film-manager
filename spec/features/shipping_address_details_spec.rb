@@ -3,6 +3,10 @@ require 'support/features_helper'
 
 describe 'shipping_address_details', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     @dvd_customer = create(:dvd_customer)
     @dvd_customer_2 = create(:dvd_customer, name: 'DVD Customer 2', sage_id: 'Sage ID 2')
@@ -27,6 +31,7 @@ describe 'shipping_address_details', type: :feature do
   it 'displays information about the shipping address' do
     visit shipping_address_path(@shipping_address, as: $admin_user)
     expect(page).to have_content 'Shipping Address Details'
+    wait_for_ajax
     expect(find('input[data-field="label"]').value).to eq 'Label'
     expect(find('input[data-field="name"]').value).to eq 'Name'
     expect(find('input[data-field="address1"]').value).to eq 'Address 1'
