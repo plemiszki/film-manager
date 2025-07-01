@@ -54,16 +54,15 @@ class SendBookingInvoice
     else
       invoice.export!(pathname)
       attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r"), File.open(Rails.root.join('app', 'workers', 'Film Movement W9.pdf'), "r")]
-      message_params = {
-        from: current_user.email,
-        to: (is_test_mode ? ENV['TEST_MODE_EMAIL'] : args['email']),
-        cc: (is_test_mode ? nil : current_user.email),
-        subject: subject,
-        text: text,
-        attachment: attachments,
-      }
+      mb = Mailgun::MessageBuilder.new
+      mb.from(current_user.email)
+      mb.add_recipient(:to, (is_test_mode ? ENV['TEST_MODE_EMAIL'] : args['email']))
+      mb.add_recipient(:cc, current_user.email) unless is_test_mode
+      mb.subject(subject)
+      mb.body_text(text)
+      attachments.each { |attachment| mb.add_attachment(attachment.path) }
       begin
-        mg_client.send_message 'filmmovement.com', message_params
+        mg_client.send_message 'filmmovement.com', mb
         Setting.first.update(next_booking_invoice_number: settings.next_booking_invoice_number + 1) # update next booking invoice number
       rescue
         errors << "Unable to send invoice to #{args['email']}"
