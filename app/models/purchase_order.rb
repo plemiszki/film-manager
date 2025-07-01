@@ -47,29 +47,29 @@ class PurchaseOrder < ActiveRecord::Base
 
     invoice = Invoice.create_invoice_from_po(self)
     invoice.export!(pathname)
-    attachments = [File.open("#{pathname}/Invoice #{invoice.number}.pdf", "r")]
-
-    message_params = {
-      from: sender.email,
-      subject: "Invoice for PO #{self.number}",
-      text: "#{Setting.first.dvd_invoice_email_text.strip}\n\nKind Regards,\n\n#{sender.email_signature}",
-      attachment: attachments,
-    }
+    attachment_path = "#{pathname}/Invoice #{invoice.number}.pdf"
+    attachments = [File.open(attachment_path, "r")]
 
     if dvd_customer.use_stripe
       invoice.create_in_stripe!
       invoice.email_through_stripe!
-      message_params.merge!(
-        to: is_test_mode ? ENV['TEST_MODE_EMAIL'] : sender.email
-      )
+      mb = Mailgun::MessageBuilder.new
+      mb.from(sender.email)
+      mb.add_recipient(:to, is_test_mode ? ENV['TEST_MODE_EMAIL'] : sender.email)
+      mb.subject("Invoice for PO #{self.number}")
+      mb.body_text("#{Setting.first.dvd_invoice_email_text.strip}\n\nKind Regards,\n\n#{sender.email_signature}")
+      mb.add_attachment(attachment_path)
+      mg_client.send_message('filmmovement.com', mb) unless Rails.env.test?
     else
-      message_params.merge!(
-        to: is_test_mode ? ENV['TEST_MODE_EMAIL'] : dvd_customer.invoices_email,
-        cc: is_test_mode ? nil : sender.email
-      )
+      mb = Mailgun::MessageBuilder.new
+      mb.from(sender.email)
+      mb.add_recipient(:to, is_test_mode ? ENV['TEST_MODE_EMAIL'] : dvd_customer.invoices_email)
+      mb.add_recipient(:cc, sender.email) unless is_test_mode
+      mb.subject("Invoice for PO #{self.number}")
+      mb.body_text("#{Setting.first.dvd_invoice_email_text.strip}\n\nKind Regards,\n\n#{sender.email_signature}")
+      mb.add_attachment(attachment_path)
+      mg_client.send_message('filmmovement.com', mb) unless Rails.env.test?
     end
-
-    mg_client.send_message 'filmmovement.com', message_params unless Rails.env.test?
 
     settings = Setting.first
     settings.update(next_dvd_invoice_number: settings.next_dvd_invoice_number + 1)
