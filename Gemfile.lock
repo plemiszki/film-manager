@@ -406,7 +406,7 @@ GEM
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
     stringio (3.1.7)
-    stripe (15.2.1)
+    stripe (12.5.0)
     textacular (5.7.0)
       activerecord (>= 5.0)
     thor (1.3.2)
@@ -487,7 +487,7 @@ DEPENDENCIES
   sentry-sidekiq
   sidekiq (= 7.2.0)
   spring
-  stripe
+  stripe (= 12.5.0)
   textacular
   timeliness
   uglifier
