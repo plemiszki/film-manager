@@ -4,6 +4,11 @@ require 'sidekiq/testing'
 
 describe 'booking_details', type: :feature do
 
+  before do
+    WebMock.disable!
+    Sidekiq::Testing.inline!
+  end
+
   before(:each) do
     create(:label)
     create(:film)
@@ -256,26 +261,24 @@ describe 'booking_details', type: :feature do
 
   it 'adds invoices' do
     create(:setting)
-    Sidekiq::Testing.inline! do
-      visit booking_path(@booking, as: $admin_user)
+    visit booking_path(@booking, as: $admin_user)
+    wait_for_ajax
+    click_btn("Add Invoice")
+    within('.admin-modal') do
+      flip_switch('switch-0') # advance
+      click_btn('Send Invoice')
+    end
+    Capybara.using_wait_time 20 do
+      expect(page).to have_content('Sending Invoice')
       wait_for_ajax
-      click_btn("Add Invoice")
-      within('.admin-modal') do
-        flip_switch('switch-0') # advance
-        click_btn('Send Invoice')
-      end
-      Capybara.using_wait_time 20 do
-        expect(page).to have_content('Sending Invoice')
-        wait_for_ajax
-      end
-      expect(Invoice.count).to eq(1)
-      expect(Invoice.first.total).to eq(100)
-      expect(InvoiceRow.count).to eq(1)
-      expect(InvoiceRow.first.item_label).to eq('Advance')
-      expect(InvoiceRow.first.total_price).to eq(100)
-      within('table') do
-        expect(page).to have_content('1B')
-      end
+    end
+    expect(Invoice.count).to eq(1)
+    expect(Invoice.first.total).to eq(100)
+    expect(InvoiceRow.count).to eq(1)
+    expect(InvoiceRow.first.item_label).to eq('Advance')
+    expect(InvoiceRow.first.total_price).to eq(100)
+    within('table') do
+      expect(page).to have_content('1B')
     end
   end
 
@@ -283,23 +286,21 @@ describe 'booking_details', type: :feature do
     create(:setting)
     create(:booking_invoice)
     create(:invoice_row, item_label: 'Advance', unit_price: 100, total_price: 100)
-    Sidekiq::Testing.inline! do
-      visit booking_path(@booking, as: $admin_user)
-      within('table') do
-        find('.edit-image').click
-      end
-      within('.admin-modal') do
-        flip_switch('switch-0') # advance
-        flip_switch('switch-2') # overage
-        click_btn('Resend Invoice')
-      end
-      Capybara.using_wait_time 30 do
-        expect(page).to have_content('Sending Invoice')
-        wait_for_ajax
-      end
-      expect(InvoiceRow.first.item_label_export).to eq('Overage (Total Gross: $1,000.00)')
-      expect(InvoiceRow.first.total_price).to eq(350)
+    visit booking_path(@booking, as: $admin_user)
+    within('table') do
+      find('.edit-image').click
     end
+    within('.admin-modal') do
+      flip_switch('switch-0') # advance
+      flip_switch('switch-2') # overage
+      click_btn('Resend Invoice')
+    end
+    Capybara.using_wait_time 30 do
+      expect(page).to have_content('Sending Invoice')
+      wait_for_ajax
+    end
+    expect(InvoiceRow.first.item_label_export).to eq('Overage (Total Gross: $1,000.00)')
+    expect(InvoiceRow.first.total_price).to eq(350)
   end
 
   it 'deletes invoices' do
