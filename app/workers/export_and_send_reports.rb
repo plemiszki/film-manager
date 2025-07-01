@@ -51,15 +51,15 @@ class ExportAndSendReports
         is_test_mode = ENV['TEST_MODE'] == 'true'
         recipient_email_address = (is_test_mode ? ENV['TEST_MODE_EMAIL'] : licensor.email.strip)
         cc_email_address = (is_test_mode ? nil : 'michael@filmmovement.com')
-        message_params =  { from: 'michael@filmmovement.com',
-                            to: recipient_email_address,
-                            cc: cc_email_address,
-                            subject: "Your Q#{quarter} #{year} producer reports from Film Movement",
-                            text: "#{royalty_email_text}",
-                            attachment: attachments
-                          }
+        mb = Mailgun::MessageBuilder.new
+        mb.from('michael@filmmovement.com')
+        mb.add_recipient(:to, recipient_email_address)
+        mb.add_recipient(:cc, cc_email_address) if cc_email_address
+        mb.subject("Your Q#{quarter} #{year} producer reports from Film Movement")
+        mb.body_text("#{royalty_email_text}")
+        attachments.each { |attachment| mb.add_attachment(attachment.path) }
         begin
-          mg_client.send_message 'filmmovement.com', message_params
+          mg_client.send_message 'filmmovement.com', mb
           film_titles = file_names.map { |file_name| file_name.split('-')[0...-1].join('-').strip }
           film_titles.each do |film_title|
             if match_data = film_title.match(/ package (?<timestamp>\d+)/)
