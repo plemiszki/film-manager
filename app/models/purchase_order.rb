@@ -79,16 +79,21 @@ class PurchaseOrder < ActiveRecord::Base
     pathname = Rails.root.join('tmp', Time.now.to_s)
     FileUtils.mkdir_p("#{pathname}")
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
+    mb = Mailgun::MessageBuilder.new
+
     self.create_shipping_files(pathname, self.source_doc)
-    attachments = [File.open("#{pathname}/#{source_doc}_worderline.txt", "r"), File.open("#{pathname}/#{source_doc}_worder.txt", "r")]
-    message_params = {
-      from: 'peter@filmmovement.com',
-      to: 'plemiszki@gmail.com',
-      subject: "Film Movement Sales Order #{self.source_doc} (TEST)",
-      text: "Please see attached shipping files.",
-      attachment: attachments
-    }
-    mg_client.send_message 'filmmovement.com', message_params
+    file1_path = "#{pathname}/#{source_doc}_worderline.txt"
+    file2_path = "#{pathname}/#{source_doc}_worder.txt"
+
+    mb.from('peter@filmmovement.com')
+    mb.add_recipient(:to, 'plemiszki@gmail.com')
+    mb.subject("Film Movement Sales Order #{source_doc} (TEST)")
+    mb.body_text('Please see attached shipping files.')
+
+    mb.add_attachment(file1_path)
+    mb.add_attachment(file2_path)
+
+    mg_client.send_message('filmmovement.com', mb)
   end
 
   def resend_shipping_files(sender_email)
