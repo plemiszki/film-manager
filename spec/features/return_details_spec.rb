@@ -4,6 +4,11 @@ require 'sidekiq/testing'
 
 describe 'return_details', type: :feature do
 
+  before do
+    WebMock.disable!
+    Sidekiq::Testing.inline!
+  end
+
   before(:each) do
     create_dvd_types
     @return = create(:return)
@@ -94,16 +99,14 @@ describe 'return_details', type: :feature do
   it 'generates the credit memo', :type => 'sidekiq' do
     create(:setting)
     create(:return_item)
-    Sidekiq::Testing.inline! do
-      visit return_path(@return, as: $admin_user)
-      click_btn('Generate and Send Credit Memo')
-      expect(page).to have_no_css('.spinner', wait: 10)
-      expect(page).to have_content('Credit Memo Sent Successfully')
-      expect(page).to have_content("Credit Memo #{CreditMemo.last.number} was sent")
-      expect(CreditMemo.count).to eq(1)
-      expect(CreditMemoRow.count).to eq(1)
-      expect(CreditMemo.last.return_number).to eq(@return.number)
-    end
+    visit return_path(@return, as: $admin_user)
+    click_btn('Generate and Send Credit Memo')
+    expect(page).to have_no_css('.spinner', wait: 10)
+    expect(page).to have_content('Credit Memo Sent Successfully')
+    expect(page).to have_content("Credit Memo #{CreditMemo.last.number} was sent")
+    expect(CreditMemo.count).to eq(1)
+    expect(CreditMemoRow.count).to eq(1)
+    expect(CreditMemo.last.return_number).to eq(@return.number)
   end
 
 end

@@ -4,7 +4,13 @@ require 'sidekiq/testing'
 
 describe 'royalty_reports_index', type: :feature do
 
+  before do
+    WebMock.disable!
+    Sidekiq::Testing.inline!
+  end
+
   before(:each) do
+    create(:setting)
     create(:user)
     create(:label)
     create(:licensor)
@@ -32,30 +38,26 @@ describe 'royalty_reports_index', type: :feature do
     create_revenue_streams
     film = create(:expenses_recouped_from_top_film)
     film.film_revenue_percentages.update_all(value: 50)
-    Sidekiq::Testing.inline! do
-      visit royalty_reports_path(as: $admin_user, no_jobs: true)
-      wait_for_ajax
-      click_btn("Import")
-      click_btn('Import Revenue')
-      find('form input[type="file"]', visible: false).set('spec/support/revenue.xlsx')
-      expect(page).to have_content 'Import Complete'
-      expect(RoyaltyReport.count).to eq(1)
-    end
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
+    wait_for_ajax
+    click_btn("Import")
+    click_btn('Import Revenue')
+    find('form input[type="file"]', visible: false).set('spec/support/revenue.xlsx')
+    expect(page).to have_content 'Import Complete'
+    expect(RoyaltyReport.count).to eq(1)
   end
 
   it 'imports expenses', :type => 'sidekiq' do
     create_revenue_streams
     film = create(:expenses_recouped_from_top_film)
     film.film_revenue_percentages.update_all(value: 50)
-    Sidekiq::Testing.inline! do
-      visit royalty_reports_path(as: $admin_user, no_jobs: true)
-      wait_for_ajax
-      click_btn("Import")
-      click_btn('Import Expenses')
-      find('form input[type="file"]', visible: false).set('spec/support/expenses.xlsx')
-      expect(page).to have_content 'Import Complete'
-      expect(RoyaltyReport.count).to eq(1)
-    end
+    visit royalty_reports_path(as: $admin_user, no_jobs: true)
+    wait_for_ajax
+    click_btn("Import")
+    click_btn('Import Expenses')
+    find('form input[type="file"]', visible: false).set('spec/support/expenses.xlsx')
+    expect(page).to have_content 'Import Complete'
+    expect(RoyaltyReport.count).to eq(1)
   end
 
   it "filters reports by when they're due" do
@@ -108,7 +110,7 @@ describe 'royalty_reports_index', type: :feature do
     wait_for_ajax
     click_nice_select_option('select.days-filter', '30 days')
     click_btn("Export All")
-    expect(page).to have_content 'Exporting Reports'
+    expect(page).to have_content('Exporting Reports', wait: 10)
   end
 
   it 'starts export and send reports job' do

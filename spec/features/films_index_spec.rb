@@ -81,6 +81,7 @@ describe 'films_index', type: :feature do
 
   it 'can add new tv series' do
     visit tv_series_index_path(as: $admin_user)
+    wait_for_ajax
     click_btn('Add TV Series')
     info = {
       title: 'New TV Series',

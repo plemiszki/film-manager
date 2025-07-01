@@ -4,6 +4,11 @@ require 'sidekiq/testing'
 
 describe 'institution_order_details', type: :feature do
 
+  before do
+    WebMock.disable!
+    Sidekiq::Testing.inline!
+  end
+
   before(:each) do
     create(:institution)
     create(:institution, label: 'Columbia University', sage_id: 'COLUMBIA')
@@ -170,36 +175,34 @@ describe 'institution_order_details', type: :feature do
     create(:setting)
     create(:label)
     create(:film)
-    Sidekiq::Testing.inline! do
-      visit institution_order_path(@institution_order, as: $admin_user)
+    visit institution_order_path(@institution_order, as: $admin_user)
+    wait_for_ajax
+    click_btn('Add Film')
+    fill_out_and_submit_modal({
+      film_id: { value: 'Wilby Wonderful', type: :select_modal },
+      licensed_rights: { label: 'PPR and DRL', type: :select },
+      price: 100,
+    }, :input)
+    wait_for_ajax
+    fill_out_form({
+      invoice_notes: INVOICE_NOTES,
+    })
+    save_and_wait
+    find('a', text: 'Send Invoice').click
+    Capybara.using_wait_time 20 do
+      expect(page).to have_content('Sending Invoice')
       wait_for_ajax
-      click_btn('Add Film')
-      fill_out_and_submit_modal({
-        film_id: { value: 'Wilby Wonderful', type: :select_modal },
-        licensed_rights: { label: 'PPR and DRL', type: :select },
-        price: 100,
-      }, :input)
-      wait_for_ajax
-      fill_out_form({
-        invoice_notes: INVOICE_NOTES,
-      })
-      save_and_wait
-      find('a', text: 'Send Invoice').click
-      Capybara.using_wait_time 20 do
-        expect(page).to have_content('Sending Invoice')
-        wait_for_ajax
-      end
-      expect(page).to have_content('Invoice Sent Successfully')
-      expect(Invoice.count).to eq(1)
-      invoice = Invoice.first
-      expect(invoice.total). to eql(115)
-      expect(invoice.notes). to eql(INVOICE_NOTES)
-      expect(invoice.rows.pluck(:total_price)). to eql([100, 15])
-      find('a', text: 'OK').click
-      wait_for_ajax
-      expect(page).to have_content('Invoice 1E was sent on')
-      expect(page).to have_no_content('Send Invoice')
     end
+    expect(page).to have_content('Invoice Sent Successfully')
+    expect(Invoice.count).to eq(1)
+    invoice = Invoice.first
+    expect(invoice.total). to eql(115)
+    expect(invoice.notes). to eql(INVOICE_NOTES)
+    expect(invoice.rows.pluck(:total_price)). to eql([100, 15])
+    find('a', text: 'OK').click
+    wait_for_ajax
+    expect(page).to have_content('Invoice 1E was sent on')
+    expect(page).to have_no_content('Send Invoice')
   end
 
 end

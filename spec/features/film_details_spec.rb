@@ -1,7 +1,13 @@
 require 'rails_helper'
 require 'support/features_helper'
+require 'sidekiq/testing'
 
 describe 'film_details', type: :feature do
+
+  before do
+    WebMock.disable!
+    Sidekiq::Testing.inline!
+  end
 
   before(:each) do
     RevenueStream.create!(name: 'Theatrical', order: 0)
@@ -1121,7 +1127,7 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('.key-art').click
     click_btn('Yes')
-    expect(page).to have_content('Updating Artwork')
+    expect(page).to have_content('Updating Artwork', wait: 20)
   end
 
   it 'starts the export XML MEC job' do
