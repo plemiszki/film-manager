@@ -27,15 +27,14 @@ class GenerateAndSendCreditMemo
     dvd_customer = credit_memo.customer
     recipient_email_address = (is_test_mode ? ENV['TEST_MODE_EMAIL'] : (dvd_customer.credit_memo_email.presence || dvd_customer.invoices_email))
     cc_email_address = is_test_mode ? nil : current_user.email
-    message_params = {
-      from: current_user.email,
-      to: recipient_email_address,
-      cc: cc_email_address,
-      subject: 'Your Film Movement Credit Memo',
-      text: email_text,
-      attachment: [File.open(path, "r")]
-    }
-    mg_client.send_message 'filmmovement.com', message_params
+    mb = Mailgun::MessageBuilder.new
+    mb.from(current_user.email)
+    mb.add_recipient(:to, recipient_email_address)
+    mb.add_recipient(:cc, cc_email_address) if cc_email_address
+    mb.subject('Your Film Movement Credit Memo')
+    mb.body_text(email_text)
+    mb.add_attachment(path)
+    mg_client.send_message 'filmmovement.com', mb
     job.update!({
       status: :success,
       first_line: 'Credit Memo Sent Successfully',
