@@ -1,7 +1,7 @@
 class Api::WebsiteController < CyberController
 
   def films
-    @films = Film.all.includes(
+    @films = Film.where(active: true).includes(
       :actors,
       :countries,
       :directors,
