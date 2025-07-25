@@ -236,7 +236,7 @@ class Film < ActiveRecord::Base
   def self.backfill_end_date_calc!
     Film.all.includes(:film_rights).each do |film|
       film.film_rights.each do |film_right|
-        film_right.update(end_date_calc: film.auto_renew ? (film_right.end_date + film.auto_renew_term.months) : film_right.end_date)
+        film_right.update(end_date_calc: film_right.calculate_end_date)
       end
     end
   end

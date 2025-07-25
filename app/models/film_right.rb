@@ -15,7 +15,7 @@ class FilmRight < ActiveRecord::Base
   belongs_to :territory
 
   def calculate_end_date
-    self.end_date_calc = film.auto_renew ? (self.end_date + film.auto_renew_term.months) : self.end_date
+    self.end_date_calc = (film.auto_renew && !film.auto_renew_opt_out) ? (self.end_date + film.auto_renew_term.months) : self.end_date
   end
 
 end
