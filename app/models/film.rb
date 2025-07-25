@@ -50,6 +50,10 @@ class Film < ActiveRecord::Base
   validates_uniqueness_of :club_date, allow_nil: true
   validate :end_date_not_before_start_date
 
+  def will_auto_renew?
+    auto_renew && !auto_renew_opt_out
+  end
+
   def gr_percentage_tenth_decimal
     if [5, 6].include?(deal_type_id)
       validates_numericality_of :gr_percentage, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 100
