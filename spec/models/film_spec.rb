@@ -72,7 +72,10 @@ RSpec.describe Film do
     film.update!(auto_renew: true, auto_renew_term: 12)
     expect(film_right.reload.end_date_calc).to eq(Date.today + 2.years)
 
-    film.update!(auto_renew: false)
+    film.update!(auto_renew_opt_out: true)
+    expect(film_right.reload.end_date_calc).to eq(Date.today + 1.year)
+
+    film.update!(auto_renew: false, auto_renew_opt_out: false)
     expect(film_right.reload.end_date_calc).to eq(Date.today + 1.year)
   end
 

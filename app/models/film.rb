@@ -162,7 +162,7 @@ class Film < ActiveRecord::Base
 
   # after save
   def update_film_rights_end_date_calc
-    if saved_change_to_auto_renew?
+    if saved_change_to_auto_renew? || saved_change_to_auto_renew_opt_out?
       self.film_rights.each do |film_right|
         film_right.save! # trigger calculate_end_date in before_save hook
       end
