@@ -91,11 +91,11 @@ class RoyaltyReport < ActiveRecord::Base
     end
   end
 
-  def get_total_past_reserves(multiple_films = nil)
+  def get_total_past_reserves(multiple_films: nil)
     if self.id.zero?
       result = Hash.new(0)
       multiple_films.each do |film|
-        report = film.royalty_reports.order(:id).last
+        report = film.royalty_reports.where(year: self.year, quarter: self.quarter).first
         next unless report
         report.past_reports.each do |report|
           result["Q#{report.quarter} #{report.year}"] += report.current_reserve
@@ -576,7 +576,7 @@ class RoyaltyReport < ActiveRecord::Base
       total_reserves = 0
       total_liquidated = 0
       total_remaining = 0
-      total_past_reserves = self.get_total_past_reserves(multiple_films)
+      total_past_reserves = self.get_total_past_reserves(multiple_films: multiple_films)
       quarters_with_reserves = total_past_reserves.length
       total_past_reserves.each_with_index do |(quarter, amount), index|
         if amount > 0
