@@ -3,6 +3,10 @@ require 'support/features_helper'
 
 describe 'alias_details', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do
     create(:label)
     @film = create(:film)
