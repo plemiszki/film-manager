@@ -2,7 +2,7 @@ module AwsUpload
 
   extend ActiveSupport::Concern
 
-  def upload_to_aws(file:, key:)
+  def upload_to_aws(file_path:, key:)
       s3_client = Aws::S3::Client.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1',
@@ -18,7 +18,7 @@ module AwsUpload
     bucket_name = ENV['S3_BUCKET']
 
     transfer_manager.upload_file(
-      file.path,
+      file_path,
       bucket: bucket_name,
       key: key,
       acl: 'public-read'

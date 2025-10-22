@@ -2,6 +2,8 @@ class CreateLicensorInvoices
   include Sidekiq::Worker
   include ActionView::Helpers::NumberHelper
   include ExportSpreadsheetHelpers
+  include AwsUpload
+
   sidekiq_options retry: false
 
   FILENAME = "Licensor Invoices.xlsx"
@@ -135,15 +137,9 @@ class CreateLicensorInvoices
     end
 
     job.update({ first_line: 'Uploading to AWS' })
-    s3 = Aws::S3::Resource.new(
-      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
-      region: 'us-east-1'
-    )
-    bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object("#{time_started}/#{FILENAME}")
-    obj.upload_file(file_path, acl:'public-read')
+    public_url = upload_to_aws(file_path: file_path, key: "#{time_started}/#{FILENAME}")
 
-    job.update!({ status: :success, metadata: { url: obj.public_url } })
+    job.update!({ status: :success, metadata: { url: public_url } })
   end
 
 end

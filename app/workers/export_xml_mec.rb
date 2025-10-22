@@ -211,7 +211,7 @@ class ExportXmlMec
     end
 
     job.update({ first_line: "Uploading to AWS" })
-    public_url = upload_to_aws(file: file, key: "#{time_started}/#{filename}")
+    public_url = upload_to_aws(file_path: file.path, key: "#{time_started}/#{filename}")
 
     job.update!({ status: 'success', first_line: '', metadata: { url: public_url }, errors_text: '' })
   end

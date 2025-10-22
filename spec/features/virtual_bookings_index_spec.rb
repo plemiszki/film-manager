@@ -3,6 +3,10 @@ require 'support/features_helper'
 
 describe 'virtual_bookings_index', type: :feature do
 
+  before do
+    WebMock.disable!
+  end
+
   before(:each) do |t|
     create(:label)
     create(:film)

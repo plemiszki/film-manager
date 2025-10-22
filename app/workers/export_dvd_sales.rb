@@ -1,6 +1,8 @@
 class ExportDvdSales
   include Sidekiq::Worker
   include ExportSpreadsheetHelpers
+  include AwsUpload
+
   sidekiq_options retry: false
 
   HEADERS = [
@@ -65,14 +67,9 @@ class ExportDvdSales
     end
 
     job.update({ first_line: "Uploading to AWS", second_line: false })
-    s3 = Aws::S3::Resource.new(
-      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
-      region: 'us-east-1'
-    )
-    bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object("#{args["time_started"]}/sales.xlsx")
-    obj.upload_file(file_path, acl:'public-read')
-    job.update!({ status: :success, metadata: { url: obj.public_url } })
+    public_url = upload_to_aws(file_path: file_path, key: "#{args["time_started"]}/sales.xlsx")
+
+    job.update!({ status: :success, metadata: { url: public_url } })
   end
 
 end
