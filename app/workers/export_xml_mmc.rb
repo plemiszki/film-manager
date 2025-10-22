@@ -73,15 +73,17 @@ class ExportXmlMmc
             end
           end
         end
-        builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.en-US") do
-          builder.__send__('md:Format', 'SCC')
-          builder.__send__('md:Type', 'normal')
-          builder.__send__('md:Language', 'en-US')
-          builder.tag!("md:Encoding") do
-            builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
-          end
-          builder.tag!("manifest:ContainerReference") do
-            builder.__send__('manifest:ContainerLocation', subtitles_filename)
+        if film.xml_include_subtitles
+          builder.tag!("manifest:Subtitle", "SubtitleTrackID" => "md:subtrackid:org:filmmovement:FM_#{title}_Movie:subtitle.en-US") do
+            builder.__send__('md:Format', 'SCC')
+            builder.__send__('md:Type', 'normal')
+            builder.__send__('md:Language', 'en-US')
+            builder.tag!("md:Encoding") do
+              builder.__send__('md:FrameRate', '24', timecode: 'NonDrop', multiplier: '1000/1001')
+            end
+            builder.tag!("manifest:ContainerReference") do
+              builder.__send__('manifest:ContainerLocation', subtitles_filename)
+            end
           end
         end
         if film.xml_include_trailer
