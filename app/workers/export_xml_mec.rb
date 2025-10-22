@@ -185,7 +185,7 @@ class ExportXmlMec
         end
 
         film.amazon_languages.each do |amazon_language|
-          builder.tag!("md:OriginalLanguage") { builder << amazon_language.code }
+          builder.tag!("md:OriginalLanguage") { builder << "en-US" }
           builder << "\n"
         end
 
