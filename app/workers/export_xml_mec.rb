@@ -209,16 +209,32 @@ class ExportXmlMec
     end
 
     job.update({ first_line: "Uploading to AWS" })
-    s3 = Aws::S3::Resource.new(
+
+    s3_client = Aws::S3::Client.new(
       credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
       region: 'us-east-1',
+      ssl_verify_peer: true,
+      ssl_ca_store: OpenSSL::X509::Store.new.tap { |store|
+        store.set_default_paths
+        # macOS/Homebrew OpenSSL lacks CRLs, so skip CRL/OCSP check safely
+        store.flags = OpenSSL::X509::V_FLAG_NO_CHECK_TIME
+      }
     )
-    bucket = s3.bucket(ENV['S3_BUCKET'])
-    obj = bucket.object("#{time_started}/#{filename}")
-    obj.upload_file(file.path, acl:'public-read')
+    transfer_manager = Aws::S3::TransferManager.new(client: s3_client)
 
+    key = "#{time_started}/#{filename}"
+    bucket_name = ENV['S3_BUCKET']
 
-    job.update!({ status: 'success', first_line: '', metadata: { url: obj.public_url }, errors_text: '' })
+    transfer_manager.upload_file(
+      file.path,
+      bucket: bucket_name,
+      key: key,
+      acl: 'public-read'
+    )
+
+    public_url = "https://#{bucket_name}.s3.us-east-1.amazonaws.com/#{key}"
+
+    job.update!({ status: 'success', first_line: '', metadata: { url: public_url }, errors_text: '' })
   end
 
 end
