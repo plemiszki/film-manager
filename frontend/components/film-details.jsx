@@ -2281,7 +2281,9 @@ export default class FilmDetails extends React.Component {
                       film.xmlCaptionFilename !==
                         filmSaved.xmlCaptionFilename ||
                       film.xmlIncludeTrailer !== filmSaved.xmlIncludeTrailer ||
-                      film.xmlIncludeCaptions !== filmSaved.xmlIncludeCaptions
+                      film.xmlIncludeCaptions !==
+                        filmSaved.xmlIncludeCaptions ||
+                      film.xmlIncludeSubtitles !== filmSaved.xmlIncludeSubtitles
                     }
                   />
                 </div>
