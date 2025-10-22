@@ -354,6 +354,7 @@ class Api::FilmsController < AdminController
       :xml_caption_filename,
       :xml_include_trailer,
       :xml_include_captions,
+      :xml_include_subtitles,
       :xml_mmc_filename,
       :xml_mec_filename
     )

@@ -86,6 +86,7 @@ json.film do
   json.missingReports @missing_reports
   json.xmlIncludeCaptions @film.xml_include_captions
   json.xmlIncludeTrailer @film.xml_include_trailer
+  json.xmlIncludeSubtitles @film.xml_include_subtitles
   json.xmlVideoFilename @film.xml_video_filename
   json.xmlTrailerFilename @film.xml_trailer_filename
   json.xmlCaptionFilename @film.xml_caption_filename

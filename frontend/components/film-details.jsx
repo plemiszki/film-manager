@@ -2210,12 +2210,21 @@ export default class FilmDetails extends React.Component {
                   columnHeader: "Video Filename",
                   placeholder: film.xmlExportFilenameDefaults.video,
                 })}
+              </div>
+              <div className="row" style={{ height: 103 }}>
+                {Details.renderSwitch.bind(this)({
+                  columnWidth: 2,
+                  entity: "film",
+                  property: "xmlIncludeSubtitles",
+                  columnHeader: "Include Subtitles",
+                })}
                 {Details.renderField.bind(this)({
                   columnWidth: 6,
                   entity: "film",
                   property: "xmlSubtitlesFilename",
                   columnHeader: "Subtitles Filename",
                   placeholder: film.xmlExportFilenameDefaults.subtitles,
+                  visible: film.xmlIncludeSubtitles,
                 })}
               </div>
               <div className="row" style={{ height: 103 }}>

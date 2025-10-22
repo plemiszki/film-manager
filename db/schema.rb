@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_28_141202) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_22_163843) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
-  enable_extension "plpgsql"
 
   create_table "actors", id: :serial, force: :cascade do |t|
     t.integer "actorable_id", null: false
@@ -445,6 +445,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_28_141202) do
     t.boolean "xml_include_captions", default: true
     t.string "xml_mmc_filename", default: ""
     t.string "xml_mec_filename", default: ""
+    t.boolean "xml_include_subtitles", default: true
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
     t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"
@@ -940,5 +941,4 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_28_141202) do
     t.integer "order", null: false
     t.index ["booking_id"], name: "index_weekly_terms_on_booking_id"
   end
-
 end
