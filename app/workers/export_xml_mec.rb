@@ -1,5 +1,7 @@
 class ExportXmlMec
   include Sidekiq::Worker
+  include AwsUpload
+
   sidekiq_options retry: false
 
   def perform(film_id, time_started)
@@ -209,30 +211,7 @@ class ExportXmlMec
     end
 
     job.update({ first_line: "Uploading to AWS" })
-
-    s3_client = Aws::S3::Client.new(
-      credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']),
-      region: 'us-east-1',
-      ssl_verify_peer: true,
-      ssl_ca_store: OpenSSL::X509::Store.new.tap { |store|
-        store.set_default_paths
-        # macOS/Homebrew OpenSSL lacks CRLs, so skip CRL/OCSP check safely
-        store.flags = OpenSSL::X509::V_FLAG_NO_CHECK_TIME
-      }
-    )
-    transfer_manager = Aws::S3::TransferManager.new(client: s3_client)
-
-    key = "#{time_started}/#{filename}"
-    bucket_name = ENV['S3_BUCKET']
-
-    transfer_manager.upload_file(
-      file.path,
-      bucket: bucket_name,
-      key: key,
-      acl: 'public-read'
-    )
-
-    public_url = "https://#{bucket_name}.s3.us-east-1.amazonaws.com/#{key}"
+    public_url = upload_to_aws(file: file, key: "#{time_started}/#{filename}")
 
     job.update!({ status: 'success', first_line: '', metadata: { url: public_url }, errors_text: '' })
   end
