@@ -65,7 +65,7 @@ const ChangeDatesModalStyles = {
 
 class CopyButton extends React.Component {
   render() {
-    const { visibleIf = true, onClick } = this.props;
+    const { visibleIf = true, textToCopy } = this.props;
 
     if (!visibleIf) {
       return null;
@@ -73,7 +73,12 @@ class CopyButton extends React.Component {
 
     return (
       <div className="col-xs-1" style={{ paddingTop: 38 }}>
-        <IconButton disableRipple onClick={onClick}>
+        <IconButton
+          disableRipple
+          onClick={() => {
+            navigator.clipboard.writeText(textToCopy);
+          }}
+        >
           <ContentCopyIcon color="action" fontSize="large" />
         </IconButton>
       </div>
@@ -2214,7 +2219,11 @@ export default class FilmDetails extends React.Component {
                   columnHeader: "MEC Filename",
                   placeholder: film.xmlExportFilenameDefaults.mec,
                 })}
-                <CopyButton onClick={() => console.log("MEC")} />
+                <CopyButton
+                  textToCopy={
+                    film.xmlMecFilename || film.xmlExportFilenameDefaults.mec
+                  }
+                />
               </div>
               <div className="row">
                 {Details.renderField.bind(this)({
@@ -2224,7 +2233,11 @@ export default class FilmDetails extends React.Component {
                   columnHeader: "MMC Filename",
                   placeholder: film.xmlExportFilenameDefaults.mmc,
                 })}
-                <CopyButton onClick={() => console.log("MMC")} />
+                <CopyButton
+                  textToCopy={
+                    film.xmlMmcFilename || film.xmlExportFilenameDefaults.mmc
+                  }
+                />
               </div>
               <div className="row">
                 {Details.renderField.bind(this)({
@@ -2234,7 +2247,12 @@ export default class FilmDetails extends React.Component {
                   columnHeader: "Video Filename",
                   placeholder: film.xmlExportFilenameDefaults.video,
                 })}
-                <CopyButton onClick={() => console.log("video")} />
+                <CopyButton
+                  textToCopy={
+                    film.xmlVideoFilename ||
+                    film.xmlExportFilenameDefaults.video
+                  }
+                />
               </div>
               <div className="row" style={{ height: 103 }}>
                 {Details.renderSwitch.bind(this)({
@@ -2252,7 +2270,10 @@ export default class FilmDetails extends React.Component {
                   visible: film.xmlIncludeSubtitles,
                 })}
                 <CopyButton
-                  onClick={() => console.log("subtitles")}
+                  textToCopy={
+                    film.xmlSubtitlesFilename ||
+                    film.xmlExportFilenameDefaults.subtitles
+                  }
                   visibleIf={film.xmlIncludeSubtitles}
                 />
               </div>
@@ -2272,7 +2293,10 @@ export default class FilmDetails extends React.Component {
                   visible: film.xmlIncludeCaptions,
                 })}
                 <CopyButton
-                  onClick={() => console.log("captions")}
+                  textToCopy={
+                    film.xmlCaptionsFilename ||
+                    film.xmlExportFilenameDefaults.captions
+                  }
                   visibleIf={film.xmlIncludeCaptions}
                 />
               </div>
@@ -2292,7 +2316,10 @@ export default class FilmDetails extends React.Component {
                   visible: film.xmlIncludeTrailer,
                 })}
                 <CopyButton
-                  onClick={() => console.log("trailer")}
+                  textToCopy={
+                    film.xmlTrailerFilename ||
+                    film.xmlExportFilenameDefaults.trailer
+                  }
                   visibleIf={film.xmlIncludeTrailer}
                 />
               </div>
