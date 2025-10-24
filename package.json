@@ -9,6 +9,9 @@
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.4",
     "babel-loader": "^9.0.0",
     "change-case": "^5.0.0",
     "handy-components": "^3.0.0",
