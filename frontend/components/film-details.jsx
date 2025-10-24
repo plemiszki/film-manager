@@ -1,5 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
+import { IconButton } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import FilmRightsNew from "./film-rights-new.jsx";
 import FilmRightsChangeDates from "./film-rights-change-dates.jsx";
 import {
@@ -60,6 +62,24 @@ const ChangeDatesModalStyles = {
     height: 240,
   },
 };
+
+class CopyButton extends React.Component {
+  render() {
+    const { visibleIf = true, onClick } = this.props;
+
+    if (!visibleIf) {
+      return null;
+    }
+
+    return (
+      <div className="col-xs-1" style={{ paddingTop: 38 }}>
+        <IconButton disableRipple onClick={onClick}>
+          <ContentCopyIcon color="action" fontSize="large" />
+        </IconButton>
+      </div>
+    );
+  }
+}
 
 export default class FilmDetails extends React.Component {
   constructor(props) {
@@ -2194,6 +2214,9 @@ export default class FilmDetails extends React.Component {
                   columnHeader: "MEC Filename",
                   placeholder: film.xmlExportFilenameDefaults.mec,
                 })}
+                <CopyButton onClick={() => console.log("MEC")} />
+              </div>
+              <div className="row">
                 {Details.renderField.bind(this)({
                   columnWidth: 6,
                   entity: "film",
@@ -2201,6 +2224,7 @@ export default class FilmDetails extends React.Component {
                   columnHeader: "MMC Filename",
                   placeholder: film.xmlExportFilenameDefaults.mmc,
                 })}
+                <CopyButton onClick={() => console.log("MMC")} />
               </div>
               <div className="row">
                 {Details.renderField.bind(this)({
@@ -2210,6 +2234,7 @@ export default class FilmDetails extends React.Component {
                   columnHeader: "Video Filename",
                   placeholder: film.xmlExportFilenameDefaults.video,
                 })}
+                <CopyButton onClick={() => console.log("video")} />
               </div>
               <div className="row" style={{ height: 103 }}>
                 {Details.renderSwitch.bind(this)({
@@ -2226,6 +2251,10 @@ export default class FilmDetails extends React.Component {
                   placeholder: film.xmlExportFilenameDefaults.subtitles,
                   visible: film.xmlIncludeSubtitles,
                 })}
+                <CopyButton
+                  onClick={() => console.log("subtitles")}
+                  visibleIf={film.xmlIncludeSubtitles}
+                />
               </div>
               <div className="row" style={{ height: 103 }}>
                 {Details.renderSwitch.bind(this)({
@@ -2242,6 +2271,10 @@ export default class FilmDetails extends React.Component {
                   placeholder: film.xmlExportFilenameDefaults.captions,
                   visible: film.xmlIncludeCaptions,
                 })}
+                <CopyButton
+                  onClick={() => console.log("captions")}
+                  visibleIf={film.xmlIncludeCaptions}
+                />
               </div>
               <div className="row" style={{ height: 103 }}>
                 {Details.renderSwitch.bind(this)({
@@ -2258,6 +2291,10 @@ export default class FilmDetails extends React.Component {
                   placeholder: film.xmlExportFilenameDefaults.trailer,
                   visible: film.xmlIncludeTrailer,
                 })}
+                <CopyButton
+                  onClick={() => console.log("trailer")}
+                  visibleIf={film.xmlIncludeTrailer}
+                />
               </div>
               <div className="row">
                 <div className="col-xs-12">
