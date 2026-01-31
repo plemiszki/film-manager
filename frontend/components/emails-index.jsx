@@ -1,51 +1,22 @@
 import React, { Component } from "react";
-import { Table, Spinner, GrayedOut } from "handy-components";
-
-const STATIC_EMAILS = [
-  {
-    id: 1,
-    emailType: "Statement",
-    sentAt: "2025-01-15 10:30:00",
-    sentBy: "Michael Rosenberg",
-    status: "delivered",
-  },
-  {
-    id: 2,
-    emailType: "Statement",
-    sentAt: "2025-01-15 10:31:00",
-    sentBy: "Michael Rosenberg",
-    status: "delivered",
-  },
-  {
-    id: 3,
-    emailType: "Statement",
-    sentAt: "2025-01-15 10:32:00",
-    sentBy: "Michael Rosenberg",
-    status: "pending",
-  },
-  {
-    id: 4,
-    emailType: "Statement",
-    sentAt: "2025-01-15 10:33:00",
-    sentBy: "Michael Rosenberg",
-    status: "failed",
-  },
-  {
-    id: 5,
-    emailType: "Statement",
-    sentAt: "2025-01-15 10:34:00",
-    sentBy: "Michael Rosenberg",
-    status: "bounced",
-  },
-];
+import { Table, Spinner, GrayedOut, fetchEntities } from "handy-components";
 
 export default class EmailsIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      spinner: false,
-      emails: STATIC_EMAILS,
+      spinner: true,
+      emails: [],
     };
+  }
+
+  componentDidMount() {
+    fetchEntities({ directory: "emails" }).then((response) => {
+      this.setState({
+        spinner: false,
+        emails: response.emails,
+      });
+    });
   }
 
   render() {

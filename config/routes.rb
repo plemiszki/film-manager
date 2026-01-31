@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   resources :institution_orders, only: [:index, :show]
 
   namespace :api do
+    resources :emails, only: [:index]
     get '/users' => '/api/users#api_index'
     get '/users/:id' => '/api/users#show'
     post '/users' => '/api/users#api_create'
