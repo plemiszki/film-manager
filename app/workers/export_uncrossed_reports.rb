@@ -24,7 +24,7 @@ class ExportUncrossedReports
     job.update({ first_line: "Creating Archive", second_line: false })
     files = Dir.glob("#{Rails.root}/tmp/#{time_started}/*.pdf")
     require 'zip'
-    Zip::File.open(Rails.root.join('tmp', time_started, 'statements.zip'), Zip::File::CREATE) do |zip|
+    Zip::File.open(Rails.root.join('tmp', time_started, 'statements.zip'), create: true) do |zip|
       files.each do |file|
         zip.add(file.split('/')[-1], file)
       end

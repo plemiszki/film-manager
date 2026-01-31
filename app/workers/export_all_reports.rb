@@ -37,7 +37,7 @@ class ExportAllReports
     files = Dir.glob("#{Rails.root}/tmp/#{time_started}/amount due/*.pdf")
     files2 = Dir.glob("#{Rails.root}/tmp/#{time_started}/no amount due/*.pdf")
     require 'zip'
-    Zip::File.open(Rails.root.join('tmp', time_started, 'statements.zip'), Zip::File::CREATE) do |zip|
+    Zip::File.open(Rails.root.join('tmp', time_started, 'statements.zip'), create: true) do |zip|
       files.each do |file|
         zip.add("amount due/#{file.split('/')[-1]}", file)
       end
