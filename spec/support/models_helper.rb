@@ -16,11 +16,13 @@ def test_parse_all_date_fields(resource)
   end
 
   # test parsing works properly
-  date_fields.each_with_index do |field, index|
+  # sort so start_date comes before end_date to avoid validation errors
+  sorted_fields = date_fields.sort_by { |f| f.include?('start') ? 0 : (f.include?('end') ? 2 : 1) }
+  sorted_fields.each_with_index do |field, index|
     obj[field] = "2/#{index + 1}/20"
   end
   resource.update(obj)
-  date_fields.each_with_index do |field, index|
+  sorted_fields.each_with_index do |field, index|
     expect(resource.send(field).month).to eq(2)
     expect(resource.send(field).day).to eq(index + 1)
     expect(resource.send(field).year).to eq(2020)
