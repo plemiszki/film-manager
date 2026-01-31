@@ -19,6 +19,7 @@ import CurrentUserDropDown from "./components/current-user-dropdown.jsx";
 import DvdCustomerDetails from "./components/dvd-customer-details.jsx";
 import DvdDetails from "./components/dvd-details.jsx";
 import DvdReports from "./components/dvd-reports.jsx";
+import EmailsIndex from "./components/emails-index.jsx";
 import EpisodeDetails from "./components/episode-details.jsx";
 import FilmDetails from "./components/film-details.jsx";
 import FilmsIndex from "./components/films-index.jsx";
@@ -119,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderIf("episode-details", EpisodeDetails);
   renderIf("jobs-index", JobsIndex);
   renderIf("virtual-booking-details", VirtualBookingDetails);
+  renderIf("emails-index", EmailsIndex);
 
   renderSimpleDetails("shipping-address-details", {
     entityName: "shippingAddress",

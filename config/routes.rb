@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   get '/royalty_reports/codes' => 'royalty_reports#codes'
   resources :royalty_reports, only: [:index, :show]
   resources :users, only: [:index, :show]
+  resources :emails, only: [:index]
   resources :invoices, only: [:index, :show]
   resources :returns, only: [:index, :show]
   resources :credit_memos, only: [:index, :show]
