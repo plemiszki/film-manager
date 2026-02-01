@@ -30,8 +30,9 @@ export default class EmailsIndex extends Component {
             rows={emails}
             columns={[
               { name: "emailType", header: "Type" },
-              { name: "sentAt", header: "Sent At" },
               { name: "sentBy", header: "Sent By" },
+              { name: "sentTo", header: "Sent To" },
+              { name: "sentAt", header: "Sent At" },
               {
                 name: "status",
                 header: "Status",
