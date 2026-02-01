@@ -2,7 +2,7 @@ class Email < ActiveRecord::Base
 
   enum(:status, [:pending, :delivered, :failed, :bounced])
 
-  EMAIL_TYPES = %w[statement].freeze
+  EMAIL_TYPES = %w[test statement].freeze
 
   belongs_to :sender, class_name: 'User'
 

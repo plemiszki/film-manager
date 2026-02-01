@@ -13,4 +13,14 @@ class User < ActiveRecord::Base
   scope :active_bookers, -> { where(booker: true, inactive: false) }
   scope :box_office_reminder_senders, -> { where(booker: true, inactive: false).where.not(name: 'Producer') }
 
+  def send_test_email!
+    SendEmail.new(
+      sender: self,
+      recipients: ENV.fetch("TEST_MODE_EMAIL"),
+      subject: "test",
+      body: "This is test!",
+      email_type: 'test',
+    ).call
+  end
+
 end

@@ -28,6 +28,7 @@ module FilmManager
     end
 
     config.autoload_paths += %W(#{config.root}/app/workers/concerns)
+    config.autoload_paths << Rails.root.join("app/services")
 
   end
 end

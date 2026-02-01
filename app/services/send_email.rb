@@ -1,4 +1,5 @@
 class SendEmail
+
   def initialize(sender:, recipients:, subject:, body:, cc: [], attachments: [], email_type: 'statement', metadata: {})
     @sender = sender
     @recipients = Array(recipients)
