@@ -51,32 +51,53 @@ class ExportAndSendReports
         is_test_mode = ENV['TEST_MODE'] == 'true'
         recipient_email_address = (is_test_mode ? ENV['TEST_MODE_EMAIL'] : licensor.email.strip)
         cc_email_address = (is_test_mode ? nil : 'michael@filmmovement.com')
+        email_subject = "Your Q#{quarter} #{year} producer reports from Film Movement"
         mb = Mailgun::MessageBuilder.new
         mb.from('michael@filmmovement.com')
         mb.add_recipient(:to, recipient_email_address)
         mb.add_recipient(:cc, cc_email_address) if cc_email_address
-        mb.subject("Your Q#{quarter} #{year} producer reports from Film Movement")
+        mb.subject(email_subject)
         mb.body_text("#{royalty_email_text}")
         attachments.each { |attachment| mb.add_attachment(attachment.path) }
         begin
-          mg_client.send_message 'filmmovement.com', mb
+          response = mg_client.send_message 'filmmovement.com', mb
           film_titles = file_names.map { |file_name| file_name.split('-')[0...-1].join('-').strip }
+          report_ids = []
           film_titles.each do |film_title|
             if match_data = film_title.match(/ package (?<timestamp>\d+)/)
               film_ids = crossed_films_hash[match_data[:timestamp]]
               film_ids.each do |film_id|
                 report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
                 report.update!(date_sent: Date.today)
+                report_ids << report.id
               end
             else
               film_id = Film.find_by(title: film_title, film_type: ['Feature', 'TV Series']).id
               report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
               report.update!(date_sent: Date.today)
+              report_ids << report.id
             end
           end
-        rescue
+          sender = User.find_by(email: 'michael@filmmovement.com')
+          Email.create!(
+            email_type: 'statement',
+            recipient: recipient_email_address,
+            subject: email_subject,
+            mailgun_message_id: response.body['id'],
+            sender: sender,
+            status: :pending,
+            sent_at: Time.current,
+            metadata: {
+              licensor_id: licensor.id,
+              quarter: quarter,
+              year: year,
+              report_ids: report_ids
+            }
+          )
+        rescue => error
           p '-------------------------'
           p "FAILED TO SEND EMAIL TO #{licensor.name}"
+          p error
           p '-------------------------'
           new_line = (job.errors_text == '' ? '' : "\n")
           job.update({ errors_text: job.errors_text += (new_line + "Failed to send email to #{licensor.name}") })
