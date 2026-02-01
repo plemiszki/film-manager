@@ -209,7 +209,9 @@ export default class ReportDetails extends React.Component {
           {this.renderHeader()}
           <div className="white-box">
             {/* Current Period */}
-            <h4>Current Period</h4>
+            <div className="section-header-box">
+              <h4>Current Period</h4>
+            </div>
             {this.renderRowHeaders(showExpenseColumn, showGRColumn)}
             {this.state.streams.map((stream, index) => {
               const errorsKey = streams[index].id;
@@ -413,7 +415,17 @@ export default class ReportDetails extends React.Component {
             <hr />
 
             {/* Cumulative Period */}
-            <h4>Cumulative</h4>
+            <div className="section-header-box cumulative-header">
+              <h4>Cumulative</h4>
+              <div className="include-current-switch">
+                <span>Include Current Period</span>
+                {Common.renderSwitchComponent({
+                  checked: showJoined,
+                  onChange: () => this.clickToggle(),
+                  readOnly: spinner,
+                })}
+              </div>
+            </div>
             {this.renderRowHeaders(showExpenseColumn, showGRColumn)}
             {this.state.streams.map((stream, index) => {
               const errorsKey = streams[index].id;
@@ -731,19 +743,6 @@ export default class ReportDetails extends React.Component {
                 disabled={spinner}
                 float
               />
-              <Button
-                text={
-                  showJoined
-                    ? "Including Current Period"
-                    : "Not Including Current Period"
-                }
-                onClick={() => {
-                  this.clickToggle();
-                }}
-                disabled={spinner}
-                float
-                marginRight
-              />
             </div>
             <GrayedOut visible={spinner} />
             <Spinner visible={spinner} />
@@ -756,8 +755,31 @@ export default class ReportDetails extends React.Component {
             color: black;
             font-size: 18px;
             text-align: center;
-            margin: auto;
-            margin-bottom: 15px;
+            margin: 0;
+          }
+          .section-header-box {
+            border-radius: 8px;
+            border: solid 1px #e4e9ed;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+          }
+          .cumulative-header {
+            position: relative;
+          }
+          .include-current-switch {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+          .include-current-switch span {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2c2f33;
           }
           .stream-name {
             margin-top: 10px;
