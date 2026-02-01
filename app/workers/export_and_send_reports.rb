@@ -61,6 +61,8 @@ class ExportAndSendReports
         attachments.each { |attachment| mb.add_attachment(attachment.path) }
         begin
           response = mg_client.send_message 'filmmovement.com', mb
+          response_body = response.body.is_a?(String) ? JSON.parse(response.body) : response.body
+          mailgun_message_id = response_body['id']
           film_titles = file_names.map { |file_name| file_name.split('-')[0...-1].join('-').strip }
           report_ids = []
           film_titles.each do |film_title|
@@ -72,7 +74,11 @@ class ExportAndSendReports
                 report_ids << report.id
               end
             else
-              film_id = Film.find_by(title: film_title, film_type: ['Feature', 'TV Series']).id
+              film = Film.find_by(title: film_title, film_type: ['Feature', 'TV Series'])
+              film ||= Film.find_by(title: "#{film_title}?", film_type: ['Feature', 'TV Series'])
+              raise "Film with title #{film_title} not found." if film.nil?
+
+              film_id = film.id
               report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
               report.update!(date_sent: Date.today)
               report_ids << report.id
@@ -83,7 +89,7 @@ class ExportAndSendReports
             email_type: 'statement',
             recipient: recipient_email_address,
             subject: email_subject,
-            mailgun_message_id: response.body['id'],
+            mailgun_message_id: mailgun_message_id,
             sender: sender,
             status: :pending,
             sent_at: Time.current,
@@ -97,7 +103,8 @@ class ExportAndSendReports
         rescue => error
           p '-------------------------'
           p "FAILED TO SEND EMAIL TO #{licensor.name}"
-          p error
+          p "#{error.class}: #{error.message}"
+          p error.backtrace.first
           p '-------------------------'
           new_line = (job.errors_text == '' ? '' : "\n")
           job.update({ errors_text: job.errors_text += (new_line + "Failed to send email to #{licensor.name}") })
