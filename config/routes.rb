@@ -58,6 +58,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :emails, only: [:index]
+    post '/mailgun/webhooks' => 'mailgun_webhooks#create'
     get '/users' => '/api/users#api_index'
     get '/users/:id' => '/api/users#show'
     post '/users' => '/api/users#api_create'
