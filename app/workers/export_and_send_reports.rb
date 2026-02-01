@@ -45,24 +45,25 @@ class ExportAndSendReports
       if licensor.email && !licensor.email.strip.empty?
         file_names = Dir.entries(Rails.root.join('tmp', "#{time_started}", entry))
         file_names.select! { |string| (string != '.' && string != '..') }
-        attachments = file_names.map { |string| File.open(Rails.root.join('tmp', "#{time_started}", entry, string), "r") }
+        attachment_paths = file_names.map { |string| Rails.root.join('tmp', "#{time_started}", entry, string).to_s }
         royalty_email_text = "Hello,\n\nPlease find attached your Q#{quarter} #{year} producer reports. Please let me know if you have any questions, or if this report should be sent to a different person.\n\nKind Regards,\n\nMichael Rosenberg\nPresident\nFilm Movement"
-        mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
         is_test_mode = ENV['TEST_MODE'] == 'true'
         recipient_email_address = (is_test_mode ? ENV['TEST_MODE_EMAIL'] : licensor.email.strip)
         cc_email_address = (is_test_mode ? nil : 'michael@filmmovement.com')
         email_subject = "Your Q#{quarter} #{year} producer reports from Film Movement"
-        mb = Mailgun::MessageBuilder.new
-        mb.from('michael@filmmovement.com')
-        mb.add_recipient(:to, recipient_email_address)
-        mb.add_recipient(:cc, cc_email_address) if cc_email_address
-        mb.subject(email_subject)
-        mb.body_text("#{royalty_email_text}")
-        attachments.each { |attachment| mb.add_attachment(attachment.path) }
+        sender = User.find_by(email: 'michael@filmmovement.com')
         begin
-          response = mg_client.send_message 'filmmovement.com', mb
-          response_body = response.body.is_a?(String) ? JSON.parse(response.body) : response.body
-          mailgun_message_id = response_body['id']
+          emails = SendEmail.new(
+            sender: sender,
+            recipients: recipient_email_address,
+            cc: cc_email_address ? [cc_email_address] : [],
+            subject: email_subject,
+            body: royalty_email_text,
+            attachments: attachment_paths,
+            email_type: 'statement',
+            metadata: { licensor_id: licensor.id, quarter: quarter, year: year }
+          ).call
+
           film_titles = file_names.map { |file_name| file_name.split('-')[0...-1].join('-').strip }
           report_ids = []
           film_titles.each do |film_title|
@@ -84,22 +85,10 @@ class ExportAndSendReports
               report_ids << report.id
             end
           end
-          sender = User.find_by(email: 'michael@filmmovement.com')
-          Email.create!(
-            email_type: 'statement',
-            recipient: recipient_email_address,
-            subject: email_subject,
-            mailgun_message_id: mailgun_message_id,
-            sender: sender,
-            status: :pending,
-            sent_at: Time.current,
-            metadata: {
-              licensor_id: licensor.id,
-              quarter: quarter,
-              year: year,
-              report_ids: report_ids
-            }
-          )
+
+          emails.each do |email|
+            email.update!(metadata: email.metadata.merge('report_ids' => report_ids))
+          end
         rescue => error
           p '-------------------------'
           p "FAILED TO SEND EMAIL TO #{licensor.name}"
