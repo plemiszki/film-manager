@@ -1,7 +1,10 @@
 class Licensor < ActiveRecord::Base
 
+  EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+
   validates :name, presence: true
   validates :name, uniqueness: true
+  validate :email_format
 
   has_many :films
 
@@ -53,6 +56,19 @@ class Licensor < ActiveRecord::Base
 
   def licensor_share_constant_across_all_revenue_streams?
     films.map { |film| film.film_revenue_percentages.pluck(:value).reject { |value| value.zero? } }.flatten.uniq.length == 1
+  end
+
+  private
+
+  def email_format
+    return if email.blank?
+
+    emails = email.split(";").map(&:strip)
+    invalid_emails = emails.reject { |e| e.match?(EMAIL_REGEX) }
+
+    if invalid_emails.any?
+      errors.add(:email, "contains invalid email address(es)")
+    end
   end
 
 end
