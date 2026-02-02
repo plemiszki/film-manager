@@ -26,4 +26,8 @@ class Email < ActiveRecord::Base
     update!(status: :bounced, error_message: error_message)
   end
 
+  def description
+    email_type == "statement" ? "Statements - Q#{metadata["quarter"]} #{metadata["year"]}" : email_type.titleize
+  end
+
 end

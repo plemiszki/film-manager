@@ -1,6 +1,6 @@
 json.emails @emails do |email|
   json.id email.id
-  json.emailType email.email_type.titleize
+  json.description email.description
   json.sentBy email.sender&.name
   json.sentTo email.recipient
   json.sentAt email.sent_at&.strftime('%Y-%m-%d %H:%M:%S')

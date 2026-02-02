@@ -36,7 +36,7 @@ export default class EmailsIndex extends Component {
           <Table
             rows={emails}
             columns={[
-              { name: "emailType", header: "Type" },
+              { name: "description", header: "Description" },
               { name: "sentBy", header: "Sent By" },
               { name: "sentTo", header: "Sent To" },
               { name: "sentAt", header: "Sent At" },
