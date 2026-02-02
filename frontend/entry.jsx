@@ -122,6 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
   renderIf("virtual-booking-details", VirtualBookingDetails);
   renderIf("emails-index", EmailsIndex);
 
+  const reportEmailsNode = document.getElementById("report-emails-index");
+  if (reportEmailsNode) {
+    const reportId = parseUrl()[0];
+    createRoot(reportEmailsNode).render(<EmailsIndex reportId={reportId} />);
+  }
+
   renderSimpleDetails("shipping-address-details", {
     entityName: "shippingAddress",
     initialEntity: {
