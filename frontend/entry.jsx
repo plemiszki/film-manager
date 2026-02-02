@@ -128,6 +128,12 @@ document.addEventListener("DOMContentLoaded", () => {
     createRoot(reportEmailsNode).render(<EmailsIndex reportId={reportId} />);
   }
 
+  const licensorEmailsNode = document.getElementById("licensor-emails-index");
+  if (licensorEmailsNode) {
+    const licensorId = parseUrl()[0];
+    createRoot(licensorEmailsNode).render(<EmailsIndex licensorId={licensorId} />);
+  }
+
   renderSimpleDetails("shipping-address-details", {
     entityName: "shippingAddress",
     initialEntity: {

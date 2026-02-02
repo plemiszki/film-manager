@@ -11,14 +11,13 @@ export default class EmailsIndex extends Component {
   }
 
   componentDidMount() {
-    const { reportId } = this.props;
+    const { reportId, licensorId } = this.props;
+    const data = {};
+    if (reportId) data.reportId = reportId;
+    if (licensorId) data.licensorId = licensorId;
     fetchEntities({
       directory: "emails",
-      data: reportId
-        ? {
-            reportId,
-          }
-        : null,
+      data: Object.keys(data).length > 0 ? data : null,
     }).then((response) => {
       this.setState({
         spinner: false,
