@@ -2,8 +2,8 @@ class SendEmail
 
   def initialize(sender:, recipients:, subject:, body:, cc: [], attachments: [], email_type: 'statement', metadata: {})
     @sender = sender
-    @recipients = Array(recipients)
-    @cc = Array(cc)
+    @recipients = parse_recipients(recipients)
+    @cc = parse_recipients(cc)
     @subject = subject
     @body = body
     @attachments = Array(attachments)
@@ -37,6 +37,18 @@ class SendEmail
         sent_at: Time.current,
         metadata: @metadata
       )
+    end
+  end
+
+  private
+
+  def parse_recipients(value)
+    return [] if value.blank?
+
+    if value.is_a?(String)
+      value.split(";").map(&:strip).reject(&:blank?)
+    else
+      Array(value)
     end
   end
 end
