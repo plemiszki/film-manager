@@ -2,41 +2,39 @@ class ExportAndSendReports
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  def perform(days_due, quarter, year, time_started)
+  def perform(report_ids, quarter, year, time_started)
     FileUtils.mkdir_p("#{Rails.root}/tmp/#{time_started}")
     job = Job.find_by_job_id(time_started)
-    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(quarter: quarter, year: year, films: { export_reports: true, send_reports: true }, date_sent: nil)
+    reports = RoyaltyReport.includes(film: [:licensor], royalty_revenue_streams: [:revenue_stream]).where(id: report_ids)
     crossed_films_done = []
     crossed_films_hash = {}
     reports.each do |report|
       return if job.reload.status == "killed"
       film = report.film
-      if (days_due == "all" || film.days_statement_due == days_due.to_i)
-        licensor = film.licensor
-        if licensor
-          licensor_folder = "#{Rails.root}/tmp/#{time_started}/#{licensor.id}"
-          FileUtils.mkdir_p(licensor_folder) unless File.exist?(licensor_folder)
-          p '---------------------------'
-          p "#{film.title}"
-          p '---------------------------'
-          films = nil
-          if film.has_crossed_films?
-            next if crossed_films_done.include?(film.id)
-            report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
-            crossed_films_done += films.pluck(:id)
-          else
-            royalty_revenue_streams = report.royalty_revenue_streams
-          end
-          report_name = report.export(directory: licensor_folder, royalty_revenue_streams: royalty_revenue_streams, multiple_films: (films || nil))
-          if match_data = report_name.match(/ package (?<timestamp>\d+) /)
-            crossed_films_hash[match_data[:timestamp]] = films.pluck(:id)
-          end
+      licensor = film.licensor
+      if licensor
+        licensor_folder = "#{Rails.root}/tmp/#{time_started}/#{licensor.id}"
+        FileUtils.mkdir_p(licensor_folder) unless File.exist?(licensor_folder)
+        p '---------------------------'
+        p "#{film.title}"
+        p '---------------------------'
+        films = nil
+        if film.has_crossed_films?
+          next if crossed_films_done.include?(film.id)
+          report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
+          crossed_films_done += films.pluck(:id)
         else
-          new_line = (job.errors_text == '' ? '' : "\n")
-          job.update({ errors_text: job.errors_text += (new_line + "Film #{film.title} is missing licensor.") })
+          royalty_revenue_streams = report.royalty_revenue_streams
         end
-        job.update({ current_value: job.current_value + 1 })
+        report_name = report.export(directory: licensor_folder, royalty_revenue_streams: royalty_revenue_streams, multiple_films: (films || nil))
+        if match_data = report_name.match(/ package (?<timestamp>\d+) /)
+          crossed_films_hash[match_data[:timestamp]] = films.pluck(:id)
+        end
+      else
+        new_line = (job.errors_text == '' ? '' : "\n")
+        job.update({ errors_text: job.errors_text += (new_line + "Film #{film.title} is missing licensor.") })
       end
+      job.update({ current_value: job.current_value + 1 })
     end
     job.update({ first_line: 'Adding Emails to Mailgun Queue', current_value: 0, total_value: Dir.entries(Rails.root.join('tmp', "#{time_started}")).length - 2 })
     Dir.foreach("#{Rails.root}/tmp/#{time_started}") do |entry|
@@ -65,14 +63,14 @@ class ExportAndSendReports
           ).call
 
           film_titles = file_names.map { |file_name| file_name.split('-')[0...-1].join('-').strip }
-          report_ids = []
+          sent_report_ids = []
           film_titles.each do |film_title|
             if match_data = film_title.match(/ package (?<timestamp>\d+)/)
               film_ids = crossed_films_hash[match_data[:timestamp]]
               film_ids.each do |film_id|
                 report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
                 report.update!(date_sent: Date.today)
-                report_ids << report.id
+                sent_report_ids << report.id
               end
             else
               film = Film.find_by(title: film_title, film_type: ['Feature', 'TV Series'])
@@ -82,12 +80,12 @@ class ExportAndSendReports
               film_id = film.id
               report = RoyaltyReport.find_by(film_id: film_id, quarter: quarter, year: year)
               report.update!(date_sent: Date.today)
-              report_ids << report.id
+              sent_report_ids << report.id
             end
           end
 
           emails.each do |email|
-            email.update!(metadata: email.metadata.merge('report_ids' => report_ids))
+            email.update!(metadata: email.metadata.merge('report_ids' => sent_report_ids))
           end
         rescue => error
           p '-------------------------'

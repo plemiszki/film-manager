@@ -4,7 +4,6 @@ RSpec.describe ExportAndSendReports do
   let(:time_started) { Time.now.to_i.to_s }
   let(:quarter) { 1 }
   let(:year) { 2025 }
-  let(:days_due) { 'all' }
 
   let!(:label) { create(:label) }
   let!(:revenue_stream) { create(:revenue_stream, name: 'Video') }
@@ -27,6 +26,7 @@ RSpec.describe ExportAndSendReports do
   end
   let!(:job) { create(:job, job_id: time_started, status: :running) }
 
+  let(:report_ids) { [royalty_report.id] }
   let(:mailgun_client) { instance_double(Mailgun::Client) }
   let(:mailgun_response) { double('response', body: { 'id' => '<test-message-id@filmmovement.com>' }) }
   let(:report_filename) { "#{film.title} - Q#{quarter} #{year}.pdf" }
@@ -52,12 +52,12 @@ RSpec.describe ExportAndSendReports do
 
   describe '#perform' do
     it 'creates the temporary directory' do
-      described_class.new.perform(days_due, quarter, year, time_started)
+      described_class.new.perform(report_ids, quarter, year, time_started)
       expect(Dir.exist?("#{Rails.root}/tmp/#{time_started}")).to be true
     end
 
     it 'exports reports for films with licensors' do
-      described_class.new.perform(days_due, quarter, year, time_started)
+      described_class.new.perform(report_ids, quarter, year, time_started)
       licensor_folder = "#{Rails.root}/tmp/#{time_started}/#{licensor.id}"
       expect(Dir.exist?(licensor_folder)).to be true
       expect(Dir.entries(licensor_folder)).to include(report_filename)
@@ -65,17 +65,17 @@ RSpec.describe ExportAndSendReports do
 
     it 'sends email via Mailgun' do
       expect(mailgun_client).to receive(:send_message).with('filmmovement.com', anything)
-      described_class.new.perform(days_due, quarter, year, time_started)
+      described_class.new.perform(report_ids, quarter, year, time_started)
     end
 
     it 'creates an Email record after sending' do
       expect {
-        described_class.new.perform(days_due, quarter, year, time_started)
+        described_class.new.perform(report_ids, quarter, year, time_started)
       }.to change(Email, :count).by(1)
     end
 
     it 'creates Email with correct attributes' do
-      described_class.new.perform(days_due, quarter, year, time_started)
+      described_class.new.perform(report_ids, quarter, year, time_started)
 
       email = Email.last
       expect(email.email_type).to eq('statement')
@@ -87,7 +87,7 @@ RSpec.describe ExportAndSendReports do
     end
 
     it 'creates Email with correct metadata' do
-      described_class.new.perform(days_due, quarter, year, time_started)
+      described_class.new.perform(report_ids, quarter, year, time_started)
 
       email = Email.last
       expect(email.metadata['licensor_id']).to eq(licensor.id)
@@ -97,12 +97,12 @@ RSpec.describe ExportAndSendReports do
     end
 
     it 'updates report date_sent' do
-      described_class.new.perform(days_due, quarter, year, time_started)
+      described_class.new.perform(report_ids, quarter, year, time_started)
       expect(royalty_report.reload.date_sent).to eq(Date.today)
     end
 
     it 'updates job status to success when no errors' do
-      described_class.new.perform(days_due, quarter, year, time_started)
+      described_class.new.perform(report_ids, quarter, year, time_started)
       expect(job.reload.status).to eq('success')
       expect(job.first_line).to eq('Done!')
     end
@@ -111,7 +111,7 @@ RSpec.describe ExportAndSendReports do
       before { film.update!(licensor: nil) }
 
       it 'adds error to job' do
-        described_class.new.perform(days_due, quarter, year, time_started)
+        described_class.new.perform(report_ids, quarter, year, time_started)
         expect(job.reload.errors_text).to include("Film #{film.title} is missing licensor")
       end
     end
@@ -120,13 +120,13 @@ RSpec.describe ExportAndSendReports do
       before { licensor.update!(email: '') }
 
       it 'adds error to job' do
-        described_class.new.perform(days_due, quarter, year, time_started)
+        described_class.new.perform(report_ids, quarter, year, time_started)
         expect(job.reload.errors_text).to include("Licensor #{licensor.name} is missing email")
       end
 
       it 'does not create an Email record' do
         expect {
-          described_class.new.perform(days_due, quarter, year, time_started)
+          described_class.new.perform(report_ids, quarter, year, time_started)
         }.not_to change(Email, :count)
       end
     end
@@ -137,18 +137,18 @@ RSpec.describe ExportAndSendReports do
       end
 
       it 'adds error to job' do
-        described_class.new.perform(days_due, quarter, year, time_started)
+        described_class.new.perform(report_ids, quarter, year, time_started)
         expect(job.reload.errors_text).to include("Failed to send email to #{licensor.name}")
       end
 
       it 'does not create an Email record' do
         expect {
-          described_class.new.perform(days_due, quarter, year, time_started)
+          described_class.new.perform(report_ids, quarter, year, time_started)
         }.not_to change(Email, :count)
       end
 
       it 'sets job status to failed' do
-        described_class.new.perform(days_due, quarter, year, time_started)
+        described_class.new.perform(report_ids, quarter, year, time_started)
         expect(job.reload.status).to eq('failed')
       end
     end
@@ -158,28 +158,22 @@ RSpec.describe ExportAndSendReports do
 
       it 'stops processing early' do
         expect_any_instance_of(RoyaltyReport).not_to receive(:export)
-        described_class.new.perform(days_due, quarter, year, time_started)
+        described_class.new.perform(report_ids, quarter, year, time_started)
       end
     end
 
-    context 'when filtering by days_due' do
-      let(:days_due) { '30' }
+    context 'when report_ids is empty' do
+      let(:report_ids) { [] }
 
-      before { film.update!(days_statement_due: 30) }
-
-      it 'processes films matching days_due' do
-        described_class.new.perform(days_due, quarter, year, time_started)
-        licensor_folder = "#{Rails.root}/tmp/#{time_started}/#{licensor.id}"
-        expect(Dir.entries(licensor_folder)).to include(report_filename)
+      it 'completes successfully with no reports to process' do
+        described_class.new.perform(report_ids, quarter, year, time_started)
+        expect(job.reload.status).to eq('success')
       end
 
-      context 'when film does not match days_due' do
-        before { film.update!(days_statement_due: 45) }
-
-        it 'skips the film' do
-          expect_any_instance_of(RoyaltyReport).not_to receive(:export)
-          described_class.new.perform(days_due, quarter, year, time_started)
-        end
+      it 'does not create any Email records' do
+        expect {
+          described_class.new.perform(report_ids, quarter, year, time_started)
+        }.not_to change(Email, :count)
       end
     end
 
@@ -192,7 +186,7 @@ RSpec.describe ExportAndSendReports do
       end
 
       it 'sends to test email address' do
-        described_class.new.perform(days_due, quarter, year, time_started)
+        described_class.new.perform(report_ids, quarter, year, time_started)
         email = Email.last
         expect(email.recipient).to eq('test@example.com')
       end

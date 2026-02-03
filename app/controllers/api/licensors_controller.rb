@@ -54,12 +54,11 @@ class Api::LicensorsController < AdminController
     return render(json: { error: "Unauthorized" }, status: :unauthorized) unless current_user.access == "super_admin"
 
     licensor = Licensor.find(params[:id])
-    film_ids = Film.where(licensor_id: licensor.id).pluck(:id)
-    total_reports = RoyaltyReport.where(quarter: params[:quarter], year: params[:year], film_id: film_ids, date_sent: nil)
+    reports = RoyaltyReport.joins(:film).where(films: { licensor_id: licensor.id }, quarter: params[:quarter], year: params[:year])
 
     time_started = Time.now.to_s
-    job = Job.create!(job_id: time_started, first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: total_reports.length)
-    ExportAndSendLicensorReports.perform_async(licensor.id, params[:quarter], params[:year], time_started)
+    job = Job.create!(job_id: time_started, first_line: "Exporting Reports", second_line: true, current_value: 0, total_value: reports.length)
+    ExportAndSendReports.perform_async(reports.pluck(:id), params[:quarter], params[:year], time_started)
     render json: { job: job.render_json }
   end
 

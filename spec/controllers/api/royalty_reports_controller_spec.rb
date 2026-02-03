@@ -689,12 +689,152 @@ RSpec.describe Api::RoyaltyReportsController do
   end
 
   context '#send_all' do
+    let!(:send_all_licensor) { create(:licensor, name: 'Send All Test Licensor') }
+    let!(:film_30_days) do
+      create(:no_expenses_recouped_film,
+        title: 'Film 30 Days',
+        licensor: send_all_licensor,
+        days_statement_due: 30,
+        export_reports: true,
+        send_reports: true
+      )
+    end
+    let!(:film_45_days) do
+      create(:no_expenses_recouped_film,
+        title: 'Film 45 Days',
+        licensor: send_all_licensor,
+        days_statement_due: 45,
+        export_reports: true,
+        send_reports: true
+      )
+    end
+    let!(:report_30_days) do
+      create(:royalty_report,
+        film: film_30_days,
+        quarter: 1,
+        year: 2025,
+        date_sent: nil
+      )
+    end
+    let!(:report_45_days) do
+      create(:royalty_report,
+        film: film_45_days,
+        quarter: 1,
+        year: 2025,
+        date_sent: nil
+      )
+    end
 
     it 'returns an OK status code' do
-      get :send_all
+      post :send_all, params: { quarter: 1, year: 2025, days_due: 'all' }
       expect(response.status).to eq(200)
     end
 
+    it 'creates a job' do
+      expect {
+        post :send_all, params: { quarter: 1, year: 2025, days_due: 'all' }
+      }.to change(Job, :count).by(1)
+    end
+
+    it 'enqueues ExportAndSendReports worker' do
+      expect(ExportAndSendReports).to receive(:perform_async).with(
+        array_including(report_30_days.id, report_45_days.id),
+        '1',
+        '2025',
+        anything
+      )
+      post :send_all, params: { quarter: 1, year: 2025, days_due: 'all' }
+    end
+
+    context 'when days_due is "all"' do
+      it 'includes reports for all days_statement_due values' do
+        expect(ExportAndSendReports).to receive(:perform_async).with(
+          array_including(report_30_days.id, report_45_days.id),
+          '1',
+          '2025',
+          anything
+        )
+        post :send_all, params: { quarter: 1, year: 2025, days_due: 'all' }
+      end
+
+      it 'sets correct total_value on job' do
+        post :send_all, params: { quarter: 1, year: 2025, days_due: 'all' }
+        job = Job.last
+        expect(job.total_value).to eq(2)
+      end
+    end
+
+    context 'when days_due is 30' do
+      it 'only includes reports for films with days_statement_due of 30' do
+        expect(ExportAndSendReports).to receive(:perform_async).with(
+          [report_30_days.id],
+          '1',
+          '2025',
+          anything
+        )
+        post :send_all, params: { quarter: 1, year: 2025, days_due: '30' }
+      end
+
+      it 'sets correct total_value on job' do
+        post :send_all, params: { quarter: 1, year: 2025, days_due: '30' }
+        job = Job.last
+        expect(job.total_value).to eq(1)
+      end
+    end
+
+    context 'when days_due is 45' do
+      it 'only includes reports for films with days_statement_due of 45' do
+        expect(ExportAndSendReports).to receive(:perform_async).with(
+          [report_45_days.id],
+          '1',
+          '2025',
+          anything
+        )
+        post :send_all, params: { quarter: 1, year: 2025, days_due: '45' }
+      end
+    end
+
+    context 'when report is already sent' do
+      before { report_30_days.update!(date_sent: Date.today) }
+
+      it 'excludes already sent reports' do
+        expect(ExportAndSendReports).to receive(:perform_async).with(
+          [report_45_days.id],
+          '1',
+          '2025',
+          anything
+        )
+        post :send_all, params: { quarter: 1, year: 2025, days_due: 'all' }
+      end
+    end
+
+    context 'when film has export_reports false' do
+      before { film_30_days.update!(export_reports: false) }
+
+      it 'excludes reports for films with export_reports false' do
+        expect(ExportAndSendReports).to receive(:perform_async).with(
+          [report_45_days.id],
+          '1',
+          '2025',
+          anything
+        )
+        post :send_all, params: { quarter: 1, year: 2025, days_due: 'all' }
+      end
+    end
+
+    context 'when film has send_reports false' do
+      before { film_30_days.update!(send_reports: false) }
+
+      it 'excludes reports for films with send_reports false' do
+        expect(ExportAndSendReports).to receive(:perform_async).with(
+          [report_45_days.id],
+          '1',
+          '2025',
+          anything
+        )
+        post :send_all, params: { quarter: 1, year: 2025, days_due: 'all' }
+      end
+    end
   end
 
   context '#totals' do
