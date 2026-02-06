@@ -1,6 +1,7 @@
 RSpec.configure do |config|
 
   config.before(:each) do
+    WebMock.disable!
     $admin_user = create(:user, email: 'peter+features@filmmovement.com', has_auto_renew_approval: true)
   end
 
