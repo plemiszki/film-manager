@@ -27,11 +27,6 @@ class Api::RoyaltyReportsController < AdminController
   end
 
   def update
-    error_present = false
-    errors = {
-      reportErrors: [],
-      streamErrors: {}
-    }
     ActiveRecord::Base.transaction do
       @report = RoyaltyReport.find(params[:id])
       @streams = @report.royalty_revenue_streams
