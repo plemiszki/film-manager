@@ -29,7 +29,7 @@ describe 'royalty_report_details', type: :feature do
   it 'displays stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
     wait_for_ajax
-    click_btn('Including Current Period')
+    flip_switch('include-current-period')
     0.upto(13) do |n|
       expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentRevenue\"]").value).to eq(dollarify(number_with_precision(n * 100, precision: 2, delimiter: ',')))
       expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentExpense\"]").value).to eq(dollarify(number_with_precision(n * 10, precision: 2, delimiter: ',')))
@@ -44,7 +44,7 @@ describe 'royalty_report_details', type: :feature do
   it 'calculates the report, not including current period' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
     wait_for_ajax
-    click_btn('Including Current Period')
+    flip_switch('include-current-period')
     0.upto(13) do |n|
       current_difference = (n * 100) - (n * 10)
       current_net = current_difference.fdiv(2)
@@ -81,10 +81,38 @@ describe 'royalty_report_details', type: :feature do
     expect(find('input[data-field="joinedAmountDue"]').value).to eq("$42,525.00")
   end
 
+  it 'displays only emails associated with the report' do
+    create(:email,
+      email_type: 'statement',
+      recipient: 'associated@example.com',
+      status: :delivered,
+      sent_at: Time.zone.parse('2025-06-15 10:30:00'),
+      metadata: { 'report_ids' => [@royalty_report.id], 'quarter' => 1, 'year' => 2025 },
+      sender: $admin_user,
+    )
+    create(:email,
+      email_type: 'statement',
+      recipient: 'unassociated@example.com',
+      status: :delivered,
+      sent_at: Time.zone.parse('2025-06-15 10:30:00'),
+      metadata: { 'report_ids' => [999], 'quarter' => 2, 'year' => 2025 },
+      sender: $admin_user,
+    )
+    visit royalty_report_path(@royalty_report, as: $admin_user)
+    wait_for_ajax
+    expect(page).to have_content 'Statements - Q1 2025'
+    expect(page).to have_content 'Peter Lemiszki'
+    expect(page).to have_content 'associated@example.com'
+    expect(page).to have_content '2025-06-15 10:30:00'
+    expect(page).to have_content 'Delivered'
+    expect(page).not_to have_content 'unassociated@example.com'
+    expect(page).not_to have_content 'Statements - Q2 2025'
+  end
+
   it 'validates stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
     wait_for_ajax
-    click_btn('Including Current Period')
+    flip_switch('include-current-period')
     clear_form
     save_and_wait
     expect(find_all('input.error').count).to eq(87)
@@ -93,14 +121,19 @@ describe 'royalty_report_details', type: :feature do
   it 'updates stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
     wait_for_ajax
-    click_btn('Including Current Period')
+    flip_switch('include-current-period')
     0.upto(13) do |n|
       x = n + 1
-      current_revenue_field = find("input[data-test-index=\"#{n}\"][data-field=\"currentRevenue\"]").set(x * 100)
-      current_expense_field = find("input[data-test-index=\"#{n}\"][data-field=\"currentExpense\"]").set(x * 10)
-      percentage_field = find("input[data-test-index=\"#{n}\"][data-field=\"licensorPercentage\"]", match: :first).set(x)
-      cume_revenue_field = find("input[data-test-index=\"#{n}\"][data-field=\"cumeRevenue\"]").set(x * 1_100)
-      cume_expense_field = find("input[data-test-index=\"#{n}\"][data-field=\"cumeExpense\"]").set(x * 1_000)
+      current_revenue_field = find("input[data-test-index=\"#{n}\"][data-field=\"currentRevenue\"]")
+      current_revenue_field.set(x * 100)
+      current_expense_field = find("input[data-test-index=\"#{n}\"][data-field=\"currentExpense\"]")
+      current_expense_field.set(x * 10)
+      percentage_field = find("input[data-test-index=\"#{n}\"][data-field=\"licensorPercentage\"]", match: :first)
+      percentage_field.set(x)
+      cume_revenue_field = find("input[data-test-index=\"#{n}\"][data-field=\"cumeRevenue\"]")
+      cume_revenue_field.set(x * 1_100)
+      cume_expense_field = find("input[data-test-index=\"#{n}\"][data-field=\"cumeExpense\"]")
+      cume_expense_field.set(x * 1_000)
     end
     data = {
       mg: 11,

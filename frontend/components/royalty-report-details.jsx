@@ -423,6 +423,7 @@ export default class ReportDetails extends React.Component {
                   checked: showJoined,
                   onChange: () => this.clickToggle(),
                   readOnly: spinner,
+                  testLabel: 'include-current-period',
                 })}
               </div>
             </div>
