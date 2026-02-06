@@ -6,6 +6,7 @@ RSpec.describe SendEmail do
 
   before do
     allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with('TEST_MODE').and_return(nil)
     allow(ENV).to receive(:[]).with('MAILGUN_KEY').and_return('test-key')
     allow(Mailgun::Client).to receive(:new).and_return(mailgun_client)
     allow(mailgun_client).to receive(:send_message) do

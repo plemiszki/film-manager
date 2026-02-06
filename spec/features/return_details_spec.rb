@@ -5,7 +5,6 @@ require 'sidekiq/testing'
 describe 'return_details', type: :feature do
 
   before do
-    WebMock.disable!
     Sidekiq::Testing.inline!
   end
 
@@ -96,7 +95,7 @@ describe 'return_details', type: :feature do
     expect(page).to have_content('Generating Credit Memo')
   end
 
-  it 'generates the credit memo', :type => 'sidekiq' do
+  it 'generates the credit memo' do
     create(:setting)
     create(:return_item)
     visit return_path(@return, as: $admin_user)

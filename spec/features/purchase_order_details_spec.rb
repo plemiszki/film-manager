@@ -5,7 +5,6 @@ require 'sidekiq/testing'
 describe 'purchase_order_details_spec', type: :feature do
 
   before do
-    WebMock.disable!
     Sidekiq::Testing.inline!
   end
 
@@ -157,7 +156,7 @@ describe 'purchase_order_details_spec', type: :feature do
     expect(PurchaseOrder.find_by_id(@purchase_order.id)).to be(nil)
   end
 
-  it 'ships the purchase order', :type => 'sidekiq' do
+  it 'ships the purchase order' do
     create(:setting)
     visit purchase_order_path(@purchase_order, as: $admin_user)
     click_btn('Ship Now')

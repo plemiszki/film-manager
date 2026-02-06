@@ -5,7 +5,6 @@ require 'sidekiq/testing'
 describe 'royalty_reports_index', type: :feature do
 
   before do
-    WebMock.disable!
     Sidekiq::Testing.inline!
   end
 
@@ -34,7 +33,7 @@ describe 'royalty_reports_index', type: :feature do
     expect(page).to have_content 'Hippo Entertainment'
   end
 
-  it 'imports revenue', :type => 'sidekiq' do
+  it 'imports revenue' do
     create_revenue_streams
     film = create(:expenses_recouped_from_top_film)
     film.film_revenue_percentages.update_all(value: 50)
@@ -47,7 +46,7 @@ describe 'royalty_reports_index', type: :feature do
     expect(RoyaltyReport.count).to eq(1)
   end
 
-  it 'imports expenses', :type => 'sidekiq' do
+  it 'imports expenses' do
     create_revenue_streams
     film = create(:expenses_recouped_from_top_film)
     film.film_revenue_percentages.update_all(value: 50)
