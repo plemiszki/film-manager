@@ -106,6 +106,7 @@ Rails.application.routes.draw do
     get '/royalty_reports/:id/export' => '/api/royalty_reports#export'
     post '/royalty_reports/export_all' => '/api/royalty_reports#export_all'
     post '/royalty_reports/send_all' => '/api/royalty_reports#send_all'
+    post '/royalty_reports/:id/send' => '/api/royalty_reports#send_report'
     post '/royalty_reports/error_check' => '/api/royalty_reports#error_check'
     post '/royalty_reports/licensor_invoices' => '/api/royalty_reports#licensor_invoices'
     post '/royalty_reports/totals' => '/api/royalty_reports#totals'

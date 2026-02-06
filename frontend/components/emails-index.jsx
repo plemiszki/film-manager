@@ -5,7 +5,9 @@ import {
   Spinner,
   GrayedOut,
   fetchEntities,
+  sendRequest,
   Button,
+  Common,
 } from "handy-components";
 
 export default class EmailsIndex extends Component {
@@ -16,10 +18,16 @@ export default class EmailsIndex extends Component {
       emails: [],
       licensorEmailAddresses: [],
       sendModalOpen: false,
+      job: {},
+      jobModalOpen: false,
     };
   }
 
   componentDidMount() {
+    this.fetchEmails();
+  }
+
+  fetchEmails() {
     const { reportId, licensorId } = this.props;
     const data = {};
     if (reportId) data.reportId = reportId;
@@ -36,8 +44,30 @@ export default class EmailsIndex extends Component {
     });
   }
 
+  clickSend() {
+    const { reportId } = this.props;
+    this.setState({ sendModalOpen: false, spinner: true });
+    sendRequest(`/api/royalty_reports/${reportId}/send`, {
+      method: "POST",
+    }).then((response) => {
+      this.setState({
+        spinner: false,
+        job: response.job,
+        jobModalOpen: true,
+      });
+    });
+  }
+
+  componentDidUpdate() {
+    Common.updateJobModal.call(this, {
+      successCallback: () => {
+        this.fetchEmails();
+      },
+    });
+  }
+
   render() {
-    const { spinner, emails, licensorEmailAddresses, sendModalOpen } =
+    const { spinner, emails, licensorEmailAddresses, sendModalOpen, job } =
       this.state;
 
     return (
@@ -104,7 +134,7 @@ export default class EmailsIndex extends Component {
             },
           }}
         >
-          <h1 style={{ marginBottom: 15 }}>
+          <h1 className="send-email-modal-header" style={{ marginBottom: 15 }}>
             {`Send report to ${licensorEmailAddresses.length > 1 ? "these email addresses" : "this email address"}?`}
           </h1>
           {licensorEmailAddresses.map((email, index) => (
@@ -123,7 +153,7 @@ export default class EmailsIndex extends Component {
           <div style={{ marginTop: 20 }}>
             <Button
               text="Send"
-              onClick={() => {}}
+              onClick={() => this.clickSend()}
               style={{ marginRight: 30 }}
             />
             <Button
@@ -133,8 +163,9 @@ export default class EmailsIndex extends Component {
             />
           </div>
         </Modal>
+        {Common.renderJobModal.call(this, job)}
         <style jsx>{`
-          h1 {
+          h1.send-email-modal-header {
             color: #2c2f33;
             font-family: "TeachableSans-SemiBold";
             font-size: 20px;
