@@ -11,6 +11,7 @@ class RoyaltyReport < ActiveRecord::Base
   validates_numericality_of :amount_paid, :greater_than_or_equal_to => 0
 
   belongs_to :film
+  has_one :licensor, through: :film
   has_many :royalty_revenue_streams, -> { joins(:revenue_stream).order('revenue_streams.order') }, dependent: :destroy
 
   def self.create_missing_film_statement(year:, quarter:, film_id:)

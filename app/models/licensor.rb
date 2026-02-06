@@ -58,6 +58,10 @@ class Licensor < ActiveRecord::Base
     films.map { |film| film.film_revenue_percentages.pluck(:value).reject { |value| value.zero? } }.flatten.uniq.length == 1
   end
 
+  def email_addresses
+    email.split(";").map(&:strip)
+  end
+
   private
 
   def email_format
