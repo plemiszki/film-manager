@@ -39,7 +39,7 @@ export default class EmailsIndex extends Component {
       this.setState({
         spinner: false,
         emails: response.emails,
-        licensorEmailAddresses: response.licensorEmailAddresses,
+        licensorEmailAddresses: response.licensorEmailAddresses || [],
       });
     });
   }
