@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'sidekiq/testing'
 require 'support/features_helper'
 require 'support/controllers_helper'
 include ActionView::Helpers::NumberHelper
@@ -107,6 +108,37 @@ describe 'royalty_report_details', type: :feature do
     expect(page).to have_content 'Delivered'
     expect(page).not_to have_content 'unassociated@example.com'
     expect(page).not_to have_content 'Statements - Q2 2025'
+  end
+
+  it 'sends an email report' do
+    Sidekiq::Testing.inline!
+    create(:user, email: 'michael@filmmovement.com', name: 'Michael Rosenberg')
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with('TEST_MODE').and_return(nil)
+    allow(ENV).to receive(:[]).with('MAILGUN_KEY').and_return('test-key')
+    mailgun_client = instance_double(Mailgun::Client)
+    allow(Mailgun::Client).to receive(:new).and_return(mailgun_client)
+    allow(mailgun_client).to receive(:send_message).and_return(
+      double('response', body: { 'id' => "<#{SecureRandom.uuid}@filmmovement.com>" })
+    )
+    allow_any_instance_of(RoyaltyReport).to receive(:export) do |report, args|
+      filepath = File.join(args[:directory], "#{report.film.title} - Q#{report.quarter} #{report.year}.pdf")
+      FileUtils.touch(filepath)
+      "#{report.film.title} - Q#{report.quarter} #{report.year}.pdf"
+    end
+    visit royalty_report_path(@royalty_report, as: $admin_user)
+    wait_for_ajax
+    click_btn('Email Report')
+    expect(page).to have_content 'Send report to this email address?'
+    expect(page).to have_content 'hippo@hippoentertainment.com'
+    click_btn('Send')
+    expect(page).to have_content 'Done!'
+    click_btn('OK')
+    wait_for_ajax
+    expect(page).to have_content 'hippo@hippoentertainment.com'
+    expect(page).to have_content 'Pending'
+    expect(page).to have_content 'Statements - Q1 2019'
+    expect(@royalty_report.reload.date_sent).to eq(Date.today)
   end
 
   it 'validates stored values in the report' do
