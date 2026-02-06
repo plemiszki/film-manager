@@ -2,13 +2,19 @@ class SendEmail
 
   def initialize(sender:, recipients:, subject:, body:, cc: [], attachments: [], email_type: 'statement', metadata: {})
     @sender = sender
-    @recipients = parse_recipients(recipients)
-    @cc = parse_recipients(cc)
     @subject = subject
     @body = body
     @attachments = Array(attachments)
     @email_type = email_type
     @metadata = metadata
+
+    if test_mode?
+      @recipients = [ENV['TEST_MODE_EMAIL']]
+      @cc = []
+    else
+      @recipients = parse_recipients(recipients)
+      @cc = parse_recipients(cc)
+    end
   end
 
   def call
@@ -41,6 +47,10 @@ class SendEmail
   end
 
   private
+
+  def test_mode?
+    ENV['TEST_MODE'] == 'true'
+  end
 
   def parse_recipients(value)
     return [] if value.blank?

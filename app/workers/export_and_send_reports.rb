@@ -45,16 +45,13 @@ class ExportAndSendReports
         file_names.select! { |string| (string != '.' && string != '..') }
         attachment_paths = file_names.map { |string| Rails.root.join('tmp', "#{time_started}", entry, string).to_s }
         royalty_email_text = "Hello,\n\nPlease find attached your Q#{quarter} #{year} producer reports. Please let me know if you have any questions, or if this report should be sent to a different person.\n\nKind Regards,\n\nMichael Rosenberg\nPresident\nFilm Movement"
-        is_test_mode = ENV['TEST_MODE'] == 'true'
-        recipient_email_address = (is_test_mode ? ENV['TEST_MODE_EMAIL'] : licensor.email.strip)
-        cc_email_address = (is_test_mode ? nil : 'michael@filmmovement.com')
         email_subject = "Your Q#{quarter} #{year} producer reports from Film Movement"
         sender = User.find_by(email: 'michael@filmmovement.com')
         begin
           emails = SendEmail.new(
             sender: sender,
-            recipients: recipient_email_address,
-            cc: cc_email_address ? [cc_email_address] : [],
+            recipients: licensor.email.strip,
+            cc: ['michael@filmmovement.com'],
             subject: email_subject,
             body: royalty_email_text,
             attachments: attachment_paths,
