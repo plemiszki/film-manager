@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Table, Spinner, GrayedOut, fetchEntities } from "handy-components";
+import {
+  Table,
+  Spinner,
+  GrayedOut,
+  fetchEntities,
+  Button,
+} from "handy-components";
 
 export default class EmailsIndex extends Component {
   constructor(props) {
@@ -32,6 +38,9 @@ export default class EmailsIndex extends Component {
     return (
       <div className="handy-component">
         <h1>Emails</h1>
+        {this.props.sendReportButton && (
+          <Button float text="Email Report" style={{ marginLeft: 20 }} />
+        )}
         <div className="white-box">
           <Table
             rows={emails}

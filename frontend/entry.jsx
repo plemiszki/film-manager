@@ -125,7 +125,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const reportEmailsNode = document.getElementById("report-emails-index");
   if (reportEmailsNode) {
     const reportId = parseUrl()[0];
-    createRoot(reportEmailsNode).render(<EmailsIndex reportId={reportId} />);
+    createRoot(reportEmailsNode).render(
+      <EmailsIndex reportId={reportId} sendReportButton />
+    );
   }
 
   const licensorEmailsNode = document.getElementById("licensor-emails-index");
