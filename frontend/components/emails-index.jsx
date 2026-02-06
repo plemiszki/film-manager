@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Modal from "react-modal";
 import {
   Table,
   Spinner,
@@ -13,6 +14,8 @@ export default class EmailsIndex extends Component {
     this.state = {
       spinner: true,
       emails: [],
+      licensorEmailAddresses: [],
+      sendModalOpen: false,
     };
   }
 
@@ -28,18 +31,25 @@ export default class EmailsIndex extends Component {
       this.setState({
         spinner: false,
         emails: response.emails,
+        licensorEmailAddresses: response.licensorEmailAddresses,
       });
     });
   }
 
   render() {
-    const { spinner, emails } = this.state;
+    const { spinner, emails, licensorEmailAddresses, sendModalOpen } =
+      this.state;
 
     return (
       <div className="handy-component">
         <h1>Emails</h1>
         {this.props.sendReportButton && (
-          <Button float text="Email Report" style={{ marginLeft: 20 }} />
+          <Button
+            float
+            text="Email Report"
+            style={{ marginLeft: 20 }}
+            onClick={() => this.setState({ sendModalOpen: true })}
+          />
         )}
         <div className="white-box">
           <Table
@@ -75,6 +85,63 @@ export default class EmailsIndex extends Component {
           <Spinner visible={spinner} />
           <GrayedOut visible={spinner} />
         </div>
+        <Modal
+          isOpen={sendModalOpen}
+          onRequestClose={() => this.setState({ sendModalOpen: false })}
+          contentLabel="Modal"
+          style={{
+            overlay: { background: "rgba(0, 0, 0, 0.50)" },
+            content: {
+              background: "#FFFFFF",
+              margin: "auto",
+              maxWidth: 500,
+              height: 140 + licensorEmailAddresses.length * 30,
+              border: "solid 1px #5F5F5F",
+              borderRadius: "6px",
+              textAlign: "center",
+              color: "#5F5F5F",
+              padding: "20px",
+            },
+          }}
+        >
+          <h1 style={{ marginBottom: 15 }}>
+            {`Send report to ${licensorEmailAddresses.length > 1 ? "these email addresses" : "this email address"}?`}
+          </h1>
+          {licensorEmailAddresses.map((email, index) => (
+            <p
+              key={index}
+              style={{
+                margin: 5,
+                fontSize: 16,
+                fontWeight: "bold",
+                marginBottom: 10,
+              }}
+            >
+              {email}
+            </p>
+          ))}
+          <div style={{ marginTop: 20 }}>
+            <Button
+              text="Send"
+              onClick={() => {}}
+              style={{ marginRight: 30 }}
+            />
+            <Button
+              text="Cancel"
+              gray
+              onClick={() => this.setState({ sendModalOpen: false })}
+            />
+          </div>
+        </Modal>
+        <style jsx>{`
+          h1 {
+            color: #2c2f33;
+            font-family: "TeachableSans-SemiBold";
+            font-size: 20px;
+            line-height: 27px;
+            margin-bottom: 20px;
+          }
+        `}</style>
       </div>
     );
   }
