@@ -85,11 +85,18 @@ export default class EmailsIndex extends Component {
   }
 
   clickSend() {
-    const { reportId } = this.props;
+    const { reportId, licensorId } = this.props;
     this.setState({ sendModalOpen: false, spinner: true });
-    sendRequest(`/api/royalty_reports/${reportId}/send`, {
-      method: "POST",
-    }).then((response) => {
+    let url;
+    let options = { method: "POST" };
+    if (licensorId) {
+      const { quarter, year } = this.state.sendOptions;
+      url = `/api/licensors/${licensorId}/send_reports`;
+      options.data = { quarter, year };
+    } else {
+      url = `/api/royalty_reports/${reportId}/send`;
+    }
+    sendRequest(url, options).then((response) => {
       this.setState({
         spinner: false,
         job: response.job,
