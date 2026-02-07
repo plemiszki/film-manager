@@ -7,6 +7,12 @@ class Api::EmailsController < AdminController
     end
     if licensor_id.present?
       @emails = @emails.where("metadata->>'licensor_id' = ?", params[:licensor_id].to_s)
+      @quarters = RoyaltyReport.joins(:film)
+        .where(films: { licensor_id: licensor_id })
+        .distinct
+        .order(:year, :quarter)
+        .pluck(:quarter, :year)
+        .map { |q, y| { quarter: q, year: y } }
     end
     if report_id || licensor_id
       @licensor_email_addresses = licensor.email_addresses

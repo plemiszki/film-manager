@@ -7,3 +7,4 @@ json.emails @emails do |email|
   json.status email.status
 end
 json.licensorEmailAddresses @licensor_email_addresses
+json.quarters @quarters
