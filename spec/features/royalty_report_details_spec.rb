@@ -70,7 +70,6 @@ describe 'royalty_report_details', type: :feature do
     wait_for_ajax
     0.upto(13) do |n|
       current_difference = (n * 100) - (n * 10)
-      current_net = current_difference.fdiv(2)
       cume_difference = (n * 1000) - (n * 100) + current_difference
       cume_net = cume_difference.fdiv(2)
       expect(find("input[data-test-index=\"#{n}\"][data-field=\"joinedDifference\"]").value).to eq(dollarify(number_with_precision(cume_difference, precision: 2, delimiter: ',')))
