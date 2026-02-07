@@ -10,18 +10,19 @@ import {
   Common,
 } from "handy-components";
 
-function OptionButton({ label, selected, onClick }) {
+function OptionButton({ label, selected, disabled, onClick }) {
   return (
     <button
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       style={{
         background: selected ? "#7B8A98" : "#FFFFFF",
-        color: selected ? "#FFFFFF" : "#5F5F5F",
+        color: selected ? "#FFFFFF" : disabled ? "#CCCCCC" : "#5F5F5F",
         border: selected ? "1px solid #7B8A98" : "1px solid #D1D1D1",
         borderRadius: 5,
         padding: "6px 16px",
-        cursor: "pointer",
+        cursor: disabled ? "default" : "pointer",
         fontSize: 14,
+        opacity: disabled ? 0.6 : 1,
       }}
     >
       {label}
@@ -44,6 +45,7 @@ export default class EmailsIndex extends Component {
       spinner: true,
       emails: [],
       licensorEmailAddresses: [],
+      quarters: [],
       sendModalOpen: false,
       job: {},
       jobModalOpen: false,
@@ -67,11 +69,18 @@ export default class EmailsIndex extends Component {
       directory: "emails",
       data: Object.keys(data).length > 0 ? data : null,
     }).then((response) => {
-      this.setState({
+      const quarters = response.quarters || [];
+      const newState = {
         spinner: false,
         emails: response.emails,
         licensorEmailAddresses: response.licensorEmailAddresses || [],
-      });
+        quarters,
+      };
+      if (quarters.length > 0) {
+        const last = quarters[quarters.length - 1];
+        newState.sendOptions = { quarter: last.quarter, year: last.year };
+      }
+      this.setState(newState);
     });
   }
 
@@ -99,8 +108,21 @@ export default class EmailsIndex extends Component {
 
   render() {
     const { licensorId } = this.props;
-    const { spinner, emails, licensorEmailAddresses, sendModalOpen, job } =
-      this.state;
+    const {
+      spinner,
+      emails,
+      licensorEmailAddresses,
+      quarters,
+      sendModalOpen,
+      job,
+    } = this.state;
+    const cutoffYear = new Date().getFullYear() - 4;
+    const availableYears = [...new Set(quarters.map((q) => q.year))]
+      .filter((y) => y >= cutoffYear)
+      .sort((a, b) => b - a);
+    const availableQuartersForYear = quarters
+      .filter((q) => q.year === this.state.sendOptions.year)
+      .map((q) => q.quarter);
 
     return (
       <div className="handy-component">
@@ -208,6 +230,7 @@ export default class EmailsIndex extends Component {
                     key={q}
                     label={`Q${q}`}
                     selected={this.state.sendOptions.quarter === q}
+                    disabled={!availableQuartersForYear.includes(q)}
                     onClick={() => {
                       const sendOptions = this.state.sendOptions;
                       sendOptions.quarter = q;
@@ -223,16 +246,23 @@ export default class EmailsIndex extends Component {
                   gap: 10,
                 }}
               >
-                {Array.from({ length: 5 }, (_, i) => {
-                  const y = new Date().getFullYear() - i;
+                {availableYears.map((y) => {
+                  const quartersForYear = quarters
+                    .filter((q) => q.year === y)
+                    .map((q) => q.quarter);
                   return (
                     <OptionButton
                       key={y}
                       label={y}
                       selected={this.state.sendOptions.year === y}
                       onClick={() => {
-                        const sendOptions = this.state.sendOptions;
-                        sendOptions.year = y;
+                        const sendOptions = { year: y };
+                        sendOptions.quarter =
+                          quartersForYear.includes(
+                            this.state.sendOptions.quarter,
+                          )
+                            ? this.state.sendOptions.quarter
+                            : quartersForYear[quartersForYear.length - 1];
                         this.setState({ sendOptions });
                       }}
                     />
