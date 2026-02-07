@@ -126,14 +126,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (reportEmailsNode) {
     const reportId = parseUrl()[0];
     createRoot(reportEmailsNode).render(
-      <EmailsIndex reportId={reportId} sendReportButton />
+      <EmailsIndex reportId={reportId} sendReportButton />,
     );
   }
 
   const licensorEmailsNode = document.getElementById("licensor-emails-index");
   if (licensorEmailsNode) {
     const licensorId = parseUrl()[0];
-    createRoot(licensorEmailsNode).render(<EmailsIndex licensorId={licensorId} />);
+    createRoot(licensorEmailsNode).render(
+      <EmailsIndex licensorId={licensorId} sendReportButton />,
+    );
   }
 
   renderSimpleDetails("shipping-address-details", {

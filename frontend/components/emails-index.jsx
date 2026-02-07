@@ -10,9 +10,36 @@ import {
   Common,
 } from "handy-components";
 
+function OptionButton({ label, selected, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        background: selected ? "#7B8A98" : "#FFFFFF",
+        color: selected ? "#FFFFFF" : "#5F5F5F",
+        border: selected ? "1px solid #7B8A98" : "1px solid #D1D1D1",
+        borderRadius: 5,
+        padding: "6px 16px",
+        cursor: "pointer",
+        fontSize: 14,
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 export default class EmailsIndex extends Component {
   constructor(props) {
     super(props);
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentQuarter = Math.floor(currentMonth / 3) + 1;
+    const previousQuarter = currentQuarter === 1 ? 4 : currentQuarter - 1;
+    const quarterYear =
+      currentQuarter === 1
+        ? currentDate.getFullYear() - 1
+        : currentDate.getFullYear();
     this.state = {
       spinner: true,
       emails: [],
@@ -20,6 +47,10 @@ export default class EmailsIndex extends Component {
       sendModalOpen: false,
       job: {},
       jobModalOpen: false,
+      sendOptions: {
+        quarter: previousQuarter,
+        year: quarterYear,
+      },
     };
   }
 
@@ -67,6 +98,7 @@ export default class EmailsIndex extends Component {
   }
 
   render() {
+    const { licensorId } = this.props;
     const { spinner, emails, licensorEmailAddresses, sendModalOpen, job } =
       this.state;
 
@@ -76,7 +108,7 @@ export default class EmailsIndex extends Component {
         {this.props.sendReportButton && (
           <Button
             float
-            text="Email Report"
+            text={`Email Report${licensorId ? "s" : ""}`}
             style={{ marginLeft: 20 }}
             onClick={() => this.setState({ sendModalOpen: true })}
           />
@@ -125,7 +157,10 @@ export default class EmailsIndex extends Component {
               background: "#FFFFFF",
               margin: "auto",
               maxWidth: 500,
-              height: 140 + licensorEmailAddresses.length * 30,
+              height:
+                140 +
+                licensorEmailAddresses.length * 30 +
+                (licensorId ? 120 : 0),
               border: "solid 1px #5F5F5F",
               borderRadius: "6px",
               textAlign: "center",
@@ -135,7 +170,7 @@ export default class EmailsIndex extends Component {
           }}
         >
           <h1 className="send-email-modal-header" style={{ marginBottom: 15 }}>
-            {`Send report to ${licensorEmailAddresses.length > 1 ? "these email addresses" : "this email address"}?`}
+            {`Send report${licensorId ? "s" : ""} to ${licensorEmailAddresses.length > 1 ? "these email addresses" : "this email address"}?`}
           </h1>
           {licensorEmailAddresses.map((email, index) => (
             <p
@@ -150,6 +185,62 @@ export default class EmailsIndex extends Component {
               {email}
             </p>
           ))}
+          {licensorId && (
+            <div
+              style={{
+                marginTop: 15,
+                marginBottom: 5,
+                border: "1px solid #D1D1D1",
+                borderRadius: 8,
+                padding: 15,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 10,
+                  marginBottom: 10,
+                }}
+              >
+                {[1, 2, 3, 4].map((q) => (
+                  <OptionButton
+                    key={q}
+                    label={`Q${q}`}
+                    selected={this.state.sendOptions.quarter === q}
+                    onClick={() => {
+                      const sendOptions = this.state.sendOptions;
+                      sendOptions.quarter = q;
+                      this.setState({ sendOptions });
+                    }}
+                  />
+                ))}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 10,
+                }}
+              >
+                {Array.from({ length: 5 }, (_, i) => {
+                  const y = new Date().getFullYear() - i;
+                  return (
+                    <OptionButton
+                      key={y}
+                      label={y}
+                      selected={this.state.sendOptions.year === y}
+                      onClick={() => {
+                        const sendOptions = this.state.sendOptions;
+                        sendOptions.year = y;
+                        this.setState({ sendOptions });
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div style={{ marginTop: 20 }}>
             <Button
               text="Send"
