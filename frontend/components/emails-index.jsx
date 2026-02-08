@@ -140,6 +140,7 @@ export default class EmailsIndex extends Component {
             text={`Email Report${licensorId ? "s" : ""}`}
             style={{ marginLeft: 20 }}
             onClick={() => this.setState({ sendModalOpen: true })}
+            disabled={licensorId && quarters.length === 0}
           />
         )}
         <div className="white-box">
