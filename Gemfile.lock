@@ -140,7 +140,7 @@ GEM
       railties (>= 5.0)
     coderay (1.1.3)
     concurrent-ruby (1.3.6)
-    connection_pool (2.5.5)
+    connection_pool (3.0.2)
     crack (1.0.1)
       bigdecimal
       rexml
@@ -404,12 +404,12 @@ GEM
     sentry-sidekiq (6.3.0)
       sentry-ruby (~> 6.3.0)
       sidekiq (>= 5.0)
-    sidekiq (7.3.9)
-      base64
-      connection_pool (>= 2.3.0)
-      logger
-      rack (>= 2.2.4)
-      redis-client (>= 0.22.2)
+    sidekiq (8.0.10)
+      connection_pool (>= 2.5.0)
+      json (>= 2.9.0)
+      logger (>= 1.6.2)
+      rack (>= 3.1.0)
+      redis-client (>= 0.23.2)
     spreadsheet (1.3.4)
       bigdecimal
       logger
@@ -480,7 +480,7 @@ DEPENDENCIES
   capybara
   caxlsx
   clearance
-  connection_pool (~> 2.4)
+  connection_pool
   database_cleaner
   dotenv-rails
   factory_bot
@@ -505,7 +505,7 @@ DEPENDENCIES
   selenium-webdriver
   sentry-ruby
   sentry-sidekiq
-  sidekiq (~> 7.3)
+  sidekiq
   spring
   stripe (= 12.5.0)
   textacular
