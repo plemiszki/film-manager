@@ -99,10 +99,48 @@ API responses use **camelCase keys**. The `RenderErrors` concern explicitly tran
 - `expiration_reminders` — alerts for expiring film licenses and sublicense rights
 - `clear_s3` — cleanup of generated export files
 
+### Public Website API
+
+A separate public API exists at `/api/website/*` for the company website. These controllers inherit from `CyberController` (not `AdminController`) and authenticate via the `CYBER_NY_API_KEY` environment variable instead of Clearance sessions. Endpoints: films, bookings, merchandise.
+
+### User Access Levels
+
+The `User` model defines three access levels via enum: `user` (50), `admin` (100), `super_admin` (150). The frontend checks `FM.user.hasAdminAccess` and `FM.user.hasSuperAdminAccess`. Sign-up is disabled (`Clearance.configure { |c| c.allow_sign_up = false }`).
+
+### Frontend Global Object: FM
+
+`app/assets/javascripts/me/common.jsx` defines a global `FM` object used throughout the frontend. It provides:
+- Modal style presets (delete, job, errors, select)
+- Current user info (`FM.user.id`, `FM.user.access`)
+- URL params (`FM.params`)
+- Utility functions: `dollarify`, `splitAddress`, drag-and-drop helpers
+- Job modal rendering helpers
+
+### Email Tracking
+
+Outbound emails go through the `SendEmail` service (`app/services/send_email.rb`) and are tracked via the `Email` model with statuses: `pending`, `delivered`, `failed`, `bounced`. Mailgun webhooks update delivery status. Setting `TEST_MODE` env var redirects all emails to `TEST_MODE_EMAIL`.
+
+### Testing Patterns
+
+- **Feature specs** use Capybara with Selenium Chrome and DatabaseCleaner (truncation strategy, not transactions)
+- A global `$admin_user` is created for feature specs
+- Custom helpers in `spec/support/features_helper.rb`: `fill_out_form`, `search_index`, `select_from_modal`, `wait_for_ajax`
+- `use_transactional_fixtures = false`
+
+### Key Model Concerns
+
+- **`DateFieldYearsConverter`** — converts 2-digit years to 4-digit (68+ → 19xx, <68 → 20xx)
+- **`StripeHelpers`** — shared Stripe customer creation logic
+
+### PostgreSQL Extensions
+
+The schema uses `pg_trgm` (trigram matching) for fuzzy search, alongside `textacular` gem.
+
 ### External Integrations
 
 - **Stripe** — payment processing for venues, DVD customers, and institutions. Customers are created via a dedicated Sidekiq worker (`CreateStripeCustomer`). Each entity that supports Stripe has a `use_stripe` boolean and a `create_in_stripe` API endpoint.
 - **Sage** — accounting system. Data is imported via `ImportSageData` worker. Models reference `sage_id` fields for reconciliation.
-- **Mailgun** — outbound email via `mailgun-ruby`.
+- **Mailgun** — outbound email via `mailgun-ruby`. Delivery tracked via webhooks and `Email` model.
 - **AWS S3** — file storage for generated exports and uploaded assets.
 - **Sentry** — error tracking.
+- **wicked_pdf** — PDF generation for invoices and statements (requires `WKHTMLTOPDF_PATH` env var).
