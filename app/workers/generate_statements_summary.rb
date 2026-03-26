@@ -1,13 +1,10 @@
 class GenerateStatementsSummary
   include Sidekiq::Worker
-  include ExportSpreadsheetHelpers
+
   sidekiq_options retry: false
 
   def perform(_, args = {})
     job = Job.find_by_job_id(args['time_started'])
-    job_folder = Rails.root.join("tmp", args['time_started'])
-    FileUtils.mkdir_p(job_folder)
-    file_path = job_folder.join("statements_summary.xlsx")
 
     licensor = Licensor.find(args['licensor_id'])
     show_percentage_column = licensor.licensor_share_constant_across_all_revenue_streams?
@@ -27,58 +24,34 @@ class GenerateStatementsSummary
     }
 
     visible_column_keys = columns.keys.reject { |key| columns[key][:hide] }
+    headers = visible_column_keys.map { |key| columns[key][:label] }
 
-    statements = licensor.most_recent_statements
+    rows = licensor.most_recent_statements.map do |statement|
+      statement.calculate!
+      film = statement.film
 
-    Axlsx::Package.new do |p|
-      p.workbook.add_worksheet(name: "Summary") do |sheet|
-        add_row(sheet, visible_column_keys.map { |key| columns[key][:label] })
+      columns[:title][:value]              = film.title
+      columns[:period][:value]             = "Q#{statement.quarter} #{statement.year}"
+      columns[:current_gross][:value]      = { value: statement.current_total_revenue, type: :float }
+      columns[:cume_gross][:value]         = { value: statement.joined_total_revenue, type: :float }
+      columns[:royalty_percentage][:value] = film.film_revenue_percentages.reject { |frp| frp.value.zero? }.first&.value || 0
+      columns[:current_net][:value]        = { value: statement.current_total, type: :float }
+      columns[:cume_net][:value]           = { value: statement.joined_total, type: :float }
+      columns[:expenses][:value]           = { value: statement.joined_total_expenses, type: :float }
+      columns[:mg][:value]                 = { value: film.mg, type: :float }
+      columns[:amount_paid][:value]        = { value: statement.amount_paid, type: :float }
+      columns[:amount_due][:value]         = { value: statement.joined_amount_due, type: :float }
 
-        statements.each do |statement|
-          statement.calculate!
-          film = statement.film
-          mg = film.mg
-
-          columns[:title][:value]              = film.title
-          columns[:period][:value]             = "Q#{statement.quarter} #{statement.year}"
-          columns[:current_gross][:value]      = { value: statement.current_total_revenue, type: :float }
-          columns[:cume_gross][:value]         = { value: statement.joined_total_revenue, type: :float }
-          columns[:royalty_percentage][:value] = film.film_revenue_percentages.reject { |frp| frp.value.zero? }.first&.value || 0
-          columns[:current_net][:value]        = { value: statement.current_total, type: :float }
-          columns[:cume_net][:value]           = { value: statement.joined_total, type: :float }
-          columns[:expenses][:value]           = { value: statement.joined_total_expenses, type: :float }
-          columns[:mg][:value]                 = { value: mg, type: :float }
-          columns[:amount_paid][:value]        = { value: statement.amount_paid, type: :float }
-          columns[:amount_due][:value]         = { value: statement.joined_amount_due, type: :float }
-
-          add_row(sheet, visible_column_keys.map { |key| columns[key][:value] })
-        end
-      end
-      p.serialize(file_path.to_s)
+      visible_column_keys.map { |key| columns[key][:value] }
     end
 
-    job.update(first_line: "Uploading to AWS")
+    public_url = ExportAndUploadSpreadsheet.new(
+      headers:  headers,
+      rows:     rows,
+      job:      job,
+      filename: 'statements_summary.xlsx'
+    ).call
 
-    client = Aws::S3::Client.new(
-      credentials: Aws::Credentials.new(
-        ENV.fetch('AWS_ACCESS_KEY_ID'),
-        ENV.fetch('AWS_SECRET_ACCESS_KEY')
-      ),
-      region: 'us-east-1'
-    )
-
-    transfer_manager = Aws::S3::TransferManager.new(client: client)
-    bucket_key = "#{args['time_started']}/statements_summary.xlsx"
-
-    transfer_manager.upload_file(file_path.to_s, bucket: ENV['S3_BUCKET'], key: bucket_key, acl: 'public-read')
-
-    obj_url = "https://#{ENV['S3_BUCKET']}.s3.amazonaws.com/#{bucket_key}"
-
-    job.update!(
-      status: 'success',
-      first_line: '',
-      metadata: { url: obj_url },
-      errors_text: ''
-    )
+    job.update!(status: 'success', first_line: '', metadata: { url: public_url }, errors_text: '')
   end
 end
