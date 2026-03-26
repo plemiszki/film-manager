@@ -1,4 +1,4 @@
-class GenerateStatementsSummary
+class ExportStatementsSummary
   include Sidekiq::Worker
 
   sidekiq_options retry: false
