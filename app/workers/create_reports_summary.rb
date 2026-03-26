@@ -1,8 +1,5 @@
 class CreateReportsSummary
   include Sidekiq::Worker
-  include ActionView::Helpers::NumberHelper
-  include ExportSpreadsheetHelpers
-  include AwsUpload
 
   sidekiq_options retry: false
 
@@ -16,42 +13,32 @@ class CreateReportsSummary
 
   def perform(quarter, year, days_due, time_started)
     job = Job.find_by_job_id(time_started)
-    job_folder = "#{Rails.root}/tmp/#{time_started}"
-    file_path = "#{job_folder}/Reports Summary.xlsx"
-    FileUtils.mkdir_p("#{job_folder}")
 
-    Axlsx::Package.new do |p|
-      p.workbook.add_worksheet(nane: "Films") do |sheet|
-        add_row(sheet, COLUMN_NAMES)
-
-        if days_due == 'all'
-          reports = RoyaltyReport.where(quarter: quarter, year: year).includes(:film)
-        else
-          reports = RoyaltyReport.where(quarter: quarter, year: year, films: { days_statement_due: days_due }).includes(film: [:licensor])
-        end
-
-        reports = reports.to_a.sort_by { |report| report.film.title }
-        reports.each do |report|
-          film = report.film
-          reserves_breakdown = report.get_reserves_breakdown
-          quarter_string = "Q#{report.quarter} #{report.year}"
-          add_row(sheet, [
-            film.title,
-            film.licensor.try(:name) || '(None)',
-            report.joined_amount_due,
-            reserves_breakdown[quarter_string]['liquidated_this_quarter'],
-            reserves_breakdown[quarter_string]['total_reserves']
-          ])
-          job.update({ current_value: job.current_value + 1 })
-        end
-
-        job.update({ first_line: 'Saving Spreadsheet', second_line: false })
-        p.serialize(file_path)
-      end
+    if days_due == 'all'
+      reports = RoyaltyReport.where(quarter: quarter, year: year).includes(:film)
+    else
+      reports = RoyaltyReport.where(quarter: quarter, year: year, films: { days_statement_due: days_due }).includes(film: [:licensor])
     end
 
-    job.update({ first_line: 'Uploading to AWS' })
-    public_url = upload_to_aws(file_path: file_path, key: "#{time_started}/Reports Summary.xlsx")
+    rows = reports.to_a.sort_by { |report| report.film.title }.map do |report|
+      film = report.film
+      reserves_breakdown = report.get_reserves_breakdown
+      quarter_string = "Q#{report.quarter} #{report.year}"
+      [
+        film.title,
+        film.licensor.try(:name) || '(None)',
+        report.joined_amount_due,
+        reserves_breakdown[quarter_string]['liquidated_this_quarter'],
+        reserves_breakdown[quarter_string]['total_reserves']
+      ]
+    end
+
+    public_url = ExportAndUploadSpreadsheet.new(
+      headers:  COLUMN_NAMES,
+      rows:     rows,
+      job:      job,
+      filename: 'Reports Summary.xlsx'
+    ).call
 
     job.update!({ status: :success, metadata: { url: public_url } })
   end
