@@ -1,7 +1,5 @@
 class ExportCreditMemos
   include Sidekiq::Worker
-  include ExportSpreadsheetHelpers
-  include AwsUpload
 
   sidekiq_options retry: false
 
@@ -84,77 +82,72 @@ class ExportCreditMemos
 
   def perform(credit_memo_ids, time_started)
     job = Job.find_by_job_id(time_started)
-    job_folder = "#{Rails.root}/tmp/#{time_started}"
-    FileUtils.mkdir_p("#{job_folder}")
-    file_path = "#{job_folder}/credit_memos.xlsx"
 
-    Axlsx::Package.new do |p|
-      p.workbook.add_worksheet(name: "Credit Memos") do |sheet|
-        add_row(sheet, HEADERS)
-        credit_memos = CreditMemo.where(id: credit_memo_ids).order(:id)
-        credit_memos.each_with_index do |credit_memo, credit_memo_index|
-          items = credit_memo.credit_memo_rows
-          items.each_with_index do |item, index|
-            film = item.dvd.feature
-            sheet.add_row([
-              credit_memo.customer.sage_id,
-              '',
-              credit_memo.number,
-              '',
-              'TRUE',
-              '',
-              credit_memo.sent_date,
-              '',
-              '',
-              '', # 10
-              '',
-              'FALSE',
-              credit_memo.billing_name,
-              credit_memo.billing_address1,
-              credit_memo.billing_address2,
-              credit_memo.billing_city,
-              credit_memo.billing_state,
-              credit_memo.billing_zip,
-              credit_memo.billing_country,
-              credit_memo.return_number, # 20
-              '',
-              '',
-              '',
-              '', '',
-              '',
-              '',
-              '10200',
-              '', '', '', '', '', '', '',
-              'FALSE',
-              '',
-              items.length,
-              index,
-              '', # 40
-              'FALSE',
-              'FALSE',
-              item.item_qty,
-              '', '', '', '',
-              item.item_label,
-              '30200',
-              '', # 50
-              item.unit_price,
-              '1',
-              '', '',
-              item.total_price,
-              '', '', '', '', '',
-              '1',
-              '', '', '',
-              film.get_sage_id,
-            ])
-          end
-          job.update({ current_value: credit_memo_index + 1 })
-        end
-        p.serialize(file_path)
+    credit_memos = CreditMemo.where(id: credit_memo_ids).order(:id)
+    rows = []
+    credit_memos.each do |credit_memo|
+      items = credit_memo.credit_memo_rows
+      items.each_with_index do |item, index|
+        film = item.dvd.feature
+        rows << [
+          credit_memo.customer.sage_id,
+          '',
+          credit_memo.number,
+          '',
+          'TRUE',
+          '',
+          credit_memo.sent_date,
+          '',
+          '',
+          '', # 10
+          '',
+          'FALSE',
+          credit_memo.billing_name,
+          credit_memo.billing_address1,
+          credit_memo.billing_address2,
+          credit_memo.billing_city,
+          credit_memo.billing_state,
+          credit_memo.billing_zip,
+          credit_memo.billing_country,
+          credit_memo.return_number, # 20
+          '',
+          '',
+          '',
+          '', '',
+          '',
+          '',
+          '10200',
+          '', '', '', '', '', '', '',
+          'FALSE',
+          '',
+          items.length,
+          index,
+          '', # 40
+          'FALSE',
+          'FALSE',
+          item.item_qty,
+          '', '', '', '',
+          item.item_label,
+          '30200',
+          '', # 50
+          item.unit_price,
+          '1',
+          '', '',
+          item.total_price,
+          '', '', '', '', '',
+          '1',
+          '', '', '',
+          film.get_sage_id,
+        ]
       end
     end
 
-    job.update({ first_line: "Uploading to AWS" })
-    public_url = upload_to_aws(file_path: file_path, key: "#{time_started}/credit_memos.xlsx")
+    public_url = ExportAndUploadSpreadsheet.new(
+      headers:  HEADERS,
+      rows:     rows,
+      job:      job,
+      filename: 'credit_memos.xlsx'
+    ).call
 
     job.update!({ status: :success, metadata: { url: public_url } })
   end

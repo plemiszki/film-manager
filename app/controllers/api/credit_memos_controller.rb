@@ -23,7 +23,8 @@ class Api::CreditMemosController < AdminController
   def export
     credit_memo_ids = perform_search(model: 'CreditMemo').pluck(:id)
     time_started = Time.now.to_s
-    job = Job.create!(job_id: time_started, name: "export credit memos", first_line: "Exporting Credit Memos", second_line: true, current_value: 0, total_value: credit_memo_ids.length)
+    total_rows = CreditMemoRow.where(credit_memo_id: credit_memo_ids).count
+    job = Job.create!(job_id: time_started, name: "export credit memos", first_line: "Exporting Credit Memos", second_line: true, current_value: 0, total_value: total_rows)
     ExportCreditMemos.perform_async(credit_memo_ids, time_started)
     render json: { job: job.render_json }
   end
