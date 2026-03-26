@@ -109,14 +109,14 @@ class ConvertSalesData
         title = columns[0].to_s.gsub("\n", '').gsub('(English Subtitled)', '').strip
         film = Film.where('lower(title) = ?', title.to_s.downcase).first
         if film
-          code = columns[1]
+          code = columns[1].to_i.to_s
           amount = convert_amount(columns[2])
           totals[film.get_sage_id][code] += amount
         else
           a = Alias.where('lower(text) = ?', title.to_s.downcase).first
           if a
             film = a.film
-            code = columns[1]
+            code = columns[1].to_i.to_s
             amount = convert_amount(columns[2])
             totals[film.get_sage_id][code] += amount
           else
