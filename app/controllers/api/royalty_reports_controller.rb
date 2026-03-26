@@ -79,7 +79,7 @@ class Api::RoyaltyReportsController < AdminController
   def licensor_invoices
     time_started = Time.now.to_s
     job = Job.create!(job_id: time_started, first_line: 'Creating Licensor Invoices', second_line: false, current_value: 0, total_value: 0)
-    CreateLicensorInvoices.perform_async(params[:quarter], params[:year], params[:days_due], time_started)
+    ExportLicensorInvoices.perform_async(params[:quarter], params[:year], params[:days_due], time_started)
     render json: { job: job.render_json }
   end
 

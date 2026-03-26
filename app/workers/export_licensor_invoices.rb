@@ -1,4 +1,4 @@
-class CreateLicensorInvoices
+class ExportLicensorInvoices
   include Sidekiq::Worker
   include ActionView::Helpers::NumberHelper
   include ExportSpreadsheetHelpers
