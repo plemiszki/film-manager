@@ -119,7 +119,7 @@ class ExportLicensorInvoices
               "Invoice #": quarter_string,
               "Date Due": (Date.today + 30.days).strftime("%-m/%-d/%Y"),
               "Description": film.title,
-              "G/L Account": "49000",
+              "G/L Account": film.fm_subscription_only? ? "49350" : "49000",
               "Job ID": film.get_sage_id,
               "Invoice/CM Distribution": index + 1,
               "Number of Distributions": licensor_reports.length,

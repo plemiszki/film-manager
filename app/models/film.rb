@@ -177,6 +177,13 @@ class Film < ActiveRecord::Base
     sage_id.empty? ? (self.film_type == 'Short' ? 'SHORTS' : title.upcase) : sage_id
   end
 
+  def fm_subscription_only?
+    fm_sub = RevenueStream.find_by(name: 'FM Subscription')
+    return false unless fm_sub
+    return false unless film_revenue_percentages.find_by(revenue_stream_id: fm_sub.id)&.value.to_f > 0
+    film_revenue_percentages.where.not(revenue_stream_id: fm_sub.id).where('value > 0').none?
+  end
+
   def self.find_from_sage_id(sage_id)
     film = Film.find_by_sage_id(sage_id)
     film = Film.where('upper(title) = ?', sage_id).first unless film

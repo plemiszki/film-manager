@@ -79,4 +79,28 @@ RSpec.describe Film do
     expect(film_right.reload.end_date_calc).to eq(Date.today + 1.year)
   end
 
+  describe '#fm_subscription_only?' do
+    before do
+      create(:label)
+      create(:revenue_stream, name: 'Theatrical')
+      @fm_sub_stream = create(:revenue_stream, name: 'FM Subscription')
+      @film = create(:film)
+    end
+
+    it 'returns true when only FM Subscription has a non-zero value' do
+      @film.film_revenue_percentages.find_by(revenue_stream_id: @fm_sub_stream.id).update!(value: 50)
+      expect(@film.fm_subscription_only?).to eq(true)
+    end
+
+    it 'returns false when FM Subscription is non-zero but another stream is also non-zero' do
+      @film.film_revenue_percentages.find_by(revenue_stream_id: @fm_sub_stream.id).update!(value: 50)
+      @film.film_revenue_percentages.where.not(revenue_stream_id: @fm_sub_stream.id).first.update!(value: 25)
+      expect(@film.fm_subscription_only?).to eq(false)
+    end
+
+    it 'returns false when all values are zero' do
+      expect(@film.fm_subscription_only?).to eq(false)
+    end
+  end
+
 end
