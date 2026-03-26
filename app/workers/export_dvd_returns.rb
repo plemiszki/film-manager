@@ -49,10 +49,11 @@ class ExportDvdReturns
     end
 
     public_url = ExportAndUploadSpreadsheet.new(
-      headers:  HEADERS,
-      rows:     rows,
-      job:      job,
-      filename: 'returns.xlsx'
+      headers:              HEADERS,
+      rows:                 rows,
+      job:                  job,
+      filename:             'returns.xlsx',
+      increment_job_column: 'Number'
     ).call
 
     job.update!({ status: :success, metadata: { url: public_url } })

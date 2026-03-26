@@ -143,10 +143,11 @@ class ExportCreditMemos
     end
 
     public_url = ExportAndUploadSpreadsheet.new(
-      headers:  HEADERS,
-      rows:     rows,
-      job:      job,
-      filename: 'credit_memos.xlsx'
+      headers:              HEADERS,
+      rows:                 rows,
+      job:                  job,
+      filename:             'credit_memos.xlsx',
+      increment_job_column: 'Invoice/CM #'
     ).call
 
     job.update!({ status: :success, metadata: { url: public_url } })
