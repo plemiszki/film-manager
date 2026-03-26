@@ -1,7 +1,5 @@
 class ExportBookings
   include Sidekiq::Worker
-  include ExportSpreadsheetHelpers
-  include AwsUpload
 
   sidekiq_options retry: false
 
@@ -46,64 +44,58 @@ class ExportBookings
 
   def perform(booking_ids, time_started)
     job = Job.find_by_job_id(time_started)
-    job_folder = "#{Rails.root}/tmp/#{time_started}"
-    file_path = "#{job_folder}/bookings.xlsx"
-    FileUtils.mkdir_p("#{job_folder}")
 
-    Axlsx::Package.new do |p|
-      p.workbook.add_worksheet(:name => "Invoices") do |sheet|
-        add_row(sheet, HEADERS)
-        bookings = Booking.where(id: booking_ids).order(:id).includes(:film, :venue, :format)
-        bookings.each_with_index do |booking, booking_index|
-          venue = booking.venue
-          add_row(sheet, [
-            booking.start_date,
-            booking.end_date,
-            booking.film.title,
-            venue.label,
-            booking.booking_type,
-            booking.status,
-            booking.terms,
-            booking.format.name,
-            booking.advance.to_f,
-            booking.shipping_fee.to_f,
-            booking.screenings,
-            booking.premiere,
-            (booking.old_booker_id ? PastBooker.find(booking.old_booker_id).name : User.find(booking.booker_id).name),
-            booking.billing_name,
-            booking.billing_address1,
-            booking.billing_address2,
-            booking.billing_city,
-            booking.billing_state,
-            booking.billing_zip,
-            booking.billing_country,
-            booking.shipping_name,
-            booking.shipping_address1,
-            booking.shipping_address2,
-            booking.shipping_city,
-            booking.shipping_state,
-            booking.shipping_zip,
-            booking.shipping_country,
-            booking.email,
-            booking.materials_sent,
-            booking.tracking_number,
-            booking.shipping_notes,
-            (booking.delivered ? 'Yes' : 'No'),
-            (booking.box_office_received ? 'Yes' : 'No'),
-            booking.box_office,
-            venue.website,
-            booking.id
-          ])
-          job.update({ current_value: booking_index + 1 })
-        end
-        p.serialize(file_path)
-      end
+    bookings = Booking.where(id: booking_ids).order(:id).includes(:film, :venue, :format)
+    rows = bookings.map do |booking|
+      venue = booking.venue
+      [
+        booking.start_date,
+        booking.end_date,
+        booking.film.title,
+        venue.label,
+        booking.booking_type,
+        booking.status,
+        booking.terms,
+        booking.format.name,
+        booking.advance.to_f,
+        booking.shipping_fee.to_f,
+        booking.screenings,
+        booking.premiere,
+        (booking.old_booker_id ? PastBooker.find(booking.old_booker_id).name : User.find(booking.booker_id).name),
+        booking.billing_name,
+        booking.billing_address1,
+        booking.billing_address2,
+        booking.billing_city,
+        booking.billing_state,
+        booking.billing_zip,
+        booking.billing_country,
+        booking.shipping_name,
+        booking.shipping_address1,
+        booking.shipping_address2,
+        booking.shipping_city,
+        booking.shipping_state,
+        booking.shipping_zip,
+        booking.shipping_country,
+        booking.email,
+        booking.materials_sent,
+        booking.tracking_number,
+        booking.shipping_notes,
+        (booking.delivered ? 'Yes' : 'No'),
+        (booking.box_office_received ? 'Yes' : 'No'),
+        booking.box_office,
+        venue.website,
+        booking.id
+      ]
     end
 
-    job.update({ first_line: "Uploading to AWS" })
-    public_url = upload_to_aws(file_path: file_path, key: "#{time_started}/bookings.xlsx")
+    public_url = ExportAndUploadSpreadsheet.new(
+      headers:  HEADERS,
+      rows:     rows,
+      job:      job,
+      filename: 'bookings.xlsx'
+    ).call
 
-    job.update!({ status: 'success', first_line: '', metadata: { url: public_url }, errors_text: '' })
+    job.update!(status: 'success', first_line: '', metadata: { url: public_url }, errors_text: '')
   end
 
 end
