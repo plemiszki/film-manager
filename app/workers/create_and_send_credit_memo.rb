@@ -6,7 +6,7 @@ class CreateAndSendCreditMemo
 
     job = Job.find_by_job_id(time_started)
 
-    # generate
+    # create credit memo
     dvd_return = Return.find(return_id)
     credit_memo = dvd_return.create_credit_memo!
 
