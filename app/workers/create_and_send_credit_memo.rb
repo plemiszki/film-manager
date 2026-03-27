@@ -8,7 +8,7 @@ class CreateAndSendCreditMemo
 
     # generate
     dvd_return = Return.find(return_id)
-    credit_memo = dvd_return.generate_credit_memo!
+    credit_memo = dvd_return.create_credit_memo!
 
     # export
     job.update!({ first_line: 'Exporting Credit Memo' })

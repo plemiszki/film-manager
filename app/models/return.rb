@@ -20,7 +20,7 @@ class Return < ActiveRecord::Base
     end
   end
 
-  def generate_credit_memo!
+  def create_credit_memo!
     fail 'credit memo exists!' if credit_memo.present?
     new_credit_memo = nil
     ActiveRecord::Base.transaction do

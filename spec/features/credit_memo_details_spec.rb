@@ -12,7 +12,7 @@ describe 'credit_memo_details', type: :feature do
     dvd_return = create(:return)
     create(:return_item)
     create(:setting)
-    @credit_memo = dvd_return.generate_credit_memo!
+    @credit_memo = dvd_return.create_credit_memo!
   end
 
   it 'is gated' do
