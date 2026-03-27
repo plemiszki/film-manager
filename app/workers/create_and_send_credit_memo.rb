@@ -1,4 +1,4 @@
-class GenerateAndSendCreditMemo
+class CreateAndSendCreditMemo
   include Sidekiq::Worker
   sidekiq_options retry: false
 
@@ -6,11 +6,11 @@ class GenerateAndSendCreditMemo
 
     job = Job.find_by_job_id(time_started)
 
-    # Generate
+    # generate
     dvd_return = Return.find(return_id)
     credit_memo = dvd_return.generate_credit_memo!
 
-    # Export
+    # export
     job.update!({ first_line: 'Exporting Credit Memo' })
     job_folder = "#{Rails.root}/tmp/#{time_started}"
     FileUtils.mkdir_p("#{job_folder}")
@@ -18,7 +18,7 @@ class GenerateAndSendCreditMemo
     path = "#{job_folder}/#{filename}"
     credit_memo.export(path)
 
-    # Send
+    # send
     is_test_mode = ENV['TEST_MODE'] == 'true'
     job.update!({ first_line: 'Sending Credit Memo' })
     mg_client = Mailgun::Client.new ENV['MAILGUN_KEY']
@@ -46,7 +46,7 @@ class GenerateAndSendCreditMemo
       }
     })
 
-  rescue => error
+  rescue
 
     credit_memo.try(:destroy)
     job.update!({ status: :failed, first_line: 'Failed to Send Credit Memo' })
