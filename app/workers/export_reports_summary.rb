@@ -1,4 +1,4 @@
-class CreateReportsSummary
+class ExportReportsSummary
   include Sidekiq::Worker
 
   sidekiq_options retry: false
