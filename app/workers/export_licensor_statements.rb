@@ -1,4 +1,4 @@
-class ExportStatementsSummary
+class ExportLicensorStatements
   include Sidekiq::Worker
 
   sidekiq_options retry: false

@@ -1,4 +1,4 @@
-class ExportReportsSummary
+class ExportQuarterlySummary
   include Sidekiq::Worker
 
   sidekiq_options retry: false
