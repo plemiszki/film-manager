@@ -17,9 +17,11 @@ class ExportAllReports
       if days_due == "all" || report.film.days_statement_due == days_due.to_i
         film = report.film
         films = nil
-        p '---------------------------'
-        p "#{film.title}"
-        p '---------------------------'
+        unless Rails.env.test?
+          p '---------------------------'
+          p "#{film.title}"
+          p '---------------------------'
+        end
         if film.has_crossed_films?
           next if crossed_films_done.include?(film.id)
           report, royalty_revenue_streams, films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)

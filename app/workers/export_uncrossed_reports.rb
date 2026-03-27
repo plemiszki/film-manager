@@ -13,9 +13,11 @@ class ExportUncrossedReports
 
     reports.each do |report|
       return if job.reload.status == "killed"
-      p '---------------------------'
-      p "#{report.film.title}"
-      p '---------------------------'
+      unless Rails.env.test?
+        p '---------------------------'
+        p "#{report.film.title}"
+        p '---------------------------'
+      end
       royalty_revenue_streams = report.royalty_revenue_streams
       report.export(directory: job_folder, royalty_revenue_streams: royalty_revenue_streams)
       job.update({ current_value: job.current_value + 1 })

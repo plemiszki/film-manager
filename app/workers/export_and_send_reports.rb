@@ -15,9 +15,11 @@ class ExportAndSendReports
       if licensor
         licensor_folder = "#{Rails.root}/tmp/#{time_started}/#{licensor.id}"
         FileUtils.mkdir_p(licensor_folder) unless File.exist?(licensor_folder)
-        p '---------------------------'
-        p "#{film.title}"
-        p '---------------------------'
+        unless Rails.env.test?
+          p '---------------------------'
+          p "#{film.title}"
+          p '---------------------------'
+        end
         films = nil
         if film.has_crossed_films?
           next if crossed_films_done.include?(film.id)
@@ -85,11 +87,13 @@ class ExportAndSendReports
             email.update!(metadata: email.metadata.merge('report_ids' => sent_report_ids))
           end
         rescue => error
-          p '-------------------------'
-          p "FAILED TO SEND EMAIL TO #{licensor.name}"
-          p "#{error.class}: #{error.message}"
-          p error.backtrace.first
-          p '-------------------------'
+          unless Rails.env.test?
+            p '-------------------------'
+            p "FAILED TO SEND EMAIL TO #{licensor.name}"
+            p "#{error.class}: #{error.message}"
+            p error.backtrace.first
+            p '-------------------------'
+          end
           new_line = (job.errors_text == '' ? '' : "\n")
           job.update({ errors_text: job.errors_text += (new_line + "Failed to send email to #{licensor.name}") })
         ensure
