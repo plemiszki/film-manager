@@ -88,7 +88,7 @@ class ExportInvoices
       headers:              COLUMN_HEADERS,
       rows:                 rows,
       job:                  job,
-      filename:             'invoices.xlsx',
+      filename:             'invoices.csv',
       increment_job_column: 'Invoice/CM #'
     ).call
 

@@ -146,7 +146,7 @@ class ExportCreditMemos
       headers:              HEADERS,
       rows:                 rows,
       job:                  job,
-      filename:             'credit_memos.xlsx',
+      filename:             'credit_memos.csv',
       increment_job_column: 'Invoice/CM #'
     ).call
 

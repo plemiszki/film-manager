@@ -3,7 +3,7 @@ class ExportLicensorInvoices
 
   sidekiq_options retry: false
 
-  FILENAME = "Licensor Invoices.xlsx"
+  FILENAME = "Licensor Invoices.csv"
 
   COLUMN_HEADERS = [
     'Vendor ID',

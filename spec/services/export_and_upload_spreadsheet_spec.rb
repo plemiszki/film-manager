@@ -23,6 +23,23 @@ RSpec.describe ExportAndUploadSpreadsheet do
     )
   end
 
+  describe 'CSV output' do
+    it 'writes a file with CRLF line endings' do
+      rows = [['A', 1], ['B', 2]]
+      described_class.new(headers: headers, rows: rows, job: job, filename: 'test.csv').call
+      content = File.binread("#{Rails.root}/tmp/#{time_started}/test.csv")
+      expect(content).to include("\r\n")
+      expect(content).not_to match(/(?<!\r)\n/)
+    end
+
+    it 'unwraps typed cell hashes to plain values' do
+      rows = [['A', { value: 1.5, type: :float }]]
+      described_class.new(headers: headers, rows: rows, job: job, filename: 'test.csv').call
+      content = File.read("#{Rails.root}/tmp/#{time_started}/test.csv")
+      expect(content).to include('1.5')
+    end
+  end
+
   describe 'job progress' do
     context 'without increment_job_column' do
       it 'increments current_value after every row' do

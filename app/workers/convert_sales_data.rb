@@ -208,7 +208,7 @@ class ConvertSalesData
         headers:  HEADERS,
         rows:     rows,
         job:      job,
-        filename: 'sales.xlsx'
+        filename: 'sales.csv'
       ).call
 
       job.update!({ status: :success, metadata: { url: public_url } })
