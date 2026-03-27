@@ -2,8 +2,6 @@
 
 class ConvertSalesData
   include Sidekiq::Worker
-  include ExportSpreadsheetHelpers
-  include AwsUpload
 
   sidekiq_options retry: false
 
@@ -127,103 +125,93 @@ class ConvertSalesData
         job.update!(current_value: index)
       end
 
-      # write to new file
-      Axlsx::Package.new do |p|
-        p.workbook.add_worksheet(:name => "Invoices") do |sheet|
-          add_row(sheet, HEADERS)
-          job.update!(first_line: "Exporting Combined Sales", second_line: true, current_value: 0, total_value: totals.keys.length)
+      # build output rows
+      digital_retailer = DigitalRetailer.find(digital_retailer_id)
+      total_invoice_rows = totals.sum { |_, value| value.length }
 
-          digital_retailer = DigitalRetailer.find(digital_retailer_id)
-          total_invoice_rows = 0
-          totals.each do |_, value|
-            value.each do |k, v|
-              total_invoice_rows += 1
-            end
-          end
-          invoice_row_index = 0
-          totals.each do |sage_id, value|
-            film = Film.find_from_sage_id(sage_id)
-            value.each do |gl_code, amount, gl_index|
-              add_row(sheet, [
-                digital_retailer.sage_id,
-                '',
-                invoice_number,
-                '',
-                'FALSE',
-                '',
-                Date.parse(date).strftime("%-m/%-d/%Y"),
-                '',
-                '',
-                '',
-                '',
-                'FALSE',
-                digital_retailer.billing_name,
-                digital_retailer.billing_address1,
-                digital_retailer.billing_address2,
-                digital_retailer.billing_city,
-                digital_retailer.billing_state,
-                digital_retailer.billing_zip,
-                digital_retailer.billing_country,
-                '',
-                '',
-                '',
-                (Date.parse(date) + 30).strftime("%-m/%-d/%Y"),
-                '',
-                '',
-                'Net 30',
-                '',
-                '10200',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                'FALSE',
-                '',
-                total_invoice_rows,
-                invoice_row_index,
-                '',
-                'FALSE',
-                'FALSE',
-                '1',
-                '',
-                '',
-                '',
-                '',
-                (sage_id == 'SHORTS' ? 'Shorts' : film.title),
-                gl_code,
-                '',
-                { value: (amount.fdiv(100) * -1), type: :float },
-                '1',
-                '',
-                '',
-                { value: (amount.fdiv(100) * -1), type: :float },
-                '', '', '', '', '',
-                '1',
-                '', '', '',
-                sage_id
-              ])
-              invoice_row_index += 1
-              job.update!(current_value: invoice_row_index)
-            end
-          end
-
-          if unknown_films.present?
-            job.update!({ status: :failed, errors_text: unknown_films.sort.uniq.to_json })
-          else
-            job.update({ first_line: "Saving New Speadsheet", second_line: false })
-            file_path = "#{job_folder}/sales.xlsx"
-            p.serialize(file_path)
-
-            job.update({ first_line: "Uploading to AWS", second_line: false })
-            public_url = upload_to_aws(file_path: file_path, key: "#{time_started}/sales.xlsx")
-
-            job.update!({ status: :success, metadata: { url: public_url } })
-          end
+      rows = []
+      totals.each do |sage_id, value|
+        film = Film.find_from_sage_id(sage_id)
+        value.each do |gl_code, amount|
+          rows << [
+            digital_retailer.sage_id,
+            '',
+            invoice_number,
+            '',
+            'FALSE',
+            '',
+            Date.parse(date).strftime("%-m/%-d/%Y"),
+            '',
+            '',
+            '',
+            '',
+            'FALSE',
+            digital_retailer.billing_name,
+            digital_retailer.billing_address1,
+            digital_retailer.billing_address2,
+            digital_retailer.billing_city,
+            digital_retailer.billing_state,
+            digital_retailer.billing_zip,
+            digital_retailer.billing_country,
+            '',
+            '',
+            '',
+            (Date.parse(date) + 30).strftime("%-m/%-d/%Y"),
+            '',
+            '',
+            'Net 30',
+            '',
+            '10200',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            'FALSE',
+            '',
+            total_invoice_rows,
+            rows.length,
+            '',
+            'FALSE',
+            'FALSE',
+            '1',
+            '',
+            '',
+            '',
+            '',
+            (sage_id == 'SHORTS' ? 'Shorts' : film.title),
+            gl_code,
+            '',
+            { value: (amount.fdiv(100) * -1), type: :float },
+            '1',
+            '',
+            '',
+            { value: (amount.fdiv(100) * -1), type: :float },
+            '', '', '', '', '',
+            '1',
+            '', '', '',
+            sage_id
+          ]
         end
       end
+
+      if unknown_films.present?
+        job.update!({ status: :failed, errors_text: unknown_films.sort.uniq.to_json })
+        return
+      end
+
+      job.update!(first_line: "Exporting Combined Sales", second_line: true, current_value: 0, total_value: total_invoice_rows)
+
+      public_url = ExportAndUploadSpreadsheet.new(
+        headers:  HEADERS,
+        rows:     rows,
+        job:      job,
+        filename: 'sales.xlsx'
+      ).call
+
+      job.update!({ status: :success, metadata: { url: public_url } })
 
     rescue
       job.update!({ status: :failed, errors_text: "Unable to import spreadsheet" })
