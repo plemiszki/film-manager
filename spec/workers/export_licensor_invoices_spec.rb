@@ -17,7 +17,7 @@ RSpec.describe ExportLicensorInvoices do
   let!(:job) { create(:job, job_id: time_started, status: :running) }
 
   before do
-    allow_any_instance_of(described_class).to receive(:upload_to_aws).and_return('https://example.com/file.xlsx')
+    allow_any_instance_of(ExportAndUploadSpreadsheet).to receive(:upload_to_aws).and_return('https://example.com/file.xlsx')
   end
 
   after do
