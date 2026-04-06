@@ -19,20 +19,19 @@ class SendEmail
 
   def call
     mg_client = Mailgun::Client.new(ENV['MAILGUN_KEY'])
+    mb = Mailgun::MessageBuilder.new
+    mb.from(@sender.email)
+    @recipients.each { |addr| mb.add_recipient(:to, addr) }
+    @cc.each { |addr| mb.add_recipient(:cc, addr) }
+    mb.subject(@subject)
+    mb.body_text(@body)
+    @attachments.each { |attachment| mb.add_attachment(attachment) }
 
-    @recipients.map do |recipient|
-      mb = Mailgun::MessageBuilder.new
-      mb.from(@sender.email)
-      mb.add_recipient(:to, recipient)
-      @cc.each { |cc_address| mb.add_recipient(:cc, cc_address) }
-      mb.subject(@subject)
-      mb.body_text(@body)
-      @attachments.each { |attachment| mb.add_attachment(attachment) }
+    response = mg_client.send_message('filmmovement.com', mb)
+    response_body = response.body.is_a?(String) ? JSON.parse(response.body) : response.body
+    mailgun_message_id = response_body['id']
 
-      response = mg_client.send_message('filmmovement.com', mb)
-      response_body = response.body.is_a?(String) ? JSON.parse(response.body) : response.body
-      mailgun_message_id = response_body['id']
-
+    (@recipients + @cc).map do |recipient|
       Email.create!(
         email_type: @email_type,
         recipient: recipient,

@@ -71,13 +71,13 @@ RSpec.describe ExportAndSendReports do
     it 'creates an Email record after sending' do
       expect {
         described_class.new.perform(report_ids, quarter, year, time_started)
-      }.to change(Email, :count).by(1)
+      }.to change(Email, :count).by(2)
     end
 
     it 'creates Email with correct attributes' do
       described_class.new.perform(report_ids, quarter, year, time_started)
 
-      email = Email.last
+      email = Email.find_by!(recipient: 'licensor@example.com')
       expect(email.email_type).to eq('statement')
       expect(email.recipient).to eq('licensor@example.com')
       expect(email.subject).to eq("Your Q#{quarter} #{year} producer reports from Film Movement")

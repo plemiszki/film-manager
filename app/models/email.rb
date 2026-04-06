@@ -9,7 +9,7 @@ class Email < ActiveRecord::Base
   validates :email_type, presence: true, inclusion: { in: EMAIL_TYPES }
   validates :recipient, presence: true
   validates :subject, presence: true
-  validates :mailgun_message_id, presence: true, uniqueness: true
+  validates :mailgun_message_id, presence: true, uniqueness: { scope: :recipient }
 
   scope :statements, -> { where(email_type: 'statement') }
   scope :recent, -> { order(sent_at: :desc) }

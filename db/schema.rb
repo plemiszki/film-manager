@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_30_203633) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -307,7 +307,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_30_203633) do
     t.string "subject", null: false
     t.datetime "updated_at", null: false
     t.index ["email_type"], name: "index_emails_on_email_type"
-    t.index ["mailgun_message_id"], name: "index_emails_on_mailgun_message_id", unique: true
+    t.index ["mailgun_message_id", "recipient"], name: "index_emails_on_mailgun_message_id_and_recipient", unique: true
     t.index ["sender_id"], name: "index_emails_on_sender_id"
     t.index ["status"], name: "index_emails_on_status"
   end

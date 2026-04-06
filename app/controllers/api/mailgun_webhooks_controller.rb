@@ -7,7 +7,8 @@ class Api::MailgunWebhooksController < ApplicationController
     event_type = event_data['event']
     message_id = extract_message_id(event_data)
 
-    email = Email.find_by(mailgun_message_id: message_id)
+    recipient = event_data['recipient']
+    email = Email.find_by(mailgun_message_id: message_id, recipient: recipient)
 
     if email.nil?
       render json: { status: 'ok', message: 'Email not found' }, status: :ok
