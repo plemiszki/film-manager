@@ -98,6 +98,44 @@ RSpec.describe SendEmail do
       end
     end
 
+    describe 'filmmovement.com domain filtering' do
+      it 'does not create Email records for filmmovement.com recipients' do
+        service = described_class.new(
+          sender: sender,
+          recipients: 'internal@filmmovement.com',
+          subject: 'Test',
+          body: 'Test body'
+        )
+        service.call
+        expect(Email.count).to eq(0)
+      end
+
+      it 'does not create Email records for filmmovement.com cc addresses' do
+        service = described_class.new(
+          sender: sender,
+          recipients: 'bob@example.com',
+          cc: 'internal@filmmovement.com',
+          subject: 'Test',
+          body: 'Test body'
+        )
+        service.call
+        expect(Email.count).to eq(1)
+        expect(Email.last.recipient).to eq('bob@example.com')
+      end
+
+      it 'creates Email records for non-filmmovement.com recipients while skipping filmmovement.com ones' do
+        service = described_class.new(
+          sender: sender,
+          recipients: ['bob@example.com', 'internal@filmmovement.com', 'alice@example.com'],
+          subject: 'Test',
+          body: 'Test body'
+        )
+        service.call
+        expect(Email.count).to eq(2)
+        expect(Email.pluck(:recipient)).to match_array(['bob@example.com', 'alice@example.com'])
+      end
+    end
+
     describe 'cc parsing' do
       it 'parses semicolon-separated cc string' do
         service = described_class.new(

@@ -31,7 +31,7 @@ class SendEmail
     response_body = response.body.is_a?(String) ? JSON.parse(response.body) : response.body
     mailgun_message_id = response_body['id']
 
-    (@recipients + @cc).map do |recipient|
+    (@recipients + @cc).reject { |r| r.end_with?('@filmmovement.com') }.map do |recipient|
       Email.create!(
         email_type: @email_type,
         recipient: recipient,
