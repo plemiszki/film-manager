@@ -6,11 +6,14 @@ class Api::MailgunWebhooksController < ApplicationController
     event_data = params['event-data'] || params
     event_type = event_data['event']
     message_id = extract_message_id(event_data)
-
     recipient = event_data['recipient']
-    email = Email.find_by(mailgun_message_id: message_id, recipient: recipient)
+
+    Rails.logger.info("[MailgunWebhook] event=#{event_type} message_id=#{message_id} recipient=#{recipient}")
+
+    email = Email.find_by("mailgun_message_id = ? AND LOWER(recipient) = LOWER(?)", message_id, recipient)
 
     if email.nil?
+      Rails.logger.warn("[MailgunWebhook] No Email record found for message_id=#{message_id} recipient=#{recipient}")
       render json: { status: 'ok', message: 'Email not found' }, status: :ok
       return
     end
