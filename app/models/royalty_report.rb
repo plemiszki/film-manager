@@ -338,14 +338,12 @@ class RoyaltyReport < ActiveRecord::Base
         cume_total: result.cume_total + report.cume_total,
         cume_total_revenue: result.cume_total_revenue + report.cume_total_revenue,
         cume_total_expenses: result.cume_total_expenses + report.cume_total_expenses,
+        cume_liquidated_reserve: result.cume_liquidated_reserve + report.cume_liquidated_reserve,
         joined_total: result.joined_total + report.joined_total,
         joined_total_revenue: result.joined_total_revenue + report.joined_total_revenue,
         joined_total_expenses: result.joined_total_expenses + report.joined_total_expenses,
         mg: result.mg + report.mg,
         e_and_o: result.e_and_o + report.e_and_o,
-        amount_paid: result.amount_paid + report.amount_paid,
-        amount_due: result.amount_due + report.amount_due,
-        joined_amount_due: result.joined_amount_due + report.joined_amount_due,
         current_reserve: result.current_reserve + report.current_reserve,
         cume_reserve: result.cume_reserve + report.cume_reserve,
         joined_reserve: result.joined_reserve + report.joined_reserve,
@@ -373,7 +371,28 @@ class RoyaltyReport < ActiveRecord::Base
         })
       end
     end
+    amount_paid = calculate_crossed_amount_paid(film, year, quarter)
+    deal_type_id = films.first.deal_type_id
+    if deal_type_id == 4
+      amount_due = result.cume_total - result.cume_total_expenses - result.cume_reserve - result.e_and_o - result.mg - amount_paid
+      joined_amount_due = result.joined_total - result.current_total_expenses - result.cume_total_expenses - result.joined_reserve + result.joined_liquidated_reserve - result.e_and_o - result.mg - amount_paid
+    else
+      amount_due = result.cume_total - result.cume_reserve + result.cume_liquidated_reserve - result.e_and_o - result.mg - amount_paid
+      joined_amount_due = result.joined_total - result.joined_reserve + result.joined_liquidated_reserve - result.e_and_o - result.mg - amount_paid
+    end
+    result.amount_paid = amount_paid
+    result.amount_due = amount_due
+    result.joined_amount_due = joined_amount_due
     [result, streams, films]
+  end
+
+  def self.calculate_crossed_amount_paid(film, year, quarter)
+    prev = quarter_math(year: year, quarter: quarter, diff: -1)
+    crossed_film_ids = film.crossed_films.pluck(:crossed_film_id)
+    film_ids = [film.id] + crossed_film_ids
+    return 0 unless RoyaltyReport.where(year: prev[:year], quarter: prev[:quarter], film_id: film_ids).exists?
+    prev_result, _streams, _films = calculate_crossed_films_report(film, prev[:year], prev[:quarter])
+    prev_result.amount_paid + [0, prev_result.joined_amount_due].max
   end
 
   def export(directory:, royalty_revenue_streams:, multiple_films: nil)

@@ -48,6 +48,49 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(response.status).to eq(200)
     end
 
+    it 'does not carry over individual film payment history into the crossed statement' do
+      # Film A: individually recouped (no MG or E&O)
+      film_a = create(:no_expenses_recouped_film, title: 'Film A')
+      film_a.film_revenue_percentages.update_all({ value: 50 })
+
+      # Film A Q1: $1000 per stream → joined_amount_due = $7,000 (recouped individually)
+      report_a_q1 = create(:no_expenses_recouped_royalty_report, film_id: film_a.id, quarter: 1, year: 2019, mg: 0, e_and_o: 0)
+      report_a_q1.create_empty_streams!
+      report_a_q1.royalty_revenue_streams.each { |s| s.update!(current_revenue: 1000) }
+      report_a_q1.calculate!
+
+      # Film A Q2: carry forward from Q1 → individual amount_paid = $7,000
+      report_a_q2 = create(:no_expenses_recouped_royalty_report, film_id: film_a.id, quarter: 2, year: 2019, mg: 0, e_and_o: 0)
+      report_a_q2.create_empty_streams!
+      report_a_q2.transfer_and_calculate_from_previous_report!
+      expect(report_a_q2.reload.amount_paid).to eq(7000) # confirm individual recoupment carried forward
+
+      # Film B: large E&O means the crossed group is NOT recouped together
+      film_b = create(:no_expenses_recouped_film, title: 'Film B')
+      film_b.film_revenue_percentages.update_all({ value: 50 })
+
+      # Film B Q1: $0 revenue, $10,000 E&O → crossed Q1 joined_amount_due = 7000 - 10000 = -$3,000
+      report_b_q1 = create(:no_expenses_recouped_royalty_report, film_id: film_b.id, quarter: 1, year: 2019, mg: 0, e_and_o: 10000)
+      report_b_q1.create_empty_streams!
+      report_b_q1.calculate!
+
+      # Film B Q2: carry forward (amount_paid stays $0, Q1 was negative)
+      report_b_q2 = create(:no_expenses_recouped_royalty_report, film_id: film_b.id, quarter: 2, year: 2019, mg: 0, e_and_o: 10000)
+      report_b_q2.create_empty_streams!
+      report_b_q2.transfer_and_calculate_from_previous_report!
+
+      CrossedFilm.create!(film_id: film_a.id, crossed_film_id: film_b.id)
+
+      get :show, params: { id: report_a_q2.id }
+      parsed_response = JSON.parse(response.body)
+
+      # Previously Paid must be $0 — crossed group was never recouped together
+      expect(parsed_response["report"]["amountPaid"]).to eq("$0.00")
+      # joined_amount_due = crossed joined_total ($7,000) - e_and_o ($10,000) - amount_paid ($0) = -$3,000
+      expect(parsed_response["report"]["joinedAmountDue"]).to eq("-$3,000.00")
+      expect(response.status).to eq(200)
+    end
+
   end
 
   context '#update' do
