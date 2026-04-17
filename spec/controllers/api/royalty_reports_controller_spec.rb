@@ -23,6 +23,24 @@ RSpec.describe Api::RoyaltyReportsController do
       expect(response.status).to eq(200)
     end
 
+    it 'sums expense caps across crossed films' do
+      film = create(:no_expenses_recouped_film, expense_cap: 25000)
+      film.film_revenue_percentages.update_all({ value: 50 })
+      report = create(:no_expenses_recouped_royalty_report)
+      report.create_empty_streams!
+      report.calculate!
+      second_film = create(:no_expenses_recouped_film, title: 'Film 2', expense_cap: 25000)
+      second_film.film_revenue_percentages.update_all({ value: 50 })
+      second_report = create(:no_expenses_recouped_royalty_report, film_id: second_film.id)
+      second_report.create_empty_streams!
+      second_report.calculate!
+      CrossedFilm.create!(film_id: film.id, crossed_film_id: second_film.id)
+      get :show, params: { id: report.id }
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response["report"]["expenseCap"]).to eq("$50,000.00")
+      expect(response.status).to eq(200)
+    end
+
     it 'shows the proper amount due for two crossed films' do
       film = create(:no_expenses_recouped_film)
       film.film_revenue_percentages.update_all({ value: 50 })

@@ -3,7 +3,7 @@ json.report do
   json.film @film.title
   json.filmId @film.id
   json.dealId @film.deal_type_id
-  json.expenseCap dollarify(number_with_precision(@film.expense_cap, precision: 2, delimiter: ','))
+  json.expenseCap dollarify(number_with_precision(@films.sum(&:expense_cap), precision: 2, delimiter: ','))
   json.quarter @report.quarter
   json.year @report.year
   json.grPercentage @film.gr_percentage.to_s || ""
