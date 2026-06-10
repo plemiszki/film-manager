@@ -326,8 +326,12 @@ class RoyaltyReport < ActiveRecord::Base
         revenue_stream_id: revenue_stream.id
       })
     end
+    reports_by_film_id = RoyaltyReport
+      .includes(:royalty_revenue_streams)
+      .where(year: year, quarter: quarter, film_id: films.map(&:id))
+      .index_by(&:film_id)
     films.each_with_index do |film, index|
-      report = RoyaltyReport.find_by(year: year, quarter: quarter, film_id: film.id)
+      report = reports_by_film_id[film.id]
       next unless report
       report_streams = report.royalty_revenue_streams
       result.assign_attributes({
