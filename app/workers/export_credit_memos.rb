@@ -96,7 +96,7 @@ class ExportCreditMemos
           '',
           'TRUE',
           '',
-          credit_memo.sent_date,
+          credit_memo.sent_date.strftime("%-m/%-d/%Y"),
           '',
           '',
           '', # 10
