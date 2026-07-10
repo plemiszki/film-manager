@@ -87,13 +87,30 @@ class ExportLicensorInvoices
       reports = RoyaltyReport.where(quarter: quarter, year: year, films: { export_reports: true, days_statement_due: days_due }).includes(film: [:licensor])
     end
 
-    amount_due_reports = reports.where('joined_amount_due > 0')
-    job.update({ second_line: true, total_value: amount_due_reports.count })
+    sorted_reports = reports.to_a.sort_by { |report| report.film.title }
 
-    sorted_reports = amount_due_reports.to_a.sort_by { |report| report.film.title }
+    crossed_films_done = []
+    eligible_reports = []
+    descriptions = {}
+    sorted_reports.each do |report|
+      film = report.film
+      if film.has_crossed_films?
+        next if crossed_films_done.include?(film.id)
+        combined_report, _streams, crossed_group_films = RoyaltyReport.calculate_crossed_films_report(film, report.year, report.quarter)
+        crossed_films_done += crossed_group_films.pluck(:id)
+        next unless combined_report.joined_amount_due > 0
+        report.joined_amount_due = combined_report.joined_amount_due
+        descriptions[report.id] = crossed_group_films.map(&:title).sort.join(' / ')
+        eligible_reports << report
+      else
+        eligible_reports << report if report.joined_amount_due > 0
+      end
+    end
+
+    job.update({ second_line: true, total_value: eligible_reports.count })
 
     reports_by_licensor = Hash.new { |hash, key| hash[key] = [] }
-    sorted_reports.each do |report|
+    eligible_reports.each do |report|
       reports_by_licensor[report.film.licensor_id] << report
     end
 
@@ -108,7 +125,7 @@ class ExportLicensorInvoices
           "Vendor ID": licensor.sage_id,
           "Invoice #": quarter_string,
           "Date Due": (Date.today + 30.days).strftime("%-m/%-d/%Y"),
-          "Description": film.title,
+          "Description": descriptions.fetch(report.id, film.title),
           "G/L Account": film.fm_subscription_only? ? "49350" : "49000",
           "Job ID": film.get_sage_id,
           "Invoice/CM Distribution": index + 1,
