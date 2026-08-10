@@ -343,7 +343,7 @@ class ImportSageData
           stream.save!
           check_for_empty_percentage(stream, errors, film.title, label)
         end
-      elsif gl == "40011" || gl == "48000" || gl == "50350" || gl == "50500" || gl == "40021"
+      elsif gl == "48000" || gl == "50350" || gl == "50500"
         unless film.deal_type_id == 3
           if FilmRight.find_by(film_id: film.id, right_id: 6)
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['TVOD'])
@@ -357,7 +357,7 @@ class ImportSageData
             check_for_empty_percentage(stream, errors, film.title, label)
           end
         end
-      elsif gl == "48100"
+      elsif gl == "40011" || gl == "40021" || gl == "48100"
         unless film.deal_type_id == 3
           if FilmRight.find_by(film_id: film.id, right_id: 7)
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Other Internet'])
