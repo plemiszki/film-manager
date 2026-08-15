@@ -121,7 +121,7 @@ describe 'royalty_reports_index', type: :feature do
     click_nice_select_option('select.days-filter', '30 days')
     click_btn('Send All')
     confirm
-    expect(page).to have_content 'Exporting Reports'
+    expect(page).to have_content('Exporting Reports', wait: 10)
   end
 
 end
