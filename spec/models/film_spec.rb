@@ -103,4 +103,33 @@ RSpec.describe Film do
     end
   end
 
+  describe '#fm_plus_only?' do
+    before do
+      create(:label)
+      create(:territory)
+      @fm_plus_right = create(:right, name: 'Film Movement Plus')
+      @film = create(:film)
+    end
+
+    it 'returns true when the only right is Film Movement Plus' do
+      create(:film_right, film: @film, right: @fm_plus_right)
+      expect(@film.fm_plus_only?).to eq(true)
+    end
+
+    it 'returns false when Film Movement Plus is present alongside another right' do
+      create(:film_right, film: @film, right: @fm_plus_right)
+      create(:film_right, film: @film, right: create(:right, name: 'Festival'))
+      expect(@film.fm_plus_only?).to eq(false)
+    end
+
+    it 'returns false when the film has no rights at all' do
+      expect(@film.fm_plus_only?).to eq(false)
+    end
+
+    it 'returns false when the film has a single right that is not Film Movement Plus' do
+      create(:film_right, film: @film, right: create(:right, name: 'Festival'))
+      expect(@film.fm_plus_only?).to eq(false)
+    end
+  end
+
 end

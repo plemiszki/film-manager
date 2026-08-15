@@ -249,7 +249,7 @@ class ImportSageData
 
   def apply_expense(film, label, gl, report, amount, errors)
     if film.deal_type_id == 2 || film.deal_type_id == 3 || film.deal_type_id == 5 || film.deal_type_id == 6
-      if FilmRight.where(film_id: film.id).count == 1 && FilmRight.exists?(film_id: film.id, right_id: RIGHT_IDS['Film Movement Plus'])
+      if film.fm_plus_only?
         stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'])
         stream.current_expense += amount
         stream.save!

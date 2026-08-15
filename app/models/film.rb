@@ -184,6 +184,10 @@ class Film < ActiveRecord::Base
     film_revenue_percentages.where.not(revenue_stream_id: fm_sub.id).where('value > 0').none?
   end
 
+  def fm_plus_only?
+    film_rights.count == 1 && film_rights.joins(:right).where(rights: { name: 'Film Movement Plus' }).exists?
+  end
+
   def self.find_from_sage_id(sage_id)
     film = Film.find_by_sage_id(sage_id)
     film = Film.where('upper(title) = ?', sage_id).first unless film
