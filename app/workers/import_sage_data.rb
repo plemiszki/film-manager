@@ -5,6 +5,7 @@ class ImportSageData
   sidekiq_options retry: false
 
   REVENUE_STREAM_IDS = Hash[*RevenueStream.all.map { |stream| [stream.name, stream.id] }.flatten]
+  RIGHT_IDS = Hash[*Right.all.map { |right| [right.name, right.id] }.flatten]
 
   def perform(year, quarter, time_started, label, original_filename, use_tmp = true)
     unless Rails.env == 'test'
@@ -127,7 +128,7 @@ class ImportSageData
               stream.save!
               check_for_empty_percentage(stream, errors, film.title, label)
             when "30350"
-              if FilmRight.find_by(film_id: film.id, right_id: 17) && FilmRevenuePercentage.find_by({ film_id: film.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'] }).value > 0
+              if FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Film Movement Plus']) && FilmRevenuePercentage.find_by({ film_id: film.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'] }).value > 0
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'])
                 stream.current_revenue += columns[3]
                 stream.save!
@@ -154,7 +155,7 @@ class ImportSageData
               stream.save!
               check_for_empty_percentage(stream, errors, film.title, label)
             when "30400"
-              if FilmRight.find_by(film_id: film.id, right_id: 2)
+              if FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Educational'])
                 stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Non-Theatrical'])
                 stream.current_revenue += columns[3]
                 stream.save!
@@ -248,7 +249,7 @@ class ImportSageData
 
   def apply_expense(film, label, gl, report, amount, errors)
     if film.deal_type_id == 2 || film.deal_type_id == 3 || film.deal_type_id == 5 || film.deal_type_id == 6
-      if (FilmRight.find_by(film_id: film.id, right_id: 13) || FilmRight.find_by(film_id: film.id, right_id: 14) || FilmRight.find_by(film_id: film.id, right_id: 15)) && !FilmRight.find_by(film_id: film.id, right_id: 1) && !FilmRight.find_by(film_id: film.id, right_id: 2) && !FilmRight.find_by(film_id: film.id, right_id: 12) && !FilmRight.find_by(film_id: film.id, right_id: 5) && !FilmRight.find_by(film_id: film.id, right_id: 6) && !FilmRight.find_by(film_id: film.id, right_id: 10) && !FilmRight.find_by(film_id: film.id, right_id: 11) && !FilmRight.find_by(film_id: film.id, right_id: 8) && !FilmRight.find_by(film_id: film.id, right_id: 9)
+      if (FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Hotels']) || FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Airlines']) || FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Ships'])) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Theatrical']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Educational']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['DVD/Video']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['SVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['TVOD (Cable)']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['FVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['AVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Pay TV']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Free TV'])
         stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Hotels, Ships, Airlines'])
         stream.current_expense += amount
         stream.save!
@@ -301,7 +302,7 @@ class ImportSageData
           check_for_empty_percentage(stream, errors, film.title, label)
         end
       elsif gl == "61110" || gl == "63104" || gl == "64101" || gl == "63114" || gl == "61140" || gl == "63103" || gl == "61120" || gl == "64100" || gl == "64103" || gl == "69111" || gl == "69113" || gl == "60200" || gl == "60400" || gl == "60300" || gl == "63110" || gl == "63120" || gl == "69109" || gl == "63105" || gl == "61100" || gl == "61160" || gl == "63111" || gl == "63106" || gl == "63118" || gl == "63107" || gl == "63112" || gl == "67160" || gl == "63119" || gl == "65101" || gl == "69110" || gl == "60100" || gl == "40071" || gl == "64104" || gl == "61150" || gl == "63116" || gl == "69100" || gl == "69112" || gl == "69101" || gl == "69102"
-        if FilmRight.find_by(film_id: film.id, right_id: 1)
+        if FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Theatrical'])
           stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Theatrical'])
           stream.current_expense += amount
           stream.save!
@@ -314,7 +315,7 @@ class ImportSageData
         end
       elsif gl == "40031"
         unless film.deal_type_id == 3
-          if FilmRight.find_by(film_id: film.id, right_id: 12)
+          if FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['DVD/Video'])
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Video'])
             stream.current_expense += amount
             stream.save!
@@ -327,12 +328,12 @@ class ImportSageData
           end
         end
       elsif gl == "40040"
-        if FilmRight.find_by(film_id: film.id, right_id: 1)
+        if FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Theatrical'])
           stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Theatrical'])
           stream.current_expense += amount
           stream.save!
           check_for_empty_percentage(stream, errors, film.title, label)
-        elsif FilmRight.find_by(film_id: film.id, right_id: 7)
+        elsif FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['EST/DTR'])
           stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Other Internet'])
           stream.current_expense += amount
           stream.save!
@@ -345,7 +346,7 @@ class ImportSageData
         end
       elsif gl == "48000" || gl == "50350" || gl == "50500"
         unless film.deal_type_id == 3
-          if FilmRight.find_by(film_id: film.id, right_id: 6)
+          if FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['TVOD (Cable)'])
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['TVOD'])
             stream.current_expense += amount
             stream.save!
@@ -359,7 +360,7 @@ class ImportSageData
         end
       elsif gl == "40011" || gl == "40021" || gl == "48100"
         unless film.deal_type_id == 3
-          if FilmRight.find_by(film_id: film.id, right_id: 7)
+          if FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['EST/DTR'])
             stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Other Internet'])
             stream.current_expense += amount
             stream.save!
@@ -379,7 +380,7 @@ class ImportSageData
           check_for_empty_percentage(stream, errors, film.title, label)
         end
       elsif gl == "50250" || gl == "50260"
-        if FilmRight.find_by(film_id: film.id, right_id: 17) && FilmRevenuePercentage.find_by({ film_id: film.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'] }).value > 0
+        if FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Film Movement Plus']) && FilmRevenuePercentage.find_by({ film_id: film.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'] }).value > 0
           stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'])
           stream.current_expense += amount
           stream.save!
