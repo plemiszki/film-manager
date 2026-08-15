@@ -44,7 +44,7 @@ RSpec.describe ImportSageData do
       create(:film_right, film: film, right: fm_plus_right, territory: territory)
       report = build_report(film)
 
-      described_class.new.apply_expense(film, 'expenses', '40070', report, 100, [])
+      described_class.new.apply_expense(film: film, label: 'expenses', gl: '40070', report: report, amount: 100, errors: [])
 
       expect(fm_subscription_expense(report)).to eq(100)
       expect(non_theatrical_expense(report)).to eq(0)
@@ -56,7 +56,7 @@ RSpec.describe ImportSageData do
       create(:film_right, film: film, right: festival_right, territory: territory)
       report = build_report(film)
 
-      described_class.new.apply_expense(film, 'expenses', '40070', report, 100, [])
+      described_class.new.apply_expense(film: film, label: 'expenses', gl: '40070', report: report, amount: 100, errors: [])
 
       expect(non_theatrical_expense(report)).to eq(100)
       expect(fm_subscription_expense(report)).to eq(0)
@@ -66,7 +66,7 @@ RSpec.describe ImportSageData do
       film = build_film(title: 'No Rights', deal_type_id: 2)
       report = build_report(film)
 
-      described_class.new.apply_expense(film, 'expenses', '40070', report, 100, [])
+      described_class.new.apply_expense(film: film, label: 'expenses', gl: '40070', report: report, amount: 100, errors: [])
 
       expect(non_theatrical_expense(report)).to eq(100)
       expect(fm_subscription_expense(report)).to eq(0)
@@ -77,7 +77,7 @@ RSpec.describe ImportSageData do
       create(:film_right, film: film, right: fm_plus_right, territory: territory)
       report = build_report(film)
 
-      described_class.new.apply_expense(film, 'expenses', '40070', report, 100, [])
+      described_class.new.apply_expense(film: film, label: 'expenses', gl: '40070', report: report, amount: 100, errors: [])
 
       expect(fm_subscription_expense(report)).to eq(100)
     end
@@ -87,7 +87,7 @@ RSpec.describe ImportSageData do
       create(:film_right, film: film, right: fm_plus_right, territory: territory)
       report = build_report(film)
 
-      described_class.new.apply_expense(film, 'expenses', '40070', report, 100, [])
+      described_class.new.apply_expense(film: film, label: 'expenses', gl: '40070', report: report, amount: 100, errors: [])
 
       expect(fm_subscription_expense(report)).to eq(0)
       expect(report.reload.current_total_expenses).to eq(100)
