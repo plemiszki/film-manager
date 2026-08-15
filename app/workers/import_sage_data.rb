@@ -249,7 +249,12 @@ class ImportSageData
 
   def apply_expense(film, label, gl, report, amount, errors)
     if film.deal_type_id == 2 || film.deal_type_id == 3 || film.deal_type_id == 5 || film.deal_type_id == 6
-      if (FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Hotels']) || FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Airlines']) || FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Ships'])) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Theatrical']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Educational']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['DVD/Video']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['SVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['TVOD (Cable)']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['FVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['AVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Pay TV']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Free TV'])
+      if FilmRight.where(film_id: film.id).count == 1 && FilmRight.exists?(film_id: film.id, right_id: RIGHT_IDS['Film Movement Plus'])
+        stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'])
+        stream.current_expense += amount
+        stream.save!
+        check_for_empty_percentage(stream, errors, film.title, label)
+      elsif (FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Hotels']) || FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Airlines']) || FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Ships'])) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Theatrical']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Educational']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['DVD/Video']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['SVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['TVOD (Cable)']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['FVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['AVOD']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Pay TV']) && !FilmRight.find_by(film_id: film.id, right_id: RIGHT_IDS['Free TV'])
         stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['Hotels, Ships, Airlines'])
         stream.current_expense += amount
         stream.save!
