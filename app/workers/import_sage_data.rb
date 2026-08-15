@@ -101,7 +101,14 @@ class ImportSageData
               stream.current_revenue += amount
               stream.save!
             else
-              apply_expense(film, label, gl_code, report, amount, errors)
+              apply_expense(
+                film: film,
+                label: label,
+                gl: gl_code,
+                report: report,
+                amount: amount,
+                errors: errors
+              )
             end
           end
         end
@@ -217,7 +224,14 @@ class ImportSageData
               errors << "GL Code #{gl_code} not found."
             end
           elsif label == "expenses"
-            apply_expense(film, label, gl_code, report, columns[3], errors)
+            apply_expense(
+              film: film,
+              label: label,
+              gl: gl_code,
+              report: report,
+              amount: columns[3],
+              errors: errors
+            )
           end
         end
 
@@ -247,7 +261,7 @@ class ImportSageData
     end
   end
 
-  def apply_expense(film, label, gl, report, amount, errors)
+  def apply_expense(film:, label:, gl:, report:, amount:, errors:)
     if film.deal_type_id == 2 || film.deal_type_id == 3 || film.deal_type_id == 5 || film.deal_type_id == 6
       if film.fm_plus_only?
         stream = RoyaltyRevenueStream.find_by(royalty_report_id: report.id, revenue_stream_id: REVENUE_STREAM_IDS['FM Subscription'])
