@@ -4,8 +4,23 @@ class ImportSageData
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  REVENUE_STREAM_IDS = Hash[*RevenueStream.all.map { |stream| [stream.name, stream.id] }.flatten]
-  RIGHT_IDS = Hash[*Right.all.map { |right| [right.name, right.id] }.flatten]
+  # Looks up by name on every call instead of caching at class-load time. RevenueStream/Right
+  # are effectively static reference data, but a plain precomputed Hash here gets frozen in
+  # whenever this class first autoloads (e.g. before test fixtures exist), which then silently
+  # breaks any later lookup for the life of the process. TODO: revisit once RevenueStream/Right
+  # move to static YML files.
+  class LiveIdLookup
+    def initialize(model)
+      @model = model
+    end
+
+    def [](name)
+      @model.find_by(name: name)&.id
+    end
+  end
+
+  REVENUE_STREAM_IDS = LiveIdLookup.new(RevenueStream)
+  RIGHT_IDS = LiveIdLookup.new(Right)
   DEAL_TYPES = {
     1 => "NO EXPENSES",
     2 => "FROM TOP",

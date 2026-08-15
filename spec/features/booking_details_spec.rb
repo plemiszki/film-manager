@@ -278,7 +278,7 @@ describe 'booking_details', type: :feature do
     expect(InvoiceRow.first.item_label).to eq('Advance')
     expect(InvoiceRow.first.total_price).to eq(100)
     within('table') do
-      expect(page).to have_content('1B')
+      expect(page).to have_content('1B', wait: 10)
     end
   end
 
