@@ -22,6 +22,8 @@ Capybara.default_driver = :selenium_chrome
 FactoryBot.definition_file_paths = [File.expand_path('../factories', __FILE__)]
 FactoryBot.find_definitions
 
+Sidekiq.testing!(:fake)
+
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are

@@ -141,7 +141,6 @@ export default class FilmDetails extends React.Component {
       newRightsModalOpen: false,
       otherCrossedFilms: [],
       otherFilms: [],
-      percentageErrors: {},
       percentageObject: {},
       percentageObjectSaved: {},
       quotes: [],
@@ -688,11 +687,8 @@ export default class FilmDetails extends React.Component {
   changePercentageField(e) {
     const filmRevenuePercentageId = e.target.dataset.id;
     const value = e.target.value;
-    const { percentageObject, percentageErrors } = this.state;
+    const { percentageObject } = this.state;
     percentageObject[filmRevenuePercentageId] = value;
-    if (percentageErrors[filmRevenuePercentageId]) {
-      delete percentageErrors[filmRevenuePercentageId];
-    }
     this.setState(
       {
         percentageObject,
@@ -2592,7 +2588,6 @@ export default class FilmDetails extends React.Component {
       film,
       filmRevenuePercentages,
       filmRights,
-      percentageErrors,
       percentageObject,
       revenueStreams,
     } = this.state;
@@ -2742,9 +2737,6 @@ export default class FilmDetails extends React.Component {
             <p className="section-header">Revenue Splits</p>
             <div className="row">
               {filmRevenuePercentages.map((revenuePercentage, index) => {
-                const properErrorsArray = percentageErrors[revenuePercentage.id]
-                  ? percentageErrors[revenuePercentage.id]
-                  : [];
                 const revenueStream = revenueStreams.find(
                   (stream) => stream.id === revenuePercentage.revenueStreamId,
                 );
@@ -2862,7 +2854,6 @@ export default class FilmDetails extends React.Component {
             this.clickSave();
           }}
         />
-        {this.renderErrorGuide()}
         {this.renderCopyAndDeleteButtons()}
       </div>
     );
@@ -2920,75 +2911,6 @@ export default class FilmDetails extends React.Component {
         jobModalOpen: true,
       });
     });
-  }
-
-  percentageErrorsExist() {
-    const { errors } = this.state;
-    var keys = Object.keys(this.state.percentageErrors);
-    var result = false;
-    if (keys.length > 0) {
-      for (var i = 0; i < keys.length; i++) {
-        if (this.state.percentageErrors[keys[i]].length > 0) {
-          result = true;
-          break;
-        }
-      }
-    }
-    return result;
-  }
-
-  renderErrorGuide() {
-    const { errors } = this.state;
-    if (errors.length > 0 || this.percentageErrorsExist()) {
-      var tabs = {
-        contract: [
-          FM.errors.grPercentage,
-          FM.errors.eAndO,
-          FM.errors.mg,
-          FM.errors.expenseCap,
-          FM.errors.sellOffPeriod,
-          FM.errors.reservePercentage,
-          FM.errors.reserveQuarters,
-          FM.errors.autoRenewTerm,
-          FM.errors.startDate,
-          FM.errors.endDate,
-        ],
-        general: [
-          FM.errors.year,
-          FM.errors.length,
-          FM.errors.avodRelease,
-          FM.errors.svodRelease,
-          FM.errors.tvodRelease,
-          FM.errors.clubDate,
-        ],
-      };
-      let result = [];
-      if (this.percentageErrorsExist()) {
-        result.push("Contract Tab");
-      }
-      errors.forEach((error) => {
-        if (result.indexOf("Contract Tab") === -1) {
-          tabs.contract.forEach((errorsArray) => {
-            if (errorsArray.indexOf(error) > -1) {
-              result.push("Contract Tab");
-            }
-          });
-        }
-        if (result.indexOf("General Tab") === -1) {
-          tabs.general.forEach((errorsArray) => {
-            if (errorsArray.indexOf(error) > -1) {
-              result.push("General Tab");
-            }
-          });
-        }
-      });
-      const string = result.length > 0 ? "(" + result.join(", ") + ")" : "";
-      return (
-        <div className="error-guide">
-          {"Not saved. There were errors. " + string}
-        </div>
-      );
-    }
   }
 
   componentDidUpdate() {

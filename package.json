@@ -15,8 +15,6 @@
     "@vitejs/plugin-react": "^6.1.1",
     "change-case": "^5.0.0",
     "handy-components": "^3.0.0",
-    "jquery": "^3.0.0",
-    "jquery-match-height": "^0.7.0",
     "lodash": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

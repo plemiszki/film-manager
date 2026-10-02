@@ -1,11 +1,10 @@
 require 'rails_helper'
 require 'support/features_helper'
-require 'sidekiq/testing'
 
 describe 'royalty_reports_index', type: :feature do
 
   before do
-    Sidekiq::Testing.inline!
+    Sidekiq.testing!(:inline)
   end
 
   before(:each) do

@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'sidekiq/testing'
 require 'support/features_helper'
 require 'support/controllers_helper'
 include ActionView::Helpers::NumberHelper
@@ -110,7 +109,7 @@ describe 'royalty_report_details', type: :feature do
   end
 
   it 'sends an email report' do
-    Sidekiq::Testing.inline!
+    Sidekiq.testing!(:inline)
     create(:user, email: 'michael@filmmovement.com', name: 'Michael Rosenberg')
     allow(ENV).to receive(:[]).and_call_original
     allow(ENV).to receive(:[]).with('TEST_MODE').and_return(nil)

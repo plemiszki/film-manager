@@ -1,11 +1,10 @@
 require 'rails_helper'
 require 'support/features_helper'
-require 'sidekiq/testing'
 
 describe 'purchase_order_details_spec', type: :feature do
 
   before do
-    Sidekiq::Testing.inline!
+    Sidekiq.testing!(:inline)
   end
 
   before(:each) do

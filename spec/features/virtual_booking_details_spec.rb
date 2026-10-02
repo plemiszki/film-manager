@@ -1,12 +1,11 @@
 require 'rails_helper'
 require 'support/features_helper'
-require 'sidekiq/testing'
 
 describe 'virtual_booking_details', type: :feature do
 
   before do
     WebMock.disable!
-    Sidekiq::Testing.inline!
+    Sidekiq.testing!(:inline)
   end
 
   before(:each) do

@@ -1,6 +1,4 @@
-import React from 'react';
-import Modal from 'react-modal';
-import { Common, titleCase } from 'handy-components';
+import { titleCase } from 'handy-components';
 
 $(document).ready(function() {
   FM.initialize();
@@ -9,92 +7,6 @@ $(document).ready(function() {
 var FM = {
 
   params: {},
-
-  selectModalStyles: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.50)'
-    },
-    content: {
-      background: '#FFFFFF',
-      margin: 'auto',
-      maxWidth: 540,
-      height: '90%',
-      border: 'solid 1px #5F5F5F',
-      borderRadius: '6px',
-      textAlign: 'center',
-      color: '#5F5F5F'
-    }
-  },
-
-  deleteModalStyles: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.50)'
-    },
-    content: {
-      background: '#FFFFFF',
-      margin: 'auto',
-      maxWidth: 540,
-      height: 217,
-      border: 'solid 1px #01647C',
-      borderRadius: '6px',
-      textAlign: 'center',
-      color: '#5F5F5F',
-      paddingTop: '36px'
-    }
-  },
-
-  jobModalStyles: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.50)'
-    },
-    content: {
-      background: 'white',
-      margin: 'auto',
-      maxWidth: 540,
-      height: 217,
-      border: 'solid 1px black',
-      borderRadius: '6px',
-      textAlign: 'center',
-      color: 'black',
-      fontSize: 18,
-      fontWeight: 'bold',
-      paddingTop: 130,
-      lineHeight: '30px'
-    }
-  },
-
-  errorsModalStyles: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.50)'
-    },
-    content: {
-      background: '#FFFFFF',
-      margin: 'auto',
-      maxWidth: 800,
-      height: 550,
-      border: 'solid 1px #5F5F5F',
-      borderRadius: '6px',
-      textAlign: 'center',
-      color: '#5F5F5F',
-      padding: 20
-    }
-  },
-
-  noErrorsModalStyles: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.50)'
-    },
-    content: {
-      background: '#FFFFFF',
-      margin: 'auto',
-      maxWidth: 540,
-      height: 140,
-      border: 'solid 1px #5F5F5F',
-      borderRadius: '6px',
-      textAlign: 'center',
-      color: '#5F5F5F'
-    }
-  },
 
   canIDrop: function($e) {
     var draggedIndex = $e[0].dataset.index;
@@ -115,64 +27,6 @@ var FM = {
     this.setState({
       searchText: event.target.value
     });
-  },
-
-  changeCheckBox: function(changeFieldArgs, event) {
-    var key = event.target.dataset.field;
-    var thing = event.target.dataset.thing || changeFieldArgs.thing;
-    var newThing = this.state[thing];
-    var thingToUpdate;
-
-    var thingId = event.target.dataset.thingid;
-    if (thingId) {
-      thingToUpdate = newThing[thingId];
-    } else {
-      thingToUpdate = newThing;
-    }
-
-    thingToUpdate[key] = event.target.checked;
-
-    if (changeFieldArgs.beforeSave) {
-      changeFieldArgs.beforeSave.call(this, newThing, key, event.target.checked);
-    }
-
-    this.setState({[thing]: newThing, justSaved: false}, function() {
-      if (changeFieldArgs.changesFunction) {
-        var changesToSave = changeFieldArgs.changesFunction.call();
-        this.setState({changesToSave: changesToSave}, function() {
-          if (changeFieldArgs.callback) {
-            changeFieldArgs.callback.call(this, this.state[thing], key);
-          }
-        });
-      } else if (changeFieldArgs.callback) {
-        changeFieldArgs.callback.call(this, this.state[thing], key);
-      }
-    });
-  },
-
-  clickHeader: function(property) {
-    this.setState({
-      sortBy: property
-    });
-  },
-
-  commonSort: function(object) {
-    var property = object[this.state.sortBy];
-    if (["shipDate", "startDate", "endDate", "dateAdded", "sentDate"].indexOf(this.state.sortBy) > -1) {
-      if (property === "(Not Sent)") {
-        return Date.now();
-      } else if (property === "") {
-        return new Date('1/1/2099');
-      } else {
-        return new Date(property);
-      }
-    } else if (typeof property === "string" || property instanceof String) {
-      return property.toLowerCase();
-    } else if (typeof property === "boolean") {
-      return property.toString().toLowerCase();
-    } else {
-      return property;
-    }
   },
 
   properStatementQuarter: function(date) {
@@ -201,10 +55,6 @@ var FM = {
     }
   },
 
-  getUserId: function() {
-    return $('#current-user-id').html();
-  },
-
   highlightCurrentPageInMenu: function() {
     $('#admin-sidebar-body li a').each(function() {
       if (this.getAttribute("href") === window.location.pathname) {
@@ -221,71 +71,6 @@ var FM = {
     FM.user.access = $('#current-user #access').html();
     FM.user.hasAdminAccess = ["admin", "super_admin"].indexOf(FM.user.access) > -1;
     FM.user.hasSuperAdminAccess = (FM.user.access === "super_admin");
-  },
-
-  jobModal: function(job) {
-    return (
-      <Modal isOpen={ this.state.jobModalOpen } onRequestClose={ this.handleModalClose } contentLabel="Modal" style={ FM.jobModalStyles }>
-        <div className="jobs-modal">
-          { Common.renderSpinner(true) }
-          <div className="first-line">{ job.firstLine }</div>
-          <div className={ "second-line" + (job.secondLine ? "" : " hidden") }>({ job.currentValue || 0 } of { job.totalValue })</div>
-        </div>
-      </Modal>
-    );
-  },
-
-  jobErrorsModal: function() {
-    return(
-      <Modal isOpen={ this.state.errorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ FM.errorsModalStyles }>
-        <div className="errors-modal">
-          <h1>{ this.state.job.firstLine }</h1>
-          { this.state.job.errorsText.split("\n").map((error, index) => {
-            var greenClass = "";
-            if (error.substr(error.length - 3) === " :)") {
-              greenClass = " green";
-              error = error.substr(0, error.length - 3);
-            }
-            return(
-              <div key={ index } className={ `import-error${greenClass}` }>{ error }</div>
-            );
-          }) }
-        </div>
-      </Modal>
-    );
-  },
-
-  jobNoErrorsModal: function() {
-    return(
-      <Modal isOpen={ this.state.noErrorsModalOpen } onRequestClose={ this.modalCloseAndRefresh.bind(this) } contentLabel="Modal" style={ FM.noErrorsModalStyles }>
-        <div className="send-modal">
-          <h1>{ this.state.job.firstLine }</h1>
-          <a className="orange-button" onClick={ this.modalCloseAndRefresh.bind(this) }>OK</a>
-        </div>
-      </Modal>
-    );
-  },
-
-  redirect: function(directory, id) {
-    window.location.pathname = directory + "/" + id;
-  },
-
-  removeQuestion: function(string, prefix) {
-    if (string.slice(-1) === '?') {
-      return {
-        [prefix + '_release']: string.slice(0, -1),
-        [prefix + '_tentative']: true
-      };
-    } else {
-      return {
-        [prefix + '_release']: string,
-        [prefix + '_tentative']: false
-      };
-    }
-  },
-
-  sortClass: function(which) {
-    return this.state.sortBy === which ? "sort-header-active" : "sort-header-inactive";
   },
 
   splitAddress: function(input) {
@@ -348,7 +133,5 @@ var FM = {
 
   user: {}
 };
-
-globalThis.Errors = FM.errors;
 
 export default FM;

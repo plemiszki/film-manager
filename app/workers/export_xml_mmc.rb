@@ -13,7 +13,6 @@ class ExportXmlMmc
 
     film = Film.find(film_id)
     filename = film.xml_mmc_filename.presence || "#{film.title_amazon_export.downcase}_mmc.xml"
-    file = File.open(filename, 'w')
 
     title = film.title_amazon_export
 
@@ -31,6 +30,8 @@ class ExportXmlMmc
     trailer_filename = film.xml_trailer_filename.presence || "filmmovement-#{title}_Trailer.mov"
     subtitles_filename = film.xml_subtitles_filename.presence || "filmmovement-FM_#{title}_Subtitle.scc"
     captions_filename = film.xml_caption_filename.presence || "filmmovement-FM_#{title}_Caption.scc"
+
+    file = File.open("#{job_folder}/#{filename}", 'w')
 
     require 'builder'
     builder = Builder::XmlMarkup.new(target: file, indent: 2)

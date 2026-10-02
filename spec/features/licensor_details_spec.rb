@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'sidekiq/testing'
 require 'support/features_helper'
 
 describe 'licensor_details', type: :feature do
@@ -99,7 +98,7 @@ describe 'licensor_details', type: :feature do
   end
 
   it 'sends email reports' do
-    Sidekiq::Testing.inline!
+    Sidekiq.testing!(:inline)
     create(:user, email: 'michael@filmmovement.com', name: 'Michael Rosenberg')
     create(:revenue_stream, name: 'Theatrical', order: 0)
     film = Film.find_by(title: 'Some Film From This Licensor')
