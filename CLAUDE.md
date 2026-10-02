@@ -19,8 +19,7 @@ bundle exec rails server
 # Start Sidekiq worker (required for background jobs)
 bundle exec sidekiq
 
-# Frontend — Vite dev server with React hot reload (run alongside rails server,
-# or run both with `foreman start -f Procfile.dev`)
+# Frontend — Vite dev server with React hot reload (run alongside rails server)
 bin/vite dev
 
 # Frontend — lint / autofix
