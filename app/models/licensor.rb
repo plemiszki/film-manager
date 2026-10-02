@@ -36,17 +36,6 @@ class Licensor < ActiveRecord::Base
     end
   end
 
-  def self.import_sage_ids!
-    data = CSV.read("data_files/licensor_sage_ids.csv")
-    data[1..-1].each do |row|
-      id, sage_id = row
-      licensor = Licensor.find(id)
-      if sage_id.present?
-        licensor.update!(sage_id: sage_id)
-      end
-    end
-  end
-
   def most_recent_statements
     most_recent_report = RoyaltyReport.joins(:film).where(film: { licensor_id: id }).order(year: :desc).order(quarter: :desc).first
     most_recent_year = most_recent_report.year
