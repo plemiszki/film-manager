@@ -385,6 +385,6 @@ var FM = {
   user: {}
 }
 
-global.Errors = FM.errors;
+globalThis.Errors = FM.errors;
 
 export default FM;

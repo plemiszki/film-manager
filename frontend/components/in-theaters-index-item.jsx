@@ -1,6 +1,6 @@
 import React from "react";
 import { sendRequest, rearrangeFields } from "handy-components";
-import FM from "../../app/assets/javascripts/me/common.jsx";
+import FM from "../common.jsx";
 
 export default class InTheatersIndexItem extends React.Component {
   constructor(props) {

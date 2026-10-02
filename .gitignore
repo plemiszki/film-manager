@@ -19,13 +19,15 @@
 # Ignore Node Modules
 /node_modules/*
 
-* Ignore bundle.js and bundle.js.map
-/app/assets/javascripts/me/bundle.js
-/app/assets/javascripts/me/bundle.js.map
-
-* Ignore data directory
+# Ignore data directory
 /data/*
 
 .env
 latest.dump
 examples.txt
+
+# Vite Ruby
+/public/vite*
+# Vite uses dotenv and suggests to ignore local-only env files. See
+# https://vite.dev/guide/env-and-mode.html#env-files
+*.local

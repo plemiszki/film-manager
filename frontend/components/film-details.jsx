@@ -32,7 +32,7 @@ import {
   Table,
   SearchBar,
 } from "handy-components";
-import FM from "../../app/assets/javascripts/me/common.jsx";
+import FM from "../common.jsx";
 import NewEntity from "./new-entity.jsx";
 import CopyEntity from "./copy-entity.jsx";
 import { camelCase } from "change-case";

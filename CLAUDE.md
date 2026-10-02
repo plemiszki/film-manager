@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Ruby 4.0.1** / **Rails 8.1.1** / **PostgreSQL**
 - **Sidekiq 7.2.0** (Redis) for background jobs
-- **React 19** + **TypeScript** bundled with **Webpack 5** (Node 24)
+- **React 19** + **TypeScript** bundled with **Vite 8** via `vite_rails` (Node 24)
 - **Clearance** for authentication
 - **RSpec** + **Capybara** (Selenium Chrome) + **FactoryBot** for testing
 
@@ -19,8 +19,9 @@ bundle exec rails server
 # Start Sidekiq worker (required for background jobs)
 bundle exec sidekiq
 
-# Frontend — watch mode for development
-npm run dev
+# Frontend — Vite dev server with React hot reload (run alongside rails server,
+# or run both with `foreman start -f Procfile.dev`)
+bin/vite dev
 
 # Frontend — lint / autofix
 npm run lint
@@ -57,13 +58,15 @@ The ERB views contain a single `<div id="some-id">` that React mounts into. The 
 
 The React frontend is driven heavily by the **`handy-components`** npm library, which provides generic CRUD components:
 
-- **`SimpleDetails`** — declarative detail/edit form. You pass it an `entityName`, `fields` config, and it auto-generates the UI and wires up GET/PUT/DELETE to the matching API routes. Most simple entity pages (countries, genres, territories, users, etc.) are just a `renderSimpleDetails(...)` call in `frontend/entry.jsx`.
+- **`SimpleDetails`** — declarative detail/edit form. You pass it an `entityName`, `fields` config, and it auto-generates the UI and wires up GET/PUT/DELETE to the matching API routes. Most simple entity pages (countries, genres, territories, users, etc.) are just a `renderSimpleDetails(...)` call in `frontend/entrypoints/application.jsx`.
 - **`FullIndex`** — a sortable, paginated index table with an optional inline "new entity" modal.
 - **`SearchIndex`** — like `FullIndex` but with a search/filter panel (`SearchCriteria` child component).
 
 Complex pages (film details, booking details, royalty reports, etc.) have dedicated custom React components in `frontend/components/`.
 
-The entry point is `frontend/entry.jsx`. On `DOMContentLoaded`, it scans for known element IDs and mounts the appropriate component. Webpack bundles everything to `app/assets/javascripts/me/bundle.js`.
+The entry point is `frontend/entrypoints/application.jsx`. On `DOMContentLoaded`, it scans for known element IDs and mounts the appropriate component. Vite (config in `vite.config.mts` and `config/vite.json`) builds it, and the layout loads it with `vite_javascript_tag`. `rake assets:precompile` runs the production build into `public/vite`. styled-jsx is applied through `@rolldown/plugin-babel`.
+
+Sprockets (`app/assets/javascripts/application.js`) still serves jQuery, jQuery UI, bootstrap, the `Tools` and `Images` globals, and all SCSS. It loads as a classic script before the Vite module, so React code can use those globals.
 
 ### Background Jobs: Worker → Job Model Pattern
 
@@ -109,7 +112,7 @@ The `User` model defines three access levels via enum: `user` (50), `admin` (100
 
 ### Frontend Global Object: FM
 
-`app/assets/javascripts/me/common.jsx` defines a global `FM` object used throughout the frontend. It provides:
+`frontend/common.jsx` defines a global `FM` object used throughout the frontend. It provides:
 - Modal style presets (delete, job, errors, select)
 - Current user info (`FM.user.id`, `FM.user.access`)
 - URL params (`FM.params`)
