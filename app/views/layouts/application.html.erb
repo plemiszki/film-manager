@@ -10,6 +10,9 @@
     <% if current_user %>
       <meta class="current-user" data-has-auto-renew-approval="<%= current_user.has_auto_renew_approval %>">
     <% end %>
+    <%= vite_client_tag %>
+    <%= vite_react_refresh_tag %>
+    <%= vite_javascript_tag 'application.jsx' %>
   </head>
   <% if signed_in? %>
     <body>

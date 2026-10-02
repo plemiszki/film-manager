@@ -160,6 +160,7 @@ GEM
       dotenv (= 3.2.0)
       railties (>= 6.1)
     drb (2.2.3)
+    dry-cli (1.4.1)
     email_validator (2.2.4)
       activemodel
     erb (6.0.7)
@@ -241,6 +242,7 @@ GEM
     multi_xml (0.9.1)
       bigdecimal (>= 3.1, < 5)
     multipart-post (2.4.1)
+    mutex_m (0.3.0)
     net-http (0.9.1)
       uri (>= 0.11.1)
     net-imap (0.6.7)
@@ -292,6 +294,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.7)
+    rack-proxy (2.0.1)
+      rack (>= 2.0, < 4)
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -445,6 +449,15 @@ GEM
       execjs (>= 0.3.0, < 3)
     uri (1.1.1)
     useragent (0.16.11)
+    vite_rails (3.11.1)
+      railties (>= 5.1, < 9)
+      vite_ruby (~> 3.0, >= 3.2.2)
+    vite_ruby (3.11.1)
+      dry-cli (>= 0.7, < 2)
+      logger (~> 1.6)
+      mutex_m
+      rack-proxy (>= 0.6.1)
+      zeitwerk (~> 2.2)
     web-console (4.3.0)
       actionview (>= 8.0.0)
       bindex (>= 0.4.0)
@@ -517,6 +530,7 @@ DEPENDENCIES
   textacular
   timeliness
   uglifier
+  vite_rails
   web-console
   webmock
   wicked_pdf

@@ -6,7 +6,7 @@ import {
   Spinner,
   GrayedOut,
 } from "handy-components";
-import FM from "../../app/assets/javascripts/me/common.jsx";
+import FM from "../common.jsx";
 import Modal from "react-modal";
 
 export default class CurrentUserDropDown extends Component {

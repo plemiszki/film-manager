@@ -14,7 +14,7 @@ import {
   SearchBar,
   Table,
 } from "handy-components";
-import FM from "../../app/assets/javascripts/me/common.jsx";
+import FM from "../common.jsx";
 
 const FilterModalStyles = {
   overlay: {

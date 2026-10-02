@@ -8,6 +8,7 @@ gem 'uglifier'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'jbuilder'
+gem 'vite_rails'
 
 gem 'american_date'
 gem 'aws-sdk-s3'
@@ -58,3 +59,4 @@ end
 group :production do
   gem 'rails_12factor'
 end
+
