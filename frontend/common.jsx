@@ -6,42 +6,6 @@ $(document).ready(function() {
   FM.initialize();
 });
 
-Array.prototype.filterInvoices = function(type, number, endNumber) {
-  return this.filter(function(invoice) {
-    var slicedNumber = invoice.number.slice(0, -1);
-    if (endNumber) {
-      return ((type === "all" || invoice.type === type) && slicedNumber >= number && slicedNumber <= endNumber);
-    } else {
-      return ((type === "all" || invoice.type === type) && slicedNumber >= number);
-    }
-  });
-};
-
-Array.prototype.filterSearchText = function(searchText, property) {
-  if (searchText !== '') {
-    var re = new RegExp(searchText, "i");
-    return this.filter(function(thing) {
-      if (property) {
-        return re.test(thing[property]);
-      } else {
-        return re.test(thing.title || thing.name);
-      }
-    });
-  } else {
-    return this;
-  }
-};
-
-Array.prototype.filterDaysDue = function(daysDue) {
-  if (daysDue === 'all') {
-    return this;
-  } else {
-    return this.filter(function(report) {
-      return report.days === Number(daysDue);
-    });
-  }
-};
-
 var FM = {
 
   params: {},

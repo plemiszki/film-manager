@@ -49,6 +49,13 @@ const sendModalStyles = {
   },
 };
 
+const filterByDaysDue = (reports, daysDue) => {
+  if (daysDue === "all") {
+    return reports;
+  }
+  return reports.filter((report) => report.days === Number(daysDue));
+};
+
 export default class ReportsIndex extends React.Component {
   constructor(props) {
     super(props);
@@ -369,9 +376,10 @@ export default class ReportsIndex extends React.Component {
 
   render() {
     const { spinner, daysDue, reports, searchText, job } = this.state;
-    const sortedReports = reports
-      .sort(this.sortReports.bind(this))
-      .filterDaysDue(this.state.daysDue);
+    const sortedReports = filterByDaysDue(
+      reports.sort(this.sortReports.bind(this)),
+      daysDue,
+    );
 
     return (
       <>
@@ -555,10 +563,11 @@ export default class ReportsIndex extends React.Component {
 
   renderSendModalHeader() {
     const { reports, daysDue, sendModalOpen } = this.state;
-    const total = reports.filterDaysDue(daysDue).filter((report) => {
+    const reportsDue = filterByDaysDue(reports, daysDue);
+    const total = reportsDue.filter((report) => {
       return report.sendReport === true;
     }).length;
-    const unsent = reports.filterDaysDue(daysDue).filter((report) => {
+    const unsent = reportsDue.filter((report) => {
       return report.sendReport === true && report.dateSent === null;
     }).length;
     if (unsent === total) {

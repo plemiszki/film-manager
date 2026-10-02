@@ -13,6 +13,7 @@ import {
   GrayedOut,
   SearchBar,
   Table,
+  Index,
 } from "handy-components";
 import FM from "../common.jsx";
 
@@ -192,9 +193,11 @@ export default class FilmsIndex extends Component {
   render() {
     const { filmType, advanced } = this.props;
     const { searchText, spinner, filterActive } = this.state;
-    var filteredFilms = this.state[
-      this.state.filterActive ? "filteredFilms" : "films"
-    ].filterSearchText(this.state.searchText, this.state.sortBy);
+    var filteredFilms = Index.filterSearchText({
+      entities: this.state[this.state.filterActive ? "filteredFilms" : "films"],
+      text: this.state.searchText,
+      property: this.state.sortBy,
+    });
     return (
       <>
         <div className="handy-component">
