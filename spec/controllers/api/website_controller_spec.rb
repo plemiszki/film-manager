@@ -9,6 +9,16 @@ RSpec.describe Api::WebsiteController do
       expect(response).to render_template('api/website/films', formats: [:json], handlers: [:jbuilder])
       expect(response.status).to eq(200)
     end
+
+    it 'returns unauthorized with a wrong api key' do
+      get :films, params: { api_key: 'wrong' }
+      expect(response.status).to eq(401)
+    end
+
+    it 'returns unauthorized with no api key' do
+      get :films
+      expect(response.status).to eq(401)
+    end
   end
 
   context '#bookings' do

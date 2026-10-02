@@ -20,13 +20,13 @@ class Api::ExternalController < ApplicationController
   private
 
   def verify_justwatch_request
-    if params[:api_key] != ENV.fetch("JUSTWATCH_API_KEY")
+    unless valid_api_key?("JUSTWATCH_API_KEY")
       render json: { "message": "you are not authorized to do this" }, status: :unauthorized
     end
   end
 
   def verify_samsung_request
-    if params[:api_key] != ENV.fetch("SAMSUNG_API_KEY")
+    unless valid_api_key?("SAMSUNG_API_KEY")
       render json: { "message": "you are not authorized to do this" }, status: :unauthorized
     end
   end

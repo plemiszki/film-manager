@@ -9,7 +9,7 @@ class CyberController < ApplicationController
   private
 
   def verify_cyber_ny_request
-    if params[:api_key] != ENV.fetch("CYBER_NY_API_KEY")
+    unless valid_api_key?("CYBER_NY_API_KEY")
       render json: { "message": "you are not authorized to do this" }, status: :unauthorized
     end
   end
