@@ -20,9 +20,9 @@ Rails.application.configure do
   # NGINX, varnish or squid.
   # config.action_dispatch.rack_cache = true
 
-  # Disable serving static files from the `/public` folder by default since
-  # Apache or NGINX already handles this.
-  config.serve_static_files = ENV['RAILS_SERVE_STATIC_FILES'].present?
+  # Serve static files from `/public` (assets, Vite build). There is no
+  # NGINX/Apache in front of Puma on Heroku.
+  config.public_file_server.enabled = true
 
   # Compress CSS.
   # config.assets.css_compressor = :sass
@@ -50,8 +50,9 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
 
-  # Use a different logger for distributed setups.
-  # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
+  # Log to STDOUT so Heroku captures the logs.
+  $stdout.sync = true
+  config.logger = ActiveSupport::TaggedLogging.logger($stdout)
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
