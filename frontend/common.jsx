@@ -1,6 +1,6 @@
-import React from 'react'
-import Modal from 'react-modal'
-import { Common, titleCase } from 'handy-components'
+import React from 'react';
+import Modal from 'react-modal';
+import { Common, titleCase } from 'handy-components';
 
 $(document).ready(function() {
   FM.initialize();
@@ -10,12 +10,12 @@ Array.prototype.filterInvoices = function(type, number, endNumber) {
   return this.filter(function(invoice) {
     var slicedNumber = invoice.number.slice(0, -1);
     if (endNumber) {
-      return ((type == "all" || invoice.type == type) && slicedNumber >= number && slicedNumber <= endNumber);
+      return ((type === "all" || invoice.type === type) && slicedNumber >= number && slicedNumber <= endNumber);
     } else {
-      return ((type == "all" || invoice.type == type) && slicedNumber >= number);
+      return ((type === "all" || invoice.type === type) && slicedNumber >= number);
     }
   });
-}
+};
 
 Array.prototype.filterSearchText = function(searchText, property) {
   if (searchText !== '') {
@@ -30,17 +30,17 @@ Array.prototype.filterSearchText = function(searchText, property) {
   } else {
     return this;
   }
-}
+};
 
 Array.prototype.filterDaysDue = function(daysDue) {
   if (daysDue === 'all') {
     return this;
   } else {
     return this.filter(function(report) {
-      return report.days == daysDue;
+      return report.days === Number(daysDue);
     });
   }
-}
+};
 
 var FM = {
 
@@ -141,7 +141,7 @@ var FM = {
     var difference = Math.abs(draggedIndex - dropZoneIndex);
     if (difference >= 2) {
       return true;
-    } else if (difference == 1 && draggedIndex < dropZoneIndex) {
+    } else if (difference === 1 && draggedIndex < dropZoneIndex) {
       return true;
     }
     return false;
@@ -204,7 +204,7 @@ var FM = {
       }
     } else if (typeof property === "string" || property instanceof String) {
       return property.toLowerCase();
-    } else if (typeof property == "boolean") {
+    } else if (typeof property === "boolean") {
       return property.toString().toLowerCase();
     } else {
       return property;
@@ -222,7 +222,7 @@ var FM = {
     return {
       quarter: FM.getQuarterFromMonth(month),
       year: year
-    }
+    };
   },
 
   getQuarterFromMonth: function(month) {
@@ -243,10 +243,10 @@ var FM = {
 
   highlightCurrentPageInMenu: function() {
     $('#admin-sidebar-body li a').each(function() {
-      if (this.getAttribute("href") == window.location.pathname) {
+      if (this.getAttribute("href") === window.location.pathname) {
         this.classList.add("highlight");
       };
-    })
+    });
   },
 
   initialize: function() {
@@ -311,12 +311,12 @@ var FM = {
       return {
         [prefix + '_release']: string.slice(0, -1),
         [prefix + '_tentative']: true
-      }
+      };
     } else {
       return {
         [prefix + '_release']: string,
         [prefix + '_tentative']: false
-      }
+      };
     }
   },
 
@@ -383,7 +383,7 @@ var FM = {
   },
 
   user: {}
-}
+};
 
 globalThis.Errors = FM.errors;
 
