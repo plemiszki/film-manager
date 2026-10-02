@@ -14,7 +14,7 @@ class SubRight < ActiveRecord::Base
   belongs_to :film
 
   scope :expired, -> { where('end_date <= CURRENT_DATE') }
-  scope :days_until_expired, -> (days) { where("end_date > CURRENT_DATE and end_date <= (CURRENT_DATE + #{days})") }
+  scope :days_until_expired, -> (days) { where("end_date > CURRENT_DATE and end_date <= (CURRENT_DATE + CAST(? AS integer))", days) }
 
   def sent_reminders_within(duration)
     start_date_of_window = self.end_date - duration

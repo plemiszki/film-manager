@@ -52,11 +52,12 @@ class ImportSageData
         job.update!(current_value: index, total_value: films.length)
       end
     else
+      quarter_streams = RoyaltyRevenueStream.joins(:royalty_report).where(royalty_reports: { year: year, quarter: quarter })
       if label == "revenue"
-        ActiveRecord::Base.connection.execute("UPDATE royalty_revenue_streams SET current_revenue = 0 FROM royalty_reports WHERE royalty_reports.id = royalty_revenue_streams.royalty_report_id AND royalty_reports.year = #{year} AND royalty_reports.quarter = #{quarter}")
+        quarter_streams.update_all(current_revenue: 0)
       elsif label == "expenses"
-        ActiveRecord::Base.connection.execute("UPDATE royalty_revenue_streams SET current_expense = 0 FROM royalty_reports WHERE royalty_reports.id = royalty_revenue_streams.royalty_report_id AND royalty_reports.year = #{year} AND royalty_reports.quarter = #{quarter}")
-        ActiveRecord::Base.connection.execute("UPDATE royalty_reports SET current_total_expenses = 0 WHERE royalty_reports.year = #{year} AND royalty_reports.quarter = #{quarter}")
+        quarter_streams.update_all(current_expense: 0)
+        reports.update_all(current_total_expenses: 0)
       end
     end
 
@@ -87,15 +88,16 @@ class ImportSageData
         gl_code = columns[1].to_s
         found_film = false
         found_box_set = false
-        films = Film.where("film_type IN ('Feature', 'TV Series') AND ignore_sage_id = FALSE AND LOWER(films.sage_id) = LOWER('#{job_id.gsub("'", "''")}')")
+        sage_films = Film.where(film_type: ['Feature', 'TV Series'], ignore_sage_id: false)
+        films = sage_films.where("LOWER(films.sage_id) = LOWER(?)", job_id)
         if films.length > 0
           found_film = true
         else
-          films = Film.where("film_type IN ('Feature', 'TV Series') AND ignore_sage_id = FALSE AND LOWER(films.title) = LOWER('#{job_id.gsub("'", "''")}')")
+          films = sage_films.where("LOWER(films.title) = LOWER(?)", job_id)
           if films.length > 0
             found_film = true
           else
-            giftboxes = Giftbox.where("LOWER(giftboxes.sage_id) = LOWER('#{job_id.gsub("'", "''")}')")
+            giftboxes = Giftbox.where("LOWER(giftboxes.sage_id) = LOWER(?)", job_id)
             if giftboxes.length > 0
               if gl_code.starts_with?('3') && gl_code != '30200'
                 errors << "Only video revenue is accepted from box set Sage IDs. (Row #{index})"
