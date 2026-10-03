@@ -103,6 +103,8 @@ def click_btn(text, type = :link)
     find('a:not(.disabled)', text: /\A#{text}\z/).click
   elsif type == :submit
     click_on text
+  else
+    raise ArgumentError, "unknown click_btn type: #{type.inspect}"
   end
 end
 
@@ -215,7 +217,7 @@ def search_index(criteria)
       end
     end
   end
-  click_btn('Search', :input)
+  click_btn('Search', :submit)
 end
 
 def select_from_modal(option)

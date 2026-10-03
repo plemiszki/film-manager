@@ -93,7 +93,7 @@ describe 'purchase_order_details_spec', type: :feature do
     click_btn("Save Shipping Address")
     within('.admin-modal') do
       find('input[data-field="label"]').set('Saved Address')
-      click_btn("Add Shipping Address", :input)
+      click_btn("Add Shipping Address", :submit)
     end
     expect(page).to have_no_css('.spinner')
     expect(ShippingAddress.last.attributes).to include(
