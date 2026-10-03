@@ -56,10 +56,37 @@ const filterByDaysDue = (reports, daysDue) => {
   return reports.filter((report) => report.days === Number(daysDue));
 };
 
+const getQuarterFromMonth = (month) => {
+  if (month >= 9) {
+    return 4;
+  } else if (month >= 6) {
+    return 3;
+  } else if (month >= 3) {
+    return 2;
+  } else {
+    return 1;
+  }
+};
+
+// statements are for the quarter that ended two months ago
+const properStatementQuarter = (date) => {
+  let month = date.getMonth();
+  let year = date.getFullYear();
+  month -= 2;
+  if (month < 0) {
+    year -= 1;
+    month += 12;
+  }
+  return {
+    quarter: getQuarterFromMonth(month),
+    year,
+  };
+};
+
 export default class ReportsIndex extends React.Component {
   constructor(props) {
     super(props);
-    let date = new Date();
+    const { quarter, year } = properStatementQuarter(new Date());
     let job = {
       errorsText: "",
     };
@@ -67,8 +94,8 @@ export default class ReportsIndex extends React.Component {
       spinner: true,
       sortBy: "title",
       searchText: "",
-      quarter: FM.properStatementQuarter(date).quarter,
-      year: FM.properStatementQuarter(date).year,
+      quarter,
+      year,
       reports: [],
       daysDue: "all",
       importModalOpen: false,

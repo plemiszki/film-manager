@@ -13,9 +13,9 @@ import {
   setUpNiceSelect,
   Spinner,
   Table,
+  titleCase,
   updateEntity,
 } from "handy-components";
-import FM from "../common.jsx";
 
 const ShredderModalStyles = {
   overlay: {
@@ -31,6 +31,118 @@ const ShredderModalStyles = {
     textAlign: "center",
     color: "#5F5F5F",
   },
+};
+
+const STATES = [
+  "AL",
+  "AK",
+  "AZ",
+  "AR",
+  "CA",
+  "CO",
+  "CT",
+  "DE",
+  "DC",
+  "FL",
+  "GA",
+  "HI",
+  "ID",
+  "IL",
+  "IN",
+  "IA",
+  "KS",
+  "KY",
+  "LA",
+  "ME",
+  "MD",
+  "MA",
+  "MI",
+  "MN",
+  "MS",
+  "MO",
+  "MT",
+  "NE",
+  "NV",
+  "NH",
+  "NJ",
+  "NM",
+  "NY",
+  "NC",
+  "ND",
+  "OH",
+  "OK",
+  "OR",
+  "PA",
+  "RI",
+  "SC",
+  "SD",
+  "TN",
+  "TX",
+  "UT",
+  "VT",
+  "VA",
+  "WA",
+  "WV",
+  "WI",
+  "WY",
+  "PR",
+];
+const PROVINCES = [
+  "AB",
+  "BC",
+  "MB",
+  "NB",
+  "NL",
+  "NS",
+  "NT",
+  "NU",
+  "ON",
+  "PE",
+  "QC",
+  "SK",
+  "YT",
+];
+
+const splitCityStateZipLine = (line) => {
+  const commaSplit = line.split(",");
+  const stateZipSplit = commaSplit[1].split(" ");
+  return {
+    city: titleCase(commaSplit[0]),
+    state: stateZipSplit[1].toUpperCase(),
+    zip: stateZipSplit[2],
+  };
+};
+
+const splitAddress = (input) => {
+  const result = {};
+  let splitObj;
+  const lines = input.split("\n");
+  if (lines.length < 3 || lines.length > 4) {
+    throw "Address must be 3 or 4 lines";
+  } else {
+    result.name = lines[0];
+    result.address1 = lines[1];
+    const cityStateRegEx = /^[\w\s]+, \w{2} [\w\d]+$/;
+    if (lines[2].match(cityStateRegEx)) {
+      splitObj = splitCityStateZipLine(lines[2]);
+    } else if (lines[3] && lines[3].match(cityStateRegEx)) {
+      result.address2 = lines[2];
+      splitObj = splitCityStateZipLine(lines[3]);
+    } else {
+      throw 'Did not find "CITY, STATE/PROVINCE ZIP" on line 3 or 4';
+    }
+  }
+  result.city = splitObj.city;
+  result.state = splitObj.state;
+  result.zip = splitObj.zip;
+  if (STATES.indexOf(splitObj.state) > -1) {
+    result.country = "USA";
+  } else if (PROVINCES.indexOf(splitObj.state) > -1) {
+    result.country = "Canada";
+  } else {
+    throw "State not recognized";
+  }
+  return result;
 };
 
 export default class VenueDetails extends React.Component {
@@ -174,7 +286,7 @@ export default class VenueDetails extends React.Component {
 
   clickSplitAddress() {
     try {
-      var result = FM.splitAddress($(".shredder-modal textarea")[0].value);
+      var result = splitAddress($(".shredder-modal textarea")[0].value);
       var venue = this.state.venue;
       venue[this.state.shredderModalAddress + "Name"] = result.name;
       venue[this.state.shredderModalAddress + "Address1"] = result.address1;

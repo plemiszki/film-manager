@@ -115,7 +115,7 @@ The `User` model defines three access levels via enum: `user` (50), `admin` (100
 - Current user info (`FM.user.id`, `FM.user.access`, `FM.user.hasAdminAccess`, `FM.user.hasSuperAdminAccess`)
 - URL params (`FM.params`)
 
-It also provides `changeSearchText` (bound to a component), `canIDrop` (jQuery UI drop check), `properStatementQuarter`, and `splitAddress`.
+It also provides `changeSearchText` (bound to a component) and `canIDrop` (jQuery UI drop check).
 
 ### Email Tracking
 
