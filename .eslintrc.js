@@ -20,5 +20,11 @@ module.exports = {
 		"eqeqeq": "warn",
 		"react/prop-types": "off",
 		"react/no-unknown-property": ["error", { "ignore": ["jsx"] }]
-	}
+	},
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx"],
+			"parser": "@typescript-eslint/parser" // parse TypeScript syntax (types, generics, etc.)
+		}
+	]
 };

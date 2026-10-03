@@ -27,8 +27,9 @@
     "node": "24.x"
   },
   "devDependencies": {
-    "@types/react": "^18.2.74",
-    "@types/react-dom": "^18.2.24",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@typescript-eslint/parser": "^8.71.0",
     "eslint": "^8.0.0",
     "eslint-plugin-eqeqeq-fix": "^1.0.3",
     "eslint-plugin-react": "^7.34.1",
