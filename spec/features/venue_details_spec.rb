@@ -149,7 +149,7 @@ describe 'venue_details', type: :feature do
   it 'errors on delete for venues with bookings' do
     visit venue_path(@venue, as: $admin_user)
     click_delete_and_confirm
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(page).to have_content 'This venue cannot be deleted because there are bookings associated with it.'
   end
 

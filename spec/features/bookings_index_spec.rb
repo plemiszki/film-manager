@@ -127,7 +127,7 @@ describe 'bookings_index', type: :feature do
       end_date: { start: '1/3/21', end: '1/3/21', type: :date_range },
       date_added: { start: '1/2/20', end: '1/2/20', type: :date_range }
     })
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(page).to have_content('Wilby Wonderful').once
     expect(page).to have_content('Film at Lincoln Center').once
     expect(page).to have_content('Non-Theatrical').once

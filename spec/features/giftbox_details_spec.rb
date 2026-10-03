@@ -73,7 +73,7 @@ describe 'giftbox_details', type: :feature do
     create(:dvd)
     create_dvd_types
     visit giftbox_path(@giftbox, as: $admin_user)
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     click_btn('Add DVD')
     select_from_modal('Wilby Wonderful - Retail')
     expect(page).to have_content('Wilby Wonderful')
@@ -87,7 +87,7 @@ describe 'giftbox_details', type: :feature do
     create_dvd_types
     visit giftbox_path(@giftbox, as: $admin_user)
     find('.x-gray-circle').click
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(GiftboxDvd.count).to be(0)
     expect(page).to have_no_content('Wilby Wonderful')
   end

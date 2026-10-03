@@ -35,7 +35,7 @@ describe 'in_theaters', type: :feature do
     create(:in_theaters_film)
     visit in_theaters_path(as: $admin_user)
     find('.x-gray-circle').click
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(InTheatersFilm.count).to be(0)
     expect(page).to have_no_content('Wilby Wonderful')
   end
@@ -62,7 +62,7 @@ describe 'in_theaters', type: :feature do
     create(:coming_soon_film)
     visit in_theaters_path(as: $admin_user)
     find('.x-gray-circle').click
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(InTheatersFilm.count).to be(0)
     expect(page).to have_no_content('Wilby Wonderful')
   end
@@ -89,7 +89,7 @@ describe 'in_theaters', type: :feature do
     create(:repertory_film)
     visit in_theaters_path(as: $admin_user)
     find('.x-gray-circle').click
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(InTheatersFilm.count).to be(0)
     expect(page).to have_no_content('Wilby Wonderful')
   end

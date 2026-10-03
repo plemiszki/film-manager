@@ -71,7 +71,7 @@ describe 'return_details', type: :feature do
     within('.content') do
       click_btn('OK', :submit)
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(@return.reload.return_items.length).to eq(1)
     expect(@return.reload.return_items.first.return_id).to eq(1)
     expect(page).to have_content('Film 1')
@@ -82,7 +82,7 @@ describe 'return_details', type: :feature do
     create(:return_item)
     visit return_path(@return, as: $admin_user)
     find('.x-gray-circle').click
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(@return.reload.return_items.length).to eq(0)
   end
 
@@ -99,7 +99,7 @@ describe 'return_details', type: :feature do
     create(:return_item)
     visit return_path(@return, as: $admin_user)
     click_btn('Generate and Send Credit Memo')
-    expect(page).to have_no_css('.spinner', wait: 10)
+    wait_for_spinner(wait: 10)
     expect(page).to have_content('Credit Memo Sent Successfully')
     expect(page).to have_content("Credit Memo #{CreditMemo.last.number} was sent")
     expect(CreditMemo.count).to eq(1)

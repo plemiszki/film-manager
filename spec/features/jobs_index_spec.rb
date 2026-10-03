@@ -39,7 +39,7 @@ describe 'jobs_index', type: :feature do
     within(@jobs_index_table_selector) do
       click_table_button("Kill Job")
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(page).to have_no_css(@jobs_index_table_selector)
     expect(Job.last.attributes['status']).to eq('killed')
   end

@@ -15,7 +15,7 @@ describe 'booker_details', type: :feature do
 
   it 'displays information about the booker' do
     visit booker_path(@booker, as: $admin_user)
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(find('input[data-field="name"]').value).to eq 'Joe Booker'
     expect(find('input[data-field="email"]').value).to eq 'joe@somewhere.com'
     expect(find('input[data-field="phone"]').value).to eq '555-555-5555'
@@ -23,7 +23,7 @@ describe 'booker_details', type: :feature do
 
   it 'updates information about the booker' do
     visit booker_path(@booker, as: $admin_user)
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     fill_out_form({
       name: 'New Name',
       email: 'newemail@somewhere.com',
@@ -53,7 +53,7 @@ describe 'booker_details', type: :feature do
     within('ul[data-test="booker-venues"]') do
       find('.x-gray-circle').click
     end
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(BookerVenue.count).to eq(0)
   end
 

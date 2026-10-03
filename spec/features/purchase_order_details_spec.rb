@@ -95,7 +95,7 @@ describe 'purchase_order_details_spec', type: :feature do
       find('input[data-field="label"]').set('Saved Address')
       click_btn("Add Shipping Address", :submit)
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(ShippingAddress.last.attributes).to include(
       'label' => 'Saved Address',
       'name' => 'saved name',
@@ -136,7 +136,7 @@ describe 'purchase_order_details_spec', type: :feature do
     within('.content') do
       click_btn('OK', :submit)
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(@purchase_order.reload.purchase_order_items.length).to be(1)
   end
 
@@ -144,7 +144,7 @@ describe 'purchase_order_details_spec', type: :feature do
     create(:purchase_order_item)
     visit purchase_order_path(@purchase_order, as: $admin_user)
     find('.x-gray-circle').click
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(@purchase_order.reload.purchase_order_items.length).to eq(0)
   end
 
@@ -159,7 +159,7 @@ describe 'purchase_order_details_spec', type: :feature do
     create(:setting)
     visit purchase_order_path(@purchase_order, as: $admin_user)
     click_btn('Ship Now')
-    expect(page).to have_no_css('.spinner', wait: 10)
+    wait_for_spinner(wait: 10)
     expect(page).to have_content('Invoice and Shipping Files Sent Successfully')
     expect(@purchase_order.reload.attributes).to include(
       'ship_date' => Date.today,

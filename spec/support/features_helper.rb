@@ -240,8 +240,8 @@ def change_modal_select_field(id, selection_text)
   end
 end
 
-def wait_for_spinner(attempts: 3)
-  expect(page).to have_no_css('.spinner')
+def wait_for_spinner(wait: Capybara.default_max_wait_time, attempts: 3)
+  expect(page).to have_no_css('.spinner', wait: wait)
 rescue Selenium::WebDriver::Error::UnknownError => e
   # if page has redirected, old spinner will be gone
   raise unless e.message.include?('does not belong to the document') && (attempts -= 1) > 0

@@ -67,7 +67,7 @@ describe 'film_details', type: :feature do
   it 'displays general information about the film' do
     visit film_path(@film, as: $admin_user)
     wait_for_spinner
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(find('input[data-field="title"]').value).to eq 'Some Film'
     expect(find(list_box_selector("directors"))).to have_content('Rob Reiner')
     expect(find('select[data-field="labelId"]', visible: false).value).to eq '1'
@@ -130,7 +130,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("directors")) do
       find('.x-gray-circle').click
     end
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(Director.count).to eq(0)
   end
 
@@ -148,7 +148,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("countries")) do
       find('.x-gray-circle').click
     end
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(FilmCountry.count).to eq(0)
   end
 
@@ -166,7 +166,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("languages")) do
       find('.x-gray-circle').click
     end
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(FilmLanguage.count).to eq(0)
   end
 
@@ -188,7 +188,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("actors")) do
       find('.x-gray-circle').click
     end
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(Actor.count).to eq(0)
   end
 
@@ -270,7 +270,7 @@ describe 'film_details', type: :feature do
       find('a', text: 'ALL', match: :first).click
       click_btn('Add Rights')
     end
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(@film.film_rights.count).to eq(4)
     expect(find('table')).to have_content('Belgium')
   end
@@ -343,7 +343,7 @@ describe 'film_details', type: :feature do
     }
     fill_out_form(new_info)
     click_btn("Save")
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     verify_db_and_component(
       entity: @film,
       data: new_info,
@@ -387,7 +387,7 @@ describe 'film_details', type: :feature do
     }
     fill_out_form(new_info)
     click_btn("Save")
-    expect(page).not_to have_selector('.spinner')
+    wait_for_spinner
     expect(page).to have_content('Msrp pre street is not a number')
     expect(page).to have_content('Ppr pre street is not a number')
     expect(page).to have_content('Ppr post street is not a number')
@@ -509,7 +509,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("laurels")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(Laurel.count).to eq(0)
     expect(page).to have_no_content('Cannes International Film Festival')
   end
@@ -556,7 +556,7 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Marketing').click
     click_btn("Add Genre")
     select_from_modal('Comedy')
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(FilmGenre.count).to eq(1)
     within(list_box_selector("genres")) do
       expect(page).to have_content('Comedy')
@@ -571,7 +571,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("genres")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(FilmGenre.count).to eq(0)
     expect(page).to have_no_content('Comedy')
   end
@@ -592,7 +592,7 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Educational').click
     click_btn("Add Topic")
     select_from_modal('Latino')
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(FilmTopic.count).to eq(1)
     within(list_box_selector("topics")) do
       expect(page).to have_content('Latino')
@@ -607,7 +607,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("topics")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(FilmTopic.count).to eq(0)
     expect(page).to have_no_content('Latino')
   end
@@ -637,7 +637,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("alternate-lengths")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(AlternateLength.count).to be(0)
     expect(page).to have_no_content('60')
   end
@@ -667,7 +667,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("alternate-audios")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(AlternateAudio.count).to be(0)
     expect(page).to have_no_content('French')
   end
@@ -697,7 +697,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("alternate-subs")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(AlternateSub.count).to be(0)
     expect(page).to have_no_content('French')
   end
@@ -718,7 +718,7 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Marketing').click
     click_btn("Add Related Film")
     select_from_modal('Another Film')
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(RelatedFilm.count).to eq(1)
     expect(page).to have_content('Another Film')
   end
@@ -731,7 +731,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("related-films")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(RelatedFilm.count).to be(0)
     expect(page).to have_no_content('Another Film')
   end
@@ -755,7 +755,7 @@ describe 'film_details', type: :feature do
       digital_retailer_id: { value: 1, type: :select },
       url: 'https://www.itunes.com/another_film'
     }, :input)
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(DigitalRetailerFilm.count).to eq(1)
     expect(page).to have_content('iTunes')
     expect(page).to have_content('https://www.itunes.com/another_film')
@@ -780,7 +780,7 @@ describe 'film_details', type: :feature do
       edu_platform_id: { value: 1, type: :select },
       url: 'https://www.kanopy.com/asdf'
     }, :input)
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(EduPlatformFilm.count).to eq(1)
     expect(page).to have_content('Kanopy')
     expect(page).to have_content('https://www.kanopy.com/asdf')
@@ -796,7 +796,7 @@ describe 'film_details', type: :feature do
       edu_platform_id: { value: 1, type: :select },
       url: ''
     }, :input)
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(EduPlatformFilm.count).to eq(1)
     expect(page).to have_content "Url can't be blank"
     expect(page).to have_content 'Edu platform has already been taken'
@@ -808,7 +808,7 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Marketing').click
     click_btn("Add Amazon Genre")
     select_from_modal('av_genre_action')
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(AmazonGenreFilm.count).to eq(1)
     within(list_box_selector("amazon-genres")) do
       expect(page).to have_content('av_genre_action')
@@ -823,7 +823,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("amazon-genres")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(AmazonGenreFilm.count).to eq(0)
     expect(page).to have_no_content('av_genre_action')
   end
@@ -834,7 +834,7 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Marketing').click
     click_btn("Add Amazon Language")
     select_from_modal('English (UK)')
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(AmazonLanguageFilm.count).to eq(1)
     within(list_box_selector("amazon-languages")) do
       expect(page).to have_content('English (UK)')
@@ -849,7 +849,7 @@ describe 'film_details', type: :feature do
     within(list_box_selector("amazon-languages")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(AmazonLanguageFilm.count).to eq(0)
     expect(page).to have_no_content('English (UK)')
   end
@@ -896,7 +896,7 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Bookings').click
     click_btn("Add Format")
     select_from_modal('35mm')
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     within(list_box_selector("formats")) do
       expect(page).to have_content('35mm')
     end
@@ -908,7 +908,7 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     find('div.tab', text: 'Bookings').click
     find('.x-gray-circle').click
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(FilmFormat.count).to be(0)
     expect(page).to have_no_content('35mm')
   end
@@ -1027,7 +1027,7 @@ describe 'film_details', type: :feature do
     find('div.tab', text: 'Statements').click
     click_btn("Add Film")
     select_from_modal('Another Film')
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(CrossedFilm.count).to eq(2)
     expect(page).to have_content('Another Film')
   end
@@ -1078,7 +1078,7 @@ describe 'film_details', type: :feature do
       episode_number: 2
     }
     fill_out_and_submit_modal(info, :input)
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(current_path).to eq("/episodes/#{Episode.last.id}")
     verify_db_and_component(
       entity: Episode.last,
@@ -1092,7 +1092,7 @@ describe 'film_details', type: :feature do
     visit film_path(@film, as: $admin_user)
     click_btn('Copy Film')
     fill_out_and_submit_modal({}, :input)
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(page).to have_content("Title can't be blank")
     expect(page).to have_content('Year is not a number')
     expect(page).to have_content('Length is not a number')
@@ -1107,7 +1107,7 @@ describe 'film_details', type: :feature do
       length: 120
     }
     fill_out_and_submit_modal(new_film_data, :input)
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     verify_db(
       entity: Film.last,
       data: new_film_data

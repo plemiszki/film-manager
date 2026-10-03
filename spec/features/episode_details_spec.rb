@@ -73,7 +73,7 @@ describe 'episode_details', type: :feature do
     within(list_box_selector("actors")) do
       find('.x-gray-circle').click
     end
-    expect(page).to have_no_css('.spinner')
+    wait_for_spinner
     expect(page).to have_no_content('Tom Hanks')
     expect(Actor.find_by_id(@actor.id)).to be(nil)
   end
