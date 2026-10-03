@@ -100,8 +100,8 @@ end
 
 def click_btn(text, type = :link)
   if type == :link
-    find('a', text: /\A#{text}\z/).click
-  elsif :submit
+    find('a:not(.disabled)', text: /\A#{text}\z/).click
+  elsif type == :submit
     click_on text
   end
 end
