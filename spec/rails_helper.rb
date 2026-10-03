@@ -15,7 +15,15 @@ end
 
 Capybara.server = :puma
 
-Capybara.default_driver = :selenium_chrome
+# headless Chrome defaults to an 800x600 window, so set a desktop size explicitly
+Capybara.register_driver :headless_chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless=new')
+  options.add_argument('--window-size=1400,1000')
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+
+Capybara.default_driver = :headless_chrome
 
 # turn off CSS transitions and jQuery animations so elements are clickable immediately
 Capybara.disable_animation = true
