@@ -21,9 +21,6 @@ class CreditMemo < ActiveRecord::Base
 
   def export(path)
     string = "<style>"
-    string += "@import url('https://fonts.googleapis.com/css2?family=Tinos:wght@700&display=swap');"
-    string += "@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');"
-    string += "@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap');"
     string += "body {"
     string +=   "font-family: Roboto;"
     string +=   "font-size: 12px;"
