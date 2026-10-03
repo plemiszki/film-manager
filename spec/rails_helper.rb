@@ -17,6 +17,9 @@ Capybara.server = :puma
 
 Capybara.default_driver = :selenium_chrome
 
+# turn off CSS transitions and jQuery animations so elements are clickable immediately
+Capybara.disable_animation = true
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 FactoryBot.definition_file_paths = [File.expand_path('../factories', __FILE__)]

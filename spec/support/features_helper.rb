@@ -55,8 +55,7 @@ def fill_out_form(data)
     elsif value[:type] == :select
       field = find("select[data-field=#{key}]", visible: false)
       nice_select_div = field.sibling('.nice-select')
-      nice_select_div.click
-      sleep 0.25
+      open_nice_select(nice_select_div)
       within(nice_select_div) do
         if value[:value]
           find("li[data-value='#{value[:value]}']").click
@@ -116,11 +115,15 @@ def flip_switch(text)
   find("div.oval[data-test=\"#{text}\"]").click
 end
 
+def open_nice_select(nice_select_div)
+  nice_select_div.click
+  expect(nice_select_div).to match_css('.open')
+end
+
 def click_nice_select_option(css_selector, option_text)
   field = find(css_selector, visible: false)
   nice_select_div = field.sibling('.nice-select')
-  nice_select_div.click
-  sleep 0.25
+  open_nice_select(nice_select_div)
   find('li', text: option_text).click
 end
 
@@ -184,8 +187,7 @@ def search_index(criteria)
       when :select
         select_element = find("select", visible: false)
         nice_select_div = select_element.sibling('.nice-select')
-        nice_select_div.click
-        sleep 0.25
+        open_nice_select(nice_select_div)
         within(nice_select_div) do
           if value[:value]
             find("li[data-value='#{value[:value]}']").click
