@@ -159,7 +159,8 @@ describe 'purchase_order_details_spec', type: :feature do
     create(:setting)
     visit purchase_order_path(@purchase_order, as: $admin_user)
     click_btn('Ship Now')
-    wait_for_spinner(wait: 10)
+    # shipping runs inline and generates a PDF invoice (wkhtmltopdf), which can take ~10s
+    wait_for_spinner(wait: 30)
     expect(page).to have_content('Invoice and Shipping Files Sent Successfully')
     expect(@purchase_order.reload.attributes).to include(
       'ship_date' => Date.today,
