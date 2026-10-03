@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_03_133720) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_03_135228) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -424,7 +424,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_133720) do
     t.date "expiration_reminders", default: [], array: true
     t.boolean "export_reports", default: true
     t.string "facebook_link", default: ""
-    t.integer "feature_id"
     t.string "film_type"
     t.date "fm_plus_release"
     t.boolean "fm_plus_tentative", default: false
@@ -492,7 +491,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_133720) do
     t.integer "year"
     t.string "youtube_trailer", default: ""
     t.index ["deal_type_id"], name: "index_films_on_deal_type_id"
-    t.index ["feature_id"], name: "index_films_on_feature_id"
     t.index ["label_id"], name: "index_films_on_label_id"
     t.index ["licensor_id"], name: "index_films_on_licensor_id"
   end
@@ -647,7 +645,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_133720) do
     t.string "shipping_state", default: ""
     t.string "shipping_zip", default: ""
     t.string "stripe_id", default: ""
-    t.decimal "sub_total", precision: 8, scale: 2, default: "0.0"
     t.decimal "total", precision: 8, scale: 2, default: "0.0"
     t.index ["booking_id"], name: "index_invoices_on_booking_id"
     t.index ["customer_id"], name: "index_invoices_on_customer_id"
@@ -918,7 +915,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_133720) do
 
   create_table "territories", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.boolean "world", default: false
   end
 
   create_table "topics", id: :serial, force: :cascade do |t|
