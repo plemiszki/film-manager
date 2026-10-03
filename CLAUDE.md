@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Tech Stack
 
-- **Ruby 4.0.1** / **Rails 8.1.1** / **PostgreSQL**
-- **Sidekiq 7.2.0** (Redis) for background jobs
+- **Ruby 4.0.7** / **Rails 8.1.4** / **PostgreSQL**
+- **Sidekiq 8.1** (Redis) for background jobs
 - **React 19** + **TypeScript** bundled with **Vite 8** via `vite_rails` (Node 24)
 - **Clearance** for authentication
 - **RSpec** + **Capybara** (Selenium Chrome) + **FactoryBot** for testing
@@ -107,16 +107,15 @@ A separate public API exists at `/api/website/*` for the company website. These 
 
 ### User Access Levels
 
-The `User` model defines three access levels via enum: `user` (50), `admin` (100), `super_admin` (150). The frontend checks `FM.user.hasAdminAccess` and `FM.user.hasSuperAdminAccess`. Sign-up is disabled (`Clearance.configure { |c| c.allow_sign_up = false }`).
+The `User` model defines three access levels via enum: `user` (50), `admin` (100), `super_admin` (150). The frontend checks `FM.user.hasAdminAccess` and `FM.user.hasSuperAdminAccess`. Sign-up and password reset are disabled: `allow_sign_up = false`, and `config/routes.rb` only defines Clearance's sign-in, session, and sign-out routes.
 
-### Frontend Global Object: FM
+### Frontend Shared Object: FM
 
-`frontend/common.jsx` defines a global `FM` object used throughout the frontend. It provides:
-- Modal style presets (delete, job, errors, select)
-- Current user info (`FM.user.id`, `FM.user.access`)
+`frontend/common.jsx` exports an `FM` object that components import (it is not a `window` global). `FM.initialize()` runs on page load and populates:
+- Current user info (`FM.user.id`, `FM.user.access`, `FM.user.hasAdminAccess`, `FM.user.hasSuperAdminAccess`)
 - URL params (`FM.params`)
-- Utility functions: `dollarify`, `splitAddress`, drag-and-drop helpers
-- Job modal rendering helpers
+
+It also provides `changeSearchText` (bound to a component), `canIDrop` (jQuery UI drop check), `properStatementQuarter`, and `splitAddress`.
 
 ### Email Tracking
 
@@ -126,8 +125,15 @@ Outbound emails go through the `SendEmail` service (`app/services/send_email.rb`
 
 - **Feature specs** use Capybara with Selenium Chrome and DatabaseCleaner (truncation strategy, not transactions)
 - A global `$admin_user` is created for feature specs
-- Custom helpers in `spec/support/features_helper.rb`: `fill_out_form`, `search_index`, `select_from_modal`, `wait_for_spinner`
+- Custom helpers in `spec/support/features_helper.rb`: `fill_out_form`, `search_index`, `select_from_modal`, `click_btn`, `wait_for_spinner`
 - `use_transactional_fixtures = false`
+- Sidekiq runs in fake mode suite-wide (`Sidekiq.testing!(:fake)` in `rails_helper.rb`); specs that need jobs to run call `Sidekiq.testing!(:inline)`
+- `Capybara.disable_animation = true`, so CSS transitions and jQuery animations are off in feature specs
+
+Conventions for keeping feature specs reliable:
+- Use `wait_for_spinner` rather than checking `.spinner` directly. It retries if the page navigates mid-check (Chrome's "Node with given id does not belong to the document" error). Pass `wait:` for slow operations.
+- `click_btn(text)` clicks a link and waits until it is not `.disabled`. `click_btn(text, :submit)` clicks a submit input. Any other type raises.
+- Don't use `sleep`. Wait on a Capybara matcher instead (e.g. `open_nice_select` waits for the dropdown's `.open` class).
 
 ### Key Model Concerns
 
