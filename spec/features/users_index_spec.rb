@@ -10,7 +10,7 @@ describe 'users_index', type: :feature do
 
   it 'displays all users' do
     visit users_path(as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'Users'
     expect(page).to have_content 'Peter Lemiszki'
     expect(page).to have_content 'Software Engineer'

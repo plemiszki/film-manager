@@ -14,7 +14,7 @@ describe 'institution_details', type: :feature do
 
   it 'displays information about the institution' do
     visit institution_path(@institution, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'Institution Details'
     expect(find('input[data-field="label"]').value).to eq 'Harvard University'
     expect(find('input[data-field="sageId"]').value).to eq 'HARVARD'

@@ -31,7 +31,7 @@ describe 'shipping_address_details', type: :feature do
   it 'displays information about the shipping address' do
     visit shipping_address_path(@shipping_address, as: $admin_user)
     expect(page).to have_content 'Shipping Address Details'
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="label"]').value).to eq 'Label'
     expect(find('input[data-field="name"]').value).to eq 'Name'
     expect(find('input[data-field="address1"]').value).to eq 'Address 1'

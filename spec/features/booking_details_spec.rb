@@ -24,7 +24,7 @@ describe 'booking_details', type: :feature do
 
   it 'displays information about the booking' do
     visit booking_path(@booking, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="filmId"]').value).to eq('Wilby Wonderful')
     expect(find('input[data-field="venueId"]').value).to eq('Film at Lincoln Center')
     expect(find('input[data-field="startDate"]').value).to eq(Date.today.strftime('%-m/%-d/%Y'))
@@ -165,7 +165,7 @@ describe 'booking_details', type: :feature do
     fill_out_and_submit_modal({
       terms: '20%'
     }, :input)
-    wait_for_ajax
+    wait_for_spinner
     within(list_box_selector("weekly-terms")) do
       expect(page).to have_content('20%')
     end
@@ -176,7 +176,7 @@ describe 'booking_details', type: :feature do
     visit booking_path(@booking, as: $admin_user)
     click_btn("Add Week")
     fill_out_and_submit_modal({}, :input)
-    wait_for_ajax
+    wait_for_spinner
     within('.admin-modal') do
       expect(page).to have_content("Terms can't be blank")
     end
@@ -189,7 +189,7 @@ describe 'booking_details', type: :feature do
     within(list_box_selector("weekly-terms")) do
       find('.x-gray-circle').click
     end
-    wait_for_ajax
+    wait_for_spinner
     within(list_box_selector("weekly-terms")) do
       expect(page).to have_no_content('40%')
     end
@@ -215,7 +215,7 @@ describe 'booking_details', type: :feature do
     fill_out_and_submit_modal({
       amount: '500'
     }, :input)
-    wait_for_ajax
+    wait_for_spinner
     within(list_box_selector("weekly-box-offices")) do
       expect(page).to have_content('Week 1 - $500.00')
     end
@@ -226,12 +226,12 @@ describe 'booking_details', type: :feature do
     visit booking_path(@booking, as: $admin_user)
     click_btn("Add Weekly Box Office")
     fill_out_and_submit_modal({}, :input)
-    wait_for_ajax
+    wait_for_spinner
     within('.admin-modal') do
       expect(page).to have_content("Amount can't be blank")
     end
     fill_out_and_submit_modal({ amount: 'asdf' }, :input)
-    wait_for_ajax
+    wait_for_spinner
     within('.admin-modal') do
       expect(page).to have_content("Amount is not a number")
     end
@@ -244,7 +244,7 @@ describe 'booking_details', type: :feature do
     within(list_box_selector("weekly-box-offices")) do
       find('.x-gray-circle').click
     end
-    wait_for_ajax
+    wait_for_spinner
     within(list_box_selector("weekly-box-offices")) do
       expect(page).to have_no_content('Week 1 - $500.00')
     end
@@ -261,7 +261,7 @@ describe 'booking_details', type: :feature do
   it 'adds invoices' do
     create(:setting)
     visit booking_path(@booking, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_btn("Add Invoice")
     within('.admin-modal') do
       flip_switch('switch-0') # advance
@@ -269,7 +269,7 @@ describe 'booking_details', type: :feature do
     end
     Capybara.using_wait_time 20 do
       expect(page).to have_content('Sending Invoice')
-      wait_for_ajax
+      wait_for_spinner
     end
     expect(Invoice.count).to eq(1)
     expect(Invoice.first.total).to eq(100)
@@ -296,7 +296,7 @@ describe 'booking_details', type: :feature do
     end
     Capybara.using_wait_time 30 do
       expect(page).to have_content('Sending Invoice')
-      wait_for_ajax
+      wait_for_spinner
     end
     expect(InvoiceRow.first.item_label_export).to eq('Overage (Total Gross: $1,000.00)')
     expect(InvoiceRow.first.total_price).to eq(350)
@@ -309,7 +309,7 @@ describe 'booking_details', type: :feature do
       find('.x-gray-circle').click
     end
     click_confirm_delete
-    wait_for_ajax
+    wait_for_spinner
     within('table') do
       expect(page).to have_no_content('1B')
     end
@@ -333,7 +333,7 @@ describe 'booking_details', type: :feature do
       notes: 'note about payment',
     }
     fill_out_and_submit_modal(info, :input)
-    wait_for_ajax
+    wait_for_spinner
     verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
     within(list_box_selector("payments")) do
       expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%Y')} - $20.00")
@@ -344,7 +344,7 @@ describe 'booking_details', type: :feature do
     visit booking_path(@booking, as: $admin_user)
     click_btn("Add Payment")
     fill_out_and_submit_modal({}, :input)
-    wait_for_ajax
+    wait_for_spinner
     within('.admin-modal') do
       expect(page).to have_content('Amount is not a number')
     end
@@ -357,7 +357,7 @@ describe 'booking_details', type: :feature do
     within(list_box_selector("payments")) do
       find('.x-gray-circle').click
     end
-    wait_for_ajax
+    wait_for_spinner
     expect(Payment.count).to eq(0)
     within(list_box_selector("payments")) do
       expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%Y')} - $50.00")
@@ -368,7 +368,7 @@ describe 'booking_details', type: :feature do
     create(:setting)
     visit booking_path(@booking, as: $admin_user)
     click_btn('Send Booking Confirmation')
-    wait_for_ajax
+    wait_for_spinner
     expect(@booking.reload.booking_confirmation_sent).to eq(Date.today)
     expect(find('input[data-field="bookingConfirmationSent"]').value).to eq(Date.today.strftime('%-m/%-d/%Y'))
   end
@@ -400,7 +400,7 @@ describe 'booking_details', type: :feature do
     fill_out_and_submit_modal({
       film_id: { value: 'Another Film', type: :select_modal }
     }, :input)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_current_path("/bookings/2", ignore_query: true)
     expect(Booking.count).to eq(2)
     verify_db(

@@ -15,7 +15,7 @@ describe 'settings_details', type: :feature do
 
   it 'displays information about the settings' do
     visit setting_path(@settings, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'Settings'
     expect(find('textarea[data-field="bookingConfirmationText"]').value).to eq 'booking confirmation text'
     expect(find('textarea[data-field="dvdInvoiceEmailText"]').value).to eq 'dvd invoice email text'
@@ -34,7 +34,7 @@ describe 'settings_details', type: :feature do
 
   it 'updates information about the settings' do
     visit setting_path(@settings, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     new_info = {
       booking_confirmation_text: 'new booking confirmation text',
       dvd_invoice_email_text: 'new dvd invoice email text',

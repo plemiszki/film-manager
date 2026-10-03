@@ -15,7 +15,7 @@ describe 'amazon_language_details', type: :feature do
 
   it 'displays information about the amazon language' do
     visit amazon_language_path(@amazon_language, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="name"]').value).to eq('English (UK)')
     expect(find('input[data-field="code"]').value).to eq('en-GB')
   end

@@ -15,7 +15,7 @@ describe 'genre_details', type: :feature do
 
   it 'displays information about the genre' do
     visit genre_path(@genre, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="name"]').value).to eq('Comedy')
   end
 

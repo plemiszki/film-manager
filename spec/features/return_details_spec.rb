@@ -24,7 +24,7 @@ describe 'return_details', type: :feature do
 
   it 'displays information about the return' do
     visit return_path(@return, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'Return Details'
     expect(find('input[data-field="number"]').value).to eq '012345678'
     expect(find('select[data-field="customerId"]', visible: false).value).to eq '1'
@@ -89,7 +89,7 @@ describe 'return_details', type: :feature do
   it 'starts the export job' do
     create(:return_item)
     visit return_path(@return, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_btn('Generate and Send Credit Memo')
     expect(page).to have_content('Generating Credit Memo')
   end

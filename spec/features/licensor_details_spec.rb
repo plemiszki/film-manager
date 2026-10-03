@@ -20,7 +20,7 @@ describe 'licensor_details', type: :feature do
 
   it 'displays information about the licensor' do
     visit licensor_path(@licensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'Licensor Details'
     expect(find('input[data-field="name"]').value).to eq 'Visit Films'
     expect(find('input[data-field="email"]').value).to eq 'ryan@visitfilms.com'
@@ -87,7 +87,7 @@ describe 'licensor_details', type: :feature do
       sender: $admin_user,
     )
     visit licensor_path(@licensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'Statements - Q1 2025'
     expect(page).to have_content 'Peter Lemiszki'
     expect(page).to have_content 'associated@example.com'
@@ -120,7 +120,7 @@ describe 'licensor_details', type: :feature do
       "#{report.film.title} - Q#{report.quarter} #{report.year}.pdf"
     end
     visit licensor_path(@licensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_btn('Email Reports')
     expect(page).to have_content 'Send reports to this email address?'
     expect(page).to have_content 'ryan@visitfilms.com'
@@ -138,7 +138,7 @@ describe 'licensor_details', type: :feature do
     click_btn('Send')
     expect(page).to have_content 'Done!'
     click_btn('OK')
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'ryan@visitfilms.com'
     expect(page).to have_content 'Pending'
     expect(page).to have_content 'Statements - Q3 2024'

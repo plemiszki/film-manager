@@ -19,7 +19,7 @@ describe 'amazon_genre_details', type: :feature do
 
   it 'displays information about the amazon genre' do
     visit amazon_genre_path(@amazon_genre, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="code"]').value).to eq('av_genre_action')
   end
 

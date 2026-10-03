@@ -25,7 +25,7 @@ describe 'virtual_booking_details', type: :feature do
 
   it 'displays information about a virtual_booking hosted by FM' do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="filmId"]').value).to eq('Wilby Wonderful')
     expect(find('input[data-field="venueId"]').value).to eq('Film at Lincoln Center')
     expect(find('input[data-field="shippingCity"]').value).to eq('New York')
@@ -43,7 +43,7 @@ describe 'virtual_booking_details', type: :feature do
   it 'displays information about a virtual_booking hosted by a venue' do
     @virtual_booking.update(host: 'Venue')
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="billingName"]').value).to eq('Some Venue')
     expect(find('input[data-field="billingAddress1"]').value).to eq('6 Sherman Bridge Road')
     expect(find('input[data-field="billingAddress2"]').value).to eq('Apt 2')
@@ -116,7 +116,7 @@ describe 'virtual_booking_details', type: :feature do
     end
     Capybara.using_wait_time 20 do
       expect(page).to have_content('Sending Invoice')
-      wait_for_ajax
+      wait_for_spinner
     end
     expect(Invoice.count).to eq(1)
     expect(Invoice.first.total).to eq(200)
@@ -147,7 +147,7 @@ describe 'virtual_booking_details', type: :feature do
     end
     Capybara.using_wait_time 20 do
       expect(page).to have_content('Sending Invoice')
-      wait_for_ajax
+      wait_for_spinner
     end
     expect(InvoiceRow.first.item_label).to eq('Amount Due')
     expect(InvoiceRow.first.total_price).to eq(450)
@@ -161,7 +161,7 @@ describe 'virtual_booking_details', type: :feature do
       find('.x-gray-circle').click
     end
     click_confirm_delete
-    wait_for_ajax
+    wait_for_spinner
     expect(Invoice.count).to eq(0)
     within('table') do
       expect(page).to have_no_content('1B')
@@ -182,7 +182,7 @@ describe 'virtual_booking_details', type: :feature do
     visit virtual_booking_path(@virtual_booking, as: $admin_user)
     click_btn("Add Payment")
     fill_out_and_submit_modal({}, :input)
-    wait_for_ajax
+    wait_for_spinner
     within('.admin-modal') do
       expect(page).to have_content('Amount is not a number')
     end
@@ -199,7 +199,7 @@ describe 'virtual_booking_details', type: :feature do
       notes: 'note about payment'
     }
     fill_out_and_submit_modal(info, :input)
-    wait_for_ajax
+    wait_for_spinner
     verify_db(entity: Payment.first, data: info.merge({ date: Date.today }))
     within(list_box_selector("payments")) do
       expect(page).to have_content("#{Date.today.strftime('%-m/%-d/%Y')} - $20.00")
@@ -213,7 +213,7 @@ describe 'virtual_booking_details', type: :feature do
     within(list_box_selector("payments")) do
       find('.x-gray-circle').click
     end
-    wait_for_ajax
+    wait_for_spinner
     expect(Payment.count).to eq(0)
     within(list_box_selector("payments")) do
       expect(page).to have_no_content("#{Date.today.strftime('%-m/%-d/%Y')} - $50.00")

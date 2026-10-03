@@ -26,7 +26,7 @@ describe 'user_details', type: :feature do
 
   it 'displays a read-only switch for normal users' do
     visit user_path($admin_user, as: @user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="hasAutoRenewApproval"]', visible: false).disabled?).to eq true
   end
 

@@ -12,7 +12,7 @@ describe 'jobs_index', type: :feature do
     timestamp = Time.now.to_s
     create(:job, current_value: 25, job_id: timestamp)
     visit royalty_reports_path(as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     within(@jobs_index_table_selector) do
       expect(page).to have_content(timestamp)
       expect(page).to have_content('25 / 100')
@@ -22,14 +22,14 @@ describe 'jobs_index', type: :feature do
   it 'does not display completed jobs' do
     create(:job, status: :success)
     visit royalty_reports_path(as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_no_css(@jobs_index_table_selector)
   end
 
   it 'does not display killed jobs' do
     create(:job, status: :killed)
     visit royalty_reports_path(as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_no_css(@jobs_index_table_selector)
   end
 

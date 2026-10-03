@@ -126,7 +126,7 @@ Outbound emails go through the `SendEmail` service (`app/services/send_email.rb`
 
 - **Feature specs** use Capybara with Selenium Chrome and DatabaseCleaner (truncation strategy, not transactions)
 - A global `$admin_user` is created for feature specs
-- Custom helpers in `spec/support/features_helper.rb`: `fill_out_form`, `search_index`, `select_from_modal`, `wait_for_ajax`
+- Custom helpers in `spec/support/features_helper.rb`: `fill_out_form`, `search_index`, `select_from_modal`, `wait_for_spinner`
 - `use_transactional_fixtures = false`
 
 ### Key Model Concerns

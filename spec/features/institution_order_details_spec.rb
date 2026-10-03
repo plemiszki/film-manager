@@ -22,7 +22,7 @@ describe 'institution_order_details', type: :feature do
   it 'displays information about the institution_order' do
     visit institution_order_path(@institution_order, as: $admin_user)
     expect(page).to have_content 'Educational Order Details'
-    wait_for_ajax
+    wait_for_spinner
 
     expect(find('input[data-field="institutionId"]').value).to eq 'Harvard University'
     expect(find('input[data-field="number"]').value).to eq '1000'
@@ -130,7 +130,7 @@ describe 'institution_order_details', type: :feature do
       price: 100,
       formats: "HD Cam",
     }, :input)
-    wait_for_ajax
+    wait_for_spinner
     @institution_order = @institution_order.reload
     expect(@institution_order.order_films.length).to eq(1)
     institution_order_film = @institution_order.order_films.first
@@ -157,9 +157,9 @@ describe 'institution_order_details', type: :feature do
     create(:film)
     create(:institution_order_film)
     visit institution_order_path(@institution_order, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     find('.x-gray-circle').click
-    wait_for_ajax
+    wait_for_spinner
     expect(@institution_order.reload.order_films.length).to eq(0)
     verify_component(
       data: {
@@ -175,14 +175,14 @@ describe 'institution_order_details', type: :feature do
     create(:label)
     create(:film)
     visit institution_order_path(@institution_order, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_btn('Add Film')
     fill_out_and_submit_modal({
       film_id: { value: 'Wilby Wonderful', type: :select_modal },
       licensed_rights: { label: 'PPR and DRL', type: :select },
       price: 100,
     }, :input)
-    wait_for_ajax
+    wait_for_spinner
     fill_out_form({
       invoice_notes: INVOICE_NOTES,
     })
@@ -190,7 +190,7 @@ describe 'institution_order_details', type: :feature do
     find('a', text: 'Send Invoice').click
     Capybara.using_wait_time 20 do
       expect(page).to have_content('Sending Invoice')
-      wait_for_ajax
+      wait_for_spinner
     end
     expect(page).to have_content('Invoice Sent Successfully')
     expect(Invoice.count).to eq(1)
@@ -199,7 +199,7 @@ describe 'institution_order_details', type: :feature do
     expect(invoice.notes). to eql(INVOICE_NOTES)
     expect(invoice.rows.pluck(:total_price)). to eql([100, 15])
     find('a', text: 'OK').click
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content('Invoice 1E was sent on')
     expect(page).to have_no_content('Send Invoice')
   end

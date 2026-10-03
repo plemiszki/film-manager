@@ -28,7 +28,7 @@ describe 'royalty_report_details', type: :feature do
 
   it 'displays stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     flip_switch('include-current-period')
     0.upto(13) do |n|
       expect(find("input[data-test-index=\"#{n}\"][data-field=\"currentRevenue\"]").value).to eq(dollarify(number_with_precision(n * 100, precision: 2, delimiter: ',')))
@@ -43,7 +43,7 @@ describe 'royalty_report_details', type: :feature do
 
   it 'calculates the report, not including current period' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     flip_switch('include-current-period')
     0.upto(13) do |n|
       current_difference = (n * 100) - (n * 10)
@@ -66,7 +66,7 @@ describe 'royalty_report_details', type: :feature do
 
   it 'calculates the report, including current period' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     0.upto(13) do |n|
       current_difference = (n * 100) - (n * 10)
       cume_difference = (n * 1000) - (n * 100) + current_difference
@@ -98,7 +98,7 @@ describe 'royalty_report_details', type: :feature do
       sender: $admin_user,
     )
     visit royalty_report_path(@royalty_report, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'Statements - Q1 2025'
     expect(page).to have_content 'Peter Lemiszki'
     expect(page).to have_content 'associated@example.com'
@@ -125,14 +125,14 @@ describe 'royalty_report_details', type: :feature do
       "#{report.film.title} - Q#{report.quarter} #{report.year}.pdf"
     end
     visit royalty_report_path(@royalty_report, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_btn('Email Report')
     expect(page).to have_content 'Send report to this email address?'
     expect(page).to have_content 'hippo@hippoentertainment.com'
     click_btn('Send')
     expect(page).to have_content 'Done!'
     click_btn('OK')
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'hippo@hippoentertainment.com'
     expect(page).to have_content 'Pending'
     expect(page).to have_content 'Statements - Q1 2019'
@@ -141,7 +141,7 @@ describe 'royalty_report_details', type: :feature do
 
   it 'validates stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     flip_switch('include-current-period')
     clear_form
     save_and_wait
@@ -150,7 +150,7 @@ describe 'royalty_report_details', type: :feature do
 
   it 'updates stored values in the report' do
     visit royalty_report_path(@royalty_report, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     flip_switch('include-current-period')
     0.upto(13) do |n|
       x = n + 1

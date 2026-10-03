@@ -21,14 +21,14 @@ describe 'alias_details', type: :feature do
 
   it 'displays information about the alias' do
     visit alias_path(@alias, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="text"]').value).to eq 'Foo'
     expect(find('input[data-field="filmId"]').value).to eq 'Wilby Wonderful'
   end
 
   it 'updates information about the alias' do
     visit alias_path(@alias, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     fill_out_form({
       text: 'Another Alias',
       film_id: { value: 'Another Film', type: :select_modal },

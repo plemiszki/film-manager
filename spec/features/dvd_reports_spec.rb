@@ -44,7 +44,7 @@ describe 'dvd_reports', type: :feature do
     Invoice.create_invoice_from_po(@midwest_february_po, { sent_date: feb_date })
     settings.update(next_dvd_invoice_number: settings.next_dvd_invoice_number + 1)
     visit dvd_reports_path(as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     within('table[data-test="customers-report"]') do
       expect(find('div[data-test="0-0"]')).to have_content('$128.92')
       expect(find('div[data-test="0-1"]')).to have_content('$39.66')

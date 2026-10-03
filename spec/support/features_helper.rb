@@ -17,7 +17,7 @@ def list_box_selector(text)
 end
 
 def clear_form(except: nil)
-  expect(page).not_to have_selector('.spinner')
+  wait_for_spinner
   inputs = page.all("input[data-field], textarea[data-field]")
   inputs.each do |input|
     next if input[:type] == 'checkbox' || input[:readonly] == 'true'
@@ -27,7 +27,7 @@ def clear_form(except: nil)
 end
 
 def fill_out_form(data)
-  expect(page).not_to have_selector('.spinner')
+  wait_for_spinner
   data.each do |key, value|
     key = key.to_s.camelize(:lower)
     if value.class != Hash
@@ -128,10 +128,10 @@ def click_nice_select_option(css_selector, option_text)
 end
 
 def save_and_wait
-  expect(page).not_to have_selector('.spinner')
+  wait_for_spinner
   save_button = find('a', text: /^Save$/)
   save_button.click
-  expect(page).not_to have_selector('.spinner')
+  wait_for_spinner
 end
 
 def click_delete_and_confirm
@@ -165,11 +165,11 @@ def fill_out_and_submit_modal(data, button_type)
       find('a').click
     end
   end
-  expect(page).not_to have_selector('.spinner')
+  wait_for_spinner
 end
 
 def search_index(criteria)
-  expect(page).not_to have_selector('.spinner')
+  wait_for_spinner
   find('.search-button').click
   criteria.each do |key, value|
     key = key.to_s.camelize(:lower)
@@ -227,7 +227,7 @@ def select_from_modal(option)
   within(modal_select) do
     find('li', text: option).click
   end
-  expect(page).not_to have_selector('.spinner')
+  wait_for_spinner
 end
 
 def change_modal_select_field(id, selection_text)
@@ -240,8 +240,12 @@ def change_modal_select_field(id, selection_text)
   end
 end
 
-def wait_for_ajax
+def wait_for_spinner(attempts: 3)
   expect(page).to have_no_css('.spinner')
+rescue Selenium::WebDriver::Error::UnknownError => e
+  # if page has redirected, old spinner will be gone
+  raise unless e.message.include?('does not belong to the document') && (attempts -= 1) > 0
+  retry
 end
 
 def get_proper_quarter(date)

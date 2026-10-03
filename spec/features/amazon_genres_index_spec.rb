@@ -26,7 +26,7 @@ describe 'amazon_genres_index', type: :feature do
 
   it 'adds amazon genres' do
     visit setting_path(as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     within('#amazon-genres-index') do
       click_btn('Add Amazon Genre')
     end

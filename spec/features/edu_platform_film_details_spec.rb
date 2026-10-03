@@ -18,7 +18,7 @@ describe 'edu_platform_film_details', type: :feature do
 
   it 'displays information about the educational platform film' do
     visit edu_platform_film_path(@edu_platform_film, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="eduPlatformId"]').value).to eq('Kanopy')
     expect(find('input[data-field="url"]').value).to eq('https://kanopy.com/asdf')
   end

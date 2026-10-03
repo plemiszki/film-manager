@@ -66,7 +66,7 @@ describe 'film_details', type: :feature do
 
   it 'displays general information about the film' do
     visit film_path(@film, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).not_to have_selector('.spinner')
     expect(find('input[data-field="title"]').value).to eq 'Some Film'
     expect(find(list_box_selector("directors"))).to have_content('Rob Reiner')
@@ -286,7 +286,7 @@ describe 'film_details', type: :feature do
       })
       click_btn('Change All Dates')
     end
-    wait_for_ajax
+    wait_for_spinner
     within('table') do
       expect(page).to have_content('3/3/2033')
       expect(page).to have_content('4/4/2034')
@@ -976,7 +976,7 @@ describe 'film_details', type: :feature do
       dvd_type_id: { value: 'Club', type: :select_modal },
     }
     fill_out_and_submit_modal(info, :input)
-    wait_for_ajax
+    wait_for_spinner
     expect(current_path).to eq("/dvds/#{Dvd.last.id}")
     expect(@film.dvds.count).to eq(2)
   end

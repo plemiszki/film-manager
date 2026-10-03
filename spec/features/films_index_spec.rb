@@ -58,7 +58,7 @@ describe 'films_index', type: :feature do
 
   it 'can add new short films' do
     visit shorts_path(as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_btn('Add Short')
     info = {
       title: 'New Short',
@@ -81,7 +81,7 @@ describe 'films_index', type: :feature do
 
   it 'can add new tv series' do
     visit tv_series_index_path(as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_btn('Add TV Series')
     info = {
       title: 'New TV Series',

@@ -15,7 +15,7 @@ describe 'country_details', type: :feature do
 
   it 'displays incountryion about the country' do
     visit country_path(@country, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="name"]').value).to eq('France')
   end
 

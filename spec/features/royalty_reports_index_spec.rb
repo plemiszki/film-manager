@@ -26,7 +26,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     create(:royalty_report, film_id: 2, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     expect(page).to have_content 'Wilby Wonderful'
     expect(page).to have_content 'Another Film'
     expect(page).to have_content 'Hippo Entertainment'
@@ -37,7 +37,7 @@ describe 'royalty_reports_index', type: :feature do
     film = create(:expenses_recouped_from_top_film)
     film.film_revenue_percentages.update_all(value: 50)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     click_btn("Import")
     click_btn('Import Revenue')
     find('form input[type="file"]', visible: false).set('spec/support/revenue.xlsx')
@@ -50,7 +50,7 @@ describe 'royalty_reports_index', type: :feature do
     film = create(:expenses_recouped_from_top_film)
     film.film_revenue_percentages.update_all(value: 50)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     click_btn("Import")
     click_btn('Import Expenses')
     find('form input[type="file"]', visible: false).set('spec/support/expenses.xlsx')
@@ -64,7 +64,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     create(:royalty_report, film_id: 2, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     click_nice_select_option('select.days-filter', '30 days')
     expect(page).to have_content 'Wilby Wonderful'
     expect(page).to have_no_content 'Another Film'
@@ -75,7 +75,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:film, title: 'Another Film', days_statement_due: 60)
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     click_btn("Totals")
     expect(page).to have_content 'Calculating Totals'
   end
@@ -85,7 +85,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:film, title: 'Another Film', days_statement_due: 60)
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     click_btn("Summary")
     expect(page).to have_content 'Creating Summary'
   end
@@ -95,7 +95,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:film, title: 'Another Film', days_statement_due: 60)
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     click_btn("Error Check")
     expect(page).to have_content 'Checking For Errors'
   end
@@ -105,7 +105,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:film, title: 'Another Film', days_statement_due: 60)
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     click_nice_select_option('select.days-filter', '30 days')
     click_btn("Export All")
     expect(page).to have_content('Exporting Reports', wait: 10)
@@ -116,7 +116,7 @@ describe 'royalty_reports_index', type: :feature do
     create(:film, title: 'Another Film', days_statement_due: 60)
     create(:royalty_report, quarter: @proper_quarter, year: @proper_year)
     visit royalty_reports_path(as: $admin_user, no_jobs: true)
-    wait_for_ajax
+    wait_for_spinner
     click_nice_select_option('select.days-filter', '30 days')
     click_btn('Send All')
     confirm

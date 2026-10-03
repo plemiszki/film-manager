@@ -18,7 +18,7 @@ describe 'digital_retailer_film_details', type: :feature do
 
   it 'displays information about the digital retailer film' do
     visit digital_retailer_film_path(@digital_retailer_film, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="digitalRetailerId"]').value).to eq('iTunes')
     expect(find('input[data-field="url"]').value).to eq('https://itunes.com/wildywonderful')
   end

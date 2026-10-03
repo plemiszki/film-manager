@@ -36,7 +36,7 @@ describe 'aliases_index', type: :feature do
       text: 'Another Alias',
       film_id: { value: 'Wilby Wonderful', type: :select_modal },
     }, :input)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('table')).to have_content 'Another Alias'
     expect(Alias.last.attributes).to include(
       'text' => 'Another Alias',

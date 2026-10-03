@@ -47,7 +47,7 @@ describe 'auto_renew', type: :feature do
     within('table.auto-renew-films') do
       find('a', text: 'Renew', match: :first).click
     end
-    wait_for_ajax
+    wait_for_spinner
     expect(find('table.auto-renew-films')).not_to have_content('Test 1')
     expect(@film.reload.end_date).to eq(Date.today - 90.days + 2.years)
     expect(find('table.auto-renew-films')).to have_content('Test 2')
@@ -57,7 +57,7 @@ describe 'auto_renew', type: :feature do
     visit films_path(as: $admin_user)
     find('.icon').click
     find('a', text: 'Renew All').click
-    wait_for_ajax
+    wait_for_spinner
     expect(find('table.auto-renew-films')).not_to have_content('Test 1')
     expect(@film.reload.end_date).to eq(Date.today - 90.days + 2.years)
     expect(find('table.auto-renew-films')).not_to have_content('Test 2')

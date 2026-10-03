@@ -14,7 +14,7 @@ describe 'sublicensor_details', type: :feature do
 
   it 'displays information about the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     expect(find('input[data-field="name"]').value).to eq 'Kanopy'
     expect(find('input[data-field="contactName"]').value).to eq 'Becky LePlant'
     expect(find('input[data-field="email"]').value).to eq 'someone@kanopy.com'
@@ -24,7 +24,7 @@ describe 'sublicensor_details', type: :feature do
 
   it 'updates information about the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     new_info = {
       name: 'Fandor',
       contact_name: 'Joe Schmo',
@@ -43,7 +43,7 @@ describe 'sublicensor_details', type: :feature do
 
   it 'validates information about the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     clear_form
     save_and_wait
     expect(page).to have_content "Name can't be blank"
@@ -56,7 +56,7 @@ describe 'sublicensor_details', type: :feature do
     create(:territory)
     create(:sub_right)
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     within('.search-index') do
       expect(page).to have_content 'Wilby Wonderful'
     end
@@ -68,7 +68,7 @@ describe 'sublicensor_details', type: :feature do
     create(:right)
     create(:territory)
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_btn('Add Rights')
     within('.admin-modal') do
       fill_out_form({
@@ -78,7 +78,7 @@ describe 'sublicensor_details', type: :feature do
       find_all('a', text: 'ALL').each { |button| button.click }
       click_btn("Add Rights")
     end
-    wait_for_ajax
+    wait_for_spinner
     within('.search-index') do
       expect(page).to have_content 'Wilby Wonderful'
       expect(page).to have_content 'Theatrical'
@@ -88,7 +88,7 @@ describe 'sublicensor_details', type: :feature do
 
   it 'deletes the sublicensor' do
     visit sublicensor_path(@sublicensor, as: $admin_user)
-    wait_for_ajax
+    wait_for_spinner
     click_delete_and_confirm
     expect(page).to have_current_path('/sublicensors', ignore_query: true)
     expect(Sublicensor.find_by_id(@sublicensor.id)).to be(nil)
