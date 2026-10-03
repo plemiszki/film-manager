@@ -632,13 +632,9 @@ class RoyaltyReport < ActiveRecord::Base
       string += "</table>"
     end
 
-    pdf = WickedPdf.new.pdf_from_string(string)
     licensor_name = @film.licensor.name if titles.length > 1
     report_name = report_name(titles, licensor_name)
-    save_path = "#{directory}/#{report_name}"
-    File.open(save_path, 'wb') do |f|
-      f << pdf
-    end
+    GeneratePdf.new(html: string, path: "#{directory}/#{report_name}").call
     report_name
   end
 

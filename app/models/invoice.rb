@@ -414,11 +414,7 @@ class Invoice < ActiveRecord::Base
     end
     string += "</div>"
 
-    pdf = WickedPdf.new.pdf_from_string(string)
-    save_path = "#{path}/Invoice #{self.number}.pdf"
-    File.open(save_path, 'wb') do |f|
-      f << pdf
-    end
+    GeneratePdf.new(html: string, path: "#{path}/Invoice #{self.number}.pdf").call
   end
 
 end

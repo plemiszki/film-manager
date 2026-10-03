@@ -120,4 +120,24 @@ RSpec.describe RoyaltyReport do
     expect(@fifth_report.joined_amount_due).to eq(0)
   end
 
+  describe '#export' do
+    it 'generates the pdf in the given directory and returns the report name' do
+      create(:label)
+      create(:revenue_stream, name: 'Video')
+      film = create(:no_expenses_recouped_film)
+      report = film.create_royalty_statement!(1, 2020)
+      generator = instance_double(GeneratePdf, call: nil)
+      allow(GeneratePdf).to receive(:new).and_return(generator)
+
+      report_name = report.export(directory: '/tmp/exports', royalty_revenue_streams: report.royalty_revenue_streams)
+
+      expect(report_name).to eq("#{film.title} - Q1 2020.pdf")
+      expect(GeneratePdf).to have_received(:new).with(
+        html: a_string_including(film.title),
+        path: "/tmp/exports/#{report_name}"
+      )
+      expect(generator).to have_received(:call)
+    end
+  end
+
 end

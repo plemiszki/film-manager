@@ -134,9 +134,7 @@ class CreditMemo < ActiveRecord::Base
     string += "<tr class=\"total-row\"><td>Total</td><td></td><td>#{total_dvds}</td><td>#{dollarify(self.total.to_s)}</td></tr>"
     string += "</table>"
     string += "</div>"
-    File.open(path, 'wb') do |f|
-      f << WickedPdf.new.pdf_from_string(string)
-    end
+    GeneratePdf.new(html: string, path: path).call
   end
 
 end
