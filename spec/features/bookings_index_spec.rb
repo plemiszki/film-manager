@@ -111,7 +111,6 @@ describe 'bookings_index', type: :feature do
         end
       end
     end
-    sleep 2
     visit bookings_path(as: $admin_user)
     wait_for_ajax
     search_index({
