@@ -2,7 +2,7 @@
 
 Fonts embedded into invoice and credit memo PDFs by `GeneratePdf` (app/services/generate_pdf.rb).
 
-They're bundled here, not loaded from Google Fonts, because wkhtmltopdf fetched them over the network on every render and sometimes gave up, silently falling back to Helvetica. That made PDF typography inconsistent.
+They're bundled here, not loaded from Google Fonts, so PDF rendering never depends on the network. The old renderer (wkhtmltopdf) fetched them on every render and sometimes gave up, silently falling back to Helvetica.
 
 | File | Family / weight | Source | License |
 |---|---|---|---|

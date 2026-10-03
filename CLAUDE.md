@@ -151,4 +151,4 @@ The schema uses `pg_trgm` (trigram matching) for fuzzy search, alongside `textac
 - **Mailgun** — outbound email via `mailgun-ruby`. Delivery tracked via webhooks and `Email` model.
 - **AWS S3** — file storage for generated exports and uploaded assets.
 - **Sentry** — error tracking.
-- **wicked_pdf** — PDF generation for invoices and statements (requires `WKHTMLTOPDF_PATH` env var).
+- **Headless Chrome (Ferrum)**: renders the PDFs for invoices, credit memos and royalty statements. Everything goes through `GeneratePdf` (`app/services/generate_pdf.rb`): A4, 10mm margins, `scale: 0.8`. The scale keeps the hard-coded row-based page breaks working. Fonts are bundled in `lib/pdf_fonts` and embedded as base64. Chrome is found on `PATH`, or set `BROWSER_PATH`. On Heroku it comes from the Chrome for Testing buildpack.

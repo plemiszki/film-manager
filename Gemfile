@@ -28,10 +28,10 @@ gem 'sentry-ruby'
 gem 'sentry-sidekiq'
 gem 'sidekiq'
 gem 'connection_pool'
+gem 'ferrum'
 gem 'stripe', '12.5.0'
 gem 'textacular'
 gem 'timeliness'
-gem 'wicked_pdf'
 
 group :test do
   gem 'rails-controller-testing'
@@ -47,7 +47,6 @@ group :development, :test do
   gem 'factory_bot'
   gem 'rspec-rails'
   gem 'selenium-webdriver'
-  gem 'wkhtmltopdf-binary'
 end
 
 group :development do

@@ -1,28 +1,36 @@
 require 'rails_helper'
 
 RSpec.describe GeneratePdf do
-  let(:html) { '<p>Invoice 1D</p>' }
-  let(:pdf_bytes) { "%PDF-1.4\xFF\x00binary".b }
-  let(:wicked_pdf) { instance_double(WickedPdf) }
-
-  before do
-    allow(WickedPdf).to receive(:new).and_return(wicked_pdf)
-    allow(wicked_pdf).to receive(:pdf_from_string).and_return(pdf_bytes)
+  def embedded_fonts(path)
+    File.binread(path).scan(%r{/BaseFont\s*/([A-Za-z0-9+_-]+)}).flatten.map { |name| name.sub(/\A[A-Z]{6}\+/, '') }.uniq
   end
 
-  it 'renders the html and writes the pdf bytes to the path' do
-    Dir.mktmpdir do |dir|
-      path = "#{dir}/Invoice 1D.pdf"
-      described_class.new(html: html, path: path).call
-      expect(wicked_pdf).to have_received(:pdf_from_string).with(html)
-      expect(File.binread(path)).to eq(pdf_bytes)
-    end
+  around do |example|
+    Dir.mktmpdir { |dir| @dir = dir; example.run }
   end
 
-  it 'returns the path' do
-    Dir.mktmpdir do |dir|
-      path = "#{dir}/statement.pdf"
-      expect(described_class.new(html: html, path: path).call).to eq(path)
-    end
+  it 'writes an A4 pdf to the path and returns the path' do
+    path = "#{@dir}/Invoice 1D.pdf"
+    result = described_class.new(html: '<p>Invoice 1D</p>', path: path).call
+
+    expect(result).to eq(path)
+    pdf = File.binread(path)
+    expect(pdf).to start_with('%PDF')
+    width, height = pdf.match(%r{/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)\s*\]}).captures
+    expect(width.to_f).to be_within(2).of(595) # A4 is 595 x 842 points
+    expect(height.to_f).to be_within(2).of(842)
+  end
+
+  it 'embeds only the bundled fonts the html uses' do
+    path = "#{@dir}/fonts.pdf"
+    html = <<~HTML
+      <style>.bold { font-family: Lato; } body { font-family: Roboto; }</style>
+      <p>Body text</p><p class="bold">Bill To:</p>
+    HTML
+    described_class.new(html: html, path: path).call
+
+    fonts = embedded_fonts(path)
+    expect(fonts).to include('Lato-Bold', 'Roboto-Regular')
+    expect(fonts).not_to include('Tinos-Bold')
   end
 end

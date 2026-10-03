@@ -17,4 +17,7 @@ RSpec.configure do |config|
 
   WebMock.disable!
 
+  # PDF rendering (GeneratePdf) talks to headless Chrome over a local connection
+  WebMock.disable_net_connect!(allow_localhost: true)
+
 end

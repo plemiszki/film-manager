@@ -289,6 +289,7 @@ class Invoice < ActiveRecord::Base
     string += "}"
     string += ".address-block {"
     string +=   "display: inline-block;"
+    string +=   "vertical-align: top;"
     string += "}"
     string += ".address-block p, .notes p {"
     string +=   "font-family: Lato;"
