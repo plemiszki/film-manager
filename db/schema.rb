@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_03_133720) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -37,6 +37,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "language_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["film_id", "language_id"], name: "index_alternate_audios_on_film_id_and_language_id", unique: true
+    t.index ["language_id"], name: "index_alternate_audios_on_language_id"
   end
 
   create_table "alternate_lengths", id: :serial, force: :cascade do |t|
@@ -53,6 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "language_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["film_id", "language_id"], name: "index_alternate_subs_on_film_id_and_language_id", unique: true
+    t.index ["language_id"], name: "index_alternate_subs_on_language_id"
   end
 
   create_table "amazon_genre_films", force: :cascade do |t|
@@ -60,6 +62,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.datetime "created_at", null: false
     t.integer "film_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["amazon_genre_id"], name: "index_amazon_genre_films_on_amazon_genre_id"
     t.index ["film_id", "amazon_genre_id"], name: "index_amazon_genre_films_on_film_id_and_amazon_genre_id", unique: true
   end
 
@@ -75,6 +78,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.datetime "created_at", null: false
     t.integer "film_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["amazon_language_id"], name: "index_amazon_language_films_on_amazon_language_id"
     t.index ["film_id", "amazon_language_id"], name: "index_amazon_language_films_on_film_id_and_amazon_language_id", unique: true
   end
 
@@ -90,6 +94,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
   create_table "booker_venues", id: :serial, force: :cascade do |t|
     t.integer "booker_id", null: false
     t.integer "venue_id", null: false
+    t.index ["booker_id"], name: "index_booker_venues_on_booker_id"
+    t.index ["venue_id"], name: "index_booker_venues_on_venue_id"
   end
 
   create_table "bookers", id: :serial, force: :cascade do |t|
@@ -171,6 +177,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "item_qty", null: false
     t.decimal "total_price", precision: 8, scale: 2, default: "0.0"
     t.decimal "unit_price", precision: 8, scale: 2, default: "0.0"
+    t.index ["credit_memo_id"], name: "index_credit_memo_rows_on_credit_memo_id"
+    t.index ["dvd_id"], name: "index_credit_memo_rows_on_dvd_id"
   end
 
   create_table "credit_memos", force: :cascade do |t|
@@ -194,6 +202,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
   create_table "crossed_films", id: :serial, force: :cascade do |t|
     t.integer "crossed_film_id", null: false
     t.integer "film_id", null: false
+    t.index ["crossed_film_id"], name: "index_crossed_films_on_crossed_film_id"
     t.index ["film_id", "crossed_film_id"], name: "index_crossed_films_on_film_id_and_crossed_film_id", unique: true
   end
 
@@ -205,6 +214,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "digital_retailer_id", null: false
     t.integer "film_id", null: false
     t.string "url", default: ""
+    t.index ["digital_retailer_id"], name: "index_digital_retailer_films_on_digital_retailer_id"
+    t.index ["film_id"], name: "index_digital_retailer_films_on_film_id"
   end
 
   create_table "digital_retailers", id: :serial, force: :cascade do |t|
@@ -253,6 +264,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "dvd_id", null: false
     t.integer "short_id", null: false
     t.index ["dvd_id", "short_id"], name: "index_dvd_shorts_on_dvd_id_and_short_id", unique: true
+    t.index ["short_id"], name: "index_dvd_shorts_on_short_id"
   end
 
   create_table "dvd_types", id: :serial, force: :cascade do |t|
@@ -285,6 +297,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.datetime "updated_at", null: false
     t.string "url", default: ""
     t.index ["edu_platform_id", "film_id"], name: "index_edu_platform_films_on_edu_platform_id_and_film_id", unique: true
+    t.index ["film_id"], name: "index_edu_platform_films_on_film_id"
   end
 
   create_table "edu_platforms", force: :cascade do |t|
@@ -319,29 +332,38 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "season_number", null: false
     t.string "synopsis", default: ""
     t.string "title", null: false
+    t.index ["film_id"], name: "index_episodes_on_film_id"
   end
 
   create_table "film_countries", id: :serial, force: :cascade do |t|
     t.integer "country_id", null: false
     t.integer "film_id", null: false
     t.integer "order"
+    t.index ["country_id"], name: "index_film_countries_on_country_id"
+    t.index ["film_id"], name: "index_film_countries_on_film_id"
   end
 
   create_table "film_formats", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "format_id", null: false
+    t.index ["film_id"], name: "index_film_formats_on_film_id"
+    t.index ["format_id"], name: "index_film_formats_on_format_id"
   end
 
   create_table "film_genres", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "genre_id", null: false
     t.integer "order"
+    t.index ["film_id"], name: "index_film_genres_on_film_id"
+    t.index ["genre_id"], name: "index_film_genres_on_genre_id"
   end
 
   create_table "film_languages", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "language_id", null: false
     t.integer "order"
+    t.index ["film_id"], name: "index_film_languages_on_film_id"
+    t.index ["language_id"], name: "index_film_languages_on_language_id"
   end
 
   create_table "film_revenue_percentages", id: :serial, force: :cascade do |t|
@@ -360,12 +382,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "right_id", null: false
     t.date "start_date"
     t.integer "territory_id"
+    t.index ["film_id"], name: "index_film_rights_on_film_id"
     t.index ["right_id", "film_id", "territory_id"], name: "index_film_rights_on_right_id_and_film_id_and_territory_id", unique: true
+    t.index ["territory_id"], name: "index_film_rights_on_territory_id"
   end
 
   create_table "film_topics", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "topic_id", null: false
+    t.index ["film_id"], name: "index_film_topics_on_film_id"
+    t.index ["topic_id"], name: "index_film_topics_on_topic_id"
   end
 
   create_table "films", id: :serial, force: :cascade do |t|
@@ -485,6 +511,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "dvd_id", null: false
     t.integer "giftbox_id", null: false
     t.index ["dvd_id", "giftbox_id"], name: "index_giftbox_dvds_on_dvd_id_and_giftbox_id", unique: true
+    t.index ["giftbox_id"], name: "index_giftbox_dvds_on_giftbox_id"
   end
 
   create_table "giftboxes", id: :serial, force: :cascade do |t|
@@ -500,6 +527,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "film_id", null: false
     t.integer "order", null: false
     t.text "section", null: false
+    t.index ["film_id"], name: "index_in_theaters_films_on_film_id"
   end
 
   create_table "institution_order_films", force: :cascade do |t|
@@ -511,6 +539,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.decimal "price", precision: 7, scale: 2, default: "0.0"
     t.datetime "updated_at", null: false
     t.index ["film_id", "institution_order_id"], name: "index_inst_order_films_on_film_id_and_inst_order_id", unique: true
+    t.index ["institution_order_id"], name: "index_institution_order_films_on_institution_order_id"
   end
 
   create_table "institution_orders", force: :cascade do |t|
@@ -574,6 +603,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "invoice_id", null: false
     t.string "notes", default: ""
     t.integer "payment_id", null: false
+    t.index ["invoice_id"], name: "index_invoice_payments_on_invoice_id"
+    t.index ["payment_id"], name: "index_invoice_payments_on_payment_id"
   end
 
   create_table "invoice_rows", id: :serial, force: :cascade do |t|
@@ -585,6 +616,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.string "item_type"
     t.decimal "total_price", precision: 8, scale: 2, default: "0.0"
     t.decimal "unit_price", precision: 8, scale: 2, default: "0.0"
+    t.index ["invoice_id"], name: "index_invoice_rows_on_invoice_id"
   end
 
   create_table "invoices", id: :serial, force: :cascade do |t|
@@ -618,6 +650,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.decimal "sub_total", precision: 8, scale: 2, default: "0.0"
     t.decimal "total", precision: 8, scale: 2, default: "0.0"
     t.index ["booking_id"], name: "index_invoices_on_booking_id"
+    t.index ["customer_id"], name: "index_invoices_on_customer_id"
+    t.index ["institution_id"], name: "index_invoices_on_institution_id"
+    t.index ["institution_order_id"], name: "index_invoices_on_institution_order_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
   end
 
@@ -631,6 +666,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.boolean "second_line", default: false
     t.integer "status", default: 0
     t.integer "total_value", default: 0
+    t.index ["job_id"], name: "index_jobs_on_job_id"
   end
 
   create_table "labels", id: :serial, force: :cascade do |t|
@@ -647,6 +683,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "film_id", null: false
     t.integer "order", null: false
     t.string "result", null: false
+    t.index ["film_id"], name: "index_laurels_on_film_id"
   end
 
   create_table "licensors", id: :serial, force: :cascade do |t|
@@ -665,6 +702,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.string "name", null: false
     t.decimal "price", precision: 5, scale: 2, default: "0.0"
     t.string "size", default: ""
+    t.index ["merchandise_type_id"], name: "index_merchandise_items_on_merchandise_type_id"
   end
 
   create_table "merchandise_types", id: :serial, force: :cascade do |t|
@@ -682,6 +720,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.string "booking_type", default: "Booking"
     t.date "date"
     t.string "notes"
+    t.index ["booking_id"], name: "index_payments_on_booking_id"
   end
 
   create_table "purchase_order_items", id: :serial, force: :cascade do |t|
@@ -690,6 +729,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "order", null: false
     t.integer "purchase_order_id", null: false
     t.integer "qty", default: 0
+    t.index ["purchase_order_id"], name: "index_purchase_order_items_on_purchase_order_id"
   end
 
   create_table "purchase_orders", id: :serial, force: :cascade do |t|
@@ -710,6 +750,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.string "state", default: ""
     t.integer "year", null: false
     t.string "zip", default: ""
+    t.index ["customer_id"], name: "index_purchase_orders_on_customer_id"
+    t.index ["number"], name: "index_purchase_orders_on_number"
   end
 
   create_table "quotes", id: :serial, force: :cascade do |t|
@@ -718,12 +760,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.integer "order", null: false
     t.string "publication"
     t.string "text", null: false
+    t.index ["film_id"], name: "index_quotes_on_film_id"
   end
 
   create_table "related_films", id: :serial, force: :cascade do |t|
     t.integer "film_id", null: false
     t.integer "order", null: false
     t.integer "other_film_id", null: false
+    t.index ["film_id"], name: "index_related_films_on_film_id"
+    t.index ["other_film_id"], name: "index_related_films_on_other_film_id"
   end
 
   create_table "return_items", id: :serial, force: :cascade do |t|
@@ -744,6 +789,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.string "number", null: false
     t.integer "year", null: false
     t.index ["customer_id"], name: "index_returns_on_customer_id"
+    t.index ["number"], name: "index_returns_on_number"
   end
 
   create_table "revenue_streams", id: :serial, force: :cascade do |t|
@@ -844,6 +890,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.string "name"
     t.string "state"
     t.string "zip"
+    t.index ["customer_id"], name: "index_shipping_addresses_on_customer_id"
   end
 
   create_table "sub_rights", id: :serial, force: :cascade do |t|
@@ -855,6 +902,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.date "start_date", null: false
     t.integer "sublicensor_id", null: false
     t.integer "territory_id", null: false
+    t.index ["film_id"], name: "index_sub_rights_on_film_id"
     t.index ["right_id"], name: "index_sub_rights_on_right_id"
     t.index ["sublicensor_id"], name: "index_sub_rights_on_sublicensor_id"
     t.index ["territory_id"], name: "index_sub_rights_on_territory_id"
@@ -945,6 +993,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_171832) do
     t.string "terms", default: ""
     t.string "url", default: "", null: false
     t.integer "venue_id", null: false
+    t.index ["film_id"], name: "index_virtual_bookings_on_film_id"
+    t.index ["venue_id"], name: "index_virtual_bookings_on_venue_id"
   end
 
   create_table "weekly_box_offices", id: :serial, force: :cascade do |t|

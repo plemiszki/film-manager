@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-if !defined?(Spring) && [nil, "development", "test"].include?(ENV["RAILS_ENV"])
+# Development only: Spring requires reloading, which is disabled in the test environment.
+if !defined?(Spring) && [nil, "development"].include?(ENV["RAILS_ENV"])
   gem "bundler"
   require "bundler"
 
