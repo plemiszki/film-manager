@@ -65,7 +65,7 @@ Complex pages (film details, booking details, royalty reports, etc.) have dedica
 
 The entry point is `frontend/entrypoints/application.jsx`. On `DOMContentLoaded`, it scans for known element IDs and mounts the appropriate component. Vite (config in `vite.config.mts` and `config/vite.json`) builds it, and the layout loads it with `vite_javascript_tag`. `rake assets:precompile` runs the production build into `public/vite`. styled-jsx is applied through `@rolldown/plugin-babel`.
 
-Sprockets (`app/assets/javascripts/application.js`) still serves jQuery, jQuery UI, bootstrap, the `Tools` and `Images` globals, and all SCSS. It loads as a classic script before the Vite module, so React code can use those globals.
+Sprockets (`app/assets/javascripts/application.js`) still serves jQuery, jQuery UI, bootstrap, the nice-select plugin, the `Images` global, and all SCSS. It loads as a classic script before the Vite module, so React code can use those globals.
 
 ### Background Jobs: Worker → Job Model Pattern
 

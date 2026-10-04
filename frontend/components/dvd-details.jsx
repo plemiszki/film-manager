@@ -3,6 +3,7 @@ import {
   Common,
   Details,
   deepCopy,
+  objectsAreEqual,
   setUpNiceSelect,
   fetchEntity,
   createEntity,
@@ -162,7 +163,7 @@ export default class DvdDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.dvd, this.state.dvdSaved);
+    return !objectsAreEqual(this.state.dvd, this.state.dvdSaved);
   }
 
   changeFieldArgs() {

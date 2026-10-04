@@ -20,6 +20,7 @@ import {
   ListBox,
   ListBoxReorderable,
   ModalSelect,
+  objectsAreEqual,
   OutlineButton,
   rearrangeFields,
   resetNiceSelect,
@@ -414,10 +415,10 @@ export default class FilmDetails extends React.Component {
   checkForChanges() {
     const { film, filmSaved, percentageObject, percentageObjectSaved } =
       this.state;
-    if (Tools.objectsAreEqual(film, filmSaved) === false) {
+    if (objectsAreEqual(film, filmSaved) === false) {
       return true;
     } else {
-      return !Tools.objectsAreEqual(percentageObject, percentageObjectSaved);
+      return !objectsAreEqual(percentageObject, percentageObjectSaved);
     }
   }
 

@@ -4,6 +4,7 @@ import {
   ConfirmDelete,
   Details,
   deepCopy,
+  objectsAreEqual,
   setUpNiceSelect,
   fetchEntity,
   createEntity,
@@ -179,7 +180,7 @@ export default class ReturnDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.return, this.state.returnSaved);
+    return !objectsAreEqual(this.state.return, this.state.returnSaved);
   }
 
   changeFieldArgs() {

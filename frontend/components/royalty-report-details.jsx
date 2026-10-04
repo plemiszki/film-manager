@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Common,
+  objectsAreEqual,
   removeFinanceSymbols,
   Details,
   fetchEntity,
@@ -160,15 +161,10 @@ export default class ReportDetails extends React.Component {
   }
 
   checkForChanges() {
-    if (
-      Tools.objectsAreEqual(this.state.report, this.state.reportSaved) === false
-    ) {
+    if (objectsAreEqual(this.state.report, this.state.reportSaved) === false) {
       return true;
     } else {
-      return !Tools.objectsAreEqual(
-        this.state.streams,
-        this.state.streamsSaved,
-      );
+      return !objectsAreEqual(this.state.streams, this.state.streamsSaved);
     }
   }
 
@@ -423,7 +419,7 @@ export default class ReportDetails extends React.Component {
                   checked: showJoined,
                   onChange: () => this.clickToggle(),
                   readOnly: spinner,
-                  testLabel: 'include-current-period',
+                  testLabel: "include-current-period",
                 })}
               </div>
             </div>

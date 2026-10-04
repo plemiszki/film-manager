@@ -7,6 +7,7 @@ import {
   Common,
   ConfirmDelete,
   Details,
+  objectsAreEqual,
   stringifyDate,
   deepCopy,
   setUpNiceSelect,
@@ -309,7 +310,7 @@ export default class BookingDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.booking, this.state.bookingSaved);
+    return !objectsAreEqual(this.state.booking, this.state.bookingSaved);
   }
 
   changeFieldArgs() {

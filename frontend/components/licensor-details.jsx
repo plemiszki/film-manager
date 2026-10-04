@@ -5,6 +5,7 @@ import {
   Details,
   deepCopy,
   fetchEntity,
+  objectsAreEqual,
   updateEntity,
   Table,
   BottomButtons,
@@ -70,10 +71,7 @@ export default class LicensorDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(
-      this.state.licensor,
-      this.state.licensorSaved,
-    );
+    return !objectsAreEqual(this.state.licensor, this.state.licensorSaved);
   }
 
   changeFieldArgs() {

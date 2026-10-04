@@ -56,6 +56,10 @@ const filterByDaysDue = (reports, daysDue) => {
   return reports.filter((report) => report.days === Number(daysDue));
 };
 
+// M/D/YYYY
+const formatDate = (date) =>
+  `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+
 const getQuarterFromMonth = (month) => {
   if (month >= 9) {
     return 4;
@@ -526,9 +530,7 @@ export default class ReportsIndex extends React.Component {
                     displayFunction: (report) => {
                       return report.sendReport
                         ? report.dateSent
-                          ? Tools.formatDate(
-                              new Date(report.dateSent + " 0:00"),
-                            )
+                          ? formatDate(new Date(report.dateSent + " 0:00"))
                           : "Not Sent"
                         : "Do Not Send";
                     },

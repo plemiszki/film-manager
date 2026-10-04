@@ -4,6 +4,7 @@ import {
   Details,
   deepCopy,
   fetchEntity,
+  objectsAreEqual,
   updateEntity,
   BottomButtons,
   Spinner,
@@ -71,7 +72,7 @@ export default class DvdCustomerDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(
+    return !objectsAreEqual(
       this.state.dvdCustomer,
       this.state.dvdCustomerSaved,
     );

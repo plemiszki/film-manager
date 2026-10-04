@@ -6,6 +6,7 @@ import {
   ConfirmDelete,
   Details,
   deepCopy,
+  objectsAreEqual,
   setUpNiceSelect,
   fetchEntity,
   updateEntity,
@@ -109,7 +110,7 @@ export default class EpisodeDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.episode, this.state.episodeSaved);
+    return !objectsAreEqual(this.state.episode, this.state.episodeSaved);
   }
 
   changeFieldArgs() {

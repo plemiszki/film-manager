@@ -3,6 +3,7 @@ import {
   Common,
   Details,
   deepCopy,
+  objectsAreEqual,
   setUpNiceSelect,
   fetchEntity,
   createEntity,
@@ -131,7 +132,7 @@ export default class GiftboxDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.giftbox, this.state.giftboxSaved);
+    return !objectsAreEqual(this.state.giftbox, this.state.giftboxSaved);
   }
 
   changeFieldArgs() {

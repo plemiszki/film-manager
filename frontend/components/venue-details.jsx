@@ -4,11 +4,13 @@ import {
   BottomButtons,
   Button,
   Common,
+  deepCopy,
   deleteEntity,
   Details,
   fetchEntity,
   GrayedOut,
   ModalMessage,
+  objectsAreEqual,
   sendRequest,
   setUpNiceSelect,
   Spinner,
@@ -168,7 +170,7 @@ export default class VenueDetails extends React.Component {
       this.setState(
         {
           venue,
-          venueSaved: Tools.deepCopy(venue),
+          venueSaved: deepCopy(venue),
           bookings,
           spinner: false,
         },
@@ -220,7 +222,7 @@ export default class VenueDetails extends React.Component {
               spinner: false,
               changesToSave: false,
               venue,
-              venueSaved: Tools.deepCopy(venue),
+              venueSaved: deepCopy(venue),
             });
           },
           (response) => {
@@ -273,7 +275,7 @@ export default class VenueDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(this.state.venue, this.state.venueSaved);
+    return !objectsAreEqual(this.state.venue, this.state.venueSaved);
   }
 
   changeFieldArgs() {

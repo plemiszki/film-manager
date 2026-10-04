@@ -6,6 +6,7 @@ import {
   Button,
   Details,
   deepCopy,
+  objectsAreEqual,
   setUpNiceSelect,
   fetchEntity,
   createEntity,
@@ -219,7 +220,7 @@ export default class PurchaseOrderDetails extends React.Component {
   }
 
   checkForChanges() {
-    return !Tools.objectsAreEqual(
+    return !objectsAreEqual(
       this.state.purchaseOrder,
       this.state.purchaseOrderSaved,
     );
