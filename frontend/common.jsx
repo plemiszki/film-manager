@@ -36,7 +36,6 @@ var FM = {
   },
 
   initialize: function() {
-    $.fn.matchHeight._maintainScroll = true;
     FM.highlightCurrentPageInMenu();
     FM.storeURLParams();
     FM.user.id = +$('#current-user #id').html();
